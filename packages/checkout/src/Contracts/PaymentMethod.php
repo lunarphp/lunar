@@ -2,6 +2,8 @@
 
 namespace Lunar\Checkout\Contracts;
 
+use Lunar\Core\Models\Cart;
+
 /**
  * Presentation + capability descriptor for one way to pay (spec 0002 §A).
  * A method owns no money movement: it names a gateway driver registered with
@@ -41,6 +43,14 @@ interface PaymentMethod
      * @return array<string, mixed>
      */
     public function config(): array;
+
+    /**
+     * Whether this method can be used for the given basket. False hides it
+     * from the checkout AND refuses it at the pay boundary, so a method that
+     * only applies to some baskets (pay on collection, account terms above a
+     * spend threshold) cannot be selected by a crafted request either.
+     */
+    public function isAvailable(Cart $cart): bool;
 
     /**
      * Whether the method also renders in the express-wallet region.

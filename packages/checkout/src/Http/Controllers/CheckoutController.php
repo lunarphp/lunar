@@ -215,7 +215,9 @@ class CheckoutController extends Controller
                 'config' => $method->config(),
                 'supportsExpress' => $method->supportsExpress(),
                 'expressComponent' => $method->expressComponent(),
-            ], app(PaymentMethodRegistry::class)->all()),
+            ], app(PaymentMethodRegistry::class)->availableFor(
+                Cart::query()->findOrFail((int) $session->cart_reference)
+            )),
             'urls' => [
                 'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
                 'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
@@ -366,13 +368,9 @@ class CheckoutController extends Controller
 
         $data = $request->validate(['payment_method' => ['required', 'string']]);
 
-        $method = $methods->get($data['payment_method']);
+        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
 
-        if ($method === null) {
-            throw ValidationException::withMessages([
-                'payment_method' => 'The selected payment method is not available.',
-            ]);
-        }
+        $method = $this->resolveAvailableMethod($methods, $cart, $data['payment_method']);
 
         $gateway = Payments::driver($method->driver());
 
@@ -381,8 +379,6 @@ class CheckoutController extends Controller
                 'payment_method' => 'The selected payment method cannot create a payment intent.',
             ]);
         }
-
-        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
 
         $descriptor = $gateway->createIntent($cart->calculate());
 
@@ -421,13 +417,11 @@ class CheckoutController extends Controller
             'payment_method' => ['required', 'string'],
         ]);
 
-        $method = $methods->get($data['payment_method']);
-
-        if ($method === null) {
-            throw ValidationException::withMessages([
-                'payment_method' => 'The selected payment method is not available.',
-            ]);
-        }
+        $method = $this->resolveAvailableMethod(
+            $methods,
+            Cart::query()->findOrFail((int) $session->cart_reference),
+            $data['payment_method'],
+        );
 
         // Live amount, not the session's pinned figure — the pin happens
         // inside assertReadyForPayment(), after this decision.
@@ -451,6 +445,25 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['pinned' => true]);
+    }
+
+    /**
+     * The registered method for this handle, provided the basket can actually
+     * use it. Availability is enforced on writes as well as hidden in the
+     * projection, so selecting a method the cart doesn't qualify for is
+     * rejected rather than quietly honoured.
+     */
+    private function resolveAvailableMethod(PaymentMethodRegistry $methods, Cart $cart, string $handle): PaymentMethod
+    {
+        $method = $methods->get($handle);
+
+        if ($method === null || ! $method->isAvailable($cart)) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'The selected payment method is not available.',
+            ]);
+        }
+
+        return $method;
     }
 
     /**

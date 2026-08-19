@@ -155,6 +155,18 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
              */
             $order = $cart->completedOrder ?: $cart->draftOrder ?: $cart->createOrder();
 
+            /*
+             * Completing the session places the order (spec 0002 §D). A gateway
+             * that placed it during authorize() keeps its own timestamp; a
+             * synchronous method — offline, pay-on-collection, a zero total —
+             * has no gateway to do it, and would otherwise leave a draft order
+             * behind a completed checkout. Stamping placed_at is what emits
+             * OrderPlaced, so stock and fulfilment react either way.
+             */
+            if (! $order->isPlaced()) {
+                $order->update(['placed_at' => now()]);
+            }
+
             $attributes = [
                 'order_reference' => (string) $order->id,
                 'completed_at' => now(),

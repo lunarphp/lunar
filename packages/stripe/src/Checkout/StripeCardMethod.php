@@ -2,7 +2,7 @@
 
 namespace Lunar\Stripe\Checkout;
 
-use Lunar\Checkout\Contracts\PaymentMethod;
+use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
 
 /**
  * Card payments through Stripe, as a checkout payment method (spec 0002).
@@ -10,7 +10,7 @@ use Lunar\Checkout\Contracts\PaymentMethod;
  * lunar/checkout is a suggested dependency, referenced only when a host that
  * has both registers this class.
  */
-class StripeCardMethod implements PaymentMethod
+class StripeCardMethod extends AbstractPaymentMethod
 {
     public function handle(): string
     {
@@ -27,11 +27,6 @@ class StripeCardMethod implements PaymentMethod
         return 'stripe';
     }
 
-    public function requiresIntent(): bool
-    {
-        return true;
-    }
-
     public function component(): string
     {
         return 'stripe-card';
@@ -42,15 +37,5 @@ class StripeCardMethod implements PaymentMethod
         return [
             'publishableKey' => (string) config('services.stripe.public_key'),
         ];
-    }
-
-    public function supportsExpress(): bool
-    {
-        return false;
-    }
-
-    public function expressComponent(): ?string
-    {
-        return null;
     }
 }

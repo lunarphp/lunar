@@ -16,6 +16,7 @@ import {
 } from './composables/elements.js'
 import { useCheckout } from './composables/useCheckout.js'
 import ContactSection from './components/ContactSection.vue'
+import OfflineNotice from './components/payments/OfflineNotice.vue'
 import StripeCard from './components/payments/StripeCard.vue'
 import '../css/checkout.css'
 
@@ -26,6 +27,7 @@ registerCheckoutElement('contact-information', ContactSection)
 // First-party gateway components are prebuilt into the app (spec 0002 §C);
 // third-party gateways self-register via a contributed runtime chunk.
 registerCheckoutElement('stripe-card', StripeCard)
+registerCheckoutElement('offline-notice', OfflineNotice)
 
 // --- The shared runtime contributed chunks build against -----------------------
 //

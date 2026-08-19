@@ -6,6 +6,7 @@ use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
+use Lunar\Core\Models\Cart;
 
 /**
  * Holds the payment methods a store has enabled (spec 0002 §B). Core ships
@@ -45,6 +46,14 @@ class PaymentMethodRegistry implements PaymentMethodRegistryContract
         }
 
         return array_values($resolved);
+    }
+
+    public function availableFor(Cart $cart): array
+    {
+        return array_values(array_filter(
+            $this->all(),
+            fn (PaymentMethod $method): bool => $method->isAvailable($cart),
+        ));
     }
 
     public function get(string $handle): ?PaymentMethod

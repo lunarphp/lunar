@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'payments' => [
+        'offline' => [
+            'label' => 'Pay later',
+        ],
+    ],
+
     'states' => [
         'checkout-session' => [
             'open' => 'Open',
