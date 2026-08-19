@@ -27,6 +27,7 @@ use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Order;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CheckoutController extends Controller
@@ -398,18 +399,52 @@ class CheckoutController extends Controller
     }
 
     /**
-     * The pay boundary: pin the session (Open → PaymentProcessing, amounts +
-     * fingerprint frozen) against the state the customer confirmed. Client-side
-     * gateway confirmation follows; completion arrives via the gateway's
-     * success path or reconciliation — never this endpoint.
+     * The pay boundary, routed by the method's capability and the amount
+     * (spec 0002 §A).
+     *
+     * Asynchronous — a gateway must confirm: pin the session (Open →
+     * PaymentProcessing, amounts + fingerprint frozen) against the state the
+     * customer confirmed. Completion then arrives via the gateway's success
+     * path or reconciliation, never this endpoint.
+     *
+     * Synchronous — nothing to confirm (an offline / pay-on-collection /
+     * invoice-terms method, or a zero total whatever the method claims):
+     * complete in place, Open → Completed. Completing here is idempotent, so a
+     * double submit yields one order.
      */
-    public function pay(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): JsonResponse
+    public function pay(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver, PaymentMethodRegistry $methods): JsonResponse
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate(['fingerprint' => ['required', 'string']]);
+        $data = $request->validate([
+            'fingerprint' => ['required', 'string'],
+            'payment_method' => ['required', 'string'],
+        ]);
+
+        $method = $methods->get($data['payment_method']);
+
+        if ($method === null) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'The selected payment method is not available.',
+            ]);
+        }
+
+        // Live amount, not the session's pinned figure — the pin happens
+        // inside assertReadyForPayment(), after this decision.
+        $amountTotal = $checkoutDriver->snapshot($session)->amountTotal;
 
         try {
+            if (! $method->requiresIntent() || $amountTotal <= 0) {
+                $completed = $checkoutDriver->complete($session, $data['fingerprint']);
+
+                return response()->json([
+                    'completed' => true,
+                    'order' => $completed instanceof Order
+                        ? (string) $completed->id
+                        : (string) $completed,
+                ]);
+            }
+
             $checkoutDriver->assertReadyForPayment($session, $data['fingerprint']);
         } catch (PaymentConfirmationException $e) {
             throw ValidationException::withMessages(['fingerprint' => $e->getMessage()]);

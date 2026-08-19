@@ -270,15 +270,27 @@ export function createCheckout(data) {
         })
       }
 
-      // Pin the session against exactly what the customer confirmed.
-      await postJson(state.urls.pay, { fingerprint: state.fingerprint })
+      // Pin the session against exactly what the customer confirmed. A method
+      // needing no gateway confirmation (offline / pay-on-collection) — or a
+      // zero total — completes server-side right here instead.
+      const result = await postJson(state.urls.pay, {
+        fingerprint: state.fingerprint,
+        payment_method: state.method,
+      })
+
+      state.paid = true
+
+      if (result.completed) {
+        window.location.reload()
+
+        return
+      }
 
       // Hand over to the gateway component (3DS, wallet sheets…).
       if (paymentConfirm) {
         await paymentConfirm()
       }
 
-      state.paid = true
       await awaitCompletion()
     } catch (error) {
       state.payError = error?.message || 'Payment failed — you have not been charged.'
