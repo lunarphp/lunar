@@ -36,7 +36,11 @@ class MapVariantsToProductOptions
                 return $amountMatched == count($variant['values']);
             });
 
-            $variant = $variants[$variantIndex] ?? null;
+            // search() returns false when no variant matches. Since $variants is a
+            // list, $variants[false] would resolve to $variants[0] and silently adopt
+            // the first variant's id, sku, price and stock for a permutation that has
+            // no variant at all.
+            $variant = $variantIndex === false ? null : $variants[$variantIndex];
 
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;

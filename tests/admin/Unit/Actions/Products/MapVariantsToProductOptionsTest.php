@@ -78,3 +78,57 @@ it('can map variants given three sets of option values', function () {
 
     expect($result)->toHaveCount(4);
 });
+
+it('does not adopt the first variant for a permutation that matches nothing', function () {
+
+    $optionValues = [
+        'Colour' => [
+            'Red',
+            'Blue',
+        ],
+        'Size' => [
+            'Small',
+            'Large',
+        ],
+    ];
+
+    // A sparse product: only two of the four combinations actually exist.
+    $variants = [
+        [
+            'id' => 1,
+            'sku' => 'RED-SMALL',
+            'price' => 10,
+            'stock' => 1,
+            'values' => [
+                'Colour' => 'Red',
+                'Size' => 'Small',
+            ],
+        ],
+        [
+            'id' => 2,
+            'sku' => 'BLUE-LARGE',
+            'price' => 20,
+            'stock' => 2,
+            'values' => [
+                'Colour' => 'Blue',
+                'Size' => 'Large',
+            ],
+        ],
+    ];
+
+    $result = MapVariantsToProductOptions::map($optionValues, $variants);
+
+    expect($result)->toHaveCount(4);
+
+    $blueSmall = collect($result)->first(
+        fn ($row) => $row['values'] === ['Colour' => 'Blue', 'Size' => 'Small']
+    );
+
+    // "Blue/Small" matches neither variant, so it must not inherit the id, sku,
+    // price or stock of whichever variant happens to be first in the list.
+    expect($blueSmall['copied_id'])->toBeNull()
+        ->and($blueSmall['variant_id'])->toBeNull()
+        ->and($blueSmall['sku'])->toBeNull()
+        ->and($blueSmall['price'])->toBe(0)
+        ->and($blueSmall['stock'])->toBe(0);
+});
