@@ -27,7 +27,8 @@ use Lunar\Core\Database\Migration;
  * Cart/Staff tables are untouched. There is no `down()`: upgrade-package data
  * migrations are one-way — recover from a backup rather than reversing a data move.
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         // [table (unprefixed), v2 "hidden" column, value written for soft-deleted rows]
@@ -39,9 +40,9 @@ return new class extends Migration {
         ];
 
         foreach ($reconcile as [$name, $column, $hidden]) {
-            $table = $this->prefix . $name;
+            $table = $this->prefix.$name;
 
-            if (!Schema::hasTable($table) || !Schema::hasColumn($table, 'deleted_at')) {
+            if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'deleted_at')) {
                 continue;
             }
 
