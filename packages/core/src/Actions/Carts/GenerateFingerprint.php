@@ -21,7 +21,10 @@ class GenerateFingerprint
                 $line->subTotal;
         });
 
-        $value .= $cart->user_id.$cart->currency_id.$cart->coupon_code;
+        $value .= $cart->user_id.
+            $cart->currency_id.
+            $cart->coupon_code.
+            $cart->shippingAddress?->shipping_option;
 
         return sha1($value);
     }
