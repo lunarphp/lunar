@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\GenerateFingerprint;
 use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
@@ -77,4 +78,44 @@ test('can generate cart fingerprint', function () {
     ]);
 
     $this->assertNotSame($fingerprintFromCart, $cart->fingerprint());
+});
+
+test('can generate a different cart fingerprint when the shipping option changes', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $variant = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+        'shipping_option' => 'BASDEL',
+    ]);
+
+    $fingerprint = $cart->fingerprint();
+
+    $cart->shippingAddress->update([
+        'shipping_option' => 'EXPDEL',
+    ]);
+
+    expect($cart->fingerprint())->not->toBe($fingerprint);
 });
