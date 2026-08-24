@@ -51,6 +51,10 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function apply(CartContract $cart): CartContract
     {
+        if (! $this->checkDiscountConditions($cart)) {
+            return $cart;
+        }
+
         $data = $this->discount->data;
 
         $minQty = $data['min_qty'] ?? null;
