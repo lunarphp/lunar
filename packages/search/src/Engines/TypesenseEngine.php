@@ -214,13 +214,11 @@ class TypesenseEngine extends AbstractEngine
             $facetQuery = $facetQuery->join(',');
 
             foreach ($searchQuery->facetFilters as $field => $values) {
-                $values = collect($values)->map(function ($value) {
-                    if ($value == 'false' || $value == 'true') {
-                        return $value;
-                    }
+                $fieldType = $this->getFieldType($field);
 
-                    return '`'.$value.'`';
-                });
+                $values = collect($values)->map(
+                    fn ($value) => $this->quoteFilterValue($value, $fieldType)
+                );
 
                 if ($values->count() > 1) {
                     $filters->push($field.':['.collect($values)->join(',').']');
@@ -342,6 +340,48 @@ class TypesenseEngine extends AbstractEngine
     {
         return collect($this->getFieldConfig())
             ->contains(fn (array $field): bool => ($field['name'] ?? null) === 'embedding');
+    }
+
+    /**
+     * Render a facet filter value for the filter_by grammar.
+     *
+     * Backticks escape a *string* literal, letting it carry spaces or commas.
+     * On a numeric field Typesense reads the backtick as a comparator and
+     * rejects the whole request ("Numerical field has an invalid comparator"),
+     * so quoting has to follow the field's schema type rather than the shape of
+     * the value — a string field whose values look numeric ('3M', '10') still
+     * needs the quotes to match exactly.
+     *
+     * A field the schema does not declare keeps the quoted form it has always
+     * had, so a host that configures its collection elsewhere cannot regress.
+     */
+    protected function quoteFilterValue(mixed $value, ?string $type): string
+    {
+        // Booleans have never been quoted — keep the literal strings working
+        // for hosts that pass them through from a request.
+        if (is_bool($value) || $value === 'true' || $value === 'false') {
+            return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+        }
+
+        $baseType = str_replace('[]', '', (string) $type);
+
+        if (in_array($baseType, ['int32', 'int64', 'float'], true)) {
+            return (string) $value;
+        }
+
+        if ($baseType === 'bool') {
+            return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+        }
+
+        return '`'.$value.'`';
+    }
+
+    protected function getFieldType(string $field): ?string
+    {
+        $config = collect($this->getFieldConfig())
+            ->first(fn (array $candidate): bool => ($candidate['name'] ?? null) === $field);
+
+        return $config['type'] ?? null;
     }
 
     protected function getFieldConfig(): array
