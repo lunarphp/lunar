@@ -13,6 +13,7 @@ use Lunar\Core\Models\Order;
 
 /**
  * @method static bool allowsMultipleOrdersPerCart()
+ * @method static Cart add(\Lunar\Core\Contracts\Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true)
  * @method static Cart|null current(bool $estimateShipping = false, bool $calculate = true)
  * @method static CartSessionManager estimateShippingUsing(array $meta)
  * @method static array getShippingEstimateMeta()

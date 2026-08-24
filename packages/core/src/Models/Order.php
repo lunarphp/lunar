@@ -53,6 +53,7 @@ use Spatie\ModelStates\HasStates;
  * @property int $discount_total
  * @property array $discount_breakdown
  * @property array $shipping_breakdown
+ * @property int $shipping_total
  * @property array $tax_breakdown
  * @property int $tax_total
  * @property int $total
