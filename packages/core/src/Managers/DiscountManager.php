@@ -9,6 +9,7 @@ use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
+use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\Channel as ChannelContract;
@@ -132,8 +133,9 @@ class DiscountManager implements DiscountManagerInterface
             $this->customerGroup($defaultGroup);
         }
 
+        /** @var Cart $cart */
         return Discount::active()
-            ->usable()
+            ->usable($cart?->consumedDiscountIds() ?? [])
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
             ->with([
