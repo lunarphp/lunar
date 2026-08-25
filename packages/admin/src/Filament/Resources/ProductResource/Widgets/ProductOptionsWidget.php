@@ -402,7 +402,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     }
 
                     if (empty($variantData['variant_id']) && empty($variantData['copied_id'])) {
-                        $variantData['copied_id'] = $this->record->variants()->value('id');
+                        $variantData['copied_id'] = $this->record->variants()->orderBy('id')->value('id');
                     }
 
                     if (! empty($variantData['copied_id'])) {
