@@ -21,6 +21,7 @@ import {
     DatePickerTrigger,
 } from 'reka-ui';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * A date-and-time picker matching the panel's control styling. The public
@@ -40,6 +41,11 @@ const props = withDefaults(
 const emit = defineEmits<{
     'update:modelValue': [value: string];
 }>();
+
+const { t, locale } = useI18n();
+
+// The staff member's panel locale, as a BCP 47 tag for reka-ui (pt_BR -> pt-BR).
+const pickerLocale = computed(() => locale.value.replace('_', '-'));
 
 function pad(value: number): string {
     return String(value).padStart(2, '0');
@@ -61,7 +67,10 @@ const value = computed<DateValue | undefined>({
             emit('update:modelValue', '');
             return;
         }
-        const dt = next instanceof CalendarDateTime
+        // Duck-typed rather than instanceof: reka-ui may resolve its own copy
+        // of @internationalized/date, and a cross-copy instanceof would
+        // silently zero the chosen time.
+        const dt = 'hour' in next
             ? next
             : new CalendarDateTime(next.year, next.month, next.day, 0, 0);
         emit(
@@ -77,7 +86,7 @@ const value = computed<DateValue | undefined>({
         v-model="value"
         granularity="minute"
         :hour-cycle="24"
-        locale="en-GB"
+        :locale="pickerLocale"
         class="block w-full"
     >
         <DatePickerField
@@ -107,7 +116,7 @@ const value = computed<DateValue | undefined>({
                 </DatePickerInput>
             </template>
 
-            <DatePickerTrigger class="ml-1 text-ink-500 hover:text-ink-900" aria-label="Open calendar">
+            <DatePickerTrigger class="ml-1 text-ink-500 hover:text-ink-900" :aria-label="t('common.open_calendar')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect x="3" y="4" width="18" height="18" rx="2" />
                     <path d="M16 2v4M8 2v4M3 10h18" />

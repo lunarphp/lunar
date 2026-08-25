@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Página anterior',
     'next_page' => 'Página siguiente',
     'open_user_menu' => 'Abrir menú de usuario',
+    'open_calendar' => 'Abrir calendario',
     'more_actions' => 'Más acciones',
     'select_all_rows' => 'Seleccionar todas las filas',
     'close' => 'Cerrar',

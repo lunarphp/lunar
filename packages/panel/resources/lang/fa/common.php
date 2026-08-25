@@ -22,6 +22,7 @@ return [
     'previous_page' => 'صفحه قبل',
     'next_page' => 'صفحه بعد',
     'open_user_menu' => 'باز کردن منوی کاربر',
+    'open_calendar' => 'باز کردن تقویم',
     'more_actions' => 'اقدامات بیشتر',
     'select_all_rows' => 'انتخاب همه ردیف‌ها',
     'close' => 'بستن',

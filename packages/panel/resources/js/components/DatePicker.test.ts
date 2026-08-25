@@ -21,7 +21,8 @@ describe('DatePicker', () => {
             props: { modelValue: '' },
         });
 
-        expect(wrapper.find('[aria-label="Open calendar"]').exists()).toBe(true);
+        // The test i18n instance carries no messages, so t() yields the raw key.
+        expect(wrapper.find('[aria-label="common.open_calendar"]').exists()).toBe(true);
     });
 
     it('ignores an unparseable value instead of throwing', () => {
