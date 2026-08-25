@@ -17,14 +17,14 @@ return [
             'label' => 'Tip',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Grup',
+            'ungrouped' => 'Fără grup',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Grup',
+            'placeholder' => 'Fără grup',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Atributele de sistem nu pot fi șterse.',
             ],
         ],
     ],

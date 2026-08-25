@@ -17,14 +17,14 @@ return [
             'label' => 'Tip',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Grupa',
+            'ungrouped' => 'Bez grupe',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Grupa',
+            'placeholder' => 'Bez grupe',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Sustavni atributi se ne mogu izbrisati.',
             ],
         ],
     ],

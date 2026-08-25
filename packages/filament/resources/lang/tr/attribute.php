@@ -17,14 +17,14 @@ return [
             'label' => 'Tür',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Grup',
+            'ungrouped' => 'Grupsuz',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Grup',
+            'placeholder' => 'Grup yok',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Sistem özellikleri silinemez.',
             ],
         ],
     ],

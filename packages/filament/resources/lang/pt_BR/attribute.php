@@ -17,14 +17,14 @@ return [
             'label' => 'Tipo',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Grupo',
+            'ungrouped' => 'Sem grupo',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Grupo',
+            'placeholder' => 'Sem grupo',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Atributos do sistema não podem ser excluídos.',
             ],
         ],
     ],

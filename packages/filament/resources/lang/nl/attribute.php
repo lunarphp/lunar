@@ -17,14 +17,14 @@ return [
             'label' => 'Type',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Groep',
+            'ungrouped' => 'Zonder groep',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Groep',
+            'placeholder' => 'Geen groep',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Systeemattributen kunnen niet worden verwijderd.',
             ],
         ],
     ],

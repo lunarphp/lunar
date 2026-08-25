@@ -17,14 +17,14 @@ return [
             'label' => 'Төрөл',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Бүлэг',
+            'ungrouped' => 'Бүлэггүй',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Бүлэг',
+            'placeholder' => 'Бүлэггүй',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Системийн атрибутыг устгах боломжгүй.',
             ],
         ],
     ],

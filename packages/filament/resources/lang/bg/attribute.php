@@ -17,14 +17,14 @@ return [
             'label' => 'Тип',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Група',
+            'ungrouped' => 'Без група',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Група',
+            'placeholder' => 'Без група',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Системните атрибути не могат да бъдат изтрити.',
             ],
         ],
     ],

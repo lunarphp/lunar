@@ -17,14 +17,14 @@ return [
             'label' => 'Típus',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Csoport',
+            'ungrouped' => 'Csoport nélkül',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Csoport',
+            'placeholder' => 'Nincs csoport',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'A rendszerattribútumok nem törölhetők.',
             ],
         ],
     ],

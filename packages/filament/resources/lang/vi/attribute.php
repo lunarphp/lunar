@@ -17,14 +17,14 @@ return [
             'label' => 'Loại',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'Nhóm',
+            'ungrouped' => 'Chưa phân nhóm',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'Nhóm',
+            'placeholder' => 'Không có nhóm',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'Không thể xóa thuộc tính hệ thống.',
             ],
         ],
     ],

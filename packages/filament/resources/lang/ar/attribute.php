@@ -17,14 +17,14 @@ return [
             'label' => 'النوع',
         ],
         'group' => [
-            'label' => 'Group',
-            'ungrouped' => 'Ungrouped',
+            'label' => 'المجموعة',
+            'ungrouped' => 'بدون مجموعة',
         ],
     ],
     'form' => [
         'attribute_group' => [
-            'label' => 'Group',
-            'placeholder' => 'No group',
+            'label' => 'المجموعة',
+            'placeholder' => 'بدون مجموعة',
         ],
         'model_types' => [
             'label' => 'Applies to',
@@ -64,7 +64,7 @@ return [
     'actions' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'System attributes cannot be deleted.',
+                'error_protected' => 'لا يمكن حذف السمات النظامية.',
             ],
         ],
     ],
