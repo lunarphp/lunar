@@ -48,9 +48,9 @@ class MapVariantsToProductOptions
                 $shouldFill = false;
             }
 
-            // New option combinations still need tax_class_id on insert; copy a sibling.
+            // New option combinations still need tax_class_id on insert; copy the oldest sibling.
             if (! $variant && $fillMissing) {
-                $copiedFrom = collect($variants)->pluck('id')->first();
+                $copiedFrom = collect($variants)->min('id');
             }
 
             if ($variant) {
