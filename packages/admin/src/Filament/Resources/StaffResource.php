@@ -19,9 +19,12 @@ class StaffResource extends BaseResource
 {
     protected static ?string $permission = 'settings:manage-staff';
 
-    protected static ?string $model = Staff::class;
-
     protected static ?int $navigationSort = 1;
+
+    public static function getModel(): string
+    {
+        return static::$model ?? config('lunar.staff.model', Staff::class);
+    }
 
     public static function getLabel(): string
     {
