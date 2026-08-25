@@ -7,8 +7,9 @@ use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.product.widgets');
 
 it('can save newly filled size and colour permutations', function () {
