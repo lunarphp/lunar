@@ -255,3 +255,22 @@ it('applies custom validation rules to each translated text value', function () 
 
     expect($this->brand->refresh()->translateAttribute('strapline'))->toBe('short');
 });
+
+it('names attribute fields by their label in validation messages', function () {
+    brandAttribute([
+        'name' => 'EAN number',
+        'handle' => 'ean',
+        'type' => 'text',
+        'required' => false,
+        'validation_rules' => ['min:13'],
+    ]);
+
+    $response = $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:ean' => '123'],
+        'rebase' => [],
+    ])->assertUnprocessable();
+
+    expect($response->json('errors.attribute:ean.0'))
+        ->toContain('EAN number')
+        ->not->toContain('attribute:ean');
+});

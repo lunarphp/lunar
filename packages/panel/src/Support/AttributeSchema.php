@@ -149,6 +149,24 @@ class AttributeSchema
     }
 
     /**
+     * Human labels keyed by draft field key, for every attribute attached to
+     * a morph type. Unlike labels(), this needs no hydrated model, so it
+     * suits models whose attribute mapping hangs off a relation (a product's
+     * product type) that a fresh instance does not have.
+     *
+     * @return array<string, string>
+     */
+    public function labelsForMorph(string $morphType): array
+    {
+        return Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $morphType))
+            ->orderBy('position')
+            ->get()
+            ->mapWithKeys(fn (Attribute $attribute) => [static::PREFIX.$attribute->handle => $attribute->name])
+            ->all();
+    }
+
+    /**
      * Human labels keyed by draft field key.
      *
      * @return array<string, string>
