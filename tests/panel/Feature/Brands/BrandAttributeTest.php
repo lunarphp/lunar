@@ -213,3 +213,64 @@ it('normalises translated attribute maps when drafting', function () {
         'fr' => 'Histoire',
     ]);
 });
+
+it('enforces custom validation rules at commit', function () {
+    brandAttribute([
+        'handle' => 'ean',
+        'type' => 'text',
+        'required' => false,
+        'validation_rules' => ['min:13', 'max:13'],
+    ]);
+
+    $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:ean' => '12345'],
+        'rebase' => [],
+    ])->assertUnprocessable();
+
+    $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:ean' => '5012345678900'],
+        'rebase' => [],
+    ])->assertOk();
+
+    expect($this->brand->refresh()->attr('ean'))->toBe('5012345678900');
+});
+
+it('applies custom validation rules to each translated text value', function () {
+    brandAttribute([
+        'handle' => 'strapline',
+        'type' => 'translated_text',
+        'required' => false,
+        'validation_rules' => ['max:10'],
+    ]);
+
+    $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:strapline' => ['en' => 'far too long for the rule']],
+        'rebase' => [],
+    ])->assertUnprocessable();
+
+    $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:strapline' => ['en' => 'short']],
+        'rebase' => [],
+    ])->assertOk();
+
+    expect($this->brand->refresh()->translateAttribute('strapline'))->toBe('short');
+});
+
+it('names attribute fields by their label in validation messages', function () {
+    brandAttribute([
+        'name' => 'EAN number',
+        'handle' => 'ean',
+        'type' => 'text',
+        'required' => false,
+        'validation_rules' => ['min:13'],
+    ]);
+
+    $response = $this->postJson(route('panel.brands.draft.commit', $this->brand), [
+        'data' => ['attribute:ean' => '123'],
+        'rebase' => [],
+    ])->assertUnprocessable();
+
+    expect($response->json('errors.attribute:ean.0'))
+        ->toContain('EAN number')
+        ->not->toContain('attribute:ean');
+});

@@ -26,6 +26,7 @@ use Lunar\Core\Models\Concerns\HasPublicId;
  * @property ?Collection $configuration
  * @property int $position
  * @property bool $required
+ * @property ?array $validation_rules
  * @property bool $searchable
  * @property bool $filterable
  * @property bool $system
@@ -76,6 +77,7 @@ class Attribute extends Base
     protected $casts = [
         'configuration' => AsCollection::class,
         'required' => 'bool',
+        'validation_rules' => 'array',
         'searchable' => 'bool',
         'filterable' => 'bool',
         'system' => 'bool',
