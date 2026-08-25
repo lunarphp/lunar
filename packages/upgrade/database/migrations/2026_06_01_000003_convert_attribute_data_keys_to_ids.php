@@ -21,9 +21,12 @@ use Lunar\Core\Facades\DB;
  *    `FieldTypeEnum` value string (`text`).
  * 5. Flatten the v1 jsonb `name` columns on `attributes` and `attribute_groups`
  *    into the v2 plain-string column (default locale wins).
- * 6. Add `attribute_groups.system`, drop the morph columns and unused
- *    `section` / `default_value` / `validation_rules`, make
- *    `attributes.attribute_group_id` nullable.
+ * 6. Convert `attributes.validation_rules` from the v1 pipe-delimited string
+ *    (`min:1|max:10`) to the v2 json list (`["min:1", "max:10"]`) — split on
+ *    `|` exactly as Laravel's validator parses string rules.
+ * 7. Add `attribute_groups.system`, drop the morph columns and unused
+ *    `section` / `default_value`, make `attributes.attribute_group_id`
+ *    nullable.
  *
  * One-way — `down()` is intentionally absent. Restore from backup to reverse.
  */
@@ -69,6 +72,7 @@ return new class extends Migration
         $this->backfillProductTypeAttribute();
         $this->convertAttributeTypeStrings();
         $this->flattenJsonbNameColumns();
+        $this->convertValidationRules();
         $this->reshapeAttributeGroupsSchema();
         $this->reshapeAttributesSchema();
     }
@@ -321,6 +325,60 @@ return new class extends Migration
         }
     }
 
+    /**
+     * v1 stored validation rules as a pipe-delimited string; v2 stores a json
+     * list. Drop-and-recreate rather than an in-place type change so the same
+     * code works on MySQL, Postgres, and SQLite. The v1 `attribute_type` morph
+     * column (dropped later in this run) marks a table as unconverted, keeping
+     * `up()` idempotent.
+     */
+    protected function convertValidationRules(): void
+    {
+        $table = $this->prefix.'attributes';
+
+        if (! Schema::hasTable($table)) {
+            return;
+        }
+
+        if (! Schema::hasColumn($table, 'validation_rules')) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->json('validation_rules')->nullable()->after('required');
+            });
+
+            return;
+        }
+
+        if (! Schema::hasColumn($table, 'attribute_type')) {
+            return;
+        }
+
+        $rules = DB::table($table)
+            ->whereNotNull('validation_rules')
+            ->pluck('validation_rules', 'id')
+            ->map(fn ($value) => array_values(array_filter(
+                array_map('trim', explode('|', (string) $value)),
+                fn (string $rule): bool => $rule !== '',
+            )));
+
+        Schema::table($table, function (Blueprint $blueprint) {
+            $blueprint->dropColumn('validation_rules');
+        });
+
+        Schema::table($table, function (Blueprint $blueprint) {
+            $blueprint->json('validation_rules')->nullable()->after('required');
+        });
+
+        foreach ($rules as $id => $list) {
+            if ($list === []) {
+                continue;
+            }
+
+            DB::table($table)->where('id', $id)->update([
+                'validation_rules' => json_encode($list),
+            ]);
+        }
+    }
+
     protected function reshapeAttributesSchema(): void
     {
         $table = $this->prefix.'attributes';
@@ -330,7 +388,7 @@ return new class extends Migration
         }
 
         $drops = array_values(array_filter(
-            ['attribute_type', 'section', 'default_value', 'validation_rules'],
+            ['attribute_type', 'section', 'default_value'],
             fn (string $column): bool => Schema::hasColumn($table, $column),
         ));
 
