@@ -1735,3 +1735,189 @@ test('can store an automatically added reward line using the morph map', functio
 
     expect($rewardLine->purchasable_type)->toEqual($purchasableB->getMorphClass());
 });
+
+test('can add a multi quantity reward as a single line', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 3,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart->calculate();
+
+    $rewardLines = CartLine::where('cart_id', $cart->id)
+        ->where('purchasable_id', $purchasableB->id)
+        ->get();
+
+    // Three of one thing is one line of three, not three lines of one.
+    expect($rewardLines)->toHaveCount(1);
+    expect($rewardLines->first()->quantity)->toEqual(3);
+});
+
+test('can leave a reward line the shopper added at their own quantity', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    // The shopper already put the reward product in the cart themselves.
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableB->getMorphClass(),
+        'purchasable_id' => $purchasableB->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 3,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart->calculate();
+
+    $rewardLines = CartLine::where('cart_id', $cart->id)
+        ->where('purchasable_id', $purchasableB->id)
+        ->get();
+
+    expect($rewardLines)->toHaveCount(1);
+    expect($rewardLines->first()->quantity)->toEqual(1);
+});
