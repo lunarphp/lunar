@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
+use Lunar\Stripe\Managers\StripeManager;
 
 class StoreCharges
 {
@@ -65,7 +66,7 @@ class StoreCharges
                 'success' => (bool) ! $charge->failure_code,
                 'type' => $charge->refunded ? 'refund' : $type,
                 'driver' => 'stripe',
-                'amount' => $charge->amount,
+                'amount' => StripeManager::fromStripeAmount($charge->amount, $order->currency),
                 'reference' => $charge->id,
                 'status' => $charge->status,
                 'notes' => $charge->failure_message ?: $charge->description,

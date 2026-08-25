@@ -258,23 +258,58 @@ class StripeManager
      */
     public static function toStripeAmount(int $value, CurrencyContract $currency): int
     {
+        return self::rescale($value, max($currency->decimal_places, 0), self::stripeDecimalPlaces($currency));
+    }
+
+    /**
+     * Convert an amount received from Stripe back to a Lunar price value,
+     * scaled by `Currency::decimal_places`. Inverse of `toStripeAmount()`.
+     */
+    public static function fromStripeAmount(int $amount, CurrencyContract $currency): int
+    {
+        return self::rescale($amount, self::stripeDecimalPlaces($currency), max($currency->decimal_places, 0));
+    }
+
+    /**
+     * The number of decimal places Stripe expects amounts in for a currency.
+     */
+    protected static function stripeDecimalPlaces(CurrencyContract $currency): int
+    {
         $code = strtolower($currency->code);
 
-        $majorAmount = $value / (10 ** max($currency->decimal_places, 0));
-
+        // UGX is also in the zero-decimal list; the special case takes precedence.
         if (in_array($code, self::SPECIAL_ZERO_DECIMAL_CURRENCIES, true)) {
-            return (int) round($majorAmount * 100);
+            return 2;
         }
 
         if (in_array($code, self::ZERO_DECIMAL_CURRENCIES, true)) {
-            return (int) round($majorAmount);
+            return 0;
         }
 
         if (in_array($code, self::THREE_DECIMAL_CURRENCIES, true)) {
-            return (int) round($majorAmount * 1000);
+            return 3;
         }
 
-        return (int) round($majorAmount * 100);
+        return 2;
+    }
+
+    /**
+     * Rescale an integer amount between decimal-place precisions using integer
+     * arithmetic only — float division misrounds at half-unit boundaries
+     * (145 at 3dp: 0.145 stores as 0.1449…, so round() gives 14, not 15).
+     * Rounds half away from zero, matching round().
+     */
+    protected static function rescale(int $value, int $fromDecimalPlaces, int $toDecimalPlaces): int
+    {
+        $exponent = $toDecimalPlaces - $fromDecimalPlaces;
+
+        if ($exponent >= 0) {
+            return $value * (10 ** $exponent);
+        }
+
+        $divisor = 10 ** (-$exponent);
+
+        return intdiv(abs($value) + intdiv($divisor, 2), $divisor) * ($value < 0 ? -1 : 1);
     }
 
     /**
