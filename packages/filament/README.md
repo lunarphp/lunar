@@ -188,6 +188,8 @@ It prefers Laravel Scout when both `lunar.filament.scout_enabled` is true and th
 
 Renders editable fields for every attribute attached to the current model (Product, Brand, Collection, etc.) according to its registered field type. Each field type knows how to draw itself, cast its data, and synthesize across Livewire.
 
+An attribute's `validation_rules` (a list of Laravel rule strings, editable on the attribute form — spec 0062) are applied to the rendered field on top of the `required` flag, so `['min:2', 'max:10']` on a text attribute validates exactly as those rules would on any form input.
+
 ```php
 use Lunar\Filament\Forms\Components\Attributes;
 

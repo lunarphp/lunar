@@ -68,7 +68,7 @@ When you add or change a public surface, **the README is the canonical user-faci
    - When you ship something that was an idea, append `_(Shipped in spec NNNN.)_` to the item; don't delete it.
    - When a spec is suggested as "next", refresh the "Suggested next spec" footer.
 
-3. **`CHANGELOG.md`** — one entry per release covering the public-surface diff. Mention any deprecation explicitly.
+3. **Release notes come from PR titles** — there is no per-package `CHANGELOG.md` (features regularly span sub-packages, so a single package's file told a partial story). Give every PR a conventional-commit title scoped to the package(s) it touches (`feat(filament): …`, `fix(core,filament): …`); release notes are compiled from merged PR titles at each release. Call out deprecations and behavioural changes prominently in the PR description — that text is what the release notes link to.
 
 4. **Translations** — see below; lang keys are part of the public surface.
 

@@ -68,7 +68,7 @@ function simulateV1AttributeShape(): void
         $table->string('type');
         $table->boolean('required')->default(false);
         $table->json('default_value')->nullable();
-        $table->json('validation_rules')->nullable();
+        $table->string('validation_rules')->nullable();
         $table->json('configuration')->nullable();
         $table->boolean('system')->default(false);
         $table->boolean('searchable')->default(true);
@@ -123,6 +123,7 @@ function simulateV1AttributeShape(): void
             'name' => json_encode(['en' => 'Meta Title']),
             'handle' => 'meta_title',
             'type' => 'Lunar\\Core\\FieldTypes\\Text',
+            'validation_rules' => 'min:1|max:10| ',
             'configuration' => null,
             'created_at' => now(),
             'updated_at' => now(),
@@ -135,6 +136,7 @@ function simulateV1AttributeShape(): void
             'name' => json_encode(['en' => 'Featured']),
             'handle' => 'featured',
             'type' => 'Lunar\\Core\\FieldTypes\\Toggle',
+            'validation_rules' => null,
             'configuration' => null,
             'created_at' => now(),
             'updated_at' => now(),
@@ -147,6 +149,7 @@ function simulateV1AttributeShape(): void
             'name' => json_encode(['en' => 'Tagline']),
             'handle' => 'tagline',
             'type' => 'Lunar\\Core\\FieldTypes\\Text',
+            'validation_rules' => '',
             'configuration' => null,
             'created_at' => now(),
             'updated_at' => now(),
@@ -276,9 +279,21 @@ test('it flattens jsonb name columns and reshapes the attribute schema', functio
     expect(Schema::hasColumn(SPEC0019_PREFIX.'attributes', 'attribute_type'))->toBeFalse();
     expect(Schema::hasColumn(SPEC0019_PREFIX.'attributes', 'section'))->toBeFalse();
     expect(Schema::hasColumn(SPEC0019_PREFIX.'attributes', 'default_value'))->toBeFalse();
-    expect(Schema::hasColumn(SPEC0019_PREFIX.'attributes', 'validation_rules'))->toBeFalse();
     expect(Schema::hasColumn(SPEC0019_PREFIX.'attribute_groups', 'attributable_type'))->toBeFalse();
     expect(Schema::hasColumn(SPEC0019_PREFIX.'attribute_groups', 'system'))->toBeTrue();
+});
+
+test('it converts pipe-delimited validation rules to a json list', function () {
+    simulateV1AttributeShape();
+
+    attributeReshapeMigration()->up();
+
+    $rules = DB::table(SPEC0019_PREFIX.'attributes')->pluck('validation_rules', 'id');
+
+    // Split on |, trimmed, empties dropped; blank/absent v1 values stay null.
+    expect(json_decode($rules[10], true))->toBe(['min:1', 'max:10'])
+        ->and($rules[11])->toBeNull()
+        ->and($rules[20])->toBeNull();
 });
 
 test('it is idempotent', function () {

@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'Érvényesítési szabályok',
+    'validation_rules_hint' => 'Az attribútum értékére alkalmazott Laravel érvényesítési szabályok. Bejegyzésenként egy szabály, például: min:1, max:10. Hozzáadáshoz nyomjon Entert.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

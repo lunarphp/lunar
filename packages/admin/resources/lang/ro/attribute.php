@@ -45,7 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Reguli de validare',
-            'helper' => 'Reguli pentru câmpul atribut, de ex.: min:1|max:10|...',
+            'helper' => 'O regulă per intrare, de exemplu: min:1, max:10',
         ],
     ],
 ];

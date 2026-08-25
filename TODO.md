@@ -22,6 +22,8 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
+- Per-attribute validation rules — restore the v1 feature across both panels, convert v1 data on upgrade (spec 0062)
+- Standalone attributes surface in the Filament admin — ungrouped attributes (`attribute_group_id` is nullable in v2) are unreachable via `AttributeGroupResource`'s relation manager, the admin's only route to editing an attribute
 - Add Boost guidelines to packages
 
 ## Ideas

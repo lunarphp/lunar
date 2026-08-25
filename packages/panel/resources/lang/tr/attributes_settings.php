@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'Doğrulama kuralları',
+    'validation_rules_hint' => 'Bu özniteliğin değerine uygulanan Laravel doğrulama kuralları. Her girişte bir kural, örneğin: min:1, max:10. Eklemek için Enter tuşuna basın.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

@@ -283,3 +283,57 @@ test('a non-system attribute can be deleted along with its model links', functio
 
     expect(Attribute::find($attribute->id))->toBeNull();
 });
+
+test('an attribute can be updated with validation rules, and clearing them stores null', function () {
+    $attribute = Attribute::factory()->create(['type' => 'text']);
+    $attribute->models()->create(['model_type' => Product::morphName()]);
+
+    $payload = [
+        'name' => $attribute->name,
+        'handle' => $attribute->handle,
+        'model_types' => [Product::morphName()],
+    ];
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [
+        ...$payload,
+        'validation_rules' => ['min:2', 'max:10', ' '],
+    ])->assertRedirect(route('panel.settings.attributes.index'));
+
+    // Blank entries are dropped on the way in.
+    expect($attribute->refresh()->validation_rules)->toBe(['min:2', 'max:10']);
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [
+        ...$payload,
+        'validation_rules' => [],
+    ])->assertRedirect(route('panel.settings.attributes.index'));
+
+    expect($attribute->refresh()->validation_rules)->toBeNull();
+});
+
+test('validation rules must be an array of strings', function () {
+    $attribute = Attribute::factory()->create(['type' => 'text']);
+    $attribute->models()->create(['model_type' => Product::morphName()]);
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [
+        'name' => $attribute->name,
+        'handle' => $attribute->handle,
+        'model_types' => [Product::morphName()],
+        'validation_rules' => 'min:2|max:10',
+    ])->assertSessionHasErrors('validation_rules');
+});
+
+test('an unusable validation rule is rejected with the rule named', function () {
+    $attribute = Attribute::factory()->create(['type' => 'text']);
+    $attribute->models()->create(['model_type' => Product::morphName()]);
+
+    $response = $this->put(route('panel.settings.attributes.update', $attribute), [
+        'name' => $attribute->name,
+        'handle' => $attribute->handle,
+        'model_types' => [Product::morphName()],
+        'validation_rules' => ['min:2', 'mx:10'],
+    ]);
+
+    $response->assertSessionHasErrors('validation_rules.1');
+    expect(session('errors')->first('validation_rules.1'))->toContain('mx:10');
+    expect($attribute->refresh()->validation_rules)->toBeNull();
+});

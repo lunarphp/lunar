@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -24,6 +25,7 @@ use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Rules\ValidRuleString;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Support\Facades\AttributeData;
 
@@ -107,6 +109,13 @@ class AttributesRelationManager extends BaseRelationManager
                             __('lunar-filament::attribute.form.required.label')
                         )->default(false),
                 ]),
+                TagsInput::make('validation_rules')
+                    ->label(
+                        __('lunar-filament::attribute.form.validation_rules.label')
+                    )->helperText(
+                        __('lunar-filament::attribute.form.validation_rules.helper')
+                    )->placeholder('min:1')
+                    ->nestedRecursiveRules([new ValidRuleString]),
                 Select::make('type')->label(
                     __('lunar-filament::attribute.form.type.label')
                 )->disabled(
