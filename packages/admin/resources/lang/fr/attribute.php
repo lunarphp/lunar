@@ -45,7 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Règles de validation',
-            'helper' => 'Règles pour le champ attribut, exemple : min:1, max:10',
+            'helper' => 'Une règle par entrée, par exemple : min:1, max:10',
         ],
     ],
 ];

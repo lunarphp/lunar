@@ -44,8 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
-    'validation_rules_label' => 'Validation rules',
-    'validation_rules_hint' => 'Laravel validation rules applied to this attribute\'s value. One rule per entry, for example: min:1, max:10. Press Enter to add.',
+    'validation_rules_label' => 'Quy tắc kiểm tra hợp lệ',
+    'validation_rules_hint' => 'Các quy tắc kiểm tra hợp lệ của Laravel áp dụng cho giá trị của thuộc tính này. Mỗi mục một quy tắc, ví dụ: min:1, max:10. Nhấn Enter để thêm.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

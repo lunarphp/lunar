@@ -44,8 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
-    'validation_rules_label' => 'Validation rules',
-    'validation_rules_hint' => 'Laravel validation rules applied to this attribute\'s value. One rule per entry, for example: min:1, max:10. Press Enter to add.',
+    'validation_rules_label' => 'قوانین اعتبارسنجی',
+    'validation_rules_hint' => 'قوانین اعتبارسنجی Laravel که روی مقدار این ویژگی اعمال می‌شود. یک قانون در هر ورودی، برای مثال: min:1, max:10. برای افزودن Enter را فشار دهید.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

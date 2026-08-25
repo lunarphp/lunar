@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'unusable_rule' => '":rule" is not a validation rule Laravel can run.',
+    'unusable_rule' => 'A(z) ":rule" nem olyan érvényesítési szabály, amelyet a Laravel futtatni tud.',
 ];

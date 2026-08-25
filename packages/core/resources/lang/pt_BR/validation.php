@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'unusable_rule' => '":rule" is not a validation rule Laravel can run.',
+    'unusable_rule' => '":rule" não é uma regra de validação que o Laravel possa executar.',
 ];
