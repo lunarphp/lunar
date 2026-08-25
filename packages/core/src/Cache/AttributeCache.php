@@ -12,6 +12,24 @@ class AttributeCache implements AttributeCacheContract
 {
     protected const KEY = 'lunar.attribute_cache';
 
+    /**
+     * The resolved maps for this instance.
+     *
+     * The cast on every attribute-backed model resolves a handle and a field
+     * type per attribute, so a single page can ask for the maps a hundred
+     * times. Without this, each call is a cache read -- on the database cache
+     * driver, a hundred queries.
+     *
+     * The binding is scoped, so the memo lives for exactly one request or
+     * queue job and every new scope re-reads the shared store. A process-long
+     * memo would be cheaper still, but a stale map silently drops attribute
+     * values in AsAttributeData's set path, so cross-process staleness is not
+     * a trade worth taking.
+     *
+     * @var array{by_handle: array<string, int>, by_id: array<int, array{handle: string, field_type_class: class-string<FieldType>|null}>}|null
+     */
+    protected ?array $maps = null;
+
     public function __construct(
         protected Repository $cache,
         protected FieldTypeManifest $fieldTypeManifest,
@@ -34,6 +52,8 @@ class AttributeCache implements AttributeCacheContract
 
     public function flush(): void
     {
+        $this->maps = null;
+
         $this->cache->forget(static::KEY);
     }
 
@@ -42,7 +62,7 @@ class AttributeCache implements AttributeCacheContract
      */
     protected function maps(): array
     {
-        return $this->cache->rememberForever(static::KEY, function (): array {
+        return $this->maps ??= $this->cache->rememberForever(static::KEY, function (): array {
             $byHandle = [];
             $byId = [];
 
