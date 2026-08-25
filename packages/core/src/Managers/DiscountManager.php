@@ -257,7 +257,7 @@ class DiscountManager implements DiscountManagerInterface
             $cart->id,
             $cart->coupon_code ?? '',
             $cart->customer_id ?? '',
-            $cart->lines->pluck('purchasable_id')->sort()->implode(','),
+            $cart->lines->map(fn ($line) => $line->purchasable_type.':'.$line->purchasable_id)->sort()->implode(','),
         ]);
     }
 
