@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Cache;
 
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\TransactionRolledBack;
@@ -26,9 +25,6 @@ class CacheInvalidator implements CacheInvalidatorContract
     /** @var array<string, array{model: Model, reason: CacheInvalidationReason, level: int}> */
     protected array $pending = [];
 
-    /** @var array<string, true> */
-    protected array $rollbackListeners = [];
-
     public function __construct(
         protected DatabaseManager $db,
         protected ?string $connection = null,
@@ -39,10 +35,6 @@ class CacheInvalidator implements CacheInvalidatorContract
         $connection = $this->db->connection($this->connection);
         $level = $connection->transactionLevel();
         $inTransaction = $level > 0;
-
-        if ($inTransaction) {
-            $this->listenForRollback($connection);
-        }
 
         foreach ($model->cacheInvalidationTargets() as $target) {
             if (! $target instanceof Model || ! method_exists($target, 'newCacheInvalidationEvent')) {
@@ -77,30 +69,21 @@ class CacheInvalidator implements CacheInvalidatorContract
         }
     }
 
-    protected function listenForRollback(ConnectionInterface $connection): void
+    public function pruneRolledBack(TransactionRolledBack $event): void
     {
-        $name = $connection->getName();
-
-        if (isset($this->rollbackListeners[$name])) {
+        if ($this->pending === []) {
             return;
         }
 
-        $this->rollbackListeners[$name] = true;
+        if ($event->connectionName !== ($this->connection ?? $this->db->getDefaultConnection())) {
+            return;
+        }
 
-        $connection->getEventDispatcher()?->listen(
-            TransactionRolledBack::class,
-            function (TransactionRolledBack $event) use ($connection) {
-                if ($event->connection !== $connection) {
-                    return;
-                }
+        $survivingLevel = $event->connection->transactionLevel();
 
-                $survivingLevel = $connection->transactionLevel();
-
-                $this->pending = array_filter(
-                    $this->pending,
-                    fn (array $entry) => $entry['level'] <= $survivingLevel,
-                );
-            },
+        $this->pending = array_filter(
+            $this->pending,
+            fn (array $entry) => $entry['level'] <= $survivingLevel,
         );
     }
 
