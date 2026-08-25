@@ -181,6 +181,10 @@ const configError = (key: string): string | undefined =>
     (form.errors as Record<string, string>)[`configuration.${key}`];
 
 const submit = (): void => {
+    // A rule typed but not yet committed with Enter would otherwise be
+    // silently discarded on save.
+    addRule();
+
     for (const field of props.configFields) {
         if (field.type === 'lookups') {
             form.configuration = {
@@ -294,6 +298,7 @@ const confirmDestroy = (): void => {
                             placeholder="min:1"
                             :aria-label="t('attributes_settings.validation_rules_label')"
                             @keydown.enter.prevent="addRule()"
+                            @blur="addRule()"
                         />
                     </div>
                     <div v-if="ruleError" class="mt-1 text-[11px] text-danger">{{ ruleError }}</div>
