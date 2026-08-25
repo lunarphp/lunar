@@ -45,7 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Pravila validacije',
-            'helper' => 'Pravila za polje atributa, primjer: min:1|max:10|...',
+            'helper' => 'Pravila za polje atributa, primjer: min:1, max:10',
         ],
     ],
 ];

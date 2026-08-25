@@ -49,7 +49,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Érvényesítési szabályok',
-            'helper' => 'Szabályok az attribútum mezőhöz, pl.: min:1|max:10|...',
+            'helper' => 'Szabályok az attribútum mezőhöz, pl.: min:1, max:10',
         ],
     ],
 ];

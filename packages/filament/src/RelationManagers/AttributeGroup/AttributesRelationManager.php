@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -107,6 +108,12 @@ class AttributesRelationManager extends BaseRelationManager
                             __('lunar-filament::attribute.form.required.label')
                         )->default(false),
                 ]),
+                TagsInput::make('validation_rules')
+                    ->label(
+                        __('lunar-filament::attribute.form.validation_rules.label')
+                    )->helperText(
+                        __('lunar-filament::attribute.form.validation_rules.helper')
+                    )->placeholder('min:1'),
                 Select::make('type')->label(
                     __('lunar-filament::attribute.form.type.label')
                 )->disabled(

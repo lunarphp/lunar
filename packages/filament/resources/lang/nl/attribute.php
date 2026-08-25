@@ -49,7 +49,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Validatieregels',
-            'helper' => 'Regels voor attribuutveld, voorbeeld: min:1|max:10|...',
+            'helper' => 'Regels voor attribuutveld, voorbeeld: min:1, max:10',
         ],
     ],
 ];
