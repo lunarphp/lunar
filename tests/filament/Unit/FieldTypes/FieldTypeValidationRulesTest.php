@@ -1,8 +1,11 @@
 <?php
 
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
 use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Language;
@@ -58,9 +61,9 @@ function builtFieldFor(string $converter, Attribute $attribute): Field
 {
     // getValidationRules() resolves utilities through the schema's Livewire
     // owner, so bind a minimal one.
-    $livewire = new class extends \Livewire\Component implements \Filament\Schemas\Contracts\HasSchemas
+    $livewire = new class extends Component implements HasSchemas
     {
-        use \Filament\Schemas\Concerns\InteractsWithSchemas;
+        use InteractsWithSchemas;
     };
 
     return Schema::make($livewire)
