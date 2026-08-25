@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Concerns;
+namespace Lunar\Core\Events\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,11 @@ use Illuminate\Database\Eloquent\Model;
  * so the scalar identity captured at construction time — cacheTags(),
  * morphType(), cacheKey() — is always readable regardless of whether the
  * row still exists.
+ *
+ * The restored model reflects a snapshot of its attributes taken when the
+ * event was dispatched, not a fresh read — it is not re-fetched from the
+ * database on unserialize. `newFromBuilder()` also fires Eloquent's
+ * `retrieved` event, the same as any other model hydration.
  */
 trait SerializesInvalidatedModel
 {
@@ -33,7 +38,7 @@ trait SerializesInvalidatedModel
     public function __unserialize(array $data): void
     {
         foreach ($data as $property => $value) {
-            if (is_array($value) && array_key_exists('__lunarModel', $value)) {
+            if (is_array($value) && array_key_exists('__lunarModel', $value) && is_a($value['__lunarModel'], Model::class, true)) {
                 $value = (new $value['__lunarModel'])->newFromBuilder($value['__lunarAttributes']);
             }
 

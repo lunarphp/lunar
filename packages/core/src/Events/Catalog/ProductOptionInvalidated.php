@@ -5,9 +5,9 @@ namespace Lunar\Core\Events\Catalog;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
-use Lunar\Core\Concerns\SerializesInvalidatedModel;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Enums\CacheInvalidationReason;
+use Lunar\Core\Events\Concerns\SerializesInvalidatedModel;
 use Lunar\Core\Models\ProductOption;
 
 /**
