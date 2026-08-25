@@ -149,6 +149,24 @@ class AttributeSchema
     }
 
     /**
+     * Human labels keyed by draft field key, for every attribute attached to
+     * a morph type. Unlike labels(), this needs no hydrated model, so it
+     * suits models whose attribute mapping hangs off a relation (a product's
+     * product type) that a fresh instance does not have.
+     *
+     * @return array<string, string>
+     */
+    public function labelsForMorph(string $morphType): array
+    {
+        return Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $morphType))
+            ->orderBy('position')
+            ->get()
+            ->mapWithKeys(fn (Attribute $attribute) => [static::PREFIX.$attribute->handle => $attribute->name])
+            ->all();
+    }
+
+    /**
      * Human labels keyed by draft field key.
      *
      * @return array<string, string>
@@ -190,6 +208,20 @@ class AttributeSchema
 
             if ($token === 'list' && ($maxItems = (int) ($attribute->configuration?->get('max_items') ?? 0)) > 0) {
                 $rules[$key][] = 'max:'.$maxItems;
+            }
+
+            // Staff-authored rules (spec 0062) describe a single stored value,
+            // so multi-value types apply them per entry. Unknown types render
+            // read-only and never submit a value to validate.
+            $custom = array_values(array_filter(
+                $attribute->validation_rules ?? [],
+                fn (mixed $rule): bool => is_string($rule) && $rule !== '',
+            ));
+
+            if ($custom !== [] && $token !== 'unknown') {
+                $target = in_array($token, ['translated_text', 'list'], true) ? $key.'.*' : $key;
+
+                $rules[$target] = [...$rules[$target], ...$custom];
             }
         }
 

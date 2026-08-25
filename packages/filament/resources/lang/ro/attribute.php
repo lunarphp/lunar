@@ -16,8 +16,16 @@ return [
         'type' => [
             'label' => 'Tip',
         ],
+        'group' => [
+            'label' => 'Grup',
+            'ungrouped' => 'Fără grup',
+        ],
     ],
     'form' => [
+        'attribute_group' => [
+            'label' => 'Grup',
+            'placeholder' => 'Fără grup',
+        ],
         'model_types' => [
             'label' => 'Applies to',
             'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
@@ -49,7 +57,15 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Reguli de validare',
-            'helper' => 'Reguli pentru câmpul atribut, de ex.: min:1|max:10|...',
+            'helper' => 'O regulă per intrare, de exemplu: min:1, max:10',
+        ],
+    ],
+
+    'actions' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'Atributele de sistem nu pot fi șterse.',
+            ],
         ],
     ],
 ];

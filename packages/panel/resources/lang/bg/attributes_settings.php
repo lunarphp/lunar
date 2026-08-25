@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'Правила за валидация',
+    'validation_rules_hint' => 'Правила за валидация на Laravel, прилагани към стойността на този атрибут. По едно правило на запис, например: min:1, max:10. Натиснете Enter за добавяне.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

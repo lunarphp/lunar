@@ -188,6 +188,8 @@ It prefers Laravel Scout when both `lunar.filament.scout_enabled` is true and th
 
 Renders editable fields for every attribute attached to the current model (Product, Brand, Collection, etc.) according to its registered field type. Each field type knows how to draw itself, cast its data, and synthesize across Livewire.
 
+An attribute's `validation_rules` (a list of Laravel rule strings, editable on the attribute form — spec 0062) are applied to the rendered field on top of the `required` flag, so `['min:2', 'max:10']` on a text attribute validates exactly as those rules would on any form input.
+
 ```php
 use Lunar\Filament\Forms\Components\Attributes;
 
@@ -296,7 +298,7 @@ $schema->components([
 ]);
 ```
 
-Models with a complete schema, table, infolist, and relation managers: `Activity`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
+Models with a complete schema, table, infolist, and relation managers: `Activity`, `Attribute`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
 
 ---
 
@@ -318,6 +320,8 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Products\AdjustStockAction` | `Core\Actions\Products\AdjustStock` | Variant row |
 | `Collections\CreateRootCollectionAction` / `CreateChildCollectionAction` | `Core\Actions\Collections\CreateRootCollection` / `CreateChildCollection` | Collection tree view |
 | `Collections\MoveCollectionAction` / `DeleteCollectionAction` | `Core\Actions\Collections\MoveCollection` / `DeleteCollection` | Collection tree view |
+| `Attributes\CreateAttributeAction` / `EditAttributeAction` | `Core\Actions\Attributes\CreateAttribute` / `UpdateAttribute` | Attribute table / attribute group relation manager (on a relation manager the owner group supplies `attribute_group_id`) |
+| `Attributes\DeleteAttributeAction` / `DeleteAttributesBulkAction` | `Core\Actions\Attributes\DeleteAttribute` | Attribute row / bulk — system attributes are protected |
 
 Drop into any header/row/bulk action array — they work like any Filament action:
 

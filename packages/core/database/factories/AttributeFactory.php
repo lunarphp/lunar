@@ -24,10 +24,19 @@ class AttributeFactory extends BaseFactory
             'type' => FieldTypeEnum::Text->value,
             'configuration' => [],
             'required' => false,
+            'validation_rules' => null,
             'searchable' => false,
             'filterable' => false,
             'system' => false,
         ];
+    }
+
+    /**
+     * @param  array<int, string>  $rules
+     */
+    public function validationRules(array $rules): static
+    {
+        return $this->state(['validation_rules' => $rules]);
     }
 
     /**

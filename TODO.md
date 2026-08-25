@@ -80,3 +80,5 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - `public_id` (ULID) external addressing (spec 0046)
 - Rename `product_variants.purchasable` to `selling_policy` (spec 0048)
 - Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
+- Per-attribute validation rules across both panels (spec 0062)
+- Standalone attributes surface in the Filament admin (spec 0063)
