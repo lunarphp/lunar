@@ -1,6 +1,6 @@
 # 0063 — Standalone attributes surface in the Filament admin
 
-- Status: draft
+- Status: accepted
 - Author: Glenn
 - Created: 2026-08-25
 - TODO item: Standalone attributes surface in the Filament admin
@@ -51,10 +51,10 @@ Give the Filament admin a first-class attributes surface mirroring the panel's S
 - Translations: new keys across all 16 locales in `lunar-filament`.
 - Upgrade: no Rector rule needed.
 
-## Open questions
+## Open questions (resolved)
 
-- Should `AttributeResource` opt into global search alongside the five existing descriptors? Attributes are staff-configuration rather than commerce records; leaning no.
-- Should the attribute group edit page's relation manager allow *attaching* an existing ungrouped attribute (AttachAction) as well as creating new ones? Leaning yes — it completes the group-management story cheaply once the shared form exists.
+- Should `AttributeResource` opt into global search alongside the five existing descriptors? **No** — attributes are staff-configuration rather than commerce records.
+- Should the attribute group edit page's relation manager allow *attaching* an existing ungrouped attribute (AttachAction) as well as creating new ones? **Deferred** — still leaning yes, tracked in the bridge's IDEAS backlog; the standalone resource already covers regrouping via the edit form's group select.
 
 ## References
 
@@ -64,6 +64,8 @@ Give the Filament admin a first-class attributes surface mirroring the panel's S
 
 ## Implementation plan
 
-- [ ] Slice 1 — bridge: extract `Schemas\Attribute\AttributeForm` + `Tables\Attribute\AttributeTable`, shared persistence support, relation manager delegates.
-- [ ] Slice 2 — admin: `AttributeResource` with List/Create/Edit pages, navigation registration, delete guard for system attributes.
-- [ ] Slice 3 — lang keys (16 locales), filament README, CHANGELOG entries, tests (resource pages, ungrouped visibility, group filter, relation manager parity).
+- [x] Slice 1 — bridge: extract `Schemas\Attribute\AttributeForm` + `Tables\Attribute\AttributeTable`, shared persistence support, relation manager delegates.
+- [x] Slice 2 — admin: `AttributeResource` with List/Create/Edit pages, navigation registration, delete guard for system attributes.
+- [x] Slice 3 — lang keys (16 locales), filament README, tests (resource pages, ungrouped visibility, group filter, relation manager parity).
+
+Persistence note: the shared support turned out to already exist — the core `CreatesAttribute` / `UpdatesAttribute` / `DeletesAttribute` actions the panel uses. The bridge gained `Actions\Attributes\{Create,Edit,Delete}AttributeAction` + `DeleteAttributesBulkAction` wrappers delegating to them, so both admins persist through one code path. Two behavioural consequences: a relation-manager create now takes the global `max(position) + 1` (previously the group's row count + 1), and the relation manager now enforces the system-attribute delete rule it previously lacked.

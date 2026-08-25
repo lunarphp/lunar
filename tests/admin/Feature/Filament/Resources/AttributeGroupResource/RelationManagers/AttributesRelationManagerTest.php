@@ -1,6 +1,7 @@
 <?php
 
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
@@ -200,4 +201,43 @@ it('hydrates dropdown lookups when editing attributes', function () {
                 ],
             ],
         ]);
+});
+
+it('cannot delete a system attribute from the relation manager', function () {
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $attribute = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+        'system' => true,
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(DeleteAction::class, $attribute);
+
+    $this->assertDatabaseHas((new Attribute)->getTable(), [
+        'id' => $attribute->id,
+    ]);
+});
+
+it('can delete a non-system attribute from the relation manager', function () {
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $attribute = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(DeleteAction::class, $attribute);
+
+    $this->assertDatabaseMissing((new Attribute)->getTable(), [
+        'id' => $attribute->id,
+    ]);
 });
