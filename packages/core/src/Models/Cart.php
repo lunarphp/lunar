@@ -284,6 +284,27 @@ class Cart extends BaseModel implements Contracts\Cart
             })->whereNull('placed_at');
     }
 
+    /**
+     * The ids of any discounts this cart has already consumed.
+     *
+     * Order creation records a use as soon as the draft order exists, so a
+     * checkout that runs it a second time - a declined card and a retry - would
+     * otherwise find its own coupon exhausted and re-price that same order
+     * without it. A cart's own consumption must not count against it.
+     */
+    public function consumedDiscountIds(): Collection
+    {
+        // Read the raw column: the cast hydrates an OrderLine per breakdown
+        // line, which is a lot of work to reach an id.
+        $breakdown = $this->draftOrder()->first()?->getRawOriginal('discount_breakdown');
+
+        return collect(json_decode($breakdown ?: '[]', true) ?: [])
+            ->pluck('discount_id')
+            ->filter()
+            ->unique()
+            ->values();
+    }
+
     public function currentDraftOrder(?int $draftOrderId = null)
     {
         return $this->calculate()
