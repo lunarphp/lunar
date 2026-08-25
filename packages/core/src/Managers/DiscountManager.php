@@ -39,6 +39,11 @@ class DiscountManager implements DiscountManagerInterface
     protected ?Collection $discounts = null;
 
     /**
+     * Identifies the cart state $discounts was built from.
+     */
+    protected ?string $discountsKey = null;
+
+    /**
      * The available discount types
      *
      * @var array
@@ -220,8 +225,11 @@ class DiscountManager implements DiscountManagerInterface
 
     public function apply(CartContract $cart): CartContract
     {
-        if (! $this->discounts || $this->discounts?->isEmpty()) {
+        $key = $this->getDiscountsCacheKey($cart);
+
+        if ($this->discounts === null || $this->discountsKey !== $key) {
             $this->discounts = $this->getDiscounts($cart);
+            $this->discountsKey = $key;
         }
 
         foreach ($this->discounts as $discount) {
@@ -239,9 +247,26 @@ class DiscountManager implements DiscountManagerInterface
         return $cart;
     }
 
+    /**
+     * Build the cache key for the memoised discounts.
+     *
+     * getDiscounts() filters on the cart's coupon code and on the purchasables
+     * in its lines, so a set built for one cart state is not valid for another.
+     */
+    protected function getDiscountsCacheKey(CartContract $cart): string
+    {
+        return implode('|', [
+            $cart->id,
+            $cart->coupon_code ?? '',
+            $cart->customer_id ?? '',
+            $cart->lines->map(fn ($line) => $line->purchasable_type.':'.$line->purchasable_id)->sort()->implode(','),
+        ]);
+    }
+
     public function resetDiscounts(): self
     {
         $this->discounts = null;
+        $this->discountsKey = null;
 
         return $this;
     }

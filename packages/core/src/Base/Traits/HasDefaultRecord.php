@@ -22,7 +22,7 @@ trait HasDefaultRecord
     /**
      * Get the default record.
      *
-     * @return self
+     * @return null|self
      */
     public static function getDefault()
     {
