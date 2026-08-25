@@ -401,6 +401,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         $basePrice = $variant->basePrices->first();
                     }
 
+                    if (empty($variantData['variant_id']) && empty($variantData['copied_id'])) {
+                        $variantData['copied_id'] = $this->record->variants()->value('id');
+                    }
+
                     if (! empty($variantData['copied_id'])) {
                         $copiedVariant = ProductVariant::find(
                             $variantData['copied_id']
