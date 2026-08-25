@@ -83,7 +83,7 @@ If a change touches public surface and the README diff is empty in the PR, the P
 Lang files live under `resources/lang/{locale}/` across **16 locales**: `ar`, `bg`, `de`, `en`, `es`, `fa`, `fr`, `hr`, `hu`, `mn`, `nl`, `pl`, `pt_BR`, `ro`, `tr`, `vi`.
 
 - Lang keys are public contract — renaming a key requires a Rector rule.
-- English first. Mirror to the other 15 locales with the English value as a placeholder. The translation community fixes the placeholders downstream.
+- English first, then **translate the value** into each of the other 15 locales, reusing the terminology already established in that locale's files (check the sibling keys — e.g. how `attribute.php` / `attributegroup.php` already render the model names). Never leave the English value as a placeholder — placeholders don't get backfilled downstream.
 - Lang namespaces: `lunar-filament::{file}.…`. Files in use: `actions.php`, `address.php`, `attribute.php`, `brand.php`, `collection.php`, `components.php`, `currency.php`, `customer.php`, `discount.php`, `fieldtypes.php`, `global-search.php`, `order.php`, `product.php`, `producttype.php`, `productvariant.php`, `widgets.php`, plus the smaller per-model files.
 - Never inline a user-facing string — always go via `__('lunar-filament::…')`. Tests don't catch missing translations, only missing keys when called.
 

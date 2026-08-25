@@ -1,6 +1,6 @@
 # 0062 — Per-attribute validation rules
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn
 - Created: 2026-08-25
 - TODO item: Per-attribute validation rules — restore the v1 feature across both panels
