@@ -81,8 +81,8 @@ Rules are authored by staff and evaluated by Laravel's validator — the same tr
 
 ## Implementation plan
 
-- [ ] Slice 1 — core: baseline column, cast, factory state; upgrade migration converts v1 data.
-- [ ] Slice 2 — filament: converters apply rules (strict-mode regression test included), attribute form input, lang updates.
-- [ ] Slice 3 — panel: `AttributeSchema::rules()`, `AttributeRequest`, Edit.vue input, lang keys, draft-commit tests.
-- [ ] Slice 4 — panel: validator attribute labels in `DraftManager` + `ProductDraftResource::labels()`.
-- [ ] Slice 5 — docs: filament README attribute section, CHANGELOG entries for core, filament, panel, upgrade.
+- [x] Slice 1 — core: baseline column, cast, factory state; upgrade migration converts v1 data.
+- [x] Slice 2 — filament: converters apply rules (strict-mode regression test included), attribute form input, lang updates.
+- [x] Slice 3 — panel: `AttributeSchema::rules()`, `AttributeRequest`, Edit.vue input, lang keys, draft-commit tests.
+- [x] Slice 4 — panel: validator attribute labels in `DraftManager` (`labelsForMorph()` covers products/variants, whose mapping needs no hydrated record) + `ProductDraftResource::labels()` / `VariantFields::labels()`.
+- [x] Slice 5 — docs: filament README attribute section, filament CHANGELOG entry (the other touched packages keep no changelog).
