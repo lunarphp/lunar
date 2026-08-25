@@ -55,11 +55,11 @@ class AttributeData
             ->label(
                 $attribute->translate('name')
             )
-            ->formatStateUsing(function ($state) use ($attribute) {
+            ->formatStateUsing(function ($state) use ($attribute, $fieldType) {
                 $value = $this->unwrapFieldValue($state);
 
                 if ($value === null) {
-                    if (filled($attribute->default_value)) {
+                    if (filled($attribute->default_value) && $fieldType::canHaveDefaultValue()) {
                         $value = $attribute->default_value;
                     } else {
                         $value = $this->unwrapFieldValue((new $attribute->type)->getValue());
@@ -93,7 +93,25 @@ class AttributeData
                 return $instance;
             })
             ->required($attribute->required)
-            ->default($attribute->default_value);
+            ->default($fieldType::canHaveDefaultValue() ? $attribute->default_value : null);
+    }
+
+    public function canHaveDefaultValue(?string $type = null): bool
+    {
+        $fieldType = $this->fieldTypes[$type] ?? null;
+
+        return $fieldType ? $fieldType::canHaveDefaultValue() : false;
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<mixed>
+     */
+    public function getDefaultValueValidationRules(?string $type = null, array $configuration = []): array
+    {
+        $fieldType = $this->fieldTypes[$type] ?? null;
+
+        return $fieldType ? $fieldType::getDefaultValueValidationRules($configuration) : [];
     }
 
     public function registerFieldType(string $coreFieldType, string $panelFieldType): static

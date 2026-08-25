@@ -128,6 +128,8 @@ class AttributesRelationManager extends BaseRelationManager
                 )
                     ->string()
                     ->nullable()
+                    ->visible(fn (Get $get) => AttributeData::canHaveDefaultValue($get('type')))
+                    ->rules(fn (Get $get) => AttributeData::getDefaultValueValidationRules($get('type'), $get('configuration') ?? []))
                     ->helperText(
                         __('lunarpanel::attribute.form.default_value.helper')
                     ),

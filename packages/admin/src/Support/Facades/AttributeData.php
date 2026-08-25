@@ -13,6 +13,8 @@ use Lunar\Models\Attribute;
  * @method static Collection getFieldTypes()
  * @method static array mutateConfigurationForForm(string|null $type = null, array $configuration = [])
  * @method static array getConfigurationFields(string|null $type = null)
+ * @method static bool canHaveDefaultValue(string|null $type = null)
+ * @method static array getDefaultValueValidationRules(string|null $type = null, array $configuration = [])
  * @method static void synthesizeLivewireProperties()
  *
  * @see \Lunar\Admin\Support\Forms\AttributeData
