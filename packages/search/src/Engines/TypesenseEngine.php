@@ -214,13 +214,11 @@ class TypesenseEngine extends AbstractEngine
             $facetQuery = $facetQuery->join(',');
 
             foreach ($searchQuery->facetFilters as $field => $values) {
-                $values = collect($values)->map(function ($value) {
-                    if ($value == 'false' || $value == 'true') {
-                        return $value;
-                    }
+                $fieldType = $this->getFieldType($field);
 
-                    return '`'.$value.'`';
-                });
+                $values = collect($values)->map(
+                    fn ($value) => $this->quoteFilterValue($value, $fieldType)
+                );
 
                 if ($values->count() > 1) {
                     $filters->push($field.':['.collect($values)->join(',').']');
@@ -231,14 +229,24 @@ class TypesenseEngine extends AbstractEngine
                 $filters->push($field.':='.collect($values)->join(','));
             }
 
+            // Scout's buildSearchParameters() only forwards query_by and
+            // prefix from the model's search-parameters config; merge the
+            // full set so weights, infix, vector_query, exclude_fields and
+            // friends actually reach Typesense.
+            $options = [
+                ...$options,
+                ...config('scout.typesense.model-settings.'.$this->modelType.'.search-parameters', []),
+            ];
+
             $queryBy = $options['query_by'];
             $queryByWeights = $options['query_by_weights'] ?? null;
             $infix = $options['infix'] ?? null;
+            $prefix = $options['prefix'] ?? false;
 
             // Without a search term there is nothing to embed, so drop the
             // embedding field from query_by — together with its entries in the
-            // position-aligned weight/infix lists, otherwise Typesense rejects
-            // the whole request over the count mismatch.
+            // position-aligned weight/infix/prefix lists, otherwise Typesense
+            // rejects the whole request over the count mismatch.
             if (! $this->query) {
                 $fields = array_map('trim', explode(',', $queryBy));
                 $embeddingIndex = array_search('embedding', $fields, true);
@@ -248,6 +256,7 @@ class TypesenseEngine extends AbstractEngine
                     $queryBy = implode(',', $fields);
                     $queryByWeights = $this->stripListEntry($queryByWeights, $embeddingIndex);
                     $infix = $this->stripListEntry($infix, $embeddingIndex);
+                    $prefix = $this->stripListEntry($prefix, $embeddingIndex);
                 }
             }
 
@@ -257,8 +266,15 @@ class TypesenseEngine extends AbstractEngine
                 // Typesense requires q; '*' is its match-all for browse mode.
                 'q' => $searchQuery->query ?: '*',
                 'facet_query' => $facetQuery,
-                'prefix' => false,
-                'exclude_fields' => 'embedding',
+                'prefix' => $prefix,
+                // The embedding vector is never wanted in payloads; hosts can
+                // exclude further fields via search-parameters.
+                'exclude_fields' => collect(explode(',', (string) ($options['exclude_fields'] ?? '')))
+                    ->map(fn (string $field) => trim($field))
+                    ->filter()
+                    ->push('embedding')
+                    ->unique()
+                    ->join(','),
                 'max_facet_values' => $this->maxFacetValues,
                 'sort_by' => $this->sortRaw ?: ($this->sortByIsValid() ? $this->sort : '_text_match:desc'),
                 'facet_by' => implode(',', $searchQuery->facets),
@@ -274,9 +290,13 @@ class TypesenseEngine extends AbstractEngine
 
             // Hybrid semantic search only works when the collection schema
             // actually declares an auto-embed `embedding` field; requesting a
-            // vector query without one 404s the whole multi-search.
+            // vector query without one 404s the whole multi-search. Hosts can
+            // pin k/alpha with a `vector_query` search parameter; it only
+            // applies alongside a search term, so browse mode drops it.
             if ($this->query && $this->schemaHasEmbeddingField()) {
-                $params['vector_query'] = 'embedding:([], k: 200)';
+                $params['vector_query'] ??= 'embedding:([], k: 200)';
+            } else {
+                unset($params['vector_query']);
             }
 
             if ($filters->count()) {
@@ -320,6 +340,48 @@ class TypesenseEngine extends AbstractEngine
     {
         return collect($this->getFieldConfig())
             ->contains(fn (array $field): bool => ($field['name'] ?? null) === 'embedding');
+    }
+
+    /**
+     * Render a facet filter value for the filter_by grammar.
+     *
+     * Backticks escape a *string* literal, letting it carry spaces or commas.
+     * On a numeric field Typesense reads the backtick as a comparator and
+     * rejects the whole request ("Numerical field has an invalid comparator"),
+     * so quoting has to follow the field's schema type rather than the shape of
+     * the value — a string field whose values look numeric ('3M', '10') still
+     * needs the quotes to match exactly.
+     *
+     * A field the schema does not declare keeps the quoted form it has always
+     * had, so a host that configures its collection elsewhere cannot regress.
+     */
+    protected function quoteFilterValue(mixed $value, ?string $type): string
+    {
+        // Booleans have never been quoted — keep the literal strings working
+        // for hosts that pass them through from a request.
+        if (is_bool($value) || $value === 'true' || $value === 'false') {
+            return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+        }
+
+        $baseType = str_replace('[]', '', (string) $type);
+
+        if (in_array($baseType, ['int32', 'int64', 'float'], true)) {
+            return (string) $value;
+        }
+
+        if ($baseType === 'bool') {
+            return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+        }
+
+        return '`'.$value.'`';
+    }
+
+    protected function getFieldType(string $field): ?string
+    {
+        $config = collect($this->getFieldConfig())
+            ->first(fn (array $candidate): bool => ($candidate['name'] ?? null) === $field);
+
+        return $config['type'] ?? null;
     }
 
     protected function getFieldConfig(): array
