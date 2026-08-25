@@ -379,3 +379,158 @@ it('strips a single entry from position-aligned parameter lists', function () {
         ->and($engine->exposedStripListEntry(['not', 'a', 'string'], 1))
         ->toBe(['not', 'a', 'string']);
 });
+
+it('merges the model search-parameters over the options scout supplies', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.search-parameters', [
+        'query_by_weights' => '10,5',
+        'infix' => 'always,off',
+        'prioritize_token_position' => 'true',
+        'num_typos' => '1',
+    ]);
+
+    // Scout only forwards query_by and prefix, so everything else arrives from
+    // the model settings or not at all.
+    $params = typesenseTestEngine()->query('shoes')->exposedBuildSearch([
+        'query_by' => 'name,description',
+        'filter_by' => [],
+    ])[0];
+
+    expect($params['query_by_weights'])
+        ->toBe('10,5')
+        ->and($params['infix'])
+        ->toBe('always,off')
+        ->and($params['prioritize_token_position'])
+        ->toBe('true')
+        ->and($params['num_typos'])
+        ->toBe('1');
+});
+
+it('takes prefix from the model search-parameters, defaulting to false', function () {
+    $options = ['query_by' => 'name,description', 'filter_by' => []];
+
+    expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['prefix'])
+        ->toBeFalse();
+
+    Config::set(
+        'scout.typesense.model-settings.'.Product::class.'.search-parameters',
+        ['prefix' => 'true,false']
+    );
+
+    expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['prefix'])
+        ->toBe('true,false');
+});
+
+it('unions the host exclude_fields with the embedding field', function () {
+    Config::set(
+        'scout.typesense.model-settings.'.Product::class.'.search-parameters',
+        ['exclude_fields' => 'notes, embedding, internal_ref']
+    );
+
+    $params = typesenseTestEngine()->exposedBuildSearch([
+        'query_by' => 'name',
+        'filter_by' => [],
+    ])[0];
+
+    expect($params['exclude_fields'])
+        ->toBe('notes,embedding,internal_ref');
+});
+
+it('strips the embedding entry from the prefix list when browsing', function () {
+    Config::set(
+        'scout.typesense.model-settings.'.Product::class.'.search-parameters',
+        ['prefix' => 'false,true,true']
+    );
+
+    // Without a term the embedding field leaves query_by, so every
+    // position-aligned list has to lose the same index or Typesense rejects
+    // the request over the count mismatch.
+    $params = typesenseTestEngine()->exposedBuildSearch([
+        'query_by' => 'embedding,name,description',
+        'filter_by' => [],
+    ])[0];
+
+    expect($params['query_by'])
+        ->toBe('name,description')
+        ->and($params['prefix'])
+        ->toBe('true,true');
+});
+
+it('leaves numeric facet filter values unquoted', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'collection_ids', 'type' => 'int64[]'],
+        ['name' => 'stock_level', 'type' => 'int32'],
+        ['name' => 'rating', 'type' => 'float'],
+    ]);
+
+    // Backticks escape a string literal; on a numeric field Typesense reads
+    // them as a comparator and rejects the whole request.
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'collection_ids' => [535, 533],
+            'stock_level' => [4],
+            'rating' => ['4.5'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toContain('collection_ids:[535,533]')
+        ->and($filters)
+        ->toContain('stock_level:=4')
+        ->and($filters)
+        ->toContain('rating:=4.5')
+        ->and($filters)
+        ->not->toContain('`');
+});
+
+it('quotes string facet filter values, including numeric-looking ones', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+        ['name' => 'sizes', 'type' => 'string[]'],
+    ]);
+
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'brand' => ['3M'],
+            'sizes' => ['10', 'Extra Large'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toContain('brand:=`3M`')
+        ->and($filters)
+        ->toContain('sizes:[`10`,`Extra Large`]');
+});
+
+it('normalises bool facet filter values', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'oversized', 'type' => 'bool'],
+        ['name' => 'clearance', 'type' => 'bool'],
+    ]);
+
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'oversized' => [true],
+            'clearance' => ['false'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toContain('oversized:=true')
+        ->and($filters)
+        ->toContain('clearance:=false');
+});
+
+it('quotes facet filter values for fields the schema does not declare', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'name', 'type' => 'string'],
+    ]);
+
+    // An unmapped field keeps the quoted form it has always had, so a host
+    // whose schema lives outside this config cannot regress.
+    $filters = typesenseTestEngine()
+        ->setFacets(['colour' => ['Red']])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toContain('colour:=`Red`');
+});

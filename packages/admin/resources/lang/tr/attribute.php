@@ -45,7 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Doğrulama Kuralları',
-            'helper' => 'Özellik alanı için kurallar, örnek: min:1|max:10|...',
+            'helper' => 'Her girişte bir kural, örneğin: min:1, max:10',
         ],
     ],
 ];

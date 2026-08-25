@@ -32,7 +32,7 @@ When asked to start a new piece of work that isn't already specced, write the sp
 
 ## Conventions specific to Lunar
 
-- **Translations**: 16 locales live under each sub-package's `resources/lang/` (`ar, bg, de, en, es, fa, fr, hr, hu, mn, nl, pl, pt_BR, ro, tr, vi`). When adding or renaming a translation key, update **every** locale — English first, then mirror the key (English value is acceptable as a placeholder) across the other 15.
+- **Translations**: 16 locales live under each sub-package's `resources/lang/` (`ar, bg, de, en, es, fa, fr, hr, hu, mn, nl, pl, pt_BR, ro, tr, vi`). When adding or renaming a translation key, update **every** locale — English first, then **translate the value** into each of the other 15, matching the terminology already used in that locale's existing files. Never mirror the English value as a placeholder — placeholders don't get backfilled.
 - **Public contract surface**: this package is consumed by downstream apps. Treat anything outside `Models/Concerns/`, `Support/`, and internal namespaces as a contract — breaking changes require a spec and a Rector rule in the `upgrade` package.
 - **Migrations**: v2 ships a flat baseline. While v2 is in alpha, fold schema changes into the existing baseline migrations rather than adding change migrations; once v2 is released, schema changes go in new migrations instead. The `upgrade` package handles v1 → v2 transformations.
 - **Filament**: v5 with the schemas refactor applied. Use schemas, not the deprecated wrapper traits.
