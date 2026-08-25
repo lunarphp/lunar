@@ -16,8 +16,16 @@ return [
         'type' => [
             'label' => 'Loại',
         ],
+        'group' => [
+            'label' => 'Group',
+            'ungrouped' => 'Ungrouped',
+        ],
     ],
     'form' => [
+        'attribute_group' => [
+            'label' => 'Group',
+            'placeholder' => 'No group',
+        ],
         'model_types' => [
             'label' => 'Applies to',
             'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
@@ -50,6 +58,14 @@ return [
         'validation_rules' => [
             'label' => 'Quy tắc xác thực',
             'helper' => 'Mỗi mục một quy tắc, ví dụ: min:1, max:10',
+        ],
+    ],
+
+    'actions' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'System attributes cannot be deleted.',
+            ],
         ],
     ],
 ];

@@ -298,7 +298,7 @@ $schema->components([
 ]);
 ```
 
-Models with a complete schema, table, infolist, and relation managers: `Activity`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
+Models with a complete schema, table, infolist, and relation managers: `Activity`, `Attribute`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
 
 ---
 
@@ -320,6 +320,8 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Products\AdjustStockAction` | `Core\Actions\Products\AdjustStock` | Variant row |
 | `Collections\CreateRootCollectionAction` / `CreateChildCollectionAction` | `Core\Actions\Collections\CreateRootCollection` / `CreateChildCollection` | Collection tree view |
 | `Collections\MoveCollectionAction` / `DeleteCollectionAction` | `Core\Actions\Collections\MoveCollection` / `DeleteCollection` | Collection tree view |
+| `Attributes\CreateAttributeAction` / `EditAttributeAction` | `Core\Actions\Attributes\CreateAttribute` / `UpdateAttribute` | Attribute table / attribute group relation manager (on a relation manager the owner group supplies `attribute_group_id`) |
+| `Attributes\DeleteAttributeAction` / `DeleteAttributesBulkAction` | `Core\Actions\Attributes\DeleteAttribute` | Attribute row / bulk — system attributes are protected |
 
 Drop into any header/row/bulk action array — they work like any Filament action:
 
