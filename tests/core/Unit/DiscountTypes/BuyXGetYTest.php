@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
@@ -1639,4 +1640,98 @@ test('can add an eligible variant reward when not in cart', function () {
 
     $this->assertEquals(1200, $cart->total->value);
     $this->assertCount(1, $cart->freeItems);
+});
+
+test('can store an automatically added reward line using the morph map', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableA->getMorphClass(),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableB->getMorphClass(),
+        'priceable_id' => $purchasableB->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 1,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart->calculate();
+
+    $rewardLine = CartLine::where('cart_id', $cart->id)
+        ->where('purchasable_id', $purchasableB->id)
+        ->first();
+
+    expect($rewardLine->purchasable_type)->toEqual($purchasableB->getMorphClass());
 });

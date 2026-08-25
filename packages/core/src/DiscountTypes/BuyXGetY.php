@@ -271,7 +271,7 @@ class BuyXGetY extends AbstractDiscountType
 
                 if (! $rewardLine) {
                     $rewardLine = $cart->lines()->make([
-                        'purchasable_type' => get_class($purchasable),
+                        'purchasable_type' => $purchasable->getMorphClass(),
                         'purchasable_id' => $purchasable->id,
                         'quantity' => 1,
                     ]);
