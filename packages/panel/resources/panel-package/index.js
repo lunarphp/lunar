@@ -35,9 +35,12 @@ export const DonutChart = ui().DonutChart;
 export const TextInput = ui().TextInput;
 export const Textarea = ui().Textarea;
 export const Select = ui().Select;
+export const Combobox = ui().Combobox;
 export const Checkbox = ui().Checkbox;
 export const Toggle = ui().Toggle;
 export const FieldLabel = ui().FieldLabel;
+export const ColorPicker = ui().ColorPicker;
+export const DatePicker = ui().DatePicker;
 
 // Overlays / display
 export const Dialog = ui().Dialog;
@@ -46,6 +49,7 @@ export const ConfirmDialog = ui().ConfirmDialog;
 export const Tooltip = ui().Tooltip;
 export const SideCard = ui().SideCard;
 export const Tabs = ui().Tabs;
+export const ValuePreviewChip = ui().ValuePreviewChip;
 
 // Edit drafts
 export const DraftActions = ui().DraftActions;

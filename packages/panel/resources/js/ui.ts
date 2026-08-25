@@ -36,10 +36,13 @@ export { default as DonutChart } from './components/DonutChart.vue';
 export { default as TextInput } from './components/TextInput.vue';
 export { default as Textarea } from './components/Textarea.vue';
 export { default as Select } from './components/Select.vue';
+export { default as Combobox } from './components/Combobox.vue';
+export type { ComboboxOption } from './components/Combobox.vue';
 export { default as Checkbox } from './components/Checkbox.vue';
 export { default as Toggle } from './components/Toggle.vue';
 export { default as FieldLabel } from './components/FieldLabel.vue';
 export { default as ColorPicker } from './components/ColorPicker.vue';
+export { default as DatePicker } from './components/DatePicker.vue';
 export { default as ValuePreviewChip } from './components/ValuePreviewChip.vue';
 export type { PreviewValue } from './components/ValuePreviewChip.vue';
 

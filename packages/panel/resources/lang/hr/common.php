@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Prethodna stranica',
     'next_page' => 'Sljedeća stranica',
     'open_user_menu' => 'Otvori korisnički izbornik',
+    'open_calendar' => 'Otvori kalendar',
     'more_actions' => 'Više radnji',
     'select_all_rows' => 'Odaberi sve retke',
     'close' => 'Zatvori',

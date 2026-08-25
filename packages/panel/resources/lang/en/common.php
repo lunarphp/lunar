@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Previous page',
     'next_page' => 'Next page',
     'open_user_menu' => 'Open user menu',
+    'open_calendar' => 'Open calendar',
     'more_actions' => 'More actions',
     'select_all_rows' => 'Select all rows',
     'close' => 'Close',
