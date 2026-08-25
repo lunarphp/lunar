@@ -4,6 +4,7 @@ namespace Lunar\DiscountTypes;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Base\Purchasable;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
@@ -251,6 +252,8 @@ class BuyXGetY extends AbstractDiscountType
                     $product = $selectedRewardItem->products()->inRandomOrder()->first();
                     $purchasable = $product?->variants()->first();
                     $selectedRewardItem = $product;
+                } elseif ($selectedRewardItem instanceof Purchasable) {
+                    $purchasable = $selectedRewardItem;
                 } else {
                     $purchasable = $selectedRewardItem->variants->first();
                 }
@@ -268,7 +271,7 @@ class BuyXGetY extends AbstractDiscountType
 
                 if (! $rewardLine) {
                     $rewardLine = $cart->lines()->make([
-                        'purchasable_type' => get_class($purchasable),
+                        'purchasable_type' => $purchasable->getMorphClass(),
                         'purchasable_id' => $purchasable->id,
                         'quantity' => 1,
                     ]);
