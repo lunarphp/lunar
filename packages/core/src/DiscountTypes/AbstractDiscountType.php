@@ -82,9 +82,17 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $lines = $this->getEligibleLines($cart);
         $validMinSpend = $minSpend ? $minSpend < $lines->sum('subTotal.value') : true;
 
-        $validMaxUses = $this->discount->max_uses ? $this->discount->uses < $this->discount->max_uses : true;
+        // A cart that already consumed this discount when its draft order was
+        // created must not then be blocked by its own use. Otherwise creating
+        // that order again - a declined card and a retry - re-prices it without
+        // the discount the shopper was quoted.
+        $alreadyConsumed = $cart->consumedDiscountIds()->contains($this->discount->id);
 
-        if ($validMaxUses && $this->discount->max_uses_per_user) {
+        $validMaxUses = $this->discount->max_uses
+            ? ($alreadyConsumed || $this->discount->uses < $this->discount->max_uses)
+            : true;
+
+        if (! $alreadyConsumed && $validMaxUses && $this->discount->max_uses_per_user) {
             $validMaxUses = $cart->user && ($this->usesByUser($cart->user) < $this->discount->max_uses_per_user);
         }
 
