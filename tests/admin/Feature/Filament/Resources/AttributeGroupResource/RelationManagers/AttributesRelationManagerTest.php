@@ -2,6 +2,7 @@
 
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
@@ -239,5 +240,63 @@ it('can delete a non-system attribute from the relation manager', function () {
 
     $this->assertDatabaseMissing((new Attribute)->getTable(), [
         'id' => $attribute->id,
+    ]);
+});
+
+it('can save an edit through the relation manager', function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $attribute = Attribute::factory()->modelType('product')->create([
+        'attribute_group_id' => $attributeGroup->id,
+        'name' => 'Details',
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(EditAction::class, $attribute, data: [
+        'name' => 'Specifications',
+        'model_types' => ['collection'],
+    ])->assertHasNoTableActionErrors();
+
+    expect($attribute->refresh())
+        ->name->toBe('Specifications')
+        ->attribute_group_id->toBe($attributeGroup->id);
+
+    expect($attribute->models()->pluck('model_type')->all())->toBe(['collection']);
+});
+
+it('bulk delete skips system attributes and removes the rest', function () {
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $system = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+        'system' => true,
+    ]);
+
+    $custom = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableBulkAction(DeleteBulkAction::class, [$system, $custom]);
+
+    $this->assertDatabaseHas((new Attribute)->getTable(), [
+        'id' => $system->id,
+    ]);
+
+    $this->assertDatabaseMissing((new Attribute)->getTable(), [
+        'id' => $custom->id,
     ]);
 });
