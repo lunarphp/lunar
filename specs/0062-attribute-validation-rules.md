@@ -85,4 +85,4 @@ Rules are authored by staff and evaluated by Laravel's validator — the same tr
 - [x] Slice 2 — filament: converters apply rules (strict-mode regression test included), attribute form input, lang updates.
 - [x] Slice 3 — panel: `AttributeSchema::rules()`, `AttributeRequest`, Edit.vue input, lang keys, draft-commit tests.
 - [x] Slice 4 — panel: validator attribute labels in `DraftManager` (`labelsForMorph()` covers products/variants, whose mapping needs no hydrated record) + `ProductDraftResource::labels()` / `VariantFields::labels()`.
-- [x] Slice 5 — docs: filament README attribute section, filament CHANGELOG entry (the other touched packages keep no changelog).
+- [x] Slice 5 — docs: filament README attribute section. (A filament CHANGELOG entry shipped here first, then the per-package changelog was retired in favour of release notes compiled from PR titles — features span sub-packages, so one package's file told a partial story.)
