@@ -25,6 +25,16 @@ describe('DatePicker', () => {
         expect(wrapper.find('[aria-label="common.open_calendar"]').exists()).toBe(true);
     });
 
+    it('renders a date-only string as midnight', () => {
+        const wrapper = mount(DatePicker, {
+            props: { modelValue: '2026-06-01' },
+        });
+
+        const text = wrapper.text();
+        expect(text).toContain('2026');
+        expect(text).toContain('00');
+    });
+
     it('ignores an unparseable value instead of throwing', () => {
         expect(() =>
             mount(DatePicker, { props: { modelValue: 'not-a-date' } }),

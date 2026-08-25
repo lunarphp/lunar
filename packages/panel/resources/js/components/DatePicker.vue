@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarDateTime, parseDateTime, type DateValue } from '@internationalized/date';
+import { CalendarDateTime, parseDate, parseDateTime, type DateValue } from '@internationalized/date';
 import {
     DatePickerArrow,
     DatePickerCalendar,
@@ -27,8 +27,8 @@ import { useI18n } from 'vue-i18n';
  * A date-and-time picker matching the panel's control styling. The public
  * v-model is a zoneless `YYYY-MM-DDTHH:mm` string (the same value a native
  * `datetime-local` input produces), so callers keep that contract while getting
- * a styled, keyboard-accessible field with a calendar popover. An empty string
- * means "no value".
+ * a styled, keyboard-accessible field with a calendar popover. A date-only
+ * `YYYY-MM-DD` value renders as midnight; an empty string means "no value".
  */
 const props = withDefaults(
     defineProps<{
@@ -58,6 +58,13 @@ const value = computed<DateValue | undefined>({
         }
         try {
             return parseDateTime(props.modelValue);
+        } catch {
+            // Fall through: a date-only YYYY-MM-DD value renders as midnight.
+        }
+        try {
+            const date = parseDate(props.modelValue);
+
+            return new CalendarDateTime(date.year, date.month, date.day, 0, 0);
         } catch {
             return undefined;
         }
