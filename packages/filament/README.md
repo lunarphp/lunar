@@ -188,6 +188,8 @@ It prefers Laravel Scout when both `lunar.filament.scout_enabled` is true and th
 
 Renders editable fields for every attribute attached to the current model (Product, Brand, Collection, etc.) according to its registered field type. Each field type knows how to draw itself, cast its data, and synthesize across Livewire.
 
+An attribute's `validation_rules` (a list of Laravel rule strings, editable on the attribute form — spec 0062) are applied to the rendered field on top of the `required` flag, so `['min:2', 'max:10']` on a text attribute validates exactly as those rules would on any form input.
+
 ```php
 use Lunar\Filament\Forms\Components\Attributes;
 
@@ -296,7 +298,7 @@ $schema->components([
 ]);
 ```
 
-Models with a complete schema, table, infolist, and relation managers: `Activity`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
+Models with a complete schema, table, infolist, and relation managers: `Activity`, `Attribute`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
 
 ---
 
@@ -318,6 +320,8 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Products\AdjustStockAction` | `Core\Actions\Products\AdjustStock` | Variant row |
 | `Collections\CreateRootCollectionAction` / `CreateChildCollectionAction` | `Core\Actions\Collections\CreateRootCollection` / `CreateChildCollection` | Collection tree view |
 | `Collections\MoveCollectionAction` / `DeleteCollectionAction` | `Core\Actions\Collections\MoveCollection` / `DeleteCollection` | Collection tree view |
+| `Attributes\CreateAttributeAction` / `EditAttributeAction` | `Core\Actions\Attributes\CreateAttribute` / `UpdateAttribute` | Attribute table / attribute group relation manager (on a relation manager the owner group supplies `attribute_group_id`) |
+| `Attributes\DeleteAttributeAction` / `DeleteAttributesBulkAction` | `Core\Actions\Attributes\DeleteAttribute` | Attribute row / bulk — system attributes are protected |
 
 Drop into any header/row/bulk action array — they work like any Filament action:
 
@@ -411,16 +415,17 @@ return $panel->widgets([
 
 Also available: `Lunar\Filament\Widgets\Customer\CustomerStatsOverviewWidget`, `Lunar\Filament\Widgets\Collections\CollectionTreeView`, `Lunar\Filament\Widgets\Products\ProductOptionsWidget`, `Lunar\Filament\Widgets\Products\VariantSwitcherTable`.
 
-Widgets that link to Lunar records (e.g. "click an order in this table") use a record-URL resolver. Wire it up to your own resources in your panel provider:
+Widgets and tables that link to Lunar records (e.g. "click an order in this table") resolve the target page through `lunar.filament.record_urls.{key}`. Point each key at your own panel's pages in `config/lunar/filament.php`:
 
 ```php
-use Lunar\Filament\Support\Facades\RecordUrls;
-
-RecordUrls::resolveUsing('order', fn ($order) => MyOrderResource::getUrl('view', ['record' => $order]));
-RecordUrls::resolveUsing('product_variant', fn ($variant) => MyProductResource::getUrl('edit', ['record' => $variant->product]));
+'record_urls' => [
+    'order' => ManageOrder::class,                            // ManageOrder::getUrl(['record' => $record])
+    'product_variant' => [MyProductResource::class, 'edit'],  // MyProductResource::getUrl('edit', ['record' => $record])
+    'collection_edit' => null,                                // omit the link
+],
 ```
 
-When no resolver is registered, the widget gracefully omits the link.
+Prefer the class-string forms: config has to survive `php artisan config:cache`, and a closure anywhere in the tree makes the whole application's config non-serializable. A callable — invoked as `$resolver($record, $context)` — is still accepted for a resolver that genuinely can't be expressed as a class and a page name, at the cost of config caching. When a key is `null` or unset, the component gracefully omits the link. The `lunarphp/admin` shell wires all three keys to its own pages at boot.
 
 ---
 

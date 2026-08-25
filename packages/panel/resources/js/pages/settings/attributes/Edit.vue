@@ -24,6 +24,7 @@ type Attribute = {
     attribute_group_id: number | null;
     position: number;
     required: boolean;
+    validation_rules: string[];
     searchable: boolean;
     filterable: boolean;
     system: boolean;
@@ -95,6 +96,7 @@ const form = useForm({
     attribute_group_id: props.attribute.attribute_group_id,
     position: String(props.attribute.position),
     required: props.attribute.required,
+    validation_rules: [...props.attribute.validation_rules],
     searchable: props.attribute.searchable,
     filterable: props.attribute.filterable,
     model_types: [...props.attribute.model_types],
@@ -144,6 +146,31 @@ const removeTag = (key: string, index: number): void => {
     form.configuration[key] = tagValues(key).filter((_, i) => i !== index);
 };
 
+// Validation rules edit as a tag list on the form root (spec 0062).
+const ruleDraft = ref('');
+
+const addRule = (): void => {
+    const draft = ruleDraft.value.trim();
+
+    if (!draft || form.validation_rules.includes(draft)) {
+        return;
+    }
+
+    form.validation_rules = [...form.validation_rules, draft];
+    ruleDraft.value = '';
+};
+
+const removeRule = (index: number): void => {
+    form.validation_rules = form.validation_rules.filter((_, i) => i !== index);
+};
+
+const ruleError = computed<string | undefined>(() => {
+    const errors = form.errors as Record<string, string>;
+
+    return errors.validation_rules
+        ?? Object.entries(errors).find(([key]) => key.startsWith('validation_rules.'))?.[1];
+});
+
 const scalarConfig = (key: string): string => {
     const value = form.configuration[key];
 
@@ -154,6 +181,10 @@ const configError = (key: string): string | undefined =>
     (form.errors as Record<string, string>)[`configuration.${key}`];
 
 const submit = (): void => {
+    // A rule typed but not yet committed with Enter would otherwise be
+    // silently discarded on save.
+    addRule();
+
     for (const field of props.configFields) {
         if (field.type === 'lookups') {
             form.configuration = {
@@ -244,6 +275,34 @@ const confirmDestroy = (): void => {
                         <div class="text-[11px] text-ink-500">{{ t('attributes_settings.filterable_hint') }}</div>
                     </div>
                 </label>
+                <div>
+                    <FieldLabel :hint="t('attributes_settings.validation_rules_hint')">{{ t('attributes_settings.validation_rules_label') }}</FieldLabel>
+                    <div class="flex flex-wrap gap-1.5 px-1.5 py-1.5 min-h-[34px] border border-line-strong rounded-md bg-surface items-center">
+                        <span
+                            v-for="(rule, index) in form.validation_rules"
+                            :key="`${rule}-${index}`"
+                            class="inline-flex items-center gap-1 h-[22px] pl-2 pr-1 border border-line bg-surface-2 rounded-full text-[11.5px] font-mono text-ink-700"
+                        >
+                            {{ rule }}
+                            <button
+                                type="button"
+                                class="w-4 h-4 rounded-full grid place-items-center text-ink-400 hover:bg-line-strong hover:text-ink-700"
+                                :aria-label="t('attributes_settings.remove_option')"
+                                @click="removeRule(index)"
+                            ><Icon name="x" cls="sm" /></button>
+                        </span>
+                        <input
+                            v-model="ruleDraft"
+                            type="text"
+                            class="flex-1 min-w-[120px] h-[22px] px-1 bg-transparent text-[12.5px] font-mono text-ink-900 outline-none"
+                            placeholder="min:1"
+                            :aria-label="t('attributes_settings.validation_rules_label')"
+                            @keydown.enter.prevent="addRule()"
+                            @blur="addRule()"
+                        />
+                    </div>
+                    <div v-if="ruleError" class="mt-1 text-[11px] text-danger">{{ ruleError }}</div>
+                </div>
             </div>
         </Section>
 

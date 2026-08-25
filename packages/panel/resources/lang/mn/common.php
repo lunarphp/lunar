@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Өмнөх хуудас',
     'next_page' => 'Дараагийн хуудас',
     'open_user_menu' => 'Хэрэглэгчийн цэсийг нээх',
+    'open_calendar' => 'Хуанлийг нээх',
     'more_actions' => 'Бусад үйлдэл',
     'select_all_rows' => 'Бүх мөрийг сонгох',
     'close' => 'Хаах',

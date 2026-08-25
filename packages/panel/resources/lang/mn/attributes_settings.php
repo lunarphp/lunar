@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'Баталгаажуулалтын дүрэм',
+    'validation_rules_hint' => 'Энэ шинж чанарын утгад хэрэглэгдэх Laravel баталгаажуулалтын дүрэм. Мөр бүрд нэг дүрэм, жишээ нь: min:1, max:10. Нэмэхийн тулд Enter дарна уу.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

@@ -18,7 +18,7 @@ class ListField extends BaseFieldType
             ->dehydrateStateUsing(function ($state) {
                 return $state;
             })
-            ->when(filled($attribute->validation_rules), fn (KeyValue $component) => $component->rules($attribute->validation_rules))
+            ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
             ->helperText(null);
     }

@@ -3,6 +3,7 @@
 namespace Lunar\Core\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Events\TransactionRolledBack;
 use Lunar\Core\Enums\CacheInvalidationReason;
 
 /**
@@ -20,4 +21,10 @@ interface CacheInvalidator
 
     /** Dispatch one event per pending entity and clear the buffer. */
     public function flush(): void;
+
+    /**
+     * Drop pending entries whose shallowest touch was inside the rolled-back
+     * frame. Wired once to TransactionRolledBack by LunarServiceProvider.
+     */
+    public function pruneRolledBack(TransactionRolledBack $event): void;
 }

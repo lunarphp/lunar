@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Trang trước',
     'next_page' => 'Trang sau',
     'open_user_menu' => 'Mở menu người dùng',
+    'open_calendar' => 'Mở lịch',
     'more_actions' => 'Thao tác khác',
     'select_all_rows' => 'Chọn tất cả các hàng',
     'close' => 'Đóng',

@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Engines\NullEngine;
+use Lunar\Core\Cache\CacheInvalidator;
 use Lunar\Core\Enums\CacheInvalidationReason;
 use Lunar\Core\Events\Catalog\BrandInvalidated;
 use Lunar\Core\Events\Catalog\CollectionInvalidated;
@@ -299,6 +301,150 @@ test('a direct change is left to scout and not reindexed by the listener', funct
     (new ReindexOnCacheInvalidation)->handle(new ProductInvalidated($product, CacheInvalidationReason::Updated));
 
     $engine->shouldNotHaveReceived('update');
+});
+
+test('a root rollback does not leak into a later autocommit mutation', function () {
+    $rolledBack = Product::factory()->create();
+    $later = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($rolledBack) {
+        DB::transaction(function () use ($rolledBack) {
+            $rolledBack->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    $later->touch();
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($later),
+    );
+});
+
+test('a root rollback does not leak into a later committed transaction', function () {
+    $rolledBack = Product::factory()->create();
+    $later = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($rolledBack) {
+        DB::transaction(function () use ($rolledBack) {
+            $rolledBack->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    DB::transaction(function () use ($later) {
+        $later->touch();
+    });
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($later),
+    );
+});
+
+test('a later transaction for the same target still invalidates after a rollback', function () {
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($product) {
+        DB::transaction(function () use ($product) {
+            $product->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    DB::transaction(function () use ($product) {
+        $product->touch();
+    });
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+});
+
+test('a nested rollback does not prevent the outer commit from invalidating', function () {
+    $outer = Product::factory()->create();
+    $nested = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    DB::transaction(function () use ($outer, $nested) {
+        $outer->touch();
+
+        rescue(function () use ($nested) {
+            DB::transaction(function () use ($nested) {
+                $nested->touch();
+
+                throw new RuntimeException('roll back nested');
+            });
+        }, report: false);
+    });
+
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($outer),
+    );
+    Event::assertNotDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($nested),
+    );
+});
+
+test('a target touched in both outer and nested frames survives the nested rollback', function () {
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    DB::transaction(function () use ($product) {
+        $product->touch();
+
+        rescue(function () use ($product) {
+            DB::transaction(function () use ($product) {
+                $product->touch();
+
+                throw new RuntimeException('roll back nested');
+            });
+        }, report: false);
+    });
+
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($product),
+    );
+});
+
+test('scope-fresh recorder instances register no listeners on the shared dispatcher', function () {
+    $product = Product::factory()->create();
+
+    $countListeners = fn () => count(Event::getRawListeners()[TransactionRolledBack::class] ?? []);
+    $baseline = $countListeners();
+
+    // Simulates successive request/job scopes under the scoped binding: each
+    // scope gets a fresh recorder, and rollback pruning must go through the
+    // provider's single process-lifetime listener rather than piling
+    // instance-bound closures onto the dispatcher for the worker's lifetime.
+    foreach (range(1, 3) as $i) {
+        $invalidator = new CacheInvalidator(app('db'), config('lunar.database.connection'));
+
+        rescue(function () use ($invalidator, $product) {
+            DB::transaction(function () use ($invalidator, $product) {
+                $invalidator->record($product, CacheInvalidationReason::Updated);
+
+                throw new RuntimeException('roll back');
+            });
+        }, report: false);
+    }
+
+    expect($countListeners())->toBe($baseline);
 });
 
 test('cache tags use the morph alias and key', function () {

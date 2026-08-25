@@ -246,6 +246,7 @@ class ProductDraftResource extends DraftableResource
             'description' => 'panel::products.field_description',
             'tags' => 'panel::products.field_tags',
             'collection_ids' => 'panel::products.side_collections',
+            ...$this->attributeSchema->labelsForMorph(Product::morphName()),
             ...$this->availabilitySchema->labels(),
             ...collect($this->variantFields->labels())
                 ->mapWithKeys(fn (string $label, string $field) => [self::VARIANT_PREFIX.$field => $label])

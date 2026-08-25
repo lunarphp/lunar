@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Önceki sayfa',
     'next_page' => 'Sonraki sayfa',
     'open_user_menu' => 'Kullanıcı menüsünü aç',
+    'open_calendar' => 'Takvimi aç',
     'more_actions' => 'Diğer işlemler',
     'select_all_rows' => 'Tüm satırları seç',
     'close' => 'Kapat',

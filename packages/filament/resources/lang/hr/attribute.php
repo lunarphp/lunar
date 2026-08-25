@@ -16,8 +16,16 @@ return [
         'type' => [
             'label' => 'Tip',
         ],
+        'group' => [
+            'label' => 'Grupa',
+            'ungrouped' => 'Bez grupe',
+        ],
     ],
     'form' => [
+        'attribute_group' => [
+            'label' => 'Grupa',
+            'placeholder' => 'Bez grupe',
+        ],
         'model_types' => [
             'label' => 'Applies to',
             'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
@@ -49,7 +57,15 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Pravila validacije',
-            'helper' => 'Pravila za polje atributa, primjer: min:1|max:10|...',
+            'helper' => 'Jedno pravilo po unosu, na primjer: min:1, max:10',
+        ],
+    ],
+
+    'actions' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'Sustavni atributi se ne mogu izbrisati.',
+            ],
         ],
     ],
 ];
