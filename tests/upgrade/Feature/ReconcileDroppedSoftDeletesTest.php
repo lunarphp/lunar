@@ -25,17 +25,18 @@ afterEach(function () {
     }
 });
 
-function reconcileSoftDeletesMigration(): object
+function upgradeMigration(string $glob): object
 {
-    $path = glob(dirname(__DIR__, 3).'/packages/upgrade/database/migrations/*reconcile_dropped_soft_deletes.php');
+    $path = glob(dirname(__DIR__, 3).'/packages/upgrade/database/migrations/'.$glob);
 
     return require $path[0];
 }
 
 /**
- * Stand up the four v1-shaped tables as they exist by this point in the upgrade:
- * each still carries the v1 `deleted_at` column alongside its v2 "hidden" column —
- * products/collections/channels a `status`, variants the `enabled` added by 000012.
+ * Stand up the tables in their TRUE v1 shape at the point these steps run (after
+ * 000012 added `product_variants.enabled`): products carry a free-form v1 `status`,
+ * variants carry `enabled`, and collections/channels carry ONLY `deleted_at` — no
+ * `status` column, because v1 never had one and no earlier upgrade step adds it.
  */
 function simulateV1SoftDeletableTables(): void
 {
@@ -51,17 +52,15 @@ function simulateV1SoftDeletableTables(): void
     });
     Schema::create(SD_UPG_PREFIX.'collections', function (Blueprint $table) {
         $table->id();
-        $table->string('status')->default('published');
         $table->softDeletes();
     });
     Schema::create(SD_UPG_PREFIX.'channels', function (Blueprint $table) {
         $table->id();
-        $table->string('status')->default('active');
         $table->softDeletes();
     });
 }
 
-test('it maps every v1 soft-deleted row onto the v2 hidden state and drops deleted_at', function () {
+test('the add-status then reconcile chain maps every soft-delete onto the v2 hidden state and drops deleted_at', function () {
     simulateV1SoftDeletableTables();
 
     $deleted = '2024-01-01 00:00:00';
@@ -75,40 +74,42 @@ test('it maps every v1 soft-deleted row onto the v2 hidden state and drops delet
         ['id' => 2, 'enabled' => true, 'deleted_at' => $deleted],
     ]);
     DB::table(SD_UPG_PREFIX.'collections')->insert([
-        ['id' => 1, 'status' => 'published', 'deleted_at' => null],
-        ['id' => 2, 'status' => 'published', 'deleted_at' => $deleted],
+        ['id' => 1, 'deleted_at' => null],
+        ['id' => 2, 'deleted_at' => $deleted],
     ]);
     DB::table(SD_UPG_PREFIX.'channels')->insert([
-        ['id' => 1, 'status' => 'active', 'deleted_at' => null],
-        ['id' => 2, 'status' => 'active', 'deleted_at' => $deleted],
+        ['id' => 1, 'deleted_at' => null],
+        ['id' => 2, 'deleted_at' => $deleted],
     ]);
 
-    reconcileSoftDeletesMigration()->up();
+    upgradeMigration('*add_collection_and_channel_status.php')->up();
+    upgradeMigration('*reconcile_dropped_soft_deletes.php')->up();
 
     // The orphaned v1 column is gone everywhere, matching a fresh v2 install.
     foreach (['products', 'product_variants', 'collections', 'channels'] as $table) {
         expect(Schema::hasColumn(SD_UPG_PREFIX.$table, 'deleted_at'))->toBeFalse();
     }
 
-    // Soft-deleted rows are hidden via the v2 mechanism; live rows are untouched.
     expect(DB::table(SD_UPG_PREFIX.'products')->find(1)->status)->toBe('published')
         ->and(DB::table(SD_UPG_PREFIX.'products')->find(2)->status)->toBe('archived')
         ->and((bool) DB::table(SD_UPG_PREFIX.'product_variants')->find(1)->enabled)->toBeTrue()
         ->and((bool) DB::table(SD_UPG_PREFIX.'product_variants')->find(2)->enabled)->toBeFalse()
+        // Live collections must land on 'published', NOT the 'draft' column default —
+        // otherwise a merchant's whole collection tree is hidden after the upgrade.
         ->and(DB::table(SD_UPG_PREFIX.'collections')->find(1)->status)->toBe('published')
         ->and(DB::table(SD_UPG_PREFIX.'collections')->find(2)->status)->toBe('archived')
         ->and(DB::table(SD_UPG_PREFIX.'channels')->find(1)->status)->toBe('active')
         ->and(DB::table(SD_UPG_PREFIX.'channels')->find(2)->status)->toBe('inactive');
 });
 
-test('it is a no-op on a fresh v2 table that never had deleted_at', function () {
+test('reconcile is a no-op on a fresh v2 table that never had deleted_at', function () {
     Schema::create(SD_UPG_PREFIX.'product_variants', function (Blueprint $table) {
         $table->id();
         $table->boolean('enabled')->default(true);
     });
     DB::table(SD_UPG_PREFIX.'product_variants')->insert(['id' => 1, 'enabled' => true]);
 
-    reconcileSoftDeletesMigration()->up();
+    upgradeMigration('*reconcile_dropped_soft_deletes.php')->up();
 
     expect((bool) DB::table(SD_UPG_PREFIX.'product_variants')->find(1)->enabled)->toBeTrue();
 });
