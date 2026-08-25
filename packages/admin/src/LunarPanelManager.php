@@ -274,7 +274,7 @@ class LunarPanelManager
             ->favicon($brandAsset('lunar-icon.png'))
             ->brandLogoHeight('2rem')
             ->topbar(false)
-            ->path('admin')
+            ->path('lunar')
             ->authGuard('staff')
             ->defaultAvatarProvider(GravatarProvider::class)
             ->login()
