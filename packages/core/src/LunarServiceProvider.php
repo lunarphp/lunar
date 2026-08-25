@@ -436,7 +436,7 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(FieldTypeManifestImpl::class);
         });
 
-        $this->app->singleton(AttributeCache::class, function ($app) {
+        $this->app->scoped(AttributeCache::class, function ($app) {
             return $app->make(AttributeCacheImpl::class);
         });
 
