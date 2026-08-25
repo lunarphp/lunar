@@ -16,8 +16,16 @@ return [
         'type' => [
             'label' => 'Tipo',
         ],
+        'group' => [
+            'label' => 'Grupo',
+            'ungrouped' => 'Sin grupo',
+        ],
     ],
     'form' => [
+        'attribute_group' => [
+            'label' => 'Grupo',
+            'placeholder' => 'Sin grupo',
+        ],
         'model_types' => [
             'label' => 'Applies to',
             'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
@@ -49,7 +57,15 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Reglas de validación',
-            'helper' => 'Reglas para el campo de atributo, ejemplo: min:1|max:10|...',
+            'helper' => 'Una regla por entrada, por ejemplo: min:1, max:10',
+        ],
+    ],
+
+    'actions' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'Los atributos del sistema no se pueden eliminar.',
+            ],
         ],
     ],
 ];

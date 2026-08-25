@@ -68,7 +68,7 @@ When you add or change a public surface, **the README is the canonical user-faci
    - When you ship something that was an idea, append `_(Shipped in spec NNNN.)_` to the item; don't delete it.
    - When a spec is suggested as "next", refresh the "Suggested next spec" footer.
 
-3. **`CHANGELOG.md`** — one entry per release covering the public-surface diff. Mention any deprecation explicitly.
+3. **Release notes come from PR titles** — there is no per-package `CHANGELOG.md` (features regularly span sub-packages, so a single package's file told a partial story). Give every PR a conventional-commit title scoped to the package(s) it touches (`feat(filament): …`, `fix(core,filament): …`); release notes are compiled from merged PR titles at each release. Call out deprecations and behavioural changes prominently in the PR description — that text is what the release notes link to.
 
 4. **Translations** — see below; lang keys are part of the public surface.
 
@@ -83,7 +83,7 @@ If a change touches public surface and the README diff is empty in the PR, the P
 Lang files live under `resources/lang/{locale}/` across **16 locales**: `ar`, `bg`, `de`, `en`, `es`, `fa`, `fr`, `hr`, `hu`, `mn`, `nl`, `pl`, `pt_BR`, `ro`, `tr`, `vi`.
 
 - Lang keys are public contract — renaming a key requires a Rector rule.
-- English first. Mirror to the other 15 locales with the English value as a placeholder. The translation community fixes the placeholders downstream.
+- English first, then **translate the value** into each of the other 15 locales, reusing the terminology already established in that locale's files (check the sibling keys — e.g. how `attribute.php` / `attributegroup.php` already render the model names). Never leave the English value as a placeholder — placeholders don't get backfilled downstream.
 - Lang namespaces: `lunar-filament::{file}.…`. Files in use: `actions.php`, `address.php`, `attribute.php`, `brand.php`, `collection.php`, `components.php`, `currency.php`, `customer.php`, `discount.php`, `fieldtypes.php`, `global-search.php`, `order.php`, `product.php`, `producttype.php`, `productvariant.php`, `widgets.php`, plus the smaller per-model files.
 - Never inline a user-facing string — always go via `__('lunar-filament::…')`. Tests don't catch missing translations, only missing keys when called.
 

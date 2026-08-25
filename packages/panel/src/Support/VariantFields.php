@@ -142,9 +142,12 @@ class VariantFields
      */
     public function labels(): array
     {
-        return collect(self::FIELDS)
-            ->mapWithKeys(fn (string $field) => [$field => "panel::products.variant_field_{$field}"])
-            ->all();
+        return [
+            ...collect(self::FIELDS)
+                ->mapWithKeys(fn (string $field) => [$field => "panel::products.variant_field_{$field}"])
+                ->all(),
+            ...$this->attributeSchema->labelsForMorph(ProductVariant::morphName()),
+        ];
     }
 
     /**

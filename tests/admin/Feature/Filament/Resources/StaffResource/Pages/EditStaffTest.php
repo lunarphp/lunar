@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\EditStaff;
@@ -75,11 +76,42 @@ it('can assign staff role and permissions', function () {
         ->call('save')
         ->assertHasNoFormErrors();
 
-    expect($staff->hasExactRoles($roles))
+    // Re-fetch through the guard-resolved model, mirroring how the panel
+    // authenticates staff at runtime, rather than the raw Core\Models\Staff
+    // instance which is not necessarily the model registered in the morph map.
+    $resolvedStaff = StaffResource::getModel()::find($staff->getKey());
+
+    expect($resolvedStaff->hasExactRoles($roles))
         ->toBeTrue()
         ->and(
             $permissions->reject(fn ($val, $handle) => $handle == $rolePermission)->keys()->toArray()
-        )->toEqualCanonicalizing($staff->getDirectPermissions()->pluck('name')->toArray())
+        )->toEqualCanonicalizing($resolvedStaff->getDirectPermissions()->pluck('name')->toArray())
         ->and($rolePermission)
-        ->toEqualCanonicalizing($staff->getPermissionsViaRoles()->pluck('name')->toArray());
+        ->toEqualCanonicalizing($resolvedStaff->getPermissionsViaRoles()->pluck('name')->toArray());
+});
+
+it('stores role assignments against the guard-resolved staff model type', function () {
+    $staff = Staff::factory()->create([
+        'admin' => false,
+    ]);
+
+    Livewire::test(EditStaff::class, [
+        'record' => $staff->getRouteKey(),
+    ])
+        ->fillForm([
+            'roles' => ['staff'],
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    // Assert against the model the auth guard actually authenticates with
+    // (config('lunar.staff.model')), independent of StaffResource's own
+    // model resolution, so this test fails if the resource ever drifts
+    // from the guard again.
+    $guardModel = config('lunar.staff.model', Staff::class);
+    $expectedMorphClass = (new $guardModel)->getMorphClass();
+
+    expect(
+        DB::table('model_has_roles')->where('model_id', $staff->getKey())->value('model_type')
+    )->toBe($expectedMorphClass);
 });

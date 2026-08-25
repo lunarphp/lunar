@@ -34,6 +34,7 @@ use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages\Dashboard;
 use Lunar\Admin\Filament\Resources\ActivityResource;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
+use Lunar\Admin\Filament\Resources\AttributeResource;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ChannelResource;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
@@ -83,6 +84,7 @@ class LunarPanelManager
     protected static $resources = [
         ActivityResource::class,
         AttributeGroupResource::class,
+        AttributeResource::class,
         BrandResource::class,
         ChannelResource::class,
         CollectionGroupResource::class,
@@ -274,7 +276,7 @@ class LunarPanelManager
             ->favicon($brandAsset('lunar-icon.png'))
             ->brandLogoHeight('2rem')
             ->topbar(false)
-            ->path('lunar')
+            ->path('admin')
             ->authGuard('staff')
             ->defaultAvatarProvider(GravatarProvider::class)
             ->login()
