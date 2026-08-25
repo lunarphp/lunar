@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('opayo-threedsecure', function () {
     return view('lunar::opayo.threed-secure-iframe');
