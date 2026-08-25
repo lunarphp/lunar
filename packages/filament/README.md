@@ -411,16 +411,17 @@ return $panel->widgets([
 
 Also available: `Lunar\Filament\Widgets\Customer\CustomerStatsOverviewWidget`, `Lunar\Filament\Widgets\Collections\CollectionTreeView`, `Lunar\Filament\Widgets\Products\ProductOptionsWidget`, `Lunar\Filament\Widgets\Products\VariantSwitcherTable`.
 
-Widgets that link to Lunar records (e.g. "click an order in this table") use a record-URL resolver. Wire it up to your own resources in your panel provider:
+Widgets and tables that link to Lunar records (e.g. "click an order in this table") resolve the target page through `lunar.filament.record_urls.{key}`. Point each key at your own panel's pages in `config/lunar/filament.php`:
 
 ```php
-use Lunar\Filament\Support\Facades\RecordUrls;
-
-RecordUrls::resolveUsing('order', fn ($order) => MyOrderResource::getUrl('view', ['record' => $order]));
-RecordUrls::resolveUsing('product_variant', fn ($variant) => MyProductResource::getUrl('edit', ['record' => $variant->product]));
+'record_urls' => [
+    'order' => ManageOrder::class,                            // ManageOrder::getUrl(['record' => $record])
+    'product_variant' => [MyProductResource::class, 'edit'],  // MyProductResource::getUrl('edit', ['record' => $record])
+    'collection_edit' => null,                                // omit the link
+],
 ```
 
-When no resolver is registered, the widget gracefully omits the link.
+Prefer the class-string forms: config has to survive `php artisan config:cache`, and a closure anywhere in the tree makes the whole application's config non-serializable. A callable — invoked as `$resolver($record, $context)` — is still accepted for a resolver that genuinely can't be expressed as a class and a page name, at the cost of config caching. When a key is `null` or unset, the component gracefully omits the link. The `lunarphp/admin` shell wires all three keys to its own pages at boot.
 
 ---
 
