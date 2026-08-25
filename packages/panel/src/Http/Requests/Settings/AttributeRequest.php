@@ -51,6 +51,10 @@ class AttributeRequest extends FormRequest
             ],
             'position' => ['sometimes', 'integer', 'min:1'],
             'required' => ['sometimes', 'boolean'],
+            'validation_rules' => ['sometimes', 'nullable', 'array'],
+            // Nullable: the empty-strings-to-null middleware turns blank
+            // entries into nulls; they are dropped in attributeAttributes().
+            'validation_rules.*' => ['nullable', 'string', 'max:255'],
             'searchable' => ['sometimes', 'boolean'],
             'filterable' => ['sometimes', 'boolean'],
             'model_types' => ['required', 'array', 'min:1'],
@@ -122,6 +126,15 @@ class AttributeRequest extends FormRequest
             if (array_key_exists($flag, $validated)) {
                 $attributes[$flag] = (bool) $validated[$flag];
             }
+        }
+
+        if (array_key_exists('validation_rules', $validated)) {
+            $rules = array_values(array_filter(
+                $validated['validation_rules'] ?? [],
+                fn (?string $rule): bool => $rule !== null && trim($rule) !== '',
+            ));
+
+            $attributes['validation_rules'] = $rules === [] ? null : $rules;
         }
 
         if (array_key_exists('configuration', $validated)) {

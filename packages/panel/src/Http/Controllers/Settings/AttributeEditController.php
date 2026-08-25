@@ -28,6 +28,7 @@ class AttributeEditController
                 'attribute_group_id' => $attribute->attribute_group_id,
                 'position' => $attribute->position,
                 'required' => $attribute->required,
+                'validation_rules' => $attribute->validation_rules ?? [],
                 'searchable' => $attribute->searchable,
                 'filterable' => $attribute->filterable,
                 'system' => $attribute->system,

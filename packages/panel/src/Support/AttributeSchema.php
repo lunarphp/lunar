@@ -191,6 +191,20 @@ class AttributeSchema
             if ($token === 'list' && ($maxItems = (int) ($attribute->configuration?->get('max_items') ?? 0)) > 0) {
                 $rules[$key][] = 'max:'.$maxItems;
             }
+
+            // Staff-authored rules (spec 0062) describe a single stored value,
+            // so multi-value types apply them per entry. Unknown types render
+            // read-only and never submit a value to validate.
+            $custom = array_values(array_filter(
+                $attribute->validation_rules ?? [],
+                fn (mixed $rule): bool => is_string($rule) && $rule !== '',
+            ));
+
+            if ($custom !== [] && $token !== 'unknown') {
+                $target = in_array($token, ['translated_text', 'list'], true) ? $key.'.*' : $key;
+
+                $rules[$target] = [...$rules[$target], ...$custom];
+            }
         }
 
         return $rules;
