@@ -5,6 +5,7 @@ namespace Lunar\Tests\Stripe\Utils;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\MockClient;
 
 class StripeFake
@@ -18,7 +19,8 @@ class StripeFake
         $cart->calculate();
 
         return Stripe::fake([
-            'amount' => $cart->total->value,
+            // Mirror createIntent: Stripe holds amounts in its own sub-unit scale.
+            'amount' => StripeManager::toStripeAmount($cart->total->value, $cart->currency),
             'currency' => strtolower($cart->currency->code),
             ...$extra,
         ]);
@@ -31,7 +33,7 @@ class StripeFake
     public static function forOrder(OrderContract $order, array $extra = []): MockClient
     {
         return Stripe::fake([
-            'amount' => $order->total->value,
+            'amount' => StripeManager::toStripeAmount($order->total->value, $order->currency),
             'currency' => strtolower($order->currency_code),
             ...$extra,
         ]);
