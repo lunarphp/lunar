@@ -31,7 +31,7 @@ final class CreateOrder extends AbstractAction
             // Read before the creation pipeline runs: MapDiscountBreakdown
             // rewrites the order's breakdown, so afterwards every discount would
             // look as though it had already been consumed.
-            $alreadyConsumed = $cart->consumedDiscountIds();
+            $alreadyConsumed = $cart->consumedDiscountIds(fresh: true);
 
             if ($cart->hasCompletedOrders() && ! $allowMultipleOrders) {
                 throw new DisallowMultipleCartOrdersException;

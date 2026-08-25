@@ -285,20 +285,44 @@ class Cart extends BaseModel implements Contracts\Cart
     }
 
     /**
+     * Memoised result of {@see self::consumedDiscountIds()}.
+     */
+    protected ?Collection $consumedDiscountIds = null;
+
+    /**
      * The ids of any discounts this cart has already consumed.
      *
      * Order creation records a use as soon as the draft order exists, so a
      * checkout that runs it a second time - a declined card and a retry - would
      * otherwise find its own coupon exhausted and re-price that same order
      * without it. A cart's own consumption must not count against it.
+     *
+     * Memoised per instance, because this is read once when the discount set is
+     * rebuilt and once per discount while conditions are checked - a fresh query
+     * each time costs a single-row lookup per discount on every calculate,
+     * including for carts that never reach a checkout.
+     *
+     * @param  bool  $fresh  Re-read rather than use the memoised set. Order
+     *                       creation writes the breakdown this reads, so it must
+     *                       pass true: a set memoised before the first order
+     *                       existed is still empty on a same-request retry, and
+     *                       the discount would be consumed a second time.
      */
-    public function consumedDiscountIds(): Collection
+    public function consumedDiscountIds(bool $fresh = false): Collection
     {
+        if ($fresh) {
+            $this->consumedDiscountIds = null;
+        }
+
+        if ($this->consumedDiscountIds !== null) {
+            return $this->consumedDiscountIds;
+        }
+
         // Read the raw column: the cast hydrates an OrderLine per breakdown
         // line, which is a lot of work to reach an id.
         $breakdown = $this->draftOrder()->first()?->getRawOriginal('discount_breakdown');
 
-        return collect(json_decode($breakdown ?: '[]', true) ?: [])
+        return $this->consumedDiscountIds = collect(json_decode($breakdown ?: '[]', true) ?: [])
             ->pluck('discount_id')
             ->filter()
             ->unique()
