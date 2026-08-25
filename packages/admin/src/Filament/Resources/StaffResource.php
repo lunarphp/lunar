@@ -23,7 +23,7 @@ class StaffResource extends BaseResource
 
     public static function getModel(): string
     {
-        return config('lunar.staff.model', Staff::class);
+        return static::$model ?? config('lunar.staff.model', Staff::class);
     }
 
     public static function getLabel(): string
