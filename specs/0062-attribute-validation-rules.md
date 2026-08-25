@@ -70,7 +70,7 @@ Rules are authored by staff and evaluated by Laravel's validator — the same tr
 ## Open questions
 
 - Should core actions enforce the rules when `attribute_data` is written outside the panels (storefront/API)? v1 did not; parity says no. Revisit in the storefront API spec.
-- Should the attribute form validate the rule strings themselves (unknown rules currently surface as a runtime `BadMethodCallException` when the form using them is saved)? A save-time dry-run against a dummy validator would catch typos cheaply.
+- ~~Should the attribute form validate the rule strings themselves?~~ Resolved: yes. `Lunar\Core\Rules\ValidRuleString` dry-runs each entry against a probe validator, so unknown rules, missing parameters, and malformed patterns are rejected while the rule is being authored instead of throwing a 500 when a record using the attribute is saved. Wired into the panel's `AttributeRequest` and the Filament attribute form's `TagsInput` (nested recursive rules).
 
 ## References
 

@@ -321,3 +321,19 @@ test('validation rules must be an array of strings', function () {
         'validation_rules' => 'min:2|max:10',
     ])->assertSessionHasErrors('validation_rules');
 });
+
+test('an unusable validation rule is rejected with the rule named', function () {
+    $attribute = Attribute::factory()->create(['type' => 'text']);
+    $attribute->models()->create(['model_type' => Product::morphName()]);
+
+    $response = $this->put(route('panel.settings.attributes.update', $attribute), [
+        'name' => $attribute->name,
+        'handle' => $attribute->handle,
+        'model_types' => [Product::morphName()],
+        'validation_rules' => ['min:2', 'mx:10'],
+    ]);
+
+    $response->assertSessionHasErrors('validation_rules.1');
+    expect(session('errors')->first('validation_rules.1'))->toContain('mx:10');
+    expect($attribute->refresh()->validation_rules)->toBeNull();
+});

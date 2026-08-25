@@ -13,6 +13,7 @@ use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Rules\ValidRuleString;
 
 /**
  * Shared by the attribute store and update endpoints. The type is only
@@ -54,7 +55,7 @@ class AttributeRequest extends FormRequest
             'validation_rules' => ['sometimes', 'nullable', 'array'],
             // Nullable: the empty-strings-to-null middleware turns blank
             // entries into nulls; they are dropped in attributeAttributes().
-            'validation_rules.*' => ['nullable', 'string', 'max:255'],
+            'validation_rules.*' => ['nullable', 'string', 'max:255', new ValidRuleString],
             'searchable' => ['sometimes', 'boolean'],
             'filterable' => ['sometimes', 'boolean'],
             'model_types' => ['required', 'array', 'min:1'],

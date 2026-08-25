@@ -25,6 +25,7 @@ use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Rules\ValidRuleString;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Support\Facades\AttributeData;
 
@@ -113,7 +114,8 @@ class AttributesRelationManager extends BaseRelationManager
                         __('lunar-filament::attribute.form.validation_rules.label')
                     )->helperText(
                         __('lunar-filament::attribute.form.validation_rules.helper')
-                    )->placeholder('min:1'),
+                    )->placeholder('min:1')
+                    ->nestedRecursiveRules([new ValidRuleString]),
                 Select::make('type')->label(
                     __('lunar-filament::attribute.form.type.label')
                 )->disabled(
