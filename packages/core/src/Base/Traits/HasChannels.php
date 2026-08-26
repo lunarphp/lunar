@@ -2,7 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
-use DateTime;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -51,7 +51,7 @@ trait HasChannels
         ])->withTimestamps();
     }
 
-    public function scheduleChannel($channel, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scheduleChannel($channel, ?DateTimeInterface $startsAt = null, ?DateTimeInterface $endsAt = null)
     {
         if ($channel instanceof Model) {
             $channel = collect([$channel]);
@@ -94,7 +94,7 @@ trait HasChannels
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeChannel($query, ChannelContract|iterable|null $channel = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeChannel($query, ChannelContract|iterable|null $channel = null, ?DateTimeInterface $startsAt = null, ?DateTimeInterface $endsAt = null)
     {
         if (blank($channel)) {
             return $query;
