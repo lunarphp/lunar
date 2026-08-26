@@ -22,7 +22,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
-- Port the v1.5.0 fixes into v2 (spec 0065)
 - Add Boost guidelines to packages
 
 ## Ideas
@@ -85,3 +84,4 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Per-attribute validation rules across both panels (spec 0062)
 - Standalone attributes surface in the Filament admin (spec 0063)
 - Long-lived worker safety — scoped lifetimes for per-visitor service state (spec 0064)
+- Port the v1.5.0 fixes into v2 (spec 0065)

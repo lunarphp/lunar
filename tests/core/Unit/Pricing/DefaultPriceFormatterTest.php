@@ -34,3 +34,19 @@ test('divides by a unit quantity of more than one', function () {
 
     expect($formatter->unitDecimal())->toEqual(5.00);
 });
+
+test('accepts a NumberFormatter style constant', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
+
+    // NumberFormatter::CURRENCY and friends are int constants; the parameter
+    // used to be typed string, so passing one tripped a coercion deprecation.
+    $formatter = new DefaultPriceFormatter(1500, $currency);
+
+    expect($formatter->formatted(locale: 'en_GB', formatterStyle: NumberFormatter::DECIMAL))
+        ->toEqual('15.00')
+        ->and($formatter->formatted(locale: 'en_GB', formatterStyle: NumberFormatter::CURRENCY))
+        ->toEqual('£15.00');
+});
