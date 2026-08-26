@@ -87,4 +87,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0061 | Product option types (Text / Colour / Swatch) | accepted    |
 | 0062 | Per-attribute validation rules | implemented |
 | 0063 | Standalone attributes surface in the Filament admin | accepted    |
-| 0064 | Scoped service lifetimes for long-lived workers | proposed    |
+| 0064 | Scoped service lifetimes for long-lived workers | implemented |

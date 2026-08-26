@@ -501,14 +501,17 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Bind the manager contracts to their default implementations.
+     *
+     * Managers memoizing per-visitor state are bound `scoped`, so a long-lived
+     * worker (Octane, queue) starts each request/job with a fresh instance.
      */
     protected function registerManagers(): void
     {
-        $this->app->singleton(CartSession::class, function ($app) {
+        $this->app->scoped(CartSession::class, function ($app) {
             return $app->make(CartSessionManager::class);
         });
 
-        $this->app->singleton(StorefrontSession::class, function ($app) {
+        $this->app->scoped(StorefrontSession::class, function ($app) {
             return $app->make(StorefrontSessionManager::class);
         });
 
@@ -524,7 +527,7 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(PaymentManagerImpl::class);
         });
 
-        $this->app->singleton(DiscountManager::class, function ($app) {
+        $this->app->scoped(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
         });
     }

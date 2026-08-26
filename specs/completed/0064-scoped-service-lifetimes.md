@@ -1,6 +1,6 @@
 # 0064 — Scoped service lifetimes for long-lived workers
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn
 - Created: 2026-08-25
 - TODO item: Long-lived worker safety — scoped service lifetimes
@@ -19,7 +19,7 @@ Issue #2561 / PR #2603 were an instance of the same class of bug: `CacheInvalida
 
 The codebase already carries the correct precedent — `lunar-access-control` and `CacheInvalidator` are bound `scoped` — but nothing states the rule, so each new service makes the lifetime call ad hoc and the failure mode is invisible in local testing.
 
-The remaining singletons are safe: manifests and modifier registries are configured at boot and read thereafter; `TaxManager` / `PaymentManager` are driver registries; `AttributeCache` delegates to the cache repository rather than instance properties; `PricingManager` is already transient (`bind`), which its fluent per-call state requires.
+The remaining singletons are safe: manifests and modifier registries are configured at boot and read thereafter; `TaxManager` / `PaymentManager` are driver registries; `AttributeCache` memoizes its maps per instance but is already bound `scoped`; `PricingManager` is already transient (`bind`), which its fluent per-call state requires.
 
 ## Proposal
 
@@ -39,7 +39,7 @@ Added to `CLAUDE.md` (ships with this spec):
 
 ### 3. Guard the lifetimes with a regression test
 
-`tests/core/Unit/ServiceLifetimesTest.php`: for each contract in the scoped list (`CartSession`, `StorefrontSession`, `DiscountManager`, `CacheInvalidator`, `lunar-access-control`), resolve, `forgetScopedInstances()`, resolve again, and assert a fresh instance. The test doubles as the canonical list of request-stateful services, so the next addition is a conscious, reviewed choice.
+`tests/core/Unit/ServiceLifetimesTest.php`: for each contract in the scoped list (`CartSession`, `StorefrontSession`, `DiscountManager`, `CacheInvalidator`, `AttributeCache`, `lunar-access-control`), resolve, `forgetScopedInstances()`, resolve again, and assert a fresh instance. The test doubles as the canonical list of request-stateful services, so the next addition is a conscious, reviewed choice.
 
 ## Alternatives considered
 
@@ -69,4 +69,4 @@ Added to `CLAUDE.md` (ships with this spec):
 ## Implementation plan
 
 - [x] Slice 0 — lifetime conventions in `CLAUDE.md` (ships with this spec PR).
-- [ ] Slice 1 — rebind `CartSession`, `StorefrontSession`, `DiscountManager` as `scoped`; add `ServiceLifetimesTest` guarding the scoped list.
+- [x] Slice 1 — rebind `CartSession`, `StorefrontSession`, `DiscountManager` as `scoped`; add `ServiceLifetimesTest` guarding the scoped list.
