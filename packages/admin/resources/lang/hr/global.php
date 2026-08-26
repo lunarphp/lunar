@@ -7,4 +7,8 @@ return [
         'reports' => 'Izvještaji',
         'settings' => 'Postavke',
     ],
+
+    'yes' => 'Da',
+    'no' => 'Ne',
+
 ];

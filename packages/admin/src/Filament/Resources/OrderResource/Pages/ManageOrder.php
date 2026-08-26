@@ -201,7 +201,9 @@ class ManageOrder extends BaseViewRecord
                         }
 
                         return TextEntry::make('meta_'.$key)
-                            ->getStateUsing(fn () => $value)
+                            ->getStateUsing(fn () => is_bool($value)
+                                ? __($value ? 'lunarpanel::global.yes' : 'lunarpanel::global.no')
+                                : $value)
                             ->label($key)
                             ->copyable()
                             ->limit(50)->tooltip(function (TextEntry $component): ?string {

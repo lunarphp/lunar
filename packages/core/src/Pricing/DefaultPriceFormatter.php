@@ -13,6 +13,12 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         public ?Currency $currency = null,
         public int $unitQty = 1
     ) {
+        // unitDecimal() divides by this, so a zero or negative unit quantity
+        // would be a division by zero or a negative unit price.
+        if ($this->unitQty < 1) {
+            $this->unitQty = 1;
+        }
+
         if (! $this->currency) {
             $this->currency = Currency::getDefault();
         }

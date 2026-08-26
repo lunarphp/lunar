@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Guardar Opciones',
                 ],
+                'save-variants' => [
+                    'label' => 'Guardar Variantes',
+                ],
                 'add-shared-option' => [
                     'label' => 'Agregar Opción Compartida',
                     'form' => [

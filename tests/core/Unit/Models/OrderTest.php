@@ -445,3 +445,49 @@ test('can retrieve order lines in ascending id order', function () {
     expect($order->load('lines')->lines->pluck('id')->all())
         ->toBe($expectedOrder);
 });
+
+test('product lines include both physical and digital lines', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $order = Order::factory()->create([
+        'user_id' => null,
+    ]);
+
+    $shippableVariant = ProductVariant::factory()->create([
+        'shippable' => true,
+    ]);
+
+    $nonShippableVariant = ProductVariant::factory()->create([
+        'shippable' => false,
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_type' => $shippableVariant->getMorphClass(),
+        'purchasable_id' => $shippableVariant->id,
+        'type' => 'physical',
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_type' => $nonShippableVariant->getMorphClass(),
+        'purchasable_id' => $nonShippableVariant->id,
+        'type' => 'digital',
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'shipping',
+    ]);
+
+    $order = $order->refresh();
+
+    // The PDF invoice iterates productLines: a non-shippable variant has
+    // requires_fulfilment false, so fulfillableLines dropped it from the body.
+    expect($order->physicalLines)->toHaveCount(1);
+    expect($order->digitalLines)->toHaveCount(1);
+    expect($order->productLines)->toHaveCount(2);
+    expect($order->fulfillableLines)->toHaveCount(1);
+});

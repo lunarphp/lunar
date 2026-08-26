@@ -58,6 +58,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             ->get();
 
         return Action::make('addSharedOption')
+            ->label(
+                __('lunar-filament::productoption.widgets.product-options.actions.add-shared-option.label')
+            )
             ->schema([
                 Callout::make()
                     ->status('info')
@@ -354,6 +357,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function saveVariantsAction(): Action
     {
         return Action::make('saveVariants')
+            ->label(
+                __('lunar-filament::productoption.widgets.product-options.actions.save-variants.label')
+            )
             ->action(function () {
                 try {
                     $this->saveVariants();
