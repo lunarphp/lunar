@@ -454,3 +454,95 @@ test('cache tags use the morph alias and key', function () {
     expect($product->cacheTags())->toBe(["product:{$product->id}"]);
     expect($option->cacheTags())->toBe(["product_option:{$option->id}"]);
 });
+
+test('a deleted product invalidation survives real queue serialization', function () {
+    $product = Product::factory()->create();
+    $id = $product->id;
+
+    $event = new ProductInvalidated($product, CacheInvalidationReason::Deleted);
+
+    $product->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->morphType())->toBe($product->getMorphClass());
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["product:{$id}"]);
+    expect($restored->reason())->toBe(CacheInvalidationReason::Deleted);
+    expect($restored->cacheModel())->toBeInstanceOf(Product::class);
+    expect($restored->cacheModel()->id)->toBe($id);
+});
+
+test('a deleted collection invalidation survives real queue serialization', function () {
+    $collection = Collection::factory()->create();
+    $id = $collection->id;
+
+    $event = new CollectionInvalidated($collection, CacheInvalidationReason::Deleted);
+
+    $collection->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["collection:{$id}"]);
+    expect($restored->cacheModel())->toBeInstanceOf(Collection::class);
+    expect($restored->cacheModel()->id)->toBe($id);
+});
+
+test('a deleted brand invalidation survives real queue serialization', function () {
+    $brand = Brand::factory()->create();
+    $id = $brand->id;
+
+    $event = new BrandInvalidated($brand, CacheInvalidationReason::Deleted);
+
+    $brand->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["brand:{$id}"]);
+    expect($restored->cacheModel())->toBeInstanceOf(Brand::class);
+    expect($restored->cacheModel()->id)->toBe($id);
+});
+
+test('a deleted product option invalidation survives real queue serialization', function () {
+    $option = ProductOption::factory()->create();
+    $id = $option->id;
+
+    $event = new ProductOptionInvalidated($option, CacheInvalidationReason::Deleted);
+
+    $option->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["product_option:{$id}"]);
+    expect($restored->cacheModel())->toBeInstanceOf(ProductOption::class);
+    expect($restored->cacheModel()->id)->toBe($id);
+});
+
+class FakeNonModel
+{
+    public static bool $instantiated = false;
+
+    public function __construct()
+    {
+        static::$instantiated = true;
+    }
+}
+
+test('the restore guard refuses a payload naming a non-model class', function () {
+    FakeNonModel::$instantiated = false;
+
+    $event = new ProductInvalidated(Product::factory()->create(), CacheInvalidationReason::Deleted);
+
+    $payload = $event->__serialize();
+    $payload['product']['__lunarModel'] = FakeNonModel::class;
+
+    $restored = (new ReflectionClass(ProductInvalidated::class))->newInstanceWithoutConstructor();
+
+    // The guard rejects the class before instantiation, so the raw array reaches
+    // the typed property and PHP is what rejects it — the canary never runs.
+    expect(fn () => $restored->__unserialize($payload))->toThrow(TypeError::class);
+    expect(FakeNonModel::$instantiated)->toBeFalse();
+});
