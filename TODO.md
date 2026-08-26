@@ -82,3 +82,4 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
 - Per-attribute validation rules across both panels (spec 0062)
 - Standalone attributes surface in the Filament admin (spec 0063)
+- Long-lived worker safety — scoped lifetimes for per-visitor service state (spec 0064)
