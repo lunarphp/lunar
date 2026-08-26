@@ -22,6 +22,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
+- Port the v1.5.0 fixes into v2 (spec 0065)
 - Add Boost guidelines to packages
 
 ## Ideas
