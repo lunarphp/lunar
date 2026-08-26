@@ -1,0 +1,68 @@
+name: version-label
+
+# Applies the release-line label from the PR's base branch. No model, no tokens.
+# Runs on pull_request_target so that PRs from forks can be labelled: fork PRs
+# get no write token under `pull_request`. Nothing is checked out and no PR
+# content is read, so there is no untrusted code path here.
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+permissions:
+  pull-requests: write
+
+concurrency:
+  group: version-label-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  version-label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            // The base branch is the ONLY source of truth. A PR description
+            // claiming "this is for v2" while targeting 1.x is a mistake to
+            // surface, not a hint to follow.
+            const base = context.payload.pull_request.base.ref
+            const managed = ['1.x', '2.x', 'needs-triage']
+
+            let wanted
+            if (/^1\.(x|\d+)$/.test(base)) {
+              wanted = '1.x'
+            } else if (/^2\.(x|\d+)$/.test(base)) {
+              wanted = '2.x'
+            } else {
+              wanted = 'needs-triage'
+            }
+
+            console.log(`base branch "${base}" -> label "${wanted}"`)
+
+            const issue = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            }
+
+            const current = context.payload.pull_request.labels.map((label) => label.name)
+
+            // Retargeted PRs must not keep the old line's label.
+            for (const label of managed) {
+              if (label !== wanted && current.includes(label)) {
+                console.log(`removing stale label "${label}"`)
+                await github.rest.issues.removeLabel({ ...issue, name: label })
+              }
+            }
+
+            if (current.includes(wanted)) {
+              console.log(`label "${wanted}" already present`)
+              return
+            }
+
+            await github.rest.issues.addLabels({ ...issue, labels: [wanted] })
