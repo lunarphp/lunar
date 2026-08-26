@@ -39,7 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Greutate min.',
-                        'helper_text' => 'Introduceți greutatea în kilograme',
+                        'helper_text' => 'Introduceți greutatea în :unit',
                     ],
                     'price' => [
                         'label' => 'Preț',
