@@ -20,7 +20,7 @@
         "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
-        "kalnoy/nestedset": "^v6.0.5|^v7.0.1",
+        "lunarphp/nestedset": "^1.0",
         "laravel/framework": "^12.0|^13.0",
         "laravel/scout": "^10.13.1",
         "leandrocfe/filament-apex-charts": "^5.0",

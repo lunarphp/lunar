@@ -14,6 +14,10 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         public ?CurrencyContract $currency = null,
         public int $unitQty = 1
     ) {
+        if ($this->unitQty < 1) {
+            $this->unitQty = 1;
+        }
+
         if (! $this->currency) {
             $this->currency = Currency::getDefault();
         }
@@ -33,17 +37,17 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         return $rounding ? round($convertedValue, $this->currency->decimal_places) : $convertedValue;
     }
 
-    public function formatted(?string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    public function formatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
     {
         return $this->formatValue($this->decimal(false), $locale, $formatterStyle, $decimalPlaces, $trimTrailingZeros);
     }
 
-    public function unitFormatted(?string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    public function unitFormatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
     {
         return $this->formatValue($this->unitDecimal(false), $locale, $formatterStyle, $decimalPlaces, $trimTrailingZeros);
     }
 
-    protected function formatValue(int|float $value, ?string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    protected function formatValue(int|float $value, ?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
     {
         if (! $locale) {
             $locale = App::currentLocale();

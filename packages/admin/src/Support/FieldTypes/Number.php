@@ -12,6 +12,20 @@ class Number extends BaseFieldType
 {
     protected static string $synthesizer = NumberSynth::class;
 
+    public static function canHaveDefaultValue(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<mixed>
+     */
+    public static function getDefaultValueValidationRules(array $configuration): array
+    {
+        return ['numeric'];
+    }
+
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         $min = (int) $attribute->configuration->get('min');

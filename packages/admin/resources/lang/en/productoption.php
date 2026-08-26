@@ -49,6 +49,9 @@ return [
                 'save-options' => [
                     'label' => 'Save Options',
                 ],
+                'save-variants' => [
+                    'label' => 'Save Variants',
+                ],
                 'add-shared-option' => [
                     'label' => 'Add Shared Option',
                     'form' => [

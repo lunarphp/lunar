@@ -9,4 +9,7 @@ return [
         'settings' => 'Setări',
     ],
 
+    'yes' => 'Da',
+    'no' => 'Nu',
+
 ];

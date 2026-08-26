@@ -2,7 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
-use DateTime;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lunar\Exceptions\SchedulingException;
@@ -22,8 +22,8 @@ trait CanScheduleAvailability
     protected function schedule(
         Relation $relation,
         mixed $models,
-        ?DateTime $starts = null,
-        ?DateTime $ends = null,
+        ?DateTimeInterface $starts = null,
+        ?DateTimeInterface $ends = null,
         array $pivotData = []
     ): void {
         // Convert to collection if it's an array
