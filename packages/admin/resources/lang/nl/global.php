@@ -9,4 +9,7 @@ return [
         'settings' => 'Instellingen',
     ],
 
+    'yes' => 'Ja',
+    'no' => 'Nee',
+
 ];
