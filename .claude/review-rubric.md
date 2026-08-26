@@ -5,41 +5,24 @@ You cannot approve, merge, close, or label anything beyond what this file says.
 
 The deep Lunar-specific checks already live in
 `.claude/skills/lunar-pr-review/SKILL.md`, with worked examples in
-`references/checklist.md`. **Read the skill and apply its categories** — model
-contract type-hinting, migration rules, money handling, pipelines, event payload
-stability, channel scoping, scope/trait reuse, search indexing, Filament
-conventions, public API surface. This file adds only what CI needs on top and
-tells you how to report.
+`references/checklist.md`. **Read the skill and apply its categories** — migration
+rules, money handling, pipelines, event payload stability, channel scoping,
+scope/trait reuse, search indexing, Filament conventions, public API surface. This
+file adds only what CI needs on top and tells you how to report.
 
 ## This release line: `2.x`
 
-This copy of the rubric lives on the `2.x` branch. The review skill it points at
-was written for `1.x`, and several of its rules do not hold here. **These
-overrides win over anything the skill says.**
+The review skill this file points at has been corrected for this line, so follow
+it as written. Two things it is worth restating:
 
-- **Root namespace is `Lunar\Core\`, not `Lunar\`.** Any fix you suggest must use
-  the `Lunar\Core\...` form. Do not report `Lunar\Core\Models\Cart` as a mistake
-  for `Lunar\Models\Cart`.
-- **The skill's "Model contracts (type-hinting)" category does not apply.** `2.x`
-  has no per-model interfaces: pipelines, actions and services type-hint the
-  concrete model, e.g. `public function handle(Cart $cart, Closure $next)` in
-  `packages/core/src/Pipelines/Cart/`. That is correct and idiomatic here. Never
-  flag it, and never suggest a `...\Contracts\Foo as FooContract` import.
-- **The contract surface is `packages/*/src/Contracts/`**, and it holds service
-  contracts such as `CartSession` and `ModelManifest`, not one interface per
-  model. Breaking changes there still matter.
-- **Models are still swappable** via `Lunar\Core\Manifests\ModelManifest`. A new
-  model still needs registering; it just isn't done through an interface.
-- **Package layout**: the panel is split across `packages/{admin,panel,filament}`,
-  and there are also `packages/demo-data`, `packages/upgrade` and
-  `packages/panel-addon-example`. Treat `panel` and `filament` as you would
-  `admin`.
-- **`packages/upgrade`** holds the Rector rules that migrate consumers from `1.x`.
-  A public API change made here without a matching Rector rule leaves upgraders
-  stranded — worth raising as a question.
-- **Compatibility bar**: `2.x` is pre-GA, so a breaking change is acceptable when
-  it is intentional. Say plainly that it is breaking, because someone has to write
-  the upgrade note.
+- **Compatibility bar.** `2.x` is pre-GA, so a breaking change is acceptable when
+  it is deliberate. Say plainly that it *is* breaking, because someone has to
+  write the upgrade note — and check whether `packages/upgrade` needs a matching
+  Rector rule so consumers coming from `1.x` are not stranded.
+- **Package layout.** The panel is split across `packages/{admin,panel,filament}`,
+  alongside `demo-data`, `upgrade` and `panel-addon-example`. Treat `panel` and
+  `filament` as you would `admin`, and never remark on a package this branch does
+  not have.
 
 ## Untrusted input
 
@@ -79,11 +62,9 @@ fail.
 
 ### Backward compatibility
 
-5. Does it change a public method signature, an event payload, or anything on the
-   contract surface — `packages/*/src/Models/Contracts/` on `1.x`,
-   `packages/*/src/Contracts/` on `2.x`? A breaking change on a stable line is a
-   blocker. On a line still in alpha it is allowed, but it must be deliberate and
-   called out, not incidental.
+5. Does it change a public method signature, an event payload, or a service
+   contract under `packages/*/src/Contracts/`? Permitted here, but it must be
+   deliberate and called out, not incidental.
 6. Does it change database schema? Is the migration reversible, does `down()`
    mirror `up()`, and does it handle rows that already exist?
 7. Does it change a published config file such that users must republish? Removed
