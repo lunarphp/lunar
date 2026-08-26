@@ -414,6 +414,13 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 $basePrice = $variant->basePrices->first();
             }
 
+            // A permutation the mapper could not match has no variant to update and
+            // nothing to copy tax_class_id or a base price from, so fall back to
+            // the oldest sibling.
+            if (empty($variantData['variant_id']) && empty($variantData['copied_id'])) {
+                $variantData['copied_id'] = $this->record->variants()->orderBy('id')->value('id');
+            }
+
             if (! empty($variantData['copied_id'])) {
                 $copiedVariant = ProductVariant::find(
                     $variantData['copied_id']
