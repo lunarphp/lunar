@@ -76,6 +76,8 @@ These are the things that get written wrong on the first attempt.
   keep an explicit override.
 - **Discounts are cached per request.** Call `Discounts::resetDiscounts()` after
   applying or changing a coupon.
-- **Collections are a nested set.** A root collection must exist before any child.
+- **Collections have no `parent_id`.** Hierarchy is a nested set, so nest with
+  `appendNode()` / `makeRoot()` rather than setting a parent column. Every collection
+  also needs a `collection_group_id` — there is no default group.
 - **Scout needs `soft_delete => true`** in `config/scout.php`, or soft-deleted records
   keep showing up in results.
