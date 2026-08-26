@@ -60,6 +60,10 @@ final class CreateOrder extends AbstractAction
                 $discount->markAsUsed($cart)->discount->save();
             });
 
+            // The breakdown has been rewritten, so anything still holding this
+            // cart must not read a set memoised before the order existed.
+            $cart->forgetConsumedDiscountIds();
+
             $cart->save();
 
             MarkAsNewCustomer::dispatch($order->id);
