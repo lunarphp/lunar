@@ -99,3 +99,86 @@ it('is case-insensitive on the currency code', function () {
 
     expect(StripeManager::toStripeAmount(500, $currency))->toBe(50000);
 });
+
+it('normalises amounts for currencies configured with more than 2 decimal places', function () {
+    // A $60.0000 cart stored with 4 decimal places is 600000, not 6000.
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 4,
+    ]);
+
+    expect(StripeManager::toStripeAmount(600000, $currency))->toBe(6000);
+});
+
+it('normalises amounts for zero-decimal currencies misconfigured with extra decimal places', function () {
+    $currency = Currency::factory()->make([
+        'code' => 'JPY',
+        'decimal_places' => 2,
+    ]);
+
+    expect(StripeManager::toStripeAmount(100000, $currency))->toBe(1000);
+});
+
+it('rounds half-unit boundaries exactly when rescaling', function () {
+    // 145 at 3dp is 0.145 — binary float division would misround this to 14.
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 3,
+    ]);
+
+    expect(StripeManager::toStripeAmount(145, $currency))->toBe(15);
+
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 4,
+    ]);
+
+    expect(StripeManager::toStripeAmount(1450, $currency))->toBe(15);
+});
+
+it('sends three-decimal currency amounts in thousandths', function () {
+    $currency = Currency::factory()->make([
+        'code' => 'BHD',
+        'decimal_places' => 3,
+    ]);
+
+    expect(StripeManager::toStripeAmount(60123, $currency))->toBe(60123);
+
+    $currency = Currency::factory()->make([
+        'code' => 'BHD',
+        'decimal_places' => 2,
+    ]);
+
+    expect(StripeManager::toStripeAmount(6012, $currency))->toBe(60120);
+});
+
+it('converts Stripe amounts back to the stored scale', function () {
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 4,
+    ]);
+
+    expect(StripeManager::fromStripeAmount(6000, $currency))->toBe(600000);
+
+    $currency = Currency::factory()->make([
+        'code' => 'JPY',
+        'decimal_places' => 2,
+    ]);
+
+    expect(StripeManager::fromStripeAmount(1000, $currency))->toBe(100000);
+
+    $currency = Currency::factory()->make([
+        'code' => 'HUF',
+        'decimal_places' => 0,
+    ]);
+
+    expect(StripeManager::fromStripeAmount(50000, $currency))->toBe(500);
+
+    // Identity for a correctly-configured two-decimal currency.
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 2,
+    ]);
+
+    expect(StripeManager::fromStripeAmount(1999, $currency))->toBe(1999);
+});
