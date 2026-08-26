@@ -2131,6 +2131,82 @@ test('can add a multi quantity reward as a single line', function () {
     expect($rewardLines->first()->quantity)->toEqual(3);
 });
 
+test('does not allocate a multi quantity reward beyond stock', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+        'purchasable' => 'in_stock',
+        'stock' => 1,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Automatic Reward Limited Stock',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 3,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart->calculate();
+
+    $rewardLines = CartLine::where('cart_id', $cart->id)
+        ->where('purchasable_id', $purchasableB->id)
+        ->get();
+
+    // Only one unit is in stock, so only one is allocated despite reward_qty 3.
+    expect($rewardLines)->toHaveCount(1);
+    expect($rewardLines->first()->quantity)->toEqual(1);
+});
+
 test('can leave a reward line the shopper added at their own quantity', function () {
     $customerGroup = CustomerGroup::factory()->create([
         'default' => true,

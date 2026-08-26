@@ -294,13 +294,24 @@ class BuyXGetY extends AbstractDiscountType
                     $purchasable = $selectedRewardItem->variants->first();
                 }
 
-                if (! $purchasable || ! $purchasable->canBeFulfilledAtQuantity(1)) {
+                if (! $purchasable) {
                     $remainingRewardQty--;
 
                     continue;
                 }
 
                 $rewardKey = $purchasable->getMorphClass().':'.$purchasable->id;
+
+                // How many units of this reward this run has already allocated,
+                // since canBeFulfilledAtQuantity below must check against that
+                // running total rather than a fixed quantity of 1 each time.
+                $allocated = $addedRewardLines[$rewardKey]->quantity ?? 0;
+
+                if (! $purchasable->canBeFulfilledAtQuantity($allocated + 1)) {
+                    $remainingRewardQty--;
+
+                    continue;
+                }
 
                 // is it already in cart?
                 $rewardLine = $addedRewardLines[$rewardKey] ?? $cart->lines->first(function ($line) use ($purchasable) {
