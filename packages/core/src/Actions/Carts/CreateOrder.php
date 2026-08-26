@@ -31,7 +31,7 @@ final class CreateOrder extends AbstractAction
             // Read before the creation pipeline runs: MapDiscountBreakdown
             // rewrites the order's breakdown, so afterwards every discount would
             // look as though it had already been consumed.
-            $alreadyConsumed = $cart->consumedDiscountIds(fresh: true);
+            $alreadyConsumed = $cart->consumedDiscountIds();
 
             if ($cart->hasCompletedOrders() && ! $allowMultipleOrders) {
                 throw new DisallowMultipleCartOrdersException;
@@ -59,6 +59,10 @@ final class CreateOrder extends AbstractAction
 
                 $discount->markAsUsed($cart)->discount->save();
             });
+
+            // The breakdown has been rewritten, so anything still holding this
+            // cart must not read a set memoised before the order existed.
+            $cart->forgetConsumedDiscountIds();
 
             $cart->save();
 

@@ -212,6 +212,11 @@ class Cart extends BaseModel implements Contracts\Cart
         'coupon_code' => CouponString::class,
     ];
 
+    /**
+     * Memoised result of {@see self::consumedDiscountIds()}.
+     */
+    protected ?Collection $consumedDiscountIds = null;
+
     public function lines(): HasMany
     {
         return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id')->orderBy('id');
@@ -285,11 +290,6 @@ class Cart extends BaseModel implements Contracts\Cart
     }
 
     /**
-     * Memoised result of {@see self::consumedDiscountIds()}.
-     */
-    protected ?Collection $consumedDiscountIds = null;
-
-    /**
      * The ids of any discounts this cart has already consumed.
      *
      * Order creation records a use as soon as the draft order exists, so a
@@ -300,20 +300,13 @@ class Cart extends BaseModel implements Contracts\Cart
      * Memoised per instance, because this is read once when the discount set is
      * rebuilt and once per discount while conditions are checked - a fresh query
      * each time costs a single-row lookup per discount on every calculate,
-     * including for carts that never reach a checkout.
+     * including for carts that never reach a checkout. Order creation is the
+     * only thing that changes the answer, so it forgets the memo.
      *
-     * @param  bool  $fresh  Re-read rather than use the memoised set. Order
-     *                       creation writes the breakdown this reads, so it must
-     *                       pass true: a set memoised before the first order
-     *                       existed is still empty on a same-request retry, and
-     *                       the discount would be consumed a second time.
+     * @see self::forgetConsumedDiscountIds()
      */
-    public function consumedDiscountIds(bool $fresh = false): Collection
+    public function consumedDiscountIds(): Collection
     {
-        if ($fresh) {
-            $this->consumedDiscountIds = null;
-        }
-
         if ($this->consumedDiscountIds !== null) {
             return $this->consumedDiscountIds;
         }
@@ -327,6 +320,20 @@ class Cart extends BaseModel implements Contracts\Cart
             ->filter()
             ->unique()
             ->values();
+    }
+
+    /**
+     * Forget the memoised consumed discount ids.
+     *
+     * Order creation writes the breakdown consumedDiscountIds() reads, so a set
+     * memoised before it ran is stale afterwards: on a same-request retry the
+     * cart's own coupon would look unconsumed to CreateOrder and be consumed
+     * twice, and exhausted to the discount conditions, re-pricing the order
+     * without it.
+     */
+    public function forgetConsumedDiscountIds(): void
+    {
+        $this->consumedDiscountIds = null;
     }
 
     public function currentDraftOrder(?int $draftOrderId = null)

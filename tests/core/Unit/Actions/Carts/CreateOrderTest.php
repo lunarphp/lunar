@@ -696,5 +696,88 @@ test('can not consume a discount twice on one cart instance', function () {
     $orderB = (new CreateOrder)->execute($cart)->then(fn ($order) => $order->refresh());
 
     expect($orderB->id)->toEqual($orderA->id);
+    expect($orderB->discount_total->value)->toEqual(500);
+    expect($discount->refresh()->uses)->toEqual(1);
+});
+
+test('keeps its own discount when a cart is priced again after order creation', function () {
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'coupon_code' => 'SAVE10',
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Ten off',
+        'coupon' => 'SAVE10',
+        'uses' => 0,
+        'max_uses' => 1,
+        'data' => [
+            'fixed_value' => true,
+            'fixed_values' => [
+                $currency->code => 500,
+            ],
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $cart->calculate();
+
+    $orderA = (new CreateOrder)->execute($cart)->then(fn ($order) => $order->refresh());
+
+    expect($orderA->discount_total->value)->toEqual(500);
+    expect($discount->refresh()->uses)->toEqual(1);
+
+    // Priced again on the same instance, with the discount set rebuilt: the
+    // cart's own use must not read as an exhausted coupon, or the retry is
+    // re-priced without the discount the shopper was quoted.
+    Discounts::resetDiscounts();
+
+    $cart->recalculate();
+
+    $orderB = (new CreateOrder)->execute($cart)->then(fn ($order) => $order->refresh());
+
+    expect($orderB->id)->toEqual($orderA->id);
+    expect($orderB->discount_total->value)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
 });
