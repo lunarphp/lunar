@@ -61,6 +61,18 @@ test('can handle unit qty', function () {
     expect($dataType->unitFormatted(null, NumberFormatter::CURRENCY, 4))->toEqual('£0.1155');
 });
 
+test('unit qty below one is clamped to one', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
+
+    $dataType = new Price(1500, $currency, 0);
+
+    expect($dataType->unitDecimal())->toEqual(15.00);
+    expect($dataType->unitFormatted())->toEqual('£15.00');
+});
+
 test('can handle no decimal places', function () {
     $currency = Currency::factory()->create([
         'code' => 'VND',

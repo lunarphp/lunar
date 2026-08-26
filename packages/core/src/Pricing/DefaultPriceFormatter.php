@@ -14,6 +14,10 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         public ?CurrencyContract $currency = null,
         public int $unitQty = 1
     ) {
+        if ($this->unitQty < 1) {
+            $this->unitQty = 1;
+        }
+
         if (! $this->currency) {
             $this->currency = Currency::getDefault();
         }

@@ -55,3 +55,24 @@ it('dispatches ProductVariantInventoryUpdated event when updating variant stock 
         'purchasable' => 'in_stock_or_on_backorder',
     ]);
 });
+
+it('rejects a unit quantity below one', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+
+    $product = Product::factory()->create();
+
+    $variant = ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    $this->asStaff();
+
+    Livewire::test(
+        ManageVariantInventory::class, [
+            'record' => $variant->getRouteKey(),
+        ])->fillForm([
+            'unit_quantity' => 0,
+        ])->call('save')
+        ->assertHasFormErrors(['unit_quantity' => 'min']);
+});

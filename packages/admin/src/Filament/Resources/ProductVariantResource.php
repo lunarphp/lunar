@@ -154,7 +154,9 @@ class ProductVariantResource extends BaseResource
                 __('lunarpanel::productvariant.form.unit_quantity.label')
             )->helperText(
                 __('lunarpanel::productvariant.form.unit_quantity.helper_text')
-            )->numeric();
+            )
+            ->numeric()
+            ->minValue(1);
     }
 
     public static function getQuantityIncrementFormComponent(): TextInput
