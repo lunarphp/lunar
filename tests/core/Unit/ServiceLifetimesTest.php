@@ -7,6 +7,7 @@ use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\DiscountManager;
+use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
@@ -42,6 +43,7 @@ dataset('scoped services', [
     'discount manager' => [DiscountManager::class],
     'cache invalidator' => [CacheInvalidator::class],
     'attribute cache' => [AttributeCache::class],
+    'shipping manifest' => [ShippingManifest::class],
     'access control manifest' => ['lunar-access-control'],
 ]);
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
+use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
@@ -32,6 +33,7 @@ class StorefrontSessionManager implements StorefrontSession
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
         protected ResolvesStorefrontContext $resolveStorefrontContext,
+        protected CartSession $cartSession,
     ) {
         $this->customerGroups = new Collection;
 
@@ -143,14 +145,31 @@ class StorefrontSessionManager implements StorefrontSession
 
     public function setCurrency(Currency $currency): static
     {
+        $this->putCurrency($currency);
+
+        // The cart carries its own currency_id and is priced from it, so a
+        // storefront switch has to reach the cart or the shopper keeps seeing
+        // the old currency. CartSession owns that write and the relation resets
+        // it needs; it is a no-op when the visitor has no cart.
+        $this->cartSession->setCurrency($currency);
+
+        return $this;
+    }
+
+    /**
+     * Store the currency without reaching for the cart.
+     *
+     * The boot cascade resolves a currency on every request, and must not
+     * calculate — or create — a cart to do it.
+     */
+    protected function putCurrency(Currency $currency): void
+    {
         $this->sessionManager->put(
             $this->getSessionKey().'_currency',
             $currency->code,
         );
 
         $this->currency = $currency;
-
-        return $this;
     }
 
     public function getCustomer(): ?Customer
@@ -259,12 +278,12 @@ class StorefrontSessionManager implements StorefrontSession
         if ($sessionCurrency) {
             $currency = Currency::query()->where('code', $sessionCurrency)->firstOrFail();
 
-            $this->setCurrency($currency);
+            $this->putCurrency($currency);
 
             return;
         }
 
-        $this->setCurrency($this->region?->currency ?? Currency::getDefault());
+        $this->putCurrency($this->region?->currency ?? Currency::getDefault());
     }
 
     public function initCustomer(): void

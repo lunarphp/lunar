@@ -405,7 +405,9 @@ class LunarServiceProvider extends ServiceProvider
             return new ShippingModifiers;
         });
 
-        $this->app->singleton(ShippingManifest::class, function ($app) {
+        // Holds the resolved options for the cart in hand plus a re-entrancy
+        // flag, so it is per-request state, not a boot-time registry.
+        $this->app->scoped(ShippingManifest::class, function ($app) {
             return $app->make(ShippingManifestImpl::class);
         });
 
