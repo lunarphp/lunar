@@ -19,6 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  * event was dispatched, not a fresh read — it is not re-fetched from the
  * database on unserialize. `newFromBuilder()` also fires Eloquent's
  * `retrieved` event, the same as any other model hydration.
+ *
+ * Loaded relations are not carried across, so reading one off the restored
+ * model queries afresh (or trips a lazy-loading violation where that is
+ * prevented). Capturing them is deliberately avoided: every model these
+ * events wrap implements Spatie's HasMedia, whose registered media
+ * collections hold closures and cannot be serialized.
  */
 trait SerializesInvalidatedModel
 {
