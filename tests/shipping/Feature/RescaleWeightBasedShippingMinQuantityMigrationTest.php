@@ -119,7 +119,10 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
 
 test('migration is a no-op when there are no weight-based shipping methods', function () {
     artisan('migrate');
-    artisan('migrate:rollback', ['--step' => 1]);
+    artisan('migrate:rollback', [
+        '--path' => realpath(RESCALE_MIGRATION),
+        '--realpath' => true,
+    ]);
 
     $currency = Currency::factory()->create(['default' => true]);
     TaxClass::factory()->create(['default' => true]);
