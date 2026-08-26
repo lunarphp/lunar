@@ -64,7 +64,7 @@
                 <div class="fi-ta-empty-state-icon-bg">
                   {{ \Filament\Support\generate_icon_html('lucide-shapes', size: \Filament\Support\Enums\IconSize::Large) }}
                 </div>
-                <h4 class="fi-ta-empty-state-heading">No Product Options Configured</h4>
+                <h4 class="fi-ta-empty-state-heading">{{ __('lunarpanel::productoption.widgets.product-options.options-list.empty.heading') }}</h4>
               </div>
             </div>
           @endif

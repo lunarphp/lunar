@@ -56,7 +56,12 @@ test('product_product_option unique migration removes duplicates', function () {
     $table = config('lunar.database.table_prefix').'product_product_option';
 
     artisan('migrate');
-    artisan('migrate:rollback', ['--step' => 1]);
+    // Roll back this specific migration — `--step 1` would silently target
+    // whichever migration happens to be newest.
+    artisan('migrate:rollback', [
+        '--path' => realpath(__DIR__.'/../../../packages/core/database/migrations/2026_04_30_100000_add_unique_lunar_product_product_option.php'),
+        '--realpath' => true,
+    ]);
 
     expect(Schema::hasIndex($table, ['product_id', 'product_option_id'], 'unique'))->toBeFalse();
 
