@@ -98,16 +98,18 @@ class LunarPanelProvider extends ServiceProvider
      */
     protected function registerBridgeRecordUrls(): void
     {
-        $this->app['config']->set('lunar.filament.record_urls.order',
-            fn ($record, array $context = []) => ManageOrder::getUrl([...$context, 'record' => $record]),
-        );
+        // Class strings rather than closures: these are written into config,
+        // and a closure anywhere in the tree makes the whole application's
+        // config non-serializable, so `php artisan config:cache` fails for
+        // every consumer of the admin shell.
+        $this->app['config']->set('lunar.filament.record_urls.order', ManageOrder::class);
 
         $this->app['config']->set('lunar.filament.record_urls.product_variant',
-            fn ($record, array $context = []) => ProductVariantResource::getUrl('edit', [...$context, 'record' => $record]),
+            [ProductVariantResource::class, 'edit'],
         );
 
         $this->app['config']->set('lunar.filament.record_urls.collection_edit',
-            fn ($record, array $context = []) => CollectionResource::getUrl('edit', [...$context, 'record' => $record]),
+            [CollectionResource::class, 'edit'],
         );
     }
 

@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Előző oldal',
     'next_page' => 'Következő oldal',
     'open_user_menu' => 'Felhasználói menü megnyitása',
+    'open_calendar' => 'Naptár megnyitása',
     'more_actions' => 'További műveletek',
     'select_all_rows' => 'Összes sor kijelölése',
     'close' => 'Bezárás',

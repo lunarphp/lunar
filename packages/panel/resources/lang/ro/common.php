@@ -22,6 +22,7 @@ return [
     'previous_page' => 'Pagina anterioară',
     'next_page' => 'Pagina următoare',
     'open_user_menu' => 'Deschide meniul utilizatorului',
+    'open_calendar' => 'Deschide calendarul',
     'more_actions' => 'Mai multe acțiuni',
     'select_all_rows' => 'Selectează toate rândurile',
     'close' => 'Închide',
