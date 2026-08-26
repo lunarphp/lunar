@@ -2,7 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
-use DateTime;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -50,8 +50,8 @@ trait HasCustomerGroups
      */
     public function scheduleCustomerGroup(
         $models,
-        ?DateTime $starts = null,
-        ?DateTime $ends = null,
+        ?DateTimeInterface $starts = null,
+        ?DateTimeInterface $ends = null,
         array $pivotData = []
     ) {
         $this->schedule(
@@ -94,7 +94,7 @@ trait HasCustomerGroups
     /**
      * Apply customer group scope.
      */
-    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt): Builder
+    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTimeInterface $startsAt, DateTimeInterface $endsAt): Builder
     {
         return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt) {
             $relation->whereIn(
@@ -120,7 +120,7 @@ trait HasCustomerGroups
      * @param  CustomerGroupContract|string  $customerGroup
      * @return Builder
      */
-    public function scopeCustomerGroup($query, CustomerGroupContract|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeCustomerGroup($query, CustomerGroupContract|iterable|null $customerGroup = null, ?DateTimeInterface $startsAt = null, ?DateTimeInterface $endsAt = null)
     {
         if (blank($customerGroup)) {
             return $query;

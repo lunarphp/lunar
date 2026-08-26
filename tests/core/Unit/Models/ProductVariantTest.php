@@ -8,6 +8,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
@@ -276,4 +278,23 @@ test('reports unpurchasable when the parent product is soft-deleted', function (
     $product->delete();
 
     expect($variant->fresh()->isPurchasable())->toBeFalse();
+});
+
+test('returns variant option values ordered by position', function () {
+    $variant = ProductVariant::factory()->create();
+    $option = ProductOption::factory()->create();
+
+    // Attached deliberately out of position order. Without an explicit ORDER BY
+    // the pivot rows would come back in attachment order ([3, 1, 2]); the
+    // relationship must order by the option value's position so getOption()
+    // (snapshotted onto order lines) is deterministic across database engines.
+    $values = collect([3, 1, 2])->map(fn ($position) => ProductOptionValue::factory()->create([
+        'product_option_id' => $option->id,
+        'position' => $position,
+    ]));
+
+    $variant->values()->attach($values->pluck('id')->all());
+
+    expect($variant->load('values')->values->pluck('position')->all())
+        ->toBe([1, 2, 3]);
 });

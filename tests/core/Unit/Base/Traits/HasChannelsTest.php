@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Channel;
 use Lunar\Models\Product;
@@ -94,4 +95,26 @@ test('can scope results to a channel', function () {
     expect(Product::channel($channelA)->get())->toHaveCount(0);
 
     expect(Product::channel($channelA, $startsAt, $endsAt)->get())->toHaveCount(1);
+});
+
+test('can schedule and scope using immutable dates', function () {
+    $channel = Channel::factory()->create();
+
+    $product = Product::factory()->create();
+
+    $startsAt = CarbonImmutable::now()->addDay();
+    $endsAt = CarbonImmutable::now()->addDays(2);
+
+    $product->scheduleChannel($channel, $startsAt, $endsAt);
+
+    $this->assertDatabaseHas($product->channels()->getTable(), [
+        'channel_id' => $channel->id,
+        'channelable_type' => $product->getMorphClass(),
+        'channelable_id' => $product->id,
+        'starts_at' => $startsAt,
+        'ends_at' => $endsAt,
+        'enabled' => 1,
+    ]);
+
+    expect(Product::channel($channel, $startsAt, $endsAt)->get())->toHaveCount(1);
 });
