@@ -23,7 +23,6 @@ concurrency:
 
 env:
   TRACKING_TITLE: "Weekly triage digest"
-  TRACKING_LABEL: "needs-decision"
 
 jobs:
   digest:

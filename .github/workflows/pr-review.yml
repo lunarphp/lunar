@@ -70,7 +70,9 @@ jobs:
       # come from, so the PR author cannot edit the standards they're judged by.
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          # Nothing here needs history: the diff comes from the API and the 2.x
+          # comparison below only needs a single tree.
+          fetch-depth: 1
 
       - name: Resolve pull request
         id: pr
@@ -164,7 +166,7 @@ jobs:
           # bites while both lines are maintained.
           : > "$CTX/forward-port-candidates.txt"
           if echo "$BASE" | grep -qE '^1\.(x|[0-9]+)$'; then
-            git fetch origin '+refs/heads/2.x:refs/remotes/origin/2.x' --quiet || true
+            git fetch origin '+refs/heads/2.x:refs/remotes/origin/2.x' --depth=1 --quiet || true
             # 2.x reorganised the packages (admin -> panel, and others), so an
             # exact path miss does not mean the code is absent there. Fall back to
             # matching the filename so moved files still get flagged.
