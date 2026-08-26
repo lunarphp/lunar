@@ -218,7 +218,7 @@ class Cart extends Base
 
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::class, 'cart_id', 'id');
+        return $this->hasMany(CartLine::class, 'cart_id', 'id')->orderBy('id');
     }
 
     public function currency(): BelongsTo
