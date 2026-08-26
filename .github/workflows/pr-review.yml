@@ -131,7 +131,7 @@ jobs:
                 '',
                 `This PR changes ${process.env.CHANGED} lines across ${process.env.FILES} files, which is more than an automated review can usefully cover, so I've skipped the detailed pass.`,
                 '',
-                'Splitting it into smaller PRs — one concern each — will get it reviewed considerably faster, and makes it far more likely each part gets merged. See [CONTRIBUTING.md](https://github.com/lunarphp/lunar/blob/1.x/CONTRIBUTING.md#one-concern-per-pull-request).',
+                'Splitting it into smaller PRs — one concern each — will get it reviewed considerably faster, and makes it far more likely each part gets merged. See [CONTRIBUTING.md](https://github.com/lunarphp/lunar/blob/HEAD/CONTRIBUTING.md#one-concern-per-pull-request).',
                 '',
                 "_I'm a bot and this is advisory. A maintainer decides._",
               ].join('\n'),

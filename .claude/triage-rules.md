@@ -42,7 +42,7 @@ or several files inside one package.
 
 Signals: a new migration under `packages/*/database/migrations/`; a new or
 changed key in `packages/*/config/`; a new Filament resource or page under
-`packages/admin/src/`; a new indexer field under `packages/*/src/Search/`;
+`packages/{admin,panel,filament}/src/`; a new indexer field under `packages/*/src/Search/`;
 several files within one package.
 
 ### `high`
@@ -52,14 +52,15 @@ where a mistake is expensive.
 
 Any of the following puts a PR in `high` regardless of diff size:
 
-- `packages/*/src/Models/Contracts/**` — the public contract surface.
+- The public contract surface. This moved between release lines, so match either:
+  `packages/*/src/Models/Contracts/**` (1.x) or `packages/*/src/Contracts/**` (2.x).
 - `packages/core/src/Models/{Cart,CartLine,Order,OrderLine,Transaction,Price}.php`
   and the other core models.
 - `packages/core/src/Pipelines/**` — cart, cart line, cart prune, order pipelines.
 - `packages/core/src/Managers/**` — pricing, tax, payment, discount, cart session.
 - `packages/core/src/Actions/{Carts,Orders,Taxes}/**`.
-- `packages/core/src/DataTypes/Price.php`, `packages/core/src/Base/Casts/Price.php`,
-  and anything else handling money.
+- `packages/core/src/DataTypes/Price.php`, and the price cast — `Base/Casts/Price.php`
+  on 1.x, `Casts/Price.php` on 2.x. Anything else handling money counts too.
 - `packages/core/src/Pricing/**`, `packages/core/src/DiscountTypes/**`,
   `packages/core/src/PaymentTypes/**`.
 - `packages/{stripe,paypal,opayo}/**` — payment adapters.
@@ -68,6 +69,17 @@ Any of the following puts a PR in `high` regardless of diff size:
 - `composer.json` or any `packages/*/composer.json` — dependency changes.
 - Any migration that renames or drops an existing table or column.
 - Anything spanning three or more packages.
+
+## A note on release lines
+
+This file is shared by both maintained lines, so it lists paths from both. A path
+that does not exist on the branch you are triaging simply never matches — do not
+treat its absence as significant, and do not comment on it.
+
+Package layout differs: `1.x` has `packages/admin` for the panel, while `2.x`
+splits it across `packages/{admin,panel,filament}` and adds `packages/demo-data`,
+`packages/upgrade` and `packages/panel-addon-example`. Treat `panel` and
+`filament` exactly as you would treat `admin`.
 
 ## Missing issue reference
 
