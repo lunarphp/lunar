@@ -1330,3 +1330,33 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
         ->and($foundCart->id)->not->toBe($mergedCart->id)
         ->and($foundCart->merged_id)->toBeNull();
 });
+
+test('orders cart lines by id', function () {
+    $cart = Cart::factory()->create();
+
+    // Cart::lines() must carry an explicit ordering contract. Without an
+    // ORDER BY, row order is undefined by the SQL standard: MySQL/InnoDB
+    // returns clustered primary-key order by coincidence, but PostgreSQL
+    // returns heap order, which changes after an UPDATE. Lunar relies on a
+    // stable line sequence (e.g. GenerateFingerprint reduces $cart->lines in
+    // iteration order), so it must be deterministic across engines.
+    expect($cart->lines()->toBase()->orders)
+        ->toBe([['column' => 'id', 'direction' => 'asc']]);
+});
+
+test('can retrieve cart lines in ascending id order', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $lines = CartLine::factory()
+        ->count(5)
+        ->create(['cart_id' => $cart->id]);
+
+    $expectedOrder = $lines->pluck('id')->sort()->values()->all();
+
+    expect($cart->load('lines')->lines->pluck('id')->all())
+        ->toBe($expectedOrder);
+});
