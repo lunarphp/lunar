@@ -249,18 +249,44 @@ class BuyXGetY extends AbstractDiscountType
 
         // we have lines to add
         if ($remainingRewardQty > 0) {
-            while ($remainingRewardQty > 0) {
-                $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
+            // Fulfillable products per collection reward, hydrated once here rather
+            // than re-queried on every iteration of the allocation loop below.
+            $fulfillableCollectionProducts = [];
 
-                if (! $selectedRewardItem) {
-                    $remainingRewardQty--;
+            $fulfillableRewards = $this->discount->discountableRewards->filter(function ($discountableReward) use (&$fulfillableCollectionProducts) {
+                $rewardItem = $discountableReward->discountable;
 
-                    continue;
+                if (! $rewardItem) {
+                    return false;
                 }
 
+                if ($rewardItem instanceof LunarCollection) {
+                    $fulfillableCollectionProducts[$rewardItem->id] = $rewardItem->products()
+                        ->with('variants')
+                        ->get()
+                        ->filter(fn ($p) => $p->variants->first()?->canBeFulfilledAtQuantity(1))
+                        ->values();
+
+                    return $fulfillableCollectionProducts[$rewardItem->id]->isNotEmpty();
+                }
+
+                if ($rewardItem instanceof Purchasable) {
+                    return $rewardItem->canBeFulfilledAtQuantity(1);
+                }
+
+                return (bool) $rewardItem->variants->first()?->canBeFulfilledAtQuantity(1);
+            });
+
+            if ($fulfillableRewards->isEmpty()) {
+                return [$affectedLines, $discountTotal];
+            }
+
+            while ($remainingRewardQty > 0) {
+                $selectedRewardItem = $fulfillableRewards->random()->discountable;
+
                 if ($selectedRewardItem instanceof LunarCollection) {
-                    $product = $selectedRewardItem->products()->inRandomOrder()->first();
-                    $purchasable = $product?->variants()->first();
+                    $product = $fulfillableCollectionProducts[$selectedRewardItem->id]->random();
+                    $purchasable = $product->variants->first();
                     $selectedRewardItem = $product;
                 } elseif ($selectedRewardItem instanceof Purchasable) {
                     $purchasable = $selectedRewardItem;
@@ -275,6 +301,17 @@ class BuyXGetY extends AbstractDiscountType
                 }
 
                 $rewardKey = $purchasable->getMorphClass().':'.$purchasable->id;
+
+                // How many units of this reward this run has already allocated,
+                // since canBeFulfilledAtQuantity below must check against that
+                // running total rather than a fixed quantity of 1 each time.
+                $allocated = $addedRewardLines[$rewardKey]->quantity ?? 0;
+
+                if (! $purchasable->canBeFulfilledAtQuantity($allocated + 1)) {
+                    $remainingRewardQty--;
+
+                    continue;
+                }
 
                 // is it already in cart?
                 $rewardLine = $addedRewardLines[$rewardKey] ?? $cart->lines->first(function ($line) use ($purchasable) {
