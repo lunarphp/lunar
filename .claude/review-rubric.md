@@ -24,6 +24,14 @@ and where.
 
 - The base branch is the release line under review. Never infer the target line
   from the description.
+- Which line you are on changes the bar. A `1.x` base is a stable line, so
+  backward compatibility is close to absolute. A `2.x` base is still pre-GA, so a
+  breaking change is acceptable when it is intentional and explained — but say
+  plainly that it is breaking, because someone has to write the upgrade note.
+- Package layout differs between lines. `1.x` has `packages/admin`; `2.x` splits
+  the panel across `packages/{admin,panel,filament}` and adds `demo-data`,
+  `upgrade` and `panel-addon-example`. Review whichever exists in the checkout;
+  never remark on a package the branch does not have.
 - `vendor/bin/pint` runs automatically on push and PHPStan runs in CI. Do not
   report formatting, import order, or anything either tool already catches. Say
   "CI covers this" and move on.
@@ -49,9 +57,11 @@ fail.
 
 ### Backward compatibility
 
-5. Does it change a public method signature, an event payload, or anything under
-   `packages/*/src/Models/Contracts/`? Breaking changes on a stable line are a
-   blocker.
+5. Does it change a public method signature, an event payload, or anything on the
+   contract surface — `packages/*/src/Models/Contracts/` on `1.x`,
+   `packages/*/src/Contracts/` on `2.x`? A breaking change on a stable line is a
+   blocker. On a line still in alpha it is allowed, but it must be deliberate and
+   called out, not incidental.
 6. Does it change database schema? Is the migration reversible, does `down()`
    mirror `up()`, and does it handle rows that already exist?
 7. Does it change a published config file such that users must republish? Removed
