@@ -8,6 +8,7 @@ use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\Translator;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ModelManifest;
@@ -49,6 +50,8 @@ class ShippingServiceProvider extends ServiceProvider
         }
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel.shipping');
+
+        $this->mergeTranslationsForPanel();
 
         if (! config('lunar.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -125,5 +128,37 @@ class ShippingServiceProvider extends ServiceProvider
                 [$class, 'run']
             );
         }
+    }
+
+    private function mergeTranslationsForPanel(): void
+    {
+        $this->app->booted(function ($app) {
+            /** @var Translator $translator */
+            $translator = $app['translator'];
+
+            $locale = $app->getLocale();
+            $group = 'auth';
+            $namespace = 'lunarpanel';
+
+            $originalLines = $translator->get("{$namespace}::{$group}", [], $locale);
+
+            if (! is_array($originalLines)) {
+                $originalLines = [];
+            }
+
+            $langFilePath = __DIR__."/../resources/lang/{$locale}/{$group}.php";
+
+            if (file_exists($langFilePath)) {
+                $langLines = require $langFilePath;
+
+                $mergedLines = collect(array_replace_recursive($originalLines, $langLines))->mapWithKeys(function ($line, $key) use ($group) {
+                    return [
+                        "{$group}.{$key}" => $line,
+                    ];
+                })->toArray();
+
+                $translator->addLines($mergedLines, $locale, $namespace);
+            }
+        });
     }
 }
