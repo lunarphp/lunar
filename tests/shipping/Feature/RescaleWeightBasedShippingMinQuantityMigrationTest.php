@@ -12,9 +12,16 @@ use function Pest\Laravel\artisan;
 
 uses(TestCase::class)->group('migrations');
 
+const RESCALE_MIGRATION = __DIR__.'/../../../packages/table-rate-shipping/database/migrations/2026_05_18_100000_rescale_weight_based_shipping_min_quantity.php';
+
 test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw kg', function () {
     artisan('migrate');
-    artisan('migrate:rollback', ['--step' => 1]);
+    // Roll back this specific migration — `--step 1` would silently target
+    // whichever migration happens to be newest.
+    artisan('migrate:rollback', [
+        '--path' => realpath(RESCALE_MIGRATION),
+        '--realpath' => true,
+    ]);
 
     $currency = Currency::factory()->create(['default' => true]);
     TaxClass::factory()->create(['default' => true]);
@@ -86,7 +93,10 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
 
     // Idempotency: rolling back and re-applying must be a no-op because the
     // rescaled values (5, 10) don't match the `min_quantity % 100 = 0` guard.
-    artisan('migrate:rollback', ['--step' => 1]);
+    artisan('migrate:rollback', [
+        '--path' => realpath(RESCALE_MIGRATION),
+        '--realpath' => true,
+    ]);
     artisan('migrate');
 
     expect((int) DB::table("{$prefix}prices")->where('id', $weightTier5KgId)->value('min_quantity'))->toBe(5);
