@@ -8,12 +8,16 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Concerns\RelationManagers\SearchesCollections;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionLimitationRelationManager extends BaseRelationManager
 {
+    use SearchesCollections;
+
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'collections';
@@ -38,6 +42,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             )
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
+                    ->with(['group', 'ancestors'])
             )
             ->paginated(false)
             ->headerActions([
@@ -50,9 +55,11 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                                 'exclusion' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.exclusion.label'),
                             ]
                         )->default('limitation'),
-                ])->recordTitle(function (Collection $record) {
-                    return $record->attr('name').' ('.static::getCollectionPath($record).')';
-                })->recordSelectSearchColumns(['attribute_data->name'])
+                ])->recordTitle(
+                    fn (CollectionContract $record): string => static::getCollectionOptionLabel($record)
+                )->recordSelectOptionsQuery(
+                    fn (Builder $query): Builder => static::withCollectionPathRelations($query)
+                )->recordSelectSearchColumns(['attribute_data->name'])
                     ->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
@@ -62,7 +69,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
-                    ->description(fn (Collection $record): string => static::getCollectionPath($record))
+                    ->description(fn (CollectionContract $record): string => static::getCollectionPath($record))
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
@@ -77,12 +84,5 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             ])->toolbarActions([
                 DetachBulkAction::make(),
             ]);
-    }
-
-    protected static function getCollectionPath(Collection $record): string
-    {
-        return collect([$record->group->name])
-            ->merge($record->breadcrumb)
-            ->implode(' > ');
     }
 }

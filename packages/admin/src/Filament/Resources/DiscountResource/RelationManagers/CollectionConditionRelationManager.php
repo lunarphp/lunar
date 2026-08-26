@@ -10,12 +10,15 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Lunar\Admin\Support\Concerns\RelationManagers\SearchesCollections;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionConditionRelationManager extends BaseRelationManager
 {
+    use SearchesCollections;
+
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'discountables';
@@ -44,6 +47,9 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 fn ($query) => $query->where('type', 'condition')
                     ->where('discountable_type', Collection::morphName())
                     ->whereHas('discountable')
+                    ->with(['discountable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
+                        Collection::modelClass() => ['group', 'ancestors'],
+                    ])])
             )
             ->headerActions([
                 CreateAction::make()->schema([
@@ -51,14 +57,11 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         ->label(__('lunarpanel::collection.singular_label'))
                         ->required()
                         ->searchable()
-                        ->getSearchResultsUsing(static function (string $search): array {
-                            return get_search_builder(Collection::modelClass(), $search)
-                                ->get()
-                                ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => static::getCollectionOptionLabel($record)])
-                                ->all();
-                        })
+                        ->getSearchResultsUsing(
+                            static fn (Select $component, string $search): array => static::getCollectionSearchResults($search, $component->getOptionsLimit())
+                        )
                         ->getOptionLabelUsing(function ($value): string {
-                            $record = Collection::modelClass()::find($value);
+                            $record = static::withCollectionPathRelations(Collection::modelClass()::query())->find($value);
 
                             return $record ? static::getCollectionOptionLabel($record) : $value;
                         }),
@@ -87,17 +90,5 @@ class CollectionConditionRelationManager extends BaseRelationManager
             ])->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
-    }
-
-    protected static function getCollectionPath(CollectionContract $record): string
-    {
-        return collect([$record->group->name])
-            ->merge($record->breadcrumb)
-            ->implode(' > ');
-    }
-
-    protected static function getCollectionOptionLabel(CollectionContract $record): string
-    {
-        return $record->attr('name').' ('.static::getCollectionPath($record).')';
     }
 }
