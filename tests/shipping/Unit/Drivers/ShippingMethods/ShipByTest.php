@@ -581,3 +581,80 @@ test('total cart weight across multiple lines with different units is summed in 
     expect($option)->toBeInstanceOf(ShippingOption::class)
         ->and($option->price->value)->toEqual(400);
 });
+
+test('weight tiers are evaluated in the shipping method configured weight_unit', function () {
+    $currency = Currency::factory()->create(['default' => true]);
+    TaxClass::factory()->create(['default' => true]);
+
+    $shippingZone = ShippingZone::factory()->create(['type' => 'countries']);
+
+    // Grams give merchants sub-kilogram tier precision with raw integer storage.
+    $shippingMethod = ShippingMethod::factory()->create([
+        'driver' => 'ship-by',
+        'data' => ['charge_by' => 'weight'],
+        'weight_unit' => 'g',
+    ]);
+
+    $shippingRate = ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
+        ['price' => 1000, 'min_quantity' => 1, 'currency_id' => $currency->id],
+        ['price' => 600, 'min_quantity' => 500, 'currency_id' => $currency->id],
+        ['price' => 200, 'min_quantity' => 1000, 'currency_id' => $currency->id],
+    ]);
+
+    $makeCart = function (array $lines) use ($currency): Cart {
+        $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+        foreach ($lines as [$weightValue, $weightUnit]) {
+            $variant = ProductVariant::factory()->create([
+                'weight_value' => $weightValue,
+                'weight_unit' => $weightUnit,
+            ]);
+            $variant->stock = 100;
+
+            Price::factory()->create([
+                'price' => 500,
+                'min_quantity' => 1,
+                'currency_id' => $currency->id,
+                'priceable_type' => $variant->getMorphClass(),
+                'priceable_id' => $variant->id,
+            ]);
+
+            $cart->lines()->create([
+                'purchasable_type' => $variant->getMorphClass(),
+                'purchasable_id' => $variant->id,
+                'quantity' => 1,
+            ]);
+        }
+
+        return $cart->calculate();
+    };
+
+    // 300g cart sits below the 500g tier.
+    $option = (new ShipBy)->resolve(new ShippingOptionRequest(
+        shippingRate: $shippingRate,
+        cart: $makeCart([[0.3, 'kg']]),
+    ));
+    expect($option)->toBeInstanceOf(ShippingOption::class)
+        ->and($option->price->value)->toEqual(1000);
+
+    // A 0.5kg product converts to 500g and matches the 500g tier exactly.
+    $option = (new ShipBy)->resolve(new ShippingOptionRequest(
+        shippingRate: $shippingRate,
+        cart: $makeCart([[0.5, 'kg']]),
+    ));
+    expect($option)->toBeInstanceOf(ShippingOption::class)
+        ->and($option->price->value)->toEqual(600);
+
+    // Mixed units: 0.4kg + 600g = 1000g hits the top tier.
+    $option = (new ShipBy)->resolve(new ShippingOptionRequest(
+        shippingRate: $shippingRate,
+        cart: $makeCart([[0.4, 'kg'], [600.0, 'g']]),
+    ));
+    expect($option)->toBeInstanceOf(ShippingOption::class)
+        ->and($option->price->value)->toEqual(200);
+});

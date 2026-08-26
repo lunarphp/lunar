@@ -25,6 +25,23 @@ abstract class BaseFieldType
         return [];
     }
 
+    /**
+     * Whether a plain-string default_value can seed this field type's component.
+     */
+    public static function canHaveDefaultValue(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<mixed>
+     */
+    public static function getDefaultValueValidationRules(array $configuration): array
+    {
+        return [];
+    }
+
     abstract public static function getFilamentComponent(Attribute $attribute): Component;
 
     public static function synthesize()
