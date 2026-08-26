@@ -421,3 +421,95 @@ it('suppresses availability warnings when product is in draft', function () {
         ->assertDontSee(__('lunarpanel::product.status.availability.hidden_from_guests'))
         ->assertDontSee(__('lunarpanel::product.status.availability.no_default_customer_group'));
 });
+
+it('applies attribute default_value when product has no value for that attribute', function () {
+    Language::factory()->create(['default' => true]);
+
+    TaxClass::factory()->create(['default' => true]);
+
+    $product = Product::factory()->create();
+    ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    $group = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => ['en' => 'Details'],
+        'handle' => 'details',
+        'position' => 1,
+    ]);
+
+    $attribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 1,
+        'name' => ['en' => 'Quantity'],
+        'handle' => 'quantity',
+        'type' => Number::class,
+        'default_value' => '99',
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    DB::table('lunar_attributables')->insert([
+        'attribute_id' => $attribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    // The product has no value for 'quantity' yet
+    expect($product->attr('quantity'))->toBeNull();
+
+    $this->asStaff(admin: true);
+
+    // Saving without explicitly setting quantity should persist the default value
+    Livewire::test(EditProduct::class, [
+        'record' => $product->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])->call('save')->assertHasNoFormErrors();
+
+    expect($product->refresh()->attr('quantity'))->toBe(99);
+});
+
+it('ignores a legacy default_value on field types that do not support one', function () {
+    Language::factory()->create(['default' => true]);
+
+    TaxClass::factory()->create(['default' => true]);
+
+    $product = Product::factory()->create();
+    ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    $group = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => ['en' => 'Details'],
+        'handle' => 'details',
+        'position' => 1,
+    ]);
+
+    $attribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 1,
+        'name' => ['en' => 'Is special'],
+        'handle' => 'is_special',
+        'type' => Toggle::class,
+        'default_value' => 'true',
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    DB::table('lunar_attributables')->insert([
+        'attribute_id' => $attribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, [
+        'record' => $product->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])->call('save')->assertHasNoFormErrors();
+
+    expect($product->refresh()->attr('is_special'))->toBeFalse();
+});

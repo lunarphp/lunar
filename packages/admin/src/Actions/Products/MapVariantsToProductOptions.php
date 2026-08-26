@@ -28,7 +28,7 @@ class MapVariantsToProductOptions
                 $valueDifference = array_diff_assoc($permutation, $variant['values']);
 
                 if (! count($valueDifference)) {
-                    return $variant;
+                    return true;
                 }
 
                 $amountMatched = count($permutation) - count($valueDifference);
@@ -36,12 +36,22 @@ class MapVariantsToProductOptions
                 return $amountMatched == count($variant['values']);
             });
 
-            $variant = $variants[$variantIndex] ?? null;
+            // search() returns false when nothing matches; PHP coerces false to index 0.
+            $variant = $variantIndex === false ? null : ($variants[$variantIndex] ?? null);
 
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;
             $copiedFrom = null;
             $shouldFill = true;
+
+            if (! $variant && ! $fillMissing) {
+                $shouldFill = false;
+            }
+
+            // New option combinations still need tax_class_id on insert; copy the oldest sibling.
+            if (! $variant && $fillMissing) {
+                $copiedFrom = collect($variants)->min('id');
+            }
 
             if ($variant) {
                 // Does this variant already exist in our permutations?
