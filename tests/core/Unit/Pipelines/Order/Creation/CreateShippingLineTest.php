@@ -54,7 +54,12 @@ test('can run pipeline', function () {
     });
 
     expect($order->shippingLines)->toHaveCount(1);
-    expect($order->shippingLines->first()->identifier)->toEqual('BASDEL');
+
+    $shippingLine = $order->shippingLines->first();
+
+    expect($shippingLine->identifier)->toEqual('BASDEL');
+    expect($shippingLine->purchasable_type)->toBeNull();
+    expect($shippingLine->purchasable_id)->toBeNull();
 });
 
 test('can update shipping line if exists', function () {
@@ -101,5 +106,11 @@ test('can update shipping line if exists', function () {
     });
 
     expect($order->shippingLines)->toHaveCount(1);
-    expect($order->shippingLines->first()->identifier)->toEqual('BASDEL');
+
+    // The legacy fake morph is matched by type + identifier and de-morphed in place.
+    $shippingLine = $order->shippingLines->first();
+
+    expect($shippingLine->identifier)->toEqual('BASDEL');
+    expect($shippingLine->purchasable_type)->toBeNull();
+    expect($shippingLine->purchasable_id)->toBeNull();
 });

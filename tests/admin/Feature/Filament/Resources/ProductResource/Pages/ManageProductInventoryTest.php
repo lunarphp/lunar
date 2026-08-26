@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Lunar\Admin\Events\ProductVariantInventoryUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductInventory;
 use Lunar\Models\Currency;
@@ -174,4 +176,40 @@ it('can update variant stock figures', function () {
         'backorder' => 50,
         'purchasable' => 'in_stock_or_on_backorder',
     ]);
+});
+
+it('dispatches ProductVariantInventoryUpdated event when updating variant stock figures', function () {
+    Event::fake([ProductVariantInventoryUpdated::class]);
+
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+        'decimal_places' => 2,
+    ]);
+
+    $record = Product::factory()->create();
+
+    $variant = ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $this->asStaff();
+
+    Livewire::test(
+        ManageProductInventory::class, [
+            'record' => $record->getRouteKey(),
+        ])->fillForm([
+            'stock' => 500,
+            'backorder' => 50,
+            'purchasable' => 'in_stock_or_on_backorder',
+        ])->call('save')->assertHasNoErrors();
+
+    Event::assertDispatched(ProductVariantInventoryUpdated::class, function ($event) use ($variant) {
+        return $event->model->is($variant)
+            && $event->model->stock == 500
+            && $event->model->backorder == 50;
+    });
 });
