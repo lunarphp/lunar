@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Engedélyezi a vásárlók kezelését',
     'permissions.sales:manage-discounts.label' => 'Kedvezmények kezelése',
     'permissions.sales:manage-discounts.description' => 'Engedélyezi a kedvezmények kezelését',
+    'permissions.shipping:manage.label' => 'Szállítás kezelése',
+    'permissions.shipping:manage.description' => 'Engedélyezi a szállítás kezelését',
 ];

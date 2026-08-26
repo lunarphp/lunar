@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Permite personalului să gestioneze clienții',
     'permissions.sales:manage-discounts.label' => 'Gestionare reduceri',
     'permissions.sales:manage-discounts.description' => 'Permite personalului să gestioneze reducerile',
+    'permissions.shipping:manage.label' => 'Gestionare livrare',
+    'permissions.shipping:manage.description' => 'Permite personalului să gestioneze livrarea',
 ];

@@ -29,4 +29,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Allow the staff member to manage customers',
     'permissions.sales:manage-discounts.label' => 'Manage Discounts',
     'permissions.sales:manage-discounts.description' => 'Allow the staff member to manage discounts',
+    'permissions.shipping:manage.label' => 'Manage Shipping',
+    'permissions.shipping:manage.description' => 'Allow the staff member to manage shipping',
 ];

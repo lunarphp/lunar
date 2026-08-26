@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Omogućuje osoblju upravljanje kupcima',
     'permissions.sales:manage-discounts.label' => 'Upravljanje popustima',
     'permissions.sales:manage-discounts.description' => 'Omogućuje osoblju upravljanje popustima',
+    'permissions.shipping:manage.label' => 'Upravljanje dostavom',
+    'permissions.shipping:manage.description' => 'Omogućuje osoblju upravljanje dostavom',
 ];
