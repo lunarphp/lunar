@@ -39,7 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Хамгийн бага жин',
-                        'helper_text' => 'Жинг килограммаар оруулна уу',
+                        'helper_text' => 'Жинг :unit-ээр оруулна уу',
                     ],
                     'price' => [
                         'label' => 'Үнэ',
