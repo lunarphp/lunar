@@ -82,3 +82,47 @@ test('can update existing addresses', function () {
 
     expect($order->addresses)->toHaveCount($cart->addresses->count());
 });
+
+test('does not duplicate addresses when the cart address postcode changes', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+        'postcode' => 'N1 1TW',
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'shipping',
+        'cart_id' => $cart->id,
+        'postcode' => 'N2 2TW',
+    ]);
+
+    $order = Order::factory()->create([
+        'cart_id' => $cart->id,
+    ]);
+
+    $billing = OrderAddress::factory()->create([
+        'type' => 'billing',
+        'order_id' => $order->id,
+        'postcode' => 'SW1 1AA',
+    ]);
+
+    $shipping = OrderAddress::factory()->create([
+        'type' => 'shipping',
+        'order_id' => $order->id,
+        'postcode' => 'SW2 2AA',
+    ]);
+
+    app(CreateOrderAddresses::class)->handle($order, fn ($order) => $order);
+
+    expect($order->refresh()->addresses)->toHaveCount(2)
+        ->and($order->billingAddress->id)->toBe($billing->id)
+        ->and($order->billingAddress->postcode)->toBe('N1 1TW')
+        ->and($order->shippingAddress->id)->toBe($shipping->id)
+        ->and($order->shippingAddress->postcode)->toBe('N2 2TW');
+});
