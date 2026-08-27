@@ -81,14 +81,21 @@ splits it across `packages/{admin,panel,filament}` and adds `packages/demo-data`
 `packages/upgrade` and `packages/panel-addon-example`. Treat `panel` and
 `filament` exactly as you would treat `admin`.
 
-## Missing issue reference
+## Missing issue or Discussion reference
 
-If the body does not reference an issue — no `#123`, no `Fixes`/`Closes`/`Refs`
-link to an issue in this repo — apply `needs-issue` and post one short comment
-pointing at the "Non-trivial changes need an accepted issue first" section of
-`CONTRIBUTING.md`.
+This repo only accepts bug reports as issues; feature requests and enhancements
+live in GitHub Discussions. Either one satisfies the gate. Set `references_issue`
+to true when the body references **any** of:
 
-Skip this for `trivial` PRs. A typo fix does not need an issue, and asking for one
+- an issue in this repo (`#123`, or a `Fixes`/`Closes`/`Refs` link), or
+- a GitHub Discussion in this repo
+  (a link like `https://github.com/lunarphp/lunar/discussions/1234`).
+
+If neither is present, apply `needs-issue` and post one short comment pointing at
+the acceptance section of `CONTRIBUTING.md`. Never tell a feature PR to open an
+issue — the issue forms will not accept one; features go to Discussions.
+
+Skip this for `trivial` PRs. A typo fix does not need sign-off, and asking for it
 is the kind of friction that loses a contributor over nothing.
 
 ## Output
