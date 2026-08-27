@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
 use Lunar\Core\Facades\Discounts;
@@ -79,11 +79,10 @@ test('can save coupon code', function () {
     ]);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => 'valid-coupon',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -757,11 +756,10 @@ test('can create a discount breakdown', function () {
     ]);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => 'valid-coupon',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);

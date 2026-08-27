@@ -7,8 +7,9 @@ use InvalidArgumentException;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager as DiscountManagerContract;
 use Lunar\Core\DataObjects\CartDiscount;
-use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\CustomerGroup;
@@ -46,7 +47,8 @@ class DiscountManager implements DiscountManagerContract
      * @var array
      */
     protected $types = [
-        AmountOff::class,
+        PercentageOff::class,
+        FixedAmountOff::class,
         BuyXGetY::class,
     ];
 

@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
@@ -671,14 +672,13 @@ test('can discount purchasable with priority', function () {
     ]);
 
     $discountB = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => FixedAmountOff::class,
         'name' => 'Test A amount off',
         'uses' => 0,
         'priority' => 1,
         'max_uses' => 1,
         'data' => [
-            'fixed_value' => true,
-            'fixed_values' => [
+            'amounts' => [
                 'GBP' => 10,
             ],
             'min_prices' => [
@@ -805,14 +805,13 @@ test('can apply multiple different discounts', function () {
     ]);
 
     $discountB = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test amount off',
         'uses' => 0,
         'priority' => 2,
         'max_uses' => 1,
         'coupon' => 'AMOUNTOFFTEST',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);

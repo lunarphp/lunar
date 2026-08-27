@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
@@ -51,11 +51,10 @@ test('can map discount with same purchasable with different meta', function () {
     ]);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);

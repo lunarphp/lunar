@@ -3,7 +3,7 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Discount;
 
 class DiscountFactory extends BaseFactory
@@ -18,7 +18,7 @@ class DiscountFactory extends BaseFactory
             'public_id' => (string) Str::ulid(),
             'name' => $name,
             'handle' => Str::snake($name),
-            'type' => AmountOff::class,
+            'type' => PercentageOff::class,
             'starts_at' => now(),
         ];
     }
