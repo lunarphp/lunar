@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Házhozszállítás',
                 'collection' => 'Személyes átvétel',
+                'flat-rate' => 'Átalánydíjas',
+                'free-shipping' => 'Ingyenes szállítás',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Házhozszállítás',
                 'collection' => 'Személyes átvétel',
+                'flat-rate' => 'Átalánydíjas',
+                'free-shipping' => 'Ingyenes szállítás',
             ],
         ],
     ],
