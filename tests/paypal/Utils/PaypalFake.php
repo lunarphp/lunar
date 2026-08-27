@@ -5,6 +5,8 @@ namespace Lunar\Tests\Paypal\Utils;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Lunar\Core\Models\Cart;
+use Lunar\Paypal\Managers\PaypalManager;
 
 /**
  * Fakes the PayPal REST endpoints the driver talks to, served from the recorded
@@ -34,6 +36,49 @@ class PaypalFake
         }
 
         Http::fake($fakes);
+    }
+
+    /**
+     * Fake an approved PayPal order (and its capture) sized to a cart.
+     *
+     * The recorded fixtures carry a fixed amount and currency; a cart's currency
+     * code is generated, so tests that exercise the amount guard need the PayPal
+     * side to agree with the cart unless they are deliberately making it differ.
+     *
+     * @param  array{amount?: string, currency?: string, status?: string, capture_status?: string}  $overrides
+     */
+    public static function forCart(Cart $cart, array $overrides = []): void
+    {
+        $cart = $cart->total ? $cart : $cart->calculate();
+
+        $amount = $overrides['amount'] ?? PaypalManager::toPaypalAmount($cart->total->value, $cart->currency);
+        $currency = $overrides['currency'] ?? $cart->currency->code;
+
+        $approved = static::fixture('order_approved');
+        $approved['status'] = $overrides['status'] ?? $approved['status'];
+        $approved['purchase_units'][0]['amount'] = [
+            'currency_code' => $currency,
+            'value' => $amount,
+        ];
+
+        $captured = static::fixture('order_captured');
+        $captured['status'] = $overrides['capture_status'] ?? $captured['status'];
+        $capture = &$captured['purchase_units'][0]['payments']['captures'][0];
+        $capture['amount'] = [
+            'currency_code' => $currency,
+            'value' => $amount,
+        ];
+        $capture['status'] = $captured['status'] === 'COMPLETED' ? 'COMPLETED' : $captured['status'];
+        unset($capture);
+
+        // The capture pattern has to be registered first — Http::fake() returns the
+        // first matching stub and `*\/v2/checkout/orders/*` would swallow it.
+        Http::fake([
+            '*/v1/oauth2/token' => Http::response(static::fixture('oauth_token')),
+            '*/v2/checkout/orders/*/capture' => Http::response($captured),
+            '*/v2/checkout/orders/*' => Http::response($approved),
+            '*/v2/payments/captures/*/refund' => Http::response(static::fixture('refund')),
+        ]);
     }
 
     /**
