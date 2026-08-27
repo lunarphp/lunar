@@ -169,7 +169,7 @@ jobs:
             body; do not add a title or a date heading, one is added for you.
           claude_args: >-
             --model claude-sonnet-5
-            --max-turns 8
+            --max-turns 20
             --max-budget-usd 1.00
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/digest
