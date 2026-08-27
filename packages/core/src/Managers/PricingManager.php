@@ -1,4 +1,5 @@
 <?php
+// Maintainer-exemption smoke test. This PR will be closed, not merged.
 
 namespace Lunar\Managers;
 
