@@ -1,4 +1,5 @@
 <?php
+// Smoke-test change for triage automation. This PR will be closed, not merged.
 
 namespace Lunar\Managers;
 
