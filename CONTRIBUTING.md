@@ -12,13 +12,22 @@ handle contributions so you don't waste effort on work we can't merge.
 
 ## Before you open a pull request
 
-### Non-trivial changes need an accepted issue first
+### Non-trivial changes need acceptance first
 
 If your change is anything more than a typo, a doc fix, or a small isolated bug
-fix, open an issue and wait for a maintainer to accept it before you write the
-code.
+fix, get it accepted before you write the code:
 
-PRs that arrive without an accepted issue may be closed without a full review.
+- **Bug fixes** — open an issue with the bug form and wait for a maintainer to
+  confirm it.
+- **Features and enhancements** — open a
+  [Discussion](https://github.com/lunarphp/lunar/discussions/new/choose) and wait
+  for a maintainer to accept the direction. Feature requests are not tracked as
+  issues in this repo.
+
+Link the issue or Discussion in your PR description.
+
+PRs that arrive without an accepted issue or Discussion may be closed without a
+full review.
 This isn't gatekeeping — it exists so you don't spend a weekend on an approach we
 were always going to say no to. A short issue costs you ten minutes and can save
 you a lot more than that.
