@@ -96,11 +96,19 @@ jobs:
           CHANGED: ${{ steps.pr.outputs.changed }}
           FILES: ${{ steps.pr.outputs.files }}
           EVENT: ${{ github.event_name }}
+          AUTHOR_ASSOC: ${{ github.event.pull_request.author_association }}
         run: |
           # Drafts are labelled but never reviewed automatically, so parking work
           # in draft form buys a contributor nothing. A maintainer can still force
           # a review with `@claude review` or workflow_dispatch.
-          if [ "$DRAFT" = "true" ] && [ "$EVENT" = "pull_request_target" ]; then
+          #
+          # Maintainers' own PRs are also skipped on the automatic trigger: the
+          # bot reviews first so contributors fix things before a maintainer
+          # looks, and that ordering is meaningless when the author IS the
+          # maintainer. Explicit requests (@claude review, dispatch) still work.
+          if [ "$EVENT" = "pull_request_target" ] && { [ "$AUTHOR_ASSOC" = "OWNER" ] || [ "$AUTHOR_ASSOC" = "MEMBER" ] || [ "$AUTHOR_ASSOC" = "COLLABORATOR" ]; }; then
+            reason=maintainer
+          elif [ "$DRAFT" = "true" ] && [ "$EVENT" = "pull_request_target" ]; then
             reason=draft
           elif [ "$CHANGED" -gt "$MAX_LINES" ] || [ "$FILES" -gt "$MAX_FILES" ]; then
             reason=too_large
@@ -114,6 +122,10 @@ jobs:
       - name: Note skipped draft
         if: steps.decide.outputs.reason == 'draft'
         run: echo "PR #$PR_NUMBER is a draft. Labelled by triage, not reviewed." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Note skipped maintainer PR
+        if: steps.decide.outputs.reason == 'maintainer'
+        run: echo "PR #$PR_NUMBER is authored by a maintainer. Skipped on the automatic trigger; use @claude review or workflow_dispatch to request one." >> "$GITHUB_STEP_SUMMARY"
 
       # Oversized PRs never reach the model, so they cost nothing.
       - name: Comment on oversized PR
