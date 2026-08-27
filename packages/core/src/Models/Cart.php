@@ -77,6 +77,7 @@ class Cart extends BaseModel implements Contracts\Cart
      */
     public $cachableProperties = [
         'subTotal',
+        'subTotalDiscounted',
         'shippingSubTotal',
         'shippingTaxTotal',
         'shippingTotal',
