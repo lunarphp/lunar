@@ -72,7 +72,7 @@ jobs:
             commercial context for it.
           claude_args: >-
             --model claude-haiku-4-5
-            --max-turns 4
+            --max-turns 12
             --max-budget-usd 0.10
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/issue-context

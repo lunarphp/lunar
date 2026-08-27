@@ -86,7 +86,7 @@ jobs:
             no tools to do so, and a later step handles it.
           claude_args: >-
             --model claude-haiku-4-5
-            --max-turns 3
+            --max-turns 10
             --max-budget-usd 0.05
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/pr-context

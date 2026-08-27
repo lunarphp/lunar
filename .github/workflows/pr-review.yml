@@ -258,7 +258,7 @@ jobs:
             you.
           claude_args: >-
             --model claude-sonnet-5
-            --max-turns 6
+            --max-turns 30
             --max-budget-usd 0.50
             --allowedTools "Read,Grep,Glob"
             --add-dir ${{ runner.temp }}/pr-context
