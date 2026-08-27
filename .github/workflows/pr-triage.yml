@@ -144,11 +144,11 @@ jobs:
               await github.rest.issues.createComment({
                 ...issue,
                 body: [
-                  "Thanks for the PR! I couldn't find a linked issue in the description.",
+                  "Thanks for the PR! I couldn't find a linked issue or Discussion in the description.",
                   '',
-                  'For anything beyond a typo or small isolated fix, we ask that an issue is opened and accepted before the PR — see [Non-trivial changes need an accepted issue first](https://github.com/lunarphp/lunar/blob/HEAD/CONTRIBUTING.md#non-trivial-changes-need-an-accepted-issue-first). It exists so you never spend a weekend on an approach we were always going to turn down.',
+                  'For anything beyond a typo or small isolated fix, we ask that the change is accepted before the PR is opened — for **bug fixes** that means a linked [issue](https://github.com/lunarphp/lunar/issues), and for **features or enhancements** a linked [Discussion](https://github.com/lunarphp/lunar/discussions) (features are not tracked as issues in this repo). See [Non-trivial changes need acceptance first](https://github.com/lunarphp/lunar/blob/HEAD/CONTRIBUTING.md#non-trivial-changes-need-acceptance-first). It exists so you never spend a weekend on an approach we were always going to turn down.',
                   '',
-                  "If there is an issue and I missed it, just link it here and ignore me — I'm a bot and this is advisory.",
+                  "If there is one and I missed it, just link it here and ignore me — I'm a bot and this is advisory.",
                 ].join('\n'),
               })
               core.summary.addRaw('Applied `needs-issue` and commented.\n')
