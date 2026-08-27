@@ -21,11 +21,9 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         Config::set('auth.providers.users.model', User::class);
-        // The driver reads credentials from `services.paypal.*` today; spec 0071
-        // slice 3 consolidates these onto `lunar.paypal.*`.
-        Config::set('services.paypal.client_id', 'TEST_CLIENT_ID');
-        Config::set('services.paypal.secret', 'TEST_SECRET');
-        Config::set('services.paypal.env', 'sandbox');
+        Config::set('lunar.paypal.client_id', 'TEST_CLIENT_ID');
+        Config::set('lunar.paypal.secret', 'TEST_SECRET');
+        Config::set('lunar.paypal.env', 'sandbox');
 
         activity()->disableLogging();
     }
