@@ -1,0 +1,24 @@
+{
+    "id": "WH-1GE84257G0350133W-6RW800890C634293G",
+    "event_version": "1.0",
+    "create_time": "2026-08-27T11:00:10.000Z",
+    "resource_type": "refund",
+    "event_type": "PAYMENT.CAPTURE.REFUNDED",
+    "summary": "A GBP 5.00 GBP capture payment was refunded",
+    "resource": {
+        "id": "1JU08902781691411",
+        "status": "COMPLETED",
+        "amount": {
+            "currency_code": "GBP",
+            "value": "5.00"
+        },
+        "supplementary_data": {
+            "related_ids": {
+                "order_id": "5O190127TN364715T",
+                "capture_id": "3C679366HH908993F"
+            }
+        },
+        "create_time": "2026-08-27T11:00:00Z",
+        "update_time": "2026-08-27T11:00:00Z"
+    }
+}
