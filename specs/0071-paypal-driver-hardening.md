@@ -1,9 +1,20 @@
 # 0071 — PayPal driver hardening
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Bring `lunarphp/paypal` up to the first-party driver bar
+
+> Implementation notes (landed): all six slices shipped in one PR. Two findings
+> changed the shape of the work. First, slice 1's harness immediately showed the
+> driver was not merely thin but non-functional — `authorize()` wrote the removed
+> `status` column, so every successful payment threw *after* the money was
+> captured; that fix led slice 2. Second, this spec was drafted against a branch
+> carrying the line-item refunds work, so its claim that `PaymentRefund` exposes
+> a `$transaction` for line attribution does not hold on `2.x`; see the
+> References section. One deliberate divergence from the plan: the amount guard
+> lands *after* the already-processed check rather than before it, so a spent
+> PayPal order is rejected without computing totals.
 
 ## Problem
 
@@ -299,9 +310,13 @@ keeping it that does not apply to Opayo.
   with a fallback for one release. Merchants using webhooks configure a webhook ID
   in the PayPal dashboard; the driver works without one, with async outcomes
   unhandled as they are today.
-- **Translations**: any user-facing failure messages land in `packages/paypal`'s
-  `resources/lang/` across all 16 locales. Note the current driver has no lang
-  directory — one is added.
+- **Translations**: `packages/paypal/resources/lang/` is added with all 16
+  locales, covering the payment-check labels — the only driver strings the admin
+  actually renders, via `Transaction::paymentChecks()`. The `PaymentAuthorize`
+  failure messages stay untranslated English, matching `packages/stripe`: they
+  are diagnostics returned to the storefront integrator, who decides what the
+  shopper sees, not strings Lunar renders. Translating them would put PayPal out
+  of step with the reference driver for no user-visible gain.
 - **Filament / panel impact**: none structurally. The panel resolves drivers through
   `PaymentManager` and reads checks via `Transaction::paymentChecks()`, so
   implementing `getPaymentChecks()` populates an existing surface rather than
@@ -348,21 +363,21 @@ depends on it.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Test harness: `paypal` testsuite in `phpunit.xml`, CI matrix entry,
+- [x] Slice 1 — Test harness: `paypal` testsuite in `phpunit.xml`, CI matrix entry,
       `tests/paypal/TestCase.php`, recorded response fixtures, and characterisation
       tests covering current behaviour so the later slices have a safety net.
-- [ ] Slice 2 — Correctness: stop writing the removed `status` column so a
+- [x] Slice 2 — Correctness: stop writing the removed `status` column so a
       successful payment can place an order at all, `PaypalManager` rescaling
       helpers, remove every hardcoded `* 100` / `/ 100`, and add the amount and
       currency verification guard on `authorize()`.
-- [ ] Slice 3 — Contract and configuration: real `PaypalInterface` under
+- [x] Slice 3 — Contract and configuration: real `PaypalInterface` under
       `Contracts/`, constructor injection, cached access token, `scoped` binding
       registered in `register()`, `config/paypal.php` with the `services.paypal.*`
       fallback, and the `buildInitialOrder()` / `cancel_url` fixes.
-- [ ] Slice 4 — Persistence and capture policy: `paypal_orders` table and model,
+- [x] Slice 4 — Persistence and capture policy: `paypal_orders` table and model,
       double-processing guard, idempotency headers, working `intent: AUTHORIZE`
       flow, and a real `capture()`.
-- [ ] Slice 5 — Webhooks: routes, signature-verifying middleware, queued job, event
+- [x] Slice 5 — Webhooks: routes, signature-verifying middleware, queued job, event
       handlers, and the `PaypalWebhookReceived` event.
-- [ ] Slice 6 — `getPaymentChecks()` from `processor_response`, plus the
+- [x] Slice 6 — `getPaymentChecks()` from `processor_response`, plus the
       `resources/lang/` strings across all 16 locales.

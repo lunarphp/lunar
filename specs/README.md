@@ -89,4 +89,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0063 | Standalone attributes surface in the Filament admin | accepted    |
 | 0064 | Scoped service lifetimes for long-lived workers | implemented |
 | 0070 | First-party payment drivers: Stripe and PayPal | implemented |
-| 0071 | PayPal driver hardening | accepted    |
+| 0071 | PayPal driver hardening | implemented |

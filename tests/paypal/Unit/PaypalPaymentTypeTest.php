@@ -313,3 +313,62 @@ it('records the paypal order against the cart and the placed order', function ()
         ->and($paypalOrder->processing_at)->not->toBeNull()
         ->and($paypalOrder->processed_at)->not->toBeNull();
 });
+
+it('surfaces the avs and cvv results from the capture', function () {
+    $cart = CartBuilder::build()->calculate();
+
+    PaypalFake::forCart($cart);
+
+    (new PaypalPaymentType)->cart($cart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    $capture = Transaction::where('type', 'capture')->first();
+
+    // The fixture carries processor_response avs_code Y, cvv_code M.
+    expect($capture->meta['avs_code'])->toEqual('Y');
+
+    $checks = collect((new PaypalPaymentType)->getPaymentChecks($capture)->getChecks());
+
+    expect($checks)->toHaveCount(2)
+        ->and($checks->first()->label)->toEqual('Address check')
+        ->and($checks->first()->successful)->toBeTrue()
+        ->and($checks->last()->label)->toEqual('Security code check')
+        ->and($checks->last()->successful)->toBeTrue();
+});
+
+it('marks a failed address check as unsuccessful', function () {
+    $order = CartBuilder::build()->calculate()->createOrder();
+
+    $capture = $order->transactions()->create([
+        'success' => true,
+        'type' => 'capture',
+        'driver' => 'paypal',
+        'amount' => 1999,
+        'reference' => '3C679366HH908993F',
+        'status' => 'COMPLETED',
+        'card_type' => 'paypal',
+        'meta' => ['avs_code' => 'N', 'cvv_code' => 'N'],
+    ]);
+
+    $checks = collect((new PaypalPaymentType)->getPaymentChecks($capture)->getChecks());
+
+    expect($checks)->toHaveCount(2)
+        ->and($checks->every(fn ($check) => $check->successful === false))->toBeTrue();
+});
+
+it('returns no checks when paypal sent no processor response', function () {
+    $order = CartBuilder::build()->calculate()->createOrder();
+
+    $capture = $order->transactions()->create([
+        'success' => true,
+        'type' => 'capture',
+        'driver' => 'paypal',
+        'amount' => 1999,
+        'reference' => '3C679366HH908993F',
+        'status' => 'COMPLETED',
+        'card_type' => 'paypal',
+    ]);
+
+    expect((new PaypalPaymentType)->getPaymentChecks($capture)->getChecks())->toBeEmpty();
+});

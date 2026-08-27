@@ -32,6 +32,8 @@ class PaypalServiceProvider extends ServiceProvider
             return $cart->hasMany(PaypalOrder::class);
         });
 
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar-paypal');
+
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/webhooks.php');
 
@@ -42,5 +44,9 @@ class PaypalServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/paypal.php' => config_path('lunar/paypal.php'),
         ], 'lunar.paypal.config');
+
+        $this->publishes([
+            __DIR__.'/../resources/lang' => lang_path('vendor/lunar-paypal'),
+        ], 'lunar.paypal.translations');
     }
 }

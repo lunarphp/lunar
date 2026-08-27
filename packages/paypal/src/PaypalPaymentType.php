@@ -6,6 +6,8 @@ use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Support\Collection;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentCheck;
+use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Exceptions\Carts\CartException;
@@ -291,6 +293,41 @@ class PaypalPaymentType extends AbstractPayment
         ]);
 
         return new PaymentCapture(success: true);
+    }
+
+    /**
+     * Surface the AVS and CVV results PayPal returns on a capture.
+     *
+     * Codes vary by card network; the pass sets below are the ones PayPal
+     * documents as a match for every network.
+     *
+     * @see https://developer.paypal.com/docs/api/payments/v2/#definition-processor_response
+     */
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        /** @var Transaction $transaction */
+        $meta = $transaction->meta;
+
+        $checks = new PaymentChecks;
+
+        if ($avs = ($meta['avs_code'] ?? null)) {
+            $checks->addCheck(new PaymentCheck(
+                // Y and X are full matches; A and B match the street only.
+                successful: in_array($avs, ['A', 'B', 'D', 'F', 'M', 'X', 'Y'], true),
+                label: __('lunar-paypal::checks.avs'),
+                message: $avs,
+            ));
+        }
+
+        if ($cvv = ($meta['cvv_code'] ?? null)) {
+            $checks->addCheck(new PaymentCheck(
+                successful: in_array($cvv, ['M', 'Y'], true),
+                label: __('lunar-paypal::checks.cvv'),
+                message: $cvv,
+            ));
+        }
+
+        return $checks;
     }
 
     /**
