@@ -83,6 +83,15 @@ class Paypal implements PaypalInterface
             ->json() ?? [];
     }
 
+    public function authorizeOrder(string $orderId, ?string $requestId = null): array
+    {
+        return $this->httpClient()
+            ->withHeaders($this->idempotencyHeaders($requestId))
+            ->withBody('', 'application/json')
+            ->post("/v2/checkout/orders/{$orderId}/authorize")
+            ->json() ?? [];
+    }
+
     public function captureAuthorization(string $authorizationId, ?string $amount = null, ?string $currencyCode = null, ?string $requestId = null): array
     {
         $payload = $amount === null ? [] : [

@@ -15,6 +15,7 @@ use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
 use Lunar\Paypal\Facades\Paypal;
 use Lunar\Paypal\Managers\PaypalManager;
+use Lunar\Paypal\Models\PaypalOrder;
 
 class PaypalPaymentType extends AbstractPayment
 {
@@ -52,14 +53,33 @@ class PaypalPaymentType extends AbstractPayment
             return $this->fail('Unable to locate the PayPal order');
         }
 
+        $paypalOrderModel = PaypalOrder::firstOrCreate(
+            ['paypal_order_id' => $paypalOrderId],
+            ['cart_id' => $this->cart?->id ?: $this->order?->cart_id, 'order_id' => $this->order?->id],
+        );
+
+        if ($paypalOrderModel->isProcessed()) {
+            return $this->fail('This PayPal order has already been processed');
+        }
+
+        $paypalOrderModel->update(['processing_at' => now()]);
+
         // Checked before capturing — a mismatch must not take the customer's money.
         if ($failure = $this->assertOrderMatchesTotal($paypalOrder)) {
             return $failure;
         }
 
+        $manual = $this->policy === 'manual';
+
         if (($paypalOrder['status'] ?? null) === 'APPROVED') {
-            $paypalOrder = Paypal::capture($paypalOrderId);
+            $paypalOrder = $manual
+                ? Paypal::authorizeOrder($paypalOrderId, $paypalOrderId)
+                : Paypal::capture($paypalOrderId, $paypalOrderId);
         }
+
+        // Sync the PayPal-side status before any local work, so the row cannot
+        // disagree with reality if a later step throws.
+        $paypalOrderModel->update(['status' => $paypalOrder['status'] ?? null]);
 
         if (($paypalOrder['status'] ?? null) !== 'COMPLETED') {
             return $this->fail('PayPal did not complete the payment');
@@ -73,14 +93,23 @@ class PaypalPaymentType extends AbstractPayment
             }
         }
 
-        $this->order->transactions()->createMany(
-            $this->buildTransactions($paypalOrder, $this->order->currency)->all()
-        );
+        $transactions = $this->buildTransactions($paypalOrder, $this->order->currency);
+
+        if ($transactions->isEmpty()) {
+            return $this->fail('PayPal returned no captures or authorizations');
+        }
+
+        $this->order->transactions()->createMany($transactions->all());
 
         // payment_status and fulfilment_status are derived from the transaction
         // ledger by TransactionObserver, so placing the order is all that is left.
         $this->order->update([
             'placed_at' => now(),
+        ]);
+
+        $paypalOrderModel->update([
+            'order_id' => $this->order->id,
+            'processed_at' => now(),
         ]);
 
         $response = new PaymentAuthorize(
@@ -151,22 +180,48 @@ class PaypalPaymentType extends AbstractPayment
      */
     protected function buildTransactions(array $paypalOrder, Currency $currency): Collection
     {
-        return collect($paypalOrder['purchase_units'] ?? [])
+        $units = collect($paypalOrder['purchase_units'] ?? []);
+
+        // Under the manual policy PayPal returns authorizations rather than
+        // captures. They become `intent` transactions, which the ledger reads as
+        // authorized-but-not-paid until capture() converts them.
+        return $units
             ->flatMap(fn (array $unit): array => $unit['payments']['captures'] ?? [])
-            ->map(fn (array $capture): array => [
-                'success' => $capture['status'] === 'COMPLETED',
-                'type' => 'capture',
-                'driver' => 'paypal',
-                'amount' => PaypalManager::fromPaypalAmount(
-                    (string) ($capture['amount']['value'] ?? '0'),
-                    $currency
-                ),
-                'reference' => $capture['id'],
-                'status' => $capture['status'],
-                'card_type' => 'paypal',
-                'captured_at' => now()->parse($capture['create_time']),
-                'meta' => $capture['processor_response'] ?? null,
-            ]);
+            ->map(fn (array $capture): array => $this->transactionRow($capture, $currency, 'capture'))
+            ->merge(
+                $units
+                    ->flatMap(fn (array $unit): array => $unit['payments']['authorizations'] ?? [])
+                    ->map(fn (array $auth): array => $this->transactionRow($auth, $currency, 'intent'))
+            )
+            ->values();
+    }
+
+    /**
+     * Map a PayPal capture or authorization onto a transaction row.
+     *
+     * @param  array<string, mixed>  $payment
+     * @return array<string, mixed>
+     */
+    protected function transactionRow(array $payment, Currency $currency, string $type): array
+    {
+        $succeeded = in_array($payment['status'] ?? null, ['COMPLETED', 'CREATED'], true);
+
+        return [
+            'success' => $succeeded,
+            'type' => $type,
+            'driver' => 'paypal',
+            'amount' => PaypalManager::fromPaypalAmount(
+                (string) ($payment['amount']['value'] ?? '0'),
+                $currency
+            ),
+            'reference' => $payment['id'],
+            'status' => $payment['status'] ?? null,
+            'card_type' => 'paypal',
+            'captured_at' => $type === 'capture' && $succeeded
+                ? now()->parse($payment['create_time'])
+                : null,
+            'meta' => $payment['processor_response'] ?? null,
+        ];
     }
 
     /**
@@ -193,6 +248,48 @@ class PaypalPaymentType extends AbstractPayment
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
+        /** @var Transaction $transaction */
+        $currency = $transaction->order->currency;
+
+        // Zero means "capture the whole authorization".
+        $amount = $amount > 0 ? $amount : $transaction->amount;
+
+        try {
+            $response = Paypal::captureAuthorization(
+                $transaction->reference,
+                PaypalManager::toPaypalAmount($amount, $currency),
+                $currency->code,
+                $transaction->reference.':'.$amount,
+            );
+        } catch (HttpClientException $e) {
+            return new PaymentCapture(
+                success: false,
+                message: $e->getMessage(),
+            );
+        }
+
+        if (($response['status'] ?? null) !== 'COMPLETED') {
+            return new PaymentCapture(
+                success: false,
+                message: 'PayPal did not complete the capture',
+            );
+        }
+
+        $transaction->order->transactions()->create([
+            'success' => true,
+            'type' => 'capture',
+            'driver' => 'paypal',
+            'amount' => PaypalManager::fromPaypalAmount(
+                (string) ($response['amount']['value'] ?? '0'),
+                $currency
+            ),
+            'reference' => $response['id'],
+            'status' => $response['status'],
+            'card_type' => $transaction->card_type,
+            'last_four' => $transaction->last_four,
+            'captured_at' => now(),
+        ]);
+
         return new PaymentCapture(success: true);
     }
 
@@ -209,7 +306,8 @@ class PaypalPaymentType extends AbstractPayment
             $response = Paypal::refund(
                 $transaction->reference,
                 PaypalManager::toPaypalAmount($amount, $currency),
-                $currency->code
+                $currency->code,
+                $transaction->reference.':refund:'.$amount,
             );
 
             $transaction->order->transactions()->create([

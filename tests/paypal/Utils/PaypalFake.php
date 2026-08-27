@@ -45,7 +45,7 @@ class PaypalFake
      * code is generated, so tests that exercise the amount guard need the PayPal
      * side to agree with the cart unless they are deliberately making it differ.
      *
-     * @param  array{amount?: string, currency?: string, status?: string, capture_status?: string}  $overrides
+     * @param  array{amount?: string, currency?: string, status?: string, capture_status?: string, authorize?: bool}  $overrides
      */
     public static function forCart(Cart $cart, array $overrides = []): void
     {
@@ -71,12 +71,27 @@ class PaypalFake
         $capture['status'] = $captured['status'] === 'COMPLETED' ? 'COMPLETED' : $captured['status'];
         unset($capture);
 
-        // The capture pattern has to be registered first — Http::fake() returns the
-        // first matching stub and `*\/v2/checkout/orders/*` would swallow it.
+        $authorized = static::fixture('order_authorized');
+        $authorized['purchase_units'][0]['payments']['authorizations'][0]['amount'] = [
+            'currency_code' => $currency,
+            'value' => $amount,
+        ];
+
+        $authorizationCapture = static::fixture('authorization_captured');
+        $authorizationCapture['amount'] = [
+            'currency_code' => $currency,
+            'value' => $amount,
+        ];
+
+        // The more specific patterns have to be registered first — Http::fake()
+        // returns the first matching stub, and `*\/v2/checkout/orders/*` would
+        // otherwise swallow the capture and authorize calls.
         Http::fake([
             '*/v1/oauth2/token' => Http::response(static::fixture('oauth_token')),
             '*/v2/checkout/orders/*/capture' => Http::response($captured),
+            '*/v2/checkout/orders/*/authorize' => Http::response($authorized),
             '*/v2/checkout/orders/*' => Http::response($approved),
+            '*/v2/payments/authorizations/*/capture' => Http::response($authorizationCapture),
             '*/v2/payments/captures/*/refund' => Http::response(static::fixture('refund')),
         ]);
     }

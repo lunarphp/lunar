@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\Models\Transaction;
+use Lunar\Paypal\Models\PaypalOrder;
 use Lunar\Paypal\PaypalPaymentType;
 use Lunar\Tests\Paypal\Unit\TestCase;
 use Lunar\Tests\Paypal\Utils\CartBuilder;
@@ -218,24 +219,97 @@ it('allows an under-payment when partial payments are enabled', function () {
     ])->authorize()->success)->toBeTrue();
 });
 
-it('reports a successful capture without contacting paypal', function () {
-    Http::fake();
+it('captures an authorization and records the capture', function () {
+    Config::set('lunar.paypal.policy', 'manual');
 
-    $order = CartBuilder::build()->calculate()->createOrder();
+    $cart = CartBuilder::build()->calculate();
 
-    $capture = $order->transactions()->create([
-        'success' => true,
-        'type' => 'capture',
-        'driver' => 'paypal',
-        'amount' => 1999,
-        'reference' => '3C679366HH908993F',
-        'status' => 'COMPLETED',
-        'card_type' => 'paypal',
-        'captured_at' => now(),
-    ]);
+    PaypalFake::forCart($cart);
 
-    expect((new PaypalPaymentType)->capture($capture, 100)->success)->toBeTrue();
+    (new PaypalPaymentType)->cart($cart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
 
-    Http::assertNothingSent();
+    // Under the manual policy the money is authorized, not captured.
+    $intent = Transaction::where('type', 'intent')->first();
+
+    expect($intent)->not->toBeNull()
+        ->and($intent->reference)->toEqual('0VF52814937998046')
+        ->and(Transaction::where('type', 'capture')->count())->toBe(0);
+
+    $response = (new PaypalPaymentType)->capture($intent, $intent->amount);
+
+    expect($response->success)->toBeTrue();
+
+    Http::assertSent(fn ($request) => str_contains($request->url(), '/v2/payments/authorizations/0VF52814937998046/capture'));
+
+    $capture = Transaction::where('type', 'capture')->first();
+
+    expect($capture)->not->toBeNull()
+        ->and($capture->amount)->toEqual($intent->amount);
 });
-// Slice 4 makes capture() call the authorization capture endpoint.
+
+it('sends an idempotency key when capturing', function () {
+    Config::set('lunar.paypal.policy', 'manual');
+
+    $cart = CartBuilder::build()->calculate();
+    PaypalFake::forCart($cart);
+
+    (new PaypalPaymentType)->cart($cart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    $intent = Transaction::where('type', 'intent')->first();
+
+    (new PaypalPaymentType)->capture($intent, $intent->amount);
+
+    Http::assertSent(fn ($request) => str_contains($request->url(), '/authorizations/')
+        && $request->hasHeader('PayPal-Request-Id'));
+});
+
+it('refuses to reuse a paypal order that has already been processed', function () {
+    $cart = CartBuilder::build()->calculate();
+
+    PaypalFake::forCart($cart);
+
+    expect((new PaypalPaymentType)->cart($cart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize()->success)->toBeTrue();
+
+    expect(PaypalOrder::where('paypal_order_id', '5O190127TN364715T')->first()->isProcessed())->toBeTrue();
+
+    // Presenting the same, already-spent PayPal order against a *different*
+    // cart is the case the row exists to stop — the first cart's own replay is
+    // caught earlier by the already-placed guard.
+    $otherCart = CartBuilder::build()->calculate();
+
+    PaypalFake::forCart($otherCart);
+
+    $second = (new PaypalPaymentType)->cart($otherCart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    expect($second->success)->toBeFalse()
+        ->and($second->message)->toEqual('This PayPal order has already been processed')
+        ->and($otherCart->refresh()->completedOrder)->toBeNull();
+
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/capture'));
+});
+
+it('records the paypal order against the cart and the placed order', function () {
+    $cart = CartBuilder::build()->calculate();
+
+    PaypalFake::forCart($cart);
+
+    (new PaypalPaymentType)->cart($cart)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    $paypalOrder = PaypalOrder::where('paypal_order_id', '5O190127TN364715T')->first();
+
+    expect($paypalOrder->cart_id)->toEqual($cart->id)
+        ->and($paypalOrder->order_id)->toEqual($cart->refresh()->completedOrder->id)
+        ->and($paypalOrder->status)->toEqual('COMPLETED')
+        ->and($paypalOrder->processing_at)->not->toBeNull()
+        ->and($paypalOrder->processed_at)->not->toBeNull();
+});

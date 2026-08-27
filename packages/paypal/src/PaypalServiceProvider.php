@@ -4,7 +4,9 @@ namespace Lunar\Paypal;
 
 use Illuminate\Support\ServiceProvider;
 use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Cart;
 use Lunar\Paypal\Contracts\PaypalInterface;
+use Lunar\Paypal\Models\PaypalOrder;
 
 class PaypalServiceProvider extends ServiceProvider
 {
@@ -26,7 +28,15 @@ class PaypalServiceProvider extends ServiceProvider
             return $app->make(PaypalPaymentType::class);
         });
 
+        Cart::resolveRelationUsing('paypalOrders', function (Cart $cart) {
+            return $cart->hasMany(PaypalOrder::class);
+        });
+
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         $this->publishes([
             __DIR__.'/../config/paypal.php' => config_path('lunar/paypal.php'),

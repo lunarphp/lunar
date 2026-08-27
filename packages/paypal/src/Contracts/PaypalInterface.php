@@ -43,6 +43,13 @@ interface PaypalInterface
     public function capture(string $orderId, ?string $requestId = null): array;
 
     /**
+     * Authorize an approved PayPal order, holding the funds for later capture.
+     *
+     * @return array<string, mixed>
+     */
+    public function authorizeOrder(string $orderId, ?string $requestId = null): array;
+
+    /**
      * Capture a previously authorized payment, optionally for part of the amount.
      *
      * @return array<string, mixed>

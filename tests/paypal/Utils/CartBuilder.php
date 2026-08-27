@@ -25,13 +25,15 @@ class CartBuilder
      */
     public static function build(array $cartParams = [], array $currencyParams = [], float $unitPrice = 1.99): Cart
     {
-        Language::factory()->create([
-            'default' => true,
-        ]);
+        // Reused when a cart already exists in the test — a second default
+        // language or currency collides on the default flag.
+        Language::query()->where('default', true)->first()
+            ?: Language::factory()->create(['default' => true]);
 
-        $currency = Currency::factory()->create(array_merge([
-            'default' => true,
-        ], $currencyParams));
+        $currency = (! $currencyParams ? Currency::query()->where('default', true)->first() : null)
+            ?: Currency::factory()->create(array_merge([
+                'default' => true,
+            ], $currencyParams));
 
         $taxClass = TaxClass::factory()->create();
 

@@ -14,6 +14,7 @@ use Lunar\Paypal\Contracts\PaypalInterface;
  * @method static string|null getAccessToken()
  * @method static array<string, mixed> getOrder(string $orderId)
  * @method static array<string, mixed> capture(string $orderId, ?string $requestId = null)
+ * @method static array<string, mixed> authorizeOrder(string $orderId, ?string $requestId = null)
  * @method static array<string, mixed> captureAuthorization(string $authorizationId, ?string $amount = null, ?string $currencyCode = null, ?string $requestId = null)
  * @method static array<string, mixed> refund(string $transactionId, string $amount, string $currencyCode, ?string $requestId = null)
  * @method static array<string, mixed> buildInitialOrder(Cart $cart)
