@@ -26,7 +26,7 @@ return [
 
 Used in code as `__('lunarpanel::channel.label')` (see `packages/admin/src/Filament/Resources/ChannelResource.php:38`).
 
-**Special case**: `packages/admin/resources/lang/*/discount.php` references `Lunar\Models\Discount`. The diff script boots Composer autoload so this loads. If a peer locale is missing the `use` statement or has stale class references, the file load will fail — report that as a Blocker, not a missing-key.
+**Special case**: `packages/admin/resources/lang/*/discount.php` references `Lunar\Core\Models\Discount`. The diff script boots Composer autoload so this loads. If a peer locale is missing the `use` statement or has stale class references, the file load will fail — report that as a Blocker, not a missing-key.
 
 **Hardcoded strings to flag**:
 - `Filament\…\TextInput::make('foo')->label('Some Label')` → must be `->label(__('lunarpanel::foo.bar'))`.
@@ -54,7 +54,7 @@ Create with `php artisan make:test --pest <Name>Test` (Pest is the test framewor
 
 ## Migrations
 
-**Base class**: `Lunar\Base\Migration` (`packages/core/src/Base/Migration.php`).
+**Base class**: `Lunar\Core\Database\Migration` (`packages/core/src/Base/Migration.php`).
 - Sets `$this->prefix` from `config('lunar.database.table_prefix')` in the constructor.
 - Provides `getConnection()` honoring `config('lunar.database.connection')`.
 - Anonymous class pattern: `return new class extends Migration { … };`.
@@ -103,7 +103,7 @@ Required surface for every resource:
 class FooResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
-    protected static ?string $model = FooContract::class; // Lunar\Models\Contracts\Foo
+    protected static ?string $model = Foo::class; // concrete model — correct on this line
     protected static ?int $navigationSort = 1;
 
     public static function getLabel(): string         { return __('lunarpanel::foo.label'); }
@@ -114,7 +114,7 @@ class FooResource extends BaseResource
 ```
 
 **Blockers**:
-- `$model` referencing a concrete class (`Channel::class`) instead of `ChannelContract::class`. This breaks consumer overrides via the model manifest.
+- On 1.x this had to be an interface. Not here: `$model = Channel::class` with the concrete class is correct, because there are no per-model interfaces. Do not flag it.
 
 **Should fix**:
 - Missing `$permission`.
@@ -123,73 +123,39 @@ class FooResource extends BaseResource
 
 ---
 
-## Model contracts (type-hinting)
+## Model type hints — no rule on this line
 
-**Why**: `packages/core/src/Base/ModelManifest.php` binds each `Lunar\Models\Contracts\*` interface to its concrete model in the container. Consumers replace a model with `Lunar::useModel(ProductContract::class, MyProduct::class)`. Code that type-hints the concrete `Lunar\Models\Product` silently bypasses that override — the consumer's subclass still gets stored, but a `Product $product` parameter rejects it on a strict type check, and IDE/static-analysis assumes properties that the subclass may have changed.
+**Do not flag concrete model type hints on this branch.**
 
-**Where the contract is required** (non-exhaustive — apply to all changed code):
+On `1.x` every model had an interface in `Lunar\Models\Contracts\*`, models were
+bound to those interfaces in the container, and type-hinting the concrete class
+was a Blocker. This line removed per-model interfaces entirely.
 
-| Surface                                | Example                                                                              |
-|----------------------------------------|--------------------------------------------------------------------------------------|
-| Pipeline `handle()` params/returns     | `public function handle(OrderContract $order, Closure $next): mixed`                 |
-| Manager methods                        | `public function apply(CartContract $cart): CartContract`                            |
-| Promoted constructor properties        | `public function __construct(public ?CartContract $cart = null) {}`                  |
-| Action / job / listener method params  | `public function handle(ProductContract $product): void`                             |
-| Event constructor params & properties  | `public function __construct(public OrderContract $order) {}` (also: breaking-change risk) |
-| PHPDoc `@param` / `@return` / `@var`   | `@return \Illuminate\Support\Collection<int, ProductContract>`                       |
-| Container resolution                   | `app(ProductContract::class)`, `resolve(CartContract::class)`                        |
-| Filament resource `$model`             | `protected static ?string $model = ProductContract::class;`                          |
-
-**Reference patterns from the codebase**:
-
-- `packages/core/src/Pipelines/Order/Creation/CreateOrderLines.php` — `handle(OrderContract $order, Closure $next)`.
-- `packages/core/src/Managers/CartSessionManager.php` — `public ?CartContract $cart = null` and `use(CartContract $cart): CartContract`.
-- `packages/core/src/PaymentTypes/AbstractPayment.php` — `protected ?CartContract $cart = null; protected ?OrderContract $order = null;`.
-
-**Where concrete classes are correct** (do not flag):
-
-- The model class itself, plus its relations, scopes, casts, observers' `$model` property.
-- `database/factories/*Factory.php` and `database/seeders/`.
-- Migrations.
-- Test fixtures: `Product::factory()->create()`, `Order::find(1)`.
-- Type-narrowing `instanceof` checks with a documented reason.
-
-**Common smells to flag**:
+Idiomatic code here type-hints the model directly:
 
 ```php
-// Bad — defeats consumer overrides
-use Lunar\Models\Cart;
+// packages/core/src/Pipelines/Cart/CalculateLines.php — correct on this line
+use Lunar\Core\Models\Cart;
 
 public function handle(Cart $cart, Closure $next): mixed { … }
-
-// Good
-use Lunar\Models\Contracts\Cart as CartContract;
-
-public function handle(CartContract $cart, Closure $next): mixed { … }
 ```
 
-```php
-// Bad
-public function __construct(public Order $order) {}
+`packages/core/src/Contracts/` still exists but holds *service* contracts —
+`CartSession`, `ModelManifest`, `OrderReferenceGenerator` and so on. There is no
+`Contracts/Cart.php`.
 
-// Good
-public function __construct(public OrderContract $order) {}
-```
+So:
 
-```php
-// Bad
-$cart = app(Cart::class);
-$cart = new Cart;
+- Never suggest a `...\Contracts\Foo as FooContract` import for a model.
+- Never report `Lunar\Core\Models\Cart` as though it should be
+  `Lunar\Models\Cart` — the `Lunar\Core\` root is correct here.
+- Filament resources correctly set `protected static ?string $model = Brand::class;`
+  with the concrete class. Do not flag it.
 
-// Good
-$cart = app(CartContract::class);
-```
-
-**Heuristic for the reviewer**: in the diff, for each `use Lunar\Models\<Name>;` added outside an exempt path, grep the same file for `<Name> $` (parameter/property), `: <Name>` (return type), `@param <Name>`, `@return <Name>`, `new <Name>`, and `app(<Name>::class)`. Each hit is a Blocker finding unless covered by an exemption above.
-
-**Severity**: Blocker — the public contract surface is part of the 1.x stability promise, and this directly affects model-extension consumers. Pair this finding with a fix snippet so it's a one-line rename rather than a discussion.
-
----
+**What is still worth checking**: models remain swappable via
+`Lunar\Core\Manifests\ModelManifest`, which discovers classes extending
+`Lunar\Core\Models\Base`. A new model that does not extend `Base`, or that lives
+outside a discovered directory, will not be registered — that is a real finding.
 
 ## PHP conventions (from `CLAUDE.md`)
 
@@ -226,11 +192,11 @@ Any of these is a Blocker until the user confirms:
 
 ---
 
-## Public API surface (1.x stability)
+## Public API surface (2.x is pre-GA)
 
 The `1.x` branch is stable — these changes are breaking and need a major bump or a deprecation path:
 
-- Anything in `packages/*/src/Models/Contracts/*.php`: added abstract methods, removed methods, renamed methods, changed parameter or return types.
+- Anything in `packages/*/src/Contracts/*.php`: added abstract methods, removed methods, renamed methods, changed parameter or return types.
 - Public method signature changes on classes implementing a `Contracts/*` interface.
 - Removed/renamed events.
 - Removed config keys in `packages/*/config/*.php` (renaming requires alias + deprecation).
