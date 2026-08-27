@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -94,7 +95,7 @@ test('login restores user cart matching current channel only', function () {
     Config::set('lunar.cart_session.auto_create', false);
 
     // Trigger login
-    event(new \Illuminate\Auth\Events\Login('web', $user, false));
+    event(new Login('web', $user, false));
 
     $currentCart = CartSession::current();
 
