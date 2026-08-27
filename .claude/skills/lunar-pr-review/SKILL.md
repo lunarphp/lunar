@@ -50,7 +50,7 @@ Also scan added strings in PHP/Blade for hardcoded user-facing English that shou
 ### Tests (Pest) — Should-fix
 
 For each newly added class under `packages/*/src/`:
-- Models, services, actions, observers, jobs, and events should have a matching Pest test under `tests/{core,panel,filament,admin,demo-data,opayo,paypal,shipping,stripe,search,upgrade}/`.
+- Models, services, actions, observers, jobs, and events should have a matching Pest test under `tests/{core,panel,filament,admin,demo-data,paypal,shipping,stripe,search,upgrade}/`.
 - New `Eloquent` models additionally require a factory under `packages/*/database/factories/`.
 - Use `php artisan make:test --pest <Name>Test` (do not write to `tests/Feature/` paths directly).
 

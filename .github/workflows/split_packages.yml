@@ -16,7 +16,6 @@ jobs:
           - "demo-data"
           - "filament"
           - "meilisearch"
-          - "opayo"
           - "panel"
           - "panel-addon-example"
           - "paypal"
