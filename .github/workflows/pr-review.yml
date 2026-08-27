@@ -259,7 +259,7 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5
             --max-turns 30
-            --max-budget-usd 0.50
+            --max-budget-usd 1.00
             --allowedTools "Read,Grep,Glob"
             --add-dir ${{ runner.temp }}/pr-context
             --json-schema '{"type":"object","properties":{"comment_markdown":{"type":"string"},"needs_forward_port":{"type":"boolean"},"injection_attempt":{"type":"boolean"},"suggested_tier":{"type":"string","enum":["high","medium","low","trivial"]}},"required":["comment_markdown","needs_forward_port","injection_attempt","suggested_tier"],"additionalProperties":false}'
