@@ -1,6 +1,6 @@
 # 0073 — Split `AmountOff` into `PercentageOff` and `FixedAmountOff`
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Split the `AmountOff` discount type into percentage and fixed-amount types (spec 0073)
@@ -119,16 +119,20 @@ directly. Enumerated so none of it is discovered late.
 ### Testing
 
 - **Pest (`tests/core/`)**: `tests/core/Unit/DiscountTypes/AmountOffTest` splits into
-  `PercentageOffTest` and `FixedAmountOffTest`, keeping the existing coverage (including the
-  fixed-value remainder pass and the "line already has a better deal" skip). The
-  `TargetsCartLines` trait is exercised through both. `DiscountManagerTest` and
-  `DiscountManagerMemoisationTest` carry `AmountOff::class` and `fixed_value` fixtures that
-  move across. Registry contents assert both types are present.
+  `PercentageOffTest` (10 tests) and `FixedAmountOffTest` (13), keeping the existing coverage
+  (including the fixed-value remainder pass and the "line already has a better deal" skip),
+  plus a targeting case on the fixed-amount side so `TargetsCartLines` is exercised through
+  both. Nine further files carry `AmountOff::class` or `fixed_value` fixtures and are
+  reclassified per fixture: `DiscountManagerTest`, `DiscountManagerMemoisationTest`,
+  `MapDiscountBreakdownTest`, `CartTest`, `CreateOrderTest`, `BuyXGetYTest`,
+  `CouponValidatorTest`, `StrictLazyLoadingTest` and `AbstractDiscountTypeTest` (whose stub
+  never read the keys — inert fixture noise, cleaned up).
 - **Pest (`tests/upgrade/`)**: the data migration — both branches of `data.fixed_value`, the
   `fixed_values` → `amounts` move, idempotency on re-run, and the report warning.
 - **Pest (`tests/admin/`)**: the existing `DiscountResource` page tests still pass (they
   reference only `BuyXGetY`, so no fixture changes), plus a regression covering the
-  `DiscountTable` type column against a row whose type class is not installed.
+  `DiscountTable` type column against a row whose type class is not installed — confirmed to
+  fail with a `ViewException` without the guard.
 - Pint + PHPStan as required.
 
 ## Alternatives considered
@@ -162,8 +166,10 @@ directly. Enumerated so none of it is discovered late.
   contract are unchanged, so third-party types are unaffected.
 - **Upgrade package**: one data migration, one `LunarSetList` entry removed, one report
   warning, plus upgrade notes covering the two code-level breaks.
-- **Translations**: new `lunar::discounts.types.*` keys in `core` (16 locales); `filament`
-  `discount.php` restructured (16 locales).
+- **Translations**: new `lunar::discounts.types.*` keys in `core` (16 locales);
+  `discount.php` restructured in **both** `filament` and `admin`, which ship identical copies
+  of that file under different namespaces (32 files). The `form.percentage` label was left as
+  English in all 15 non-English locales and is translated while the group is open.
 - **Filament / admin**: enumerated above.
 
 ## Open questions
@@ -193,10 +199,11 @@ directly. Enumerated so none of it is discovered late.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Core: `PercentageOff`, `FixedAmountOff`, `TargetsCartLines`, registry +
+- [x] Slice 1 — Core: `PercentageOff`, `FixedAmountOff`, `TargetsCartLines`, registry +
       factory, `lunar::discounts.types.*` keys (16 locales), core test split.
-- [ ] Slice 2 — Filament / admin: `DiscountForm` sections and component methods,
-      `EditDiscount` save mutation, `discount.php` across 16 locales, `DiscountTable`
-      `class_exists()` guard + regression test, delete `ManageBuyXGetYDiscount`.
-- [ ] Slice 3 — Upgrade: the one-way data migration, `LunarSetList` entry removal,
-      `StepReport` warning, upgrade notes, tests.
+- [x] Slice 2 — Filament / admin: `DiscountForm` sections and component methods,
+      `EditDiscount` save mutation, `discount.php` across 32 locale files (`filament` and
+      `admin`), `DiscountTable` `class_exists()` guard + regression test, delete
+      `ManageBuyXGetYDiscount`.
+- [x] Slice 3 — Upgrade: the one-way data migration, `LunarSetList` entry removal,
+      `DataMigrationStep::MANUAL_ACTIONS`, tests.
