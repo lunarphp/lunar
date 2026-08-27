@@ -2,26 +2,37 @@
 
 namespace Lunar\Panel\Http\Controllers\Orders;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Lang;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lunar\Core\Actions\Fulfilment\CreateFulfilment;
-use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
+use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
+use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
+use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Actions\Orders\CancelOrder;
 use Lunar\Core\Actions\Orders\CaptureOrder;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Facades\Carriers;
+use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Facades\OrderNotifications;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\FulfilmentTracking;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Panel\Support\FulfilmentTransitions;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 
@@ -30,9 +41,11 @@ class OrderShowController
     public function show(Order $order): Response
     {
         $order->load([
-            'lines',
-            'fulfilments.lines.orderLine',
+            'lines.purchasable',
+            'lines.fulfilmentLines',
+            'fulfilments.lines.orderLine.purchasable',
             'fulfilments.trackings',
+            'fulfilments.location',
             'transactions',
             'shippingAddress.country',
             'billingAddress.country',
@@ -54,6 +67,9 @@ class OrderShowController
         $customerName = $billing
             ? (trim($billing->first_name.' '.$billing->last_name) ?: $billing->company_name)
             : ($order->customer ? trim($order->customer->first_name.' '.$order->customer->last_name) : null);
+
+        $locations = Location::query()->orderBy('name')->get();
+        $shippingOption = $this->shippingOption($order, $money);
 
         return Inertia::render('orders/Show', [
             'order' => [
@@ -78,18 +94,16 @@ class OrderShowController
                 'closed_at' => $order->closed_at,
                 'cancelled_at' => $order->cancelled_at,
             ],
-            'lines' => $order->lines
-                ->where('type', '!=', 'shipping')
+            'fulfilments' => $order->fulfilments->map(
+                fn (Fulfilment $fulfilment) => $this->fulfilment($order, $fulfilment, $locations, $shippingOption, $money)
+            ),
+            // Non-shipping lines with no fulfilment allocation — services and
+            // other non-fulfillable purchasables. Fulfillable lines always live
+            // in a fulfilment (created at placement, split/merged after).
+            'otherLines' => $order->lines
+                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && $line->fulfilmentLines->isEmpty())
                 ->values()
-                ->map(fn (OrderLine $line) => [
-                    'id' => $line->id,
-                    'description' => $line->description,
-                    'option' => $line->option,
-                    'identifier' => $line->identifier,
-                    'quantity' => $line->quantity,
-                    'unit_price' => $money($line->unit_price),
-                    'total' => $money($line->total),
-                ]),
+                ->map(fn (OrderLine $line) => $this->line($line, $line->quantity, $money)),
             'shippingLines' => $order->lines
                 ->where('type', 'shipping')
                 ->values()
@@ -98,29 +112,6 @@ class OrderShowController
                     'description' => $line->description,
                     'total' => $money($line->total),
                 ]),
-            'fulfilments' => $order->fulfilments->map(fn (Fulfilment $fulfilment) => [
-                'id' => $fulfilment->id,
-                'reference' => $fulfilment->reference ?: '#'.$fulfilment->id,
-                'state' => $fulfilment->state::$name,
-                'state_label' => __('lunar::states.fulfilment.'.$fulfilment->state::$name),
-                'method' => $fulfilment->method,
-                'shipped_at' => $fulfilment->shipped_at,
-                'notes' => $fulfilment->notes,
-                'lines' => $fulfilment->lines->map(fn (FulfilmentLine $line) => [
-                    'id' => $line->id,
-                    'quantity' => $line->quantity,
-                    'description' => $line->orderLine?->description,
-                    'identifier' => $line->orderLine?->identifier,
-                    'option' => $line->orderLine?->option,
-                ]),
-                'trackings' => $fulfilment->trackings->map(fn (FulfilmentTracking $tracking) => [
-                    'carrier' => $tracking->carrier,
-                    'tracking_number' => $tracking->tracking_number,
-                    'url' => $tracking->url,
-                ]),
-                'can_ship' => ShipFulfilment::canRun($fulfilment),
-                'ship_url' => route('panel.orders.fulfilments.ship', [$order, $fulfilment]),
-            ]),
             'transactions' => $order->transactions->map(fn (Transaction $transaction) => [
                 'id' => $transaction->id,
                 'type' => $transaction->type,
@@ -148,8 +139,10 @@ class OrderShowController
                 'new_customer' => (bool) $order->new_customer,
                 'url' => $order->customer ? route('panel.customers.edit', $order->customer) : null,
             ],
-            'shippingAddress' => $this->address($order->shippingAddress),
-            'billingAddress' => $this->address($order->billingAddress),
+            'shippingAddress' => $this->address($order->shippingAddress, $order),
+            'billingAddress' => $this->address($order->billingAddress, $order),
+            'shippingOption' => $shippingOption,
+            'countries' => Country::orderBy('name')->get(['id', 'name']),
             'tags' => $order->tags->pluck('value')->all(),
             'actions' => [
                 'can_capture' => CaptureOrder::canRun($order),
@@ -173,8 +166,16 @@ class OrderShowController
             'availableToRefundFormatted' => $money($availableToRefund),
             'cancelReasons' => CancelReasons::all(),
             'notifications' => OrderNotifications::sendable(),
-            'carriers' => Carriers::all()->mapWithKeys(fn (ShippingCarrier $carrier) => [$carrier->getKey() => $carrier->getName()]),
-            'canCreateFulfilment' => CreateFulfilment::canRun($order),
+            'carriers' => Carriers::all()->map(fn (ShippingCarrier $carrier) => [
+                'key' => $carrier->getKey(),
+                'name' => $carrier->getName(),
+                'services' => collect($carrier->getServices())->map(fn (string $label) => __($label))->all(),
+            ])->values(),
+            'holdReasons' => HoldReasons::all(),
+            'locations' => $locations->map(fn (Location $location) => [
+                'id' => $location->id,
+                'name' => $location->name,
+            ])->values(),
             'activities' => Inertia::defer(fn () => $order->activities()
                 ->with('causer')
                 ->latest()
@@ -189,23 +190,206 @@ class OrderShowController
                 'notify' => route('panel.orders.notify', $order),
                 'note' => route('panel.orders.note.update', $order),
                 'tags' => route('panel.orders.tags.update', $order),
-                'fulfilmentsStore' => route('panel.orders.fulfilments.store', $order),
             ],
         ]);
     }
 
     /**
-     * Flatten an order address for display.
+     * The full card payload for one fulfilment: chrome (state, method, hold,
+     * location, handed-over), allocated lines with price detail, tracking rows,
+     * the offered status transitions, per-action gates, merge candidates, and
+     * the endpoint URL map.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection<int, Location>  $locations
+     * @param  array{name: string, identifier: ?string, price: ?string}|null  $shippingOption
+     * @return array<string, mixed>
+     */
+    protected function fulfilment(Order $order, Fulfilment $fulfilment, \Illuminate\Database\Eloquent\Collection $locations, ?array $shippingOption, callable $money): array
+    {
+        $method = $fulfilment->method();
+        $category = $fulfilment->state->category();
+        $mergeTargets = $this->mergeTargets($order, $fulfilment);
+
+        return [
+            'id' => $fulfilment->id,
+            'reference' => $fulfilment->reference ?: '#'.$fulfilment->id,
+            'method' => $fulfilment->method,
+            'method_label' => $method->getLabel(),
+            'state' => $fulfilment->state::$name,
+            'state_label' => __('lunar::states.fulfilment.'.$fulfilment->state::$name),
+            'state_category' => strtolower($category->name),
+            'on_hold' => $fulfilment->isOnHold(),
+            'hold_reason_label' => $fulfilment->isOnHold() ? $fulfilment->holdReasonLabel() : null,
+            'hold_note' => $fulfilment->isOnHold() ? $fulfilment->hold_note : null,
+            'location' => $fulfilment->location?->name,
+            'location_id' => $fulfilment->location_id,
+            'shipped_at' => $fulfilment->shipped_at,
+            'handed_over_label' => $this->methodLabel('handed_over', $fulfilment->method, 'handed_over_default'),
+            'fulfil_label' => $this->methodLabel('fulfil_label', $fulfilment->method, 'fulfil_label'),
+            // The checkout's delivery method, surfaced on dispatchable parcels
+            // so the admin knows which service the customer paid for.
+            'delivery_method' => $method->usesTracking() ? ($shippingOption['name'] ?? null) : null,
+            'notes' => $fulfilment->notes,
+            'lines' => $fulfilment->lines->map(fn (FulfilmentLine $line) => [
+                ...$this->line($line->orderLine, $line->quantity, $money),
+                'id' => $line->id,
+                'order_line_id' => $line->order_line_id,
+            ]),
+            'trackings' => $fulfilment->trackings->map(fn (FulfilmentTracking $tracking) => [
+                'id' => $tracking->id,
+                'carrier' => $tracking->carrier,
+                'carrier_name' => $tracking->carrier()?->getName() ?? $tracking->carrier,
+                'shipping_method' => $tracking->shippingMethodLabel(),
+                'tracking_number' => $tracking->tracking_number,
+                'url' => $tracking->url,
+                'destroy_url' => route('panel.orders.fulfilments.trackings.destroy', [$order, $fulfilment, $tracking]),
+            ]),
+            'transitions' => FulfilmentTransitions::for($fulfilment)
+                ->map(fn (array $transition) => [
+                    'state' => $transition['name'],
+                    'label' => $transition['label'],
+                    'via' => $transition['via'],
+                    'notify' => $transition['notify'],
+                ]),
+            'can' => [
+                'split' => SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1,
+                'merge' => MergeFulfilments::isMergeable($fulfilment) && $mergeTargets->isNotEmpty(),
+                'change_location' => ChangeFulfilmentLocation::canRun($fulfilment) && $locations->count() > 1,
+                'add_tracking' => $method->usesTracking() && $category === FulfilmentStateCategory::Fulfilled,
+                'undo_return' => $category === FulfilmentStateCategory::Returned
+                    && $fulfilment->state->canTransitionTo($method->fulfilledState()),
+                'hold' => HoldFulfilment::canRun($fulfilment),
+                'release' => ReleaseFulfilment::canRun($fulfilment),
+                'cancel' => $fulfilment->state->canTransitionTo($method->defaultState()),
+            ],
+            'merge_targets' => $mergeTargets->map(fn (Fulfilment $target) => [
+                'id' => $target->id,
+                'reference' => $target->reference ?: '#'.$target->id,
+                'quantity' => (int) $target->lines->sum('quantity'),
+            ]),
+            'urls' => [
+                'ship' => route('panel.orders.fulfilments.ship', [$order, $fulfilment]),
+                'fulfil' => route('panel.orders.fulfilments.fulfil', [$order, $fulfilment]),
+                'transition' => route('panel.orders.fulfilments.transition', [$order, $fulfilment]),
+                'split' => route('panel.orders.fulfilments.split', [$order, $fulfilment]),
+                'merge' => route('panel.orders.fulfilments.merge', [$order, $fulfilment]),
+                'return' => route('panel.orders.fulfilments.return', [$order, $fulfilment]),
+                'undoReturn' => route('panel.orders.fulfilments.undo-return', [$order, $fulfilment]),
+                'hold' => route('panel.orders.fulfilments.hold', [$order, $fulfilment]),
+                'release' => route('panel.orders.fulfilments.release', [$order, $fulfilment]),
+                'cancel' => route('panel.orders.fulfilments.cancel', [$order, $fulfilment]),
+                'location' => route('panel.orders.fulfilments.location.update', [$order, $fulfilment]),
+                'trackings' => route('panel.orders.fulfilments.trackings.store', [$order, $fulfilment]),
+            ],
+        ];
+    }
+
+    /**
+     * A line row shared by fulfilment cards and the "other items" section —
+     * identity, thumbnail, and the expandable price detail. `quantity` is the
+     * quantity shown on the row (a fulfilment's allocation, or the line's own).
+     *
+     * @return array<string, mixed>
+     */
+    protected function line(?OrderLine $line, int $quantity, callable $money): array
+    {
+        if (! $line) {
+            return [];
+        }
+
+        return [
+            'id' => $line->id,
+            'quantity' => $quantity,
+            'line_quantity' => $line->quantity,
+            'description' => $line->description,
+            'option' => $line->option,
+            'identifier' => $line->identifier,
+            'thumbnail' => $line->purchasable?->getThumbnail()?->getUrl('small'),
+            'unit_price' => $money($line->unit_price),
+            'sub_total' => $money($line->sub_total),
+            'discount_total' => $line->discount_total ? $money($line->discount_total) : null,
+            'tax' => collect($line->tax_breakdown?->amounts ?? [])->map(fn (TaxBreakdownAmount $tax) => [
+                'label' => $tax->description,
+                'amount' => $tax->price->format(),
+            ])->values()->all(),
+            'total' => $money($line->total),
+            'notes' => $line->notes,
+        ];
+    }
+
+    /**
+     * Other outstanding fulfilments the given one could merge into — same
+     * order, location, and method (mirrors the core merge guards).
+     *
+     * @return Collection<int, Fulfilment>
+     */
+    protected function mergeTargets(Order $order, Fulfilment $source): Collection
+    {
+        return $order->fulfilments
+            ->filter(fn (Fulfilment $target) => $target->id !== $source->id
+                && $target->location_id === $source->location_id
+                && $target->method === $source->method
+                && MergeFulfilments::isMergeable($target))
+            ->values();
+    }
+
+    /**
+     * A per-method label with a generic fallback — e.g. `handed_over_shipping`
+     * ("Shipped") falling back to `handed_over_default` ("Fulfilled").
+     */
+    protected function methodLabel(string $prefix, string $method, string $fallback): string
+    {
+        $key = 'panel::orders.'.$prefix.'_'.$method;
+
+        return Lang::has($key) ? __($key) : __('panel::orders.'.$fallback);
+    }
+
+    /**
+     * The delivery method chosen at checkout — the shipping-breakdown snapshot,
+     * falling back to the shipping line for orders without a breakdown.
+     *
+     * @return array{name: string, identifier: ?string, price: ?string}|null
+     */
+    protected function shippingOption(Order $order, callable $money): ?array
+    {
+        $item = $order->shipping_breakdown?->items?->first();
+
+        if ($item) {
+            return [
+                'name' => $item->name,
+                'identifier' => $item->identifier,
+                'price' => $item->price->format(),
+            ];
+        }
+
+        $line = $order->lines->firstWhere('type', 'shipping');
+
+        if (! $line) {
+            return null;
+        }
+
+        return [
+            'name' => $line->description,
+            'identifier' => $order->shippingAddress?->shipping_option,
+            'price' => $money($line->total),
+        ];
+    }
+
+    /**
+     * Flatten an order address for display and editing.
      *
      * @return array<string, mixed>|null
      */
-    protected function address(?OrderAddress $address): ?array
+    protected function address(?OrderAddress $address, Order $order): ?array
     {
         if (! $address) {
             return null;
         }
 
         return [
+            'id' => $address->id,
+            'type' => $address->type,
+            'title' => $address->title,
             'first_name' => $address->first_name,
             'last_name' => $address->last_name,
             'company_name' => $address->company_name,
@@ -216,10 +400,13 @@ class OrderShowController
             'state' => $address->state,
             'postcode' => $address->postcode,
             'country' => $address->country?->name,
+            'country_id' => $address->country_id,
+            'tax_identifier' => $address->tax_identifier,
             'contact_email' => $address->contact_email,
             'contact_phone' => $address->contact_phone,
             'delivery_instructions' => $address->delivery_instructions,
             'shipping_option' => $address->shipping_option,
+            'update_url' => route('panel.orders.addresses.update', [$order, $address]),
         ];
     }
 }

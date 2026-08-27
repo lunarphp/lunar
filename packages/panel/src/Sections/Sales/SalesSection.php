@@ -13,6 +13,7 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Http\Controllers\Orders\OrderActionController;
+use Lunar\Panel\Http\Controllers\Orders\OrderAddressController;
 use Lunar\Panel\Http\Controllers\Orders\OrderFulfilmentController;
 use Lunar\Panel\Http\Controllers\Orders\OrderIndexController;
 use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
@@ -107,10 +108,24 @@ class SalesSection extends Section
                 Route::post('/{order}/notify', [OrderActionController::class, 'notify'])->name('notify');
                 Route::put('/{order}/note', [OrderActionController::class, 'note'])->name('note.update');
                 Route::put('/{order}/tags', [OrderActionController::class, 'tags'])->name('tags.update');
-                Route::post('/{order}/fulfilments', [OrderFulfilmentController::class, 'store'])->name('fulfilments.store');
-
                 Route::scopeBindings()->group(function (): void {
-                    Route::post('/{order}/fulfilments/{fulfilment}/ship', [OrderFulfilmentController::class, 'ship'])->name('fulfilments.ship');
+                    Route::put('/{order}/addresses/{address}', [OrderAddressController::class, 'update'])->name('addresses.update');
+                });
+
+                Route::scopeBindings()->prefix('/{order}/fulfilments/{fulfilment}')->name('fulfilments.')->group(function (): void {
+                    Route::post('/ship', [OrderFulfilmentController::class, 'ship'])->name('ship');
+                    Route::post('/fulfil', [OrderFulfilmentController::class, 'fulfil'])->name('fulfil');
+                    Route::post('/transition', [OrderFulfilmentController::class, 'transition'])->name('transition');
+                    Route::post('/split', [OrderFulfilmentController::class, 'split'])->name('split');
+                    Route::post('/merge', [OrderFulfilmentController::class, 'merge'])->name('merge');
+                    Route::post('/return', [OrderFulfilmentController::class, 'markReturned'])->name('return');
+                    Route::post('/undo-return', [OrderFulfilmentController::class, 'undoReturn'])->name('undo-return');
+                    Route::post('/hold', [OrderFulfilmentController::class, 'hold'])->name('hold');
+                    Route::post('/release', [OrderFulfilmentController::class, 'release'])->name('release');
+                    Route::post('/cancel', [OrderFulfilmentController::class, 'cancel'])->name('cancel');
+                    Route::put('/location', [OrderFulfilmentController::class, 'updateLocation'])->name('location.update');
+                    Route::post('/trackings', [OrderFulfilmentController::class, 'storeTracking'])->name('trackings.store');
+                    Route::delete('/trackings/{tracking}', [OrderFulfilmentController::class, 'destroyTracking'])->name('trackings.destroy');
                 });
             });
 

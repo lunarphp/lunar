@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Deferred, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Deferred, Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import PageHeader from '../../components/PageHeader.vue';
@@ -18,16 +18,31 @@ import Select from '../../components/Select.vue';
 import Toggle from '../../components/Toggle.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
+import FulfilmentCard, { type FulfilmentCardAction } from '../../components/orders/FulfilmentCard.vue';
+import FulfilmentLineRow from '../../components/orders/FulfilmentLineRow.vue';
+import ShipFulfilmentDialog from '../../components/orders/ShipFulfilmentDialog.vue';
+import SplitFulfilmentDialog from '../../components/orders/SplitFulfilmentDialog.vue';
+import MergeFulfilmentDialog from '../../components/orders/MergeFulfilmentDialog.vue';
+import HoldFulfilmentDialog from '../../components/orders/HoldFulfilmentDialog.vue';
+import AddTrackingDialog from '../../components/orders/AddTrackingDialog.vue';
+import ChangeLocationDialog from '../../components/orders/ChangeLocationDialog.vue';
+import FulfilmentConfirmDialog, { type PendingFulfilmentAction } from '../../components/orders/FulfilmentConfirmDialog.vue';
+import OrderAddressDialog from '../../components/orders/OrderAddressDialog.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
+import type { CarrierData, FulfilmentData, FulfilmentLineData, LocationData } from '../../components/orders/types';
 
 interface Charge { id: number; reference: string | null; amount: number; amount_formatted: string | null }
 
 type Tone = 'sage' | 'warn' | 'danger' | 'archived' | 'neutral';
 
 interface Address {
+    id: number;
+    type: string;
+    title: string | null;
     first_name: string | null;
     last_name: string | null;
     company_name: string | null;
+    tax_identifier: string | null;
     line_one: string | null;
     line_two: string | null;
     line_three: string | null;
@@ -35,10 +50,12 @@ interface Address {
     state: string | null;
     postcode: string | null;
     country: string | null;
+    country_id: number | null;
     contact_email: string | null;
     contact_phone: string | null;
     delivery_instructions: string | null;
     shipping_option: string | null;
+    update_url: string;
 }
 
 const props = defineProps<{
@@ -64,21 +81,9 @@ const props = defineProps<{
         closed_at: string | null;
         cancelled_at: string | null;
     };
-    lines: { id: number; description: string; option: string | null; identifier: string | null; quantity: number; unit_price: string | null; total: string | null }[];
+    otherLines: FulfilmentLineData[];
     shippingLines: { id: number; description: string; total: string | null }[];
-    fulfilments: {
-        id: number;
-        reference: string;
-        state: string;
-        state_label: string;
-        method: string;
-        shipped_at: string | null;
-        notes: string | null;
-        lines: { id: number; quantity: number; description: string | null; identifier: string | null; option: string | null }[];
-        trackings: { carrier: string | null; tracking_number: string | null; url: string | null }[];
-        can_ship: boolean;
-        ship_url: string;
-    }[];
+    fulfilments: FulfilmentData[];
     transactions: { id: number; type: string; success: boolean; driver: string; amount: string | null; reference: string | null; status: string | null; card_type: string | null; last_four: string | null; created_at: string }[];
     totals: { sub_total: string | null; discount_total: string | null; shipping_total: string | null; tax_total: string | null; total: string | null; refunded: string | null; net: string | null };
     customer: { name: string | null; email: string | null; new_customer: boolean; url: string | null };
@@ -92,9 +97,12 @@ const props = defineProps<{
     availableToRefundFormatted: string | null;
     cancelReasons: Record<string, string>;
     notifications: Record<string, string>;
-    carriers: Record<string, string>;
-    canCreateFulfilment: boolean;
-    urls: { index: string; capture: string; refund: string; cancel: string; notify: string; note: string; tags: string; fulfilmentsStore: string };
+    carriers: CarrierData[];
+    holdReasons: Record<string, string>;
+    locations: LocationData[];
+    shippingOption: { name: string; identifier: string | null; price: string | null } | null;
+    countries: { id: number; name: string }[];
+    urls: { index: string; capture: string; refund: string; cancel: string; notify: string; note: string; tags: string };
 }>();
 
 const { t } = useI18n();
@@ -121,19 +129,8 @@ const FULFILMENT_TONES: Record<string, Tone> = {
     'partially-returned': 'warn',
     returned: 'danger',
 };
-const STATE_TONES: Record<string, Tone> = {
-    shipped: 'sage',
-    collected: 'sage',
-    provisioned: 'sage',
-    pending: 'warn',
-    'in-progress': 'warn',
-    'ready-for-collection': 'warn',
-    returned: 'danger',
-    cancelled: 'archived',
-};
 const paymentTone = (key: string): Tone => PAYMENT_TONES[key] ?? 'neutral';
 const fulfilmentTone = (key: string): Tone => FULFILMENT_TONES[key] ?? 'neutral';
-const stateTone = (key: string): Tone => STATE_TONES[key] ?? 'neutral';
 
 const TXN_TYPE_LABELS: Record<string, string> = {
     capture: t('orders.txn_type_capture'),
@@ -163,25 +160,106 @@ const submitRefund = (): void => refundForm.post(props.urls.refund, { preserveSc
 const submitCancel = (): void => cancelForm.post(props.urls.cancel, { preserveScroll: true, onSuccess: closeDialog });
 const submitNotify = (): void => notifyForm.post(props.urls.notify, { preserveScroll: true, onSuccess: closeDialog });
 
-// Fulfilments.
-const creatingFulfilment = ref(false);
-const createFulfilment = (): void => {
-    creatingFulfilment.value = true;
-    router.post(props.urls.fulfilmentsStore, {}, { preserveScroll: true, onFinish: () => (creatingFulfilment.value = false) });
+// Fulfilments — the card emits an action, this routes it to the right dialog
+// or confirm step. Form-bearing actions (ship, split, merge, hold, tracking,
+// location) get a dialog; the rest confirm and post.
+type FulfilmentDialog = 'ship' | 'split' | 'merge' | 'hold' | 'tracking' | 'location';
+
+const activeFulfilment = ref<FulfilmentData | null>(null);
+const fulfilmentDialog = ref<FulfilmentDialog | null>(null);
+const pendingAction = ref<PendingFulfilmentAction | null>(null);
+
+const closeFulfilmentDialog = (): void => {
+    fulfilmentDialog.value = null;
+    activeFulfilment.value = null;
 };
 
-const shipUrl = ref<string | null>(null);
-const shipForm = useForm({ carrier: '', tracking_number: '', tracking_url: '', notify: true });
-const openShip = (url: string): void => {
-    shipForm.reset();
-    shipForm.clearErrors();
-    shipUrl.value = url;
+const shipNotify = computed(
+    () => activeFulfilment.value?.transitions.find((tr) => tr.via === 'ship')?.notify ?? false,
+);
+
+const openFulfilmentDialog = (fulfilment: FulfilmentData, dialog: FulfilmentDialog): void => {
+    activeFulfilment.value = fulfilment;
+    fulfilmentDialog.value = dialog;
 };
-const submitShip = (): void => {
-    if (shipUrl.value) {
-        shipForm.post(shipUrl.value, { preserveScroll: true, onSuccess: () => (shipUrl.value = null) });
+
+const onFulfilmentAction = (fulfilment: FulfilmentData, action: FulfilmentCardAction): void => {
+    switch (action.type) {
+        case 'ship':
+            return openFulfilmentDialog(fulfilment, 'ship');
+        case 'split':
+            return openFulfilmentDialog(fulfilment, 'split');
+        case 'merge':
+            return openFulfilmentDialog(fulfilment, 'merge');
+        case 'hold':
+            return openFulfilmentDialog(fulfilment, 'hold');
+        case 'add-tracking':
+            return openFulfilmentDialog(fulfilment, 'tracking');
+        case 'change-location':
+            return openFulfilmentDialog(fulfilment, 'location');
+        case 'fulfil':
+            pendingAction.value = {
+                title: fulfilment.fulfil_label,
+                url: fulfilment.urls.fulfil,
+                showNotify: fulfilment.transitions.find((tr) => tr.via === 'fulfil')?.notify ?? false,
+            };
+            return;
+        case 'transition':
+            pendingAction.value = {
+                title: t('orders.transition_confirm', { status: action.transition.label }),
+                confirmLabel: action.transition.label,
+                url: fulfilment.urls.transition,
+                data: { state: action.transition.state },
+                showNotify: action.transition.notify,
+            };
+            return;
+        case 'return':
+            pendingAction.value = {
+                title: t('orders.transition_confirm', { status: action.transition.label }),
+                confirmLabel: action.transition.label,
+                url: fulfilment.urls.return,
+                showNotify: action.transition.notify,
+            };
+            return;
+        case 'undo-return':
+            pendingAction.value = {
+                title: t('orders.action_undo_return'),
+                description: t('orders.undo_return_confirm'),
+                url: fulfilment.urls.undoReturn,
+            };
+            return;
+        case 'release':
+            pendingAction.value = {
+                title: t('orders.action_release'),
+                description: t('orders.release_confirm'),
+                url: fulfilment.urls.release,
+            };
+            return;
+        case 'cancel':
+            pendingAction.value = {
+                title: t('orders.cancel_fulfilment_confirm'),
+                description: t('orders.cancel_fulfilment_warning'),
+                confirmLabel: t('orders.action_cancel_fulfilment'),
+                tone: 'danger',
+                url: fulfilment.urls.cancel,
+            };
+            return;
+        case 'remove-tracking':
+            pendingAction.value = {
+                title: t('orders.remove_tracking_confirm'),
+                confirmLabel: t('orders.tracking_remove_row'),
+                tone: 'danger',
+                url: action.tracking.destroy_url,
+                method: 'delete',
+            };
     }
 };
+
+// Address corrections — one dialog, pointed at whichever address is being edited.
+const editingAddress = ref<Address | null>(null);
+const addressDialogTitle = computed(() =>
+    editingAddress.value?.type === 'billing' ? t('orders.edit_billing_address') : t('orders.edit_shipping_address'),
+);
 
 // Inline note editing.
 const editingNote = ref(false);
@@ -256,72 +334,31 @@ const addressLines = (address: Address): string[] =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
-                <PageZone region="main" position="before" />
+                <PageZone region="main" position="before" :order="order" :shipping-option="shippingOption" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
-                        <!-- Fulfilments -->
+                        <!-- Fulfilments — one card per fulfilment, the order's contents. -->
                         <Section :title="t('orders.section_fulfilments')">
-                            <template v-if="canCreateFulfilment" #actions>
-                                <Button icon="plus" size="sm" :disabled="creatingFulfilment" @click="createFulfilment">{{ t('orders.create_fulfilment') }}</Button>
+                            <template #actions>
+                                <span class="text-[11.5px] text-ink-500">
+                                    {{ t('orders.fulfilment_count', { count: fulfilments.length }, fulfilments.length) }}
+                                </span>
                             </template>
                             <div v-if="fulfilments.length" class="flex flex-col gap-3">
-                                <div v-for="fulfilment in fulfilments" :key="fulfilment.id" class="bg-surface border border-line rounded-xl overflow-hidden">
-                                    <div class="flex items-center gap-2.5 px-4 py-3 border-b border-line">
-                                        <Icon name="box" cls="sm" />
-                                        <span class="text-[12.5px] font-mono tracking-[-0.01em] text-ink-900">{{ fulfilment.reference }}</span>
-                                        <StatusBadge :tone="stateTone(fulfilment.state)" size="sm">{{ fulfilment.state_label }}</StatusBadge>
-                                        <div class="flex-1" />
-                                        <span v-if="fulfilment.shipped_at" class="text-[11px] text-ink-500">{{ formatDate(fulfilment.shipped_at) }}</span>
-                                        <Button v-if="fulfilment.can_ship" icon="box" size="sm" @click="openShip(fulfilment.ship_url)">{{ t('orders.mark_shipped') }}</Button>
-                                    </div>
-                                    <div class="px-4 py-3">
-                                        <div v-for="line in fulfilment.lines" :key="line.id" class="flex items-center gap-2 py-1 text-[12.5px]">
-                                            <span class="text-ink-500 [font-variant-numeric:tabular-nums] w-8">{{ line.quantity }}×</span>
-                                            <span class="text-ink-900 truncate">{{ line.description }}</span>
-                                            <span v-if="line.option" class="text-ink-500 truncate">{{ line.option }}</span>
-                                            <span v-if="line.identifier" class="text-ink-400 font-mono text-[11px] ml-auto">{{ line.identifier }}</span>
-                                        </div>
-                                        <div v-for="tracking in fulfilment.trackings" :key="tracking.tracking_number ?? tracking.carrier ?? ''" class="mt-2 flex items-center gap-1.5 text-[11.5px] text-ink-500">
-                                            <Icon name="box" cls="sm" />
-                                            <span v-if="tracking.carrier">{{ tracking.carrier }}</span>
-                                            <a v-if="tracking.url" :href="tracking.url" target="_blank" rel="noopener" class="text-sage-ink underline underline-offset-2">{{ tracking.tracking_number }}</a>
-                                            <span v-else-if="tracking.tracking_number" class="font-mono">{{ tracking.tracking_number }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <FulfilmentCard
+                                    v-for="fulfilment in fulfilments"
+                                    :key="fulfilment.id"
+                                    :fulfilment="fulfilment"
+                                    @action="onFulfilmentAction(fulfilment, $event)"
+                                />
                             </div>
                             <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.fulfilments_empty') }}</p>
                         </Section>
 
-                        <!-- Line items -->
-                        <Section :title="t('orders.section_items')">
-                            <div v-if="lines.length" class="overflow-x-auto">
-                                <table class="w-full text-[12.5px] border-collapse">
-                                    <thead>
-                                        <tr class="text-ink-500 text-[11px] text-left border-b border-line">
-                                            <th class="font-medium py-1.5 pr-2">{{ t('orders.col_product') }}</th>
-                                            <th class="font-medium py-1.5 px-2">{{ t('orders.col_sku') }}</th>
-                                            <th class="font-medium py-1.5 px-2 text-right">{{ t('orders.col_qty') }}</th>
-                                            <th class="font-medium py-1.5 px-2 text-right">{{ t('orders.col_unit') }}</th>
-                                            <th class="font-medium py-1.5 pl-2 text-right">{{ t('orders.col_total') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="line in lines" :key="line.id" class="border-b border-line last:border-0">
-                                            <td class="py-2 pr-2">
-                                                <div class="text-ink-900">{{ line.description }}</div>
-                                                <div v-if="line.option" class="text-ink-500 text-[11px]">{{ line.option }}</div>
-                                            </td>
-                                            <td class="py-2 px-2 text-ink-500 font-mono text-[11px]">{{ line.identifier ?? '—' }}</td>
-                                            <td class="py-2 px-2 text-right text-ink-700 [font-variant-numeric:tabular-nums]">{{ line.quantity }}</td>
-                                            <td class="py-2 px-2 text-right text-ink-700 [font-variant-numeric:tabular-nums]">{{ line.unit_price }}</td>
-                                            <td class="py-2 pl-2 text-right text-ink-900 [font-variant-numeric:tabular-nums]">{{ line.total }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.items_empty') }}</p>
+                        <!-- Lines with no fulfilment: services and other non-fulfillable purchasables. -->
+                        <Section v-if="otherLines.length" :title="t('orders.section_other_items')">
+                            <FulfilmentLineRow v-for="line in otherLines" :key="line.id" :line="line" />
                         </Section>
 
                         <!-- Totals -->
@@ -393,15 +430,19 @@ const addressLines = (address: Address): string[] =>
                             <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.transactions_empty') }}</p>
                         </Section>
 
-                        <!-- Shipping -->
-                        <Section v-if="shippingLines.length || shippingAddress?.shipping_option" :title="t('orders.section_shipping')">
+                        <!-- The delivery method chosen at checkout. -->
+                        <Section v-if="shippingOption" :title="t('orders.section_shipping')">
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-md bg-surface-2 border border-line grid place-items-center text-ink-700 shrink-0">
-                                    <Icon name="box" cls="sm" />
+                                    <Icon name="truck" cls="sm" />
                                 </div>
                                 <div class="min-w-0">
-                                    <div class="text-[12.5px] text-ink-900">{{ shippingAddress?.shipping_option ?? shippingLines[0]?.description }}</div>
-                                    <div v-if="shippingLines[0]" class="text-[11px] text-ink-500 [font-variant-numeric:tabular-nums]">{{ shippingLines[0].total }}</div>
+                                    <div class="text-[12.5px] text-ink-900 font-medium">{{ shippingOption.name }}</div>
+                                    <div class="text-[11px] text-ink-500">
+                                        <span v-if="shippingOption.identifier" class="font-mono">{{ shippingOption.identifier }}</span>
+                                        <span v-if="shippingOption.identifier && shippingOption.price"> · </span>
+                                        <span v-if="shippingOption.price" class="[font-variant-numeric:tabular-nums]">{{ shippingOption.price }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </Section>
@@ -420,6 +461,8 @@ const addressLines = (address: Address): string[] =>
 
                     <!-- Sidebar -->
                     <div class="min-w-0">
+                        <PageZone region="sidebar" position="before" :order="order" :shipping-option="shippingOption" />
+
                         <SideCard :title="t('orders.side_status')">
                             <dl class="text-[12.5px] space-y-2">
                                 <div class="flex items-center justify-between gap-2">
@@ -457,6 +500,11 @@ const addressLines = (address: Address): string[] =>
                         </SideCard>
 
                         <SideCard v-if="shippingAddress" :title="t('orders.side_shipping_address')">
+                            <template #actions>
+                                <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingAddress = shippingAddress">
+                                    {{ t('common.edit') }}
+                                </button>
+                            </template>
                             <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
                                 <div v-for="(line, i) in addressLines(shippingAddress)" :key="i">{{ line }}</div>
                                 <div v-if="shippingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
@@ -466,6 +514,11 @@ const addressLines = (address: Address): string[] =>
                         </SideCard>
 
                         <SideCard v-if="billingAddress" :title="t('orders.side_billing_address')">
+                            <template #actions>
+                                <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingAddress = billingAddress">
+                                    {{ t('common.edit') }}
+                                </button>
+                            </template>
                             <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
                                 <div v-for="(line, i) in addressLines(billingAddress)" :key="i">{{ line }}</div>
                                 <div v-if="billingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
@@ -526,10 +579,12 @@ const addressLines = (address: Address): string[] =>
                             </dl>
                             <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.no_metadata') }}</p>
                         </SideCard>
+
+                        <PageZone region="sidebar" position="after" :order="order" :shipping-option="shippingOption" />
                     </div>
                 </div>
 
-                <PageZone region="main" position="after" />
+                <PageZone region="main" position="after" :order="order" :shipping-option="shippingOption" />
             </div>
 
             <!-- Capture -->
@@ -623,35 +678,50 @@ const addressLines = (address: Address): string[] =>
                 </template>
             </Dialog>
 
-            <!-- Ship fulfilment -->
-            <Dialog :open="shipUrl !== null" :title="t('orders.mark_shipped')" size="sm" @update:open="(v: boolean) => !v && (shipUrl = null)">
-                <div class="space-y-3">
-                    <div>
-                        <FieldLabel>{{ t('orders.ship_carrier') }}</FieldLabel>
-                        <Select v-model="shipForm.carrier">
-                            <option value="">{{ t('orders.ship_carrier_none') }}</option>
-                            <option v-for="(name, key) in carriers" :key="key" :value="key">{{ name }}</option>
-                        </Select>
-                    </div>
-                    <div>
-                        <FieldLabel>{{ t('orders.ship_tracking_number') }}</FieldLabel>
-                        <TextInput v-model="shipForm.tracking_number" :invalid="!!shipForm.errors.tracking_number" />
-                    </div>
-                    <div>
-                        <FieldLabel>{{ t('orders.ship_tracking_url') }}</FieldLabel>
-                        <TextInput v-model="shipForm.tracking_url" type="url" :invalid="!!shipForm.errors.tracking_url" />
-                        <p v-if="shipForm.errors.tracking_url" class="text-danger text-[11px] mt-1">{{ shipForm.errors.tracking_url }}</p>
-                    </div>
-                    <label class="flex items-center gap-2 text-[12.5px] text-ink-700">
-                        <Toggle :on="shipForm.notify" @toggle="shipForm.notify = !shipForm.notify" />
-                        {{ t('orders.ship_notify') }}
-                    </label>
-                </div>
-                <template #footer>
-                    <Button variant="ghost" @click="shipUrl = null">{{ t('common.cancel') }}</Button>
-                    <Button variant="primary" :disabled="shipForm.processing" @click="submitShip">{{ t('orders.mark_shipped') }}</Button>
-                </template>
-            </Dialog>
+            <!-- Fulfilment dialogs -->
+            <ShipFulfilmentDialog
+                :open="fulfilmentDialog === 'ship'"
+                :fulfilment="activeFulfilment"
+                :carriers="carriers"
+                :show-notify="shipNotify"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <SplitFulfilmentDialog
+                :open="fulfilmentDialog === 'split'"
+                :fulfilment="activeFulfilment"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <MergeFulfilmentDialog
+                :open="fulfilmentDialog === 'merge'"
+                :fulfilment="activeFulfilment"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <HoldFulfilmentDialog
+                :open="fulfilmentDialog === 'hold'"
+                :fulfilment="activeFulfilment"
+                :hold-reasons="holdReasons"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <AddTrackingDialog
+                :open="fulfilmentDialog === 'tracking'"
+                :fulfilment="activeFulfilment"
+                :carriers="carriers"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <ChangeLocationDialog
+                :open="fulfilmentDialog === 'location'"
+                :fulfilment="activeFulfilment"
+                :locations="locations"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <FulfilmentConfirmDialog :action="pendingAction" @close="pendingAction = null" />
+            <OrderAddressDialog
+                :open="!!editingAddress"
+                :address="editingAddress"
+                :title="addressDialogTitle"
+                :countries="countries"
+                @update:open="(v: boolean) => !v && (editingAddress = null)"
+            />
         </div>
     </PanelLayout>
 </template>

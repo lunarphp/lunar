@@ -15,10 +15,11 @@ class ShipFulfilmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'carrier' => ['nullable', 'string', 'max:255'],
-            'shipping_method' => ['nullable', 'string', 'max:255'],
-            'tracking_number' => ['nullable', 'string', 'max:255'],
-            'tracking_url' => ['nullable', 'url', 'max:2000'],
+            'tracking' => ['array'],
+            'tracking.*.carrier' => ['nullable', 'string', 'max:255'],
+            'tracking.*.shipping_method' => ['nullable', 'string', 'max:255'],
+            'tracking.*.tracking_number' => ['nullable', 'string', 'max:255'],
+            'tracking.*.tracking_url' => ['nullable', 'url', 'max:2000'],
             'notify' => ['boolean'],
         ];
     }

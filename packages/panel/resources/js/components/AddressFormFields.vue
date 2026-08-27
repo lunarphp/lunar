@@ -22,8 +22,8 @@ export interface AddressFormValues {
     delivery_instructions: string;
     contact_email: string;
     contact_phone: string;
-    shipping_default: boolean;
-    billing_default: boolean;
+    shipping_default?: boolean;
+    billing_default?: boolean;
 }
 
 /** An Inertia useForm over the address fields — values and errors are read and written directly. */
@@ -36,6 +36,8 @@ const props = defineProps<{
     countries: { id: number; name: string }[];
     /** Prefixes input ids so two address forms on one page keep unique label associations. */
     idPrefix: string;
+    /** Customer-address default checkboxes; hidden for order addresses, which have no defaults. */
+    showDefaults?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -138,7 +140,7 @@ const fieldId = (name: string): string => `${props.idPrefix}-${name}`;
             <Textarea :id="fieldId('delivery-instructions')" v-model="form.delivery_instructions" :rows="2" :invalid="!!form.errors.delivery_instructions" />
             <div v-if="form.errors.delivery_instructions" class="mt-1 text-[11px] text-danger">{{ form.errors.delivery_instructions }}</div>
         </div>
-        <div class="flex gap-4">
+        <div v-if="showDefaults !== false" class="flex gap-4">
             <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
                 <Checkbox v-model="form.shipping_default" />
                 {{ t('customers.default_shipping') }}

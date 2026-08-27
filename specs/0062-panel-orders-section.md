@@ -12,10 +12,15 @@
 > was brought forward into this pass (wired through `OrderNotifications::sendable()`
 > and the `order-update` notification). Fulfilment **split/merge** turned out to
 > already exist in core (`SplitsFulfilment`/`MergesFulfilments` + `$fulfilment`
-> verbs), so those are a smaller follow-up than first assumed. Bulk list actions
+> verbs), so those are a smaller follow-up than first assumed — now specced, with
+> the Show screen reshaped around fulfilment cards (the flat Line-items table and
+> the create-fulfilment surface are superseded), in
+> [[0063-panel-fulfilment-centric-order-view]]. Bulk list actions
 > (capture/cancel/export) moved out of slice 1 to sit with their single-order
-> siblings; only the row "view" action shipped on the list. Address editing is a
-> follow-up (reuses `AddressFormFields`).
+> siblings; only the row "view" action shipped on the list. Address editing landed
+> with the [[0063-panel-fulfilment-centric-order-view]] work (reuses
+> `AddressFormFields`, logging the Filament admin's `order-address-update`
+> activity event on the order).
 
 ## Problem
 
@@ -308,6 +313,6 @@ before implementation (several already have stub specs — see References).
       handling, tests. (PDF deferred — not reachable from the panel; address edit deferred.)
 - [x] Slice 4 — Fulfilment create + ship: `fulfilments.store` / `fulfilments.ship`
       endpoints, ship dialog with carriers from the `Carriers` registry, tests.
-- [ ] Deferred — order-PDF (move generation into core first), address editing, list bulk
+- [ ] Deferred — order-PDF (move generation into core first), list bulk
       actions (capture/cancel/export), split/merge dialogs, per-dispatch invoices,
       line-item refunds, returns, goodwill credits, manual order creation.
