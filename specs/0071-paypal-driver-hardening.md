@@ -14,7 +14,9 @@
 > a `$transaction` for line attribution does not hold on `2.x`; see the
 > References section. One deliberate divergence from the plan: the amount guard
 > lands *after* the already-processed check rather than before it, so a spent
-> PayPal order is rejected without computing totals.
+> PayPal order is rejected without computing totals. `GetPaypalOrderController`'s
+> hardening (rate limit, trimmed response) landed after the slice 3 commit,
+> alongside the README, rather than within it.
 
 ## Problem
 
@@ -342,11 +344,14 @@ driver. `PAYMENT.CAPTURE.*` webhooks arrive keyed by capture ID but carry
 `supplementary_data.related_ids.order_id`, so they resolve back to the row
 without a second table.
 
-**Open — reference storefront integration.** Do we ship a reference client-side
-integration (PayPal JS SDK button wiring), or document the flow and leave the
-storefront to the consumer? The v1 blade-component approach does not fit v2's
-headless shape. Owner: Glenn; can follow the driver work, nothing in this spec
-depends on it.
+**Resolved — no reference storefront integration.** The package stays server-side
+only and documents the flow instead. The client half is a few calls to PayPal's
+JS SDK, and every storefront wants it wired differently (Blade, Inertia,
+Livewire, headless SPA, native app); shipping one shape would be consumer
+infrastructure, not a fact about Lunar's data. `packages/paypal/README.md`
+carries the four-step flow, the one route the package does add, a worked
+`authorize()` controller, the amount-verification table, both capture policies,
+webhook setup, and an explicit list of what the package does not do.
 
 ## References
 

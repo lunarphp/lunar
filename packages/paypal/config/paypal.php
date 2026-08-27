@@ -65,6 +65,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Order endpoint rate limit
+    |--------------------------------------------------------------------------
+    |
+    | Throttle for the endpoint that creates a PayPal order for the session
+    | cart, as "attempts,minutes". Each call costs a PayPal API request, so it
+    | should not be freely repeatable.
+    |
+    */
+    'order_rate_limit' => '10,1',
+
+    /*
+    |--------------------------------------------------------------------------
     | Storefront routes
     |--------------------------------------------------------------------------
     |
