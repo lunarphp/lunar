@@ -73,3 +73,32 @@ test('cart is not soft deleted on logout when delete_on_logout is false', functi
     expect(Session::get(config('lunar.cart_session.session_key')))->toBeNull();
     expect($cart->refresh()->deleted_at)->toBeNull();
 });
+
+test('login restores user cart matching current channel only', function () {
+    Currency::factory()->create(['default' => true]);
+    $channelA = Channel::factory()->create(['default' => true]);
+    $channelB = Channel::factory()->create(['default' => false]);
+
+    $user = User::factory()->create();
+
+    $cartB = Cart::factory()->create([
+        'user_id' => $user->id,
+        'channel_id' => $channelB->id,
+    ]);
+
+    $cartA = Cart::factory()->create([
+        'user_id' => $user->id,
+        'channel_id' => $channelA->id,
+    ]);
+
+    Config::set('lunar.cart_session.auto_create', false);
+
+    // Trigger login
+    event(new \Illuminate\Auth\Events\Login('web', $user, false));
+
+    $currentCart = CartSession::current();
+
+    expect($currentCart)->not->toBeNull()
+        ->and($currentCart->id)->toBe($cartA->id)
+        ->and($currentCart->channel_id)->toBe($channelA->id);
+});
