@@ -4,6 +4,7 @@ namespace Lunar\Core\DiscountTypes;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
@@ -50,6 +51,10 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function apply(Cart $cart): Cart
     {
+        if (! $this->checkDiscountConditions($cart)) {
+            return $cart;
+        }
+
         $data = $this->discount->data;
 
         $minQty = $data['min_qty'] ?? null;
@@ -224,23 +229,57 @@ class BuyXGetY extends AbstractDiscountType
 
     private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
     {
+        // Reward lines this run has added, keyed by purchasable. The check below
+        // reads $cart->lines, which never receives a line made here, so without
+        // this a reward quantity of three opens three lines of one rather than
+        // one line of three.
+        $addedRewardLines = [];
+
         // we have lines to add
         if ($remainingRewardQty > 0) {
-            while ($remainingRewardQty > 0) {
-                $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
+            // Fulfillable products per collection reward, hydrated once here rather
+            // than re-queried on every iteration of the allocation loop below.
+            $fulfillableCollectionProducts = [];
 
-                if (! $selectedRewardItem) {
-                    $remainingRewardQty--;
+            $fulfillableRewards = $this->discount->discountableRewards->filter(function ($discountableReward) use (&$fulfillableCollectionProducts) {
+                $rewardItem = $discountableReward->discountable;
 
-                    continue;
+                if (! $rewardItem) {
+                    return false;
                 }
 
+                if ($rewardItem instanceof LunarCollection) {
+                    $fulfillableCollectionProducts[$rewardItem->id] = $rewardItem->products()
+                        ->with('variants')
+                        ->get()
+                        ->filter(fn ($p) => $p->variants->first()?->canBeFulfilledAtQuantity(1))
+                        ->values();
+
+                    return $fulfillableCollectionProducts[$rewardItem->id]->isNotEmpty();
+                }
+
+                if ($rewardItem instanceof Purchasable) {
+                    return $rewardItem->canBeFulfilledAtQuantity(1);
+                }
+
+                return (bool) $rewardItem->variants()->first()?->canBeFulfilledAtQuantity(1);
+            });
+
+            if ($fulfillableRewards->isEmpty()) {
+                return [$affectedLines, $discountTotal];
+            }
+
+            while ($remainingRewardQty > 0) {
+                $selectedRewardItem = $fulfillableRewards->random()->discountable;
+
                 if ($selectedRewardItem instanceof LunarCollection) {
-                    $product = $selectedRewardItem->products()->inRandomOrder()->first();
-                    $purchasable = $product?->variants()->first();
+                    $product = $fulfillableCollectionProducts[$selectedRewardItem->id]->random();
+                    $purchasable = $product->variants->first();
                     $selectedRewardItem = $product;
+                } elseif ($selectedRewardItem instanceof Purchasable) {
+                    $purchasable = $selectedRewardItem;
                 } else {
-                    $purchasable = $selectedRewardItem->variants->first();
+                    $purchasable = $selectedRewardItem->variants()->first();
                 }
 
                 if (! $purchasable) {
@@ -249,14 +288,39 @@ class BuyXGetY extends AbstractDiscountType
                     continue;
                 }
 
+                $rewardKey = $purchasable->getMorphClass().':'.$purchasable->id;
+
+                // How many units of this reward this run has already allocated,
+                // since canBeFulfilledAtQuantity below must check against that
+                // running total rather than a fixed quantity of 1 each time.
+                $allocated = $addedRewardLines[$rewardKey]->quantity ?? 0;
+
+                if (! $purchasable->canBeFulfilledAtQuantity($allocated + 1)) {
+                    $remainingRewardQty--;
+
+                    continue;
+                }
+
                 // is it already in cart?
-                $rewardLine = $cart->lines->first(function ($line) use ($purchasable) {
+                $rewardLine = $addedRewardLines[$rewardKey] ?? $cart->lines->first(function ($line) use ($purchasable) {
                     return $line->purchasable->id == $purchasable->id;
                 });
 
+                if ($rewardLine && isset($addedRewardLines[$rewardKey])) {
+                    // Another unit of a reward this run already added: raise the
+                    // quantity on that line. A line the shopper put in the cart
+                    // themselves is left at the quantity they chose, as before.
+                    $rewardLine->quantity++;
+
+                    $lineTotal = $rewardLine->unitPrice->multiply($rewardLine->quantity);
+
+                    $rewardLine->subTotal = $lineTotal;
+                    $rewardLine->total = $lineTotal;
+                }
+
                 if (! $rewardLine) {
                     $rewardLine = $cart->lines()->make([
-                        'purchasable_type' => get_class($purchasable),
+                        'purchasable_type' => $purchasable->getMorphClass(),
                         'purchasable_id' => $purchasable->id,
                         'quantity' => 1,
                     ]);
@@ -279,11 +343,11 @@ class BuyXGetY extends AbstractDiscountType
                             return $cartLine;
                         });
 
-                    $unitQuantity = $purchasable->getUnitQuantity();
-
                     $rewardLine->subTotal = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
                     $rewardLine->taxAmount = new PriceValue(0, $cart->currency);
                     $rewardLine->total = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
+
+                    $addedRewardLines[$rewardKey] = $rewardLine;
                 }
 
                 $meta = $rewardLine->meta ?? json_decode('{}');

@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'قواعد التحقق',
+    'validation_rules_hint' => 'قواعد تحقق Laravel المطبقة على قيمة هذه السمة. قاعدة واحدة لكل إدخال، على سبيل المثال: min:1, max:10. اضغط Enter للإضافة.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

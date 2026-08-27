@@ -44,6 +44,8 @@ return [
     'required_hint' => 'A value must be provided before saving.',
     'searchable_hint' => 'Indexed for panel and storefront search.',
     'filterable_hint' => 'Available as a storefront filter.',
+    'validation_rules_label' => 'Reguły walidacji',
+    'validation_rules_hint' => 'Reguły walidacji Laravel stosowane do wartości tego atrybutu. Jedna reguła na wpis, na przykład: min:1, max:10. Naciśnij Enter, aby dodać.',
 
     'section_details' => 'Details',
     'section_behaviour' => 'Behaviour',

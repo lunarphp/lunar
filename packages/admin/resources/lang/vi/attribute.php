@@ -45,7 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Quy tắc xác thực',
-            'helper' => 'Quy tắc cho trường thuộc tính, ví dụ: min:1|max:10|...',
+            'helper' => 'Mỗi mục một quy tắc, ví dụ: min:1, max:10',
         ],
     ],
 ];

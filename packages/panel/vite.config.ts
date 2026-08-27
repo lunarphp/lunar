@@ -20,4 +20,25 @@ export default defineConfig(({ command }) => ({
         vue(),
         tailwindcss(),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                // flag-icons ships ~540 SVGs pulled in via CSS url(); hashing
+                // them re-emits every file on each build, churning committed
+                // assets. Pin flags to stable paths (content rarely changes)
+                // so rebuilds produce identical filenames and no git noise.
+                // The 4x3/1x1 split is preserved -- basenames collide across it.
+                assetFileNames: (assetInfo) => {
+                    const source = assetInfo.originalFileNames?.[0] ?? assetInfo.names?.[0] ?? '';
+                    const flag = source.match(/flag-icons[\\/]flags[\\/](1x1|4x3)[\\/](.+\.svg)$/i);
+
+                    if (flag) {
+                        return `assets/flags/${flag[1]}/${flag[2]}`;
+                    }
+
+                    return 'assets/[name]-[hash][extname]';
+                },
+            },
+        },
+    },
 }));

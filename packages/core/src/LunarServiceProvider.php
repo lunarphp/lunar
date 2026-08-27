@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
+use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -407,7 +408,9 @@ class LunarServiceProvider extends ServiceProvider
             return new ShippingModifiers;
         });
 
-        $this->app->singleton(ShippingManifest::class, function ($app) {
+        // Holds the resolved options for the cart in hand plus a re-entrancy
+        // flag, so it is per-request state, not a boot-time registry.
+        $this->app->scoped(ShippingManifest::class, function ($app) {
             return $app->make(ShippingManifestImpl::class);
         });
 
@@ -439,12 +442,20 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(FieldTypeManifestImpl::class);
         });
 
-        $this->app->singleton(AttributeCache::class, function ($app) {
+        $this->app->scoped(AttributeCache::class, function ($app) {
             return $app->make(AttributeCacheImpl::class);
         });
 
-        $this->app->singleton(CacheInvalidator::class, function ($app) {
+        $this->app->scoped(CacheInvalidator::class, function ($app) {
             return new CacheInvalidatorImpl($app['db'], config('lunar.database.connection'));
+        });
+
+        // One process-lifetime listener; the invalidator is resolved at dispatch
+        // time so each request/job scope prunes its own pending buffer.
+        $this->app['events']->listen(TransactionRolledBack::class, function (TransactionRolledBack $event) {
+            if ($this->app->resolved(CacheInvalidator::class)) {
+                $this->app->make(CacheInvalidator::class)->pruneRolledBack($event);
+            }
         });
 
         $this->app->singleton(CacheDependenciesContract::class, function ($app) {
@@ -495,14 +506,17 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Bind the manager contracts to their default implementations.
+     *
+     * Managers memoizing per-visitor state are bound `scoped`, so a long-lived
+     * worker (Octane, queue) starts each request/job with a fresh instance.
      */
     protected function registerManagers(): void
     {
-        $this->app->singleton(CartSession::class, function ($app) {
+        $this->app->scoped(CartSession::class, function ($app) {
             return $app->make(CartSessionManager::class);
         });
 
-        $this->app->singleton(StorefrontSession::class, function ($app) {
+        $this->app->scoped(StorefrontSession::class, function ($app) {
             return $app->make(StorefrontSessionManager::class);
         });
 
@@ -518,7 +532,7 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(PaymentManagerImpl::class);
         });
 
-        $this->app->singleton(DiscountManager::class, function ($app) {
+        $this->app->scoped(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
         });
     }

@@ -209,7 +209,7 @@ class Order extends Base implements HasCurrency
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::class);
+        return $this->hasMany(OrderLine::class)->orderBy('id');
     }
 
     public function fulfilments(): HasMany

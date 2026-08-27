@@ -20,6 +20,16 @@ use Lunar\Filament\Forms\Components\Support\RecordSearch;
  */
 trait AppliesToExistingSelect
 {
+    /**
+     * Relations optionLabel() reads, eager loaded before it is called.
+     *
+     * @return array<int, string>
+     */
+    public function optionLabelRelations(): array
+    {
+        return [];
+    }
+
     public static function applyTo(Select $select): Select
     {
         $proxy = static::make($select->getName() ?: '__lunar_selector_proxy');
@@ -32,7 +42,7 @@ trait AppliesToExistingSelect
         $select->getSearchResultsUsing(static function (string $search) use ($proxy, $modelClass): array {
             $query = RecordSearch::for($modelClass, $search);
 
-            return $query->take(50)->get()
+            return $query->with($proxy->optionLabelRelations())->take(50)->get()
                 ->mapWithKeys(static fn (Model $record): array => [
                     $record->getKey() => $proxy->optionLabel($record),
                 ])
@@ -40,7 +50,9 @@ trait AppliesToExistingSelect
         });
 
         $select->getOptionLabelUsing(static function ($value) use ($proxy, $modelClass): ?string {
-            $record = $modelClass::find($value);
+            // optionLabel() may reach for relations (a collection's group and
+            // ancestors), which lazy loading would refuse under strict mode.
+            $record = $modelClass::with($proxy->optionLabelRelations())->find($value);
 
             return $record ? $proxy->optionLabel($record) : null;
         });

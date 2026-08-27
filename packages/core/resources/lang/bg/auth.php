@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Позволява на член на персонала да управлява клиенти',
     'permissions.sales:manage-discounts.label' => 'Управление на отстъпки',
     'permissions.sales:manage-discounts.description' => 'Позволява на член на персонала да управлява отстъпки',
+    'permissions.shipping:manage.label' => 'Управление на доставки',
+    'permissions.shipping:manage.description' => 'Позволява на член на персонала да управлява доставките',
 ];

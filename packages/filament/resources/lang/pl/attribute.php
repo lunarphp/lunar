@@ -16,8 +16,16 @@ return [
         'type' => [
             'label' => 'Typ',
         ],
+        'group' => [
+            'label' => 'Grupa',
+            'ungrouped' => 'Bez grupy',
+        ],
     ],
     'form' => [
+        'attribute_group' => [
+            'label' => 'Grupa',
+            'placeholder' => 'Brak grupy',
+        ],
         'model_types' => [
             'label' => 'Applies to',
             'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
@@ -49,7 +57,15 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Reguły walidacji',
-            'helper' => 'Rules for attribute field, example: min:1|max:10|...',
+            'helper' => 'Jedna reguła na wpis, na przykład: min:1, max:10',
+        ],
+    ],
+
+    'actions' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'Atrybutów systemowych nie można usunąć.',
+            ],
         ],
     ],
 ];

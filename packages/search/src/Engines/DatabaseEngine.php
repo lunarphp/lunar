@@ -9,8 +9,13 @@ class DatabaseEngine extends AbstractEngine
 {
     public function get(): mixed
     {
-        $results = get_search_builder($this->modelType, $this->query)
-            ->paginate();
+        // Scout's builder, not the admin package's get_search_builder() helper —
+        // this package must work without lunar/admin installed. Eager-load the
+        // relations the indexer touches so mapping hits below doesn't lazy-load
+        // per row.
+        $results = $this->modelType::search($this->query)
+            ->query(fn ($query) => (new $this->modelType)->indexer()->makeAllSearchableUsing($query))
+            ->paginate($this->perPage);
 
         $documents = collect($results->items())->map(fn ($hit) => SearchHit::from([
             'highlights' => collect(),
@@ -25,6 +30,7 @@ class DatabaseEngine extends AbstractEngine
             'perPage' => $results->perPage(),
             'hits' => $documents,
             'facets' => collect(),
+            'links' => $results->links(),
         ]);
     }
 

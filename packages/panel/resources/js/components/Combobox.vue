@@ -15,7 +15,7 @@ import { useI18n } from 'vue-i18n';
 import Flag from './Flag.vue';
 import Icon from './Icon.vue';
 
-type ComboboxOption = { value: string | number; label: string; flag?: string | null };
+export type ComboboxOption = { value: string | number; label: string; flag?: string | null };
 
 const props = withDefaults(
     defineProps<{

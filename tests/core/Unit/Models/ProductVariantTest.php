@@ -8,6 +8,8 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRate;
@@ -284,4 +286,23 @@ test('scopeEnabled filters out disabled variants', function () {
     ProductVariant::factory()->create(['product_id' => $product->id, 'enabled' => false]);
 
     expect($product->variants()->enabled()->pluck('id')->all())->toBe([$enabled->id]);
+});
+
+test('returns variant option values ordered by position', function () {
+    $variant = ProductVariant::factory()->create();
+    $option = ProductOption::factory()->create();
+
+    // Attached deliberately out of position order. Without an explicit ORDER BY
+    // the pivot rows would come back in attachment order ([3, 1, 2]); the
+    // relationship must order by the option value's position so getOption()
+    // (snapshotted onto order lines) is deterministic across database engines.
+    $values = collect([3, 1, 2])->map(fn ($position) => ProductOptionValue::factory()->create([
+        'product_option_id' => $option->id,
+        'position' => $position,
+    ]));
+
+    $variant->values()->attach($values->pluck('id')->all());
+
+    expect($variant->load('values')->values->pluck('position')->all())
+        ->toBe([1, 2, 3]);
 });

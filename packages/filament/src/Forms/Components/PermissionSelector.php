@@ -194,7 +194,7 @@ class PermissionSelector extends Field
             return null;
         }
 
-        $traits = trait_uses_recursive($record);
+        $traits = class_uses_recursive($record);
 
         if (! in_array(HasRoles::class, $traits)) {
             throw new Exception('Not implemented \Spatie\Permission\Traits\HasRoles');

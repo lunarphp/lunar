@@ -6,6 +6,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
@@ -420,4 +421,93 @@ it('can return correct payment checks', function () {
         ->and($paymentDChecks[2]->successful)
         ->not
         ->toBe(true);
+});
+
+it('authorizes a cart whose currency needs rescaling for stripe', function () {
+    $cart = CartBuilder::build(currencyParams: [
+        'code' => 'HUF',
+        'decimal_places' => 0,
+    ]);
+    $payment = new StripePaymentType;
+
+    $cart->calculate();
+
+    // Stripe holds HUF amounts multiplied by 100, as createIntent sends them.
+    StripeFake::forCart($cart, [
+        'amount' => StripeManager::toStripeAmount($cart->total->value, $cart->currency),
+    ]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull();
+
+    // The charges fixture reports 1099 Stripe sub-units; stored back as 11 HUF.
+    $transaction = $cart->completedOrder->transactions()->where('type', 'capture')->first();
+
+    expect($transaction->amount)->toBe(11);
+});
+
+it('rejects an intent holding the raw lunar value for a rescaled currency', function () {
+    $cart = CartBuilder::build(currencyParams: [
+        'code' => 'HUF',
+        'decimal_places' => 0,
+    ]);
+    $payment = new StripePaymentType;
+
+    $cart->calculate();
+
+    // An intent holding the raw stored value — 100x off Stripe's HUF scale.
+    StripeFake::forCart($cart, ['amount' => $cart->total->value]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total');
+});
+
+it('converts capture and refund amounts to stripe scale and stores refunds in lunar scale', function () {
+    $cart = CartBuilder::build(currencyParams: [
+        'code' => 'HUF',
+        'decimal_places' => 0,
+    ]);
+    $payment = new StripePaymentType;
+
+    $cart->calculate();
+
+    $mock = StripeFake::forCart($cart, [
+        'amount' => StripeManager::toStripeAmount($cart->total->value, $cart->currency),
+    ]);
+
+    $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    $order = $cart->refresh()->completedOrder;
+    $transaction = $order->transactions()->where('type', 'capture')->first();
+
+    $payment->capture($transaction, 500);
+
+    $captureRequest = collect($mock->requests)->last(
+        fn ($r) => $r['method'] == 'post' && str_contains($r['url'], 'capture')
+    );
+
+    expect($captureRequest['params']['amount_to_capture'])->toBe(50000);
+
+    $payment->refund($transaction, 500, 'test refund');
+
+    $refundRequest = collect($mock->requests)->last(
+        fn ($r) => $r['method'] == 'post' && str_contains($r['url'], 'refunds')
+    );
+
+    expect($refundRequest['params']['amount'])->toBe(50000);
+
+    // The refund transaction is stored back in Lunar's scale.
+    $refund = $order->transactions()->where('type', 'refund')->first();
+
+    expect($refund->amount)->toBe(500);
 });

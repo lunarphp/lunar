@@ -9,7 +9,9 @@ use Spatie\Permission\PermissionRegistrar;
 uses(TestCase::class);
 
 beforeEach(function () {
-    $this->staff = Staff::factory()->create(['admin' => true, 'first_name' => 'Ada', 'last_name' => 'Admin']);
+    // Pin the email: the search test queries email LIKE %term%, and an
+    // unconstrained faker email on the acting staff can contain the term.
+    $this->staff = Staff::factory()->create(['admin' => true, 'first_name' => 'Ada', 'last_name' => 'Admin', 'email' => 'ada.admin@example.com']);
     $this->actingAs($this->staff, 'staff');
 });
 

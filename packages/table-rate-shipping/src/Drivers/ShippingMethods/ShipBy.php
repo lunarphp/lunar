@@ -72,8 +72,12 @@ class ShipBy implements ShippingRateInterface
         $tier = $subTotal;
 
         if ($chargeBy == 'weight') {
+            // Tiers are stored raw in the method's weight unit; each line's
+            // weight converts from its own purchasable unit.
+            $weightUnit = $shippingMethod->weight_unit ?: 'kg';
+
             $tier = $cart->lines->sum(
-                fn ($line) => $line->purchasable->weight->to('weight.kg')->convert()->getValue() * $line->quantity
+                fn ($line) => $line->purchasable->weight->to("weight.{$weightUnit}")->convert()->getValue() * $line->quantity
             );
         }
 

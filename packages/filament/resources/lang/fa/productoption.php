@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Save Options',
                 ],
+                'save-variants' => [
+                    'label' => 'ذخیره گونه‌ها',
+                ],
                 'add-shared-option' => [
                     'label' => 'Add Shared Option',
                     'form' => [

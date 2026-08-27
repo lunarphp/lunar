@@ -7,4 +7,8 @@ return [
         'reports' => 'Reports',
         'settings' => 'Settings',
     ],
+
+    'yes' => 'بله',
+    'no' => 'خیر',
+
 ];

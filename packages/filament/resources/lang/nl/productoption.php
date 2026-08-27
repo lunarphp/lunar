@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Opties opslaan',
                 ],
+                'save-variants' => [
+                    'label' => 'Varianten opslaan',
+                ],
                 'add-shared-option' => [
                     'label' => 'Gedeelde optie toevoegen',
                     'form' => [
