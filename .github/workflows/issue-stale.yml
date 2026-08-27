@@ -1,0 +1,46 @@
+name: issue-stale
+
+# Closes issues that are waiting on the reporter and never got an answer.
+# Deterministic, no model, no tokens. Scheduled workflows only ever run from
+# the default branch.
+
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Only ever touch issues we have explicitly asked the reporter about.
+          only-labels: "needs-info"
+          days-before-stale: 14
+          days-before-close: 7
+          stale-issue-label: "stale"
+          # `needs-decision` means we are the ones holding it up. Maintainer
+          # silence is never the reporter's fault.
+          exempt-issue-labels: "needs-decision,high,confirmed,blocks-v2"
+          exempt-all-milestones: true
+          stale-issue-message: >
+            This issue has been waiting on more information from the reporter for
+            14 days, so it's been marked as stale. If you can still reproduce it,
+            please add the missing details and the label will be removed. Without
+            a response it will be closed in 7 days.
+          close-issue-message: >
+            Closing this as we never received the information needed to
+            investigate. That's no reflection on the report — we simply can't
+            action it as it stands. If you can still reproduce the problem,
+            please comment with the missing details and we'll happily reopen it.
+          close-issue-reason: "not_planned"
+          # Never touch pull requests. PR staleness is a maintainer judgement.
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          operations-per-run: 100
+          ascending: true
