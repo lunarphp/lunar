@@ -156,6 +156,13 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->createNewCart() : null;
         }
 
+        if ($cart->channel_id != $this->getChannel()->id) {
+            $this->sessionManager->forget($this->getSessionKey());
+            $this->cart = null;
+
+            return $create ? $this->createNewCart() : null;
+        }
+
         if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
             return $this->createNewCart();
         }

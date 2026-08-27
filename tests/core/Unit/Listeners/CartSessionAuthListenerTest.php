@@ -101,5 +101,6 @@ test('login restores user cart matching current channel only', function () {
 
     expect($currentCart)->not->toBeNull()
         ->and($currentCart->id)->toBe($cartA->id)
+        ->and($currentCart->id)->not->toBe($cartB->id)
         ->and($currentCart->channel_id)->toBe($channelA->id);
 });
