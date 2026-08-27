@@ -348,3 +348,112 @@ test('can return new instance when current cart has completed order', function (
         'cart_id' => $cart->id,
     ]);
 });
+
+test('user cart lookup is scoped to current channel', function () {
+    $manager = app(CartSessionManager::class);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelA = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelB = Channel::factory()->create([
+        'default' => false,
+    ]);
+
+    $user = User::factory()->create();
+
+    $cartA = Cart::factory()->create([
+        'user_id' => $user->id,
+        'channel_id' => $channelA->id,
+    ]);
+
+    $cartB = Cart::factory()->create([
+        'user_id' => $user->id,
+        'channel_id' => $channelB->id,
+    ]);
+
+    actingAs($user);
+
+    Config::set('lunar.cart_session.auto_create', false);
+
+    $currentCart = $manager->current();
+
+    expect($currentCart)->not->toBeNull()
+        ->and($currentCart->id)->toBe($cartA->id);
+
+    $manager->setChannel($channelB);
+
+    $currentCartB = $manager->current();
+
+    expect($currentCartB)->not->toBeNull()
+        ->and($currentCartB->id)->toBe($cartB->id);
+});
+
+test('changing channel forgets session cart when channel differs', function () {
+    $manager = app(CartSessionManager::class);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelA = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelB = Channel::factory()->create([
+        'default' => false,
+    ]);
+
+    Config::set('lunar.cart_session.auto_create', true);
+
+    $cartA = $manager->current();
+
+    expect($cartA->channel_id)->toBe($channelA->id);
+
+    $manager->setChannel($channelB);
+
+    $cartB = $manager->current();
+
+    expect($cartB->id)->not->toBe($cartA->id)
+        ->and($cartB->channel_id)->toBe($channelB->id);
+});
+
+test('session cart resolved on a fresh manager is ignored when it belongs to another channel', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelA = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $channelB = Channel::factory()->create([
+        'default' => false,
+    ]);
+
+    $cartA = Cart::factory()->create([
+        'channel_id' => $channelA->id,
+    ]);
+
+    // Simulate a session that already holds a channel A cart id, as would
+    // happen on a real request: no cart has been loaded into memory yet.
+    Session::put(config('lunar.cart_session.session_key'), $cartA->id);
+
+    Config::set('lunar.cart_session.auto_create', false);
+
+    // A fresh manager instance, mirroring how the container builds one per
+    // request: $this->cart starts out null.
+    $manager = app()->makeWith(CartSessionManager::class, [
+        'channel' => $channelB,
+    ]);
+
+    $resolved = $manager->current();
+
+    expect($resolved)->toBeNull();
+
+    expect(Session::get(config('lunar.cart_session.session_key')))->toBeNull();
+});

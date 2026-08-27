@@ -136,7 +136,12 @@ class CartSessionManager implements CartSessionInterface
         );
 
         if (! $cartId && $user = $this->authManager->user()) {
-            $cartId = $user->carts()->unmerged()->active()->latest('id')->value('id');
+            $cartId = $user->carts()
+                ->where('channel_id', $this->getChannel()->id)
+                ->unmerged()
+                ->active()
+                ->latest('id')
+                ->value('id');
         }
 
         if (! $cartId) {
@@ -148,6 +153,13 @@ class CartSessionManager implements CartSessionInterface
         )->find($cartId);
 
         if (! $cart) {
+            return $create ? $this->createNewCart() : null;
+        }
+
+        if ($cart->channel_id != $this->getChannel()->id) {
+            $this->sessionManager->forget($this->getSessionKey());
+            $this->cart = null;
+
             return $create ? $this->createNewCart() : null;
         }
 
@@ -200,10 +212,9 @@ class CartSessionManager implements CartSessionInterface
         /** @var Channel $channel */
         $this->channel = $channel;
 
-        if ($this->current() && $this->current()->channel_id != $channel->id) {
-            $this->cart->update([
-                'channel_id' => $channel->id,
-            ]);
+        if ($this->cart && $this->cart->channel_id != $channel->id) {
+            $this->sessionManager->forget($this->getSessionKey());
+            $this->cart = null;
         }
     }
 
