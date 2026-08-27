@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Allow the staff member to manage customers',
     'permissions.sales:manage-discounts.label' => 'Manage Discounts',
     'permissions.sales:manage-discounts.description' => 'Allow the staff member to manage discounts',
+    'permissions.shipping:manage.label' => 'مدیریت حمل و نقل',
+    'permissions.shipping:manage.description' => 'به کارمند اجازه می‌دهد حمل و نقل را مدیریت کند',
 ];

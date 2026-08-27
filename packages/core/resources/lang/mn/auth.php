@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Харилцагчдыг удирдах эрх олгоно',
     'permissions.sales:manage-discounts.label' => 'Хөнгөлөлтүүдийн удирдлага',
     'permissions.sales:manage-discounts.description' => 'Хөнгөлөлтүүдийг удирдах эрх олгоно',
+    'permissions.shipping:manage.label' => 'Хүргэлтийн удирдлага',
+    'permissions.shipping:manage.description' => 'Хүргэлтийг удирдах эрх олгоно',
 ];

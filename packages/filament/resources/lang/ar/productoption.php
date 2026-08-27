@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'حفظ الخيارات',
                 ],
+                'save-variants' => [
+                    'label' => 'حفظ المتغيرات',
+                ],
                 'add-shared-option' => [
                     'label' => 'إضافة خيار مشترك',
                     'form' => [

@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Permet au membre du personnel de gérer les clients',
     'permissions.sales:manage-discounts.label' => 'Gérer les remises',
     'permissions.sales:manage-discounts.description' => 'Permet au membre du personnel de gérer les remises',
+    'permissions.shipping:manage.label' => 'Gérer l\'expédition',
+    'permissions.shipping:manage.description' => 'Permet au membre du personnel de gérer l\'expédition',
 ];

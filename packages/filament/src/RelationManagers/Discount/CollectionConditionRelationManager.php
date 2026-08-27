@@ -43,6 +43,9 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 fn ($query) => $query->where('type', 'condition')
                     ->where('discountable_type', Collection::morphName())
                     ->whereHas('discountable')
+                    ->with(['discountable' => fn ($morphTo) => $morphTo->morphWith([
+                        Collection::class => ['group', 'ancestors'],
+                    ])])
             )
             ->headerActions([
                 CreateAction::make()->schema([
@@ -62,6 +65,12 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 TextColumn::make('discountable.id')
                     ->label(
                         __('lunar-filament::discount.relationmanagers.collection_conditions.table.name.label')
+                    )
+                    ->description(
+                        fn (Model $record): string => collect([$record->discountable?->group?->name])
+                            ->concat($record->discountable?->breadcrumb ?? [])
+                            ->filter()
+                            ->implode(' > ')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable?->translate('name')

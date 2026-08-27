@@ -176,7 +176,7 @@
                     </tr>
                 </thead>
                 <tbody class="lines-body">
-                  @foreach($record->fulfillableLines as $line)
+                  @foreach($record->productLines as $line)
                     <tr>
                       <td>
                         {{ $line->description }} <br>

@@ -95,7 +95,8 @@ class ProductVariantForm
             ->label(__('lunar-filament::productvariant.form.unit_quantity.label'))
             ->hintIcon('heroicon-m-question-mark-circle')
             ->hintIconTooltip(__('lunar-filament::productvariant.form.unit_quantity.tooltip'))
-            ->numeric();
+            ->numeric()
+            ->minValue(1);
     }
 
     public static function getQuantityIncrementComponent(): TextInput

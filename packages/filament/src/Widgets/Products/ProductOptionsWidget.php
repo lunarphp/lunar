@@ -58,6 +58,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             ->get();
 
         return Action::make('addSharedOption')
+            ->label(
+                __('lunar-filament::productoption.widgets.product-options.actions.add-shared-option.label')
+            )
             ->schema([
                 Callout::make()
                     ->status('info')
@@ -354,6 +357,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function saveVariantsAction(): Action
     {
         return Action::make('saveVariants')
+            ->label(
+                __('lunar-filament::productoption.widgets.product-options.actions.save-variants.label')
+            )
             ->action(function () {
                 try {
                     $this->saveVariants();
@@ -412,6 +418,13 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             if (! empty($variantData['variant_id'])) {
                 $variant = ProductVariant::find($variantData['variant_id']);
                 $basePrice = $variant->basePrices->first();
+            }
+
+            // A permutation the mapper could not match has no variant to update and
+            // nothing to copy tax_class_id or a base price from, so fall back to
+            // the oldest sibling.
+            if (empty($variantData['variant_id']) && empty($variantData['copied_id'])) {
+                $variantData['copied_id'] = $this->record->variants()->orderBy('id')->value('id');
             }
 
             if (! empty($variantData['copied_id'])) {

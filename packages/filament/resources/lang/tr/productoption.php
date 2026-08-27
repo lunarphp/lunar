@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Seçenekleri Kaydet',
                 ],
+                'save-variants' => [
+                    'label' => 'Varyantları Kaydet',
+                ],
                 'add-shared-option' => [
                     'label' => 'Paylaşılan Seçenek Ekle',
                     'form' => [

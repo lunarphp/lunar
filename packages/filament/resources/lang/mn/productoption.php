@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Сонголтууд хадгалах',
                 ],
+                'save-variants' => [
+                    'label' => 'Вариантууд хадгалах',
+                ],
                 'add-shared-option' => [
                     'label' => 'Хуваалцсан сонголт нэмэх',
                     'form' => [

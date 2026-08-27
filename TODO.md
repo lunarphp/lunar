@@ -28,6 +28,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 - Cache toolkit follow-ons — outbound webhooks, change feed / sync cursor, internal derived caches (ride spec 0043 events)
 - Cache-invalidation deferrals — media as a tracked satellite; a `CartLinesUpdated` event (from spec 0043)
+- Stock events — `StockMovementRecorded`, a variant stock-changed event and the Scout re-index on `stock_available` change (spec 0038's unshipped events section; split out of spec 0065)
 - Location-scoped availability & stock routing — per-location stock selection + sell-time routing/splitting (follow-on to 0038)
 - Checkout stock reservations — hold stock via the `ReservesStock` seam at checkout start (follow-on to 0038)
 - Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
@@ -83,3 +84,4 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Per-attribute validation rules across both panels (spec 0062)
 - Standalone attributes surface in the Filament admin (spec 0063)
 - Long-lived worker safety — scoped lifetimes for per-visitor service state (spec 0064)
+- Port the v1.5.0 fixes into v2 (spec 0065)

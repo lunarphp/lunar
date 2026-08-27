@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Pozwala na zarządzanie klientami',
     'permissions.sales:manage-discounts.label' => 'Zarządzanie rabatami',
     'permissions.sales:manage-discounts.description' => 'Pozwala na zarządzanie rabatami',
+    'permissions.shipping:manage.label' => 'Zarządzanie dostawą',
+    'permissions.shipping:manage.description' => 'Pozwala na zarządzanie dostawą',
 ];

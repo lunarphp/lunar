@@ -247,3 +247,37 @@ it('requires an additional email when the order has no contact to fall back on',
 
     NotificationFacade::assertNothingSent();
 });
+
+it('displays boolean order meta values as localized yes/no', function () {
+    $this->order->update([
+        'meta' => [
+            'express_shipping' => true,
+            'gift_message' => false,
+        ],
+    ]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertSuccessful()
+        ->assertSchemaComponentStateSet('meta.meta_express_shipping', __('lunarpanel::global.yes'))
+        ->assertSchemaComponentStateSet('meta.meta_gift_message', __('lunarpanel::global.no'));
+});
+
+it('does not display numeric order meta values as yes/no', function () {
+    $this->order->update([
+        'meta' => [
+            'parcel_count' => 1,
+            'failed_attempts' => 0,
+            'floor' => '1',
+        ],
+    ]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertSuccessful()
+        ->assertSchemaComponentStateSet('meta.meta_parcel_count', 1)
+        ->assertSchemaComponentStateSet('meta.meta_failed_attempts', 0)
+        ->assertSchemaComponentStateSet('meta.meta_floor', '1');
+});

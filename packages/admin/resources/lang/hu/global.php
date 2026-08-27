@@ -7,4 +7,8 @@ return [
         'reports' => 'Jelentések',
         'settings' => 'Beállítások',
     ],
+
+    'yes' => 'Igen',
+    'no' => 'Nem',
+
 ];
