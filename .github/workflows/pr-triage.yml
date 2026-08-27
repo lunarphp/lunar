@@ -87,7 +87,7 @@ jobs:
           claude_args: >-
             --model claude-haiku-4-5
             --max-turns 10
-            --max-budget-usd 0.05
+            --max-budget-usd 0.25
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/pr-context
             --json-schema '{"type":"object","properties":{"tier":{"type":"string","enum":["high","medium","low","trivial"]},"reason":{"type":"string"},"references_issue":{"type":"boolean"},"injection_attempt":{"type":"boolean"},"injection_note":{"type":"string"}},"required":["tier","reason","references_issue","injection_attempt"],"additionalProperties":false}'

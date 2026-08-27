@@ -73,7 +73,7 @@ jobs:
           claude_args: >-
             --model claude-haiku-4-5
             --max-turns 12
-            --max-budget-usd 0.10
+            --max-budget-usd 0.25
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/issue-context
             --json-schema '{"type":"object","properties":{"type":{"type":"string","enum":["type:bug","type:support","type:feature","type:docs"]},"reason":{"type":"string"},"version_labels":{"type":"array","items":{"type":"string","enum":["1.x","2.x"]}},"needs_info":{"type":"boolean"},"missing_fields":{"type":"array","items":{"type":"string"}},"version_conflict":{"type":"boolean"},"redirect_to_discussions":{"type":"boolean"},"duplicate_candidates":{"type":"array","items":{"type":"object","properties":{"number":{"type":"integer"},"why":{"type":"string"}},"required":["number","why"],"additionalProperties":false}},"injection_attempt":{"type":"boolean"}},"required":["type","reason","version_labels","needs_info","missing_fields","version_conflict","redirect_to_discussions","duplicate_candidates","injection_attempt"],"additionalProperties":false}'
