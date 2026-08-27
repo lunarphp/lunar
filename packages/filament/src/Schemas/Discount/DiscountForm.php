@@ -14,8 +14,9 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Currency;
 use Lunar\Filament\Contracts\DiscountFormType;
@@ -50,10 +51,14 @@ class DiscountForm
                     ->heading(__('lunar-filament::discount.form.buy_x_get_y.heading'))
                     ->visible(fn (Get $get) => $get('type') == BuyXGetY::class)
                     ->schema(static::getBuyXGetYComponents()),
-                Section::make('amount_off')
-                    ->heading(__('lunar-filament::discount.form.amount_off.heading'))
-                    ->visible(fn (Get $get) => $get('type') == AmountOff::class)
-                    ->schema(static::getAmountOffComponents()),
+                Section::make('percentage_off')
+                    ->heading(__('lunar-filament::discount.form.percentage_off.heading'))
+                    ->visible(fn (Get $get) => $get('type') == PercentageOff::class)
+                    ->schema(static::getPercentageOffComponents()),
+                Section::make('fixed_amount_off')
+                    ->heading(__('lunar-filament::discount.form.fixed_amount_off.heading'))
+                    ->visible(fn (Get $get) => $get('type') == FixedAmountOff::class)
+                    ->schema(static::getFixedAmountOffComponents()),
                 ...$discountSchemas,
             ]),
         );
@@ -213,14 +218,23 @@ class DiscountForm
             ->live();
     }
 
-    public static function getAmountOffComponents(): array
+    public static function getPercentageOffComponents(): array
+    {
+        return [
+            TextInput::make('data.percentage')
+                ->label(__('lunar-filament::discount.form.percentage.label'))
+                ->numeric(),
+        ];
+    }
+
+    public static function getFixedAmountOffComponents(): array
     {
         $currencies = Currency::get();
 
         $currencyInputs = [];
 
         foreach ($currencies as $currency) {
-            $currencyInputs[] = TextInput::make('data.fixed_values.'.$currency->code)
+            $currencyInputs[] = TextInput::make('data.amounts.'.$currency->code)
                 ->label($currency->name)
                 ->afterStateHydrated(function (TextInput $component, $state) use ($currencies) {
                     $currencyCode = last(explode('.', $component->getStatePath()));
@@ -235,16 +249,7 @@ class DiscountForm
         }
 
         return [
-            Toggle::make('data.fixed_value')
-                ->label(__('lunar-filament::discount.form.fixed_value.label'))
-                ->live(),
-            TextInput::make('data.percentage')
-                ->label(__('lunar-filament::discount.form.percentage.label'))
-                ->visible(fn (Get $get) => ! $get('data.fixed_value'))
-                ->numeric(),
-            Group::make($currencyInputs)
-                ->visible(fn (Get $get) => (bool) $get('data.fixed_value'))
-                ->columns(3),
+            Group::make($currencyInputs)->columns(3),
         ];
     }
 

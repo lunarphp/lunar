@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Buy X Get Y',
         ],
-        'amount_off' => [
-            'heading' => 'Amount Off',
+        'percentage_off' => [
+            'heading' => 'تخفیف درصدی',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'تخفیف مبلغ ثابت',
         ],
         'name' => [
             'label' => 'Name',
@@ -64,11 +67,8 @@ return [
             'label' => 'Automatically add rewards',
             'helper_text' => 'Switch on to add reward products when not present in the basket.',
         ],
-        'fixed_value' => [
-            'label' => 'Fixed value',
-        ],
         'percentage' => [
-            'label' => 'Percentage',
+            'label' => 'درصد',
         ],
     ],
     'table' => [

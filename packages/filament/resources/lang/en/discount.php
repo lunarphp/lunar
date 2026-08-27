@@ -12,8 +12,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Buy X Get Y',
         ],
-        'amount_off' => [
-            'heading' => 'Amount Off',
+        'percentage_off' => [
+            'heading' => 'Percentage Off',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Fixed Amount Off',
         ],
         'name' => [
             'label' => 'Name',
@@ -65,9 +68,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Automatically add rewards',
             'helper_text' => 'Switch on to add reward products when not present in the basket.',
-        ],
-        'fixed_value' => [
-            'label' => 'Fixed value',
         ],
         'percentage' => [
             'label' => 'Percentage',

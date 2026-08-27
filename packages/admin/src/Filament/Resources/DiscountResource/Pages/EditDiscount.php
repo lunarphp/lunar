@@ -59,7 +59,7 @@ class EditDiscount extends BaseEditRecord
         }
 
         $minPrices = $data['data']['min_prices'] ?? [];
-        $fixedPrices = $data['data']['fixed_values'] ?? [];
+        $fixedPrices = $data['data']['amounts'] ?? [];
         $currencies = Currency::enabled()->get();
 
         foreach ($minPrices as $currencyCode => $value) {
@@ -81,7 +81,7 @@ class EditDiscount extends BaseEditRecord
             if (! $currency) {
                 continue;
             }
-            $data['data']['fixed_values'][$currencyCode] = PriceCalculator::toMinor($fixedPrice, $currency);
+            $data['data']['amounts'][$currencyCode] = PriceCalculator::toMinor($fixedPrice, $currency);
         }
 
         return $data;

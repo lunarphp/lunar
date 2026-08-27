@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Koop X Krijg Y',
         ],
-        'amount_off' => [
-            'heading' => 'Bedrag Korting',
+        'percentage_off' => [
+            'heading' => 'Procentuele korting',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Vast kortingsbedrag',
         ],
         'name' => [
             'label' => 'Naam',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Automatisch beloningen toevoegen',
             'helper_text' => 'Schakel in om beloningsproducten toe te voegen wanneer deze niet in de winkelwagen aanwezig zijn.',
-        ],
-        'fixed_value' => [
-            'label' => 'Vaste waarde',
         ],
         'percentage' => [
             'label' => 'Percentage',

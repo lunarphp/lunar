@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'اشترِ X واحصل على Y',
         ],
-        'amount_off' => [
-            'heading' => 'مقدار الخصم',
+        'percentage_off' => [
+            'heading' => 'خصم بنسبة مئوية',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'خصم بمبلغ ثابت',
         ],
         'name' => [
             'label' => 'الاسم',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'إضافة المكافآت تلقائيًا',
             'helper_text' => 'حددها لإضافة منتجات المكافأة تلقائيًا إذا لم تكن موجودة في السلة.',
-        ],
-        'fixed_value' => [
-            'label' => 'قيمة ثابتة',
         ],
         'percentage' => [
             'label' => 'النسبة المئوية',

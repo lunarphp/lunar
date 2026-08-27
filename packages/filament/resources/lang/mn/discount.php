@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'X авбал Y урамшуулалтай',
         ],
-        'amount_off' => [
-            'heading' => 'Хэмжээг бууруулах',
+        'percentage_off' => [
+            'heading' => 'Хувийн хөнгөлөлт',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Тогтмол дүнгийн хөнгөлөлт',
         ],
         'name' => [
             'label' => 'Нэр',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Шагналыг автоматаар нэмэх',
             'helper_text' => 'Сагсанд байхгүй бол шагнал бүтээгдэхүүн нэмэхийг идэвхжүүл.',
-        ],
-        'fixed_value' => [
-            'label' => 'Тогтмол утга',
         ],
         'percentage' => [
             'label' => 'Хувь',
