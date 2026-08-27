@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Facades\Converter;
+use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
 use Lunar\Shipping\Models\Contracts\ShippingMethod;
@@ -208,14 +209,16 @@ class ShippingMethodResource extends BaseResource
     {
         return Forms\Components\Select::make('driver')
             ->label(__('lunarpanel.shipping::shippingmethod.form.driver.label'))
-            ->options([
-                'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),
-                'collection' => __('lunarpanel.shipping::shippingmethod.form.driver.options.collection'),
-                'flat-rate' => __('lunarpanel.shipping::shippingmethod.form.driver.options.flat-rate'),
-                'free-shipping' => __('lunarpanel.shipping::shippingmethod.form.driver.options.free-shipping'),
-            ])
+            ->options(static::getDriverOptions())
             ->default('ship-by')
             ->required();
+    }
+
+    protected static function getDriverOptions(): array
+    {
+        return Shipping::getSupportedDrivers()->keys()->mapWithKeys(
+            fn ($driver) => [$driver => __("lunarpanel.shipping::shippingmethod.form.driver.options.{$driver}")]
+        )->all();
     }
 
     public static function getDefaultTable(Table $table): Table
