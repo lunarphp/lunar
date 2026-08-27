@@ -85,6 +85,27 @@ export interface FulfilmentData {
     };
 }
 
+export interface RefundableLineData extends FulfilmentLineData {
+    refundable_quantity: number;
+    refund_unit_amount: number;
+}
+
+export interface ShippingLineData {
+    id: number;
+    description: string | null;
+    total: string | null;
+    amount: number;
+}
+
+export interface SettlementData {
+    status: 'balanced' | 'outstanding' | 'refund_due';
+    captured: string | null;
+    refunded: string | null;
+    total: string;
+    variance: string | null;
+    varianceMajor: number;
+}
+
 export interface CarrierData {
     key: string;
     name: string;

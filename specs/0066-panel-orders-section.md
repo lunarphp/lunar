@@ -1,9 +1,9 @@
-# 0062 — Panel Orders section
+# 0066 — Panel Orders section
 
 - Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-07-22
-- TODO item: Panel Orders section — list, order view, capture/refund/cancel/fulfil actions (spec 0062)
+- TODO item: Panel Orders section — list, order view, capture/refund/cancel/fulfil actions (spec 0066)
 
 > Implementation notes (landed): PDF generation lives only in the Filament
 > package (`Lunar\Filament\...\DownloadOrderPdfAction`) and the panel depends only
@@ -15,10 +15,10 @@
 > verbs), so those are a smaller follow-up than first assumed — now specced, with
 > the Show screen reshaped around fulfilment cards (the flat Line-items table and
 > the create-fulfilment surface are superseded), in
-> [[0063-panel-fulfilment-centric-order-view]]. Bulk list actions
+> [[0067-panel-fulfilment-centric-order-view]]. Bulk list actions
 > (capture/cancel/export) moved out of slice 1 to sit with their single-order
 > siblings; only the row "view" action shipped on the list. Address editing landed
-> with the [[0063-panel-fulfilment-centric-order-view]] work (reuses
+> with the [[0067-panel-fulfilment-centric-order-view]] work (reuses
 > `AddressFormFields`, logging the Filament admin's `order-address-update`
 > activity event on the order).
 

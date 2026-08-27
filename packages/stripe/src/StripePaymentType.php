@@ -277,7 +277,7 @@ class StripePaymentType extends AbstractPayment
             );
         }
 
-        $transaction->order->transactions()->create([
+        $refundTransaction = $transaction->order->transactions()->create([
             'success' => $refund->status != 'failed',
             'type' => 'refund',
             'driver' => 'stripe',
@@ -290,7 +290,8 @@ class StripePaymentType extends AbstractPayment
         ]);
 
         return new PaymentRefund(
-            success: true
+            success: true,
+            transaction: $refundTransaction,
         );
     }
 

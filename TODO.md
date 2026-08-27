@@ -16,11 +16,10 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
 - Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
 - Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
-- Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0063)
-- Panel settlement banner + line-driven refund composer (spec 0064)
+- Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)
+- Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
-- Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
@@ -82,3 +81,5 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - `public_id` (ULID) external addressing (spec 0046)
 - Rename `product_variants.purchasable` to `selling_policy` (spec 0048)
 - Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
+- Line-item refunds — `refund_lines`, per-line refund guards, `RefundRequest` (spec 0028)
+- Panel settlement banner + line-driven refund composer (spec 0068)

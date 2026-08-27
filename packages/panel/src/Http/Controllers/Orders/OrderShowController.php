@@ -30,6 +30,7 @@ use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Panel\Support\FulfilmentTransitions;
@@ -46,7 +47,7 @@ class OrderShowController
             'fulfilments.lines.orderLine.purchasable',
             'fulfilments.trackings',
             'fulfilments.location',
-            'transactions',
+            'transactions.refundLines.orderLine',
             'shippingAddress.country',
             'billingAddress.country',
             'customer',
@@ -60,8 +61,10 @@ class OrderShowController
         $factor = (int) ($currency?->factor ?: 100);
         $toMajor = fn (int $minor): float => round($minor / $factor, 2);
 
+        $captured = (int) $order->transactions->where('type', 'capture')->where('success', true)->sum('amount');
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
+        $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -104,6 +107,16 @@ class OrderShowController
                 ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && $line->fulfilmentLines->isEmpty())
                 ->values()
                 ->map(fn (OrderLine $line) => $this->line($line, $line->quantity, $money)),
+            // Every non-shipping line with quantity still left to refund —
+            // the refund composer's line picker.
+            'refundableLines' => $order->lines
+                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && $line->refundableQuantity() > 0)
+                ->values()
+                ->map(fn (OrderLine $line) => [
+                    ...$this->line($line, $line->quantity, $money),
+                    'refundable_quantity' => $line->refundableQuantity(),
+                    'refund_unit_amount' => $toMajor((int) round($line->total / max(1, $line->quantity))),
+                ]),
             'shippingLines' => $order->lines
                 ->where('type', 'shipping')
                 ->values()
@@ -111,6 +124,7 @@ class OrderShowController
                     'id' => $line->id,
                     'description' => $line->description,
                     'total' => $money($line->total),
+                    'amount' => $toMajor($line->total),
                 ]),
             'transactions' => $order->transactions->map(fn (Transaction $transaction) => [
                 'id' => $transaction->id,
@@ -123,6 +137,7 @@ class OrderShowController
                 'card_type' => $transaction->card_type,
                 'last_four' => $transaction->last_four,
                 'created_at' => $transaction->created_at,
+                'lines_summary' => $this->refundLinesSummary($transaction),
             ]),
             'totals' => [
                 'sub_total' => $money($order->sub_total),
@@ -133,6 +148,7 @@ class OrderShowController
                 'refunded' => $refunded ? $money($refunded) : null,
                 'net' => $refunded ? $money($order->total - $refunded) : null,
             ],
+            'settlement' => $settlement,
             'customer' => [
                 'name' => $customerName ?: null,
                 'email' => $billing?->contact_email,
@@ -285,6 +301,31 @@ class OrderShowController
     }
 
     /**
+     * "2× Widget, 1× Gadget" from a refund transaction's recorded line
+     * allocations — null for non-refund transactions or refunds with no
+     * tracked allocation (a driver that didn't hand back a transaction, or an
+     * amount-only refund with nothing but a manual adjustment).
+     */
+    protected function refundLinesSummary(Transaction $transaction): ?string
+    {
+        if ($transaction->type !== 'refund' || $transaction->refundLines->isEmpty()) {
+            return null;
+        }
+
+        $parts = $transaction->refundLines
+            ->map(fn (RefundLine $refundLine) => $refundLine->quantity.'× '.($refundLine->orderLine?->description ?? '—'))
+            ->all();
+
+        $lineAmount = (int) $transaction->refundLines->sum('amount');
+
+        if ($lineAmount < $transaction->amount) {
+            $parts[] = __('panel::orders.refund_summary_and_more');
+        }
+
+        return implode(', ', $parts);
+    }
+
+    /**
      * A line row shared by fulfilment cards and the "other items" section —
      * identity, thumbnail, and the expandable price detail. `quantity` is the
      * quantity shown on the row (a fulfilment's allocation, or the line's own).
@@ -342,6 +383,42 @@ class OrderShowController
         $key = 'panel::orders.'.$prefix.'_'.$method;
 
         return Lang::has($key) ? __($key) : __('panel::orders.'.$fallback);
+    }
+
+    /**
+     * How the transaction ledger compares to what the order should have
+     * settled to: `outstanding` when the customer has paid something but not
+     * everything, `refund_due` when settled money exceeds that reference,
+     * `balanced` otherwise. A zero-capture order (pending/authorized) stays
+     * balanced — that's the ordinary pre-payment state, not a divergence to
+     * flag. A cancelled order's reference is 0, not its total — nothing
+     * should be kept, so any money still held is a refund due regardless of
+     * how much of the original total it represents.
+     *
+     * @return array{status: string, captured: ?string, refunded: ?string, total: string, variance: ?string, varianceMajor: float}
+     */
+    protected function settlement(Order $order, int $captured, int $refunded, callable $money, callable $toMajor): array
+    {
+        $total = (int) $order->total;
+        $settled = $captured - $refunded;
+        $reference = $order->isCancelled() ? 0 : $total;
+
+        $status = match (true) {
+            $settled > $reference => 'refund_due',
+            $captured > 0 && $settled < $reference => 'outstanding',
+            default => 'balanced',
+        };
+
+        $varianceMinor = $status === 'balanced' ? 0 : abs($settled - $reference);
+
+        return [
+            'status' => $status,
+            'captured' => $captured ? $money($captured) : null,
+            'refunded' => $refunded ? $money($refunded) : null,
+            'total' => $money($total),
+            'variance' => $varianceMinor ? $money($varianceMinor) : null,
+            'varianceMajor' => $toMajor($varianceMinor),
+        ];
     }
 
     /**

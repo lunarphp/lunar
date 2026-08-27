@@ -205,7 +205,7 @@ class OpayoPaymentType extends AbstractPayment
             );
         }
 
-        $transaction->order->transactions()->create([
+        $refundTransaction = $transaction->order->transactions()->create([
             'parent_transaction_id' => $transaction->id,
             'success' => true,
             'type' => 'refund',
@@ -220,7 +220,8 @@ class OpayoPaymentType extends AbstractPayment
         ]);
 
         return new PaymentRefund(
-            success: true
+            success: true,
+            transaction: $refundTransaction,
         );
     }
 

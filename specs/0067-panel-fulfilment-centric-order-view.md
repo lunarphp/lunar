@@ -1,9 +1,9 @@
-# 0063 — Panel fulfilment-centric order view
+# 0067 — Panel fulfilment-centric order view
 
 - Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-08-27
-- TODO item: Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0063)
+- TODO item: Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)
 
 > Implementation notes (landed): three review follow-ups shipped with this
 > work. **Address editing** (deferred from 0062) — shipping/billing side cards
@@ -20,7 +20,7 @@
 
 ## Problem
 
-Spec [[0062-panel-orders-section]] shipped the panel's order show screen with two
+Spec [[0066-panel-orders-section]] shipped the panel's order show screen with two
 parallel representations of the order's contents: a Fulfilments section *and* a
 standalone "Line items" table listing every non-shipping line. That flat table is a
 holdover from a pre-fulfilment mental model and it is wrong on core's own terms:
@@ -294,7 +294,7 @@ refund/return actions remain with [[0028-line-item-refunds]].
 
 ## References
 
-- [[0062-panel-orders-section]] — the Orders section this reshapes; its Show-screen
+- [[0066-panel-orders-section]] — the Orders section this reshapes; its Show-screen
   Fulfilments/Line-items layout is superseded by this spec.
 - [[0022-order-fulfilments]] — the fulfilment model, state machine, and operations.
 - [[0031-fulfilment-methods]] — methods, state categories, `fulfil()`, and the

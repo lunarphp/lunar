@@ -1,9 +1,29 @@
-# 0064 — Panel order settlement banner and refund composer
+# 0068 — Panel order settlement banner and refund composer
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
-- TODO item: Panel settlement banner + line-driven refund composer (spec 0064)
+- TODO item: Panel settlement banner + line-driven refund composer (spec 0068)
+
+> Implementation notes (landed): both slices shipped, with slice 2 built on
+> option (a) — [[0028-line-item-refunds]]'s core model landed first (on this
+> same branch), so the composer submits a real `RefundRequest` and the
+> transactions table renders each refund's line allocation ("2× Widget, and
+> more" — see below) sourced from `refund_lines`, not a client-side guess.
+> One refinement beyond the draft: the settlement banner's cancelled-order
+> handling turned out to need its *reference* total to be 0, not
+> `order.total` — a cancelled order holding £40 of a £100 total is
+> `refund_due` (the whole £40 is owed back, not just the excess over some
+> notional remaining balance), not `outstanding` and not silently `balanced`.
+> Both rules now share that reference-total concept; the "cancelled never
+> shows outstanding, but refund_due still fires while cancelled and holding
+> money" behaviour from the original proposal is preserved exactly, just
+> derived from one consistent rule instead of two special cases. The
+> transaction allocation summary append "and more" when the refund's line
+> portion doesn't cover the full transaction amount (shipping/adjustment
+> aren't line-attributed, per 0028's design) — a small addition beyond the
+> original slice 2 scope, added so the transactions table doesn't imply a
+> refund was purely line-driven when it wasn't.
 
 ## Problem
 
@@ -68,8 +88,10 @@ Where `settled = captured − refunded` and:
   but `refund_due` still fires on a cancelled order holding money.
 - `balanced` otherwise — the banner does not render.
 
-The Vue side renders an alert strip in the main column, above the Totals section
-(warn tone, consistent with the hold banner on fulfilment cards):
+The Vue side renders an alert strip at the top of the main column, above the
+Fulfilments section (warn tone, consistent with the hold banner on fulfilment
+cards) — moved there from an initial placement above Totals after review found it
+got lost at the bottom of a long order:
 
 - **outstanding**: "£12.50 outstanding — the customer has paid less than the order
   total." Primary affordance **Take payment** opens the existing capture dialog
@@ -99,7 +121,9 @@ submitting to the existing `panel.orders.refund` endpoint:
 - A full-or-none **shipping** row when the order has an unrefunded shipping line.
 - A signed **adjustment** field — the escape hatch that keeps every refund the old
   flow could express reachable (and mirrors 0028's `RefundRequest.adjustment`).
-- The existing transaction select (multiple captures) and notes field stay.
+- The existing transaction select (multiple captures) and notes field stay, plus a
+  **notify** toggle (defaulting on) matching every other customer-visible action on
+  the page — added after review caught that refunds were notifying unconditionally.
 - A live footer total, disabled submit at zero, client-side clamp to
   `availableToRefund`.
 
@@ -107,27 +131,14 @@ The request gains `lines: [{id, quantity}]`, `shipping: bool`, `adjustment` — 
 the **controller recomputes the amount server-side** from the order lines (client
 math is display-only), then calls `RefundOrder` exactly as today.
 
-**Recording what was refunded.** Two options, decided by this spec's review:
-
-- **(a) Wait for 0028 (recommended).** Land 0028's core model first
-  (`refund_lines`, `refunded_quantity`, `RefundRequest`); the composer then submits
-  a `RefundRequest`, steppers are bounded by *remaining* refundable quantity, and
-  the transactions table / timeline render the allocation from `refund_lines`. The
-  composer UI in this slice is unchanged either way — only the submit path and the
-  persistence differ.
-- **(b) Interim `Transaction.meta` stamp.** Persist the allocation as
-  `meta['refund_allocation']` on the refund transaction and render the summary
-  ("2 × Widget + shipping") from it. This needs a small core enabler — the driver
-  seam returns `PaymentRefund { success, message }` with no handle on the created
-  transaction, so either `PaymentRefund` gains a nullable `transaction` property
-  (additive, useful regardless) or the panel fishes for the latest refund
-  transaction post-hoc (fragile; rejected). Without per-line rollups the steppers
-  can only bound to the line's full quantity, so repeat refunds can over-allocate a
-  line even though the money guard still holds. Retired when 0028 lands.
-
-Option (a) costs a dependency on 0028 being picked up; option (b) ships sooner but
-knowingly duplicates bookkeeping 0028 replaces. The composer's UI work is common to
-both, so slice 2 can be built against (a) with no waste if 0028 is scheduled next.
+**Recording what was refunded — resolved as option (a).** 0028's core model landed
+first: `refund_lines`, `order_lines.refunded_quantity`, `RefundRequest`. The
+composer submits a `RefundRequest`; the panel's line steppers are bounded by each
+line's *remaining* refundable quantity (`OrderLine::refundableQuantity()`), and the
+transactions table renders each refund's allocation from `refund_lines` (see
+implementation notes above) rather than a client-side guess. Option (b)'s interim
+`Transaction.meta` stamp was not needed — 0028 shipped on the same branch, so there
+was no gap to bridge.
 
 ## Alternatives considered
 
@@ -149,29 +160,29 @@ both, so slice 2 can be built against (a) with no waste if 0028 is scheduled nex
 
 ## Migration impact
 
-- **Database:** none in this spec. Option (b) uses the existing `meta` array cast;
-  option (a) inherits 0028's migrations.
-- **Public contract:** no breaking changes. `RefundOrder` is untouched. Option (b)
-  adds a nullable `transaction` property to `PaymentRefund` (additive; drivers that
-  do not set it keep working).
-- **Panel request shape:** the refund endpoint's request grows optional `lines` /
-  `shipping` / `adjustment` fields; a bare `amount` submission keeps working until
-  the composer fully replaces the dialog.
-- **Translations:** new `panel::orders` keys (banner copy, composer labels,
-  allocation summaries) across all 16 locales.
-- **Filament/admin:** untouched. The banner could later port to Filament; noted,
-  not scoped.
+- **Database:** none directly in this spec; inherits 0028's migrations
+  (`refund_lines`, `order_lines.refunded_quantity`).
+- **Public contract:** no breaking changes from this spec directly (0028 carries
+  its own, covered by its Rector rule).
+- **Panel request shape:** the refund endpoint's request replaced its bare `amount`
+  field with `lines` / `shipping` / `adjustment`; `OrderActionController::refund()`
+  and `RefundOrderRequest` were rewritten together with the composer (panel-only,
+  no external consumer of this endpoint).
+- **Translations:** new `panel::orders` keys (banner copy, composer labels, the
+  allocation-summary "and more" string) added to `en` and mirrored across all 16
+  locales as English placeholders, per repo convention.
+- **Filament/admin:** untouched by this spec. `RefundOrderAction`'s own adaptation
+  to the new `RefundRequest` signature is recorded under 0028.
 
-## Open questions
+## Open questions (resolved at implementation)
 
-- **Slice 2 path (a) vs (b)** — wait for 0028's core model or ship the interim
-  meta stamp? Owner: maintainer, at spec review. Recommendation: (a), scheduling
-  0028 next.
-- **Refund basis for a discounted line** — `line.total / quantity` (discounted,
-  tax-inclusive) is assumed here and matches 0028's leaning (Shopify behaviour).
-  Confirm alongside 0028's identical open question.
-- **Should `outstanding` also fire on authorized-but-uncaptured orders?** Proposed:
-  no (chip + Capture action suffice); confirm at review.
+- **Slice 2 path (a) vs (b)** — resolved as (a): 0028 landed first on the same
+  branch, so the composer submits a real `RefundRequest` from day one.
+- **Refund basis for a discounted line** — resolved to `line.total / quantity`
+  (discounted, tax-inclusive), matching 0028.
+- **Should `outstanding` also fire on authorized-but-uncaptured orders?** Resolved:
+  no — a zero-capture order stays `balanced` regardless of payment status; the
+  existing chip and Capture action cover it.
 
 ## References
 
@@ -183,13 +194,15 @@ both, so slice 2 can be built against (a) with no waste if 0028 is scheduled nex
 - Panel: `OrderShowController`, `OrderActionController::refund`,
   `pages/orders/Show.vue`.
 - [[0028-line-item-refunds]] — the core per-line refund model this composes with.
-- [[0062-panel-orders-section]], [[0063-panel-fulfilment-centric-order-view]] —
+- [[0066-panel-orders-section]], [[0067-panel-fulfilment-centric-order-view]] —
   the order view this extends.
 
 ## Implementation plan
 
-- [ ] Slice 1 — settlement banner: `settlement` prop, alert component, dialog
+- [x] Slice 1 — settlement banner: `settlement` prop, alert component, dialog
       pre-fills, Pest + vitest coverage, translations.
-- [ ] Slice 2 — refund composer: dialog rebuild, request shape + server-side
-      amount computation, allocation recording per the resolved open question,
-      transactions table / timeline allocation summaries, tests, translations.
+- [x] Slice 2 — refund composer: dialog rebuild, request shape + server-side
+      amount computation, allocation recording via 0028's `RefundRequest`,
+      transactions table allocation summaries, tests, translations. (Timeline
+      allocation summaries not added — the transactions table already carries
+      this; the activity timeline's refund entry is unchanged.)

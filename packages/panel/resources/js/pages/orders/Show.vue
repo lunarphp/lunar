@@ -28,8 +28,10 @@ import AddTrackingDialog from '../../components/orders/AddTrackingDialog.vue';
 import ChangeLocationDialog from '../../components/orders/ChangeLocationDialog.vue';
 import FulfilmentConfirmDialog, { type PendingFulfilmentAction } from '../../components/orders/FulfilmentConfirmDialog.vue';
 import OrderAddressDialog from '../../components/orders/OrderAddressDialog.vue';
+import RefundComposerDialog from '../../components/orders/RefundComposerDialog.vue';
+import SettlementBanner from '../../components/orders/SettlementBanner.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
-import type { CarrierData, FulfilmentData, FulfilmentLineData, LocationData } from '../../components/orders/types';
+import type { CarrierData, FulfilmentData, FulfilmentLineData, LocationData, RefundableLineData, SettlementData, ShippingLineData } from '../../components/orders/types';
 
 interface Charge { id: number; reference: string | null; amount: number; amount_formatted: string | null }
 
@@ -82,10 +84,12 @@ const props = defineProps<{
         cancelled_at: string | null;
     };
     otherLines: FulfilmentLineData[];
-    shippingLines: { id: number; description: string; total: string | null }[];
+    refundableLines: RefundableLineData[];
+    shippingLines: ShippingLineData[];
     fulfilments: FulfilmentData[];
-    transactions: { id: number; type: string; success: boolean; driver: string; amount: string | null; reference: string | null; status: string | null; card_type: string | null; last_four: string | null; created_at: string }[];
+    transactions: { id: number; type: string; success: boolean; driver: string; amount: string | null; reference: string | null; status: string | null; card_type: string | null; last_four: string | null; created_at: string; lines_summary: string | null }[];
     totals: { sub_total: string | null; discount_total: string | null; shipping_total: string | null; tax_total: string | null; total: string | null; refunded: string | null; net: string | null };
+    settlement: SettlementData;
     customer: { name: string | null; email: string | null; new_customer: boolean; url: string | null };
     shippingAddress: Address | null;
     billingAddress: Address | null;
@@ -151,13 +155,24 @@ const closeDialog = (): void => {
 };
 
 const captureForm = useForm({ transaction_id: props.intents[0]?.id ?? null, amount: props.intents[0]?.amount ?? 0 });
-const refundForm = useForm({ transaction_id: props.charges[0]?.id ?? null, amount: props.availableToRefund, notes: '' });
 const cancelForm = useForm({ reason: '' as string, note: '', notify: true });
 const notifyForm = useForm({ notification: Object.keys(props.notifications)[0] ?? '', message: '' });
 
 const submitCapture = (): void => captureForm.post(props.urls.capture, { preserveScroll: true, onSuccess: closeDialog });
-const submitRefund = (): void => refundForm.post(props.urls.refund, { preserveScroll: true, onSuccess: closeDialog });
 const submitCancel = (): void => cancelForm.post(props.urls.cancel, { preserveScroll: true, onSuccess: closeDialog });
+
+// The settlement banner's actions pre-fill with the variance rather than the
+// dialog's usual default (the full intent / the full available-to-refund).
+const refundPrefillAdjustment = ref(0);
+const openCaptureFromSettlement = (): void => {
+    captureForm.transaction_id = props.intents[0]?.id ?? null;
+    captureForm.amount = Math.min(props.settlement.varianceMajor, props.intents[0]?.amount ?? 0);
+    dialog.value = 'capture';
+};
+const openRefundFromSettlement = (): void => {
+    refundPrefillAdjustment.value = Math.min(props.settlement.varianceMajor, props.availableToRefund);
+    dialog.value = 'refund';
+};
 const submitNotify = (): void => notifyForm.post(props.urls.notify, { preserveScroll: true, onSuccess: closeDialog });
 
 // Fulfilments — the card emits an action, this routes it to the right dialog
@@ -338,6 +353,14 @@ const addressLines = (address: Address): string[] =>
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
+                        <SettlementBanner
+                            :settlement="settlement"
+                            :can-capture="actions.can_capture"
+                            :can-refund="actions.can_refund"
+                            @capture="openCaptureFromSettlement"
+                            @refund="openRefundFromSettlement"
+                        />
+
                         <!-- Fulfilments — one card per fulfilment, the order's contents. -->
                         <Section :title="t('orders.section_fulfilments')">
                             <template #actions>
@@ -417,6 +440,7 @@ const addressLines = (address: Address): string[] =>
                                             </td>
                                             <td class="py-2 px-2 text-ink-700">
                                                 {{ txn.card_type || txn.driver }}<span v-if="txn.last_four" class="text-ink-500"> ····{{ txn.last_four }}</span>
+                                                <div v-if="txn.lines_summary" class="text-[11px] text-ink-500">{{ txn.lines_summary }}</div>
                                             </td>
                                             <td class="py-2 px-2 text-ink-500 font-mono text-[11px]">{{ txn.reference ?? '—' }}</td>
                                             <td class="py-2 px-2 text-ink-500 [font-variant-numeric:tabular-nums]">{{ formatDateTime(txn.created_at) }}</td>
@@ -609,29 +633,17 @@ const addressLines = (address: Address): string[] =>
             </Dialog>
 
             <!-- Refund -->
-            <Dialog :open="dialog === 'refund'" :title="t('orders.action_refund')" size="sm" @update:open="(v: boolean) => !v && closeDialog()">
-                <div class="space-y-3">
-                    <div v-if="charges.length > 1">
-                        <FieldLabel>{{ t('orders.refund_transaction') }}</FieldLabel>
-                        <Select v-model="refundForm.transaction_id">
-                            <option v-for="charge in charges" :key="charge.id" :value="charge.id">{{ charge.reference || ('#' + charge.id) }} — {{ charge.amount_formatted }}</option>
-                        </Select>
-                    </div>
-                    <div>
-                        <FieldLabel :hint="availableToRefundFormatted ?? undefined">{{ t('orders.refund_amount') }}</FieldLabel>
-                        <TextInput v-model="refundForm.amount" type="number" :invalid="!!refundForm.errors.amount" />
-                        <p v-if="refundForm.errors.amount" class="text-danger text-[11px] mt-1">{{ refundForm.errors.amount }}</p>
-                    </div>
-                    <div>
-                        <FieldLabel>{{ t('orders.refund_notes') }}</FieldLabel>
-                        <Textarea v-model="refundForm.notes" :rows="2" />
-                    </div>
-                </div>
-                <template #footer>
-                    <Button variant="ghost" @click="closeDialog">{{ t('common.cancel') }}</Button>
-                    <Button variant="primary" :disabled="refundForm.processing" @click="submitRefund">{{ t('orders.action_refund') }}</Button>
-                </template>
-            </Dialog>
+            <RefundComposerDialog
+                :open="dialog === 'refund'"
+                :lines="refundableLines"
+                :shipping-lines="shippingLines"
+                :charges="charges"
+                :available-to-refund="availableToRefund"
+                :available-to-refund-formatted="availableToRefundFormatted"
+                :url="urls.refund"
+                :prefill-adjustment="refundPrefillAdjustment"
+                @update:open="(v: boolean) => !v && closeDialog()"
+            />
 
             <!-- Cancel -->
             <Dialog :open="dialog === 'cancel'" :title="t('orders.action_cancel')" size="sm" @update:open="(v: boolean) => !v && closeDialog()">

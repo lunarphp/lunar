@@ -9,6 +9,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Tag;
 use Lunar\Core\Models\Transaction;
@@ -158,6 +159,122 @@ it('falls back to the shipping line for the delivery method', function () {
             ->component('orders/Show')
             ->where('shippingOption.name', 'Standard Delivery')
             ->where('shippingOption.price', '£5.00')
+        );
+});
+
+it('flags an outstanding settlement when the order is under-captured', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 6000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'outstanding')
+            ->where('settlement.captured', '£60.00')
+            ->where('settlement.total', '£100.00')
+            ->where('settlement.variance', '£40.00')
+            ->where('settlement.varianceMajor', 40)
+        );
+});
+
+it('flags a refund-due settlement when settled money exceeds the total', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 12000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'refund_due')
+            ->where('settlement.variance', '£20.00')
+        );
+});
+
+it('keeps the settlement balanced before any capture exists', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+            ->where('settlement.variance', null)
+        );
+});
+
+it('still flags refund-due on a cancelled order holding money', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000, 'cancelled_at' => now()]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'refund_due')
+        );
+});
+
+it('stays balanced on a cancelled order with nothing captured', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000, 'cancelled_at' => now()]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+        );
+});
+
+it('flags refund-due, never outstanding, for a partially captured cancelled order', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000, 'cancelled_at' => now()]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 4000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'refund_due')
+            ->where('settlement.variance', '£40.00')
+        );
+});
+
+it('lists lines with quantity still left to refund', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    $line = OrderLine::factory()->for($order)->create(['quantity' => 3, 'unit_price' => 1000, 'total' => 3000, 'refunded_quantity' => 1]);
+    OrderLine::factory()->for($order)->create(['quantity' => 2, 'total' => 2000, 'refunded_quantity' => 2]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->has('refundableLines', 1)
+            ->where('refundableLines.0.id', $line->id)
+            ->where('refundableLines.0.refundable_quantity', 2)
+            ->where('refundableLines.0.refund_unit_amount', 10)
+        );
+});
+
+it('summarises the line allocation on a refund transaction', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    $line = OrderLine::factory()->for($order)->create(['description' => 'Widget', 'quantity' => 3, 'unit_price' => 1000, 'total' => 3000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 3000, 'created_at' => now()->subMinute()]);
+    $refund = Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 2500, 'created_at' => now()]);
+    RefundLine::factory()->create(['transaction_id' => $refund->id, 'order_line_id' => $line->id, 'quantity' => 2, 'amount' => 2000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('transactions.0.lines_summary', '2× Widget, and more')
         );
 });
 

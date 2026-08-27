@@ -1,9 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\OrderUpdate;
@@ -92,8 +96,53 @@ it('refunds against a capture within the available balance', function () {
     $capture = Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
 
     $this->from(route('panel.orders.show', $order))
-        ->post(route('panel.orders.refund', $order), ['transaction_id' => $capture->id, 'amount' => 50, 'notes' => 'Partial'])
+        ->post(route('panel.orders.refund', $order), ['transaction_id' => $capture->id, 'adjustment' => 50, 'notes' => 'Partial'])
         ->assertSessionHas('success');
+});
+
+it('refunds specific order lines and includes shipping', function () {
+    Language::factory()->create(['default' => true, 'code' => 'en']);
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $line = OrderLine::factory()->for($order)->create(['quantity' => 2, 'unit_price' => 5000, 'total' => 10000]);
+    OrderLine::factory()->for($order)->create(['type' => 'shipping', 'requires_shipping' => false, 'requires_fulfilment' => false, 'total' => 500]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.refund', $order), [
+            'transaction_id' => $order->transactions()->whereType('capture')->firstOrFail()->id,
+            'lines' => [['order_line_id' => $line->id, 'quantity' => 1]],
+            'shipping' => true,
+        ])
+        ->assertSessionHas('success');
+
+    expect($line->refresh()->refunded_quantity)->toBe(1);
+});
+
+it('honours the notify toggle when refunding', function () {
+    Event::fake([OrderRefunded::class]);
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $capture = Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.refund', $order), [
+            'transaction_id' => $capture->id,
+            'adjustment' => 25,
+            'notify' => false,
+        ])
+        ->assertSessionHas('success');
+
+    Event::assertDispatched(OrderRefunded::class, fn (OrderRefunded $event) => $event->notify === false);
+});
+
+it('rejects a refund request selecting nothing', function () {
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $capture = Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.refund', $order), ['transaction_id' => $capture->id])
+        ->assertSessionHasErrors('lines');
 });
 
 it('sends a customer notification', function () {

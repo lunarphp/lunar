@@ -3,19 +3,27 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
 
 /**
  * Issue a refund against an existing capture transaction on an order.
  *
- * Validates the requested amount against the order's available-to-refund
- * total, then dispatches the refund through the underlying transaction's
- * payment driver. Returns the driver's `PaymentRefund` result unchanged.
+ * Validates the requested lines/shipping/adjustment against the order's
+ * available-to-refund total and each line's remaining refundable quantity,
+ * dispatches the refund through the underlying transaction's payment driver,
+ * and — when the driver hands back the refund transaction it created —
+ * records the line-level allocation so "what was refunded" is answerable
+ * from the ledger, not just "how much".
  */
 class RefundOrder implements RefundsOrder
 {
@@ -23,25 +31,21 @@ class RefundOrder implements RefundsOrder
         protected PriceCalculatorInterface $priceCalculator,
     ) {}
 
-    /**
-     * Major-unit amount (decimal) to refund. Converted to minor units using
-     * the order's currency factor before being handed to the driver.
-     */
-    public function execute(
-        Order $order,
-        int|string $transactionId,
-        float|int|string $amount,
-        ?string $notes = null,
-    ): PaymentRefund {
+    public function execute(Order $order, RefundRequest $request): PaymentRefund
+    {
         /** @var Order $order */
         /** @var Transaction $transaction */
-        $transaction = $order->transactions()->whereKey($transactionId)->firstOrFail();
+        $transaction = $order->transactions()->whereKey($request->transactionId)->firstOrFail();
 
         if (! $this->canRunForTransaction($transaction)) {
             throw new OrderActionException('Transaction is not a successful capture and cannot be refunded.');
         }
 
-        $minorAmount = $this->priceCalculator->toMinor($amount, $order->currency);
+        $lineAllocations = $this->resolveLineAllocations($order, $request->lines);
+
+        $minorAmount = array_sum(array_column($lineAllocations, 'amount'))
+            + $this->priceCalculator->toMinor($request->shipping, $order->currency)
+            + $this->priceCalculator->toMinor($request->adjustment, $order->currency);
 
         if ($minorAmount <= 0) {
             throw new OrderActionException('Refund amount must be greater than zero.');
@@ -53,7 +57,87 @@ class RefundOrder implements RefundsOrder
             throw new OrderActionException('Refund amount exceeds the available amount on this order.');
         }
 
-        return $transaction->refund($minorAmount, $notes);
+        $refund = $transaction->refund($minorAmount, $request->notes);
+
+        if ($refund->success) {
+            $this->recordLineAllocations($refund, $lineAllocations);
+
+            event(new OrderRefunded($order, $request->notify));
+        }
+
+        return $refund;
+    }
+
+    /**
+     * Resolve the requested lines against the order, guarding each against
+     * its own remaining refundable quantity, and price the allocation from
+     * the line's discounted, tax-inclusive per-unit total.
+     *
+     * @param  array<int, array{order_line_id: int, quantity: int}>  $lines
+     * @return array<int, array{order_line_id: int, quantity: int, amount: int}>
+     */
+    protected function resolveLineAllocations(Order $order, array $lines): array
+    {
+        $allocations = [];
+
+        foreach ($lines as $line) {
+            $quantity = (int) ($line['quantity'] ?? 0);
+
+            if ($quantity <= 0) {
+                continue;
+            }
+
+            /** @var ?OrderLine $orderLine */
+            $orderLine = $order->lines()->whereKey($line['order_line_id'])->first();
+
+            if (! $orderLine) {
+                throw new OrderActionException("Order line #{$line['order_line_id']} does not belong to this order.");
+            }
+
+            $remaining = $orderLine->refundableQuantity();
+
+            if ($quantity > $remaining) {
+                throw new OrderActionException("Refund quantity for order line #{$orderLine->id} exceeds the remaining refundable quantity ({$remaining}).");
+            }
+
+            $unitAmount = (int) round($orderLine->total / $orderLine->quantity);
+
+            $allocations[] = [
+                'order_line_id' => $orderLine->id,
+                'quantity' => $quantity,
+                'amount' => $unitAmount * $quantity,
+            ];
+        }
+
+        return $allocations;
+    }
+
+    /**
+     * Persist the line-level allocation and bump each line's
+     * refunded_quantity rollup. Best-effort: a driver that doesn't hand back
+     * the refund transaction it created (see {@see PaymentRefund}) means the
+     * money still refunds correctly, it just isn't attributable to lines.
+     *
+     * @param  array<int, array{order_line_id: int, quantity: int, amount: int}>  $allocations
+     */
+    protected function recordLineAllocations(PaymentRefund $refund, array $allocations): void
+    {
+        if (! $allocations || ! $refund->transaction) {
+            return;
+        }
+
+        DB::transaction(function () use ($refund, $allocations) {
+            foreach ($allocations as $allocation) {
+                RefundLine::create([
+                    'transaction_id' => $refund->transaction->id,
+                    'order_line_id' => $allocation['order_line_id'],
+                    'quantity' => $allocation['quantity'],
+                    'amount' => $allocation['amount'],
+                ]);
+
+                OrderLine::whereKey($allocation['order_line_id'])->increment('refunded_quantity', $allocation['quantity']);
+            }
+        });
     }
 
     /**

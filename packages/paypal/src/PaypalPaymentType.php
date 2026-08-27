@@ -157,7 +157,7 @@ class PaypalPaymentType extends AbstractPayment
                 $currencyCode
             );
 
-            $transaction->order->transactions()->create([
+            $refundTransaction = $transaction->order->transactions()->create([
                 'success' => true,
                 'type' => 'refund',
                 'driver' => 'paypal',
@@ -170,7 +170,8 @@ class PaypalPaymentType extends AbstractPayment
             ]);
 
             return new PaymentRefund(
-                success: true
+                success: true,
+                transaction: $refundTransaction,
             );
         } catch (HttpClientException $e) {
             return new PaymentRefund(

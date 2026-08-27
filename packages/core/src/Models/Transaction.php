@@ -5,8 +5,10 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\TransactionFactory;
 use Lunar\Core\Facades\Payments;
@@ -91,6 +93,16 @@ class Transaction extends Base implements HasCurrency
             'order_id',
             'currency_code'
         );
+    }
+
+    /**
+     * The line-level refund allocations recorded against this transaction
+     * (populated only for refund transactions dispatched through
+     * {@see RefundOrder}).
+     */
+    public function refundLines(): HasMany
+    {
+        return $this->hasMany(RefundLine::class);
     }
 
     public function driver()

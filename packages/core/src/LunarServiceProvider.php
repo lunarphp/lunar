@@ -63,6 +63,7 @@ use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPlaced;
+use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\AllocateStockForFulfilment;
@@ -75,6 +76,7 @@ use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
+use Lunar\Core\Listeners\SendOrderRefundedNotifications;
 use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
@@ -287,6 +289,7 @@ class LunarServiceProvider extends ServiceProvider
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
         Event::listen(FulfilmentStatusUpdated::class, SendFulfilmentStatusNotifications::class);
         Event::listen(OrderCancelled::class, SendOrderCancelledNotifications::class);
+        Event::listen(OrderRefunded::class, SendOrderRefundedNotifications::class);
 
         // Optionally archive a fully paid + fulfilled order (config-gated).
         Event::listen(OrderPaymentStatusUpdated::class, CloseSettledOrder::class);

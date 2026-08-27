@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Lunar\Core\Actions\Orders\CancelOrder;
 use Lunar\Core\Actions\Orders\CaptureOrder;
 use Lunar\Core\Actions\Orders\RefundOrder;
+use Lunar\Core\DataObjects\RefundRequest;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
@@ -38,11 +39,22 @@ class OrderActionController
     {
         abort_unless(RefundOrder::canRun($order), 403);
 
-        return $this->run($order, fn () => $order->refund(
-            $request->integer('transaction_id'),
-            $request->input('amount'),
-            $request->input('notes'),
-        ), 'panel::orders.flash_refunded');
+        // "Include shipping" is a full-or-none flag, not a client-submitted
+        // amount — the shipping value comes from the order's own shipping
+        // line so the refund total can't be spoofed from the request.
+        $shippingLine = $order->lines()->whereType('shipping')->first();
+        $shipping = $request->boolean('shipping') && $shippingLine
+            ? $shippingLine->total / $order->currency->factor
+            : 0;
+
+        return $this->run($order, fn () => $order->refund(new RefundRequest(
+            transactionId: $request->integer('transaction_id'),
+            lines: $request->lines(),
+            shipping: $shipping,
+            adjustment: $request->input('adjustment') ?: 0,
+            notes: $request->input('notes'),
+            notify: $request->boolean('notify'),
+        )), 'panel::orders.flash_refunded');
     }
 
     public function cancel(CancelOrderRequest $request, Order $order): RedirectResponse
