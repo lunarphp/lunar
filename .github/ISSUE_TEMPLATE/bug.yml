@@ -1,0 +1,91 @@
+name: "🐛 Bug report"
+description: Report something that's broken.
+type: bug
+projects: ["lunarphp/9"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report.
+
+        If you have a usage question, a configuration problem, or you're not yet
+        sure whether the behaviour you're seeing is a Lunar bug, please open a
+        [Discussion](https://github.com/lunarphp/lunar/discussions/new/choose)
+        instead. You'll usually get help faster there.
+
+  - type: dropdown
+    id: version-line
+    attributes:
+      label: Which release line(s) does this affect?
+      description: Select both if you have confirmed the problem on both lines.
+      multiple: true
+      options:
+        - "1.x"
+        - "2.x"
+    validations:
+      required: true
+
+  - type: input
+    id: lunar-version
+    attributes:
+      label: Lunar version
+      description: The exact version, including the patch number. Run `composer show lunarphp/lunar` if you're not sure.
+      placeholder: "1.4.2"
+    validations:
+      required: true
+
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "8.4.3"
+    validations:
+      required: true
+
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel version
+      placeholder: "13.0.1"
+    validations:
+      required: true
+
+  - type: input
+    id: database
+    attributes:
+      label: Database driver & version
+      placeholder: "MySQL 8.4"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead? Include the full error message and stack trace if there was one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction steps
+      description: |
+        The smallest set of steps that reproduces the problem from a fresh install.
+        Reports without reproduction steps usually can't be actioned and will be
+        closed after a fortnight without a response.
+      placeholder: |
+        1. Create a cart with ...
+        2. Add a shipping option of ...
+        3. Call ...
+        4. Observe that ...
+    validations:
+      required: true
