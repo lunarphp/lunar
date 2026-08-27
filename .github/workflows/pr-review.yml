@@ -82,11 +82,20 @@ jobs:
           gh pr view "$PR_NUMBER" \
             --json number,title,body,author,baseRefName,headRefOid,isDraft,additions,deletions,changedFiles,labels \
             > pr.json
+          # Payload author_association reports org members with private
+          # membership as CONTRIBUTOR, so ask the permission API instead.
+          author=$(jq -r .author.login pr.json)
+          perm=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$author/permission" --jq .permission 2>/dev/null || echo "none")
+          case "$perm" in
+            admin|maintain|write) maintainer=true ;;
+            *) maintainer=false ;;
+          esac
           {
             echo "base=$(jq -r .baseRefName pr.json)"
             echo "draft=$(jq -r .isDraft pr.json)"
             echo "changed=$(jq -r '.additions + .deletions' pr.json)"
             echo "files=$(jq -r .changedFiles pr.json)"
+            echo "maintainer=$maintainer"
           } >> "$GITHUB_OUTPUT"
 
       - name: Decide whether to review
@@ -96,7 +105,7 @@ jobs:
           CHANGED: ${{ steps.pr.outputs.changed }}
           FILES: ${{ steps.pr.outputs.files }}
           EVENT: ${{ github.event_name }}
-          AUTHOR_ASSOC: ${{ github.event.pull_request.author_association }}
+          MAINTAINER: ${{ steps.pr.outputs.maintainer }}
         run: |
           # Drafts are labelled but never reviewed automatically, so parking work
           # in draft form buys a contributor nothing. A maintainer can still force
@@ -106,7 +115,7 @@ jobs:
           # bot reviews first so contributors fix things before a maintainer
           # looks, and that ordering is meaningless when the author IS the
           # maintainer. Explicit requests (@claude review, dispatch) still work.
-          if [ "$EVENT" = "pull_request_target" ] && { [ "$AUTHOR_ASSOC" = "OWNER" ] || [ "$AUTHOR_ASSOC" = "MEMBER" ] || [ "$AUTHOR_ASSOC" = "COLLABORATOR" ]; }; then
+          if [ "$EVENT" = "pull_request_target" ] && [ "$MAINTAINER" = "true" ]; then
             reason=maintainer
           elif [ "$DRAFT" = "true" ] && [ "$EVENT" = "pull_request_target" ]; then
             reason=draft

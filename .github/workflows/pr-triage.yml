@@ -132,9 +132,15 @@ jobs:
 
             // Maintainers get the tier label (useful for scanning) but not the
             // issue-gate nudge — the gate exists to save contributors wasted
-            // effort, and maintainers answer to no such gate.
-            const isMaintainer = ['OWNER', 'MEMBER', 'COLLABORATOR']
-              .includes(context.payload.pull_request.author_association)
+            // effort, and maintainers answer to no such gate. Checked via the
+            // permission API: the webhook payload's author_association reports
+            // org members with private membership as CONTRIBUTOR.
+            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: issue.owner,
+              repo: issue.repo,
+              username: livePr.user.login,
+            })
+            const isMaintainer = ['admin', 'maintain', 'write'].includes(perm.permission)
 
             core.summary.addHeading('PR triage', 3)
             core.summary.addRaw(`Proposed tier: \`${triage.tier}\` — ${triage.reason}\n\n`)
