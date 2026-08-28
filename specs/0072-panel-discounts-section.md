@@ -439,7 +439,8 @@ it to 16.
 
 ## Open questions
 
-- **Free shipping** — agreed as a follow-up spec. The open part is its shape: promote
+- **Free shipping** — agreed as a follow-up spec, and it now also owns slice 6's
+  `ShippingDiscountForm`. The open part is its shape: promote
   `ShippingDiscount` from `table-rate-shipping` into core and generalise it away from
   `ShippingMethod`, or add a narrower core `FreeShipping` type and leave `ShippingDiscount`
   where it is? Resolve against the shipping-options work before writing it. Either answer
@@ -494,8 +495,13 @@ Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
 - [x] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,
       `TargetPickerDialog`, per-bucket blocks driven by `targetBuckets()`, the eligible-
       customers card, `ui.ts` exports, tests.
-- [ ] Slice 6 — Seam proof: `ShippingDiscountForm` + `ShippingDiscountForm.vue` registered
-      from `table-rate-shipping`'s own section, `de` / `nl` locales added there, tests.
-      Droppable into the free-shipping spec if we would rather keep this one panel-shaped.
+- [ ] Slice 6 — Seam proof: deferred to the free-shipping spec, as this plan allowed.
+      The seam is already proven against a type registered from outside core by
+      `tests/panel/Feature/Discounts/DiscountTypeSeamTest`, whose fixture exercises a
+      custom component, narrowed buckets, a scaling round trip and its own rules. What
+      `ShippingDiscount` would add beyond that is mostly packaging — an npm workspace,
+      a Vite config, a committed bundle, CI wiring and `de` / `nl` locales — and the
+      open question below may move the type into core, taking its form with it. Until
+      it lands, `table-rate-shipping` users get the `RawDataForm` fallback.
 - [ ] Deferred — core free-shipping type (own spec), `restriction` column removal,
       normalising the three targeting tables.
