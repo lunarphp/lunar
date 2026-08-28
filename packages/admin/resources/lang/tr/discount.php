@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'X Al Y Kazan',
         ],
-        'amount_off' => [
-            'heading' => 'Sabit Tutar İndirimi',
+        'percentage_off' => [
+            'heading' => 'Yüzde indirim',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Sabit tutar indirimi',
         ],
         'name' => [
             'label' => 'İndirim Adı',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Ödülleri otomatik ekle',
             'helper_text' => 'Ödül ürünlerini sepette yokken eklemek için açın.',
-        ],
-        'fixed_value' => [
-            'label' => 'Sabit değer',
         ],
         'percentage' => [
             'label' => 'Yüzde',

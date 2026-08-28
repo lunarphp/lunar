@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Vásárolj X-et, kapj Y-t',
         ],
-        'amount_off' => [
-            'heading' => 'Összeg alapú kedvezmény',
+        'percentage_off' => [
+            'heading' => 'Százalékos kedvezmény',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Fix összegű kedvezmény',
         ],
         'name' => [
             'label' => 'Név',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Jutalmak automatikus hozzáadása',
             'helper_text' => 'Kapcsolja be, hogy a jutalomtermékek automatikusan hozzáadódjanak, ha nincsenek a kosárban.',
-        ],
-        'fixed_value' => [
-            'label' => 'Rögzített érték',
         ],
         'percentage' => [
             'label' => 'Százalék',

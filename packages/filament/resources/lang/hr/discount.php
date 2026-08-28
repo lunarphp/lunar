@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Kupi X, dobij Y',
         ],
-        'amount_off' => [
-            'heading' => 'Iznos popusta',
+        'percentage_off' => [
+            'heading' => 'Postotni popust',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Popust u fiksnom iznosu',
         ],
         'name' => [
             'label' => 'Naziv',
@@ -64,11 +67,8 @@ return [
             'label' => 'Automatski dodaj nagrade',
             'helper_text' => 'Uključite kako biste dodali nagradne proizvode ako se ne nalaze u košarici.',
         ],
-        'fixed_value' => [
-            'label' => 'Fixed value',
-        ],
         'percentage' => [
-            'label' => 'Percentage',
+            'label' => 'Postotak',
         ],
     ],
     'table' => [

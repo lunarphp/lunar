@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
@@ -60,19 +60,19 @@ function discountMemoFixture(): Cart
     // whenever the memoised set is empty, so the staleness only shows once the
     // first calculation already found something.
     $attach(Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => FixedAmountOff::class,
         'name' => 'Always on',
         'coupon' => null,
         'starts_at' => now()->subDay(),
-        'data' => ['fixed_value' => true, 'fixed_values' => ['GBP' => 1]],
+        'data' => ['amounts' => ['GBP' => 1]],
     ]));
 
     $attach(Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => FixedAmountOff::class,
         'name' => 'Coupon discount',
         'coupon' => 'SAVE',
         'starts_at' => now()->subDay(),
-        'data' => ['fixed_value' => true, 'fixed_values' => ['GBP' => 5]],
+        'data' => ['amounts' => ['GBP' => 5]],
     ]));
 
     $cart = Cart::factory()->create([

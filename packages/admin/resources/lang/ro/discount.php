@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Cumperi X, primești Y',
         ],
-        'amount_off' => [
-            'heading' => 'Reducere sumă',
+        'percentage_off' => [
+            'heading' => 'Reducere procentuală',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Reducere cu sumă fixă',
         ],
         'name' => [
             'label' => 'Nume',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Adaugă automat recompense',
             'helper_text' => 'Activați pentru a adăuga produse-recompensă când nu sunt în coș.',
-        ],
-        'fixed_value' => [
-            'label' => 'Valoare fixă',
         ],
         'percentage' => [
             'label' => 'Procent',

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Validation\CouponValidator;
 use Lunar\Tests\Core\Stubs\User;
@@ -15,11 +15,10 @@ test('can validate coupons', function () {
     $validator = app(CouponValidator::class);
 
     Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -37,13 +36,12 @@ test('can validate based on uses', function () {
     $validator = app(CouponValidator::class);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'uses' => 10,
         'max_uses' => 20,
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -71,12 +69,11 @@ test('enforces max uses per user for the authenticated user', function () {
     $user = User::factory()->create();
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'max_uses_per_user' => 1,
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -98,12 +95,11 @@ test('does not enforce max uses per user for a guest', function () {
     $user = User::factory()->create();
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'max_uses_per_user' => 1,
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -122,12 +118,11 @@ test('allows another user when one is at the per-user limit', function () {
     $userB = User::factory()->create();
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'max_uses_per_user' => 1,
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -143,7 +138,7 @@ test('can validate based on start and end dates', function () {
     $validator = app(CouponValidator::class);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'uses' => 0,
         'max_uses' => null,
@@ -151,7 +146,6 @@ test('can validate based on start and end dates', function () {
         'ends_at' => now()->endOfWeek(),
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
