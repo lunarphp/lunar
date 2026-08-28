@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Toate reducerile, de la început',
     'show_kpis' => 'Arată statisticile',
 
+    'summary_percentage_off' => ':percentage% reducere',
+
+    'summary_fixed_amount_off' => ':amount reducere',
+
+    'summary_buy_x_get_y' => 'Cumperi :buy, primești :get',
+
+    'field_percentage' => 'Procent de reducere',
+
+    'field_percentage_hint' => 'Se scade din fiecare linie eligibilă.',
+
+    'field_amount' => 'Valoarea reducerii',
+
+    'field_amounts_hint' => 'Setați o valoare per monedă. O monedă lăsată goală nu primește reducere.',
+
+    'field_min_qty' => 'Cantitate de cumpărat',
+
+    'field_reward_qty' => 'Cantitate oferită',
+
+    'field_max_reward_qty' => 'Maxim oferit',
+
+    'field_max_reward_qty_hint' => 'Lăsați gol pentru a recompensa fiecare set eligibil.',
+
+    'field_automatically_add_rewards' => 'Adaugă automat recompensele în coș',
+
+    'field_automatically_add_rewards_hint' => 'Adaugă produsele oferite în locul clientului, în loc să aștepte ca el să o facă.',
+
+    'section_conditions' => 'Condiții',
+
+    'section_conditions_description' => 'Ce trebuie să îndeplinească un coș înainte ca reducerea să se aplice.',
+
+    'field_min_spend' => 'Sumă minimă',
+
+    'field_min_spend_hint' => 'Setați un prag per monedă. O monedă lăsată goală nu are minim.',
+
     'automatic' => 'Automată',
     'no_end_date' => 'Fără dată de final',
     'usage_unlimited' => 'fără limită',

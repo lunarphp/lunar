@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Support\DiscountTypeForms;
 
+use Lunar\Core\Models\Currency;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 
 /**
@@ -37,5 +38,12 @@ class RawDataForm implements DiscountTypeForm
     public function rules(): array
     {
         return [];
+    }
+
+    public function summary(array $data, ?Currency $currency): ?string
+    {
+        // The panel does not know what the payload means, so it says nothing
+        // rather than guessing; the list falls back to the type's own name.
+        return null;
     }
 }

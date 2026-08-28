@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Бүх хөнгөлөлт, бүх хугацаанд',
     'show_kpis' => 'Статистик харуулах',
 
+    'summary_percentage_off' => ':percentage% хөнгөлөлт',
+
+    'summary_fixed_amount_off' => ':amount хөнгөлөлт',
+
+    'summary_buy_x_get_y' => ':buy авбал :get бэлэг',
+
+    'field_percentage' => 'Хөнгөлөлтийн хувь',
+
+    'field_percentage_hint' => 'Тохирох мөр бүрээс хасагдана.',
+
+    'field_amount' => 'Хөнгөлөлтийн дүн',
+
+    'field_amounts_hint' => 'Валют тус бүрд дүн оруулна уу. Хоосон орхисон валют хөнгөлөлт авахгүй.',
+
+    'field_min_qty' => 'Худалдан авах тоо',
+
+    'field_reward_qty' => 'Урамшуулах тоо',
+
+    'field_max_reward_qty' => 'Хамгийн их урамшуулал',
+
+    'field_max_reward_qty_hint' => 'Тохирох багц бүрийг урамшуулахын тулд хоосон орхино уу.',
+
+    'field_automatically_add_rewards' => 'Урамшууллыг сагсанд автоматаар нэмэх',
+
+    'field_automatically_add_rewards_hint' => 'Худалдан авагчийг хүлээхийн оронд урамшууллын бараануудыг өөрөө нэмнэ.',
+
+    'section_conditions' => 'Нөхцөл',
+
+    'section_conditions_description' => 'Энэ хөнгөлөлт хэрэгжихийн өмнө сагс ямар нөхцөл хангах ёстой вэ.',
+
+    'field_min_spend' => 'Хамгийн бага худалдан авалт',
+
+    'field_min_spend_hint' => 'Валют тус бүрд босго тогтооно уу. Хоосон орхисон валютад доод хязгаар байхгүй.',
+
     'automatic' => 'Автомат',
     'no_end_date' => 'Дуусах огноогүй',
     'usage_unlimited' => 'хязгааргүй',

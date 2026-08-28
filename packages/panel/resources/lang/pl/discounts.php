@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Wszystkie rabaty, od początku',
     'show_kpis' => 'Pokaż statystyki',
 
+    'summary_percentage_off' => ':percentage% rabatu',
+
+    'summary_fixed_amount_off' => 'Rabat :amount',
+
+    'summary_buy_x_get_y' => 'Kup :buy, otrzymaj :get',
+
+    'field_percentage' => 'Procent rabatu',
+
+    'field_percentage_hint' => 'Odejmowany od każdej kwalifikującej się pozycji.',
+
+    'field_amount' => 'Kwota rabatu',
+
+    'field_amounts_hint' => 'Ustaw kwotę dla każdej waluty. Waluta pozostawiona pusta nie otrzyma rabatu.',
+
+    'field_min_qty' => 'Ilość do kupienia',
+
+    'field_reward_qty' => 'Ilość w nagrodę',
+
+    'field_max_reward_qty' => 'Maksymalna nagroda',
+
+    'field_max_reward_qty_hint' => 'Pozostaw puste, aby nagradzać każdy kwalifikujący się zestaw.',
+
+    'field_automatically_add_rewards' => 'Automatycznie dodawaj nagrody do koszyka',
+
+    'field_automatically_add_rewards_hint' => 'Dodaje produkty nagrody za klienta, zamiast czekać, aż zrobi to sam.',
+
+    'section_conditions' => 'Warunki',
+
+    'section_conditions_description' => 'Co koszyk musi spełnić, zanim ten rabat zostanie naliczony.',
+
+    'field_min_spend' => 'Minimalna kwota',
+
+    'field_min_spend_hint' => 'Ustaw próg dla każdej waluty. Waluta pozostawiona pusta nie ma minimum.',
+
     'automatic' => 'Automatyczny',
     'no_end_date' => 'Bez daty zakończenia',
     'usage_unlimited' => 'bez limitu',

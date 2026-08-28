@@ -10,7 +10,7 @@ use Lunar\Core\Models\Discount;
 use Lunar\Panel\Drafts\DraftableResource;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\Support\AvailabilitySchema;
-use Lunar\Panel\Support\DiscountTypeSchema;
+use Lunar\Panel\Support\DiscountDataSchema;
 
 class DiscountDraftResource extends DraftableResource
 {
@@ -23,7 +23,7 @@ class DiscountDraftResource extends DraftableResource
     public function __construct(
         protected UpdatesDiscount $updatesDiscount,
         protected AvailabilitySchema $availabilitySchema,
-        protected DiscountTypeSchema $typeSchema,
+        protected DiscountDataSchema $dataSchema,
     ) {}
 
     public function model(): string
@@ -63,7 +63,7 @@ class DiscountDraftResource extends DraftableResource
             'stop' => (bool) $record->stop,
             'max_uses' => $record->max_uses === null ? null : (int) $record->max_uses,
             'max_uses_per_user' => $record->max_uses_per_user === null ? null : (int) $record->max_uses_per_user,
-            'data' => $this->typeSchema->formFor($record->type)->toForm($record->data ?? []),
+            'data' => $this->dataSchema->toForm($record->type, $record->data ?? []),
             ...$this->availabilitySchema->values($record),
         ];
     }
@@ -140,9 +140,10 @@ class DiscountDraftResource extends DraftableResource
         $attributes = $availability['attributes'];
 
         if (array_key_exists('data', $attributes)) {
-            $attributes['data'] = $this->typeSchema
-                ->formFor($record->type)
-                ->toStorage((array) $attributes['data']);
+            $attributes['data'] = $this->dataSchema->toStorage(
+                $record->type,
+                (array) $attributes['data'],
+            );
         }
 
         $this->updatesDiscount->execute(

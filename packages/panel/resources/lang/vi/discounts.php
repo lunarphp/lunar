@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Tất cả chương trình, từ trước đến nay',
     'show_kpis' => 'Hiện thống kê',
 
+    'summary_percentage_off' => 'Giảm :percentage%',
+
+    'summary_fixed_amount_off' => 'Giảm :amount',
+
+    'summary_buy_x_get_y' => 'Mua :buy tặng :get',
+
+    'field_percentage' => 'Phần trăm giảm',
+
+    'field_percentage_hint' => 'Trừ trên mỗi dòng đủ điều kiện.',
+
+    'field_amount' => 'Số tiền giảm',
+
+    'field_amounts_hint' => 'Đặt số tiền cho từng loại tiền tệ. Loại tiền để trống sẽ không được giảm.',
+
+    'field_min_qty' => 'Số lượng cần mua',
+
+    'field_reward_qty' => 'Số lượng được tặng',
+
+    'field_max_reward_qty' => 'Tối đa được tặng',
+
+    'field_max_reward_qty_hint' => 'Để trống để thưởng cho mọi bộ đủ điều kiện.',
+
+    'field_automatically_add_rewards' => 'Tự động thêm hàng tặng vào giỏ',
+
+    'field_automatically_add_rewards_hint' => 'Thêm sản phẩm tặng thay cho khách thay vì chờ họ tự thêm.',
+
+    'section_conditions' => 'Điều kiện',
+
+    'section_conditions_description' => 'Giỏ hàng phải thỏa điều kiện gì trước khi được giảm.',
+
+    'field_min_spend' => 'Chi tiêu tối thiểu',
+
+    'field_min_spend_hint' => 'Đặt ngưỡng cho từng loại tiền tệ. Loại tiền để trống thì không có mức tối thiểu.',
+
     'automatic' => 'Tự động',
     'no_end_date' => 'Không có ngày kết thúc',
     'usage_unlimited' => 'không giới hạn',

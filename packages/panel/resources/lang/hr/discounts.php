@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Svi popusti, od početka',
     'show_kpis' => 'Prikaži statistiku',
 
+    'summary_percentage_off' => ':percentage % popusta',
+
+    'summary_fixed_amount_off' => ':amount popusta',
+
+    'summary_buy_x_get_y' => 'Kupi :buy, dobij :get',
+
+    'field_percentage' => 'Postotak popusta',
+
+    'field_percentage_hint' => 'Oduzima se od svake prihvatljive stavke.',
+
+    'field_amount' => 'Iznos popusta',
+
+    'field_amounts_hint' => 'Postavite iznos po valuti. Valuta ostavljena praznom ne dobiva popust.',
+
+    'field_min_qty' => 'Količina za kupnju',
+
+    'field_reward_qty' => 'Nagradna količina',
+
+    'field_max_reward_qty' => 'Najviše nagrađeno',
+
+    'field_max_reward_qty_hint' => 'Ostavite prazno kako bi se nagradio svaki prihvatljivi komplet.',
+
+    'field_automatically_add_rewards' => 'Automatski dodaj nagrade u košaricu',
+
+    'field_automatically_add_rewards_hint' => 'Dodaje nagradne proizvode umjesto kupca, umjesto da čeka da ih on doda.',
+
+    'section_conditions' => 'Uvjeti',
+
+    'section_conditions_description' => 'Što košarica mora zadovoljiti prije nego se ovaj popust primijeni.',
+
+    'field_min_spend' => 'Najmanji iznos',
+
+    'field_min_spend_hint' => 'Postavite prag po valuti. Valuta ostavljena praznom nema minimum.',
+
     'automatic' => 'Automatski',
     'no_end_date' => 'Bez datuma završetka',
     'usage_unlimited' => 'bez ograničenja',

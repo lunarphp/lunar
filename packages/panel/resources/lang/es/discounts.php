@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Todos los descuentos, desde siempre',
     'show_kpis' => 'Mostrar estadísticas',
 
+    'summary_percentage_off' => ':percentage % de descuento',
+
+    'summary_fixed_amount_off' => ':amount de descuento',
+
+    'summary_buy_x_get_y' => 'Compra :buy, llévate :get',
+
+    'field_percentage' => 'Porcentaje de descuento',
+
+    'field_percentage_hint' => 'Se descuenta de cada línea elegible.',
+
+    'field_amount' => 'Importe de descuento',
+
+    'field_amounts_hint' => 'Fije un importe por moneda. Una moneda en blanco no recibe descuento.',
+
+    'field_min_qty' => 'Cantidad a comprar',
+
+    'field_reward_qty' => 'Cantidad de regalo',
+
+    'field_max_reward_qty' => 'Máximo de regalo',
+
+    'field_max_reward_qty_hint' => 'Déjelo vacío para premiar cada conjunto que califique.',
+
+    'field_automatically_add_rewards' => 'Añadir los regalos al carrito automáticamente',
+
+    'field_automatically_add_rewards_hint' => 'Añade los productos de regalo por el cliente en lugar de esperar a que los añada.',
+
+    'section_conditions' => 'Condiciones',
+
+    'section_conditions_description' => 'Qué debe cumplir un carrito antes de que se aplique este descuento.',
+
+    'field_min_spend' => 'Gasto mínimo',
+
+    'field_min_spend_hint' => 'Fije un umbral por moneda. Una moneda en blanco no tiene mínimo.',
+
     'automatic' => 'Automático',
     'no_end_date' => 'Sin fecha de fin',
     'usage_unlimited' => 'sin límite',

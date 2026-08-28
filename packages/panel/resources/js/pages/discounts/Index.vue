@@ -37,6 +37,7 @@ interface DiscountRow {
     status_label: string;
     type: string;
     type_label: string;
+    effect: string | null;
     coupon: string | null;
     starts_at: string | null;
     ends_at: string | null;
@@ -370,8 +371,11 @@ const formatDate = (value: string | null): string | null =>
                         </div>
                     </template>
 
-                    <template #cell-type_label="{ value }">
-                        <span class="text-[12.5px] text-ink-900 truncate">{{ value }}</span>
+                    <template #cell-type_label="{ row }">
+                        <div class="min-w-0">
+                            <div class="text-[12.5px] text-ink-900 truncate">{{ row.type_label }}</div>
+                            <div v-if="row.effect" class="text-[11px] text-ink-500 truncate">{{ row.effect }}</div>
+                        </div>
                     </template>
 
                     <template #cell-coupon="{ row }">

@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Tüm indirimler, tüm zamanlar',
     'show_kpis' => 'İstatistikleri göster',
 
+    'summary_percentage_off' => '%:percentage indirim',
+
+    'summary_fixed_amount_off' => ':amount indirim',
+
+    'summary_buy_x_get_y' => ':buy al, :get kazan',
+
+    'field_percentage' => 'İndirim yüzdesi',
+
+    'field_percentage_hint' => 'Uygun her satırdan düşülür.',
+
+    'field_amount' => 'İndirim tutarı',
+
+    'field_amounts_hint' => 'Her para birimi için bir tutar belirleyin. Boş bırakılan para birimi indirim almaz.',
+
+    'field_min_qty' => 'Alınacak miktar',
+
+    'field_reward_qty' => 'Ödül miktarı',
+
+    'field_max_reward_qty' => 'En fazla ödül',
+
+    'field_max_reward_qty_hint' => 'Uygun her seti ödüllendirmek için boş bırakın.',
+
+    'field_automatically_add_rewards' => 'Ödülleri sepete otomatik ekle',
+
+    'field_automatically_add_rewards_hint' => 'Müşterinin eklemesini beklemek yerine ödül ürünlerini onun adına ekler.',
+
+    'section_conditions' => 'Koşullar',
+
+    'section_conditions_description' => 'Bu indirim uygulanmadan önce sepetin sağlaması gerekenler.',
+
+    'field_min_spend' => 'Asgari harcama',
+
+    'field_min_spend_hint' => 'Her para birimi için bir eşik belirleyin. Boş bırakılan para biriminin asgarisi olmaz.',
+
     'automatic' => 'Otomatik',
     'no_end_date' => 'Bitiş tarihi yok',
     'usage_unlimited' => 'sınırsız',
