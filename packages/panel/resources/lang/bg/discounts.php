@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Добавя наградните продукти вместо клиента, вместо да чака той да ги добави.',
 
+    'section_targets' => 'Отнася се за',
+
+    'section_targets_description' => 'Ограничете отстъпката до част от каталога. Оставете блок празен, за да важи навсякъде.',
+
+    'section_customers' => 'Допустими клиенти',
+
+    'bucket_limitation' => 'Отнася се за',
+
+    'bucket_limitation_description' => 'Само тези получават отстъпка.',
+
+    'bucket_exclusion' => 'Изключени',
+
+    'bucket_exclusion_description' => 'Никога не получават отстъпка, дори да отговарят на горното.',
+
+    'bucket_condition' => 'Отговарящи продукти',
+
+    'bucket_condition_description' => 'Какво трябва да купи клиентът, за да получи наградата.',
+
+    'bucket_reward' => 'Наградни продукти',
+
+    'bucket_reward_description' => 'Какво получава клиентът.',
+
+    'bucket_customers' => 'Допустими клиенти',
+
+    'bucket_customers_description' => 'Само тези клиенти могат да ползват отстъпката. Оставете празно, за да важи за всички.',
+
+    'kind_products' => 'Продукти',
+
+    'kind_variants' => 'Варианти',
+
+    'kind_collections' => 'Колекции',
+
+    'kind_brands' => 'Марки',
+
+    'kind_customers' => 'Клиенти',
+
+    'target_add' => 'Добавяне',
+
+    'target_remove' => 'Премахване на {label}',
+
+    'target_empty' => 'Нищо не е избрано, затова важи за всичко.',
+
+    'target_dialog_title' => 'Добавяне на цели',
+
+    'target_dialog_description' => 'Търсете сред всичко, което този блок може да обхване.',
+
+    'target_search_placeholder' => 'Търсене на продукти, колекции, марки',
+
+    'target_no_results' => 'Няма съвпадения.',
+
+    'target_add_selected' => 'Добавяне на {count}',
+
     'section_conditions' => 'Условия',
 
     'section_conditions_description' => 'На какво трябва да отговаря количката, преди отстъпката да се приложи.',

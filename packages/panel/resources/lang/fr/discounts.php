@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Ajoute les produits offerts à la place du client plutôt que d\'attendre qu\'il le fasse.',
 
+    'section_targets' => 'S\'applique à',
+
+    'section_targets_description' => 'Limitez cette réduction à une partie du catalogue. Un bloc laissé vide s\'applique partout.',
+
+    'section_customers' => 'Clients éligibles',
+
+    'bucket_limitation' => 'S\'applique à',
+
+    'bucket_limitation_description' => 'Seuls ceux-ci sont réduits.',
+
+    'bucket_exclusion' => 'Exclus',
+
+    'bucket_exclusion_description' => 'Jamais réduits, même s\'ils correspondent ci-dessus.',
+
+    'bucket_condition' => 'Produits qualifiants',
+
+    'bucket_condition_description' => 'Ce que le client doit acheter pour obtenir l\'article offert.',
+
+    'bucket_reward' => 'Produits offerts',
+
+    'bucket_reward_description' => 'Ce que reçoit le client.',
+
+    'bucket_customers' => 'Clients éligibles',
+
+    'bucket_customers_description' => 'Seuls ces clients peuvent utiliser la réduction. Laissez vide pour l\'ouvrir à tous.',
+
+    'kind_products' => 'Produits',
+
+    'kind_variants' => 'Variantes',
+
+    'kind_collections' => 'Collections',
+
+    'kind_brands' => 'Marques',
+
+    'kind_customers' => 'Clients',
+
+    'target_add' => 'Ajouter',
+
+    'target_remove' => 'Retirer {label}',
+
+    'target_empty' => 'Rien de sélectionné : s\'applique donc à tout.',
+
+    'target_dialog_title' => 'Ajouter des cibles',
+
+    'target_dialog_description' => 'Recherchez parmi tout ce que ce bloc peut cibler.',
+
+    'target_search_placeholder' => 'Rechercher produits, collections, marques',
+
+    'target_no_results' => 'Aucun résultat.',
+
+    'target_add_selected' => 'Ajouter {count}',
+
     'section_conditions' => 'Conditions',
 
     'section_conditions_description' => 'Ce qu\'un panier doit remplir avant que cette réduction s\'applique.',

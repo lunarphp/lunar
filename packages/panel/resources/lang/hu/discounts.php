@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'A vásárló helyett teszi be a jutalomtermékeket, ahelyett hogy megvárná.',
 
+    'section_targets' => 'Mire vonatkozik',
+
+    'section_targets_description' => 'Szűkítse a kedvezményt a katalógus egy részére. Az üresen hagyott blokk mindenre vonatkozik.',
+
+    'section_customers' => 'Jogosult vevők',
+
+    'bucket_limitation' => 'Mire vonatkozik',
+
+    'bucket_limitation_description' => 'Csak ezek kapnak kedvezményt.',
+
+    'bucket_exclusion' => 'Kizárva',
+
+    'bucket_exclusion_description' => 'Soha nem kapnak kedvezményt, még ha a fentiekre illenek is.',
+
+    'bucket_condition' => 'Feltételt teljesítő termékek',
+
+    'bucket_condition_description' => 'Mit kell vennie a vásárlónak a jutalomért.',
+
+    'bucket_reward' => 'Jutalomtermékek',
+
+    'bucket_reward_description' => 'Mit kap a vásárló.',
+
+    'bucket_customers' => 'Jogosult vevők',
+
+    'bucket_customers_description' => 'Csak ezek a vevők használhatják a kedvezményt. Hagyja üresen, hogy mindenki élhessen vele.',
+
+    'kind_products' => 'Termékek',
+
+    'kind_variants' => 'Változatok',
+
+    'kind_collections' => 'Kollekciók',
+
+    'kind_brands' => 'Márkák',
+
+    'kind_customers' => 'Vevők',
+
+    'target_add' => 'Hozzáadás',
+
+    'target_remove' => '{label} eltávolítása',
+
+    'target_empty' => 'Nincs kiválasztva semmi, így mindenre vonatkozik.',
+
+    'target_dialog_title' => 'Célok hozzáadása',
+
+    'target_dialog_description' => 'Keressen mindenben, amit ez a blokk célozhat.',
+
+    'target_search_placeholder' => 'Termékek, kollekciók, márkák keresése',
+
+    'target_no_results' => 'Nincs találat.',
+
+    'target_add_selected' => '{count} hozzáadása',
+
     'section_conditions' => 'Feltételek',
 
     'section_conditions_description' => 'Mit kell teljesítenie a kosárnak, mielőtt ez a kedvezmény érvényesül.',

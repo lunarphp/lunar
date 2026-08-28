@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'يضيف منتجات المكافأة نيابة عن المتسوّق بدل انتظاره ليضيفها.',
 
+    'section_targets' => 'ينطبق على',
+
+    'section_targets_description' => 'ضيّق هذا الخصم على جزء من الكتالوج. اترك أي قسم فارغًا ليُطبَّق على الجميع.',
+
+    'section_customers' => 'العملاء المؤهلون',
+
+    'bucket_limitation' => 'ينطبق على',
+
+    'bucket_limitation_description' => 'هذه وحدها التي تُخصم.',
+
+    'bucket_exclusion' => 'مستثنى',
+
+    'bucket_exclusion_description' => 'لا تُخصم أبدًا، حتى لو طابقت ما سبق.',
+
+    'bucket_condition' => 'المنتجات المؤهِّلة',
+
+    'bucket_condition_description' => 'ما يجب أن يشتريه المتسوّق ليحصل على المكافأة.',
+
+    'bucket_reward' => 'منتجات المكافأة',
+
+    'bucket_reward_description' => 'ما يحصل عليه المتسوّق.',
+
+    'bucket_customers' => 'العملاء المؤهلون',
+
+    'bucket_customers_description' => 'هؤلاء وحدهم يمكنهم استخدام الخصم. اتركه فارغًا ليُتاح للجميع.',
+
+    'kind_products' => 'المنتجات',
+
+    'kind_variants' => 'المتغيرات',
+
+    'kind_collections' => 'المجموعات',
+
+    'kind_brands' => 'العلامات التجارية',
+
+    'kind_customers' => 'العملاء',
+
+    'target_add' => 'إضافة',
+
+    'target_remove' => 'إزالة {label}',
+
+    'target_empty' => 'لم يُحدَّد شيء، فينطبق على كل شيء.',
+
+    'target_dialog_title' => 'إضافة أهداف',
+
+    'target_dialog_description' => 'ابحث في كل ما يمكن لهذا القسم استهدافه.',
+
+    'target_search_placeholder' => 'ابحث في المنتجات والمجموعات والعلامات',
+
+    'target_no_results' => 'لا شيء يطابق.',
+
+    'target_add_selected' => 'إضافة {count}',
+
     'section_conditions' => 'الشروط',
 
     'section_conditions_description' => 'ما يجب أن تستوفيه السلة قبل تطبيق هذا الخصم.',

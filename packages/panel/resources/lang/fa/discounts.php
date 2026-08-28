@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'به‌جای انتظار برای مشتری، محصولات جایزه را خودش اضافه می‌کند.',
 
+    'section_targets' => 'اعمال بر',
+
+    'section_targets_description' => 'این تخفیف را به بخشی از کاتالوگ محدود کنید. بخش خالی یعنی همه‌جا.',
+
+    'section_customers' => 'مشتریان واجد شرایط',
+
+    'bucket_limitation' => 'اعمال بر',
+
+    'bucket_limitation_description' => 'فقط این‌ها تخفیف می‌گیرند.',
+
+    'bucket_exclusion' => 'مستثنا',
+
+    'bucket_exclusion_description' => 'هرگز تخفیف نمی‌گیرند، حتی اگر با بالا هم‌خوان باشند.',
+
+    'bucket_condition' => 'محصولات واجد شرایط',
+
+    'bucket_condition_description' => 'مشتری برای گرفتن جایزه چه باید بخرد.',
+
+    'bucket_reward' => 'محصولات جایزه',
+
+    'bucket_reward_description' => 'مشتری چه می‌گیرد.',
+
+    'bucket_customers' => 'مشتریان واجد شرایط',
+
+    'bucket_customers_description' => 'فقط این مشتریان می‌توانند از تخفیف استفاده کنند. خالی بگذارید تا برای همه باشد.',
+
+    'kind_products' => 'محصولات',
+
+    'kind_variants' => 'گونه‌ها',
+
+    'kind_collections' => 'مجموعه‌ها',
+
+    'kind_brands' => 'برندها',
+
+    'kind_customers' => 'مشتریان',
+
+    'target_add' => 'افزودن',
+
+    'target_remove' => 'حذف {label}',
+
+    'target_empty' => 'چیزی انتخاب نشده، پس برای همه اعمال می‌شود.',
+
+    'target_dialog_title' => 'افزودن هدف‌ها',
+
+    'target_dialog_description' => 'در میان هر چیزی که این بخش می‌تواند هدف بگیرد جست‌وجو کنید.',
+
+    'target_search_placeholder' => 'جست‌وجوی محصول، مجموعه، برند',
+
+    'target_no_results' => 'چیزی مطابقت ندارد.',
+
+    'target_add_selected' => 'افزودن {count}',
+
     'section_conditions' => 'شرط‌ها',
 
     'section_conditions_description' => 'سبد باید چه شرطی داشته باشد تا این تخفیف اعمال شود.',

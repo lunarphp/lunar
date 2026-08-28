@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Añade los productos de regalo por el cliente en lugar de esperar a que los añada.',
 
+    'section_targets' => 'Se aplica a',
+
+    'section_targets_description' => 'Limite este descuento a una parte del catálogo. Deje un bloque vacío para aplicarlo en todas partes.',
+
+    'section_customers' => 'Clientes elegibles',
+
+    'bucket_limitation' => 'Se aplica a',
+
+    'bucket_limitation_description' => 'Solo estos se descuentan.',
+
+    'bucket_exclusion' => 'Excluidos',
+
+    'bucket_exclusion_description' => 'Nunca se descuentan, aunque coincidan con lo anterior.',
+
+    'bucket_condition' => 'Productos que califican',
+
+    'bucket_condition_description' => 'Lo que debe comprar el cliente para obtener el regalo.',
+
+    'bucket_reward' => 'Productos de regalo',
+
+    'bucket_reward_description' => 'Lo que recibe el cliente.',
+
+    'bucket_customers' => 'Clientes elegibles',
+
+    'bucket_customers_description' => 'Solo estos clientes pueden usar el descuento. Déjelo vacío para permitir a todos.',
+
+    'kind_products' => 'Productos',
+
+    'kind_variants' => 'Variantes',
+
+    'kind_collections' => 'Colecciones',
+
+    'kind_brands' => 'Marcas',
+
+    'kind_customers' => 'Clientes',
+
+    'target_add' => 'Añadir',
+
+    'target_remove' => 'Quitar {label}',
+
+    'target_empty' => 'No hay nada seleccionado, así que se aplica a todo.',
+
+    'target_dialog_title' => 'Añadir objetivos',
+
+    'target_dialog_description' => 'Busque entre todo lo que este bloque puede abarcar.',
+
+    'target_search_placeholder' => 'Buscar productos, colecciones, marcas',
+
+    'target_no_results' => 'No hay coincidencias.',
+
+    'target_add_selected' => 'Añadir {count}',
+
     'section_conditions' => 'Condiciones',
 
     'section_conditions_description' => 'Qué debe cumplir un carrito antes de que se aplique este descuento.',

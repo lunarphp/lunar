@@ -14,6 +14,7 @@ use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AvailabilitySchema;
 use Lunar\Panel\Support\DiscountDataSchema;
+use Lunar\Panel\Support\DiscountTargetSchema;
 use Lunar\Panel\Support\DiscountTypeSchema;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
@@ -27,6 +28,7 @@ class DiscountEditController
         AvailabilitySchema $availabilitySchema,
         DiscountTypeSchema $typeSchema,
         DiscountDataSchema $dataSchema,
+        DiscountTargetSchema $targetSchema,
     ): Response {
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($discount, $staff) : null;
@@ -70,6 +72,10 @@ class DiscountEditController
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'decimal_places', 'default']),
+            // Ids for the draft to track, and resolved rows for the chips to
+            // render, so the page needs no second round trip to show a target.
+            'targets' => $targetSchema->values($discount),
+            'targetChips' => $targetSchema->chips($discount),
             'availability' => $availabilitySchema->rows(),
             'availabilityValues' => $availabilitySchema->values($discount) ?: (object) [],
             'activities' => $activities,
@@ -80,6 +86,7 @@ class DiscountEditController
                 'destroy' => route('panel.discounts.destroy', $discount),
                 'draft' => route('panel.discounts.draft.update', $discount),
                 'draftCommit' => route('panel.discounts.draft.commit', $discount),
+                'targetSearch' => route('panel.discounts.targets.search', $discount),
             ],
         ]);
     }

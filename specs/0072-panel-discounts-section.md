@@ -425,6 +425,14 @@ it to 16.
   full update that omits the payload would be rejected for a missing `data.percentage`;
   omitting it now leaves the stored payload untouched, matching how `UpdatesDiscount`
   treats availability and targeting.
+- **The target picker is one search across the bucket's kinds**, with kind chips on the
+  rows, rather than a tab per kind — the open question in this spec, resolved in favour of
+  the prototype's shape. It also excludes what the bucket already holds, which is what
+  earns the `{discount}` in its route.
+- **`UpdateDiscount::BUCKET_KINDS` is public.** It describes core's targeting schema
+  rather than the action's behaviour, and the panel needs the same map to know which
+  blocks a bucket can show. Restating it in the panel would let the picker drift from
+  what the action accepts.
 - **`DiscountDraftResource::rules()` filters the request rules to draftable fields.** A
   commit only ever carries draftable values, so the endpoint's `type` rule — a column
   fixed once the discount exists — would reject every commit.
@@ -438,9 +446,6 @@ it to 16.
   slots into this section unchanged.
 - **`discounts.restriction`** — dead column with no reader anywhere; tracked as an open
   question on [[0073-split-amount-off-discount-type]], which is already in that table.
-- **Target picker breadth** — should the picker page results per kind (five tabs) or search
-  across all allowed kinds at once with kind chips on the rows? Lean: one search, kind chips,
-  matching the prototype's `TargetPickerDialog`.
 
 ## References
 
@@ -486,7 +491,7 @@ Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
 - [x] Slice 4 — First-party type forms + conditions: `PercentageOffForm`,
       `FixedAmountOffForm`, `BuyXGetYForm`, the conditions block, currency scaling through
       `PriceCalculator::toMinor()`, tests (including a zero-decimal currency).
-- [ ] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,
+- [x] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,
       `TargetPickerDialog`, per-bucket blocks driven by `targetBuckets()`, the eligible-
       customers card, `ui.ts` exports, tests.
 - [ ] Slice 6 — Seam proof: `ShippingDiscountForm` + `ShippingDiscountForm.vue` registered

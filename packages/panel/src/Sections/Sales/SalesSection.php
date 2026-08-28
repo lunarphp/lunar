@@ -19,6 +19,7 @@ use Lunar\Panel\Http\Controllers\Discounts\DiscountBulkController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountCreateController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountEditController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountIndexController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountTargetSearchController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
@@ -131,6 +132,8 @@ class SalesSection extends Section
 
                 Route::post('/bulk/end', [DiscountBulkController::class, 'end'])->name('bulk-end');
                 Route::post('/bulk/destroy', [DiscountBulkController::class, 'destroy'])->name('bulk-destroy');
+
+                Route::get('/{discount}/targets/search', [DiscountTargetSearchController::class, 'search'])->name('targets.search');
 
                 Route::get('/{discount}/edit', [DiscountEditController::class, 'edit'])->name('edit');
                 Route::put('/{discount}', [DiscountEditController::class, 'update'])->name('update');
