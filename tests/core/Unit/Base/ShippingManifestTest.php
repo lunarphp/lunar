@@ -285,3 +285,67 @@ test('can not re-enter shipping modifiers while resolving options', function () 
     // a single calculate runs the modifiers twice. Neither run may re-enter.
     expect(TestRecursiveShippingModifier::$calls)->toEqual(2);
 });
+
+test('can replace an option that is published again', function () {
+    $taxClass = TaxClass::factory()->create();
+
+    $option = fn (int $price) => new ShippingOption(
+        name: 'Standard delivery',
+        description: 'Standard delivery',
+        identifier: 'STANDARD',
+        price: new Price($price, $this->cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($option(500));
+    ShippingManifest::addOption($option(2500));
+
+    // One option, at the price it was last published with - a modifier
+    // re-pricing for a changed destination must not be ignored.
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+    expect(ShippingManifest::getOptions($this->cart)->first()->price->value)->toEqual(2500);
+});
+
+test('can not offer one cart the options priced for another', function () {
+    $taxClass = TaxClass::factory()->create();
+
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Standard delivery',
+            description: 'Standard delivery',
+            identifier: 'STANDARD',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
+
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+
+    // The next cart in the same process - a queue job, a console command, an
+    // Octane worker - must not inherit them.
+    $other = Cart::factory()->create([
+        'currency_id' => $this->cart->currency_id,
+    ]);
+
+    expect(ShippingManifest::getOptions($other))->toHaveCount(0);
+});
+
+test('can keep options published for the cart being resolved', function () {
+    $taxClass = TaxClass::factory()->create();
+
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Standard delivery',
+            description: 'Standard delivery',
+            identifier: 'STANDARD',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
+
+    // Publishing straight onto the manifest, rather than from inside a
+    // modifier, is how much of the suite sets shipping up. Resolving the same
+    // cart must not discard it.
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+});
