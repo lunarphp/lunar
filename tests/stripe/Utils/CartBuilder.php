@@ -53,7 +53,7 @@ class CartBuilder
 
         $variant = ProductVariant::factory()->create()->each(function ($variant) use ($currency) {
             $variant->prices()->create([
-                'price' => 1.99,
+                'price' => 199,
                 'currency_id' => $currency->id,
             ]);
         });
