@@ -383,7 +383,10 @@ it to 16.
   missed while its `Product` and `Collection` siblings did not — deleting a discount was
   orphaning its `channelables` rows on every delete path.
 - **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm`,
-  `Section::discountTypeForms()`, and four new `ui.ts` exports.
+  `Section::discountTypeForms()`, and four new `ui.ts` exports. `discountTypeForms()`
+  is added to `ProvidesNavigation` and `SectionExtension` alongside `Section`, matching
+  every other extension hook — a consumer implementing the interface directly rather
+  than extending the abstract has to add the method.
 - **Permission**: reuses `sales:manage-discounts`; no manifest change.
 - **Translations**: new panel `discounts.php` group and a `nav.php` key across all 16
   locales; if the `ShippingDiscount` slice lands here, its lang group is repointed and
@@ -393,6 +396,27 @@ it to 16.
   deliberately not moved onto the new discount action contracts — no Filament resource uses
   a core action today, and making them do so is a pass across every resource, not this one.
 - **No new npm dependencies.**
+
+## Decisions taken during implementation
+
+- **Discount handles carry no format rule.** The Filament admin only runs the name
+  through `Str::snake`, which leaves punctuation intact, so handles like `sofia_o'kon`
+  already exist. A pattern in the panel would make them uneditable. The panel's create
+  screen generates a clean snake_case handle, matching Filament, but accepts anything
+  Filament would.
+- **The channel and customer-group filters read the pivot's `enabled` flag**, not the
+  row's existence: `HasChannels` and `HasCustomerGroups` attach every channel and group
+  when a discount is created, so a filter on attachment alone matches everything.
+- **The redemptions KPI is a lifetime total, not a 30-day window** as first written.
+  `uses` is a bare counter with no per-redemption timestamp, and the only timestamped
+  table (`discount_user`) records signed-in redemptions only — `markAsUsed()` skips the
+  attach for a guest cart — so a windowed figure would silently omit guest checkouts.
+- **The type-effect summary in the list ("15% off") waits for slice 4.** Deriving it in
+  slice 2 would need the hardcoded type ladder this section exists to avoid; it belongs
+  to the first-party type forms.
+- **`DiscountDraftResource::rules()` filters the request rules to draftable fields.** A
+  commit only ever carries draftable values, so the endpoint's `type` rule — a column
+  fixed once the discount exists — would reject every commit.
 
 ## Open questions
 
@@ -438,11 +462,12 @@ Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
       + contracts + `ActionServiceProvider` entries, with the `$targets` fan-out across
       `discountables` / `collection_discount` / `brand_discount` / `customer_discount`;
       `Discount` status scopes; tests.
-- [ ] Slice 2 — Panel scaffold + list: `SalesSection` nav item, routes,
+- [x] Slice 2 — Panel scaffold + list: `SalesSection` nav item, routes,
       `DiscountIndexController` (rows, filters, search, KPI strip), `DiscountsTableExtension`,
       `pages/discounts/Index.vue`, `percent` icon, `discounts.php` + `nav.php` lang keys
       (16 locales), tests.
-- [ ] Slice 3 — Type seam + edit shell: `DiscountTypeForm` contract,
+- [x] Slice 3 — Type seam + edit shell (shipped with slice 2 — a list whose rows
+      have nowhere to open is not shippable on its own): `DiscountTypeForm` contract,
       `Section::discountTypeForms()`, `DiscountTypeSchema`, `DiscountDraftResource`,
       `DiscountCreateController` / `DiscountEditController`,
       `pages/discounts/{Create,Edit}.vue` with Details / Schedule / Availability / Usage and

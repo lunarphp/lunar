@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Bán hàng',
     'customers' => 'Khách hàng',
+    'discounts' => 'Giảm giá',
     'general' => 'Chung',
     'team' => 'Team',
     'store' => 'Store',

@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Értékesítés',
     'customers' => 'Ügyfelek',
+    'discounts' => 'Kedvezmények',
     'general' => 'Általános',
     'team' => 'Team',
     'store' => 'Store',

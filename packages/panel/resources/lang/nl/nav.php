@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Verkoop',
     'customers' => 'Klanten',
+    'discounts' => 'Kortingen',
     'general' => 'Algemeen',
     'team' => 'Team',
     'store' => 'Store',

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Lunar\Panel\Actions\PageActionResolver;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\WidgetRegistry;
 use Lunar\Panel\Models\EditDraft;
@@ -39,6 +40,9 @@ class PanelManager
 
     /** @var array<class-string<Model>, DraftableResource> */
     protected array $draftables = [];
+
+    /** @var array<class-string, class-string<DiscountTypeForm>> */
+    protected array $discountTypeForms = [];
 
     /** @var Closure[] */
     protected array $routeRegistrars = [];
@@ -147,6 +151,10 @@ class PanelManager
             $this->draftable($definitionClass);
         }
 
+        foreach ($entity->discountTypeForms() as $discountType => $formClass) {
+            $this->discountTypeForm($discountType, $formClass);
+        }
+
         foreach ($entity->widgets() as $widgetClass) {
             $this->widget($widgetClass);
         }
@@ -219,6 +227,23 @@ class PanelManager
     public function resolveExtensions(string $tableId): TableExtensionResolver
     {
         return new TableExtensionResolver($this->getTableExtensions($tableId), $this->user());
+    }
+
+    /**
+     * @param  class-string  $discountType
+     * @param  class-string<DiscountTypeForm>  $formClass
+     */
+    public function discountTypeForm(string $discountType, string $formClass): static
+    {
+        $this->discountTypeForms[$discountType] = $formClass;
+
+        return $this;
+    }
+
+    /** @return array<class-string, class-string<DiscountTypeForm>> */
+    public function discountTypeForms(): array
+    {
+        return $this->discountTypeForms;
     }
 
     /** @param class-string $actionClass */

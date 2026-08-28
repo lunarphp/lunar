@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Prodaja',
     'customers' => 'Kupci',
+    'discounts' => 'Popusti',
     'general' => 'Općenito',
     'team' => 'Team',
     'store' => 'Store',

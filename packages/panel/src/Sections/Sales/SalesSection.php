@@ -11,10 +11,15 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerEditController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountBulkController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountCreateController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountEditController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountIndexController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
+use Lunar\Panel\Sections\Sales\Tables\DiscountsTableExtension;
 use Lunar\Panel\Sections\Section;
 
 class SalesSection extends Section
@@ -25,6 +30,9 @@ class SalesSection extends Section
      * stay in lockstep. Same handle as the Filament admin's CustomerResource.
      */
     private const CUSTOMERS_PERMISSION = 'sales:manage-customers';
+
+    /** As above, and the same handle the Filament admin's DiscountResource uses. */
+    private const DISCOUNTS_PERMISSION = 'sales:manage-discounts';
 
     public function key(): string
     {
@@ -46,6 +54,13 @@ class SalesSection extends Section
             route: 'panel.customers.index',
             permission: self::CUSTOMERS_PERMISSION,
         ));
+        $registry->addItem('sales', new NavigationItem(
+            key: 'discounts',
+            label: __('panel::nav.discounts'),
+            icon: 'percent',
+            route: 'panel.discounts.index',
+            permission: self::DISCOUNTS_PERMISSION,
+        ));
     }
 
     /** @return array<string, class-string> */
@@ -53,6 +68,7 @@ class SalesSection extends Section
     {
         return [
             'customers.index' => CustomersTableExtension::class,
+            'discounts.index' => DiscountsTableExtension::class,
         ];
     }
 
@@ -61,6 +77,7 @@ class SalesSection extends Section
     {
         return [
             CustomerDraftResource::class,
+            DiscountDraftResource::class,
         ];
     }
 
@@ -88,6 +105,23 @@ class SalesSection extends Section
 
                 Route::post('/{customer}/users', [CustomerUserController::class, 'store'])->name('users.store');
                 Route::delete('/{customer}/users/{user}', [CustomerUserController::class, 'destroy'])->name('users.destroy');
+            });
+
+            Route::prefix('discounts')->name('panel.discounts.')->middleware('can:'.self::DISCOUNTS_PERMISSION)->group(function (): void {
+                Route::get('/', [DiscountIndexController::class, 'index'])->name('index');
+                Route::get('/create', [DiscountCreateController::class, 'create'])->name('create');
+                Route::post('/', [DiscountCreateController::class, 'store'])->name('store');
+
+                Route::post('/bulk/end', [DiscountBulkController::class, 'end'])->name('bulk-end');
+                Route::post('/bulk/destroy', [DiscountBulkController::class, 'destroy'])->name('bulk-destroy');
+
+                Route::get('/{discount}/edit', [DiscountEditController::class, 'edit'])->name('edit');
+                Route::put('/{discount}', [DiscountEditController::class, 'update'])->name('update');
+                Route::delete('/{discount}', [DiscountEditController::class, 'destroy'])->name('destroy');
+
+                Route::patch('/{discount}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{discount}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{discount}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
             });
         };
     }

@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Борлуулалт',
     'customers' => 'Харилцагчид',
+    'discounts' => 'Хөнгөлөлтүүд',
     'general' => 'Ерөнхий',
     'team' => 'Team',
     'store' => 'Store',

@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Продажби',
     'customers' => 'Клиенти',
+    'discounts' => 'Отстъпки',
     'general' => 'Общи',
     'team' => 'Team',
     'store' => 'Store',
