@@ -35,6 +35,57 @@ test('can apply usable scope', function () {
     ))->toBeNull();
 });
 
+test('status scopes partition the table the way the status accessor does', function () {
+    $active = Discount::factory()->create([
+        'starts_at' => now()->subDay(),
+        'ends_at' => now()->addDay(),
+    ]);
+
+    $openEnded = Discount::factory()->create([
+        'starts_at' => now()->subDay(),
+        'ends_at' => null,
+    ]);
+
+    $scheduled = Discount::factory()->create([
+        'starts_at' => now()->addDay(),
+        'ends_at' => null,
+    ]);
+
+    $expired = Discount::factory()->create([
+        'starts_at' => now()->subWeek(),
+        'ends_at' => now()->subDay(),
+    ]);
+
+    expect(Discount::active()->pluck('id')->all())->toEqualCanonicalizing([$active->id, $openEnded->id]);
+    expect(Discount::scheduled()->pluck('id')->all())->toBe([$scheduled->id]);
+    expect(Discount::expired()->pluck('id')->all())->toBe([$expired->id]);
+
+    expect($active->status)->toBe(Discount::ACTIVE);
+    expect($openEnded->status)->toBe(Discount::ACTIVE);
+    expect($scheduled->status)->toBe(Discount::SCHEDULED);
+    expect($expired->status)->toBe(Discount::EXPIRED);
+});
+
+test('an end date in the past beats a start date in the future', function () {
+    $discount = Discount::factory()->create([
+        'starts_at' => now()->addDay(),
+        'ends_at' => now()->subDay(),
+    ]);
+
+    expect(Discount::expired()->pluck('id')->all())->toBe([$discount->id]);
+    expect(Discount::scheduled()->count())->toBe(0);
+    expect($discount->status)->toBe(Discount::EXPIRED);
+});
+
+test('pending matches nothing while starts_at is required', function () {
+    // The column is NOT NULL in the baseline schema, so no discount can reach
+    // pending. The scope is here to keep the four statuses exhaustive.
+    Discount::factory()->create(['starts_at' => now()->subDay()]);
+    Discount::factory()->create(['starts_at' => now()->addDay()]);
+
+    expect(Discount::pending()->count())->toBe(0);
+});
+
 test('can apply collections scope', function () {
     $collectionA = Collection::factory()->create();
     $collectionB = Collection::factory()->create();
