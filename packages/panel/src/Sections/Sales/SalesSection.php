@@ -4,6 +4,10 @@ namespace Lunar\Panel\Sections\Sales;
 
 use Closure;
 use Illuminate\Support\Facades\Route;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Http\Controllers\Customers\CustomerAddressController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerCreateController;
@@ -21,6 +25,9 @@ use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
 use Lunar\Panel\Sections\Sales\Tables\DiscountsTableExtension;
 use Lunar\Panel\Sections\Section;
+use Lunar\Panel\Support\DiscountTypeForms\BuyXGetYForm;
+use Lunar\Panel\Support\DiscountTypeForms\FixedAmountOffForm;
+use Lunar\Panel\Support\DiscountTypeForms\PercentageOffForm;
 
 class SalesSection extends Section
 {
@@ -69,6 +76,16 @@ class SalesSection extends Section
         return [
             'customers.index' => CustomersTableExtension::class,
             'discounts.index' => DiscountsTableExtension::class,
+        ];
+    }
+
+    /** @return array<class-string, class-string<DiscountTypeForm>> */
+    public function discountTypeForms(): array
+    {
+        return [
+            PercentageOff::class => PercentageOffForm::class,
+            FixedAmountOff::class => FixedAmountOffForm::class,
+            BuyXGetY::class => BuyXGetYForm::class,
         ];
     }
 

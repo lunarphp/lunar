@@ -8,9 +8,11 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
+use Lunar\Panel\Support\DiscountDataSchema;
 
 class DiscountIndexController
 {
@@ -27,7 +29,7 @@ class DiscountIndexController
         Discount::PENDING,
     ];
 
-    public function index(Request $request): Response
+    public function index(Request $request, DiscountDataSchema $dataSchema): Response
     {
         $columns = [
             ['key' => 'status', 'label' => __('panel::discounts.column_status'), 'width' => '110px'],
@@ -49,6 +51,8 @@ class DiscountIndexController
         $types = $this->types();
 
         $prefix = config('lunar.database.table_prefix');
+
+        $defaultCurrency = Currency::getDefault();
 
         $discounts = Discount::query()
             ->when($request->filled('q'), function ($query) use ($request, $resolver) {
@@ -89,7 +93,7 @@ class DiscountIndexController
             ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString()
-            ->through(function (Discount $discount) use ($resolver, $types) {
+            ->through(function (Discount $discount) use ($resolver, $types, $dataSchema, $defaultCurrency) {
                 $status = $discount->status;
 
                 $row = [
@@ -103,6 +107,9 @@ class DiscountIndexController
                     // can outlive the package that registered its type, so fall back
                     // to the stored class rather than instantiating something gone.
                     'type_label' => $types[$discount->type] ?? $discount->type,
+                    // The type's own one-liner ("15% off"), or null when it cannot
+                    // summarise itself — the column then shows the label alone.
+                    'effect' => $dataSchema->summary($discount->type, $discount->data ?? [], $defaultCurrency),
                     'coupon' => $discount->coupon,
                     'starts_at' => $discount->starts_at,
                     'ends_at' => $discount->ends_at,

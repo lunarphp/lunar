@@ -382,7 +382,8 @@ it to 16.
 - **Behaviour fix**: `DiscountObserver::deleting()` also detaches `channels()`, which it
   missed while its `Product` and `Collection` siblings did not — deleting a discount was
   orphaning its `channelables` rows on every delete path.
-- **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm`,
+- **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm` (six methods:
+  `component`, `targetBuckets`, `toForm`, `toStorage`, `rules`, `summary`),
   `Section::discountTypeForms()`, and four new `ui.ts` exports. `discountTypeForms()`
   is added to `ProvidesNavigation` and `SectionExtension` alongside `Section`, matching
   every other extension hook — a consumer implementing the interface directly rather
@@ -411,9 +412,19 @@ it to 16.
   `uses` is a bare counter with no per-redemption timestamp, and the only timestamped
   table (`discount_user`) records signed-in redemptions only — `markAsUsed()` skips the
   attach for a guest cart — so a windowed figure would silently omit guest checkouts.
-- **The type-effect summary in the list ("15% off") waits for slice 4.** Deriving it in
-  slice 2 would need the hardcoded type ladder this section exists to avoid; it belongs
-  to the first-party type forms.
+- **The type-effect summary in the list ("15% off") arrived with slice 4**, as a
+  `summary()` method on `DiscountTypeForm`. Deriving it earlier would have needed the
+  hardcoded type ladder this section exists to avoid.
+- **`data` has two owners, so `DiscountDataSchema` composes it.** `min_prices` is read by
+  `AbstractDiscountType::checkDiscountConditions()` for every type, but it lives in the
+  `data` column a type form owns — a form returning only its own keys from `toStorage()`,
+  which is the natural way to write one, would drop the minimum-spend condition. Every
+  read and write of `data` goes through the composing schema instead of a type form
+  directly.
+- **The type's `data.*` rules only apply when the request carries `data`.** Otherwise a
+  full update that omits the payload would be rejected for a missing `data.percentage`;
+  omitting it now leaves the stored payload untouched, matching how `UpdatesDiscount`
+  treats availability and targeting.
 - **`DiscountDraftResource::rules()` filters the request rules to draftable fields.** A
   commit only ever carries draftable values, so the endpoint's `type` rule — a column
   fixed once the discount exists — would reject every commit.
@@ -472,7 +483,7 @@ Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
       `DiscountCreateController` / `DiscountEditController`,
       `pages/discounts/{Create,Edit}.vue` with Details / Schedule / Availability / Usage and
       the `RawDataForm` fallback, tests.
-- [ ] Slice 4 — First-party type forms + conditions: `PercentageOffForm`,
+- [x] Slice 4 — First-party type forms + conditions: `PercentageOffForm`,
       `FixedAmountOffForm`, `BuyXGetYForm`, the conditions block, currency scaling through
       `PriceCalculator::toMinor()`, tests (including a zero-decimal currency).
 - [ ] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,

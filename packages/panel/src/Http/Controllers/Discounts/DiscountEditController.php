@@ -13,6 +13,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\DiscountDataSchema;
 use Lunar\Panel\Support\DiscountTypeSchema;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
@@ -25,6 +26,7 @@ class DiscountEditController
         DraftManager $drafts,
         AvailabilitySchema $availabilitySchema,
         DiscountTypeSchema $typeSchema,
+        DiscountDataSchema $dataSchema,
     ): Response {
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($discount, $staff) : null;
@@ -35,8 +37,6 @@ class DiscountEditController
             ->limit(25)
             ->get()
             ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
-
-        $form = $typeSchema->formFor($discount->type);
 
         return Inertia::render('discounts/Edit', [
             'discount' => [
@@ -54,7 +54,7 @@ class DiscountEditController
                 'uses' => (int) $discount->uses,
                 'max_uses' => $discount->max_uses,
                 'max_uses_per_user' => $discount->max_uses_per_user,
-                'data' => $form->toForm($discount->data ?? []) ?: (object) [],
+                'data' => $dataSchema->toForm($discount->type, $discount->data ?? []) ?: (object) [],
                 'created_at' => $discount->created_at,
                 'updated_at' => $discount->updated_at,
             ],
@@ -84,14 +84,15 @@ class DiscountEditController
         ]);
     }
 
-    public function update(DiscountRequest $request, Discount $discount, UpdatesDiscount $updatesDiscount, DiscountTypeSchema $typeSchema): RedirectResponse
+    public function update(DiscountRequest $request, Discount $discount, UpdatesDiscount $updatesDiscount, DiscountDataSchema $dataSchema): RedirectResponse
     {
         $attributes = $request->validated();
 
         if (array_key_exists('data', $attributes)) {
-            $attributes['data'] = $typeSchema
-                ->formFor($attributes['type'] ?? $discount->type)
-                ->toStorage((array) $attributes['data']);
+            $attributes['data'] = $dataSchema->toStorage(
+                $attributes['type'] ?? $discount->type,
+                (array) $attributes['data'],
+            );
         }
 
         $updatesDiscount->execute($discount, $attributes);

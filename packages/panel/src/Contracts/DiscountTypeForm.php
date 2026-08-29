@@ -2,6 +2,8 @@
 
 namespace Lunar\Panel\Contracts;
 
+use Lunar\Core\Models\Currency;
+
 /**
  * How a discount type is edited in the panel.
  *
@@ -47,4 +49,14 @@ interface DiscountTypeForm
      * @return array<string, mixed>
      */
     public function rules(): array;
+
+    /**
+     * A one-line description of the effect, for the discounts list — "15% off",
+     * "Buy 2, get 1". Null when the type cannot summarise itself from `data`
+     * alone, which is what the list falls back on.
+     *
+     * @param  array<string, mixed>  $data  the stored payload, not the form view
+     * @param  ?Currency  $currency  the store's default currency, for money amounts
+     */
+    public function summary(array $data, ?Currency $currency): ?string;
 }

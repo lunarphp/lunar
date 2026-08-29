@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Discount;
-use Lunar\Panel\Support\DiscountTypeSchema;
+use Lunar\Panel\Support\DiscountDataSchema;
 
 /** Rules for the discount update endpoint and the drafts layer. */
 class DiscountRequest extends FormRequest
@@ -17,7 +17,14 @@ class DiscountRequest extends FormRequest
      */
     public function rules(): array
     {
-        return static::rulesFor($this->route('discount'), $this->string('type')->value());
+        // The type's own rules only bite when the request actually carries a
+        // `data` payload; omitting it leaves the stored one untouched, the same
+        // way UpdatesDiscount treats availability and targeting.
+        return static::rulesFor(
+            $this->route('discount'),
+            $this->string('type')->value(),
+            $this->has('data'),
+        );
     }
 
     /**
@@ -25,13 +32,13 @@ class DiscountRequest extends FormRequest
      * layer can validate a commit payload with the same rules the update
      * endpoint applies.
      *
-     * The selected type's own `data.*` rules are merged in — the type owns the
-     * shape of that column, so nothing here assumes anything about it beyond
-     * its being an array.
+     * The `data.*` rules come from the composed data schema — the selected
+     * type's own rules plus the conditions core reads for every type — so
+     * nothing here assumes anything about that column beyond its being an array.
      *
      * @return array<string, array<int, mixed>>
      */
-    public static function rulesFor(?Discount $discount, ?string $type = null): array
+    public static function rulesFor(?Discount $discount, ?string $type = null, bool $withData = true): array
     {
         $unique = fn (string $column) => tap(
             Rule::unique((new Discount)->getTable(), $column),
@@ -59,8 +66,8 @@ class DiscountRequest extends FormRequest
 
         $type ??= $discount?->type;
 
-        if ($type) {
-            foreach (app(DiscountTypeSchema::class)->formFor($type)->rules() as $key => $rule) {
+        if ($type && $withData) {
+            foreach (app(DiscountDataSchema::class)->rules($type) as $key => $rule) {
                 $rules["data.{$key}"] = $rule;
             }
         }

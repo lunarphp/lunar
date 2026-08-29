@@ -19,6 +19,10 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
 import Toggle from '../../components/Toggle.vue';
 import UsageMeter from '../../components/UsageMeter.vue';
+import BuyXGetYForm from '../../components/DiscountTypeForms/BuyXGetYForm.vue';
+import DiscountConditions from '../../components/DiscountConditions.vue';
+import FixedAmountOffForm from '../../components/DiscountTypeForms/FixedAmountOffForm.vue';
+import PercentageOffForm from '../../components/DiscountTypeForms/PercentageOffForm.vue';
 import RawDataForm from '../../components/DiscountTypeForms/RawDataForm.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -128,6 +132,9 @@ const submitDetails = (): void => {
 // First-party type forms resolve locally; anything else comes from the add-on
 // component registry, the same path the dashboard widgets take.
 const LOCAL_TYPE_FORMS: Record<string, Component> = {
+    PercentageOffForm,
+    FixedAmountOffForm,
+    BuyXGetYForm,
     RawDataForm,
 };
 
@@ -239,6 +246,19 @@ const confirmDestroy = (): void => {
                             <component
                                 :is="typeFormComponent"
                                 v-if="typeFormComponent"
+                                v-model="details.data"
+                                :currencies="currencies"
+                                :errors="detailsErrors"
+                            />
+                        </section>
+
+                        <section class="bg-surface border border-line rounded-xl shadow-sm p-5">
+                            <div class="pb-4 border-b border-line mb-4">
+                                <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_conditions') }}</h2>
+                                <div class="text-xs text-ink-500 leading-normal">{{ t('discounts.section_conditions_description') }}</div>
+                            </div>
+
+                            <DiscountConditions
                                 v-model="details.data"
                                 :currencies="currencies"
                                 :errors="detailsErrors"

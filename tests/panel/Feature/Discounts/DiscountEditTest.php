@@ -36,9 +36,9 @@ it('renders the edit screen with the discount, its type schema and availability'
 });
 
 it('falls back to the raw json editor for a type with no registered form', function () {
-    // PercentageOff has no panel form yet; the fallback is what keeps any type
-    // editable rather than making it disappear.
-    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+    // Every first-party type has a form, so this is the third-party case: the
+    // fallback keeps such a type editable rather than making it disappear.
+    $discount = Discount::factory()->create(['type' => 'Acme\\Discounts\\Unregistered']);
 
     $this->get(route('panel.discounts.edit', $discount))
         ->assertInertia(fn (Assert $page) => $page
@@ -91,6 +91,22 @@ it('accepts a handle in the shape the Filament admin produces', function () {
     ])->assertSessionHasNoErrors();
 
     expect($discount->refresh()->name)->toBe('Renamed');
+});
+
+it('leaves the type payload alone when an update omits it', function () {
+    $discount = Discount::factory()->create([
+        'type' => PercentageOff::class,
+        'data' => ['percentage' => 15],
+    ]);
+
+    $this->put(route('panel.discounts.update', $discount), [
+        'name' => 'Renamed',
+        'handle' => $discount->handle,
+        'type' => PercentageOff::class,
+        'starts_at' => $discount->starts_at->toDateTimeString(),
+    ])->assertSessionHasNoErrors();
+
+    expect($discount->refresh()->data)->toEqual(['percentage' => 15]);
 });
 
 it('rejects an end date before the start date', function () {

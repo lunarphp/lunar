@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'همه‌ی تخفیف‌ها، از ابتدا',
     'show_kpis' => 'نمایش آمار',
 
+    'summary_percentage_off' => ':percentage٪ تخفیف',
+
+    'summary_fixed_amount_off' => ':amount تخفیف',
+
+    'summary_buy_x_get_y' => ':buy بخر، :get بگیر',
+
+    'field_percentage' => 'درصد تخفیف',
+
+    'field_percentage_hint' => 'از هر ردیف واجد شرایط کم می‌شود.',
+
+    'field_amount' => 'مبلغ تخفیف',
+
+    'field_amounts_hint' => 'برای هر ارز مبلغی تعیین کنید. ارزی که خالی بماند تخفیفی نمی‌گیرد.',
+
+    'field_min_qty' => 'تعداد خرید',
+
+    'field_reward_qty' => 'تعداد جایزه',
+
+    'field_max_reward_qty' => 'بیشینه‌ی جایزه',
+
+    'field_max_reward_qty_hint' => 'خالی بگذارید تا هر مجموعه‌ی واجد شرایط جایزه بگیرد.',
+
+    'field_automatically_add_rewards' => 'افزودن خودکار جایزه‌ها به سبد',
+
+    'field_automatically_add_rewards_hint' => 'به‌جای انتظار برای مشتری، محصولات جایزه را خودش اضافه می‌کند.',
+
+    'section_conditions' => 'شرط‌ها',
+
+    'section_conditions_description' => 'سبد باید چه شرطی داشته باشد تا این تخفیف اعمال شود.',
+
+    'field_min_spend' => 'حداقل خرید',
+
+    'field_min_spend_hint' => 'برای هر ارز آستانه‌ای تعیین کنید. ارزی که خالی بماند حداقلی ندارد.',
+
     'automatic' => 'خودکار',
     'no_end_date' => 'بدون تاریخ پایان',
     'usage_unlimited' => 'بدون محدودیت',

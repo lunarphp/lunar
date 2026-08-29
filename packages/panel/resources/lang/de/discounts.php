@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Alle Rabatte, gesamter Zeitraum',
     'show_kpis' => 'Statistiken anzeigen',
 
+    'summary_percentage_off' => ':percentage % Rabatt',
+
+    'summary_fixed_amount_off' => ':amount Rabatt',
+
+    'summary_buy_x_get_y' => 'Kaufe :buy, erhalte :get',
+
+    'field_percentage' => 'Rabatt in Prozent',
+
+    'field_percentage_hint' => 'Wird von jeder berechtigten Position abgezogen.',
+
+    'field_amount' => 'Rabattbetrag',
+
+    'field_amounts_hint' => 'Legen Sie je Währung einen Betrag fest. Eine leer gelassene Währung erhält keinen Rabatt.',
+
+    'field_min_qty' => 'Zu kaufende Menge',
+
+    'field_reward_qty' => 'Belohnte Menge',
+
+    'field_max_reward_qty' => 'Maximal belohnt',
+
+    'field_max_reward_qty_hint' => 'Leer lassen, um jeden qualifizierenden Satz zu belohnen.',
+
+    'field_automatically_add_rewards' => 'Belohnungen automatisch in den Warenkorb legen',
+
+    'field_automatically_add_rewards_hint' => 'Legt die Belohnungsprodukte für den Kunden hinein, statt darauf zu warten, dass er es tut.',
+
+    'section_conditions' => 'Bedingungen',
+
+    'section_conditions_description' => 'Was ein Warenkorb erfüllen muss, bevor dieser Rabatt greift.',
+
+    'field_min_spend' => 'Mindestbestellwert',
+
+    'field_min_spend_hint' => 'Legen Sie je Währung eine Schwelle fest. Eine leer gelassene Währung hat keinen Mindestwert.',
+
     'automatic' => 'Automatisch',
     'no_end_date' => 'Kein Enddatum',
     'usage_unlimited' => 'unbegrenzt',

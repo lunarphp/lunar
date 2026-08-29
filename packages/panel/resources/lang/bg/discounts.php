@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Всички отстъпки, за всички времена',
     'show_kpis' => 'Показване на статистиките',
 
+    'summary_percentage_off' => ':percentage% отстъпка',
+
+    'summary_fixed_amount_off' => ':amount отстъпка',
+
+    'summary_buy_x_get_y' => 'Купи :buy, вземи :get',
+
+    'field_percentage' => 'Процент отстъпка',
+
+    'field_percentage_hint' => 'Приспада се от всеки допустим ред.',
+
+    'field_amount' => 'Сума на отстъпката',
+
+    'field_amounts_hint' => 'Задайте сума за всяка валута. Валута, оставена празна, не получава отстъпка.',
+
+    'field_min_qty' => 'Количество за купуване',
+
+    'field_reward_qty' => 'Количество за награда',
+
+    'field_max_reward_qty' => 'Максимум за награда',
+
+    'field_max_reward_qty_hint' => 'Оставете празно, за да се награждава всеки отговарящ комплект.',
+
+    'field_automatically_add_rewards' => 'Автоматично добавяне на наградите в количката',
+
+    'field_automatically_add_rewards_hint' => 'Добавя наградните продукти вместо клиента, вместо да чака той да ги добави.',
+
+    'section_conditions' => 'Условия',
+
+    'section_conditions_description' => 'На какво трябва да отговаря количката, преди отстъпката да се приложи.',
+
+    'field_min_spend' => 'Минимална сума',
+
+    'field_min_spend_hint' => 'Задайте праг за всяка валута. Валута, оставена празна, няма минимум.',
+
     'automatic' => 'Автоматична',
     'no_end_date' => 'Без крайна дата',
     'usage_unlimited' => 'без ограничение',

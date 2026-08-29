@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Alle kortingen, alle tijden',
     'show_kpis' => 'Statistieken tonen',
 
+    'summary_percentage_off' => ':percentage% korting',
+
+    'summary_fixed_amount_off' => ':amount korting',
+
+    'summary_buy_x_get_y' => 'Koop :buy, krijg :get',
+
+    'field_percentage' => 'Kortingspercentage',
+
+    'field_percentage_hint' => 'Wordt van elke in aanmerking komende regel afgetrokken.',
+
+    'field_amount' => 'Kortingsbedrag',
+
+    'field_amounts_hint' => 'Stel een bedrag per valuta in. Een valuta die leeg blijft krijgt geen korting.',
+
+    'field_min_qty' => 'Te kopen aantal',
+
+    'field_reward_qty' => 'Beloonde aantal',
+
+    'field_max_reward_qty' => 'Maximaal beloond',
+
+    'field_max_reward_qty_hint' => 'Laat leeg om elke kwalificerende set te belonen.',
+
+    'field_automatically_add_rewards' => 'Beloningen automatisch aan de winkelwagen toevoegen',
+
+    'field_automatically_add_rewards_hint' => 'Voegt de beloningsproducten voor de klant toe in plaats van te wachten tot die dat doet.',
+
+    'section_conditions' => 'Voorwaarden',
+
+    'section_conditions_description' => 'Waaraan een winkelwagen moet voldoen voordat deze korting geldt.',
+
+    'field_min_spend' => 'Minimale besteding',
+
+    'field_min_spend_hint' => 'Stel een drempel per valuta in. Een valuta die leeg blijft heeft geen minimum.',
+
     'automatic' => 'Automatisch',
     'no_end_date' => 'Geen einddatum',
     'usage_unlimited' => 'onbeperkt',

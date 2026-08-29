@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Toutes réductions, depuis le début',
     'show_kpis' => 'Afficher les statistiques',
 
+    'summary_percentage_off' => ':percentage % de réduction',
+
+    'summary_fixed_amount_off' => ':amount de réduction',
+
+    'summary_buy_x_get_y' => 'Achetez :buy, obtenez :get',
+
+    'field_percentage' => 'Pourcentage de réduction',
+
+    'field_percentage_hint' => 'Retiré de chaque ligne éligible.',
+
+    'field_amount' => 'Montant de la réduction',
+
+    'field_amounts_hint' => 'Définissez un montant par devise. Une devise laissée vide ne reçoit aucune réduction.',
+
+    'field_min_qty' => 'Quantité à acheter',
+
+    'field_reward_qty' => 'Quantité offerte',
+
+    'field_max_reward_qty' => 'Maximum offert',
+
+    'field_max_reward_qty_hint' => 'Laissez vide pour récompenser chaque lot éligible.',
+
+    'field_automatically_add_rewards' => 'Ajouter automatiquement les articles offerts au panier',
+
+    'field_automatically_add_rewards_hint' => 'Ajoute les produits offerts à la place du client plutôt que d\'attendre qu\'il le fasse.',
+
+    'section_conditions' => 'Conditions',
+
+    'section_conditions_description' => 'Ce qu\'un panier doit remplir avant que cette réduction s\'applique.',
+
+    'field_min_spend' => 'Montant minimum',
+
+    'field_min_spend_hint' => 'Définissez un seuil par devise. Une devise laissée vide n\'a aucun minimum.',
+
     'automatic' => 'Automatique',
     'no_end_date' => 'Sans date de fin',
     'usage_unlimited' => 'sans limite',

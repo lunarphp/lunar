@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Panel\Fixtures\Discounts;
 
+use Lunar\Core\Models\Currency;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 
 /**
@@ -33,5 +34,10 @@ class FixtureDiscountTypeForm implements DiscountTypeForm
     public function rules(): array
     {
         return ['tier' => ['required', 'numeric', 'min:0']];
+    }
+
+    public function summary(array $data, ?Currency $currency): ?string
+    {
+        return 'Tier '.($data['tier'] ?? 0);
     }
 }

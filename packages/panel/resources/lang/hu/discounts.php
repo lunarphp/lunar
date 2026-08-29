@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'Minden kedvezmény, a kezdetektől',
     'show_kpis' => 'Statisztikák megjelenítése',
 
+    'summary_percentage_off' => ':percentage% kedvezmény',
+
+    'summary_fixed_amount_off' => ':amount kedvezmény',
+
+    'summary_buy_x_get_y' => 'Vegyél :buy-t, kapsz :get-t',
+
+    'field_percentage' => 'Kedvezmény százaléka',
+
+    'field_percentage_hint' => 'Minden jogosult tételből levonva.',
+
+    'field_amount' => 'Kedvezmény összege',
+
+    'field_amounts_hint' => 'Adjon meg összeget pénznemenként. Az üresen hagyott pénznem nem kap kedvezményt.',
+
+    'field_min_qty' => 'Megvásárolandó mennyiség',
+
+    'field_reward_qty' => 'Jutalmazott mennyiség',
+
+    'field_max_reward_qty' => 'Legfeljebb jutalmazott',
+
+    'field_max_reward_qty_hint' => 'Hagyja üresen, hogy minden jogosult készlet jutalmat kapjon.',
+
+    'field_automatically_add_rewards' => 'A jutalmak automatikus kosárba helyezése',
+
+    'field_automatically_add_rewards_hint' => 'A vásárló helyett teszi be a jutalomtermékeket, ahelyett hogy megvárná.',
+
+    'section_conditions' => 'Feltételek',
+
+    'section_conditions_description' => 'Mit kell teljesítenie a kosárnak, mielőtt ez a kedvezmény érvényesül.',
+
+    'field_min_spend' => 'Minimális költés',
+
+    'field_min_spend_hint' => 'Adjon meg küszöböt pénznemenként. Az üresen hagyott pénznemnek nincs minimuma.',
+
     'automatic' => 'Automatikus',
     'no_end_date' => 'Nincs záró dátum',
     'usage_unlimited' => 'nincs korlát',

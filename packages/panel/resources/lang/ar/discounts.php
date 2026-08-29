@@ -59,6 +59,40 @@ return [
     'kpi_redemptions_hint' => 'كل الخصومات، منذ البداية',
     'show_kpis' => 'إظهار الإحصاءات',
 
+    'summary_percentage_off' => ':percentage% خصم',
+
+    'summary_fixed_amount_off' => 'خصم :amount',
+
+    'summary_buy_x_get_y' => 'اشترِ :buy واحصل على :get',
+
+    'field_percentage' => 'نسبة الخصم',
+
+    'field_percentage_hint' => 'يُخصم من كل بند مؤهل.',
+
+    'field_amount' => 'قيمة الخصم',
+
+    'field_amounts_hint' => 'حدّد قيمة لكل عملة. العملة المتروكة فارغة لا تحصل على خصم.',
+
+    'field_min_qty' => 'الكمية المطلوب شراؤها',
+
+    'field_reward_qty' => 'الكمية المكافأة',
+
+    'field_max_reward_qty' => 'الحد الأقصى للمكافأة',
+
+    'field_max_reward_qty_hint' => 'اتركه فارغًا لمكافأة كل مجموعة مؤهلة.',
+
+    'field_automatically_add_rewards' => 'إضافة المكافآت إلى السلة تلقائيًا',
+
+    'field_automatically_add_rewards_hint' => 'يضيف منتجات المكافأة نيابة عن المتسوّق بدل انتظاره ليضيفها.',
+
+    'section_conditions' => 'الشروط',
+
+    'section_conditions_description' => 'ما يجب أن تستوفيه السلة قبل تطبيق هذا الخصم.',
+
+    'field_min_spend' => 'الحد الأدنى للإنفاق',
+
+    'field_min_spend_hint' => 'حدّد عتبة لكل عملة. العملة المتروكة فارغة بلا حد أدنى.',
+
     'automatic' => 'تلقائي',
     'no_end_date' => 'بدون تاريخ انتهاء',
     'usage_unlimited' => 'بلا حد',
