@@ -192,6 +192,43 @@ it('places the order when paypal covers more than the total', function () {
         ->and($cart->refresh()->completedOrder->placed_at)->not->toBeNull();
 });
 
+it('authorizes a zero-decimal currency total that rounds to a whole unit', function () {
+    $cart = CartBuilder::build(currencyParams: ['code' => 'HUF'])->calculate();
+
+    // PayPal only accepts whole HUF, so a 12.34 HUF total can never be matched
+    // exactly — the canonical PayPal amount is "12". The guard has to compare
+    // at PayPal's precision or every total that rounds down is unpayable.
+    $order = $cart->createOrder();
+    $order->update(['total' => 1234]);
+
+    PaypalFake::forCart($cart, ['amount' => '12']);
+
+    $response = (new PaypalPaymentType)->order($order)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    expect($response->success)->toBeTrue()
+        ->and(Transaction::where('type', 'capture')->first()->amount)->toEqual(1200);
+});
+
+it('refuses a zero-decimal currency amount short by a whole unit', function () {
+    $cart = CartBuilder::build(currencyParams: ['code' => 'HUF'])->calculate();
+
+    $order = $cart->createOrder();
+    $order->update(['total' => 1234]);
+
+    PaypalFake::forCart($cart, ['amount' => '11']);
+
+    $response = (new PaypalPaymentType)->order($order)->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('PayPal order amount does not cover the order total');
+
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/capture'));
+});
+
 it('refuses to authorize when the paypal currency differs', function () {
     $cart = CartBuilder::build()->calculate();
 
