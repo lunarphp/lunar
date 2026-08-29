@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
@@ -49,6 +50,18 @@ abstract class SectionExtension implements ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return panel forms for discount types this extension contributes, keyed
+     * by the discount type class, e.g.
+     * [PercentageOff::class => PercentageOffForm::class].
+     *
+     * @return array<class-string, class-string<DiscountTypeForm>>
+     */
+    public function discountTypeForms(): array
     {
         return [];
     }

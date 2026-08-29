@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Vânzări',
     'customers' => 'Clienți',
+    'discounts' => 'Reduceri',
     'general' => 'General',
     'team' => 'Team',
     'store' => 'Store',

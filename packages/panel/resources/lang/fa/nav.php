@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'فروش',
     'customers' => 'مشتریان',
+    'discounts' => 'تخفیف‌ها',
     'general' => 'عمومی',
     'team' => 'Team',
     'store' => 'Store',
