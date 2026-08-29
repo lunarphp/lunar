@@ -16,11 +16,12 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
 - Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
 - Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
+- Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)
+- Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
 - Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
-- Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
@@ -89,3 +90,5 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Standalone attributes surface in the Filament admin (spec 0063)
 - Long-lived worker safety — scoped lifetimes for per-visitor service state (spec 0064)
 - Port the v1.5.0 fixes into v2 (spec 0065)
+- Line-item refunds — `refund_lines`, per-line refund guards, `RefundRequest` (spec 0028)
+- Panel settlement banner + line-driven refund composer (spec 0068)

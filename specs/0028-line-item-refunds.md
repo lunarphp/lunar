@@ -1,9 +1,35 @@
 # 0028 — Line-item refunds
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-09
 - TODO item: Line-item refunds
+
+> Implementation notes (landed): the core model shipped largely as designed —
+> `refund_lines` table, `order_lines.refunded_quantity` rollup, `RefundLine`
+> model, and `RefundsOrder::execute(Order, RefundRequest)`. Three deliberate
+> departures from the draft, made at implementation time: **(1) no separate
+> `reason` field or reasons catalogue** — the prototype's own refund reason is
+> free text, not a select, so it folds into the existing `notes` field rather
+> than adding a parallel column/manifest. **(2) the stale `config('lunar.orders
+> .notifications.refunded')` / `config('lunar.orders.refund_reasons')` calls
+> named in the original draft don't exist** — that config map was already
+> replaced by the container-bound `OrderNotificationManifest`;
+> `SendOrderRefundedNotifications` looks up `triggeredBy('refunded', ...)` on
+> it, mirroring `SendOrderCancelledNotifications` exactly. **(3) Filament kept
+> its existing modal action** rather than gaining the dedicated refund page —
+> `RefundOrderAction` now builds a `RefundRequest` with the whole amount riding
+> on `adjustment` (the documented amount-only fallback), so it works unchanged
+> against the new signature. A line-picking Filament page is still open work,
+> tracked separately; it wasn't needed to unblock the panel's refund composer
+> ([[0068-panel-settlement-banner-refund-composer]]), which is where the actual
+> line-picking UI landed first. Additive enabler: `PaymentRefund` gained a
+> nullable `transaction` property so `RefundOrder` can record the line
+> allocation against the transaction the driver actually created; Stripe,
+> PayPal, and the offline driver all populate it (the offline driver
+> previously created no refund transaction at all — a pre-existing gap fixed
+> as part of this work, since it directly blocked verifying the new line
+> tracking end-to-end with the store's default payment method).
 
 ## Problem
 
@@ -78,18 +104,18 @@ The order **items table** gains a refunded indicator per line (e.g. "2 of 5 refu
 ## Migration impact
 
 - **Database** (baseline editable, v2 pre-release): new `refund_lines` table; new `order_lines.refunded_quantity` column. No change to `transactions`.
-- **Breaking public-contract change:** `RefundsOrder::execute` signature changes from `(order, transactionId, amount, notes)` to `(order, RefundRequest)`. Requires a **Rector rule in `lunarphp/upgrade`** to migrate callers (wrap the old args in a `RefundRequest`). The amount-only behaviour is still reachable via the request's `adjustment`. Flag in upgrade notes.
-- **Additive surface:** `DataObjects\RefundRequest`, `Models\RefundLine`, `Events\Orders\OrderRefunded`, `Listeners\SendOrderRefundedNotifications`, `OrderResource\Pages\RefundOrder`, `config('lunar.orders.refund_reasons')`. The bridge `RefundOrderAction` modal is removed in favour of the page (a behaviour change worth noting; a thin deprecated shim may forward to the page route).
-- **Translations (16 locales):** refund page labels, reason list, per-line "refunded" copy, notification strings, new exception messages — `lunar-filament::actions.orders.refund.*` extended, `lunar::orders.refund_reasons.*`.
-- **Filament/admin:** new refund page registered on `OrderResource`; items table column for refunded quantity; activity renderer update.
+- **Breaking public-contract change:** `RefundsOrder::execute` signature changed from `(order, transactionId, amount, notes)` to `(order, RefundRequest)`; `Order::refund()` changed the same way. A **Rector rule** (`Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector`) migrates `Order::refund()` call sites by wrapping the old positional args in a `RefundRequest` (the amount-only path lands on `adjustment`, matching runtime behaviour exactly).
+- **Additive surface:** `DataObjects\RefundRequest`, `Models\RefundLine`, `Database\Factories\RefundLineFactory`, `Events\Orders\OrderRefunded`, `Listeners\SendOrderRefundedNotifications`, `OrderLine::refundLines()` / `refundableQuantity()`, `Transaction::refundLines()`, `PaymentRefund::$transaction` (nullable). No dedicated Filament refund page, no `refund_reasons` config/manifest — see implementation notes above for what shipped instead.
+- **Translations:** none — no new UI surface landed in core/Filament; the panel's translation additions live under [[0068-panel-settlement-banner-refund-composer]].
+- **Filament/admin:** `RefundOrderAction`'s existing modal is unchanged in the UI; internally it now builds a `RefundRequest`.
 
-## Open questions
+## Open questions (resolved at implementation)
 
-- **`refunded_total` on `order_lines`?** Quantity covers "which lines refunded"; a money rollup per line is only needed if we show per-line refunded amounts. Add if the items table wants it, else derive from `refund_lines`.
-- **Reason storage** — `meta` key on the refund transaction vs a dedicated nullable `reason` column. A column is cleaner to query/report on; leaning column.
-- **Tax handling on partial-quantity refunds** — refund `unit_price × qty` tax-inclusive is the simple model; do we ever need to refund tax separately (e.g. tax-only adjustment)? The `adjustment` field can absorb it for now.
-- **Over-refund on discounted lines** — line `unit_price` vs effective per-unit `total` after `discount_total`. Confirm which basis the suggested amount uses (Shopify refunds the discounted unit price). Likely the line's discounted per-unit total.
-- **Restock** — deferred to the inventory spec; the refund page will grow a restock toggle then (as the cancel modal will).
+- **`refunded_total` on `order_lines`?** Not added — nothing consuming it yet; derivable from `refund_lines` if a future screen wants a per-line money rollup.
+- **Reason storage** — neither a `meta` key nor a dedicated column: no separate reason concept shipped at all (see implementation notes above). The refund's free-text note lives on the transaction's existing `notes` field, same as before.
+- **Tax handling on partial-quantity refunds** — shipped as the simple model: `round(line.total / line.quantity) × quantity`, tax-inclusive. The `adjustment` field is the escape hatch for anything finer.
+- **Over-refund on discounted lines** — resolved to the line's discounted, tax-inclusive per-unit total (`line.total / line.quantity`), matching the Shopify-style basis this question leaned toward.
+- **Restock** — still deferred to the inventory spec, unchanged.
 
 ## References
 
