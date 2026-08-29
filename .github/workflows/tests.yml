@@ -186,3 +186,9 @@ jobs:
       # preset (IIFE output, externalised vue/inertia/panel globals) still works.
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
+
+      # Fails when a publishable npm package's content no longer matches the
+      # tarball published under its current version — the reminder to bump.
+      # Relies on the panel build above for fresh @lunarphp/panel types.
+      - name: Check npm packages for unpublished drift
+        run: npm run check-npm-drift

@@ -12,7 +12,7 @@ import { computed } from 'vue';
 // under `example-addon::{group}` keys — served, cached and versioned by the
 // panel's translations endpoint like the panel's own strings.
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, FlashMessage, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
@@ -28,8 +28,6 @@ const breadcrumbs = computed(() => [
 
 // Shared props the panel middleware provides to every page, add-on pages included.
 const panelName = computed(() => (usePage().props.panel as { name?: string } | undefined)?.name ?? 'Lunar');
-
-const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
 // Same column shape first-party pages use: key/label plus optional width and align.
 const columns = [
@@ -71,8 +69,6 @@ const chartPoints = [
 
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
-
-            <FlashMessage :message="flashSuccess" class="mb-4" />
 
             <p class="text-[13px] text-ink-700">
                 {{ message ?? 'This page is served by a separately-compiled add-on package.' }}
