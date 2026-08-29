@@ -15,6 +15,8 @@ use Lunar\Panel\Slots\SlotRegistry;
 use LunarPanelExample\Actions\AuditPageAction;
 use LunarPanelExample\Actions\ImportPageAction;
 use LunarPanelExample\Dashboard\CustomerCountWidget;
+use LunarPanelExample\Search\CustomerEmailSearchSource;
+use LunarPanelExample\Search\PingWidgetsCommand;
 use LunarPanelExample\Tables\ExampleTableExtension;
 
 class ExampleSection extends Section
@@ -179,6 +181,22 @@ class ExampleSection extends Section
     public function widgets(): array
     {
         return [CustomerCountWidget::class];
+    }
+
+    /**
+     * Contribute a source to the global search. Results appear grouped under
+     * the source's own label, gated by its permission, and the palette needs
+     * no knowledge of this add-on.
+     */
+    public function searchSources(): array
+    {
+        return [CustomerEmailSearchSource::class];
+    }
+
+    /** Contribute a quick action to the global search palette. */
+    public function searchCommands(): array
+    {
+        return [PingWidgetsCommand::class];
     }
 
     /**

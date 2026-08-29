@@ -45,6 +45,15 @@ class HandlePanelInertiaRequests extends Middleware
             'pageActions' => fn () => $this->manager
                 ->resolvePageActions($this->currentPagePrefix($request))
                 ->resolve($this->currentRecord($request)),
+            // The palette needs its quick actions before the first keystroke,
+            // so they ship with the page rather than behind the search fetch.
+            'searchCommands' => fn () => $this->manager->resolveSearchCommands()->resolve(),
+            'searchSources' => fn () => $this->manager->resolveSearchSources()->kinds(),
+            // The record this page is showing, shaped as a search row, so the
+            // palette can offer it back under "Recently viewed".
+            'visitedRecord' => fn () => ($record = $this->currentRecord($request))
+                ? $this->manager->resolveSearchSources()->rowFor($record)
+                : null,
         ]);
     }
 

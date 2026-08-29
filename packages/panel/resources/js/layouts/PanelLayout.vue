@@ -1,17 +1,38 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
 import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import NavBody from '../components/NavBody.vue';
+import CommandPalette from '../components/CommandPalette.vue';
 import Icon from '../components/Icon.vue';
 import Toaster from '../components/Toaster.vue';
 import { useNavState } from '../composables/useNavState';
+import { useRecentRecords } from '../composables/useRecentRecords';
+import type { SearchResult } from '../types/search';
 
 const { state, toggleCollapsed, openDrawer } = useNavState();
 const { t } = useI18n();
 
-const panelName = computed(() => (usePage().props.panel as { name: string }).name);
+const page = usePage();
+
+const panelName = computed(() => (page.props.panel as { name: string }).name);
+
+const userId = computed(() => (page.props.auth as { user: { id: string | number } | null }).user?.id ?? 'guest');
+
+const { remember } = useRecentRecords(userId.value);
+
+// Record pages share the record they are showing; the palette offers the last
+// few back as its empty state.
+watch(
+    () => page.props.visitedRecord as SearchResult | null | undefined,
+    (record) => {
+        if (record) {
+            remember(record);
+        }
+    },
+    { immediate: true },
+);
 
 const isDesktop = ref(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(min-width: 1024px)').matches : true);
 
@@ -145,6 +166,8 @@ onUnmounted(() => {
                 <slot />
             </main>
         </div>
+
+        <CommandPalette />
 
         <Toaster />
     </TooltipProvider>

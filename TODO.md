@@ -20,6 +20,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
 - Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
+- Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)

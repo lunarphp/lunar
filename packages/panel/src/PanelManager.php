@@ -13,6 +13,10 @@ use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\WidgetRegistry;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchCommandResolver;
+use Lunar\Panel\Search\SearchSource;
+use Lunar\Panel\Search\SearchSourceResolver;
 use Lunar\Panel\Sections\ProvidesNavigation;
 use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Sections\SectionExtension;
@@ -37,6 +41,12 @@ class PanelManager
 
     /** @var array<string, string[]> */
     protected array $pageActions = [];
+
+    /** @var array<int, class-string<SearchSource>> */
+    protected array $searchSources = [];
+
+    /** @var array<int, class-string<SearchCommand>> */
+    protected array $searchCommands = [];
 
     /** @var array<class-string<Model>, DraftableResource> */
     protected array $draftables = [];
@@ -159,6 +169,14 @@ class PanelManager
             $this->widget($widgetClass);
         }
 
+        foreach ($entity->searchSources() as $sourceClass) {
+            $this->searchSource($sourceClass);
+        }
+
+        foreach ($entity->searchCommands() as $commandClass) {
+            $this->searchCommand($commandClass);
+        }
+
         if ($viteConfig = $entity->vite()) {
             $this->vite($this->viteKeyFor($sectionKey, $entity), $viteConfig);
         }
@@ -263,6 +281,44 @@ class PanelManager
     public function resolvePageActions(string $pageId): PageActionResolver
     {
         return new PageActionResolver($this->getPageActions($pageId), $this->user());
+    }
+
+    /** @param class-string<SearchSource> $sourceClass */
+    public function searchSource(string $sourceClass): static
+    {
+        $this->searchSources[] = $sourceClass;
+
+        return $this;
+    }
+
+    /** @return array<int, class-string<SearchSource>> */
+    public function getSearchSources(): array
+    {
+        return $this->searchSources;
+    }
+
+    public function resolveSearchSources(): SearchSourceResolver
+    {
+        return new SearchSourceResolver($this->getSearchSources(), $this->user());
+    }
+
+    /** @param class-string<SearchCommand> $commandClass */
+    public function searchCommand(string $commandClass): static
+    {
+        $this->searchCommands[] = $commandClass;
+
+        return $this;
+    }
+
+    /** @return array<int, class-string<SearchCommand>> */
+    public function getSearchCommands(): array
+    {
+        return $this->searchCommands;
+    }
+
+    public function resolveSearchCommands(): SearchCommandResolver
+    {
+        return new SearchCommandResolver($this->getSearchCommands(), $this->user());
     }
 
     /**

@@ -28,6 +28,12 @@ use Lunar\Panel\Http\Controllers\Orders\OrderIndexController;
 use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\Commands\CreateCustomerCommand;
+use Lunar\Panel\Search\Commands\CreateDiscountCommand;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
+use Lunar\Panel\Search\Sources\CustomerSearchSource;
+use Lunar\Panel\Search\Sources\OrderSearchSource;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
 use Lunar\Panel\Sections\Sales\Tables\DiscountsTableExtension;
 use Lunar\Panel\Sections\Sales\Tables\OrdersTableExtension;
@@ -43,13 +49,13 @@ class SalesSection extends Section
      * and the navigation item, so what a user can see and what they can reach
      * stay in lockstep. Same handle as the Filament admin's CustomerResource.
      */
-    private const CUSTOMERS_PERMISSION = 'sales:manage-customers';
+    public const CUSTOMERS_PERMISSION = 'sales:manage-customers';
 
     /** As above, and the same handle as the Filament admin's OrderResource. */
-    private const ORDERS_PERMISSION = 'sales:manage-orders';
+    public const ORDERS_PERMISSION = 'sales:manage-orders';
 
     /** As above, and the same handle the Filament admin's DiscountResource uses. */
-    private const DISCOUNTS_PERMISSION = 'sales:manage-discounts';
+    public const DISCOUNTS_PERMISSION = 'sales:manage-discounts';
 
     public function key(): string
     {
@@ -87,6 +93,24 @@ class SalesSection extends Section
             route: 'panel.discounts.index',
             permission: self::DISCOUNTS_PERMISSION,
         ));
+    }
+
+    /** @return array<int, class-string<SearchSource>> */
+    public function searchSources(): array
+    {
+        return [
+            OrderSearchSource::class,
+            CustomerSearchSource::class,
+        ];
+    }
+
+    /** @return array<int, class-string<SearchCommand>> */
+    public function searchCommands(): array
+    {
+        return [
+            CreateCustomerCommand::class,
+            CreateDiscountCommand::class,
+        ];
     }
 
     /** @return array<string, class-string> */

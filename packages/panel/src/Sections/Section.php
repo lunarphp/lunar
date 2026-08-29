@@ -7,6 +7,8 @@ use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Slots\SlotRegistry;
 
 abstract class Section implements ProvidesNavigation
@@ -73,6 +75,29 @@ abstract class Section implements ProvidesNavigation
      * @return array<class-string, class-string<DiscountTypeForm>>
      */
     public function discountTypeForms(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search sources this section contributes, e.g.
+     * [ProductSearchSource::class].
+     *
+     * @return array<int, class-string<SearchSource>>
+     */
+    public function searchSources(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search commands this section contributes — the static
+     * verbs the palette offers alongside record results, e.g.
+     * [CreateProductCommand::class].
+     *
+     * @return array<int, class-string<SearchCommand>>
+     */
+    public function searchCommands(): array
     {
         return [];
     }

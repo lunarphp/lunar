@@ -92,3 +92,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0071 | PayPal driver hardening | implemented |
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
+| 0074 | Panel global search (command palette) | implemented |

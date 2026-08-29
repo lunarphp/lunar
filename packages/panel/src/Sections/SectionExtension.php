@@ -7,6 +7,8 @@ use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Slots\SlotRegistry;
 
 abstract class SectionExtension implements ProvidesNavigation
@@ -73,6 +75,26 @@ abstract class SectionExtension implements ProvidesNavigation
      * @return array<int, class-string<Widget>>
      */
     public function widgets(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search sources this extension contributes.
+     *
+     * @return array<int, class-string<SearchSource>>
+     */
+    public function searchSources(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search commands this extension contributes.
+     *
+     * @return array<int, class-string<SearchCommand>>
+     */
+    public function searchCommands(): array
     {
         return [];
     }
