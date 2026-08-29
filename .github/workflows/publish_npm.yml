@@ -3,11 +3,20 @@ name: publish-npm
 # Publishes the add-on-facing npm packages (@lunarphp/panel and
 # @lunarphp/panel-vite-plugin) alongside the Composer monorepo split.
 # Skips any version already on the registry, so tags that don't bump the
-# npm package versions pass without churn. Requires the NPM_TOKEN secret.
+# npm package versions pass without churn.
+#
+# Authenticates via npm trusted publishing (OIDC) — no NPM_TOKEN secret.
+# Each package registers this repo + workflow filename as its trusted
+# publisher on npmjs.com; the id-token permission lets the job mint the
+# short-lived credential, and --provenance attests the build.
 
 on:
   push:
     tags: "*"
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -26,7 +35,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
+
+      # Node 22 bundles npm 10.x; trusted publishing needs npm >= 11.5.1.
+      - name: Update npm for OIDC support
+        run: npm install -g npm@latest
 
       # Two installs, matching tests.yml: the workspace root links the
       # publishable packages; packages/panel (which generates the
@@ -44,7 +56,5 @@ jobs:
           if npm view "${{ matrix.package }}@${version}" version > /dev/null 2>&1; then
             echo "${{ matrix.package }}@${version} already published, skipping."
           else
-            npm publish --workspace ${{ matrix.package }} --access public
+            npm publish --workspace ${{ matrix.package }} --access public --provenance
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
