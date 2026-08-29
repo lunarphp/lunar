@@ -136,3 +136,33 @@ it('puts the draft actions in the sticky breadcrumb bar on every draft-backed pa
 
     expect($offenders)->toBe([]);
 });
+
+/**
+ * Toggle takes `:on` and emits `toggle`; it has no modelValue prop. Bound with
+ * v-model it renders permanently off, swallows the click, and leaks modelValue
+ * through to Reka's SwitchRoot, which then writes back on mount and leaves a
+ * pristine form reading as dirty.
+ */
+it('never binds the Toggle component with v-model', function () {
+    $jsDir = panelJsPath('');
+
+    $offenders = [];
+
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($jsDir, FilesystemIterator::SKIP_DOTS),
+    );
+
+    foreach ($files as $file) {
+        if ($file->getExtension() !== 'vue') {
+            continue;
+        }
+
+        $contents = (string) file_get_contents($file->getPathname());
+
+        if (preg_match('/<Toggle\b[^>]*\bv-model\b/', $contents)) {
+            $offenders[] = str_replace($jsDir, '', $file->getPathname());
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});

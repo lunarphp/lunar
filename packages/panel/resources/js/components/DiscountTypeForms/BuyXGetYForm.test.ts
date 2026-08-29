@@ -23,6 +23,36 @@ describe('BuyXGetYForm', () => {
         });
     });
 
+    it('flips the automatic-rewards toggle onto the payload', async () => {
+        // Toggle takes :on and emits toggle; bound with v-model it renders
+        // permanently off and swallows the click.
+        const wrapper = mount(BuyXGetYForm, {
+            props: {
+                modelValue: { min_qty: 2, reward_qty: 1, automatically_add_rewards: false },
+                currencies,
+            },
+        });
+
+        await wrapper.findComponent({ name: 'Toggle' }).vm.$emit('toggle');
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toEqual({
+            min_qty: 2,
+            reward_qty: 1,
+            automatically_add_rewards: true,
+        });
+    });
+
+    it('shows the toggle as on when the payload says so', () => {
+        const wrapper = mount(BuyXGetYForm, {
+            props: {
+                modelValue: { min_qty: 2, reward_qty: 1, automatically_add_rewards: true },
+                currencies,
+            },
+        });
+
+        expect(wrapper.findComponent({ name: 'Toggle' }).props('on')).toBe(true);
+    });
+
     it('renders the three quantity fields', () => {
         const wrapper = mount(BuyXGetYForm, {
             props: { modelValue: { min_qty: 2, reward_qty: 1, max_reward_qty: null }, currencies },

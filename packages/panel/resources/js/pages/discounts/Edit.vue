@@ -327,10 +327,13 @@ const confirmDestroy = (): void => {
                                     <div v-if="detailsErrors.priority" class="mt-1 text-[11px] text-danger">{{ detailsErrors.priority }}</div>
                                     <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_priority_hint') }}</div>
                                 </div>
-                                <div class="flex flex-col justify-center">
-                                    <Toggle v-model="details.stop" :label="t('discounts.field_stop')" />
-                                    <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_stop_hint') }}</div>
-                                </div>
+                                <label class="flex items-start gap-3 cursor-pointer self-center">
+                                    <Toggle :on="!!details.stop" @toggle="details.stop = !details.stop" />
+                                    <div>
+                                        <div class="text-[12.5px] text-ink-900 font-medium">{{ t('discounts.field_stop') }}</div>
+                                        <div class="text-[11px] text-ink-500">{{ t('discounts.field_stop_hint') }}</div>
+                                    </div>
+                                </label>
                             </div>
                         </section>
 
