@@ -30,6 +30,7 @@ class DiscountObserver
     public function deleting(Discount $discount): void
     {
         $discount->brands()->detach();
+        $discount->channels()->detach();
         $discount->collections()->detach();
         $discount->customerGroups()->detach();
         $discount->customers()->detach();

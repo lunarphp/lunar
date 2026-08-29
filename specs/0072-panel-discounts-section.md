@@ -1,10 +1,10 @@
 # 0072 — Panel Discounts section
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
-- Depends on: [[0073-split-amount-off-discount-type]] (lands first, separate PR)
+- Depends on: [[0073-split-amount-off-discount-type]] (shipped)
 
 ## Problem
 
@@ -52,7 +52,7 @@ through `CouponString`), `type` (the discount-type class name), `starts_at` / `e
   | `limitation` | `discountables` | `collection_discount` | `brand_discount` | `customer_discount` |
   | `exclusion` | `discountables` | `collection_discount` | `brand_discount` | — |
   | `condition` (BuyXGetY) | `discountables` | `discountables` | — | — |
-  | `reward` (BuyXGetY) | `discountables` | — | — | — |
+  | `reward` (BuyXGetY) | `discountables` | `discountables` | — | — |
 
   Collections are the trap: the line-targeting types read them from the
   `collection_discount` pivot, while `BuyXGetY::apply()` reads them from `discountables`
@@ -133,14 +133,17 @@ collections live in two places.
  *   limitation: array{products: int[], variants: int[], collections: int[], brands: int[], customers: int[]},
  *   exclusion:  array{products: int[], variants: int[], collections: int[], brands: int[]},
  *   condition:  array{products: int[], variants: int[], collections: int[]},
- *   reward:     array{products: int[], variants: int[]},
+ *   reward:     array{products: int[], variants: int[], collections: int[]},
  * } $targets  null leaves targeting untouched; a present bucket replaces that bucket wholesale
  */
 ```
 
 The action is the only place that knows the routing table above. It writes in a
 transaction, syncing `discountables` per morph type and the three pivots, and it is the
-seam a consumer swaps to change targeting semantics.
+seam a consumer swaps to change targeting semantics. A bucket given a kind it cannot
+target — brands on a `condition`, say — raises rather than writing rows no discount type
+reads. `customer_discount` has no `type` column, so eligible customers hang off the
+`limitation` bucket alone.
 
 `Discount` also gains `scopeScheduled()`, `scopeExpired()` and `scopePending()` alongside
 the existing `scopeActive()`, so the derived status is filterable in SQL. The Filament table
@@ -376,6 +379,9 @@ it to 16.
 - **Breaking changes**: none. Everything here is additive; the breaking work is in 0073.
 - **Core public surface**: three new action contracts and implementations plus their
   `ActionServiceProvider::$actions` entries, and three new `Discount` scopes. Additive.
+- **Behaviour fix**: `DiscountObserver::deleting()` also detaches `channels()`, which it
+  missed while its `Product` and `Collection` siblings did not — deleting a discount was
+  orphaning its `channelables` rows on every delete path.
 - **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm`,
   `Section::discountTypeForms()`, and four new `ui.ts` exports.
 - **Permission**: reuses `sales:manage-discounts`; no manifest change.
@@ -428,7 +434,7 @@ it to 16.
 
 Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
 
-- [ ] Slice 1 — Core actions: `Actions/Discounts/{CreateDiscount,UpdateDiscount,DeleteDiscount}`
+- [x] Slice 1 — Core actions: `Actions/Discounts/{CreateDiscount,UpdateDiscount,DeleteDiscount}`
       + contracts + `ActionServiceProvider` entries, with the `$targets` fan-out across
       `discountables` / `collection_discount` / `brand_discount` / `customer_discount`;
       `Discount` status scopes; tests.
