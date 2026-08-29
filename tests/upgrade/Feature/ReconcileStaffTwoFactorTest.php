@@ -62,10 +62,11 @@ function createStaffTable(bool $renamed): void
  * serializes by default, and recovery codes are stored plaintext inside the JSON.
  *
  * @param  array<int, string>  $plaintextCodes
+ * @param  array<string, mixed>  $extra  further columns (e.g. two_factor_confirmed_at)
  */
-function insertLegacyStaff(int $id, string $secretColumn, string $recoveryColumn, string $secret, array $plaintextCodes): void
+function insertLegacyStaff(int $id, string $secretColumn, string $recoveryColumn, string $secret, array $plaintextCodes, array $extra = []): void
 {
-    DB::table(STAFF_2FA_UPG_PREFIX.'staff')->insert([
+    DB::table(STAFF_2FA_UPG_PREFIX.'staff')->insert(array_merge([
         'id' => $id,
         'email' => "staff{$id}@example.com",
         'password' => bcrypt('secret'),
@@ -73,7 +74,7 @@ function insertLegacyStaff(int $id, string $secretColumn, string $recoveryColumn
         $recoveryColumn => Crypt::encrypt(json_encode($plaintextCodes)),
         'created_at' => now(),
         'updated_at' => now(),
-    ]);
+    ], $extra));
 }
 
 /**
@@ -99,7 +100,7 @@ function insertV2Staff(int $id, string $secret, array $plaintextCodes): void
 
 test('it renames pre-1.5 columns and re-encodes the secret and recovery codes', function () {
     createStaffTable(renamed: false);
-    insertLegacyStaff(1, 'two_factor_secret', 'two_factor_recovery_codes', 'JBSWY3DPEHPK3PXP', ['aaaa111111-bbbb222222', 'cccc333333-dddd444444']);
+    insertLegacyStaff(1, 'two_factor_secret', 'two_factor_recovery_codes', 'JBSWY3DPEHPK3PXP', ['aaaa111111-bbbb222222', 'cccc333333-dddd444444'], ['two_factor_confirmed_at' => now()]);
 
     staffTwoFactorMigration()->up();
 
@@ -228,4 +229,47 @@ test('it renames a pre-1.5 store that already lacks two_factor_confirmed_at', fu
     expect(Schema::hasColumn($table, 'app_authentication_secret'))->toBeTrue()
         ->and(Schema::hasColumn($table, 'two_factor_secret'))->toBeFalse()
         ->and(Crypt::decryptString(DB::table($table)->find(1)->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
+});
+
+test('it discards an unconfirmed pre-1.5 enrolment instead of promoting it to active 2FA', function () {
+    createStaffTable(renamed: false);
+    // Confirmed enrolment (two_factor_confirmed_at set) -> carried across and re-encoded.
+    insertLegacyStaff(1, 'two_factor_secret', 'two_factor_recovery_codes', 'JBSWY3DPEHPK3PXP', ['aaaa111111-bbbb222222'], ['two_factor_confirmed_at' => now()]);
+    // Enrolment started but never confirmed (confirmed_at null) -> 2FA was OFF in v1.
+    insertLegacyStaff(2, 'two_factor_secret', 'two_factor_recovery_codes', 'MFRGGZDFMZTWQ2LK', ['cccc333333-dddd444444'], ['two_factor_confirmed_at' => null]);
+
+    staffTwoFactorMigration()->up();
+
+    $table = STAFF_2FA_UPG_PREFIX.'staff';
+
+    // The confirmed member keeps working 2FA.
+    expect(Crypt::decryptString(DB::table($table)->find(1)->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
+
+    // The unconfirmed member comes out with NO 2FA (they re-enrol in v2) — not a filled
+    // secret they never confirmed, which v2 would treat as active with no email fallback,
+    // locking them out.
+    $unconfirmed = DB::table($table)->find(2);
+    expect($unconfirmed->app_authentication_secret)->toBeNull()
+        ->and($unconfirmed->app_authentication_recovery_codes)->toBeNull();
+});
+
+test('it re-encodes a store that carries only the secret column', function () {
+    // A part-way-fixed store with only the secret column present (no recovery column):
+    // the data pass must handle it independently rather than bail because its pair is absent.
+    Schema::create(STAFF_2FA_UPG_PREFIX.'staff', function (Blueprint $table) {
+        $table->id();
+        $table->string('email')->unique();
+        $table->string('password');
+        $table->text('app_authentication_secret')->nullable();
+        $table->timestamps();
+    });
+    DB::table(STAFF_2FA_UPG_PREFIX.'staff')->insert([
+        'id' => 1, 'email' => 'staff1@example.com', 'password' => bcrypt('secret'),
+        'app_authentication_secret' => Crypt::encrypt('JBSWY3DPEHPK3PXP'),
+        'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    staffTwoFactorMigration()->up();
+
+    expect(Crypt::decryptString(DB::table(STAFF_2FA_UPG_PREFIX.'staff')->find(1)->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
 });

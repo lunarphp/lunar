@@ -20,7 +20,10 @@ use Lunar\Core\Database\Migration;
  *    store upgraded straight from a pre-1.5 line never ran it, so it lands with the
  *    old names and the v2 Staff model (which reads app_authentication_*) sees no
  *    2FA. Apply the rename here when the v1 columns are still present; a 1.5+ store
- *    already has the v2 names and is left untouched.
+ *    already has the v2 names and is left untouched. A half-finished enrolment
+ *    (secret written but two_factor_confirmed_at still null) was 2FA-off in v1, so
+ *    its columns are cleared before the rename rather than promoted to an active v2
+ *    secret the user never confirmed.
  *
  * 2. Encoding. v1 stored the secret and recovery codes as encrypt(serialize(...))
  *    with plaintext recovery codes. v2's panel (spec 0049, #2558) matches
@@ -50,32 +53,44 @@ return new class extends Migration
 
         $this->renameLegacyColumns($staff);
 
-        if (! Schema::hasColumn($staff, 'app_authentication_secret')
-            || ! Schema::hasColumn($staff, 'app_authentication_recovery_codes')) {
+        // Handle the two columns independently: a store part-way through a manual fix
+        // may carry only one of them, and selecting or updating a missing column would throw.
+        $hasSecret = Schema::hasColumn($staff, 'app_authentication_secret');
+        $hasRecoveryCodes = Schema::hasColumn($staff, 'app_authentication_recovery_codes');
+
+        if (! $hasSecret && ! $hasRecoveryCodes) {
             return;
         }
 
         DB::table($staff)
-            ->where(function ($query): void {
-                $query->whereNotNull('app_authentication_secret')
-                    ->orWhereNotNull('app_authentication_recovery_codes');
+            ->where(function ($query) use ($hasSecret, $hasRecoveryCodes): void {
+                if ($hasSecret) {
+                    $query->orWhereNotNull('app_authentication_secret');
+                }
+
+                if ($hasRecoveryCodes) {
+                    $query->orWhereNotNull('app_authentication_recovery_codes');
+                }
             })
-            ->orderBy('id')
-            ->chunkById(500, function ($rows) use ($staff): void {
+            ->chunkById(500, function ($rows) use ($staff, $hasSecret, $hasRecoveryCodes): void {
                 foreach ($rows as $row) {
                     try {
                         $update = [];
 
-                        $secret = $this->reencodeSecret($row->app_authentication_secret);
+                        if ($hasSecret) {
+                            $secret = $this->reencodeSecret($row->app_authentication_secret);
 
-                        if ($secret !== null) {
-                            $update['app_authentication_secret'] = $secret;
+                            if ($secret !== null) {
+                                $update['app_authentication_secret'] = $secret;
+                            }
                         }
 
-                        $codes = $this->reencodeRecoveryCodes($row->app_authentication_recovery_codes);
+                        if ($hasRecoveryCodes) {
+                            $codes = $this->reencodeRecoveryCodes($row->app_authentication_recovery_codes);
 
-                        if ($codes !== null) {
-                            $update['app_authentication_recovery_codes'] = $codes;
+                            if ($codes !== null) {
+                                $update['app_authentication_recovery_codes'] = $codes;
+                            }
                         }
 
                         if ($update !== []) {
@@ -103,13 +118,36 @@ return new class extends Migration
         // one, and renaming a missing column would throw.
         $renameSecret = Schema::hasColumn($staff, 'two_factor_secret');
         $renameRecoveryCodes = Schema::hasColumn($staff, 'two_factor_recovery_codes');
-        $dropConfirmedAt = Schema::hasColumn($staff, 'two_factor_confirmed_at');
+        $hasConfirmedAt = Schema::hasColumn($staff, 'two_factor_confirmed_at');
 
-        if (! $renameSecret && ! $renameRecoveryCodes && ! $dropConfirmedAt) {
+        if (! $renameSecret && ! $renameRecoveryCodes && ! $hasConfirmedAt) {
             return;
         }
 
-        Schema::table($staff, function (Blueprint $table) use ($renameSecret, $renameRecoveryCodes, $dropConfirmedAt): void {
+        // Discard half-finished v1 enrolments before they become active v2 2FA. The
+        // Fortify-derived plugin writes the secret and recovery codes when enrolment
+        // STARTS and only stamps two_factor_confirmed_at once the user verifies a TOTP
+        // code — until then v1 treats 2FA as off. v2's AppAuthentication::isEnabled()
+        // is just filled($secret), and the challenge offers no email fallback once a
+        // secret exists, so carrying an unconfirmed secret across would lock that staff
+        // member out with a TOTP they never finished setting up.
+        if ($hasConfirmedAt) {
+            $clear = [];
+
+            if ($renameSecret) {
+                $clear['two_factor_secret'] = null;
+            }
+
+            if ($renameRecoveryCodes) {
+                $clear['two_factor_recovery_codes'] = null;
+            }
+
+            if ($clear !== []) {
+                DB::table($staff)->whereNull('two_factor_confirmed_at')->update($clear);
+            }
+        }
+
+        Schema::table($staff, function (Blueprint $table) use ($renameSecret, $renameRecoveryCodes, $hasConfirmedAt): void {
             if ($renameSecret) {
                 $table->renameColumn('two_factor_secret', 'app_authentication_secret');
             }
@@ -118,7 +156,7 @@ return new class extends Migration
                 $table->renameColumn('two_factor_recovery_codes', 'app_authentication_recovery_codes');
             }
 
-            if ($dropConfirmedAt) {
+            if ($hasConfirmedAt) {
                 $table->dropColumn('two_factor_confirmed_at');
             }
         });
