@@ -44,9 +44,12 @@ const automaticallyAddRewards = field<boolean>('automatically_add_rewards');
             <div v-if="errors?.['data.max_reward_qty']" class="mt-1 text-[11px] text-danger">{{ errors['data.max_reward_qty'] }}</div>
             <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_max_reward_qty_hint') }}</div>
         </div>
-        <div class="sm:col-span-3">
-            <Toggle v-model="automaticallyAddRewards" :label="t('discounts.field_automatically_add_rewards')" />
-            <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_automatically_add_rewards_hint') }}</div>
-        </div>
+        <label class="sm:col-span-3 flex items-start gap-3 cursor-pointer">
+            <Toggle :on="!!automaticallyAddRewards" @toggle="automaticallyAddRewards = !automaticallyAddRewards" />
+            <div>
+                <div class="text-[12.5px] text-ink-900 font-medium">{{ t('discounts.field_automatically_add_rewards') }}</div>
+                <div class="text-[11px] text-ink-500">{{ t('discounts.field_automatically_add_rewards_hint') }}</div>
+            </div>
+        </label>
     </div>
 </template>

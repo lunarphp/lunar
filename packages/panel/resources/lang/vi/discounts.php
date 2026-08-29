@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Thêm sản phẩm tặng thay cho khách thay vì chờ họ tự thêm.',
 
+    'section_targets' => 'Áp dụng cho',
+
+    'section_targets_description' => 'Giới hạn chương trình này trong một phần danh mục. Để trống một khối nghĩa là áp dụng cho tất cả.',
+
+    'section_customers' => 'Khách hàng đủ điều kiện',
+
+    'bucket_limitation' => 'Áp dụng cho',
+
+    'bucket_limitation_description' => 'Chỉ những mục này được giảm.',
+
+    'bucket_exclusion' => 'Loại trừ',
+
+    'bucket_exclusion_description' => 'Không bao giờ được giảm, kể cả khi khớp ở trên.',
+
+    'bucket_condition' => 'Sản phẩm đủ điều kiện',
+
+    'bucket_condition_description' => 'Khách phải mua gì để nhận quà.',
+
+    'bucket_reward' => 'Sản phẩm tặng',
+
+    'bucket_reward_description' => 'Khách được nhận gì.',
+
+    'bucket_customers' => 'Khách hàng đủ điều kiện',
+
+    'bucket_customers_description' => 'Chỉ những khách này dùng được. Để trống để mọi người đều dùng được.',
+
+    'kind_products' => 'Sản phẩm',
+
+    'kind_variants' => 'Biến thể',
+
+    'kind_collections' => 'Bộ sưu tập',
+
+    'kind_brands' => 'Thương hiệu',
+
+    'kind_customers' => 'Khách hàng',
+
+    'target_add' => 'Thêm',
+
+    'target_remove' => 'Bỏ {label}',
+
+    'target_empty' => 'Chưa chọn gì nên áp dụng cho tất cả.',
+
+    'target_dialog_title' => 'Thêm mục tiêu',
+
+    'target_dialog_description' => 'Tìm trong mọi thứ khối này có thể nhắm tới.',
+
+    'target_search_placeholder' => 'Tìm sản phẩm, bộ sưu tập, thương hiệu',
+
+    'target_no_results' => 'Không có kết quả.',
+
+    'target_add_selected' => 'Thêm {count}',
+
     'section_conditions' => 'Điều kiện',
 
     'section_conditions_description' => 'Giỏ hàng phải thỏa điều kiện gì trước khi được giảm.',

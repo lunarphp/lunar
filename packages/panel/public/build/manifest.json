@@ -2168,18 +2168,18 @@
     "src": "node_modules/flag-icons/flags/4x3/zw.svg"
   },
   "resources/css/app.css": {
-    "file": "assets/app-Bk07hgSx.css",
+    "file": "assets/app-s-Ovoegf.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-CyLC6R3p.js",
+    "file": "assets/app-Jx8VOWzz.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
     "css": [
       "assets/app-BnXPSN9y.css",
-      "assets/app-Bk07hgSx.css"
+      "assets/app-s-Ovoegf.css"
     ],
     "assets": [
       "assets/flags/4x3/xx.svg",

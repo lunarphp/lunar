@@ -16,6 +16,8 @@ import PageZone from '../../components/PageZone.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import SideCard from '../../components/SideCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
+import TargetChipList, { type TargetChip } from '../../components/TargetChipList.vue';
+import TargetPickerDialog, { type TargetOption } from '../../components/TargetPickerDialog.vue';
 import TextInput from '../../components/TextInput.vue';
 import Toggle from '../../components/Toggle.vue';
 import UsageMeter from '../../components/UsageMeter.vue';
@@ -62,6 +64,8 @@ const props = defineProps<{
     typeRegistered: boolean;
     draft: DraftState | null;
     currencies: { id: number; code: string; name: string; decimal_places: number; default: boolean }[];
+    targets: Record<string, Record<string, number[]>>;
+    targetChips: Record<string, Record<string, TargetChip[]>>;
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
     availabilityValues: Record<string, unknown>;
     activities: ActivityEntry[];
@@ -72,6 +76,7 @@ const props = defineProps<{
         destroy: string;
         draft: string;
         draftCommit: string;
+        targetSearch: string;
     };
 }>();
 
@@ -98,6 +103,7 @@ const draftForm = useEditDraft({
         // The type owns this shape, so it drafts as one unit.
         data: { ...props.discount.data },
         ...props.availabilityValues,
+        ...props.targets,
     },
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
@@ -154,6 +160,90 @@ const typeFormComponent = computed<Component | null>(() => {
     return resolved ?? null;
 });
 
+// Only the buckets this discount type declares get a block, so a cart-level
+// type renders none of the targeting UI at all.
+const TARGET_PREFIX = 'target:';
+
+// Customers are an audience restriction, not a product target — they hang off
+// the limitation bucket in core and get their own sidebar card here.
+const PRODUCT_KINDS = ['products', 'variants', 'collections', 'brands'];
+
+// The draft values carry dynamic availability and target keys alongside the
+// declared ones. Same reactive object, indexed without widening the whole
+// form's type.
+const targetValues = details as unknown as Record<string, Record<string, number[]>>;
+
+const chips = ref<Record<string, Record<string, TargetChip[]>>>(
+    JSON.parse(JSON.stringify(props.targetChips)) as Record<string, Record<string, TargetChip[]>>,
+);
+
+const bucketKinds = (bucket: string): string[] =>
+    PRODUCT_KINDS.filter((kind) => Object.prototype.hasOwnProperty.call(props.targets[TARGET_PREFIX + bucket] ?? {}, kind));
+
+const visibleBuckets = computed(() => props.type.buckets.filter((bucket) => bucketKinds(bucket).length > 0));
+
+const pickerBucket = ref<string | null>(null);
+const pickerOpen = computed({
+    get: () => pickerBucket.value !== null,
+    set: (value: boolean) => {
+        if (!value) {
+            pickerBucket.value = null;
+        }
+    },
+});
+
+const pickerKinds = computed(() => (pickerBucket.value ? bucketKinds(pickerBucket.value) : []));
+
+const addTargets = (added: TargetOption[]): void => {
+    const bucket = pickerBucket.value;
+
+    if (!bucket) {
+        return;
+    }
+
+    const field = TARGET_PREFIX + bucket;
+    const value = { ...targetValues[field] };
+    const bucketChips = { ...(chips.value[field] ?? {}) };
+
+    added.forEach((target) => {
+        if ((value[target.kind] ?? []).includes(target.id)) {
+            return;
+        }
+
+        value[target.kind] = [...(value[target.kind] ?? []), target.id];
+        bucketChips[target.kind] = [
+            ...(bucketChips[target.kind] ?? []),
+            { id: target.id, label: target.label, hint: target.hint },
+        ];
+    });
+
+    targetValues[field] = value;
+    chips.value = { ...chips.value, [field]: bucketChips };
+};
+
+const removeTarget = (bucket: string, kind: string, id: number): void => {
+    const field = TARGET_PREFIX + bucket;
+    const value = { ...targetValues[field] };
+
+    value[kind] = (value[kind] ?? []).filter((row) => row !== id);
+    targetValues[field] = value;
+
+    chips.value = {
+        ...chips.value,
+        [field]: {
+            ...chips.value[field],
+            [kind]: (chips.value[field]?.[kind] ?? []).filter((chip) => chip.id !== id),
+        },
+    };
+};
+
+// The customer_discount pivot has no bucket column, so eligible customers are
+// stored under limitation but read as an audience rather than a product target.
+const customerField = `${TARGET_PREFIX}limitation`;
+const customerChips = computed(() => chips.value[customerField]?.customers ?? []);
+
+const customerPickerOpen = ref(false);
+
 const statusTone = computed(() => {
     if (props.discount.status === 'active') {
         return 'sage' as const;
@@ -176,9 +266,13 @@ const confirmDestroy = (): void => {
 <template>
     <PanelLayout>
         <div data-screen-label="Edit discount" class="contents">
-            <Breadcrumbs :items="breadcrumbs" />
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <DraftActions :form="draftForm" />
+                </template>
+            </Breadcrumbs>
 
-            <PageHeader :title="discount.name" :description="discount.handle">
+            <PageHeader :title="discount.name">
                 <template #icon>
                     <Link
                         :href="urls.index"
@@ -188,8 +282,16 @@ const confirmDestroy = (): void => {
                         <Icon name="arrowLeft" />
                     </Link>
                 </template>
+                <template #description>
+                    <div class="flex gap-2 items-center flex-wrap">
+                        <StatusBadge :tone="statusTone" dot>{{ discount.status_label }}</StatusBadge>
+                        <span class="text-ink-500">·</span>
+                        <span class="font-mono">{{ discount.handle }}</span>
+                        <span class="text-ink-500">·</span>
+                        <span>{{ type.label }}</span>
+                    </div>
+                </template>
                 <template #actions>
-                    <DraftActions :form="draftForm" />
                     <Button icon="trash" class="!text-danger" @click="confirmOpen = true">
                         <span class="hidden sm:inline">{{ t('discounts.delete_discount') }}</span>
                     </Button>
@@ -225,10 +327,13 @@ const confirmDestroy = (): void => {
                                     <div v-if="detailsErrors.priority" class="mt-1 text-[11px] text-danger">{{ detailsErrors.priority }}</div>
                                     <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_priority_hint') }}</div>
                                 </div>
-                                <div class="flex flex-col justify-center">
-                                    <Toggle v-model="details.stop" :label="t('discounts.field_stop')" />
-                                    <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_stop_hint') }}</div>
-                                </div>
+                                <label class="flex items-start gap-3 cursor-pointer self-center">
+                                    <Toggle :on="!!details.stop" @toggle="details.stop = !details.stop" />
+                                    <div>
+                                        <div class="text-[12.5px] text-ink-900 font-medium">{{ t('discounts.field_stop') }}</div>
+                                        <div class="text-[11px] text-ink-500">{{ t('discounts.field_stop_hint') }}</div>
+                                    </div>
+                                </label>
                             </div>
                         </section>
 
@@ -252,6 +357,26 @@ const confirmDestroy = (): void => {
                             />
                         </section>
 
+                        <section v-if="visibleBuckets.length" class="bg-surface border border-line rounded-xl shadow-sm p-5">
+                            <div class="pb-4 border-b border-line mb-4">
+                                <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_targets') }}</h2>
+                                <div class="text-xs text-ink-500 leading-normal">{{ t('discounts.section_targets_description') }}</div>
+                            </div>
+
+                            <div class="flex flex-col gap-5">
+                                <TargetChipList
+                                    v-for="bucket in visibleBuckets"
+                                    :key="bucket"
+                                    :chips="chips[`target:${bucket}`] ?? {}"
+                                    :kinds="bucketKinds(bucket)"
+                                    :label="t(`discounts.bucket_${bucket}`)"
+                                    :description="t(`discounts.bucket_${bucket}_description`)"
+                                    @add="pickerBucket = bucket"
+                                    @remove="(kind, id) => removeTarget(bucket, kind, id)"
+                                />
+                            </div>
+                        </section>
+
                         <section class="bg-surface border border-line rounded-xl shadow-sm p-5">
                             <div class="pb-4 border-b border-line mb-4">
                                 <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_conditions') }}</h2>
@@ -272,10 +397,10 @@ const confirmDestroy = (): void => {
                         <div class="flex flex-col gap-5">
                             <PageZone region="sidebar" position="before" :discount="discount" />
 
+                            <!-- The status badge lives in the page header, not here: it is
+                                 derived server-side, so beside the date fields that produce
+                                 it it would read as stale until the draft commits. -->
                             <SideCard :title="t('discounts.section_schedule')">
-                                <template #actions>
-                                    <StatusBadge :tone="statusTone" dot>{{ discount.status_label }}</StatusBadge>
-                                </template>
                                 <div class="flex flex-col gap-3">
                                     <div>
                                         <FieldLabel for="discount-starts-at" required>{{ t('discounts.field_starts_at') }}</FieldLabel>
@@ -318,6 +443,17 @@ const confirmDestroy = (): void => {
                                 </div>
                             </SideCard>
 
+                            <SideCard :title="t('discounts.section_customers')">
+                                <TargetChipList
+                                    :chips="{ customers: customerChips }"
+                                    :kinds="['customers']"
+                                    :label="t('discounts.bucket_customers')"
+                                    :description="t('discounts.bucket_customers_description')"
+                                    @add="customerPickerOpen = true"
+                                    @remove="(kind, id) => removeTarget('limitation', kind, id)"
+                                />
+                            </SideCard>
+
                             <AvailabilityCard
                                 :channels="availability.channels"
                                 :customer-groups="availability.customer_groups"
@@ -345,6 +481,22 @@ const confirmDestroy = (): void => {
                 tone="danger"
                 :confirm-label="t('common.delete')"
                 @confirm="confirmDestroy"
+            />
+
+            <TargetPickerDialog
+                v-model:open="pickerOpen"
+                :search-url="urls.targetSearch"
+                :bucket="pickerBucket ?? 'limitation'"
+                :kinds="pickerKinds"
+                @add="addTargets"
+            />
+
+            <TargetPickerDialog
+                v-model:open="customerPickerOpen"
+                :search-url="urls.targetSearch"
+                bucket="limitation"
+                :kinds="['customers']"
+                @add="addTargets"
             />
 
             <DraftConflictDialog

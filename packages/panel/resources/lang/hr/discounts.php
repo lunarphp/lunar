@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Dodaje nagradne proizvode umjesto kupca, umjesto da čeka da ih on doda.',
 
+    'section_targets' => 'Odnosi se na',
+
+    'section_targets_description' => 'Suzite ovaj popust na dio kataloga. Prazan blok znači da vrijedi svugdje.',
+
+    'section_customers' => 'Prihvatljivi kupci',
+
+    'bucket_limitation' => 'Odnosi se na',
+
+    'bucket_limitation_description' => 'Samo ovi dobivaju popust.',
+
+    'bucket_exclusion' => 'Isključeno',
+
+    'bucket_exclusion_description' => 'Nikad ne dobivaju popust, čak i ako odgovaraju gornjem.',
+
+    'bucket_condition' => 'Kvalificirajući proizvodi',
+
+    'bucket_condition_description' => 'Što kupac mora kupiti da zaradi nagradu.',
+
+    'bucket_reward' => 'Nagradni proizvodi',
+
+    'bucket_reward_description' => 'Što kupac dobiva.',
+
+    'bucket_customers' => 'Prihvatljivi kupci',
+
+    'bucket_customers_description' => 'Samo ovi kupci mogu iskoristiti popust. Ostavite prazno da vrijedi za sve.',
+
+    'kind_products' => 'Proizvodi',
+
+    'kind_variants' => 'Varijante',
+
+    'kind_collections' => 'Kolekcije',
+
+    'kind_brands' => 'Marke',
+
+    'kind_customers' => 'Kupci',
+
+    'target_add' => 'Dodaj',
+
+    'target_remove' => 'Ukloni {label}',
+
+    'target_empty' => 'Ništa nije odabrano, pa vrijedi za sve.',
+
+    'target_dialog_title' => 'Dodaj ciljeve',
+
+    'target_dialog_description' => 'Pretražite sve što ovaj blok može obuhvatiti.',
+
+    'target_search_placeholder' => 'Pretraži proizvode, kolekcije, marke',
+
+    'target_no_results' => 'Nema podudaranja.',
+
+    'target_add_selected' => 'Dodaj {count}',
+
     'section_conditions' => 'Uvjeti',
 
     'section_conditions_description' => 'Što košarica mora zadovoljiti prije nego se ovaj popust primijeni.',

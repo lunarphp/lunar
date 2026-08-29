@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Adaugă produsele oferite în locul clientului, în loc să aștepte ca el să o facă.',
 
+    'section_targets' => 'Se aplică la',
+
+    'section_targets_description' => 'Restrângeți reducerea la o parte din catalog. Un bloc lăsat gol se aplică peste tot.',
+
+    'section_customers' => 'Clienți eligibili',
+
+    'bucket_limitation' => 'Se aplică la',
+
+    'bucket_limitation_description' => 'Doar acestea primesc reducere.',
+
+    'bucket_exclusion' => 'Excluse',
+
+    'bucket_exclusion_description' => 'Nu primesc niciodată reducere, chiar dacă se potrivesc mai sus.',
+
+    'bucket_condition' => 'Produse care califică',
+
+    'bucket_condition_description' => 'Ce trebuie să cumpere clientul pentru a primi recompensa.',
+
+    'bucket_reward' => 'Produse oferite',
+
+    'bucket_reward_description' => 'Ce primește clientul.',
+
+    'bucket_customers' => 'Clienți eligibili',
+
+    'bucket_customers_description' => 'Doar acești clienți pot folosi reducerea. Lăsați gol pentru a permite tuturor.',
+
+    'kind_products' => 'Produse',
+
+    'kind_variants' => 'Variante',
+
+    'kind_collections' => 'Colecții',
+
+    'kind_brands' => 'Mărci',
+
+    'kind_customers' => 'Clienți',
+
+    'target_add' => 'Adaugă',
+
+    'target_remove' => 'Elimină {label}',
+
+    'target_empty' => 'Nu e nimic selectat, deci se aplică la tot.',
+
+    'target_dialog_title' => 'Adaugă ținte',
+
+    'target_dialog_description' => 'Căutați printre tot ce poate viza acest bloc.',
+
+    'target_search_placeholder' => 'Caută produse, colecții, mărci',
+
+    'target_no_results' => 'Nicio potrivire.',
+
+    'target_add_selected' => 'Adaugă {count}',
+
     'section_conditions' => 'Condiții',
 
     'section_conditions_description' => 'Ce trebuie să îndeplinească un coș înainte ca reducerea să se aplice.',

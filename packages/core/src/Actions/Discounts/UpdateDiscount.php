@@ -26,8 +26,12 @@ class UpdateDiscount implements UpdatesDiscount
      * The kinds each bucket can target. Anything outside this map is a caller
      * mistake rather than a new feature, so it raises instead of writing rows
      * no discount type reads.
+     *
+     * Public because it describes core's targeting schema rather than this
+     * action's behaviour: an admin building a target picker needs the same map
+     * to know which blocks a bucket can show.
      */
-    private const BUCKET_KINDS = [
+    public const BUCKET_KINDS = [
         'limitation' => ['products', 'variants', 'collections', 'brands', 'customers'],
         'exclusion' => ['products', 'variants', 'collections', 'brands'],
         'condition' => ['products', 'variants', 'collections'],

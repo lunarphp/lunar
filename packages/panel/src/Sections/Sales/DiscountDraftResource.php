@@ -11,6 +11,7 @@ use Lunar\Panel\Drafts\DraftableResource;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\Support\AvailabilitySchema;
 use Lunar\Panel\Support\DiscountDataSchema;
+use Lunar\Panel\Support\DiscountTargetSchema;
 
 class DiscountDraftResource extends DraftableResource
 {
@@ -24,6 +25,7 @@ class DiscountDraftResource extends DraftableResource
         protected UpdatesDiscount $updatesDiscount,
         protected AvailabilitySchema $availabilitySchema,
         protected DiscountDataSchema $dataSchema,
+        protected DiscountTargetSchema $targetSchema,
     ) {}
 
     public function model(): string
@@ -47,6 +49,7 @@ class DiscountDraftResource extends DraftableResource
             // as one unit rather than field by field.
             'data',
             ...$this->availabilitySchema->fields(),
+            ...$this->targetSchema->fields(),
         ];
     }
 
@@ -65,6 +68,7 @@ class DiscountDraftResource extends DraftableResource
             'max_uses_per_user' => $record->max_uses_per_user === null ? null : (int) $record->max_uses_per_user,
             'data' => $this->dataSchema->toForm($record->type, $record->data ?? []),
             ...$this->availabilitySchema->values($record),
+            ...$this->targetSchema->values($record),
         ];
     }
 
@@ -107,6 +111,10 @@ class DiscountDraftResource extends DraftableResource
                 || str_starts_with($key, AvailabilitySchema::CUSTOMER_GROUP_PREFIX)) {
                 $data[$key] = $this->availabilitySchema->normalizeValue((array) $value);
             }
+
+            if (str_starts_with($key, DiscountTargetSchema::PREFIX)) {
+                $data[$key] = $this->targetSchema->normalizeValue($key, (array) $value);
+            }
         }
 
         return $data;
@@ -118,6 +126,7 @@ class DiscountDraftResource extends DraftableResource
         $rules = [
             ...DiscountRequest::rulesFor($record, $record->type),
             ...$this->availabilitySchema->rules(),
+            ...$this->targetSchema->rules(),
         ];
 
         // The endpoint validates a whole discount; a commit only ever carries
@@ -135,7 +144,9 @@ class DiscountDraftResource extends DraftableResource
     public function commit(Model $record, array $values): void
     {
         /** @var Discount $record */
-        $availability = $this->availabilitySchema->extract($record, $values);
+        $targets = $this->targetSchema->extract($values);
+
+        $availability = $this->availabilitySchema->extract($record, $targets['attributes']);
 
         $attributes = $availability['attributes'];
 
@@ -151,6 +162,7 @@ class DiscountDraftResource extends DraftableResource
             $attributes,
             $availability['channels'],
             $availability['customerGroups'],
+            $targets['targets'],
         );
     }
 
@@ -168,6 +180,7 @@ class DiscountDraftResource extends DraftableResource
             'max_uses_per_user' => 'panel::discounts.field_max_uses_per_user',
             'data' => 'panel::discounts.section_configuration',
             ...$this->availabilitySchema->labels(),
+            ...$this->targetSchema->labels(),
         ];
     }
 

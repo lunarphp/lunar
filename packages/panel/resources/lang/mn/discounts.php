@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Худалдан авагчийг хүлээхийн оронд урамшууллын бараануудыг өөрөө нэмнэ.',
 
+    'section_targets' => 'Хамрах хүрээ',
+
+    'section_targets_description' => 'Энэ хөнгөлөлтийг каталогийн хэсэгт хязгаарлана. Хоосон орхивол бүгдэд үйлчилнэ.',
+
+    'section_customers' => 'Эрх бүхий харилцагчид',
+
+    'bucket_limitation' => 'Хамрах хүрээ',
+
+    'bucket_limitation_description' => 'Зөвхөн эдгээр хөнгөлөгдөнө.',
+
+    'bucket_exclusion' => 'Хасагдсан',
+
+    'bucket_exclusion_description' => 'Дээрхтэй тохирсон ч хэзээ ч хөнгөлөгдөхгүй.',
+
+    'bucket_condition' => 'Болзол хангах бараа',
+
+    'bucket_condition_description' => 'Урамшуулал авахын тулд юу худалдаж авах ёстой вэ.',
+
+    'bucket_reward' => 'Урамшууллын бараа',
+
+    'bucket_reward_description' => 'Худалдан авагч юу авах вэ.',
+
+    'bucket_customers' => 'Эрх бүхий харилцагчид',
+
+    'bucket_customers_description' => 'Зөвхөн эдгээр харилцагч ашиглана. Бүгдэд нээхийн тулд хоосон орхино уу.',
+
+    'kind_products' => 'Бараа',
+
+    'kind_variants' => 'Хувилбарууд',
+
+    'kind_collections' => 'Цуглуулгууд',
+
+    'kind_brands' => 'Брэндүүд',
+
+    'kind_customers' => 'Харилцагчид',
+
+    'target_add' => 'Нэмэх',
+
+    'target_remove' => '{label}-г хасах',
+
+    'target_empty' => 'Юу ч сонгоогүй тул бүгдэд үйлчилнэ.',
+
+    'target_dialog_title' => 'Зорилт нэмэх',
+
+    'target_dialog_description' => 'Энэ хэсэг хамрах бүх зүйлээс хайна уу.',
+
+    'target_search_placeholder' => 'Бараа, цуглуулга, брэнд хайх',
+
+    'target_no_results' => 'Тохирох зүйл алга.',
+
+    'target_add_selected' => '{count} нэмэх',
+
     'section_conditions' => 'Нөхцөл',
 
     'section_conditions_description' => 'Энэ хөнгөлөлт хэрэгжихийн өмнө сагс ямар нөхцөл хангах ёстой вэ.',

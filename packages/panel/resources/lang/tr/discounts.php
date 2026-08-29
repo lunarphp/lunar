@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Müşterinin eklemesini beklemek yerine ödül ürünlerini onun adına ekler.',
 
+    'section_targets' => 'Kapsamı',
+
+    'section_targets_description' => 'Bu indirimi kataloğun bir bölümüyle sınırlayın. Boş bırakılan blok her şeye uygulanır.',
+
+    'section_customers' => 'Uygun müşteriler',
+
+    'bucket_limitation' => 'Kapsamı',
+
+    'bucket_limitation_description' => 'Yalnızca bunlar indirilir.',
+
+    'bucket_exclusion' => 'Hariç',
+
+    'bucket_exclusion_description' => 'Yukarıdakilere uysa bile asla indirilmez.',
+
+    'bucket_condition' => 'Koşulu sağlayan ürünler',
+
+    'bucket_condition_description' => 'Müşterinin ödülü kazanmak için alması gerekenler.',
+
+    'bucket_reward' => 'Ödül ürünleri',
+
+    'bucket_reward_description' => 'Müşterinin aldığı.',
+
+    'bucket_customers' => 'Uygun müşteriler',
+
+    'bucket_customers_description' => 'İndirimi yalnızca bu müşteriler kullanabilir. Herkese açmak için boş bırakın.',
+
+    'kind_products' => 'Ürünler',
+
+    'kind_variants' => 'Varyantlar',
+
+    'kind_collections' => 'Koleksiyonlar',
+
+    'kind_brands' => 'Markalar',
+
+    'kind_customers' => 'Müşteriler',
+
+    'target_add' => 'Ekle',
+
+    'target_remove' => '{label} kaldır',
+
+    'target_empty' => 'Hiçbir şey seçilmedi, yani her şeye uygulanır.',
+
+    'target_dialog_title' => 'Hedef ekle',
+
+    'target_dialog_description' => 'Bu bloğun kapsayabileceği her şeyde arayın.',
+
+    'target_search_placeholder' => 'Ürün, koleksiyon, marka ara',
+
+    'target_no_results' => 'Eşleşen yok.',
+
+    'target_add_selected' => '{count} ekle',
+
     'section_conditions' => 'Koşullar',
 
     'section_conditions_description' => 'Bu indirim uygulanmadan önce sepetin sağlaması gerekenler.',

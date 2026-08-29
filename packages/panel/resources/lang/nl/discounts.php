@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Voegt de beloningsproducten voor de klant toe in plaats van te wachten tot die dat doet.',
 
+    'section_targets' => 'Geldt voor',
+
+    'section_targets_description' => 'Beperk deze korting tot een deel van de catalogus. Laat een blok leeg om overal te gelden.',
+
+    'section_customers' => 'In aanmerking komende klanten',
+
+    'bucket_limitation' => 'Geldt voor',
+
+    'bucket_limitation_description' => 'Alleen deze krijgen korting.',
+
+    'bucket_exclusion' => 'Uitgesloten',
+
+    'bucket_exclusion_description' => 'Krijgen nooit korting, ook niet als ze hierboven passen.',
+
+    'bucket_condition' => 'Kwalificerende producten',
+
+    'bucket_condition_description' => 'Wat de klant moet kopen om de beloning te verdienen.',
+
+    'bucket_reward' => 'Beloningsproducten',
+
+    'bucket_reward_description' => 'Wat de klant krijgt.',
+
+    'bucket_customers' => 'In aanmerking komende klanten',
+
+    'bucket_customers_description' => 'Alleen deze klanten kunnen de korting gebruiken. Laat leeg om iedereen toe te staan.',
+
+    'kind_products' => 'Producten',
+
+    'kind_variants' => 'Varianten',
+
+    'kind_collections' => 'Collecties',
+
+    'kind_brands' => 'Merken',
+
+    'kind_customers' => 'Klanten',
+
+    'target_add' => 'Toevoegen',
+
+    'target_remove' => '{label} verwijderen',
+
+    'target_empty' => 'Niets geselecteerd, dus dit geldt voor alles.',
+
+    'target_dialog_title' => 'Doelen toevoegen',
+
+    'target_dialog_description' => 'Zoek in alles wat dit blok kan aanwijzen.',
+
+    'target_search_placeholder' => 'Zoek producten, collecties, merken',
+
+    'target_no_results' => 'Geen resultaten.',
+
+    'target_add_selected' => '{count} toevoegen',
+
     'section_conditions' => 'Voorwaarden',
 
     'section_conditions_description' => 'Waaraan een winkelwagen moet voldoen voordat deze korting geldt.',

@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Legt die Belohnungsprodukte für den Kunden hinein, statt darauf zu warten, dass er es tut.',
 
+    'section_targets' => 'Gilt für',
+
+    'section_targets_description' => 'Grenzen Sie diesen Rabatt auf einen Teil des Katalogs ein. Ein leerer Block gilt überall.',
+
+    'section_customers' => 'Berechtigte Kunden',
+
+    'bucket_limitation' => 'Gilt für',
+
+    'bucket_limitation_description' => 'Nur diese werden rabattiert.',
+
+    'bucket_exclusion' => 'Ausgeschlossen',
+
+    'bucket_exclusion_description' => 'Werden nie rabattiert, auch wenn sie oben zutreffen.',
+
+    'bucket_condition' => 'Qualifizierende Produkte',
+
+    'bucket_condition_description' => 'Was der Kunde kaufen muss, um die Belohnung zu erhalten.',
+
+    'bucket_reward' => 'Belohnungsprodukte',
+
+    'bucket_reward_description' => 'Was der Kunde bekommt.',
+
+    'bucket_customers' => 'Berechtigte Kunden',
+
+    'bucket_customers_description' => 'Nur diese Kunden können den Rabatt nutzen. Leer lassen, um ihn allen zu erlauben.',
+
+    'kind_products' => 'Produkte',
+
+    'kind_variants' => 'Varianten',
+
+    'kind_collections' => 'Kollektionen',
+
+    'kind_brands' => 'Marken',
+
+    'kind_customers' => 'Kunden',
+
+    'target_add' => 'Hinzufügen',
+
+    'target_remove' => '{label} entfernen',
+
+    'target_empty' => 'Nichts ausgewählt, gilt also für alles.',
+
+    'target_dialog_title' => 'Ziele hinzufügen',
+
+    'target_dialog_description' => 'Suchen Sie über alles, was dieser Block erfassen kann.',
+
+    'target_search_placeholder' => 'Produkte, Kollektionen, Marken suchen',
+
+    'target_no_results' => 'Keine Treffer.',
+
+    'target_add_selected' => '{count} hinzufügen',
+
     'section_conditions' => 'Bedingungen',
 
     'section_conditions_description' => 'Was ein Warenkorb erfüllen muss, bevor dieser Rabatt greift.',

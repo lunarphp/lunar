@@ -85,6 +85,58 @@ return [
 
     'field_automatically_add_rewards_hint' => 'Dodaje produkty nagrody za klienta, zamiast czekać, aż zrobi to sam.',
 
+    'section_targets' => 'Dotyczy',
+
+    'section_targets_description' => 'Ogranicz ten rabat do części katalogu. Pusty blok oznacza, że obowiązuje wszędzie.',
+
+    'section_customers' => 'Uprawnieni klienci',
+
+    'bucket_limitation' => 'Dotyczy',
+
+    'bucket_limitation_description' => 'Tylko te otrzymują rabat.',
+
+    'bucket_exclusion' => 'Wykluczone',
+
+    'bucket_exclusion_description' => 'Nigdy nie otrzymują rabatu, nawet jeśli pasują powyżej.',
+
+    'bucket_condition' => 'Produkty kwalifikujące',
+
+    'bucket_condition_description' => 'Co klient musi kupić, aby otrzymać nagrodę.',
+
+    'bucket_reward' => 'Produkty w nagrodę',
+
+    'bucket_reward_description' => 'Co klient otrzymuje.',
+
+    'bucket_customers' => 'Uprawnieni klienci',
+
+    'bucket_customers_description' => 'Tylko ci klienci mogą użyć rabatu. Pozostaw puste, aby zezwolić wszystkim.',
+
+    'kind_products' => 'Produkty',
+
+    'kind_variants' => 'Warianty',
+
+    'kind_collections' => 'Kolekcje',
+
+    'kind_brands' => 'Marki',
+
+    'kind_customers' => 'Klienci',
+
+    'target_add' => 'Dodaj',
+
+    'target_remove' => 'Usuń {label}',
+
+    'target_empty' => 'Nic nie wybrano, więc dotyczy wszystkiego.',
+
+    'target_dialog_title' => 'Dodaj cele',
+
+    'target_dialog_description' => 'Szukaj wśród wszystkiego, co ten blok może objąć.',
+
+    'target_search_placeholder' => 'Szukaj produktów, kolekcji, marek',
+
+    'target_no_results' => 'Brak dopasowań.',
+
+    'target_add_selected' => 'Dodaj {count}',
+
     'section_conditions' => 'Warunki',
 
     'section_conditions_description' => 'Co koszyk musi spełnić, zanim ten rabat zostanie naliczony.',
