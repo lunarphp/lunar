@@ -266,9 +266,13 @@ const confirmDestroy = (): void => {
 <template>
     <PanelLayout>
         <div data-screen-label="Edit discount" class="contents">
-            <Breadcrumbs :items="breadcrumbs" />
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <DraftActions :form="draftForm" />
+                </template>
+            </Breadcrumbs>
 
-            <PageHeader :title="discount.name" :description="discount.handle">
+            <PageHeader :title="discount.name">
                 <template #icon>
                     <Link
                         :href="urls.index"
@@ -278,8 +282,16 @@ const confirmDestroy = (): void => {
                         <Icon name="arrowLeft" />
                     </Link>
                 </template>
+                <template #description>
+                    <div class="flex gap-2 items-center flex-wrap">
+                        <StatusBadge :tone="statusTone" dot>{{ discount.status_label }}</StatusBadge>
+                        <span class="text-ink-500">·</span>
+                        <span class="font-mono">{{ discount.handle }}</span>
+                        <span class="text-ink-500">·</span>
+                        <span>{{ type.label }}</span>
+                    </div>
+                </template>
                 <template #actions>
-                    <DraftActions :form="draftForm" />
                     <Button icon="trash" class="!text-danger" @click="confirmOpen = true">
                         <span class="hidden sm:inline">{{ t('discounts.delete_discount') }}</span>
                     </Button>
@@ -382,10 +394,10 @@ const confirmDestroy = (): void => {
                         <div class="flex flex-col gap-5">
                             <PageZone region="sidebar" position="before" :discount="discount" />
 
+                            <!-- The status badge lives in the page header, not here: it is
+                                 derived server-side, so beside the date fields that produce
+                                 it it would read as stale until the draft commits. -->
                             <SideCard :title="t('discounts.section_schedule')">
-                                <template #actions>
-                                    <StatusBadge :tone="statusTone" dot>{{ discount.status_label }}</StatusBadge>
-                                </template>
                                 <div class="flex flex-col gap-3">
                                     <div>
                                         <FieldLabel for="discount-starts-at" required>{{ t('discounts.field_starts_at') }}</FieldLabel>
