@@ -5,6 +5,7 @@ use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Discountable;
@@ -112,6 +113,54 @@ it('leaves targeting alone when a draft never touches it', function () {
     ])->assertOk();
 
     expect($discount->brands()->count())->toBe(1);
+});
+
+it('says where a collection lives, since its name alone is ambiguous', function () {
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    $group = CollectionGroup::factory()->create(['name' => 'Main']);
+    $parent = Collection::factory()->create(['collection_group_id' => $group->id, 'name' => ['en' => 'Seasonal']]);
+    $child = Collection::factory()->create(['collection_group_id' => $group->id, 'name' => ['en' => 'Sale']]);
+    $child->appendToNode($parent)->save();
+
+    $response = $this->getJson(
+        route('panel.discounts.targets.search', $discount).'?bucket=limitation&q=Sale&kinds[]=collections'
+    );
+
+    expect($response->json('data.0.label'))->toBe('Sale');
+    expect($response->json('data.0.hint'))->toBe('Main / Seasonal');
+});
+
+it('falls back to the group alone for a top-level collection', function () {
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    $group = CollectionGroup::factory()->create(['name' => 'Main']);
+    Collection::factory()->create(['collection_group_id' => $group->id, 'name' => ['en' => 'Clearance']]);
+
+    $response = $this->getJson(
+        route('panel.discounts.targets.search', $discount).'?bucket=limitation&q=Clearance&kinds[]=collections'
+    );
+
+    expect($response->json('data.0.hint'))->toBe('Main');
+});
+
+it('carries the same collection context onto the chips', function () {
+    // The picker and the chips share one row builder, so a target reads the
+    // same before and after it is selected.
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    $group = CollectionGroup::factory()->create(['name' => 'Main']);
+    $parent = Collection::factory()->create(['collection_group_id' => $group->id, 'name' => ['en' => 'Seasonal']]);
+    $child = Collection::factory()->create(['collection_group_id' => $group->id, 'name' => ['en' => 'Sale']]);
+    $child->appendToNode($parent)->save();
+
+    $discount->collections()->attach($child->id, ['type' => 'limitation']);
+
+    $this->get(route('panel.discounts.edit', $discount))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('targetChips.target:limitation.collections.0.label', 'Sale')
+            ->where('targetChips.target:limitation.collections.0.hint', 'Main / Seasonal')
+        );
 });
 
 it('searches every kind the bucket can target', function () {

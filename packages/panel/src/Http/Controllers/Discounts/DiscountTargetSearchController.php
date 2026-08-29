@@ -2,14 +2,11 @@
 
 namespace Lunar\Panel\Http\Controllers\Discounts;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lunar\Core\Models\Brand;
-use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Discount;
-use Lunar\Core\Models\Product;
-use Lunar\Core\Models\ProductVariant;
 use Lunar\Panel\Support\DiscountTargetSchema;
 
 /**
@@ -42,7 +39,7 @@ class DiscountTargetSearchController
         $existing = $targets->values($discount)[DiscountTargetSchema::PREFIX.$bucket] ?? [];
 
         $results = collect($kinds)
-            ->flatMap(fn (string $kind) => $this->searchKind($kind, $term, (array) ($existing[$kind] ?? [])))
+            ->flatMap(fn (string $kind) => $this->searchKind($targets, $kind, $term, (array) ($existing[$kind] ?? [])))
             ->values();
 
         return response()->json(['data' => $results]);
@@ -52,79 +49,40 @@ class DiscountTargetSearchController
      * @param  int[]  $exclude
      * @return array<int, array{kind: string, id: int, label: string, hint: ?string}>
      */
-    protected function searchKind(string $kind, string $term, array $exclude): array
+    protected function searchKind(DiscountTargetSchema $targets, string $kind, string $term, array $exclude): array
+    {
+        return $targets->query($kind)
+            ->whereNotIn('id', $exclude)
+            ->when($term !== '', fn ($query) => $this->applyTerm($query, $kind, $term))
+            ->limit(self::PER_KIND)
+            ->get()
+            // Rows are shaped by the schema, not here, so a target reads the
+            // same in the picker as it does once it is a chip.
+            ->map(fn (Model $model) => ['kind' => $kind, ...$targets->row($kind, $model)])
+            ->all();
+    }
+
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
+    protected function applyTerm(Builder $query, string $kind, string $term): Builder
     {
         $like = "%{$term}%";
 
         return match ($kind) {
-            'products' => Product::query()
-                ->whereNotIn('id', $exclude)
-                ->when($term !== '', fn ($query) => $query->where(fn ($query) => $query
-                    ->where('name', 'like', $like)
-                    ->orWhereHas('variants', fn ($query) => $query->where('sku', 'like', $like))))
-                ->with('variants:id,product_id,sku')
-                ->limit(self::PER_KIND)
-                ->get()
-                ->map(fn (Product $product) => [
-                    'kind' => 'products',
-                    'id' => $product->id,
-                    'label' => $product->translate('name') ?? '',
-                    'hint' => $product->variants->first()?->sku,
-                ])->all(),
-
-            'variants' => ProductVariant::query()
-                ->whereNotIn('id', $exclude)
-                ->when($term !== '', fn ($query) => $query->where('sku', 'like', $like))
-                ->with('product')
-                ->limit(self::PER_KIND)
-                ->get()
-                ->map(fn (ProductVariant $variant) => [
-                    'kind' => 'variants',
-                    'id' => $variant->id,
-                    'label' => $variant->sku ?? '',
-                    'hint' => $variant->product?->translate('name'),
-                ])->all(),
-
-            'collections' => Collection::query()
-                ->whereNotIn('id', $exclude)
-                ->when($term !== '', fn ($query) => $query->where('name', 'like', $like))
-                ->limit(self::PER_KIND)
-                ->get()
-                ->map(fn (Collection $collection) => [
-                    'kind' => 'collections',
-                    'id' => $collection->id,
-                    'label' => $collection->translate('name') ?? '',
-                    'hint' => null,
-                ])->all(),
-
-            'brands' => Brand::query()
-                ->whereNotIn('id', $exclude)
-                ->when($term !== '', fn ($query) => $query->where('name', 'like', $like))
-                ->limit(self::PER_KIND)
-                ->get(['id', 'name'])
-                ->map(fn (Brand $brand) => [
-                    'kind' => 'brands',
-                    'id' => $brand->id,
-                    'label' => $brand->name,
-                    'hint' => null,
-                ])->all(),
-
-            'customers' => Customer::query()
-                ->whereNotIn('id', $exclude)
-                ->when($term !== '', fn ($query) => $query->where(fn ($query) => $query
-                    ->where('first_name', 'like', $like)
-                    ->orWhere('last_name', 'like', $like)
-                    ->orWhere('company_name', 'like', $like)))
-                ->limit(self::PER_KIND)
-                ->get()
-                ->map(fn (Customer $customer) => [
-                    'kind' => 'customers',
-                    'id' => $customer->id,
-                    'label' => trim($customer->full_name) ?: (string) $customer->id,
-                    'hint' => $customer->company_name,
-                ])->all(),
-
-            default => [],
+            // The dedicated name column holds a {locale: text} map.
+            'products' => $query->where(fn ($query) => $query
+                ->where('name', 'like', $like)
+                ->orWhereHas('variants', fn ($query) => $query->where('sku', 'like', $like))),
+            'variants' => $query->where('sku', 'like', $like),
+            'collections' => $query->where('name', 'like', $like),
+            'brands' => $query->where('name', 'like', $like),
+            'customers' => $query->where(fn ($query) => $query
+                ->where('first_name', 'like', $like)
+                ->orWhere('last_name', 'like', $like)
+                ->orWhere('company_name', 'like', $like)),
+            default => $query,
         };
     }
 }

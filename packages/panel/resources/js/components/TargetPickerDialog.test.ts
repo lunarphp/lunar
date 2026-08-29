@@ -63,6 +63,17 @@ describe('TargetPickerDialog', () => {
         expect(body().textContent).toContain('discounts.kind_products');
     });
 
+    it('shows where a result lives and repeats it as a tooltip', async () => {
+        await mountDialog();
+
+        expect(body().textContent).toContain('WID-1');
+
+        const titled = [...body().querySelectorAll('[title]')]
+            .map((element) => element.getAttribute('title'));
+
+        expect(titled).toContain('Widget \u2014 WID-1');
+    });
+
     it('narrows to one kind when a chip is chosen', async () => {
         await mountDialog();
 

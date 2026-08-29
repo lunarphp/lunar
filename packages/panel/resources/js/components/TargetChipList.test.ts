@@ -50,6 +50,30 @@ describe('TargetChipList', () => {
         expect(wrapper.emitted('add')).toHaveLength(1);
     });
 
+    it('puts the label and its context in a tooltip, since both are truncated', () => {
+        const wrapper = mount(TargetChipList, {
+            props: {
+                chips: { collections: [{ id: 3, label: 'Sale', hint: 'Main / Seasonal' }] },
+                kinds: ['collections'],
+                label: 'Applies to',
+            },
+        });
+
+        expect(wrapper.find('[title]').attributes('title')).toBe('Sale \u2014 Main / Seasonal');
+    });
+
+    it('leaves the tooltip as the bare label when there is no context', () => {
+        const wrapper = mount(TargetChipList, {
+            props: {
+                chips: { brands: [{ id: 7, label: 'Stark', hint: null }] },
+                kinds: ['brands'],
+                label: 'Applies to',
+            },
+        });
+
+        expect(wrapper.find('[title]').attributes('title')).toBe('Stark');
+    });
+
     it('only renders the kinds it was given', () => {
         const wrapper = mount(TargetChipList, {
             props: { chips, kinds: ['products'], label: 'Applies to' },

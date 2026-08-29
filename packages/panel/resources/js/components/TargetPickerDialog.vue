@@ -133,9 +133,12 @@ const addPicked = (): void => {
                     :aria-label="option.label"
                     @update:model-value="togglePick(option)"
                 />
-                <span class="min-w-0 flex-1">
+                <span class="min-w-0 flex-1" :title="option.hint ? `${option.label} — ${option.hint}` : option.label">
                     <span class="block text-ink-900 truncate">{{ option.label }}</span>
-                    <span v-if="option.hint" class="block text-[11px] font-mono text-ink-500 truncate">{{ option.hint }}</span>
+                    <!-- Where the target lives: a collection's group and ancestor path,
+                         a variant's product, a product's SKU. Two rows can otherwise
+                         look identical. -->
+                    <span v-if="option.hint" class="block text-[11px] text-ink-500 truncate">{{ option.hint }}</span>
                 </span>
                 <StatusBadge tone="neutral" size="sm">{{ t(`discounts.kind_${option.kind}`) }}</StatusBadge>
             </label>

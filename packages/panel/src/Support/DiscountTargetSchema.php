@@ -2,6 +2,9 @@
 
 namespace Lunar\Panel\Support;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use Lunar\Core\Actions\Discounts\UpdateDiscount;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
@@ -177,39 +180,82 @@ class DiscountTargetSchema
     /** @return array<int, array{id: int, label: string, hint: ?string}> */
     public function resolve(string $kind, array $ids): array
     {
+        return $this->query($kind)
+            ->whereIn('id', $ids)
+            ->get()
+            ->map(fn (Model $model) => $this->row($kind, $model))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * The query a kind is looked up through, eager loading whatever row()
+     * needs. Shared with the target search so a row means the same thing
+     * whether it came from the picker or from the stored targeting.
+     *
+     * @return Builder<Model>
+     */
+    public function query(string $kind): Builder
+    {
         return match ($kind) {
-            'products' => Product::query()->whereIn('id', $ids)->get()
-                ->map(fn (Product $product) => [
-                    'id' => $product->id,
-                    'label' => $product->translate('name') ?? '',
-                    'hint' => $product->variants()->first()?->sku,
-                ])->values()->all(),
-            'variants' => ProductVariant::query()->whereIn('id', $ids)->with('product')->get()
-                ->map(fn (ProductVariant $variant) => [
-                    'id' => $variant->id,
-                    'label' => $variant->sku ?? '',
-                    'hint' => $variant->product?->translate('name'),
-                ])->values()->all(),
-            'collections' => Collection::query()->whereIn('id', $ids)->get()
-                ->map(fn (Collection $collection) => [
-                    'id' => $collection->id,
-                    'label' => $collection->translate('name') ?? '',
-                    'hint' => null,
-                ])->values()->all(),
-            'brands' => Brand::query()->whereIn('id', $ids)->get(['id', 'name'])
-                ->map(fn (Brand $brand) => [
-                    'id' => $brand->id,
-                    'label' => $brand->name,
-                    'hint' => null,
-                ])->values()->all(),
-            'customers' => Customer::query()->whereIn('id', $ids)->get()
-                ->map(fn (Customer $customer) => [
-                    'id' => $customer->id,
-                    'label' => trim($customer->full_name) ?: (string) $customer->id,
-                    'hint' => $customer->company_name,
-                ])->values()->all(),
-            default => [],
+            'products' => Product::query()->with('variants:id,product_id,sku'),
+            'variants' => ProductVariant::query()->with('product'),
+            'collections' => Collection::query()->with(['group:id,name', 'ancestors']),
+            'brands' => Brand::query(),
+            'customers' => Customer::query(),
+            default => throw new InvalidArgumentException("Unknown discount target kind [{$kind}]."),
         };
+    }
+
+    /**
+     * One display row for a target, so the picker and the chips agree.
+     *
+     * @return array{id: int, label: string, hint: ?string}
+     */
+    public function row(string $kind, Model $model): array
+    {
+        return match ($kind) {
+            'products' => [
+                'id' => $model->id,
+                'label' => $model->translate('name') ?? '',
+                'hint' => $model->variants->first()?->sku,
+            ],
+            'variants' => [
+                'id' => $model->id,
+                'label' => $model->sku ?? '',
+                'hint' => $model->product?->translate('name'),
+            ],
+            'collections' => [
+                'id' => $model->id,
+                'label' => $model->translate('name') ?? '',
+                'hint' => $this->collectionHint($model),
+            ],
+            'brands' => [
+                'id' => $model->id,
+                'label' => $model->name,
+                'hint' => null,
+            ],
+            'customers' => [
+                'id' => $model->id,
+                'label' => trim($model->full_name) ?: (string) $model->id,
+                'hint' => $model->company_name,
+            ],
+            default => throw new InvalidArgumentException("Unknown discount target kind [{$kind}]."),
+        };
+    }
+
+    /**
+     * Where a collection sits, as "Group / Ancestor / Ancestor".
+     *
+     * A collection's name on its own is ambiguous: the same "Sale" can exist in
+     * several groups and at several depths, and the picker would show them as
+     * identical rows.
+     */
+    protected function collectionHint(Collection $collection): ?string
+    {
+        return collect([$collection->group?->name, ...$collection->breadcrumb])
+            ->filter()
+            ->implode(' / ') ?: null;
     }
 
     /** @return array<string, string> */

@@ -24,6 +24,11 @@ const props = defineProps<{
 const emit = defineEmits<{ add: []; remove: [kind: string, id: number] }>();
 
 const total = computed(() => props.kinds.reduce((sum, kind) => sum + (props.chips[kind]?.length ?? 0), 0));
+
+// Both parts are truncated to keep chips compact, so the full text — a
+// collection's group and ancestor path, above all — lives in the tooltip.
+const chipTitle = (chip: TargetChip): string =>
+    (chip.hint ? `${chip.label} — ${chip.hint}` : chip.label);
 </script>
 
 <template>
@@ -45,9 +50,10 @@ const total = computed(() => props.kinds.reduce((sum, kind) => sum + (props.chip
                             v-for="chip in chips[kind]"
                             :key="`${kind}-${chip.id}`"
                             class="inline-flex items-center gap-1.5 max-w-full rounded-full border border-line bg-surface-2 pl-2.5 pr-1 py-1 text-[11.5px] text-ink-900"
+                            :title="chipTitle(chip)"
                         >
                             <span class="truncate">{{ chip.label }}</span>
-                            <span v-if="chip.hint" class="text-ink-500 font-mono text-[10.5px] truncate">{{ chip.hint }}</span>
+                            <span v-if="chip.hint" class="text-ink-500 text-[10.5px] truncate max-w-[160px]">{{ chip.hint }}</span>
                             <button
                                 type="button"
                                 class="shrink-0 rounded-full p-0.5 text-ink-400 hover:text-ink-900 hover:bg-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
