@@ -1,6 +1,6 @@
 {
     "name": "@lunarphp/panel-vite-plugin",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "Vite plugin for compiling lunarphp/panel add-on bundles as IIFEs sharing the panel's Vue runtime.",
     "license": "MIT",
