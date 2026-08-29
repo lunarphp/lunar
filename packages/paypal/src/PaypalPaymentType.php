@@ -167,6 +167,15 @@ class PaypalPaymentType extends AbstractPayment
             )
         );
 
+        // Compare at PayPal's precision for the currency — for one PayPal treats
+        // as zero-decimal, a subunit total can never be matched exactly, so
+        // holding PayPal to the raw minor-unit total would refuse every total
+        // that rounds down.
+        $expectedAmount = PaypalManager::fromPaypalAmount(
+            PaypalManager::toPaypalAmount($expectedAmount, $currency),
+            $currency,
+        );
+
         if ($paypalAmount < $expectedAmount) {
             return $this->fail('PayPal order amount does not cover the order total');
         }

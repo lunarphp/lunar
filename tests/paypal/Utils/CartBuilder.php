@@ -33,6 +33,9 @@ class CartBuilder
         $currency = (! $currencyParams ? Currency::query()->where('default', true)->first() : null)
             ?: Currency::factory()->create(array_merge([
                 'default' => true,
+                // Pinned — faker can roll HUF/JPY/TWD, which PayPal treats as
+                // zero-decimal, and the suite's amount assertions assume 2dp.
+                'code' => 'USD',
             ], $currencyParams));
 
         $taxClass = TaxClass::factory()->create();
