@@ -1,0 +1,8 @@
+{
+    "scope": "https://uri.paypal.com/services/checkout/one-click-with-merchant-issued-token",
+    "access_token": "A21AAL_TEST_ACCESS_TOKEN",
+    "token_type": "Bearer",
+    "app_id": "APP-80W284485P519543T",
+    "expires_in": 32400,
+    "nonce": "2026-08-27T10:00:00ZTEST"
+}

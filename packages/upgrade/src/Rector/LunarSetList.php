@@ -347,6 +347,7 @@ final class LunarSetList
         'Lunar\\Observers\\UrlObserver' => 'Lunar\\Core\\Observers\\UrlObserver',
         'Lunar\\PaymentTypes\\AbstractPayment' => 'Lunar\\Core\\PaymentTypes\\AbstractPayment',
         'Lunar\\PaymentTypes\\OfflinePayment' => 'Lunar\\Core\\PaymentTypes\\OfflinePayment',
+        'Lunar\\Paypal\\PaypalInterface' => 'Lunar\\Paypal\\Contracts\\PaypalInterface',
         'Lunar\\Pipelines\\CartLine\\GetUnitPrice' => 'Lunar\\Core\\Pipelines\\CartLine\\GetUnitPrice',
         'Lunar\\Pipelines\\CartPrune\\PruneAfter' => 'Lunar\\Core\\Pipelines\\CartPrune\\PruneAfter',
         'Lunar\\Pipelines\\CartPrune\\WhereNotMerged' => 'Lunar\\Core\\Pipelines\\CartPrune\\WhereNotMerged',

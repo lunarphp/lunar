@@ -1,0 +1,22 @@
+{
+    "id": "5O190127TN364715T",
+    "intent": "CAPTURE",
+    "status": "APPROVED",
+    "purchase_units": [
+        {
+            "reference_id": "default",
+            "amount": {
+                "currency_code": "GBP",
+                "value": "19.99"
+            }
+        }
+    ],
+    "payer": {
+        "name": {
+            "given_name": "Test",
+            "surname": "Buyer"
+        },
+        "email_address": "buyer@example.com",
+        "payer_id": "QYR5Z8XDVJNXQ"
+    }
+}

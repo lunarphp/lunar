@@ -1,9 +1,22 @@
 # 0071 — PayPal driver hardening
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Bring `lunarphp/paypal` up to the first-party driver bar
+
+> Implementation notes (landed): all six slices shipped in one PR. Two findings
+> changed the shape of the work. First, slice 1's harness immediately showed the
+> driver was not merely thin but non-functional — `authorize()` wrote the removed
+> `status` column, so every successful payment threw *after* the money was
+> captured; that fix led slice 2. Second, this spec was drafted against a branch
+> carrying the line-item refunds work, so its claim that `PaymentRefund` exposes
+> a `$transaction` for line attribution does not hold on `2.x`; see the
+> References section. One deliberate divergence from the plan: the amount guard
+> lands *after* the already-processed check rather than before it, so a spent
+> PayPal order is rejected without computing totals. `GetPaypalOrderController`'s
+> hardening (rate limit, trimmed response) landed after the slice 3 commit,
+> alongside the README, rather than within it.
 
 ## Problem
 
@@ -18,6 +31,34 @@ several defects that lose or mis-record money.
 `phpunit.xml` and no `paypal` entry in the CI matrix. Every change to core since v2
 began has landed against this package untested. For comparison, Stripe has 9 test
 files, recorded API fixtures under `resources/responses/`, and a `MockClient`.
+
+### Authorization crashes on a column that no longer exists
+
+`PaypalPaymentType::authorize()` finishes by writing the order:
+
+```php
+$this->order->update([
+    'status' => $status ?? ($this->config['authorized'] ?? null),
+    'placed_at' => now(),
+]);
+```
+
+`lunar_orders` has no `status` column in v2 — it was replaced by the derived
+`payment_status` and `fulfilment_status` pair, which `TransactionObserver`
+recomputes from the transaction ledger via `RecomputesOrderStatus`. Every
+otherwise-successful PayPal payment therefore ends in:
+
+```
+SQLSTATE[HY000]: General error: 1 no such column: status
+```
+
+The driver is not thin, it is non-functional: the money is captured at PayPal
+and the exception is thrown after the capture, so the customer is charged and no
+order is placed. This went unnoticed precisely because the package has no CI.
+
+The fix is the one Stripe already uses — set `placed_at` and let the ledger drive
+the status. The `authorized` key in the driver's `lunar.payments.types` config
+entry becomes meaningless and is dropped.
 
 ### Authorization does not verify the amount
 
@@ -271,9 +312,13 @@ keeping it that does not apply to Opayo.
   with a fallback for one release. Merchants using webhooks configure a webhook ID
   in the PayPal dashboard; the driver works without one, with async outcomes
   unhandled as they are today.
-- **Translations**: any user-facing failure messages land in `packages/paypal`'s
-  `resources/lang/` across all 16 locales. Note the current driver has no lang
-  directory — one is added.
+- **Translations**: `packages/paypal/resources/lang/` is added with all 16
+  locales, covering the payment-check labels — the only driver strings the admin
+  actually renders, via `Transaction::paymentChecks()`. The `PaymentAuthorize`
+  failure messages stay untranslated English, matching `packages/stripe`: they
+  are diagnostics returned to the storefront integrator, who decides what the
+  shopper sees, not strings Lunar renders. Translating them would put PayPal out
+  of step with the reference driver for no user-visible gain.
 - **Filament / panel impact**: none structurally. The panel resolves drivers through
   `PaymentManager` and reads checks via `Transaction::paymentChecks()`, so
   implementing `getPaymentChecks()` populates an existing surface rather than
@@ -281,41 +326,63 @@ keeping it that does not apply to Opayo.
 
 ## Open questions
 
-- Does the amount-mismatch guard block or warn when PayPal reports a *larger*
-  capture than the order total? Stripe treats any mismatch as failure; over-payment
-  arguably wants to place the order and let the settlement banner flag it. Owner:
-  Glenn, resolve before slice 2.
-- Do we ship a reference client-side integration (PayPal JS SDK button wiring), or
-  document the flow and leave the storefront to the consumer? The v1 blade component
-  approach does not fit v2's headless shape. Owner: Glenn, can follow the driver
-  work.
-- Is `paypal_orders` the right grain, or should it key on the capture ID to align
-  with how webhooks arrive? Owner: resolve during slice 4 design.
+**Resolved — over-capture places the order.** `authorize()` fails when PayPal
+reports *less* than the order total (unless `allow_partial_payment` is set) and
+places the order when it reports *more*, leaving the settlement banner to surface
+it as `refund_due`. Rationale: at that point the money is already taken at PayPal.
+Failing the authorization would leave a captured payment with no order attached —
+the orphaned-payment problem Stripe needed a dedicated
+`OrphanedPaymentIntentDetected` event to paper over. The banner already computes
+and renders exactly this case, so an over-capture becomes a visible admin task
+rather than a silent inconsistency. This is a deliberate divergence from Stripe's
+`assertIntentMatchesTotal()`, which fails on any mismatch.
+
+**Resolved — `paypal_orders` keys on the PayPal order ID.** One row per PayPal
+order (the object `authorize()` is handed and the thing that maps to a cart),
+with capture IDs living on `transactions.reference` as they do for every other
+driver. `PAYMENT.CAPTURE.*` webhooks arrive keyed by capture ID but carry
+`supplementary_data.related_ids.order_id`, so they resolve back to the row
+without a second table.
+
+**Resolved — no reference storefront integration.** The package stays server-side
+only and documents the flow instead. The client half is a few calls to PayPal's
+JS SDK, and every storefront wants it wired differently (Blade, Inertia,
+Livewire, headless SPA, native app); shipping one shape would be consumer
+infrastructure, not a fact about Lunar's data. `packages/paypal/README.md`
+carries the four-step flow, the one route the package does add, a worked
+`authorize()` controller, the amount-verification table, both capture policies,
+webhook setup, and an explicit list of what the package does not do.
 
 ## References
 
 - [[0070-first-party-payment-drivers]] — the bar this spec meets.
-- [[0028-line-item-refunds]] — the refund contract; PayPal's `refund()` must keep
-  returning a populated `PaymentRefund::$transaction` for line attribution.
+- [[0028-line-item-refunds]] — **not yet on `2.x`**. `PaymentRefund` currently
+  carries only `success` and `message`; the `$transaction` property and
+  `RefundRequest` land with 0028. Neither Stripe nor PayPal populates a refund
+  transaction on the DTO today, so this spec does not either. When 0028 merges,
+  PayPal's `refund()` needs the same one-line change Stripe's does — assign the
+  created transaction and pass it to `PaymentRefund` — for line attribution to
+  work. Tracked there, not here.
 - `packages/stripe/` — the reference implementation for every section above.
 - PayPal Orders v2 and Payments v2 API documentation.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Test harness: `paypal` testsuite in `phpunit.xml`, CI matrix entry,
+- [x] Slice 1 — Test harness: `paypal` testsuite in `phpunit.xml`, CI matrix entry,
       `tests/paypal/TestCase.php`, recorded response fixtures, and characterisation
       tests covering current behaviour so the later slices have a safety net.
-- [ ] Slice 2 — Money correctness: `PaypalManager` rescaling helpers, remove every
-      hardcoded `* 100` / `/ 100`, and add the amount and currency verification
-      guard on `authorize()`.
-- [ ] Slice 3 — Contract and configuration: real `PaypalInterface` under
+- [x] Slice 2 — Correctness: stop writing the removed `status` column so a
+      successful payment can place an order at all, `PaypalManager` rescaling
+      helpers, remove every hardcoded `* 100` / `/ 100`, and add the amount and
+      currency verification guard on `authorize()`.
+- [x] Slice 3 — Contract and configuration: real `PaypalInterface` under
       `Contracts/`, constructor injection, cached access token, `scoped` binding
       registered in `register()`, `config/paypal.php` with the `services.paypal.*`
       fallback, and the `buildInitialOrder()` / `cancel_url` fixes.
-- [ ] Slice 4 — Persistence and capture policy: `paypal_orders` table and model,
+- [x] Slice 4 — Persistence and capture policy: `paypal_orders` table and model,
       double-processing guard, idempotency headers, working `intent: AUTHORIZE`
       flow, and a real `capture()`.
-- [ ] Slice 5 — Webhooks: routes, signature-verifying middleware, queued job, event
+- [x] Slice 5 — Webhooks: routes, signature-verifying middleware, queued job, event
       handlers, and the `PaypalWebhookReceived` event.
-- [ ] Slice 6 — `getPaymentChecks()` from `processor_response`, plus the
+- [x] Slice 6 — `getPaymentChecks()` from `processor_response`, plus the
       `resources/lang/` strings across all 16 locales.

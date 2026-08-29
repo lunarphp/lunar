@@ -26,7 +26,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
-- PayPal driver hardening — tests, amount verification, currency-correct scaling, webhooks (spec 0071)
 
 ## Ideas
 
@@ -47,6 +46,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- PayPal driver hardening — tests, amount verification, currency-correct scaling, webhooks (spec 0071)
 - First-party payment drivers narrowed to Stripe and PayPal; retire the Opayo package (spec 0070)
 - Upgrade package for v1.x migrators, using Rector (spec 0001)
 - Flatten v1.x migrations into a v2 baseline (spec 0003)
