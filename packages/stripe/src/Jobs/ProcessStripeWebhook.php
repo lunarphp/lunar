@@ -43,7 +43,7 @@ class ProcessStripeWebhook implements ShouldQueue
         if ($this->orderId) {
             $order = Order::find($this->orderId);
 
-            if ($order->placed_at) {
+            if ($order?->placed_at) {
                 return;
             }
         }

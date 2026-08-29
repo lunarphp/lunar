@@ -16,3 +16,13 @@ it('will dispatch event if payment intent has no found cart or order', function 
         CartMissingForIntent::class,
     );
 });
+
+it('will dispatch event if the order id in the intent metadata no longer exists', function () {
+    Event::fake();
+
+    ProcessStripeWebhook::dispatchSync('PI_FOOBAR', '999999');
+
+    Event::assertDispatched(
+        CartMissingForIntent::class,
+    );
+});
