@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
 
 /**
- * v1 → v2 upgrade data step (spec 0057): add `product_associations.sort`.
+ * v1 → v2 upgrade data step: add `product_associations.sort`.
  *
  * v2 gives product associations an explicit, drag-reorderable position, and
  * `Product::associations()` orders by it (`->orderBy('sort')->orderBy('id')`).
