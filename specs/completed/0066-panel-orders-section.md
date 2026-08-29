@@ -1,6 +1,6 @@
 # 0066 — Panel Orders section
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-22
 - TODO item: Panel Orders section — list, order view, capture/refund/cancel/fulfil actions (spec 0066)

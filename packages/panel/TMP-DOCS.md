@@ -3,7 +3,7 @@
 > **Status: placeholder.** These are working notes captured while the package is
 > under active development, kept as a reference for writing the real
 > documentation later. Expect drift — verify against the source before trusting
-> a detail. See also: `specs/0049-inertia-panel.md` (design rationale),
+> a detail. See also: `specs/completed/0049-inertia-panel.md` (design rationale),
 > `packages/panel/CLAUDE.md` (internal conventions), and
 > `packages/panel-addon-example/README.md` (the full, tested extension
 > walkthrough).

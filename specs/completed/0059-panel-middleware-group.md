@@ -1,6 +1,6 @@
 # 0059 — Panel ships its own middleware group
 
-- Status: accepted
+- Status: implemented
 - Author: glenn
 - Created: 2026-07-22
 - TODO item: —

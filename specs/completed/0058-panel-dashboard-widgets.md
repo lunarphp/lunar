@@ -1,6 +1,6 @@
 # 0058 — Panel dashboard widgets
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn (via pairing session)
 - Created: 2026-07-21
 - TODO item: Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)

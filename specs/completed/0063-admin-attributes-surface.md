@@ -1,6 +1,6 @@
 # 0063 — Standalone attributes surface in the Filament admin
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn
 - Created: 2026-08-25
 - TODO item: Standalone attributes surface in the Filament admin

@@ -1,6 +1,6 @@
 # 0072 — Panel Discounts section
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
