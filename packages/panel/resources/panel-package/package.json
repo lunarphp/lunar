@@ -4,6 +4,11 @@
     "type": "module",
     "description": "Panel layout and page-chrome components for building lunarphp/panel add-on pages.",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lunarphp/lunar.git",
+        "directory": "packages/panel/resources/panel-package"
+    },
     "main": "index.js",
     "module": "index.js",
     "types": "dist/ui.d.ts",
