@@ -56,7 +56,9 @@ class DiscountTable
                 ->toggleable(),
             TextColumn::make('type')
                 ->formatStateUsing(function ($state) {
-                    return (new $state)->getName();
+                    // A discount can outlive the package that registered its type;
+                    // show the stored class rather than fataling the whole table.
+                    return class_exists($state) ? (new $state)->getName() : $state;
                 })
                 ->label(__('lunar-filament::discount.table.type.label'))
                 ->toggleable(),

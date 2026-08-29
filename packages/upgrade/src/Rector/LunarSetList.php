@@ -179,7 +179,6 @@ final class LunarSetList
         'Lunar\\Database\\Seeders\\DemoSeeder' => 'Lunar\\Core\\Database\\Seeders\\DemoSeeder',
         'Lunar\\Database\\Seeders\\TestingSeeder' => 'Lunar\\Core\\Database\\Seeders\\TestingSeeder',
         'Lunar\\DiscountTypes\\AbstractDiscountType' => 'Lunar\\Core\\DiscountTypes\\AbstractDiscountType',
-        'Lunar\\DiscountTypes\\AmountOff' => 'Lunar\\Core\\DiscountTypes\\AmountOff',
         'Lunar\\DiscountTypes\\BuyXGetY' => 'Lunar\\Core\\DiscountTypes\\BuyXGetY',
         'Lunar\\Drivers\\SystemTaxDriver' => 'Lunar\\Core\\Drivers\\SystemTaxDriver',
         'Lunar\\Events\\PaymentAttemptEvent' => 'Lunar\\Core\\Events\\PaymentAttemptEvent',

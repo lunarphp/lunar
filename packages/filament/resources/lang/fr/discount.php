@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Y pour le prix de X',
         ],
-        'amount_off' => [
-            'heading' => 'Montant de réduction',
+        'percentage_off' => [
+            'heading' => 'Remise en pourcentage',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Remise à montant fixe',
         ],
         'name' => [
             'label' => 'Nom',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Ajouter automatiquement les récompenses',
             'helper_text' => 'Activez pour ajouter des produits de récompense lorsqu\'ils ne sont pas présents dans le panier.',
-        ],
-        'fixed_value' => [
-            'label' => 'Valeur fixe',
         ],
         'percentage' => [
             'label' => 'Pourcentage',

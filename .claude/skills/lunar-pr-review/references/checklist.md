@@ -36,7 +36,7 @@ Used in code as `__('lunarpanel::channel.label')` (see `packages/admin/src/Filam
 
 ## Tests (Pest)
 
-**Test roots**: `tests/core`, `tests/admin`, `tests/opayo`, `tests/paypal`, `tests/shipping`, `tests/stripe`, `tests/search` (mapped in `composer.json` autoload-dev).
+**Test roots**: `tests/core`, `tests/admin`, `tests/paypal`, `tests/shipping`, `tests/stripe`, `tests/search` (mapped in `composer.json` autoload-dev).
 
 **Factories**: `packages/core/database/factories/*Factory.php` (e.g. `CustomerGroupFactory`, `OrderLineFactory`).
 
@@ -265,7 +265,7 @@ These are lower-frequency but worth flagging when the diff touches the relevant 
 - **Mass-assignment surface** — additions to `$fillable` should not include foreign keys to ownership boundaries (`customer_id`, `user_id`) on publicly-exposed models without explicit guarding upstream.
 - **Validation** — new admin/API endpoints should use FormRequest classes, not inline `request()->validate(...)`.
 - **Magic strings → enums** — order/transaction/payment status literals should reference the existing enum cases; new string-literal comparisons are smell.
-- **Payment-provider PRs** (`packages/stripe`, `packages/paypal`, `packages/opayo`) — verify webhook signature checks, idempotency keys, and that card data never reaches logs/exceptions.
+- **Payment-provider PRs** (`packages/stripe`, `packages/paypal`) — verify webhook signature checks, idempotency keys, and that card data never reaches logs/exceptions.
 - **Notifications & mail** — new notification subjects/bodies and `resources/views/vendor/mail` templates also need translating, not just lang files.
 - **User-facing copy** — spelling/grammar on labels, error messages, and notification text. Cheap to fix in review, expensive after release.
 - **Filament navigation** — added resources without `$navigationSort` slot to the bottom of the group; usually fine, but flag if it disrupts grouping.

@@ -63,7 +63,7 @@ Any of the following puts a PR in `high` regardless of diff size:
   on 1.x, `Casts/Price.php` on 2.x. Anything else handling money counts too.
 - `packages/core/src/Pricing/**`, `packages/core/src/DiscountTypes/**`,
   `packages/core/src/PaymentTypes/**`.
-- `packages/{stripe,paypal,opayo}/**` — payment adapters.
+- `packages/{stripe,paypal}/**` — payment adapters.
 - `packages/*/src/Events/**` and `packages/*/src/Base/Events/**` — event payloads
   are public API.
 - `composer.json` or any `packages/*/composer.json` — dependency changes.

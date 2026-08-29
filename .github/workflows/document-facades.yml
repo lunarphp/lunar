@@ -58,7 +58,6 @@ jobs:
             Lunar\\Facades\\ShippingManifest \
             Lunar\\Facades\\StorefrontSession \
             Lunar\\Facades\\Taxes \
-            Lunar\\Opayo\\Facades\\Opayo \
             Lunar\\Paypal\\Facades\\Paypal \
             Lunar\\Search\\Facades\\Search \
             Lunar\\Shipping\\Facades\\Shipping \

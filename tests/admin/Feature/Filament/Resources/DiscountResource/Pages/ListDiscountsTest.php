@@ -33,3 +33,17 @@ it('can create a discount', function () {
         'type' => BuyXGetY::class,
     ])->assertHasNoErrors();
 });
+
+it('lists a discount whose type class is not installed', function () {
+    // A discount outlives the package that registered its type — the list must
+    // degrade to the stored class name rather than fatal on instantiation.
+    $discount = Discount::factory()->create([
+        'type' => 'Acme\\Discounts\\UninstalledType',
+    ]);
+
+    Livewire::test(ListDiscounts::class)
+        ->assertSuccessful()
+        ->assertSee('Acme\\Discounts\\UninstalledType');
+
+    expect($discount->refresh()->type)->toBe('Acme\\Discounts\\UninstalledType');
+});

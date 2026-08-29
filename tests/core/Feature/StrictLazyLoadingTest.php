@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\DataObjects\PriceValue as PriceDataType;
 use Lunar\Core\DataTypes\ShippingOption;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
@@ -99,12 +99,11 @@ it('evaluates a coupon discount across a collection of carts without lazy-loadin
     });
 
     Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Strict coupon',
         'coupon' => 'STRICT10',
         'starts_at' => now()->subDay(),
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);

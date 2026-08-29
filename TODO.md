@@ -18,12 +18,15 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
 - Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
+- Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
+- Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
+- PayPal driver hardening — tests, amount verification, currency-correct scaling, webhooks (spec 0071)
 
 ## Ideas
 
@@ -44,6 +47,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- First-party payment drivers narrowed to Stripe and PayPal; retire the Opayo package (spec 0070)
 - Upgrade package for v1.x migrators, using Rector (spec 0001)
 - Flatten v1.x migrations into a v2 baseline (spec 0003)
 - `\Lunar\Core` namespace change (spec 0002)

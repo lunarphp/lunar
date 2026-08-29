@@ -26,7 +26,7 @@
 > line-picking UI landed first. Additive enabler: `PaymentRefund` gained a
 > nullable `transaction` property so `RefundOrder` can record the line
 > allocation against the transaction the driver actually created; Stripe,
-> PayPal, Opayo, and the offline driver all populate it (the offline driver
+> PayPal, and the offline driver all populate it (the offline driver
 > previously created no refund transaction at all — a pre-existing gap fixed
 > as part of this work, since it directly blocked verifying the new line
 > tracking end-to-end with the store's default payment method).
