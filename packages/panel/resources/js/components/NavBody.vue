@@ -6,6 +6,7 @@ import Icon from './Icon.vue';
 import NavLink from './NavLink.vue';
 import Tooltip from './Tooltip.vue';
 import UserMenu from './UserMenu.vue';
+import { useCommandPalette } from '../composables/useCommandPalette';
 import type { NavItemShape, NavTreeShape } from '../types/navigation';
 
 withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
@@ -40,8 +41,9 @@ const settingsItem = computed<NavItemShape>(() => ({
 
 const logoLetter = computed(() => panel.value.name?.charAt(0).toUpperCase() ?? 'L');
 
-// Static placeholder for the future command palette (out of scope for the
-// initial slice); the value is the Command keycap glyph plus K.
+const { openPalette } = useCommandPalette();
+
+// The Command keycap glyph plus K, mirroring the palette's own binding.
 const SEARCH_SHORTCUT = '⌘K';
 
 const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-ink-700 cursor-pointer select-none hover:bg-surface-2';
@@ -74,10 +76,12 @@ const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-in
     <Tooltip :text="collapsed ? `${t('nav.search')} (${SEARCH_SHORTCUT})` : ''">
         <button
             type="button"
+            :aria-label="t('nav.search')"
             :class="[
                 'flex items-center gap-2 bg-surface-2 border border-line rounded-md text-ink-500 text-xs cursor-pointer transition-colors hover:bg-paper-hover hover:text-ink-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35',
                 collapsed ? 'w-auto justify-center p-2 my-1.5 mx-0' : 'w-[calc(100%-0.5rem)] px-2.5 py-1.5 mx-1 mt-1.5 mb-2.5',
             ]"
+            @click="openPalette"
         >
             <Icon name="search" cls="sm" />
             <template v-if="!collapsed">
