@@ -1,6 +1,6 @@
 # 0067 — Panel fulfilment-centric order view
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)

@@ -8,19 +8,8 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-- Inertia admin panel — new `lunarphp/panel` package: auth, extension points (navigation, slots, table columns, row/bulk/page actions with shared ordering), Customers CRUD, Channels settings (spec 0049)
-- Panel order-value chart on the customer edit page + `TimeSeriesChart` on the add-on surface (spec 0050)
-- Panel edit drafts — autosaved pending edits with field-level conflict detection (spec 0051)
-- Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
-- Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
-- Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
-- Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
-- Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
-- Panel order view rebuilt around fulfilments + full fulfilment operations (spec 0067)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
-- Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
-- Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
-- Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
+- Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
@@ -47,6 +36,20 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
+- Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
+- Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
+- Panel Orders section + order view rebuilt around fulfilments with full fulfilment operations (specs 0066, 0067)
+- Panel media groups — every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
+- Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
+- Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
+- Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
+- Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
+- Panel edit drafts — autosaved pending edits with field-level conflict detection (spec 0051)
+- Panel order-value chart on the customer edit page + `TimeSeriesChart` on the add-on surface (spec 0050)
+- Panel product option types (spec 0061)
+- Panel `lunar.panel` middleware group (spec 0059)
+- Inertia admin panel — new `lunarphp/panel` package: auth, extension points, Customers CRUD, Channels settings (spec 0049)
 - PayPal driver hardening — tests, amount verification, currency-correct scaling, webhooks (spec 0071)
 - First-party payment drivers narrowed to Stripe and PayPal; retire the Opayo package (spec 0070)
 - Upgrade package for v1.x migrators, using Rector (spec 0001)

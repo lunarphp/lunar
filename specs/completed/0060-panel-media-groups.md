@@ -1,6 +1,6 @@
 # 0060 — Panel media groups
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-22
 - TODO item: Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)

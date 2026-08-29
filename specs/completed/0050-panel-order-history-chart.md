@@ -1,6 +1,6 @@
 # 0050 — Panel order-value chart and public charting component
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn (via pairing session)
 - Created: 2026-07-16
 - TODO item: Panel order-value chart on the customer edit page + chart component on the add-on surface

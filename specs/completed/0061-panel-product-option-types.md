@@ -1,6 +1,6 @@
 # 0061 — Product option types (Text / Colour / Swatch)
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-22
 - TODO item: Product option types
