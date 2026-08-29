@@ -1,10 +1,10 @@
 # 0072 — Panel Discounts section
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-08-27
 - TODO item: Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
-- Depends on: [[0073-split-amount-off-discount-type]] (lands first, separate PR)
+- Depends on: [[0073-split-amount-off-discount-type]] (shipped)
 
 ## Problem
 
@@ -52,7 +52,7 @@ through `CouponString`), `type` (the discount-type class name), `starts_at` / `e
   | `limitation` | `discountables` | `collection_discount` | `brand_discount` | `customer_discount` |
   | `exclusion` | `discountables` | `collection_discount` | `brand_discount` | — |
   | `condition` (BuyXGetY) | `discountables` | `discountables` | — | — |
-  | `reward` (BuyXGetY) | `discountables` | — | — | — |
+  | `reward` (BuyXGetY) | `discountables` | `discountables` | — | — |
 
   Collections are the trap: the line-targeting types read them from the
   `collection_discount` pivot, while `BuyXGetY::apply()` reads them from `discountables`
@@ -133,14 +133,17 @@ collections live in two places.
  *   limitation: array{products: int[], variants: int[], collections: int[], brands: int[], customers: int[]},
  *   exclusion:  array{products: int[], variants: int[], collections: int[], brands: int[]},
  *   condition:  array{products: int[], variants: int[], collections: int[]},
- *   reward:     array{products: int[], variants: int[]},
+ *   reward:     array{products: int[], variants: int[], collections: int[]},
  * } $targets  null leaves targeting untouched; a present bucket replaces that bucket wholesale
  */
 ```
 
 The action is the only place that knows the routing table above. It writes in a
 transaction, syncing `discountables` per morph type and the three pivots, and it is the
-seam a consumer swaps to change targeting semantics.
+seam a consumer swaps to change targeting semantics. A bucket given a kind it cannot
+target — brands on a `condition`, say — raises rather than writing rows no discount type
+reads. `customer_discount` has no `type` column, so eligible customers hang off the
+`limitation` bucket alone.
 
 `Discount` also gains `scopeScheduled()`, `scopeExpired()` and `scopePending()` alongside
 the existing `scopeActive()`, so the derived status is filterable in SQL. The Filament table
@@ -376,8 +379,15 @@ it to 16.
 - **Breaking changes**: none. Everything here is additive; the breaking work is in 0073.
 - **Core public surface**: three new action contracts and implementations plus their
   `ActionServiceProvider::$actions` entries, and three new `Discount` scopes. Additive.
-- **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm`,
-  `Section::discountTypeForms()`, and four new `ui.ts` exports.
+- **Behaviour fix**: `DiscountObserver::deleting()` also detaches `channels()`, which it
+  missed while its `Product` and `Collection` siblings did not — deleting a discount was
+  orphaning its `channelables` rows on every delete path.
+- **Panel public surface**: `Lunar\Panel\Contracts\DiscountTypeForm` (six methods:
+  `component`, `targetBuckets`, `toForm`, `toStorage`, `rules`, `summary`),
+  `Section::discountTypeForms()`, and four new `ui.ts` exports. `discountTypeForms()`
+  is added to `ProvidesNavigation` and `SectionExtension` alongside `Section`, matching
+  every other extension hook — a consumer implementing the interface directly rather
+  than extending the abstract has to add the method.
 - **Permission**: reuses `sales:manage-discounts`; no manifest change.
 - **Translations**: new panel `discounts.php` group and a `nav.php` key across all 16
   locales; if the `ShippingDiscount` slice lands here, its lang group is repointed and
@@ -388,18 +398,55 @@ it to 16.
   a core action today, and making them do so is a pass across every resource, not this one.
 - **No new npm dependencies.**
 
+## Decisions taken during implementation
+
+- **Discount handles carry no format rule.** The Filament admin only runs the name
+  through `Str::snake`, which leaves punctuation intact, so handles like `sofia_o'kon`
+  already exist. A pattern in the panel would make them uneditable. The panel's create
+  screen generates a clean snake_case handle, matching Filament, but accepts anything
+  Filament would.
+- **The channel and customer-group filters read the pivot's `enabled` flag**, not the
+  row's existence: `HasChannels` and `HasCustomerGroups` attach every channel and group
+  when a discount is created, so a filter on attachment alone matches everything.
+- **The redemptions KPI is a lifetime total, not a 30-day window** as first written.
+  `uses` is a bare counter with no per-redemption timestamp, and the only timestamped
+  table (`discount_user`) records signed-in redemptions only — `markAsUsed()` skips the
+  attach for a guest cart — so a windowed figure would silently omit guest checkouts.
+- **The type-effect summary in the list ("15% off") arrived with slice 4**, as a
+  `summary()` method on `DiscountTypeForm`. Deriving it earlier would have needed the
+  hardcoded type ladder this section exists to avoid.
+- **`data` has two owners, so `DiscountDataSchema` composes it.** `min_prices` is read by
+  `AbstractDiscountType::checkDiscountConditions()` for every type, but it lives in the
+  `data` column a type form owns — a form returning only its own keys from `toStorage()`,
+  which is the natural way to write one, would drop the minimum-spend condition. Every
+  read and write of `data` goes through the composing schema instead of a type form
+  directly.
+- **The type's `data.*` rules only apply when the request carries `data`.** Otherwise a
+  full update that omits the payload would be rejected for a missing `data.percentage`;
+  omitting it now leaves the stored payload untouched, matching how `UpdatesDiscount`
+  treats availability and targeting.
+- **The target picker is one search across the bucket's kinds**, with kind chips on the
+  rows, rather than a tab per kind — the open question in this spec, resolved in favour of
+  the prototype's shape. It also excludes what the bucket already holds, which is what
+  earns the `{discount}` in its route.
+- **`UpdateDiscount::BUCKET_KINDS` is public.** It describes core's targeting schema
+  rather than the action's behaviour, and the panel needs the same map to know which
+  blocks a bucket can show. Restating it in the panel would let the picker drift from
+  what the action accepts.
+- **`DiscountDraftResource::rules()` filters the request rules to draftable fields.** A
+  commit only ever carries draftable values, so the endpoint's `type` rule — a column
+  fixed once the discount exists — would reject every commit.
+
 ## Open questions
 
-- **Free shipping** — agreed as a follow-up spec. The open part is its shape: promote
+- **Free shipping** — agreed as a follow-up spec, and it now also owns slice 6's
+  `ShippingDiscountForm`. The open part is its shape: promote
   `ShippingDiscount` from `table-rate-shipping` into core and generalise it away from
   `ShippingMethod`, or add a narrower core `FreeShipping` type and leave `ShippingDiscount`
   where it is? Resolve against the shipping-options work before writing it. Either answer
   slots into this section unchanged.
 - **`discounts.restriction`** — dead column with no reader anywhere; tracked as an open
   question on [[0073-split-amount-off-discount-type]], which is already in that table.
-- **Target picker breadth** — should the picker page results per kind (five tabs) or search
-  across all allowed kinds at once with kind chips on the rows? Lean: one search, kind chips,
-  matching the prototype's `TargetPickerDialog`.
 
 ## References
 
@@ -428,27 +475,33 @@ it to 16.
 
 Prerequisite: [[0073-split-amount-off-discount-type]] merges first.
 
-- [ ] Slice 1 — Core actions: `Actions/Discounts/{CreateDiscount,UpdateDiscount,DeleteDiscount}`
+- [x] Slice 1 — Core actions: `Actions/Discounts/{CreateDiscount,UpdateDiscount,DeleteDiscount}`
       + contracts + `ActionServiceProvider` entries, with the `$targets` fan-out across
       `discountables` / `collection_discount` / `brand_discount` / `customer_discount`;
       `Discount` status scopes; tests.
-- [ ] Slice 2 — Panel scaffold + list: `SalesSection` nav item, routes,
+- [x] Slice 2 — Panel scaffold + list: `SalesSection` nav item, routes,
       `DiscountIndexController` (rows, filters, search, KPI strip), `DiscountsTableExtension`,
       `pages/discounts/Index.vue`, `percent` icon, `discounts.php` + `nav.php` lang keys
       (16 locales), tests.
-- [ ] Slice 3 — Type seam + edit shell: `DiscountTypeForm` contract,
+- [x] Slice 3 — Type seam + edit shell (shipped with slice 2 — a list whose rows
+      have nowhere to open is not shippable on its own): `DiscountTypeForm` contract,
       `Section::discountTypeForms()`, `DiscountTypeSchema`, `DiscountDraftResource`,
       `DiscountCreateController` / `DiscountEditController`,
       `pages/discounts/{Create,Edit}.vue` with Details / Schedule / Availability / Usage and
       the `RawDataForm` fallback, tests.
-- [ ] Slice 4 — First-party type forms + conditions: `PercentageOffForm`,
+- [x] Slice 4 — First-party type forms + conditions: `PercentageOffForm`,
       `FixedAmountOffForm`, `BuyXGetYForm`, the conditions block, currency scaling through
       `PriceCalculator::toMinor()`, tests (including a zero-decimal currency).
-- [ ] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,
+- [x] Slice 5 — Targeting: `targets.search` endpoint, `TargetChipList`,
       `TargetPickerDialog`, per-bucket blocks driven by `targetBuckets()`, the eligible-
       customers card, `ui.ts` exports, tests.
-- [ ] Slice 6 — Seam proof: `ShippingDiscountForm` + `ShippingDiscountForm.vue` registered
-      from `table-rate-shipping`'s own section, `de` / `nl` locales added there, tests.
-      Droppable into the free-shipping spec if we would rather keep this one panel-shaped.
+- [ ] Slice 6 — Seam proof: deferred to the free-shipping spec, as this plan allowed.
+      The seam is already proven against a type registered from outside core by
+      `tests/panel/Feature/Discounts/DiscountTypeSeamTest`, whose fixture exercises a
+      custom component, narrowed buckets, a scaling round trip and its own rules. What
+      `ShippingDiscount` would add beyond that is mostly packaging — an npm workspace,
+      a Vite config, a committed bundle, CI wiring and `de` / `nl` locales — and the
+      open question below may move the type into core, taking its form with it. Until
+      it lands, `table-rate-shipping` users get the `RawDataForm` fallback.
 - [ ] Deferred — core free-shipping type (own spec), `restriction` column removal,
       normalising the three targeting tables.

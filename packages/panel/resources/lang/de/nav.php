@@ -23,6 +23,7 @@ return [
     'sales' => 'Verkäufe',
     'customers' => 'Kunden',
     'orders' => 'Orders',
+    'discounts' => 'Rabatte',
     'general' => 'Allgemein',
     'team' => 'Team',
     'store' => 'Store',

@@ -23,6 +23,7 @@ return [
     'sales' => 'Verkoop',
     'customers' => 'Klanten',
     'orders' => 'Orders',
+    'discounts' => 'Kortingen',
     'general' => 'Algemeen',
     'team' => 'Team',
     'store' => 'Store',

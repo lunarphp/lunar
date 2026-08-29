@@ -23,6 +23,7 @@ return [
     'sales' => 'Értékesítés',
     'customers' => 'Ügyfelek',
     'orders' => 'Orders',
+    'discounts' => 'Kedvezmények',
     'general' => 'Általános',
     'team' => 'Team',
     'store' => 'Store',

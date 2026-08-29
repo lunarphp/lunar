@@ -23,6 +23,7 @@ return [
     'sales' => 'Bán hàng',
     'customers' => 'Khách hàng',
     'orders' => 'Orders',
+    'discounts' => 'Giảm giá',
     'general' => 'Chung',
     'team' => 'Team',
     'store' => 'Store',

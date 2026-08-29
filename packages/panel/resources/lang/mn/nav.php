@@ -23,6 +23,7 @@ return [
     'sales' => 'Борлуулалт',
     'customers' => 'Харилцагчид',
     'orders' => 'Orders',
+    'discounts' => 'Хөнгөлөлтүүд',
     'general' => 'Ерөнхий',
     'team' => 'Team',
     'store' => 'Store',

@@ -4,6 +4,10 @@ namespace Lunar\Panel\Sections\Sales;
 
 use Closure;
 use Illuminate\Support\Facades\Route;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Http\Controllers\Customers\CustomerAddressController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerCreateController;
@@ -11,6 +15,11 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerEditController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountBulkController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountCreateController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountEditController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountIndexController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountTargetSearchController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Http\Controllers\Orders\OrderActionController;
 use Lunar\Panel\Http\Controllers\Orders\OrderAddressController;
@@ -20,8 +29,12 @@ use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
+use Lunar\Panel\Sections\Sales\Tables\DiscountsTableExtension;
 use Lunar\Panel\Sections\Sales\Tables\OrdersTableExtension;
 use Lunar\Panel\Sections\Section;
+use Lunar\Panel\Support\DiscountTypeForms\BuyXGetYForm;
+use Lunar\Panel\Support\DiscountTypeForms\FixedAmountOffForm;
+use Lunar\Panel\Support\DiscountTypeForms\PercentageOffForm;
 
 class SalesSection extends Section
 {
@@ -32,8 +45,11 @@ class SalesSection extends Section
      */
     private const CUSTOMERS_PERMISSION = 'sales:manage-customers';
 
-    /** Same handle as the Filament admin's OrderResource. */
+    /** As above, and the same handle as the Filament admin's OrderResource. */
     private const ORDERS_PERMISSION = 'sales:manage-orders';
+
+    /** As above, and the same handle the Filament admin's DiscountResource uses. */
+    private const DISCOUNTS_PERMISSION = 'sales:manage-discounts';
 
     public function key(): string
     {
@@ -64,6 +80,13 @@ class SalesSection extends Section
             permission: self::CUSTOMERS_PERMISSION,
             priority: 20,
         ));
+        $registry->addItem('sales', new NavigationItem(
+            key: 'discounts',
+            label: __('panel::nav.discounts'),
+            icon: 'percent',
+            route: 'panel.discounts.index',
+            permission: self::DISCOUNTS_PERMISSION,
+        ));
     }
 
     /** @return array<string, class-string> */
@@ -72,6 +95,17 @@ class SalesSection extends Section
         return [
             'orders.index' => OrdersTableExtension::class,
             'customers.index' => CustomersTableExtension::class,
+            'discounts.index' => DiscountsTableExtension::class,
+        ];
+    }
+
+    /** @return array<class-string, class-string<DiscountTypeForm>> */
+    public function discountTypeForms(): array
+    {
+        return [
+            PercentageOff::class => PercentageOffForm::class,
+            FixedAmountOff::class => FixedAmountOffForm::class,
+            BuyXGetY::class => BuyXGetYForm::class,
         ];
     }
 
@@ -91,6 +125,7 @@ class SalesSection extends Section
     {
         return [
             CustomerDraftResource::class,
+            DiscountDraftResource::class,
         ];
     }
 
@@ -150,6 +185,25 @@ class SalesSection extends Section
 
                 Route::post('/{customer}/users', [CustomerUserController::class, 'store'])->name('users.store');
                 Route::delete('/{customer}/users/{user}', [CustomerUserController::class, 'destroy'])->name('users.destroy');
+            });
+
+            Route::prefix('discounts')->name('panel.discounts.')->middleware('can:'.self::DISCOUNTS_PERMISSION)->group(function (): void {
+                Route::get('/', [DiscountIndexController::class, 'index'])->name('index');
+                Route::get('/create', [DiscountCreateController::class, 'create'])->name('create');
+                Route::post('/', [DiscountCreateController::class, 'store'])->name('store');
+
+                Route::post('/bulk/end', [DiscountBulkController::class, 'end'])->name('bulk-end');
+                Route::post('/bulk/destroy', [DiscountBulkController::class, 'destroy'])->name('bulk-destroy');
+
+                Route::get('/{discount}/targets/search', [DiscountTargetSearchController::class, 'search'])->name('targets.search');
+
+                Route::get('/{discount}/edit', [DiscountEditController::class, 'edit'])->name('edit');
+                Route::put('/{discount}', [DiscountEditController::class, 'update'])->name('update');
+                Route::delete('/{discount}', [DiscountEditController::class, 'destroy'])->name('destroy');
+
+                Route::patch('/{discount}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{discount}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{discount}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
             });
         };
     }

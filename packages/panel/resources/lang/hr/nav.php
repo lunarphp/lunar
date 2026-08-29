@@ -23,6 +23,7 @@ return [
     'sales' => 'Prodaja',
     'customers' => 'Kupci',
     'orders' => 'Orders',
+    'discounts' => 'Popusti',
     'general' => 'Općenito',
     'team' => 'Team',
     'store' => 'Store',

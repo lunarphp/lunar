@@ -23,6 +23,7 @@ return [
     'sales' => 'Vânzări',
     'customers' => 'Clienți',
     'orders' => 'Orders',
+    'discounts' => 'Reduceri',
     'general' => 'General',
     'team' => 'Team',
     'store' => 'Store',

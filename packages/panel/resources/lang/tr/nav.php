@@ -23,6 +23,7 @@ return [
     'sales' => 'Satışlar',
     'customers' => 'Müşteriler',
     'orders' => 'Orders',
+    'discounts' => 'İndirimler',
     'general' => 'Genel',
     'team' => 'Team',
     'store' => 'Store',

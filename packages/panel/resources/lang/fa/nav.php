@@ -23,6 +23,7 @@ return [
     'sales' => 'فروش',
     'customers' => 'مشتریان',
     'orders' => 'Orders',
+    'discounts' => 'تخفیف‌ها',
     'general' => 'عمومی',
     'team' => 'Team',
     'store' => 'Store',

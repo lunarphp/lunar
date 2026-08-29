@@ -23,6 +23,7 @@ return [
     'sales' => 'المبيعات',
     'customers' => 'العملاء',
     'orders' => 'Orders',
+    'discounts' => 'الخصومات',
     'general' => 'عام',
     'team' => 'Team',
     'store' => 'Store',
