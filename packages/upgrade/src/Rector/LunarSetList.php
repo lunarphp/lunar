@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lunar\Upgrade\Rector;
 
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
+use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
 use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
 
 /**
@@ -178,7 +179,6 @@ final class LunarSetList
         'Lunar\\Database\\Seeders\\DemoSeeder' => 'Lunar\\Core\\Database\\Seeders\\DemoSeeder',
         'Lunar\\Database\\Seeders\\TestingSeeder' => 'Lunar\\Core\\Database\\Seeders\\TestingSeeder',
         'Lunar\\DiscountTypes\\AbstractDiscountType' => 'Lunar\\Core\\DiscountTypes\\AbstractDiscountType',
-        'Lunar\\DiscountTypes\\AmountOff' => 'Lunar\\Core\\DiscountTypes\\AmountOff',
         'Lunar\\DiscountTypes\\BuyXGetY' => 'Lunar\\Core\\DiscountTypes\\BuyXGetY',
         'Lunar\\Drivers\\SystemTaxDriver' => 'Lunar\\Core\\Drivers\\SystemTaxDriver',
         'Lunar\\Events\\PaymentAttemptEvent' => 'Lunar\\Core\\Events\\PaymentAttemptEvent',
@@ -530,6 +530,7 @@ final class LunarSetList
      */
     public const V1_TO_V2 = [
         RewriteModelClassCallRector::class,
+        RewriteOrderRefundCallRector::class,
         RetypeFormatterStyleParamRector::class,
     ];
 

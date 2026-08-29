@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
@@ -37,6 +38,14 @@ interface ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array;
+
+    /**
+     * Panel forms for discount types, keyed by the discount type class, e.g.
+     * [PercentageOff::class => PercentageOffForm::class].
+     *
+     * @return array<class-string, class-string<DiscountTypeForm>>
+     */
+    public function discountTypeForms(): array;
 
     /**
      * Dashboard widget classes, e.g. [RevenueChartWidget::class].

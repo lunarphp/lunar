@@ -4,7 +4,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\DataObjects\CartDiscount;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Models\Cart;
@@ -281,11 +282,10 @@ test('can validate coupons', function () {
     $manager = app(DiscountManager::class);
 
     Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -331,13 +331,12 @@ test('can get discount with coupon', function () {
     ]);
 
     $discountA = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => FixedAmountOff::class,
         'name' => 'Test Discount A',
         'coupon' => null,
         'starts_at' => now(),
         'data' => [
-            'fixed_value' => true,
-            'fixed_values' => [
+            'amounts' => [
                 'GBP' => 10,
             ],
         ],
@@ -358,13 +357,12 @@ test('can get discount with coupon', function () {
     ]);
 
     $discountB = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => FixedAmountOff::class,
         'name' => 'Test Discount B',
         'coupon' => null,
         'starts_at' => now(),
         'data' => [
-            'fixed_value' => true,
-            'fixed_values' => [
+            'amounts' => [
                 'GBP' => 10,
             ],
         ],
@@ -439,23 +437,21 @@ test('stop flag halts further discounts after a discount applies', function () {
     ]);
 
     $stopper = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Stopper',
         'priority' => 10,
         'stop' => true,
         'data' => [
-            'fixed_value' => false,
             'percentage' => 5,
         ],
     ]);
 
     $shouldNotApply = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Should not apply',
         'priority' => 5,
         'stop' => false,
         'data' => [
-            'fixed_value' => false,
             'percentage' => 20,
         ],
     ]);
@@ -520,24 +516,22 @@ test('stop flag does not halt further discounts when conditions fail', function 
     ]);
 
     $couponed = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Coupon discount that wont match',
         'priority' => 10,
         'stop' => true,
         'coupon' => 'WRONG',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 20,
         ],
     ]);
 
     $fallback = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Fallback',
         'priority' => 5,
         'stop' => false,
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -602,23 +596,21 @@ test('stop=false discount lets further discounts apply', function () {
     ]);
 
     $first = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'First',
         'priority' => 10,
         'stop' => false,
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
 
     $second = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Second',
         'priority' => 5,
         'stop' => false,
         'data' => [
-            'fixed_value' => false,
             'percentage' => 20,
         ],
     ]);

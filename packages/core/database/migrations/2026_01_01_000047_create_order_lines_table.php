@@ -27,6 +27,7 @@ return new class extends Migration
             $table->jsonb('tax_breakdown');
             $table->unsignedBigInteger('tax_total');
             $table->unsignedBigInteger('total');
+            $table->unsignedInteger('refunded_quantity')->default(0)->comment('Rollup of refund_lines.quantity for this line');
             $table->text('notes')->nullable();
             $table->jsonb('meta')->nullable();
             $table->timestamps();

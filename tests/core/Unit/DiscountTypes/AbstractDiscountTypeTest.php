@@ -52,8 +52,7 @@ test('will handle customer limitation', function () {
         'name' => 'Test Coupon',
         'coupon' => '10OFF',
         'data' => [
-            'fixed_value' => true,
-            'fixed_values' => [
+            'amounts' => [
                 'GBP' => 10,
             ],
         ],

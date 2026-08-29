@@ -7,6 +7,16 @@ const props = withDefaults(
     defineProps<{
         modelValue?: string | number;
         type?: string;
+        /**
+         * Bound explicitly rather than left to attribute fallthrough: the
+         * grouped variant's root is the wrapper div, so these would land there
+         * instead of on the input — breaking label association and dropping
+         * numeric constraints on any input with a prefix or suffix.
+         */
+        id?: string;
+        min?: string | number;
+        max?: string | number;
+        step?: string | number;
         placeholder?: string;
         invalid?: boolean;
         mono?: boolean;
@@ -72,9 +82,13 @@ defineExpose({ focus: () => inputRef.value?.focus() });
         ><slot name="prefix" /></span>
         <input
             ref="inputRef"
+            :id="id"
             :type="type"
             :class="groupedInputCls"
             :value="modelValue"
+            :min="min"
+            :max="max"
+            :step="step"
             :placeholder="placeholder"
             :disabled="disabled"
             :autocomplete="autocomplete"
@@ -98,9 +112,13 @@ defineExpose({ focus: () => inputRef.value?.focus() });
     <input
         v-else
         ref="inputRef"
+        :id="id"
         :type="type"
         :class="standaloneInputCls"
         :value="modelValue"
+        :min="min"
+        :max="max"
+        :step="step"
         :placeholder="placeholder"
         :disabled="disabled"
         :autocomplete="autocomplete"

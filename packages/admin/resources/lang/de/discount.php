@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Kaufe X, erhalte Y',
         ],
-        'amount_off' => [
-            'heading' => 'Rabattbetrag',
+        'percentage_off' => [
+            'heading' => 'Prozentualer Rabatt',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Fester Rabattbetrag',
         ],
         'name' => [
             'label' => 'Name',
@@ -64,11 +67,8 @@ return [
             'label' => 'Belohnungen automatisch hinzufügen',
             'helper_text' => 'Einschalten, um Belohnungsprodukte hinzuzufügen, wenn sie nicht im Warenkorb vorhanden sind.',
         ],
-        'fixed_value' => [
-            'label' => 'Fixed value',
-        ],
         'percentage' => [
-            'label' => 'Percentage',
+            'label' => 'Prozentsatz',
         ],
     ],
     'table' => [

@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\PaymentTypes;
 
+use Illuminate\Support\Str;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
@@ -46,7 +47,19 @@ class OfflinePayment extends AbstractPayment
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        return new PaymentRefund(true);
+        $refundTransaction = $transaction->order->transactions()->create([
+            'success' => true,
+            'type' => 'refund',
+            'driver' => 'offline',
+            'amount' => $amount,
+            'reference' => (string) Str::uuid(),
+            'status' => 'refunded',
+            'notes' => $notes,
+            'card_type' => $transaction->card_type,
+            'last_four' => $transaction->last_four,
+        ]);
+
+        return new PaymentRefund(success: true, transaction: $refundTransaction);
     }
 
     /**

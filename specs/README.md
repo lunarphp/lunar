@@ -90,3 +90,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0064 | Scoped service lifetimes for long-lived workers | implemented |
 | 0070 | First-party payment drivers: Stripe and PayPal | implemented |
 | 0071 | PayPal driver hardening | implemented |
+| 0072 | Panel Discounts section | accepted    |
+| 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |

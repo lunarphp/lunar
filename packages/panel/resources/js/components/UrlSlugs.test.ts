@@ -94,9 +94,7 @@ describe('UrlSlugs', () => {
         select.value = '2';
         select.dispatchEvent(new Event('change'));
 
-        // A prefixed TextInput renders a grouped wrapper; the id sits on the
-        // wrapper div, so target the inner input.
-        const slug = dialog.querySelector('#url-slug input') as HTMLInputElement;
+        const slug = dialog.querySelector('input#url-slug') as HTMLInputElement;
         slug.value = 'stark-de';
         slug.dispatchEvent(new Event('input'));
         await nextTick();
