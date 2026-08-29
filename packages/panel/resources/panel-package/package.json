@@ -1,6 +1,6 @@
 {
     "name": "@lunarphp/panel",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "Panel layout and page-chrome components for building lunarphp/panel add-on pages.",
     "license": "MIT",
