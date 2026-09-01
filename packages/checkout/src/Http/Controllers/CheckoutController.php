@@ -2,6 +2,7 @@
 
 namespace Lunar\Checkout\Http\Controllers;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,11 +15,11 @@ use Inertia\Response;
 use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
-use Lunar\Checkout\Contracts\ElementDataStore;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Events\CheckoutElementStored;
 use Lunar\Checkout\Exceptions\AddressLookupException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
@@ -42,8 +43,8 @@ class CheckoutController extends Controller
      */
     public function __construct(
         private readonly ElementRegistry $registry,
-        private readonly ElementDataStore $dataStore,
         private readonly AddressLookup $addressLookup,
+        private readonly Dispatcher $events,
     ) {}
 
     /**
@@ -255,6 +256,8 @@ class CheckoutController extends Controller
         $validated = $request->validate($element->rules());
 
         $element->store($validated);
+
+        $this->events->dispatch(new CheckoutElementStored($session, $handle, $validated));
 
         return back();
     }

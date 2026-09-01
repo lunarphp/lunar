@@ -17,6 +17,7 @@ use Lunar\Checkout\Events\CheckoutSessionCompleted;
 use Lunar\Checkout\Events\CouponApplied;
 use Lunar\Checkout\Events\CouponRemoved;
 use Lunar\Checkout\Events\CustomerAssociated;
+use Lunar\Checkout\Events\OrderPlacing;
 use Lunar\Checkout\Events\ShippingAddressStored;
 use Lunar\Checkout\Events\ShippingOptionSet;
 use Lunar\Checkout\Exceptions\CheckoutSessionConflictException;
@@ -154,6 +155,17 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
              * one; only a cart with no order yet creates here.
              */
             $order = $cart->completedOrder ?: $cart->draftOrder ?: $cart->createOrder();
+
+            /*
+             * Last point before the order becomes real, and the one place both
+             * the sync and webhook-first paths converge (spec 0011 §F). Inside
+             * the transaction and the cart-row lock, so a listener's writes are
+             * atomic with placement. The event gets a clone: $order is stamped
+             * with placed_at right below, and that must not retroactively
+             * mutate the "about to be placed" snapshot a listener (or a faked
+             * assertion) already read.
+             */
+            $this->events->dispatch(new OrderPlacing(clone $order, $session));
 
             /*
              * Completing the session places the order (spec 0002 §D). A gateway
