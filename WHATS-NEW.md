@@ -151,7 +151,7 @@ non-Filament panels can share it.
 ## A new admin panel, built on Inertia + Vue
 
 Alongside the Filament admin, a first-party `lunarphp/panel` package now ships
-a Vue 3 + Inertia.js v2 admin with its own design system and a runtime
+a Vue 3 + Inertia.js v3 admin with its own design system and a runtime
 extension mechanism — add-on packages register pages, navigation, table
 columns, actions and page-slot content through a `PanelManager`/`Section` API,
 and their prebuilt JS bundles are picked up by the host app without a recompile.
@@ -166,15 +166,17 @@ Add it to a Laravel app that already has Lunar installed:
 
 ```
 composer require lunarphp/panel
-php artisan vendor:publish --tag=lunar          # config/lunar/panel.php
-php artisan vendor:publish --tag=panel-assets   # published Vue build
+php artisan lunar:panel:install
 ```
 
-Set `path`, `name` and `guard` in `config/lunar/panel.php`, then visit the
-panel at `/{path}` (`/panel` by default). The service provider is
-auto-discovered — no manual registration needed. Building the panel's own
-assets (`npm run build` inside the package, before publishing) is only
-required if you're developing the panel or an add-on for it locally.
+The install command publishes `config/lunar/panel.php` and the compiled
+panel assets (including any add-on builds). Set `path`, `name` and `guard`
+in the config, run the migrations, then visit the panel at `/{path}`
+(`/panel` by default). The service provider is auto-discovered — no manual
+registration needed. Building the panel's own assets (`npm run build` inside
+the package, before publishing) is only required if you're developing the
+panel or an add-on for it locally; `php artisan lunar:panel:link` symlinks
+add-on builds during development.
 
 ## Foundations & external addressing
 
