@@ -136,13 +136,47 @@ export function createCheckout(data) {
 
   // Persist an element's captured data to the checkout session via its store
   // route, then reload only the `checkout` prop so element data() round-trips.
+  // Returns a promise that settles once the visit finishes (success or
+  // error), so callers, namely the pending-write flush below, can await the
+  // write actually landing rather than firing and forgetting it.
   function storeElement(element, data, options = {}) {
-    router.post(element.storeUrl, data, {
-      preserveScroll: true,
-      preserveState: true,
-      only: ['checkout'],
-      ...options,
+    return new Promise((resolve) => {
+      router.post(element.storeUrl, data, {
+        preserveScroll: true,
+        preserveState: true,
+        only: ['checkout'],
+        ...options,
+        onFinish: (...args) => {
+          options.onFinish?.(...args)
+          resolve()
+        },
+      })
     })
+  }
+
+  // Components with their own debounced local writes (e.g. OrderDetails'
+  // PO reference / delivery notes) register a flush callback here. `pay()`
+  // awaits every registered flush before it posts to the pay boundary, so a
+  // customer who types a reference and clicks Pay inside the debounce window
+  // doesn't lose it. Returns an unregister function for symmetry, though
+  // nothing currently unmounts mid-checkout.
+  const pendingWrites = new Set()
+  function registerPendingWrite(fn) {
+    pendingWrites.add(fn)
+    return () => pendingWrites.delete(fn)
+  }
+
+  // Each flush is isolated: a synchronous throw or a rejected promise from
+  // one registrant is swallowed rather than left to reject Promise.all and
+  // block payment on a failure that's unrelated to the charge itself.
+  async function flushPendingWrites() {
+    await Promise.all(
+      Array.from(pendingWrites).map((fn) =>
+        Promise.resolve()
+          .then(() => fn())
+          .catch(() => {}),
+      ),
+    )
   }
 
   // Options a courier delivers; collection renders through the fulfilment
@@ -254,6 +288,10 @@ export function createCheckout(data) {
     state.payError = ''
 
     try {
+      // Let any debounced element write in flight (or still pending) land
+      // before we pin the fingerprint and post to the pay boundary.
+      await flushPendingWrites()
+
       // Billing defaults to the delivery address until a billing element
       // captures its own.
       if (state.billingSame && state.shippingAddress) {
@@ -331,6 +369,7 @@ export function createCheckout(data) {
     setFulfilment,
     activePaymentMethod,
     registerPaymentConfirm,
+    registerPendingWrite,
     postJson,
     pay,
   }
