@@ -8,6 +8,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
+- First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
