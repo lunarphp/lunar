@@ -134,6 +134,10 @@ class CheckoutSession extends Base
      * requests capturing different handles would each save a blob built from
      * their own stale read, and one handle would vanish. The row lock is what
      * makes concurrent writes to different handles both survive.
+     *
+     * NB `lockForUpdate()` is a no-op on SQLite (the test default) and only
+     * takes effect on MySQL (production), so the test suite proves the
+     * re-read-inside-transaction behaviour, not the row lock itself.
      */
     public function putElementData(string $handle, array $data): void
     {
@@ -146,7 +150,13 @@ class CheckoutSession extends Base
             $locked->element_data = $bag;
             $locked->save();
 
+            // Mirror onto $this so a caller reading straight off this instance
+            // sees the merged bag, but sync the original too: an unsynced
+            // attribute leaves $this dirty, and a later unrelated save() on
+            // this instance would rewrite the whole column from this stale
+            // snapshot, outside the lock we just took.
             $this->element_data = $bag;
+            $this->syncOriginalAttribute('element_data');
         });
     }
 
@@ -162,6 +172,7 @@ class CheckoutSession extends Base
             $locked->save();
 
             $this->element_data = $bag;
+            $this->syncOriginalAttribute('element_data');
         });
     }
 

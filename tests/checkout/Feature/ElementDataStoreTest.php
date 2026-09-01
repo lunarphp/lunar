@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Checkout\Contracts\CheckoutDriver;
+use Lunar\Checkout\Contracts\ElementRegistry;
+use Lunar\Checkout\Elements\AbstractCheckoutElement;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Core\Facades\CartSession;
@@ -49,6 +51,63 @@ it('does not lose a sibling handle when two stores write', function () {
     expect($bag)->toHaveKeys(['alpha', 'beta'])
         ->and($bag['alpha'])->toBe(['a' => 1])
         ->and($bag['beta'])->toBe(['b' => 2]);
+});
+
+it('lets the session owner post an element and land it on the row', function () {
+    // The route now goes {session}/elements/{handle} instead of a bare
+    // {handle} — this is what proves an OWNER can still POST through it and
+    // have the payload persisted, not just that a stranger is blocked.
+    app(ElementRegistry::class)->add(new class extends AbstractCheckoutElement
+    {
+        public function handle(): string
+        {
+            return 'order-details';
+        }
+
+        public function title(): string
+        {
+            return 'Order details';
+        }
+
+        public function component(): string
+        {
+            return 'order-details';
+        }
+
+        public function rules(): array
+        {
+            return ['reference' => ['required', 'string']];
+        }
+    });
+
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    $this->post(route('lunar.checkout.elements.store', ['session' => $session->uuid, 'handle' => 'order-details']), [
+        'reference' => 'PO-9999',
+    ])->assertRedirect();
+
+    expect($session->fresh()->getElementData('order-details'))->toBe(['reference' => 'PO-9999']);
+});
+
+it('leaves the model instance clean after a bag write', function () {
+    // element_data is synced back to $this after the locked write. Without
+    // that sync, $this stays dirty on the pre-write bag, and a later
+    // unrelated save() on the same instance would rewrite the whole column
+    // from that stale snapshot, outside the lock the write just took.
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    (new ModelElementStore($session))->put('order-details', ['reference' => 'PO-1']);
+
+    expect($session->isDirty('element_data'))->toBeFalse();
+
+    $session->customer_email = 'later@example.test';
+    $session->save();
+
+    expect($session->fresh()->getElementData('order-details'))->toBe(['reference' => 'PO-1']);
 });
 
 it('forgets a handle', function () {
