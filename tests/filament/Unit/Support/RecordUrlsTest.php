@@ -43,6 +43,10 @@ it('keeps working when the configured value is nonsense', function () {
 
     expect(RecordUrls::for('order', (object) ['id' => 1]))->toBeNull();
 
+    config()->set('lunar.filament.record_urls.order', ['class' => FakeRecordResource::class, 'page' => 'edit']);
+
+    expect(RecordUrls::for('order', (object) ['id' => 1]))->toBeNull();
+
     config()->set('lunar.filament.record_urls.order', 'Not\\A\\Real\\Class');
 
     expect(RecordUrls::for('order', (object) ['id' => 1]))->toBeNull();

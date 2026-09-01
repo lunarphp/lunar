@@ -8,17 +8,10 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-- Inertia admin panel — new `lunarphp/panel` package: auth, extension points (navigation, slots, table columns, row/bulk/page actions with shared ordering), Customers CRUD, Channels settings (spec 0049)
-- Panel order-value chart on the customer edit page + `TimeSeriesChart` on the add-on surface (spec 0050)
-- Panel edit drafts — autosaved pending edits with field-level conflict detection (spec 0051)
-- Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
-- Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
-- Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
-- Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
-- Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
+- Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
+- Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
-- Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
@@ -28,6 +21,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 - Cache toolkit follow-ons — outbound webhooks, change feed / sync cursor, internal derived caches (ride spec 0043 events)
 - Cache-invalidation deferrals — media as a tracked satellite; a `CartLinesUpdated` event (from spec 0043)
+- Stock events — `StockMovementRecorded`, a variant stock-changed event and the Scout re-index on `stock_available` change (spec 0038's unshipped events section; split out of spec 0065)
 - Location-scoped availability & stock routing — per-location stock selection + sell-time routing/splitting (follow-on to 0038)
 - Checkout stock reservations — hold stock via the `ReservesStock` seam at checkout start (follow-on to 0038)
 - Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
@@ -42,6 +36,22 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
+- Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)
+- Split the `AmountOff` discount type into `PercentageOff` and `FixedAmountOff` (spec 0073)
+- Panel Orders section + order view rebuilt around fulfilments with full fulfilment operations (specs 0066, 0067)
+- Panel media groups — every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
+- Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
+- Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
+- Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
+- Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
+- Panel edit drafts — autosaved pending edits with field-level conflict detection (spec 0051)
+- Panel order-value chart on the customer edit page + `TimeSeriesChart` on the add-on surface (spec 0050)
+- Panel product option types (spec 0061)
+- Panel `lunar.panel` middleware group (spec 0059)
+- Inertia admin panel — new `lunarphp/panel` package: auth, extension points, Customers CRUD, Channels settings (spec 0049)
+- PayPal driver hardening — tests, amount verification, currency-correct scaling, webhooks (spec 0071)
+- First-party payment drivers narrowed to Stripe and PayPal; retire the Opayo package (spec 0070)
 - Upgrade package for v1.x migrators, using Rector (spec 0001)
 - Flatten v1.x migrations into a v2 baseline (spec 0003)
 - `\Lunar\Core` namespace change (spec 0002)
@@ -80,3 +90,9 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - `public_id` (ULID) external addressing (spec 0046)
 - Rename `product_variants.purchasable` to `selling_policy` (spec 0048)
 - Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
+- Per-attribute validation rules across both panels (spec 0062)
+- Standalone attributes surface in the Filament admin (spec 0063)
+- Long-lived worker safety — scoped lifetimes for per-visitor service state (spec 0064)
+- Port the v1.5.0 fixes into v2 (spec 0065)
+- Line-item refunds — `refund_lines`, per-line refund guards, `RefundRequest` (spec 0028)
+- Panel settlement banner + line-driven refund composer (spec 0068)

@@ -12,6 +12,8 @@ return [
     'settings_webhook_url' => 'URL du webhook',
     'settings_ping_enabled' => 'Envoyer un webhook quand un widget est pingué',
     'settings_saved' => 'Réglages de l\'add-on d\'exemple enregistrés.',
+    'search_source' => 'Références de compte',
+    'search_command' => 'Envoyer un ping aux widgets',
     'widget_label' => 'Nombre de clients',
     'widget_description' => 'Le total des clients, et combien ont rejoint sur la période sélectionnée.',
     'widget_total' => 'Clients au total',

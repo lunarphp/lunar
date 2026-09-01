@@ -1,6 +1,6 @@
 ---
 name: lunar-pr-review
-description: Review a Lunar pull request or branch against the 1.x main branch. Activates on /lunar:pr-review, or when the user asks to "review this PR/branch/diff" inside the Lunar monorepo. Checks translation completeness across 16 locales, missing tests/factories, migration safety, Filament contract usage, PHP conventions, and breaking-change risk on the public contract surface.
+description: Review a Lunar pull request or branch against the 2.x main branch. Activates on /lunar:pr-review, or when the user asks to "review this PR/branch/diff" inside the Lunar monorepo. Checks translation completeness across 16 locales, missing tests/factories, migration safety, Filament conventions, PHP conventions, and breaking-change risk on the public contract surface.
 metadata:
   audience: Lunar monorepo contributors
 ---
@@ -9,7 +9,7 @@ metadata:
 
 ## Overview
 
-Lunar is a Laravel-based headless commerce package distributed as a monorepo (`packages/core`, `packages/admin`, plus payment/search adapters). PRs target the `1.x` branch. This skill runs a deterministic review pass tuned to the patterns that actually exist in this codebase, surfaces findings as `path:line — issue — fix`, and groups them by severity. It does not make changes.
+Lunar is a Laravel-based headless commerce package distributed as a monorepo. On this line the packages are `core`, `panel`, `filament`, `admin`, `demo-data`, `upgrade`, `panel-addon-example`, plus the payment and search adapters. PRs target the `2.x` branch. The root namespace is `Lunar\Core\` for core, and `Lunar\Panel\` / `Lunar\Filament\` for the panel packages — **not** the bare `Lunar\` of the 1.x line. This skill runs a deterministic review pass tuned to the patterns that actually exist in this codebase, surfaces findings as `path:line — issue — fix`, and groups them by severity. It does not make changes.
 
 ## When to Activate
 
@@ -19,12 +19,12 @@ Lunar is a Laravel-based headless commerce package distributed as a monorepo (`p
 
 ## Scope
 
-- **In scope**: changed files between `HEAD` and `origin/1.x` (or a user-supplied base).
+- **In scope**: changed files between `HEAD` and `origin/2.x` (or a user-supplied base).
 - **Out of scope**: unchanged files, generated docs (`packages/*/resources/views/vendor`), `vendor/`, lock files beyond noting they changed.
 
 ## Workflow
 
-1. **Determine base branch.** Default `1.x`. If the user passed an arg (e.g. `/lunar:pr-review main`), use that. Run `git fetch origin <base> --quiet`.
+1. **Determine base branch.** Default `2.x`. If the user passed an arg (e.g. `/lunar:pr-review main`), use that. Run `git fetch origin <base> --quiet`.
 2. **Collect the diff.**
    - Files: `git diff --name-status origin/<base>...HEAD`
    - Commits: `git log --oneline origin/<base>..HEAD`
@@ -50,14 +50,14 @@ Also scan added strings in PHP/Blade for hardcoded user-facing English that shou
 ### Tests (Pest) — Should-fix
 
 For each newly added class under `packages/*/src/`:
-- Models, services, actions, observers, jobs, and events should have a matching Pest test under `tests/{core,admin,opayo,paypal,shipping,stripe,search}/`.
+- Models, services, actions, observers, jobs, and events should have a matching Pest test under `tests/{core,panel,filament,admin,demo-data,paypal,shipping,stripe,search,upgrade}/`.
 - New `Eloquent` models additionally require a factory under `packages/*/database/factories/`.
 - Use `php artisan make:test --pest <Name>Test` (do not write to `tests/Feature/` paths directly).
 
 ### Migrations — Blocker
 
 For each migration in `packages/*/database/migrations/`:
-- Must `extend Lunar\Base\Migration` (not `Illuminate\Database\Migrations\Migration` directly).
+- Must `extend Lunar\Core\Database\Migration` (not `Illuminate\Database\Migrations\Migration` directly).
 - Must use `$this->prefix` when referencing table names (`Schema::table($this->prefix.'orders', …)`).
 - Must implement `down()` symmetrically — every `Schema::create` / column-add in `up()` is reversed.
 - Foreign keys use `foreignId(...)->constrained()` with explicit `onDelete`/`onUpdate` where the parent model uses soft deletes.
@@ -66,30 +66,26 @@ For each migration in `packages/*/database/migrations/`:
 
 ### Filament resources & admin — Should-fix
 
-For files under `packages/admin/src/Filament/Resources/`:
+For files under `packages/admin/src/Filament/Resources/`, and the equivalent navigation/section classes under `packages/panel/src/Sections/`:
 - `protected static ?string $model = …Contract::class;` — must reference an interface from `Lunar\Models\Contracts\*`, not a concrete model.
 - Labels: `getLabel`, `getPluralLabel`, `getNavigationGroup`, form/column labels must come from `__('lunarpanel::…')`; flag any hardcoded English strings.
 - New resources set `protected static ?string $permission`.
 - Navigation icons resolved via `FilamentIcon::resolve('lunar::…')`.
 
-### Model contracts (type-hinting) — Blocker
+### Model type hints — no rule on this line
 
-Eloquent models in `packages/*/src/Models/` are bound to interfaces in `Lunar\Models\Contracts\*` via the model manifest, so consumers can swap in their own subclass. Code that type-hints the concrete model defeats that extension point.
+**Do not flag concrete model type hints.** On 1.x every model had an interface in
+`Lunar\Models\Contracts\*` and type-hinting the concrete class was a blocker. This
+line dropped per-model interfaces: pipelines, actions, managers and observers
+type-hint the model directly, for example
+`public function handle(Cart $cart, Closure $next): mixed` in
+`packages/core/src/Pipelines/Cart/`. That is correct and idiomatic here.
 
-Anywhere outside the model class itself and its factory/seeder, type hints, return types, property types, and PHPDoc references must use the contract, not the concrete model:
+Never suggest a `...\Contracts\Foo as FooContract` import, and never report
+`Lunar\Core\Models\Cart` as though it should have been `Lunar\Models\Cart`.
 
-- Method parameters & return types: `public function handle(CartContract $cart, Closure $next): CartContract`.
-- Promoted/declared properties: `protected ?OrderContract $order = null;`.
-- PHPDoc: `@param Closure(OrderContract): mixed $next`, `@return Collection<int, ProductContract>`.
-- DI / container resolution: `app(CartContract::class)`, not `app(Cart::class)` or `new Cart`.
-
-Exemptions (concrete class is correct here):
-- The model class itself, its relations, scopes, and casts.
-- Factories, seeders, and migrations.
-- Tests creating fixtures (`Product::factory()->create()`).
-- `instanceof` checks against the concrete class only when there is a documented reason (otherwise prefer the contract).
-
-Flag as **Blocker** in new/changed code: `use Lunar\Models\Foo;` followed by a type hint `Foo $foo` in a service, action, manager, pipeline, observer, listener, event, or job. Suggest the fix as `use Lunar\Models\Contracts\Foo as FooContract;` and rename the hint to `FooContract`.
+Models remain swappable through `Lunar\Core\Manifests\ModelManifest`, so a newly
+added model still needs registering there — that part is worth checking.
 
 ### PHP conventions — Should-fix / Nit
 
@@ -114,7 +110,7 @@ Any diff in `composer.json` or any `packages/*/composer.json`:
 
 ### Channel scoping — Blocker
 
-Lunar is multi-channel. Models using `Lunar\Base\Traits\HasChannels` (`Product`, `Collection`, `Discount`, …) expose `scopeChannel()` for filtering.
+Lunar is multi-channel. Models using `Lunar\Core\Models\Concerns\HasChannels` (`Product`, `Collection`, `Discount`, …) expose `scopeChannel()` for filtering.
 
 - New queries on these models in admin lists, storefront-facing endpoints, or scheduled jobs should call `->channel($channel)` (or be explicitly justified as cross-channel).
 - New columns/relations on a channelled model that drive visibility need the channel scope wired in, not just the column added.
@@ -123,9 +119,9 @@ Lunar is multi-channel. Models using `Lunar\Base\Traits\HasChannels` (`Product`,
 
 Before reviewing any new Eloquent query, check whether the related trait/model already exposes a scope for the same condition. Hand-rolled `->where(...)->orWhere(...)` chains that duplicate a trait scope are a Should-fix.
 
-- `Lunar\Base\Traits\HasCustomerGroups` exposes a scope for customer-group eligibility (enabled/visible/`starts_at`/`ends_at` windowing). New `->customerGroups()->where('enabled', true)…` chains in resources, widgets, validators, or pipelines should use that scope.
-- `Lunar\Base\Traits\HasChannels` — see Channel scoping above; use `->channel(...)`, not `->channels()->where('enabled', true)…`.
-- `Lunar\Base\Traits\HasUrls` — use the `default()` / active scope rather than re-checking columns inline.
+- `Lunar\Core\Models\Concerns\HasCustomerGroups` exposes a scope for customer-group eligibility (enabled/visible/`starts_at`/`ends_at` windowing). New `->customerGroups()->where('enabled', true)…` chains in resources, widgets, validators, or pipelines should use that scope.
+- `Lunar\Core\Models\Concerns\HasChannels` — see Channel scoping above; use `->channel(...)`, not `->channels()->where('enabled', true)…`.
+- `Lunar\Core\Models\Concerns\HasUrls` — use the `default()` / active scope rather than re-checking columns inline.
 - Status enums on `Product`, `Order`, etc. — prefer `->whereIn('status', SomeStatus::active())` or the existing helper over string-literal comparisons.
 
 When flagging, name the specific trait/scope the author should use, not just "use a scope". If the scope doesn't exist yet but the same chain is repeated 2+ times in the diff, suggest adding it to the trait.
@@ -143,7 +139,7 @@ Treat a single instance as a Nit; flag as Should-fix when the same closure stack
 
 ### Money & price handling — Blocker
 
-Money in Lunar lives in `Lunar\DataTypes\Price` (integer minor units + `Currency`) and the `Lunar\Base\Casts\Price` cast.
+Money on this line lives in `Lunar\Core\DataObjects\PriceValue` (integer minor units + `Currency`). Note the rename from 1.x, which used `Lunar\DataTypes\Price`.
 
 - Flag new monetary columns as `decimal`/`float` — they should be `unsignedInteger`/`bigInteger` and cast through `Price`.
 - Flag float arithmetic on money: `* 0.01`, `(float)`, `round()` on raw totals, `+`/`-`/`*` between mixed-currency `Price` instances.
@@ -167,7 +163,7 @@ Cart, cart line, cart prune, and order pipelines live under `packages/core/src/P
 
 ### Event payload stability — Blocker
 
-Event classes under `packages/*/src/Events/` and `packages/*/src/Base/Events/` are public API on `1.x`. Listeners depend on the constructor signature and public properties.
+Event classes under `packages/*/src/Events/` are public API. Listeners depend on the constructor signature and public properties.
 
 - Renaming/removing/retyping constructor params or public properties on an existing event is breaking.
 - Adding new optional params at the end of a constructor is acceptable; new public properties are acceptable.
@@ -175,9 +171,10 @@ Event classes under `packages/*/src/Events/` and `packages/*/src/Base/Events/` a
 
 ### Public API surface — Blocker
 
-`1.x` is a stable line. The following count as breaking changes and must be flagged loudly:
-- Any change in `packages/*/src/Models/Contracts/` (added/removed/renamed methods, changed signatures).
+`2.x` is pre-GA, so a breaking change is permitted — but it must be deliberate, called out in the PR, and accompanied by an upgrade path (usually a Rector rule in `packages/upgrade`). Flag the following loudly as breaking, and check the upgrade path exists:
+- Any change in `packages/*/src/Contracts/` (added/removed/renamed methods, changed signatures). These are service contracts such as `CartSession` and `ModelManifest`.
 - Public method signature changes on classes that implement a `Contracts/*` interface.
+- Renamed or moved Rector rules in `packages/upgrade/src/Rector/` that consumers rely on to migrate from 1.x.
 - Removed or renamed events under `packages/*/src/Base/Events/` or `packages/*/src/Events/`.
 - Removed config keys in `packages/*/config/*.php`.
 - Migrations that rename existing tables/columns without a backwards-compatible accessor.

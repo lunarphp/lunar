@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Compre X, leve Y',
         ],
-        'amount_off' => [
-            'heading' => 'Valor de desconto',
+        'percentage_off' => [
+            'heading' => 'Desconto percentual',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Desconto de valor fixo',
         ],
         'name' => [
             'label' => 'Nome',
@@ -64,11 +67,8 @@ return [
             'label' => 'Adicionar recompensas automaticamente',
             'helper_text' => 'Ative para adicionar produtos de recompensa quando não estiverem no carrinho.',
         ],
-        'fixed_value' => [
-            'label' => 'Valor fixo',
-        ],
         'percentage' => [
-            'label' => 'Percentual',
+            'label' => 'Porcentagem',
         ],
     ],
     'table' => [

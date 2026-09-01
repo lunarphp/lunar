@@ -184,6 +184,42 @@ class Discount extends Base
             });
     }
 
+    /**
+     * The three scopes below complete scopeActive so that active, scheduled,
+     * expired and pending partition the table the way getStatusAttribute()
+     * partitions a single record: an end date in the past wins, then the start
+     * date decides. They follow scopeActive's boundary — a discount ending
+     * exactly now is expired — rather than the accessor's isPast(), so that no
+     * row falls outside all four.
+     *
+     * Pending only matches a null starts_at, which the baseline schema forbids.
+     * It is here to keep the four statuses exhaustive, not because a discount is
+     * expected to land there.
+     */
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->whereNotNull('ends_at')
+            ->where('ends_at', '<=', now());
+    }
+
+    public function scopeScheduled(Builder $query): Builder
+    {
+        return $query->where('starts_at', '>', now())
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>', now());
+            });
+    }
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->whereNull('starts_at')
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>', now());
+            });
+    }
+
     public function scopeCollections(Builder $query, iterable $collectionIds = [], array|string $types = []): Builder
     {
         if (is_array($collectionIds)) {
@@ -270,11 +306,22 @@ class Discount extends Base
         );
     }
 
-    public function scopeUsable(Builder $query): Builder
+    /**
+     * @param  iterable  $exempt  Discount ids that stay usable whatever their
+     *                            use count — a cart that already consumed a
+     *                            discount must still be able to re-price with it.
+     */
+    public function scopeUsable(Builder $query, iterable $exempt = []): Builder
     {
-        return $query->where(function ($subQuery) {
+        $exempt = collect($exempt)->filter()->values();
+
+        return $query->where(function ($subQuery) use ($exempt) {
             $subQuery->whereRaw('uses < max_uses')
-                ->orWhereNull('max_uses');
+                ->orWhereNull('max_uses')
+                ->when(
+                    $exempt->isNotEmpty(),
+                    fn ($subQuery) => $subQuery->orWhereIn('id', $exempt)
+                );
         });
     }
 }

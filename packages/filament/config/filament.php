@@ -49,15 +49,19 @@ return [
     |--------------------------------------------------------------------------
     |
     | Bridge tables and widgets link to per-record management pages owned by
-    | whichever panel is consuming them. Each entry is a Filament resource or
-    | page class string. The bridge calls `{class}::getUrl(['record' => $record])`
-    | when present; an empty string disables the link. The `lunarphp/admin`
-    | shell overrides these defaults at boot.
+    | whichever panel is consuming them. Each entry is a Filament page class
+    | string, called as `{class}::getUrl(['record' => $record])`, or a
+    | `[Resource::class, 'page']` pair, called as
+    | `{resource}::getUrl('page', ['record' => $record])`. A callable receiving
+    | ($record, $context) is also accepted, but closures do not survive
+    | `config:cache`. Null disables the link. The `lunarphp/admin` shell
+    | overrides these defaults at boot.
     |
     */
     'record_urls' => [
         'order' => null,
         'product_variant' => null,
+        'collection_edit' => null,
     ],
 
     /*

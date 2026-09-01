@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Запази опциите',
                 ],
+                'save-variants' => [
+                    'label' => 'Запази вариантите',
+                ],
                 'add-shared-option' => [
                     'label' => 'Добави споделена опция',
                     'form' => [

@@ -21,7 +21,7 @@ class File extends BaseFieldType
         $directory = $attribute->configuration->get('directory');
 
         $input = FileUpload::make($attribute->handle)
-            ->when(filled($attribute->validation_rules), fn (FileUpload $component) => $component->rules($attribute->validation_rules))
+            ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
             ->helperText(null);
 

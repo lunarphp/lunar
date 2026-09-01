@@ -24,7 +24,7 @@ class GetTaxZone implements GetsTaxZone
         }
 
         if ($address && $address->state) {
-            $stateZone = $this->getTaxZoneState->execute($address->state);
+            $stateZone = $this->getTaxZoneState->execute($address->state, $address->country_id);
             if ($stateZone) {
                 return $stateZone->taxZone;
             }

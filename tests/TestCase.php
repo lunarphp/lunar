@@ -3,6 +3,7 @@
 namespace Lunar\Tests;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\Filesystem;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 use function Orchestra\Testbench\after_resolving;
@@ -11,6 +12,8 @@ use function Orchestra\Testbench\default_migration_path;
 class TestCase extends BaseTestCase
 {
     private static bool $databasePrepared = false;
+
+    private static bool $storagePrepared = false;
 
     protected function setUp(): void
     {
@@ -21,11 +24,34 @@ class TestCase extends BaseTestCase
     {
         Model::preventLazyLoading();
 
+        $this->configureStorage($app);
+
         match (env('DB_DRIVER', 'sqlite')) {
             'mysql' => $this->configureMysql($app),
             'pgsql' => $this->configurePgsql($app),
             default => $this->configureSqlite($app),
         };
+    }
+
+    // Media tests write real files, and media ids restart at 1 in every worker's
+    // database — so on a shared root one worker deleting `public/1` can fail
+    // another worker's upload mid-write. Give each worker its own root.
+    private function configureStorage($app): void
+    {
+        $root = sys_get_temp_dir().'/lunar-test-storage-'.$this->workerToken();
+        $filesystem = new Filesystem;
+
+        // Once per process, so a previous run's files can't leak into assertions.
+        if (! static::$storagePrepared) {
+            $filesystem->deleteDirectory($root);
+            static::$storagePrepared = true;
+        }
+
+        $filesystem->ensureDirectoryExists($root.'/public');
+        $filesystem->ensureDirectoryExists($root.'/private');
+
+        $app['config']->set('filesystems.disks.public.root', $root.'/public');
+        $app['config']->set('filesystems.disks.local.root', $root.'/private');
     }
 
     private function configureSqlite($app): void

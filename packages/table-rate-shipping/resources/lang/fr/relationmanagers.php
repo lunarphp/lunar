@@ -39,7 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Poids Min.',
-                        'helper_text' => 'Saisir le poids en kilogrammes',
+                        'helper_text' => 'Saisir le poids en :unit',
                     ],
                     'price' => [
                         'label' => 'Prix',

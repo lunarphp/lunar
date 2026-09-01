@@ -36,10 +36,13 @@ export { default as DonutChart } from './components/DonutChart.vue';
 export { default as TextInput } from './components/TextInput.vue';
 export { default as Textarea } from './components/Textarea.vue';
 export { default as Select } from './components/Select.vue';
+export { default as Combobox } from './components/Combobox.vue';
+export type { ComboboxOption } from './components/Combobox.vue';
 export { default as Checkbox } from './components/Checkbox.vue';
 export { default as Toggle } from './components/Toggle.vue';
 export { default as FieldLabel } from './components/FieldLabel.vue';
 export { default as ColorPicker } from './components/ColorPicker.vue';
+export { default as DatePicker } from './components/DatePicker.vue';
 export { default as ValuePreviewChip } from './components/ValuePreviewChip.vue';
 export type { PreviewValue } from './components/ValuePreviewChip.vue';
 
@@ -58,6 +61,14 @@ export { useEditDraft } from './composables/useEditDraft';
 export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';
 export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
 export type { DraftConflict } from './lib/http';
+
+// Discounts — exported so a third-party discount type's form can reuse the
+// same targeting and usage widgets the first-party forms use.
+export { default as TargetChipList } from './components/TargetChipList.vue';
+export type { TargetChip } from './components/TargetChipList.vue';
+export { default as TargetPickerDialog } from './components/TargetPickerDialog.vue';
+export type { TargetOption } from './components/TargetPickerDialog.vue';
+export { default as UsageMeter } from './components/UsageMeter.vue';
 
 // Primitives
 export { default as Button } from './components/Button.vue';

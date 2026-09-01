@@ -69,6 +69,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Global Search
+    |--------------------------------------------------------------------------
+    |
+    | The command palette matches records with SQL LIKE by default. Enable
+    | scout_enabled to route matching through Laravel Scout instead for any
+    | model that is indexed, which is what makes the search tolerate typos —
+    | engines such as Meilisearch and Typesense provide that; Scout's database
+    | driver matches substrings only.
+    |
+    */
+    'search' => [
+        'scout_enabled' => env('LUNAR_PANEL_SEARCH_SCOUT', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Menus
     |--------------------------------------------------------------------------
     |

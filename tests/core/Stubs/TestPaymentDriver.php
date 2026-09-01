@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Core\Stubs;
 
+use Illuminate\Support\Str;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
@@ -23,7 +24,17 @@ class TestPaymentDriver extends AbstractPayment
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        return new PaymentRefund(true);
+        $refundTransaction = $transaction->order->transactions()->create([
+            'success' => true,
+            'type' => 'refund',
+            'driver' => 'testing',
+            'amount' => $amount,
+            'reference' => 'test-refund-'.Str::random(8),
+            'status' => 'success',
+            'notes' => $notes,
+        ]);
+
+        return new PaymentRefund(success: true, transaction: $refundTransaction);
     }
 
     /**

@@ -38,6 +38,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property array $tax_breakdown
  * @property int $tax_total
  * @property int $total
+ * @property int $refunded_quantity
  * @property ?string $notes
  * @property ?array $meta
  * @property ?Carbon $created_at
@@ -84,6 +85,7 @@ class OrderLine extends Base implements HasCurrency
         'tax_total' => 'integer',
         'discount_total' => 'integer',
         'total' => 'integer',
+        'refunded_quantity' => 'integer',
     ];
 
     public function resolveCurrency(): Currency
@@ -101,6 +103,20 @@ class OrderLine extends Base implements HasCurrency
     public function fulfilmentLines(): HasMany
     {
         return $this->hasMany(FulfilmentLine::class);
+    }
+
+    public function refundLines(): HasMany
+    {
+        return $this->hasMany(RefundLine::class);
+    }
+
+    /**
+     * Quantity still available to refund — the line's quantity minus
+     * whatever refund_lines have already claimed against it.
+     */
+    public function refundableQuantity(): int
+    {
+        return max(0, $this->quantity - $this->refunded_quantity);
     }
 
     /**

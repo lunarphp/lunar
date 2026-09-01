@@ -31,3 +31,11 @@ test('can get default record with static helper', function () {
 
     expect(Channel::getDefault()->id)->toEqual($defaultChannel->id);
 });
+
+test('can return null when no record is marked as default', function () {
+    Channel::factory(3)->create([
+        'default' => false,
+    ]);
+
+    expect(Channel::getDefault())->toBeNull();
+});

@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Spremi opcije',
                 ],
+                'save-variants' => [
+                    'label' => 'Spremi varijante',
+                ],
                 'add-shared-option' => [
                     'label' => 'Dodaj dijeljenu opciju',
                     'form' => [

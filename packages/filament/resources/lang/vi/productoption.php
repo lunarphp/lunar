@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Lưu tùy chọn',
                 ],
+                'save-variants' => [
+                    'label' => 'Lưu biến thể',
+                ],
                 'add-shared-option' => [
                     'label' => 'Thêm tùy chọn dùng chung',
                     'form' => [

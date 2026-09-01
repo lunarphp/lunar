@@ -85,8 +85,19 @@ class DraftManager implements DraftManagerContract
 
         $draft = $this->persist($draft ?? $this->newDraft($draftable, $staff), $merged, $snapshot);
 
+        // Attribute fields would otherwise surface in messages by their raw
+        // draft key ("The attribute:hero_cta field is required."). The `.*`
+        // variants name the per-value entries of translated/list fields.
+        $names = collect($resource->labels())
+            ->map(fn (string $label): string => __($label));
+
         $this->validator
-            ->make([...$current, ...$merged], $resource->rules($draftable))
+            ->make(
+                [...$current, ...$merged],
+                $resource->rules($draftable),
+                [],
+                [...$names, ...$names->mapWithKeys(fn (string $name, string $key) => [$key.'.*' => $name])],
+            )
             ->validate();
 
         if ($conflicts = $this->detectConflicts($resource, $merged, $snapshot, $current)) {

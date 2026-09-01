@@ -38,7 +38,7 @@ class RecordUrls
 
         // Checked before is_callable: [Resource::class, 'edit'] would satisfy
         // is_callable if the resource happened to expose a static edit().
-        if (is_array($resolver) && count($resolver) === 2) {
+        if (is_array($resolver) && array_is_list($resolver) && count($resolver) === 2) {
             [$class, $page] = $resolver;
 
             if (is_string($class) && is_string($page) && method_exists($class, 'getUrl')) {

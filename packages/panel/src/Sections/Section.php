@@ -3,9 +3,12 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Slots\SlotRegistry;
 
 abstract class Section implements ProvidesNavigation
@@ -57,6 +60,44 @@ abstract class Section implements ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return panel forms for discount types this section owns, keyed by the
+     * discount type class, e.g.
+     * [PercentageOff::class => PercentageOffForm::class].
+     *
+     * A type with no entry falls back to the raw JSON editor, so a
+     * panel-unaware type from another package stays editable.
+     *
+     * @return array<class-string, class-string<DiscountTypeForm>>
+     */
+    public function discountTypeForms(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search sources this section contributes, e.g.
+     * [ProductSearchSource::class].
+     *
+     * @return array<int, class-string<SearchSource>>
+     */
+    public function searchSources(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search commands this section contributes — the static
+     * verbs the palette offers alongside record results, e.g.
+     * [CreateProductCommand::class].
+     *
+     * @return array<int, class-string<SearchCommand>>
+     */
+    public function searchCommands(): array
     {
         return [];
     }

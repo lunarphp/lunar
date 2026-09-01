@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Mua X tặng Y',
         ],
-        'amount_off' => [
-            'heading' => 'Số tiền giảm',
+        'percentage_off' => [
+            'heading' => 'Giảm giá theo phần trăm',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Giảm giá số tiền cố định',
         ],
         'name' => [
             'label' => 'Tên',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Tự động thêm quà tặng',
             'helper_text' => 'Bật để tự động thêm sản phẩm quà tặng khi không có trong giỏ hàng.',
-        ],
-        'fixed_value' => [
-            'label' => 'Giá trị cố định',
         ],
         'percentage' => [
             'label' => 'Phần trăm',

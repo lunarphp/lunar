@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Sta het personeelslid toe om klanten te beheren',
     'permissions.sales:manage-discounts.label' => 'Beheer Kortingen',
     'permissions.sales:manage-discounts.description' => 'Sta het personeelslid toe om kortingen te beheren',
+    'permissions.shipping:manage.label' => 'Beheer Verzending',
+    'permissions.shipping:manage.description' => 'Sta het personeelslid toe om verzending te beheren',
 ];

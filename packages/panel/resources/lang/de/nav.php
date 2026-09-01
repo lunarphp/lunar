@@ -22,6 +22,8 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Verkäufe',
     'customers' => 'Kunden',
+    'orders' => 'Orders',
+    'discounts' => 'Rabatte',
     'general' => 'Allgemein',
     'team' => 'Team',
     'store' => 'Store',

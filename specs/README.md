@@ -85,3 +85,11 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0058 | Panel dashboard widgets | proposed    |
 | 0060 | Panel media groups | proposed    |
 | 0061 | Product option types (Text / Colour / Swatch) | accepted    |
+| 0062 | Per-attribute validation rules | implemented |
+| 0063 | Standalone attributes surface in the Filament admin | accepted    |
+| 0064 | Scoped service lifetimes for long-lived workers | implemented |
+| 0070 | First-party payment drivers: Stripe and PayPal | implemented |
+| 0071 | PayPal driver hardening | implemented |
+| 0072 | Panel Discounts section | accepted    |
+| 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
+| 0074 | Panel global search (command palette) | implemented |

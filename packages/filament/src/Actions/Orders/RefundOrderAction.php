@@ -5,6 +5,7 @@ namespace Lunar\Filament\Actions\Orders;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Lunar\Core\Actions\Orders\RefundOrder;
+use Lunar\Core\DataObjects\RefundRequest;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
 use Lunar\Filament\Actions\Concerns\ConfirmsDestructiveAction;
@@ -58,12 +59,15 @@ class RefundOrderAction extends Action
 
     protected function performRefund(array $data, Order $record): void
     {
+        // This modal is an amount-only refund — no line picker — so the
+        // whole amount rides as the manual adjustment, per RefundRequest's
+        // documented amount-only fallback (empty lines).
         try {
-            $result = $record->refund(
+            $result = $record->refund(new RefundRequest(
                 transactionId: $data['transaction'],
-                amount: $data['amount'],
+                adjustment: $data['amount'],
                 notes: $data['notes'] ?? null,
-            );
+            ));
         } catch (OrderActionException $exception) {
             $this->failureNotification(
                 fn () => Notification::make('refund_failure')->color('danger')->title($exception->getMessage())

@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'السماح للموظف بإدارة العملاء',
     'permissions.sales:manage-discounts.label' => 'إدارة الخصومات',
     'permissions.sales:manage-discounts.description' => 'السماح للموظف بإدارة الخصومات',
+    'permissions.shipping:manage.label' => 'إدارة الشحن',
+    'permissions.shipping:manage.description' => 'السماح للموظف بإدارة الشحن',
 ];

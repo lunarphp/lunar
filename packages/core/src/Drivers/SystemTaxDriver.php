@@ -172,6 +172,6 @@ class SystemTaxDriver implements TaxDriver
 
     protected function defaultTaxZone()
     {
-        return TaxZone::where('default', '=', 1)->first();
+        return TaxZone::getDefault();
     }
 }

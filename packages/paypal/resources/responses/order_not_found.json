@@ -1,0 +1,11 @@
+{
+    "name": "RESOURCE_NOT_FOUND",
+    "message": "The specified resource does not exist.",
+    "debug_id": "b9f9c1f9a1b2c",
+    "details": [
+        {
+            "issue": "INVALID_RESOURCE_ID",
+            "description": "Specified resource ID does not exist."
+        }
+    ]
+}

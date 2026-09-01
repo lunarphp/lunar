@@ -1,0 +1,39 @@
+{
+    "id": "5O190127TN364715T",
+    "status": "COMPLETED",
+    "purchase_units": [
+        {
+            "reference_id": "default",
+            "payments": {
+                "captures": [
+                    {
+                        "id": "3C679366HH908993F",
+                        "status": "COMPLETED",
+                        "amount": {
+                            "currency_code": "GBP",
+                            "value": "19.99"
+                        },
+                        "final_capture": true,
+                        "seller_protection": {
+                            "status": "ELIGIBLE"
+                        },
+                        "create_time": "2026-08-27T10:05:00Z",
+                        "update_time": "2026-08-27T10:05:00Z",
+                        "processor_response": {
+                            "avs_code": "Y",
+                            "cvv_code": "M"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "payer": {
+        "name": {
+            "given_name": "Test",
+            "surname": "Buyer"
+        },
+        "email_address": "buyer@example.com",
+        "payer_id": "QYR5Z8XDVJNXQ"
+    }
+}

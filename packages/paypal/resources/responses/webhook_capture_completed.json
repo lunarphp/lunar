@@ -1,0 +1,23 @@
+{
+    "id": "WH-2WR32451HC0233532-67976317FL4543714",
+    "event_version": "1.0",
+    "create_time": "2026-08-27T10:05:10.000Z",
+    "resource_type": "capture",
+    "event_type": "PAYMENT.CAPTURE.COMPLETED",
+    "summary": "Payment completed for GBP 19.99 GBP",
+    "resource": {
+        "id": "3C679366HH908993F",
+        "status": "COMPLETED",
+        "amount": {
+            "currency_code": "GBP",
+            "value": "19.99"
+        },
+        "supplementary_data": {
+            "related_ids": {
+                "order_id": "5O190127TN364715T"
+            }
+        },
+        "create_time": "2026-08-27T10:05:00Z",
+        "update_time": "2026-08-27T10:05:00Z"
+    }
+}

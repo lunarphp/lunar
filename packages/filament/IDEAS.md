@@ -27,6 +27,7 @@ Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped. Spec 0010 (item #1)
 13. **Tenancy hooks** — channel-as-tenant support (Filament v5 tenancy contracts), so multi-store SaaS builds don't need to fork.
 14. **Table preset filters** — `OrderStatusFilter`, `OrderDateRangeFilter`, `ProductStatusFilter`, `LowStockFilter` as reusable filter classes, not only baked into our tables.
 15. **Slideover quick-edit actions** — `EditProductSlideoverAction`, etc. Idiomatic-Filament, currently absent.
+22. **`AttachAction` on the attribute group relation manager** — attach an existing ungrouped attribute to the group, completing the group-management story that spec 0063's standalone attributes surface started (its edit form's group select already covers regrouping). Deferred open question from spec 0063, leaning yes. _(Numbered out of sequence: existing item numbers are referenced by shipped specs and stay stable.)_
 
 ## Developer experience
 

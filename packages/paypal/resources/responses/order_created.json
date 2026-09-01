@@ -1,0 +1,16 @@
+{
+    "id": "5O190127TN364715T",
+    "status": "CREATED",
+    "links": [
+        {
+            "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/5O190127TN364715T",
+            "rel": "self",
+            "method": "GET"
+        },
+        {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=5O190127TN364715T",
+            "rel": "approve",
+            "method": "GET"
+        }
+    ]
+}

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('configuration')->nullable();
             $table->integer('position')->default(1)->index();
             $table->boolean('required')->default(false);
+            $table->json('validation_rules')->nullable();
             $table->boolean('searchable')->default(false)->index();
             $table->boolean('filterable')->default(false)->index();
             $table->boolean('system')->default(false);

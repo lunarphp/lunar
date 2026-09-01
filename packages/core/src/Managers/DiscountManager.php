@@ -7,8 +7,9 @@ use InvalidArgumentException;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager as DiscountManagerContract;
 use Lunar\Core\DataObjects\CartDiscount;
-use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\CustomerGroup;
@@ -36,12 +37,18 @@ class DiscountManager implements DiscountManagerContract
     protected ?Collection $discounts = null;
 
     /**
+     * Identifies the cart state $discounts was built from.
+     */
+    protected ?string $discountsKey = null;
+
+    /**
      * The available discount types
      *
      * @var array
      */
     protected $types = [
-        AmountOff::class,
+        PercentageOff::class,
+        FixedAmountOff::class,
         BuyXGetY::class,
     ];
 
@@ -132,7 +139,7 @@ class DiscountManager implements DiscountManagerContract
         }
 
         return Discount::active()
-            ->usable()
+            ->usable($cart?->consumedDiscountIds() ?? [])
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
             ->with([
@@ -217,8 +224,11 @@ class DiscountManager implements DiscountManagerContract
 
     public function apply(Cart $cart): Cart
     {
-        if (! $this->discounts || $this->discounts?->isEmpty()) {
+        $key = $this->getDiscountsCacheKey($cart);
+
+        if ($this->discounts === null || $this->discountsKey !== $key) {
             $this->discounts = $this->getDiscounts($cart);
+            $this->discountsKey = $key;
         }
 
         foreach ($this->discounts as $discount) {
@@ -236,9 +246,26 @@ class DiscountManager implements DiscountManagerContract
         return $cart;
     }
 
+    /**
+     * Build the cache key for the memoised discounts.
+     *
+     * getDiscounts() filters on the cart's coupon code and on the purchasables
+     * in its lines, so a set built for one cart state is not valid for another.
+     */
+    protected function getDiscountsCacheKey(Cart $cart): string
+    {
+        return implode('|', [
+            $cart->id,
+            $cart->coupon_code ?? '',
+            $cart->customer_id ?? '',
+            $cart->lines->map(fn ($line) => $line->purchasable_type.':'.$line->purchasable_id)->sort()->implode(','),
+        ]);
+    }
+
     public function resetDiscounts(): self
     {
         $this->discounts = null;
+        $this->discountsKey = null;
 
         return $this;
     }
