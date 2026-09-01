@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Filament\Actions\Orders;
+namespace Lunar\Admin\Support\Actions\Orders;
 
+use Lunar\Admin\Support\Actions\DownloadPdfAction;
 use Lunar\Core\Models\Order;
-use Lunar\Filament\Actions\Support\DownloadPdfAction;
 
 class DownloadOrderPdfAction extends DownloadPdfAction
 {
@@ -20,6 +20,6 @@ class DownloadOrderPdfAction extends DownloadPdfAction
 
         parent::setUp();
 
-        $this->label(__('lunar-filament::actions.orders.download_pdf.label'));
+        $this->label(__('lunarpanel::order.action.download_order_pdf.label'));
     }
 }

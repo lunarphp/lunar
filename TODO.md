@@ -36,6 +36,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
 - Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
 - Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)

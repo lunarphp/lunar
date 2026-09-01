@@ -16,9 +16,7 @@ use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
 
 class LunarPanelProvider extends ServiceProvider
 {
-    protected $configFiles = [
-        'admin',
-    ];
+    protected $configFiles = [];
 
     protected $root = __DIR__.'/..';
 
@@ -44,8 +42,11 @@ class LunarPanelProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/lunarpanel'),
+        ], 'lunarpanel.views');
+
+        $this->publishes([
             __DIR__.'/../resources/lang' => $this->app->langPath('vendor/lunarpanel'),
-        ]);
+        ], 'lunarpanel.translations');
 
         $this->publishes([
             __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/lunarpanel/pdf'),

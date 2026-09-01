@@ -402,7 +402,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Tables\\Actions\\Collections\\CreateChildCollection' => 'Lunar\\Filament\\Tables\\Actions\\Collections\\CreateChildCollection',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Livewire' => 'Filament\\Schemas\\Components\\Livewire',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Tags' => 'Lunar\\Filament\\Infolists\\Components\\Tags',
-        'Lunar\\Admin\\Support\\Infolists\\Components\\Timeline' => 'Lunar\\Filament\\Infolists\\Components\\Timeline',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Transaction' => 'Lunar\\Filament\\Infolists\\Components\\Transaction',
         'Lunar\\Admin\\Support\\FieldTypes\\BaseFieldType' => 'Lunar\\Filament\\FieldTypes\\BaseFieldType',
         'Lunar\\Admin\\Support\\FieldTypes\\Dropdown' => 'Lunar\\Filament\\FieldTypes\\Dropdown',

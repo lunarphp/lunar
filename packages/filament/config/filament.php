@@ -32,19 +32,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Widget auto-registration
-    |--------------------------------------------------------------------------
-    |
-    | The Lunar admin shell wires every bridge widget into its panel. When
-    | you build your own Filament panel using lunarphp/filament directly,
-    | leave this disabled and register only the widgets you want via your
-    | own `widgets([…])` configuration.
-    |
-    */
-    'register_widgets_on_default_panel' => false,
-
-    /*
-    |--------------------------------------------------------------------------
     | Record URL resolvers
     |--------------------------------------------------------------------------
     |
