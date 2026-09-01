@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\CheckoutSession;
@@ -18,6 +19,7 @@ use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Exceptions\AddressLookupException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
@@ -40,6 +42,7 @@ class CheckoutController extends Controller
     public function __construct(
         private readonly ElementRegistry $registry,
         private readonly CheckoutSession $session,
+        private readonly AddressLookup $addressLookup,
     ) {}
 
     /**
@@ -224,6 +227,11 @@ class CheckoutController extends Controller
                 'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
                 'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
                 'pay' => route('lunar.checkout.pay', $session->uuid),
+                // Null when no driver can answer, which is how the delivery
+                // step knows to render manual entry instead of a dead search.
+                'addressLookup' => $this->addressLookup->isAvailable()
+                    ? route('lunar.checkout.address-lookup', $session->uuid)
+                    : null,
             ],
         ];
     }
@@ -262,6 +270,33 @@ class CheckoutController extends Controller
         $exists = Auth::getProvider()->retrieveByCredentials(['email' => $data['email']]) !== null;
 
         return response()->json(['exists' => $exists]);
+    }
+
+    /**
+     * Addresses at a postcode (spec 0011 §C). Owned and throttled, and the
+     * postcode is validated before the vendor is touched so a malformed value
+     * can never cost the merchant a billed lookup.
+     *
+     * Selecting a returned address fills the delivery form client-side; it does
+     * not write the cart. Persistence stays on the shipping-address route, so
+     * address writes keep one path.
+     */
+    public function addressLookup(Request $request, CheckoutSessionModel $session, AddressLookup $lookup): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate([
+            'postcode' => ['required', 'string', 'max:12', 'regex:/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/'],
+        ]);
+
+        try {
+            $addresses = $lookup->lookup($data['postcode']);
+        } catch (AddressLookupException) {
+            // The vendor's own message never reaches the browser.
+            return response()->json(['message' => 'We could not search for that postcode. Enter your address manually.'], 503);
+        }
+
+        return response()->json(['addresses' => $addresses]);
     }
 
     /**

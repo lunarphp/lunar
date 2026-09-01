@@ -23,6 +23,13 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
             ->middleware('throttle:checkout-contact-lookup')
             ->name('lunar.checkout.contact.lookup');
 
+        // Postcode to address lookup (spec 0011 §C). Session-scoped and owned
+        // like every other write route, throttled like the contact lookup, and
+        // the postcode is format-checked before any vendor call is made.
+        Route::post($path.'/{session}/address-lookup', [CheckoutController::class, 'addressLookup'])
+            ->middleware('throttle:checkout-address-lookup')
+            ->name('lunar.checkout.address-lookup');
+
         // Persist the contact email onto the checkout session model (guest) or
         // associate the authenticated customer. Inertia POST, returns back().
         Route::post($path.'/{session}/contact', [CheckoutController::class, 'storeContact'])

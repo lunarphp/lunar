@@ -106,6 +106,11 @@ class CheckoutServiceProvider extends ServiceProvider
     {
         RateLimiter::for('checkout-contact-lookup', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
 
+        // Same shape as the contact bucket. An ungated lookup endpoint on a
+        // per-lookup-billed vendor is a way for a stranger to spend the
+        // merchant's money.
+        RateLimiter::for('checkout-address-lookup', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
+
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
