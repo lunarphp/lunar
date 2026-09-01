@@ -74,6 +74,22 @@ final class CreateCheckoutSession implements CreatesCheckoutSession
                 $superseded[] = $sibling;
             }
 
+            /*
+             * Supersede is the normal path when a guest signs in and their cart
+             * merges (spec 0010 §A). Without this, anything an element captured
+             * before sign-in is silently discarded, which is exactly the moment
+             * a trade customer signs in to order against their account.
+             */
+            $carriedElementData = null;
+
+            foreach ($superseded as $sibling) {
+                $bag = $sibling->element_data?->getArrayCopy() ?? [];
+
+                if ($bag !== []) {
+                    $carriedElementData = array_merge($carriedElementData ?? [], $bag);
+                }
+            }
+
             $session = CheckoutSession::create([
                 'cart_reference' => $cartReference,
                 'channel_handle' => $snapshot->channelHandle,
@@ -89,6 +105,7 @@ final class CreateCheckoutSession implements CreatesCheckoutSession
                 'success_url' => $attributes['success_url'] ?? null,
                 'cancel_url' => $attributes['cancel_url'] ?? null,
                 'metadata' => $attributes['metadata'] ?? null,
+                'element_data' => $carriedElementData,
                 'expires_at' => now()->addHours(
                     (int) config('lunar.checkout.session.expires_after', 24)
                 ),
