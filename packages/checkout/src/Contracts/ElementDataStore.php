@@ -3,12 +3,14 @@
 namespace Lunar\Checkout\Contracts;
 
 /**
- * Prototype stand-in for the spec 0004 CheckoutSession. The full model snapshots
- * lines, pins channel/currency, carries a state machine and a public uuid. Until
- * that lands, this is a thin per-shopper value store that gives checkout elements
- * a place to read and persist the data they capture, scoped to the active session.
+ * Key/value store for the data checkout elements capture, keyed by element
+ * handle (the spec 0010 §C element bag).
+ *
+ * Deliberately NOT called CheckoutSession: that name means the persisted row
+ * (Models\CheckoutSession), and having two unrelated objects share it made
+ * "is $session the row or the bag?" a coin flip at every call site.
  */
-interface CheckoutSession
+interface ElementDataStore
 {
     /** Read a captured value (typically by element handle). */
     public function get(string $key, mixed $default = null): mixed;

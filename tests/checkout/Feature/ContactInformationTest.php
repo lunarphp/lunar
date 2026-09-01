@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Elements\ContactInformation;
-use Lunar\Checkout\Session\CheckoutSession as SessionBag;
+use Lunar\Checkout\Session\SessionElementStore;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Models\Customer;
 use Lunar\Tests\Checkout\TestCase;
@@ -24,7 +24,7 @@ function makeUserWithCustomer(): array
 }
 
 it('describes itself as the contact region element', function () {
-    $element = (new ContactInformation)->setSession(new SessionBag(app('session.store')));
+    $element = (new ContactInformation)->setDataStore(new SessionElementStore(app('session.store')));
 
     expect($element->handle())->toBe('contact')
         ->and($element->component())->toBe('contact-information')
@@ -32,7 +32,7 @@ it('describes itself as the contact region element', function () {
 });
 
 it('projects guest contact state when not authenticated', function () {
-    $element = (new ContactInformation)->setSession(new SessionBag(app('session.store')));
+    $element = (new ContactInformation)->setDataStore(new SessionElementStore(app('session.store')));
     $props = $element->props();
 
     expect($props['signedIn'])->toBeFalse()

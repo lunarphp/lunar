@@ -14,15 +14,15 @@ use Lunar\Checkout\Console\Commands\ReconcileCheckoutSessions;
 use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 use Lunar\Checkout\Contracts\CheckoutDriver;
-use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
 use Lunar\Checkout\Contracts\CheckoutSessionStateConfig;
+use Lunar\Checkout\Contracts\ElementDataStore;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
 use Lunar\Checkout\Managers\AddressLookupManager;
 use Lunar\Checkout\Managers\CheckoutSessionManager;
-use Lunar\Checkout\Session\CheckoutSession;
+use Lunar\Checkout\Session\SessionElementStore;
 use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
 use Lunar\Checkout\Support\CheckoutAssets;
 use Lunar\Core\Events\PaymentAttemptEvent;
@@ -71,11 +71,11 @@ class CheckoutServiceProvider extends ServiceProvider
         // registered the payment region projects empty.
         $this->app->singleton(PaymentMethodRegistryContract::class, fn ($app) => new PaymentMethodRegistry($app));
 
-        // Checkout session (prototype) — request-scoped value store backing the
-        // data elements capture. Swapped for the spec 0004 model by rebinding.
+        // Element data store. This session-backed binding serves the embedded
+        // flow; the uuid checkout flow swaps in a row-backed store per request.
         $this->app->scoped(
-            CheckoutSessionContract::class,
-            fn ($app) => new CheckoutSession($app->make(LaravelSession::class)),
+            ElementDataStore::class,
+            fn ($app) => new SessionElementStore($app->make(LaravelSession::class)),
         );
 
         // Checkout-session state machine catalogue (spec 0004 §C). Bound in

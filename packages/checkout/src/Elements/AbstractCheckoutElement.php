@@ -3,7 +3,7 @@
 namespace Lunar\Checkout\Elements;
 
 use Lunar\Checkout\Contracts\CheckoutElement;
-use Lunar\Checkout\Contracts\CheckoutSession;
+use Lunar\Checkout\Contracts\ElementDataStore;
 
 /**
  * Base for checkout elements. Provides the required-core defaults so a custom
@@ -13,11 +13,11 @@ use Lunar\Checkout\Contracts\CheckoutSession;
  */
 abstract class AbstractCheckoutElement implements CheckoutElement
 {
-    protected CheckoutSession $session;
+    protected ElementDataStore $dataStore;
 
-    public function setSession(CheckoutSession $session): static
+    public function setDataStore(ElementDataStore $store): static
     {
-        $this->session = $session;
+        $this->dataStore = $store;
 
         return $this;
     }
@@ -39,7 +39,7 @@ abstract class AbstractCheckoutElement implements CheckoutElement
 
     public function data(): array
     {
-        return (array) $this->session->get($this->handle(), []);
+        return (array) $this->dataStore->get($this->handle(), []);
     }
 
     public function rules(): array
@@ -49,6 +49,6 @@ abstract class AbstractCheckoutElement implements CheckoutElement
 
     public function store(array $data): void
     {
-        $this->session->put($this->handle(), $data);
+        $this->dataStore->put($this->handle(), $data);
     }
 }

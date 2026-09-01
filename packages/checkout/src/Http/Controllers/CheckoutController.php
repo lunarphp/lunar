@@ -14,7 +14,7 @@ use Inertia\Response;
 use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
-use Lunar\Checkout\Contracts\CheckoutSession;
+use Lunar\Checkout\Contracts\ElementDataStore;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
@@ -41,7 +41,7 @@ class CheckoutController extends Controller
      */
     public function __construct(
         private readonly ElementRegistry $registry,
-        private readonly CheckoutSession $session,
+        private readonly ElementDataStore $dataStore,
         private readonly AddressLookup $addressLookup,
     ) {}
 
@@ -247,7 +247,7 @@ class CheckoutController extends Controller
 
         abort_if($element === null, 404);
 
-        $element->setSession($this->session);
+        $element->setDataStore($this->dataStore);
 
         $validated = $request->validate($element->rules());
 
@@ -512,7 +512,7 @@ class CheckoutController extends Controller
     private function projectElements(CheckoutSessionModel $session): array
     {
         return array_map(function (CheckoutElement $element) use ($session): array {
-            $element->setSession($this->session);
+            $element->setDataStore($this->dataStore);
             $element->mount();
 
             $props = $element->props();

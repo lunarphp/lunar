@@ -24,8 +24,8 @@ interface CheckoutElement
     /** Layout region: 'main' (the form column) or 'summary' (the order rail). */
     public function region(): string;
 
-    /** Inject the checkout session the element reads from and persists to. */
-    public function setSession(CheckoutSession $session): static;
+    /** Inject the store the element reads captured data from and writes it to. */
+    public function setDataStore(ElementDataStore $store): static;
 
     /** Read-only hydration from already-persisted state. Must not write. */
     public function mount(): void;

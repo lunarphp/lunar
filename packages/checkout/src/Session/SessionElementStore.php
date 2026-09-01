@@ -3,15 +3,14 @@
 namespace Lunar\Checkout\Session;
 
 use Illuminate\Contracts\Session\Session as LaravelSession;
-use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
+use Lunar\Checkout\Contracts\ElementDataStore;
 
 /**
- * Laravel-session-backed checkout session (prototype). Namespaces every captured
- * value under a single bag key so element data does not collide with the host
- * app's own session keys. Replaced by the spec 0004 CheckoutSession model
- * (persisted, uuid-addressable, with pinned currency/total) when it lands.
+ * Element data in the visitor's PHP session. This is the store for the
+ * session-less embedded flow, which per spec 0010 §C has no bag row to write
+ * to. The uuid-addressed checkout flow uses ModelElementStore instead.
  */
-class CheckoutSession implements CheckoutSessionContract
+class SessionElementStore implements ElementDataStore
 {
     private const BAG = 'lunar.checkout.elements';
 
