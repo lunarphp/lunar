@@ -14,7 +14,7 @@ const panelFor = (method) => resolveElement(method.component)
   <section class="block" data-block="payment">
     <div class="block-head">
       <h2 class="block-title">
-        <span class="block-step"><span class="num">4</span><span class="chk ico"><Icon name="check" /></span></span>
+        <span class="block-step"><span class="num">5</span><span class="chk ico"><Icon name="check" /></span></span>
         Payment
       </h2>
     </div>
