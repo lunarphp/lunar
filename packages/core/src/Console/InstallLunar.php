@@ -61,8 +61,10 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
+            /** @var class-string<Staff> $staffModel */
+            $staffModel = config('lunar.staff.model', Staff::class);
 
-            if (class_exists(Staff::class) && ! Staff::whereAdmin(true)->exists()) {
+            if (! $staffModel::whereAdmin(true)->exists()) {
                 $this->components->info('First create a lunar admin user');
                 $this->call('lunar:create-admin');
             }
@@ -185,8 +187,14 @@ class InstallLunar extends Command
             }
         });
 
-        $this->components->info('Publishing Filament assets');
-        $this->call('filament:assets');
+        if ($this->commandExists('filament:assets')) {
+            $this->components->info('Publishing Filament assets');
+            $this->call('filament:assets');
+        }
+
+        if ($this->commandExists('lunar:panel:install') && confirm('Install the Lunar panel (publish its config and assets)?')) {
+            $this->call('lunar:panel:install');
+        }
 
         $this->components->info('Lunar is now installed');
 
@@ -199,6 +207,15 @@ class InstallLunar extends Command
 
             $this->components->info('Thank you!');
         }
+    }
+
+    /**
+     * Only panel-specific steps run through this guard — the panels are
+     * optional, so their commands may not be registered at all.
+     */
+    private function commandExists(string $name): bool
+    {
+        return $this->getApplication()?->has($name) ?? false;
     }
 
     /**
