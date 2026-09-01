@@ -7,12 +7,25 @@ use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Core\Models\Order;
 
 /**
- * The order has resolved and is about to be placed (spec 0001 §I as amended by
- * spec 0011 §F).
+ * The order has resolved and complete() is about to decide whether to stamp
+ * it placed (spec 0001 §I as amended by spec 0011 §F). On the synchronous
+ * path $order is genuinely pre-placement; on the webhook-first path it was
+ * already placed by the gateway during authorize(), so "about to be placed"
+ * only holds for the branch that still needs the stamp — this is still the
+ * one point both paths converge, inside the transaction and cart-row lock.
  *
  * This is where a host projects what its elements captured onto the order. It
- * fires inside complete()'s transaction and cart-row lock, so a listener's
- * writes are atomic with placement and happen exactly once per order.
+ * fires exactly once per order.
+ *
+ * $order is a clone taken at dispatch, detached from the instance complete()
+ * goes on to mutate (and, on the sync path, save()) immediately after. A
+ * listener's writes to it are NOT persisted automatically — call
+ * `$event->order->update([...])` (or ->save()) explicitly; Eloquent resolves
+ * by primary key, so this always touches the correct row regardless of which
+ * clone performs it. Any attribute change left unsaved is discarded and never
+ * appears on the order complete() returns. The clone is shallow (Model
+ * defines no __clone), so already-loaded relations remain shared with the
+ * original instance — the isolation covers the order's own attributes only.
  *
  * The package deliberately does not project element data itself: what a
  * captured value means to a merchant's downstream systems is theirs to decide.

@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Elements\AbstractCheckoutElement;
+use Lunar\Checkout\Events\CheckoutElementStored;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Core\Facades\CartSession;
@@ -89,6 +91,49 @@ it('lets the session owner post an element and land it on the row', function () 
     ])->assertRedirect();
 
     expect($session->fresh()->getElementData('order-details'))->toBe(['reference' => 'PO-9999']);
+});
+
+it('dispatches CheckoutElementStored when the owner posts an element', function () {
+    Event::fake([CheckoutElementStored::class]);
+
+    app(ElementRegistry::class)->add(new class extends AbstractCheckoutElement
+    {
+        public function handle(): string
+        {
+            return 'order-details';
+        }
+
+        public function title(): string
+        {
+            return 'Order details';
+        }
+
+        public function component(): string
+        {
+            return 'order-details';
+        }
+
+        public function rules(): array
+        {
+            return ['reference' => ['required', 'string']];
+        }
+    });
+
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    $this->post(route('lunar.checkout.elements.store', ['session' => $session->uuid, 'handle' => 'order-details']), [
+        'reference' => 'PO-9999',
+    ])->assertRedirect();
+
+    Event::assertDispatchedTimes(CheckoutElementStored::class, 1);
+    Event::assertDispatched(
+        CheckoutElementStored::class,
+        fn (CheckoutElementStored $event): bool => $event->session->uuid === $session->uuid
+            && $event->handle === 'order-details'
+            && $event->data === ['reference' => 'PO-9999'],
+    );
 });
 
 it('leaves the model instance clean after a bag write', function () {

@@ -38,8 +38,9 @@ class CheckoutController extends Controller
 {
     /**
      * Collaborators are constructor-injected per the service-layer DI rule
-     * (spec 0016): the element registry and the checkout session are bound to
-     * their contracts in the service provider.
+     * (spec 0016): the element registry and the address lookup are bound to
+     * their contracts in the service provider; the dispatcher is the
+     * framework's own event dispatcher.
      */
     public function __construct(
         private readonly ElementRegistry $registry,
