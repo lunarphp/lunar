@@ -23,6 +23,12 @@ class CreateAdmin extends Command
         /** @var class-string<Staff> $model */
         $model = config('lunar.staff.model', Staff::class);
 
+        if (($email = $this->option('email')) !== null && ($error = $this->emailError($email, $model))) {
+            $this->components->error($error);
+
+            return self::FAILURE;
+        }
+
         $staff = $model::create([
             'first_name' => $this->option('firstname') ?? text(
                 label: 'First Name',
@@ -34,14 +40,10 @@ class CreateAdmin extends Command
                 required: true,
             ),
 
-            'email' => $this->option('email') ?? text(
+            'email' => $email ?? text(
                 label: 'Email address',
                 required: true,
-                validate: fn (string $email): ?string => match (true) {
-                    ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email address must be valid.',
-                    $model::where('email', $email)->exists() => 'A staff member with this email address already exists.',
-                    default => null,
-                },
+                validate: fn (string $email): ?string => $this->emailError($email, $model),
             ),
 
             // The model's `hashed` cast takes care of hashing.
@@ -56,5 +58,17 @@ class CreateAdmin extends Command
         $this->components->info("Success! {$staff->email} now has admin access.");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * @param  class-string<Staff>  $model
+     */
+    protected function emailError(string $email, string $model): ?string
+    {
+        return match (true) {
+            ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email address must be valid.',
+            $model::where('email', $email)->exists() => 'A staff member with this email address already exists.',
+            default => null,
+        };
     }
 }

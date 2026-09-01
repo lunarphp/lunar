@@ -54,6 +54,30 @@ test('rejects an email address already in use', function () {
     expect(Staff::where('email', 'taken@example.com')->count())->toBe(1);
 });
 
+test('rejects an --email option already in use', function () {
+    Staff::factory()->create(['email' => 'taken@example.com']);
+
+    $this->artisan('lunar:create-admin', [
+        '--firstname' => 'Ada',
+        '--lastname' => 'Lovelace',
+        '--email' => 'taken@example.com',
+        '--password' => 'top-secret',
+    ])->assertFailed();
+
+    expect(Staff::where('email', 'taken@example.com')->count())->toBe(1);
+});
+
+test('rejects an invalid --email option', function () {
+    $this->artisan('lunar:create-admin', [
+        '--firstname' => 'Ada',
+        '--lastname' => 'Lovelace',
+        '--email' => 'not-an-email',
+        '--password' => 'top-secret',
+    ])->assertFailed();
+
+    expect(Staff::count())->toBe(0);
+});
+
 test('creates through a swapped lunar.staff.model', function () {
     config()->set('lunar.staff.model', TestStaff::class);
 

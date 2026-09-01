@@ -1,6 +1,6 @@
 # 0075 — First staff account creation without the Filament admin
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-01
 - TODO item: First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
@@ -54,7 +54,9 @@ working. Behavioural differences from the admin-package original:
   account was created; each panel's installer already prints its own URL, and
   the command must not know which panels are installed.
 - Prompt flow, email validation (valid + unique), password hashing, and
-  `admin => true` are carried over as-is.
+  `admin => true` are carried over. The email rules also run against an
+  `--email` option value, so scripted installs fail cleanly instead of
+  surfacing a database unique-constraint exception.
 
 `lunarphp/admin` deletes `MakeLunarAdminCommand` and its registration in
 `LunarPanelProvider`. The command name still resolves in an admin-package
