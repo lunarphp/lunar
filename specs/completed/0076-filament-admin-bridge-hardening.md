@@ -1,6 +1,6 @@
 # 0076 — Filament admin and bridge hardening
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-01
 - TODO item: Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
@@ -234,9 +234,9 @@ The bridge README and the v2 docs (Add-ons > Filament Admin) update to match.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Bridge standalone: move `Timeline` + PDF actions to admin, set-list cleanup, filament-suite architecture test.
-- [ ] Slice 2 — Hook surface: delete the two dead hooks, declare `extendsInfolist`, upgrade-guide notes.
-- [ ] Slice 3 — Locale-safe navigation groups + test.
-- [ ] Slice 4 — Configured staff guard through panel and `Staff::guardName()` + tests.
-- [ ] Slice 5 — Asset package id fix and tagged views/lang publishes.
-- [ ] Slice 6 — Config hygiene (`order_count_statuses`, plugin toggles, `register_widgets_on_default_panel`), README + docs follow-up.
+- [x] Slice 1 — Bridge standalone: move `Timeline` + PDF actions to admin, set-list cleanup, filament-suite architecture test.
+- [x] Slice 2 — Hook surface: delete the two dead hooks, declare `extendsInfolist`, upgrade-guide notes.
+- [x] Slice 3 — Locale-safe navigation groups + test.
+- [x] Slice 4 — Configured staff guard through panel and `Staff::guardName()` + tests. (Also fixed three hard-coded `auth('staff')` call sites in the Inertia panel, routed through `Panel::guard()`.)
+- [x] Slice 5 — Asset package id fix and tagged views/lang publishes.
+- [x] Slice 6 — Config hygiene (`order_count_statuses`, plugin toggles, `register_widgets_on_default_panel`), README + docs follow-up. (The `admin` config file emptied out and was removed entirely.)
