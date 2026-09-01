@@ -82,3 +82,27 @@ it('lets a real listener observe the order before it is placed', function () {
 
     expect($seen)->toBeNull();
 });
+
+it('keeps a listener\'s write on the order after complete() stamps placement', function () {
+    // The clone contract's actual guarantee: complete() hands the listener a
+    // clone so the "about to be placed" snapshot it dispatched isn't
+    // retroactively mutated by the placed_at stamp below, but the listener's
+    // own write (same underlying row) must survive that stamp, not be
+    // clobbered by it.
+    Event::listen(OrderPlacing::class, function (OrderPlacing $event): void {
+        $event->order->update(['customer_reference' => 'PO-TEST']);
+    });
+
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+
+    $driver = app(CheckoutDriver::class);
+    $session = $driver->resolveOrCreateSession($cart);
+
+    $order = $driver->complete($session, $session->cart_fingerprint);
+
+    $fresh = $order->fresh();
+
+    expect($fresh->customer_reference)->toBe('PO-TEST')
+        ->and($fresh->placed_at)->not->toBeNull();
+});

@@ -41,6 +41,13 @@ const resolveRegion = (region) =>
   )
 
 const mainElements = resolveRegion('main')
+
+// Contact, delivery and shipping methods are steps 1-3, so main-region
+// elements number from 4 and payment takes whatever is left. Derived rather
+// than hardcoded: every main-region element is opt-in, so a host that
+// registers none, one or several has to number correctly in each case.
+const FIRST_MAIN_STEP = 4
+
 // The contact region renders through the same registry; when the host hasn't
 // registered a contact element server-side, fall back to the presentational
 // built-in section so the prototype layout still holds together.
@@ -105,18 +112,21 @@ const mSummaryOpen = ref(false)
             </section>
 
             <!-- Consumer-registered custom elements (main region), placed above
-                 payment. Server-projected; rendered via the component registry. -->
+                 payment. Server-projected; rendered via the component registry.
+                 Each element's step number is derived from its position so an
+                 opt-in element never collides with a fixed number. -->
             <component
               :is="comp"
-              v-for="{ el, comp } in mainElements"
+              v-for="({ el, comp }, index) in mainElements"
               :key="el.handle"
               :element="el"
+              :step="FIRST_MAIN_STEP + index"
             />
 
             <!-- Static extension point for non-element custom markup. -->
             <slot name="before-payment" />
 
-            <PaymentSection />
+            <PaymentSection :step="FIRST_MAIN_STEP + mainElements.length" />
 
             <div class="cta-wrap desktop-cta">
               <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing">

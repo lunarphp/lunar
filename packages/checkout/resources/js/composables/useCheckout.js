@@ -199,8 +199,10 @@ export function createCheckout(data) {
   }
 
   // Plain JSON POST outside Inertia — the pay boundary and gateway calls are
-  // request/response, not page visits.
-  async function postJson(url, body) {
+  // request/response, not page visits. `fallbackMessage` is caller-supplied:
+  // a hardcoded "Payment could not be started." made no sense surfacing on
+  // the delivery step's address lookup.
+  async function postJson(url, body, fallbackMessage = 'The request could not be completed.') {
     const xsrf = decodeURIComponent(
       document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '',
     )
@@ -220,7 +222,7 @@ export function createCheckout(data) {
 
     if (!response.ok) {
       const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
-      throw new Error(message || 'Payment could not be started.')
+      throw new Error(message || fallbackMessage)
     }
 
     return payload
@@ -256,27 +258,35 @@ export function createCheckout(data) {
       // captures its own.
       if (state.billingSame && state.shippingAddress) {
         const a = state.shippingAddress
-        await postJson(state.urls.billingAddress, {
-          first_name: a.firstName,
-          last_name: a.lastName,
-          company_name: a.companyName,
-          line1: a.line1,
-          line2: a.line2,
-          city: a.city,
-          state: a.state,
-          postcode: a.postcode,
-          country_code: a.countryCode,
-          phone: a.phone,
-        })
+        await postJson(
+          state.urls.billingAddress,
+          {
+            first_name: a.firstName,
+            last_name: a.lastName,
+            company_name: a.companyName,
+            line1: a.line1,
+            line2: a.line2,
+            city: a.city,
+            state: a.state,
+            postcode: a.postcode,
+            country_code: a.countryCode,
+            phone: a.phone,
+          },
+          'Your billing address could not be saved.',
+        )
       }
 
       // Pin the session against exactly what the customer confirmed. A method
       // needing no gateway confirmation (offline / pay-on-collection) — or a
       // zero total — completes server-side right here instead.
-      const result = await postJson(state.urls.pay, {
-        fingerprint: state.fingerprint,
-        payment_method: state.method,
-      })
+      const result = await postJson(
+        state.urls.pay,
+        {
+          fingerprint: state.fingerprint,
+          payment_method: state.method,
+        },
+        'Payment could not be started.',
+      )
 
       state.paid = true
 

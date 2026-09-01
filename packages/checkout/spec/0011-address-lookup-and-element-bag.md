@@ -1,6 +1,6 @@
 # 0011 — Address lookup drivers & making the element bag real
 
-- Status: draft
+- Status: shipped (2026-09-01)
 - Author: Alec Ritson
 - Created: 2026-08-19
 - TODO item: "Checkout address lookup — a driver seam for postcode → address, shipped with a first concrete driver; make the [[0010-cart-session-reconciliation]] §C element bag the actual persistence for price-neutral elements"

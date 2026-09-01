@@ -41,7 +41,11 @@ onMounted(async () => {
     if (!key) throw new Error('Card payments are not configured.')
 
     const [{ clientSecret }] = await Promise.all([
-      postJson(state.urls.paymentIntent, { payment_method: props.method.handle }),
+      postJson(
+        state.urls.paymentIntent,
+        { payment_method: props.method.handle },
+        'Card payment could not be started.',
+      ),
       loadStripeJs(),
     ])
 

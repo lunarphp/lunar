@@ -27,6 +27,14 @@ use Lunar\Core\Models\Order;
  * defines no __clone), so already-loaded relations remain shared with the
  * original instance — the isolation covers the order's own attributes only.
  *
+ * The flip side of that isolation: the order instance complete() returns, and
+ * the one OrderPlaced carries synchronously, do NOT reflect a listener's
+ * writes. Those are on the row, not on that instance. A consumer that needs
+ * them must re-fetch (`$order->fresh()`, or a fresh query by id). Consumers
+ * using SerializesModels get it for free, since they reload the model by key
+ * when they run — which is why the host app's order mailables see projected
+ * values without doing anything special.
+ *
  * The package deliberately does not project element data itself: what a
  * captured value means to a merchant's downstream systems is theirs to decide.
  */

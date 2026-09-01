@@ -150,6 +150,23 @@ class CheckoutController extends Controller
     }
 
     /**
+     * Ownership says who may touch the session; this says whether it is still
+     * touchable at all. `show()` tests the same three terminal conditions and
+     * redirects a browser out of them; an XHR write has nowhere to redirect
+     * to, so it gets a 409 rather than quietly mutating a session whose order
+     * is already placed or whose window has closed.
+     */
+    private function ensureOperable(CheckoutSessionModel $session): void
+    {
+        abort_if(
+            $session->status instanceof Completed
+                || $session->status instanceof Cancelled
+                || $session->isExpired(),
+            409,
+        );
+    }
+
+    /**
      * The UUID in the URL is a capability token. Without an ownership check any
      * leaked or guessed UUID would expose the session's PII (email, addresses),
      * so the requester must own the session: their live cart is its source, or
@@ -247,6 +264,7 @@ class CheckoutController extends Controller
     public function storeElement(Request $request, CheckoutSessionModel $session, string $handle): RedirectResponse
     {
         $this->ensureOwnership($session);
+        $this->ensureOperable($session);
 
         $element = $this->registry->get($handle);
 
@@ -288,16 +306,17 @@ class CheckoutController extends Controller
      * not write the cart. Persistence stays on the shipping-address route, so
      * address writes keep one path.
      */
-    public function addressLookup(Request $request, CheckoutSessionModel $session, AddressLookup $lookup): JsonResponse
+    public function addressLookup(Request $request, CheckoutSessionModel $session): JsonResponse
     {
         $this->ensureOwnership($session);
+        $this->ensureOperable($session);
 
         $data = $request->validate([
             'postcode' => ['required', 'string', 'max:12', 'regex:/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/'],
         ]);
 
         try {
-            $addresses = $lookup->lookup($data['postcode']);
+            $addresses = $this->addressLookup->lookup($data['postcode']);
         } catch (AddressLookupException) {
             // The vendor's own message never reaches the browser.
             return response()->json(['message' => 'We could not search for that postcode. Enter your address manually.'], 503);

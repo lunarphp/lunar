@@ -38,7 +38,11 @@ async function findAddresses() {
   lookupResults.value = []
 
   try {
-    const result = await postJson(state.urls.addressLookup, { postcode: lookupPostcode.value })
+    const result = await postJson(
+      state.urls.addressLookup,
+      { postcode: lookupPostcode.value },
+      'We could not search for that postcode. Enter your address manually.',
+    )
     lookupResults.value = result.addresses ?? []
 
     if (lookupResults.value.length === 0) {
@@ -62,6 +66,8 @@ function chooseAddress(index) {
   form.city = address.city ?? ''
   form.postcode = address.postcode ?? ''
   form.country = address.countryCode ?? 'GB'
+
+  lookupResults.value = []
 }
 
 // The cart address is the source of truth for whether the shipping step is

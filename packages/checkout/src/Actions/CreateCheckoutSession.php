@@ -79,6 +79,12 @@ final class CreateCheckoutSession implements CreatesCheckoutSession
              * merges (spec 0010 §A). Without this, anything an element captured
              * before sign-in is silently discarded, which is exactly the moment
              * a trade customer signs in to order against their account.
+             *
+             * Across multiple superseded siblings the merge is last-write-wins
+             * per handle, and that is intentional: siblings come back in id
+             * order, so the most recently captured value survives. Reconciling
+             * two siblings' competing captures for one handle is not a case
+             * worth inventing a rule for.
              */
             $carriedElementData = null;
 

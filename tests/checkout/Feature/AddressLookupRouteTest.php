@@ -122,6 +122,30 @@ it('projects the lookup url when a driver can answer', function () {
         );
 });
 
+it('throttles the address lookup to 10 requests per minute per IP', function () {
+    // Spec 0011 §C's Testing list requires the throttle bucket enforced; the
+    // route's own middleware is 'throttle:checkout-address-lookup'
+    // (10/min/IP, registered in CheckoutServiceProvider).
+    Http::fake(['api.ideal-postcodes.co.uk/*' => Http::response([
+        'code' => 2000,
+        'result' => [],
+    ])]);
+
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    for ($i = 0; $i < 10; $i++) {
+        $this->postJson(route('lunar.checkout.address-lookup', $session->uuid), [
+            'postcode' => 'SW1A 2AA',
+        ])->assertOk();
+    }
+
+    $this->postJson(route('lunar.checkout.address-lookup', $session->uuid), [
+        'postcode' => 'SW1A 2AA',
+    ])->assertStatus(429);
+});
+
 it('projects a null lookup url under the null driver', function () {
     config()->set('lunar.checkout.address_lookup.driver', 'null');
 

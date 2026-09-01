@@ -155,6 +155,26 @@ it('leaves the model instance clean after a bag write', function () {
     expect($session->fresh()->getElementData('order-details'))->toBe(['reference' => 'PO-1']);
 });
 
+it('leaves the model instance clean after a bag forget', function () {
+    // Same guarantee as the put() case above, for forget(): the locked write
+    // still has to sync element_data back onto $this, or a later unrelated
+    // save() on the same instance rewrites the column from a stale bag that
+    // still has the forgotten handle in it.
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    (new ModelElementStore($session))->put('order-details', ['reference' => 'PO-1']);
+    (new ModelElementStore($session))->forget('order-details');
+
+    expect($session->isDirty('element_data'))->toBeFalse();
+
+    $session->customer_email = 'later@example.test';
+    $session->save();
+
+    expect($session->fresh()->getElementData('order-details'))->toBeNull();
+});
+
 it('forgets a handle', function () {
     $cart = CheckoutCart::orderable();
     CartSession::use($cart);

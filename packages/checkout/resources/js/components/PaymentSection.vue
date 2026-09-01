@@ -3,6 +3,13 @@ import Icon from './primitives/Icon.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 import { resolveElement } from '../composables/elements.js'
 
+// Step number, derived by the parent from how many main-region elements are
+// registered ahead of payment (spec 0011 §G) — payment is always last, but
+// "last" isn't a fixed number when the elements ahead of it are opt-in.
+defineProps({
+  step: { type: Number, default: 5 },
+})
+
 const { state, activePaymentMethod } = useCheckout()
 
 // The active method's component, resolved from the same runtime registry the
@@ -14,7 +21,7 @@ const panelFor = (method) => resolveElement(method.component)
   <section class="block" data-block="payment">
     <div class="block-head">
       <h2 class="block-title">
-        <span class="block-step"><span class="num">5</span><span class="chk ico"><Icon name="check" /></span></span>
+        <span class="block-step"><span class="num">{{ step }}</span><span class="chk ico"><Icon name="check" /></span></span>
         Payment
       </h2>
     </div>
