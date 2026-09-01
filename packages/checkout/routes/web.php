@@ -13,8 +13,11 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::post($path, [CheckoutController::class, 'start'])
             ->name('lunar.checkout.start');
 
-        // Persist a single element's captured data into the checkout session.
-        Route::post($path.'/elements/{handle}', [CheckoutController::class, 'storeElement'])
+        // Persist one element's captured data into the session's element bag.
+        // Session-scoped and ownership-gated like every other write route: the
+        // bag is now a row, so an ungated handle would let a stranger write to
+        // someone else's checkout.
+        Route::post($path.'/{session}/elements/{handle}', [CheckoutController::class, 'storeElement'])
             ->name('lunar.checkout.elements.store');
 
         // Contact-step account lookup: owned + throttled, returns { exists }

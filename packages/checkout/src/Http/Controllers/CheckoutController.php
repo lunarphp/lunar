@@ -22,6 +22,7 @@ use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Exceptions\AddressLookupException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
+use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Core\Contracts\CreatesPaymentIntents;
@@ -241,13 +242,15 @@ class CheckoutController extends Controller
      * session. The element owns its rules and its write path (the prototype
      * writes to the session; the spec 0001 model writes through the cart API).
      */
-    public function storeElement(Request $request, string $handle): RedirectResponse
+    public function storeElement(Request $request, CheckoutSessionModel $session, string $handle): RedirectResponse
     {
+        $this->ensureOwnership($session);
+
         $element = $this->registry->get($handle);
 
         abort_if($element === null, 404);
 
-        $element->setDataStore($this->dataStore);
+        $element->setDataStore(new ModelElementStore($session));
 
         $validated = $request->validate($element->rules());
 
@@ -512,7 +515,7 @@ class CheckoutController extends Controller
     private function projectElements(CheckoutSessionModel $session): array
     {
         return array_map(function (CheckoutElement $element) use ($session): array {
-            $element->setDataStore($this->dataStore);
+            $element->setDataStore(new ModelElementStore($session));
             $element->mount();
 
             $props = $element->props();
@@ -533,7 +536,7 @@ class CheckoutController extends Controller
                 'region' => $element->region(),
                 'props' => $props,
                 'data' => $element->data(),
-                'storeUrl' => route('lunar.checkout.elements.store', $element->handle()),
+                'storeUrl' => route('lunar.checkout.elements.store', [$session->uuid, $element->handle()]),
             ];
         }, $this->registry->all());
     }

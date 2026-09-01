@@ -128,15 +128,41 @@ class CheckoutSession extends Base
 
     /**
      * The element bag (spec 0010 §C): price-neutral custom element data, keyed
-     * by element handle. Callers serialise writes on the session row.
+     * by element handle.
+     *
+     * The whole bag is one JSON column, so a read-modify-write races: two
+     * requests capturing different handles would each save a blob built from
+     * their own stale read, and one handle would vanish. The row lock is what
+     * makes concurrent writes to different handles both survive.
      */
     public function putElementData(string $handle, array $data): void
     {
-        $bag = $this->element_data?->getArrayCopy() ?? [];
-        $bag[$handle] = $data;
+        $this->getConnection()->transaction(function () use ($handle, $data): void {
+            $locked = static::query()->whereKey($this->getKey())->lockForUpdate()->firstOrFail();
 
-        $this->element_data = $bag;
-        $this->save();
+            $bag = $locked->element_data?->getArrayCopy() ?? [];
+            $bag[$handle] = $data;
+
+            $locked->element_data = $bag;
+            $locked->save();
+
+            $this->element_data = $bag;
+        });
+    }
+
+    public function forgetElementData(string $handle): void
+    {
+        $this->getConnection()->transaction(function () use ($handle): void {
+            $locked = static::query()->whereKey($this->getKey())->lockForUpdate()->firstOrFail();
+
+            $bag = $locked->element_data?->getArrayCopy() ?? [];
+            unset($bag[$handle]);
+
+            $locked->element_data = $bag;
+            $locked->save();
+
+            $this->element_data = $bag;
+        });
     }
 
     public function getElementData(string $handle): ?array
