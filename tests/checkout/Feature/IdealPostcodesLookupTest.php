@@ -55,6 +55,67 @@ it('maps a vendor hit onto CheckoutAddress', function () {
         ->and($addresses[0]->countryCode)->toBe('GB');
 });
 
+it('maps a residential address with no organisation as-is', function () {
+    Http::fake(['api.ideal-postcodes.co.uk/*' => Http::response(idealPostcodesBody([
+        [
+            'organisation_name' => '',
+            'line_1' => '10 Downing Street',
+            'line_2' => '',
+            'line_3' => '',
+            'post_town' => 'London',
+            'county' => 'London',
+            'postcode' => 'SW1A 2AA',
+        ],
+    ]))]);
+
+    $addresses = app(AddressLookup::class)->lookup('SW1A 2AA');
+
+    expect($addresses[0]->companyName)->toBeNull()
+        ->and($addresses[0]->line1)->toBe('10 Downing Street')
+        ->and($addresses[0]->line2)->toBeNull();
+});
+
+it('shifts the street up when line_1 duplicates the organisation name', function () {
+    Http::fake(['api.ideal-postcodes.co.uk/*' => Http::response(idealPostcodesBody([
+        [
+            'organisation_name' => 'Prime Minister & First Lord Of The Treasury',
+            'line_1' => 'Prime Minister & First Lord Of The Treasury',
+            'line_2' => '10 Downing Street',
+            'line_3' => '',
+            'post_town' => 'London',
+            'county' => 'London',
+            'postcode' => 'SW1A 2AA',
+        ],
+    ]))]);
+
+    $addresses = app(AddressLookup::class)->lookup('SW1A 2AA');
+
+    expect($addresses[0]->companyName)->toBe('Prime Minister & First Lord Of The Treasury')
+        ->and($addresses[0]->line1)->toBe('10 Downing Street')
+        ->and($addresses[0]->line2)->toBeNull()
+        ->and($addresses[0]->line3)->toBeNull();
+});
+
+it('leaves line_1 alone when an organisation exists but line_1 is a distinct premise line', function () {
+    Http::fake(['api.ideal-postcodes.co.uk/*' => Http::response(idealPostcodesBody([
+        [
+            'organisation_name' => 'Acme Electrical Ltd',
+            'line_1' => 'Unit 4, Riverside Business Park',
+            'line_2' => '10 Downing Street',
+            'line_3' => '',
+            'post_town' => 'London',
+            'county' => 'London',
+            'postcode' => 'SW1A 2AA',
+        ],
+    ]))]);
+
+    $addresses = app(AddressLookup::class)->lookup('SW1A 2AA');
+
+    expect($addresses[0]->companyName)->toBe('Acme Electrical Ltd')
+        ->and($addresses[0]->line1)->toBe('Unit 4, Riverside Business Park')
+        ->and($addresses[0]->line2)->toBe('10 Downing Street');
+});
+
 it('treats an empty result as an empty list, not an error', function () {
     Http::fake(['api.ideal-postcodes.co.uk/*' => Http::response(idealPostcodesBody([]))]);
 

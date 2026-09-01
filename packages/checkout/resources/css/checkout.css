@@ -706,6 +706,22 @@
     font-size: 18px;
     pointer-events: none;
   }
+  /* Postcode lookup: the search input sits beside its "Find address" button
+     rather than inside .search, which only lays out its own icon + input. */
+  .search-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .search-row .search {
+    flex: 1;
+    min-width: 0;
+  }
+  .search-btn {
+    flex: none;
+    height: 48px;
+    padding: 0 16px;
+  }
   .manual-link {
     display: inline-flex;
     align-items: center;

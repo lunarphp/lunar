@@ -11,6 +11,7 @@ const stored = state.shippingAddress
 
 const form = reactive({
   name: [stored?.firstName, stored?.lastName].filter(Boolean).join(' '),
+  companyName: stored?.companyName ?? '',
   line1: stored?.line1 ?? '',
   line2: stored?.line2 ?? '',
   city: stored?.city ?? '',
@@ -61,6 +62,7 @@ function chooseAddress(index) {
   const address = lookupResults.value[index]
   if (!address) return
 
+  form.companyName = address.companyName ?? ''
   form.line1 = address.line1 ?? ''
   form.line2 = address.line2 ?? ''
   form.city = address.city ?? ''
@@ -82,6 +84,7 @@ function save() {
     {
       first_name: splitAt === -1 ? name : name.slice(0, splitAt),
       last_name: splitAt === -1 ? name : name.slice(splitAt + 1),
+      company_name: form.companyName || null,
       line1: form.line1,
       line2: form.line2 || null,
       city: form.city,
@@ -112,23 +115,26 @@ function save() {
 
     <div class="stack" style="margin-bottom: 12px">
       <FloatingField id="first" v-model="form.name" label="Full name" autocomplete="name" />
+      <FloatingField id="company" v-model="form.companyName" label="Company" autocomplete="organization" optional />
     </div>
 
     <!-- Postcode lookup (spec 0011 §B). Rendered only when a driver can answer;
          with the null driver the customer gets honest manual entry below. -->
-    <div v-if="lookupEnabled" class="search" style="margin-bottom: 12px">
-      <span class="lead ico"><Icon name="search" :size="18" /></span>
-      <label class="sr-only" for="addr-search">Search for your address by postcode</label>
-      <input
-        id="addr-search"
-        v-model="lookupPostcode"
-        type="text"
-        autocomplete="off"
-        placeholder="Enter your postcode"
-        style="text-transform: uppercase"
-        @keydown.enter.prevent="findAddresses"
-      />
-      <button type="button" class="btn btn-secondary" :disabled="lookupBusy" @click="findAddresses">
+    <div v-if="lookupEnabled" class="search-row" style="margin-bottom: 12px">
+      <div class="search">
+        <span class="lead ico"><Icon name="search" :size="18" /></span>
+        <label class="sr-only" for="addr-search">Search for your address by postcode</label>
+        <input
+          id="addr-search"
+          v-model="lookupPostcode"
+          type="text"
+          autocomplete="off"
+          placeholder="Enter your postcode"
+          style="text-transform: uppercase"
+          @keydown.enter.prevent="findAddresses"
+        />
+      </div>
+      <button type="button" class="btn btn-secondary search-btn" :disabled="lookupBusy" @click="findAddresses">
         {{ lookupBusy ? 'Searching…' : 'Find address' }}
       </button>
     </div>
