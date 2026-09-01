@@ -521,6 +521,9 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
         'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
 
+        // --- Spec 0075: first staff account creation moves to core ---
+        'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
+
     ];
 
     /**

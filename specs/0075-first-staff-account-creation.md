@@ -1,6 +1,6 @@
 # 0075 — First staff account creation without the Filament admin
 
-- Status: draft
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-09-01
 - TODO item: First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
@@ -148,6 +148,6 @@ account and the place to use it.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Move `lunar:create-admin` to core (new class, registration, admin-package removal, Rector rule, core tests).
-- [ ] Slice 2 — `lunar:panel:install` staff-creation offer + panel tests.
-- [ ] Slice 3 — `lunar:install` portability guards (`filament:assets`, panel-install offer) + test; docs follow-up PR in lunarphp/docs.
+- [x] Slice 1 — Move `lunar:create-admin` to core (new class, registration, admin-package removal, Rector rule, core tests).
+- [x] Slice 2 — `lunar:panel:install` staff-creation offer + panel tests.
+- [x] Slice 3 — `lunar:install` portability guards (`filament:assets`, panel-install offer) + test; docs follow-up PR in lunarphp/docs.

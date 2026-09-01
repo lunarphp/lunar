@@ -6,7 +6,6 @@ use Filament\Support\Events\FilamentUpgraded;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Console\Commands\PublishAdminResourcesCommand;
 use Lunar\Admin\Events\CustomerUserEdited;
 use Lunar\Admin\Filament\Resources\CollectionResource;
@@ -64,7 +63,6 @@ class LunarPanelProvider extends ServiceProvider
             });
 
             $this->commands([
-                MakeLunarAdminCommand::class,
                 PublishAdminResourcesCommand::class,
             ]);
         }
