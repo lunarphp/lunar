@@ -15,6 +15,12 @@ uses(TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     config()->set('lunar.checkout.address_lookup.driver', 'ideal_postcodes');
     config()->set('lunar.checkout.address_lookup.ideal_postcodes.key', 'test-key');
+
+    // The ownership test below deliberately has no Http::fake(): it asserts a
+    // 403 fires before the vendor is ever touched. Without this guard, a
+    // regression in ensureOwnership() would fall through to a real, billable
+    // request against the vendor instead of failing the test loudly.
+    Http::preventStrayRequests();
 });
 
 it('returns mapped addresses for an owned session', function () {
