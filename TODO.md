@@ -8,6 +8,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
+- Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
