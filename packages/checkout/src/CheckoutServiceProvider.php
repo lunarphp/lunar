@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
 use Lunar\Checkout\Console\Commands\ReconcileCheckoutSessions;
+use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
@@ -19,6 +20,7 @@ use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
+use Lunar\Checkout\Managers\AddressLookupManager;
 use Lunar\Checkout\Managers\CheckoutSessionManager;
 use Lunar\Checkout\Session\CheckoutSession;
 use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
@@ -89,6 +91,14 @@ class CheckoutServiceProvider extends ServiceProvider
         $this->app->bind(
             CheckoutDriver::class,
             fn ($app) => $app->make(CheckoutSessionManager::class)->driver(),
+        );
+
+        // Address lookup (spec 0011 §B): same Manager shape as the checkout
+        // driver. Selected by config value; hosts extend() their own.
+        $this->app->singleton(AddressLookupManager::class);
+        $this->app->bind(
+            AddressLookup::class,
+            fn ($app) => $app->make(AddressLookupManager::class)->driver(),
         );
     }
 

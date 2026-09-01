@@ -98,4 +98,28 @@ return [
         'max_attempts' => 5,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Address lookup
+    |--------------------------------------------------------------------------
+    |
+    | Postcode to address lookup (spec 0011). A value, never a class swap: the
+    | manager resolves the named driver, and a host registers its own with
+    | AddressLookupManager::extend(). The default `null` driver answers nothing
+    | and reports itself unavailable, so the delivery step renders manual entry.
+    |
+    | Postcodes are static data and vendors bill per lookup, so results are
+    | cached for `cache_ttl` seconds keyed on the normalised postcode.
+    |
+    */
+
+    'address_lookup' => [
+        'driver' => env('CHECKOUT_ADDRESS_LOOKUP_DRIVER', 'null'),
+
+        'ideal_postcodes' => [
+            'key' => env('IDEAL_POSTCODES_KEY'),
+            'cache_ttl' => 60 * 60 * 24 * 30,
+        ],
+    ],
+
 ];
