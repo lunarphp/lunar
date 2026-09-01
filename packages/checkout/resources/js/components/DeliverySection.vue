@@ -4,7 +4,7 @@ import Icon from './primitives/Icon.vue'
 import FloatingField from './primitives/FloatingField.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state, storeShippingAddress } = useCheckout()
+const { state, storeShippingAddress, postJson } = useCheckout()
 
 // Hydrate from the cart's stored address so a returning session round-trips.
 const stored = state.shippingAddress
@@ -22,6 +22,47 @@ const form = reactive({
 const complete = computed(() => Boolean(form.name && form.line1 && form.city && form.postcode))
 const saving = ref(false)
 const errors = ref({})
+
+// A null url means no driver can answer, so the search never renders.
+const lookupEnabled = computed(() => Boolean(state.urls.addressLookup))
+const lookupPostcode = ref('')
+const lookupResults = ref([])
+const lookupBusy = ref(false)
+const lookupError = ref('')
+
+async function findAddresses() {
+  if (lookupBusy.value || !lookupPostcode.value.trim()) return
+
+  lookupBusy.value = true
+  lookupError.value = ''
+  lookupResults.value = []
+
+  try {
+    const result = await postJson(state.urls.addressLookup, { postcode: lookupPostcode.value })
+    lookupResults.value = result.addresses ?? []
+
+    if (lookupResults.value.length === 0) {
+      lookupError.value = 'No addresses found for that postcode. Enter your address manually.'
+    }
+  } catch (error) {
+    lookupError.value = error?.message || 'We could not search for that postcode. Enter your address manually.'
+  } finally {
+    lookupBusy.value = false
+  }
+}
+
+// Filling the form is all this does: persistence stays on the shipping-address
+// route, so address writes keep exactly one path (spec 0011 §C).
+function chooseAddress(index) {
+  const address = lookupResults.value[index]
+  if (!address) return
+
+  form.line1 = address.line1 ?? ''
+  form.line2 = address.line2 ?? ''
+  form.city = address.city ?? ''
+  form.postcode = address.postcode ?? ''
+  form.country = address.countryCode ?? 'GB'
+}
 
 // The cart address is the source of truth for whether the shipping step is
 // unlocked (state.addressValid) — the local form only gates the save button.
@@ -67,11 +108,35 @@ function save() {
       <FloatingField id="first" v-model="form.name" label="Full name" autocomplete="name" />
     </div>
 
-    <!-- Address search (presentational — autocomplete lands with the full flow) -->
-    <div class="search" style="margin-bottom: 12px">
+    <!-- Postcode lookup (spec 0011 §B). Rendered only when a driver can answer;
+         with the null driver the customer gets honest manual entry below. -->
+    <div v-if="lookupEnabled" class="search" style="margin-bottom: 12px">
       <span class="lead ico"><Icon name="search" :size="18" /></span>
-      <label class="sr-only" for="addr-search">Search for your address</label>
-      <input id="addr-search" type="text" autocomplete="off" placeholder="Start typing a postcode or street…" />
+      <label class="sr-only" for="addr-search">Search for your address by postcode</label>
+      <input
+        id="addr-search"
+        v-model="lookupPostcode"
+        type="text"
+        autocomplete="off"
+        placeholder="Enter your postcode"
+        style="text-transform: uppercase"
+        @keydown.enter.prevent="findAddresses"
+      />
+      <button type="button" class="btn btn-secondary" :disabled="lookupBusy" @click="findAddresses">
+        {{ lookupBusy ? 'Searching…' : 'Find address' }}
+      </button>
+    </div>
+
+    <p v-if="lookupError" class="help" role="alert" style="color: var(--error-700)">{{ lookupError }}</p>
+
+    <div v-if="lookupResults.length" class="stack" style="margin-bottom: 12px">
+      <label class="sr-only" for="addr-results">Select your address</label>
+      <select id="addr-results" @change="chooseAddress($event.target.value)">
+        <option value="">{{ lookupResults.length }} addresses found — select one</option>
+        <option v-for="(address, index) in lookupResults" :key="index" :value="index">
+          {{ [address.line1, address.line2, address.city].filter(Boolean).join(', ') }}
+        </option>
+      </select>
     </div>
 
     <div class="stack">
