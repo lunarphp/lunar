@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Stripe\Enums\CancellationReason;
+use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
@@ -38,10 +39,15 @@ class StripeManager
 
     public function fetchOrCreateIntent(Cart $cart, array $createOptions = []): PaymentIntent
     {
-        /** @var Cart $cart */
-        $existingIntentId = $this->getCartIntentId($cart);
-
-        $intent = $existingIntentId ? $this->fetchIntent($existingIntentId) : $this->createIntent($cart, $createOptions);
+        /**
+         * createIntent() already reuses the cart's stored intent when it is
+         * still alive at Stripe, and mints a fresh one when it is missing or
+         * finished (canceled/succeeded) - so delegate instead of fetching
+         * blind, which used to hand dead intents back to the caller.
+         *
+         * @var Cart $cart
+         */
+        $intent = $this->createIntent($cart, $createOptions);
 
         /**
          * If the payment intent is stored in the meta, we don't have a linked payment intent
@@ -81,7 +87,20 @@ class StripeManager
                 $existingId
             )
         ) {
-            return $intent;
+            if (! in_array($intent->status, StripePaymentIntent::FINAL_STATES, true)) {
+                return $intent;
+            }
+
+            /**
+             * The stored intent is dead at Stripe (canceled from the dashboard,
+             * or finished on another surface) while the local record still
+             * reads active. Correct the record so the active() scope stops
+             * returning it, and fall through to mint a fresh intent - a dead
+             * intent can never be updated or confirmed again.
+             */
+            $cart->paymentIntents()->where('intent_id', $existingId)->update([
+                'status' => $intent->status,
+            ]);
         }
 
         $paymentIntent = $this->buildIntent(

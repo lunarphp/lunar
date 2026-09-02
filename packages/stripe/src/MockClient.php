@@ -137,6 +137,21 @@ class MockClient implements ClientInterface
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
 
+            if (str_contains($absUrl, 'PI_CANCELED')) {
+                $this->rBody = $this->getResponse('payment_intent_paid', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_CANCELED,
+                    'capture_method' => 'automatic',
+                    'payment_status' => 'canceled',
+                    'payment_error' => null,
+                    'failure_code' => null,
+                    'captured' => false,
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
             if (str_contains($absUrl, 'PI_REQUIRES_PAYMENT_METHOD')) {
                 $this->rBody = $this->getResponse('payment_intent_requires_payment_method', [
                     ...$this->nextData,

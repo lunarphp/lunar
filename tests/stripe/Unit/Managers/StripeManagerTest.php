@@ -23,6 +23,46 @@ it('can create a payment intent', function () {
     ]);
 });
 
+it('replaces a canceled intent instead of reusing it', function () {
+    $cart = CartBuilder::build();
+
+    // The local record still reads active, but Stripe reports the intent
+    // canceled (dashboard cancellation, another surface finishing it).
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'requires_payment_method',
+    ]);
+
+    $intent = Stripe::createIntent($cart->calculate(), []);
+
+    expect($intent->id)->not->toBe('PI_CANCELED')
+        ->and($intent->status)->not->toBe('canceled');
+
+    // The stale record is corrected and the fresh intent recorded.
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'canceled',
+    ]);
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => $intent->id,
+        'cart_id' => $cart->id,
+    ]);
+});
+
+it('hands back a fresh intent from fetchOrCreateIntent when the stored one is dead', function () {
+    $cart = CartBuilder::build();
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'requires_payment_method',
+    ]);
+
+    $intent = Stripe::fetchOrCreateIntent($cart->calculate());
+
+    expect($intent->status)->not->toBe('canceled')
+        ->and($intent->id)->not->toBe('PI_CANCELED');
+});
+
 it('returns legacy payment intent id stored in cart meta', function () {
     $cart = CartBuilder::build([
         'meta' => [
