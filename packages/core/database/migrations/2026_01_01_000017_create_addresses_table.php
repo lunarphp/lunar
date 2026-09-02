@@ -29,6 +29,7 @@ return new class extends Migration
             $table->jsonb('meta')->nullable();
             $table->boolean('shipping_default')->default(false);
             $table->boolean('billing_default')->default(false);
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
             $table->string('tax_identifier')->nullable();
         });
