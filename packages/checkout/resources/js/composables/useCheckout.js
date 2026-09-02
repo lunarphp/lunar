@@ -25,6 +25,9 @@ export function createCheckout(data) {
     // default; nothing is "chosen" until the cart says so.
     shippingId: data.shippingId ?? null,
     shippingAddress: data.shippingAddress ?? null,
+    // The signed-in customer's address book (empty for guests), offered for
+    // one-click selection; writes still go through the shipping-address route.
+    savedAddresses: data.savedAddresses ?? [],
     // Server-derived money figures (minor units). When present they are the
     // single source of truth for the summary; the client calc below is the
     // prototype fallback for payloads without them.
@@ -50,6 +53,13 @@ export function createCheckout(data) {
 
   state.method = state.paymentMethods[0]?.handle ?? null
 
+  // Bounced back from the processing page: the gateway reported the charge
+  // failed and the session was reopened for another attempt.
+  if (new URLSearchParams(window.location.search).get('payment') === 'failed') {
+    state.payError = 'Your payment could not be completed and you have not been charged. Check your payment details and try again.'
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
   // Re-sync from a fresh `checkout` prop after an Inertia partial reload —
   // options, selection and totals are all server-owned.
   function sync(fresh) {
@@ -57,6 +67,7 @@ export function createCheckout(data) {
     state.shippingMethods = fresh.shippingMethods ?? []
     state.shippingId = fresh.shippingId ?? null
     state.shippingAddress = fresh.shippingAddress ?? null
+    state.savedAddresses = fresh.savedAddresses ?? []
     state.totals = fresh.totals ?? null
     state.urls = fresh.urls ?? {}
     state.elements = fresh.elements ?? []
@@ -219,6 +230,17 @@ export function createCheckout(data) {
     if (mode === 'collect' && collectOption.value && state.shippingId !== collectOption.value.id) {
       selectShipping(collectOption.value.id)
     }
+
+    // Back to delivery while the cart still holds the collect option: hand
+    // the choice to the cheapest courier option so the stored selection always
+    // matches the mode on screen.
+    if (mode === 'delivery' && state.shippingId === collectOption.value?.id) {
+      const fallback = deliveryMethods.value[0]
+
+      if (fallback) {
+        selectShipping(fallback.id)
+      }
+    }
   }
 
   const activePaymentMethod = computed(
@@ -262,22 +284,24 @@ export function createCheckout(data) {
     return payload
   }
 
-  // Poll the session URL until the server moves it somewhere terminal (the
-  // Completed redirect) — completion arrives via the gateway's webhook.
-  async function awaitCompletion() {
-    for (let attempt = 0; attempt < 20; attempt++) {
-      const response = await fetch(window.location.href, {
-        credentials: 'same-origin',
-        redirect: 'follow',
-        headers: { Accept: 'text/html' },
-      })
+  // Unpin a session whose gateway confirmation failed. The server reopens it
+  // only after the gateway confirms no money was captured; a captured charge
+  // completes the order instead, which lands here as `completed`.
+  async function releasePaymentPin() {
+    try {
+      const result = await postJson(state.urls.paymentRelease, {}, 'The payment could not be completed.')
 
-      if (response.url && response.url !== window.location.href) {
-        window.location.assign(response.url)
+      if (result.outcome === 'completed') {
+        window.location.reload()
+
         return
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      if (result.fingerprint) {
+        state.fingerprint = result.fingerprint
+      }
+    } catch {
+      // Leave it frozen: the reconciliation sweep owns unconfirmable outcomes.
     }
   }
 
@@ -296,7 +320,7 @@ export function createCheckout(data) {
       // captures its own.
       if (state.billingSame && state.shippingAddress) {
         const a = state.shippingAddress
-        await postJson(
+        const billing = await postJson(
           state.urls.billingAddress,
           {
             first_name: a.firstName,
@@ -312,6 +336,14 @@ export function createCheckout(data) {
           },
           'Your billing address could not be saved.',
         )
+
+        // The billing address is a fingerprint input, so this write just
+        // changed the live fingerprint. Pin against the one the server
+        // computed after the write, or the pay boundary rejects the stale
+        // page-load fingerprint on every first pay.
+        if (billing?.fingerprint) {
+          state.fingerprint = billing.fingerprint
+        }
       }
 
       // Pin the session against exactly what the customer confirmed. A method
@@ -326,20 +358,33 @@ export function createCheckout(data) {
         'Payment could not be started.',
       )
 
-      state.paid = true
-
       if (result.completed) {
+        state.paid = true
         window.location.reload()
 
         return
       }
 
-      // Hand over to the gateway component (3DS, wallet sheets…).
+      // Hand over to the gateway component (3DS, wallet sheets…). A failed
+      // or abandoned confirmation leaves the session pinned server-side, so
+      // release it before surfacing the error — otherwise every retry 409s
+      // against a frozen session until the reconciliation sweep runs.
       if (paymentConfirm) {
-        await paymentConfirm()
+        try {
+          await paymentConfirm()
+        } catch (confirmError) {
+          await releasePaymentPin()
+          throw confirmError
+        }
       }
 
-      await awaitCompletion()
+      // The gateway accepted the confirmation. Hand off to the processing
+      // page, which settles the session against the gateway's ACTUAL outcome
+      // server-side and forwards to the store's success URL — never trust
+      // this client-side signal alone, and never leave the customer parked on
+      // the checkout watching a spinner that depends on a webhook arriving.
+      state.paid = true
+      window.location.assign(state.urls.processing)
     } catch (error) {
       state.payError = error?.message || 'Payment failed — you have not been charged.'
       state.paid = false

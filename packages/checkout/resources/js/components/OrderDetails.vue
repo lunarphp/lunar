@@ -129,7 +129,7 @@ onBeforeUnmount(unregisterPendingWrite)
         <label for="order-notes">Delivery notes (optional)</label>
       </div>
 
-      <button type="button" class="btn btn-secondary" :disabled="saving" @click="save">
+      <button type="button" class="btn btn-secondary btn-step" :disabled="saving" @click="save">
         {{ saving ? 'Saving…' : 'Save order details' }}
       </button>
     </div>

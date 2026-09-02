@@ -9,6 +9,7 @@ use Lunar\Checkout\Session\SessionElementStore;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Models\Customer;
 use Lunar\Tests\Checkout\TestCase;
+use Lunar\Tests\Checkout\Utils\CheckoutCart;
 use Lunar\Tests\Core\Stubs\User;
 
 uses(TestCase::class, RefreshDatabase::class);
@@ -48,16 +49,17 @@ it('owns a session by customer_reference when the cart differs, and reconciles i
     $session->customer_reference = (string) $customer->id;
     $session->save();
 
-    // A different (empty) cart is current, so cart-ownership would fail
+    // A different (EMPTY) cart is current, so cart-ownership would fail
     // without the customer_reference fallback — ensureOwnership lets this
-    // through (not a 403). show() then treats the mismatched cart as a swap
-    // (see the cart-swap reconcile test below) and hands off to the fresh
-    // session for the current cart rather than rendering the stale one.
+    // through (not a 403). show() then refuses to hand off to an empty cart:
+    // nothing empty may render as a payable checkout, so the customer goes
+    // back to the basket with the structured reason attached.
     CartSession::use(routeTestCart());
     $this->actingAs($user);
 
     $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
-        ->assertConflict();
+        ->assertRedirect('/')
+        ->assertSessionHas('lunar.checkout.error.code', 'cart_empty');
 });
 
 it('forbids a signed-in customer from viewing another customer\'s session', function () {
@@ -131,7 +133,8 @@ it('associates the customer when authenticated', function () {
 it('projects the persisted guest email into the contact element', function () {
     app(ElementRegistry::class)->add(ContactInformation::class);
 
-    $cart = routeTestCart();
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
     $session = app(CheckoutDriver::class)->createSession($cart);
     $session->customer_email = 'guest@example.test';
     $session->save();
@@ -146,7 +149,8 @@ it('projects a login url when the host names a login route', function () {
     Route::get('login-test-stub', fn () => '')->name('login');
     app(ElementRegistry::class)->add(ContactInformation::class);
 
-    $cart = routeTestCart();
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 
@@ -158,7 +162,8 @@ it('projects a login url when the host names a login route', function () {
 it('projects a null login url when the host has no login route', function () {
     app(ElementRegistry::class)->add(ContactInformation::class);
 
-    $cart = routeTestCart();
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 
@@ -167,10 +172,38 @@ it('projects a null login url when the host has no login route', function () {
         ->assertJsonPath('props.checkout.elements.0.props.loginUrl', null);
 });
 
+it('projects a logout url when the host names a logout route', function () {
+    Route::post('logout-test-stub', fn () => '')->name('logout');
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.logoutUrl', route('logout'));
+});
+
+it('projects a null logout url when the host has no logout route', function () {
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.logoutUrl', null);
+});
+
 it('injects contact urls into the projected contact element', function () {
     app(ElementRegistry::class)->add(ContactInformation::class);
 
-    $cart = routeTestCart();
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 
@@ -190,8 +223,9 @@ it('re-resolves to the current cart session when the cart was swapped on login',
     $stale->customer_reference = (string) $customer->id;
     $stale->save();
 
-    // A different cart is now current (simulating the post-login merge).
-    $currentCart = routeTestCart();
+    // A different cart WITH LINES is now current (simulating the post-login
+    // merge); an empty one would bounce to the basket instead of swapping.
+    $currentCart = CheckoutCart::addLine(routeTestCart());
     CartSession::use($currentCart);
     $this->actingAs($user);
 

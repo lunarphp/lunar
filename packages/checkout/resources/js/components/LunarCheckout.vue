@@ -81,7 +81,12 @@ const mSummaryOpen = ref(false)
       <!-- Left · form -->
       <div class="form-side">
         <div class="form-col">
-          <BrandHead :merchant="checkout.merchant" :logo="branding.logo" :logo-alt="branding.logoAlt" />
+          <BrandHead :merchant="checkout.merchant" :logo="branding.logo" :logo-alt="branding.logoAlt" :back-url="state.urls.back" />
+
+          <a v-if="state.urls.back" class="back-to-store" :href="state.urls.back">
+            <span class="ico"><Icon name="arrow-left" :size="15" /></span>
+            Back to basket
+          </a>
           <FulfilmentToggle />
           <ExpressWallets />
 

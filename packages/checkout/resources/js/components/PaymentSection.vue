@@ -64,7 +64,10 @@ const panelFor = (method) => resolveElement(method.component)
         <span class="txt">Use delivery address as billing address</span>
       </label>
 
-      <p v-if="state.payError" class="help" style="color: var(--error-700)">{{ state.payError }}</p>
+      <div v-if="state.payError" class="alert a-error" role="alert" style="margin-top: 14px">
+        <Icon name="alert-circle" :size="18" />
+        <span>{{ state.payError }}</span>
+      </div>
     </template>
   </section>
 </template>

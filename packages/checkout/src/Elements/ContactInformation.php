@@ -37,7 +37,7 @@ class ContactInformation extends AbstractCheckoutElement
     }
 
     /**
-     * @return array{signedIn: bool, displayName: string|null, email: string|null, passkeysEnabled: bool, loginUrl: string|null}
+     * @return array{signedIn: bool, displayName: string|null, email: string|null, passkeysEnabled: bool, loginUrl: string|null, logoutUrl: string|null}
      */
     public function props(): array
     {
@@ -52,6 +52,10 @@ class ContactInformation extends AbstractCheckoutElement
             // route (Fortify or otherwise); without one the section only
             // offers the guest path.
             'loginUrl' => Route::has('login') ? route('login') : null,
+            // Signing out invalidates the HTTP session, which orphans the cart
+            // and therefore the checkout, so the component redirects back to the
+            // store afterwards rather than reloading a session it no longer owns.
+            'logoutUrl' => Route::has('logout') ? route('logout') : null,
         ];
     }
 

@@ -1,8 +1,29 @@
 <script setup>
+import { watch } from 'vue'
 import Icon from './primitives/Icon.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
 const { state, fmt, deliveryMethods, selectShipping } = useCheckout()
+
+// Nothing chosen once options exist = an unorderable cart the customer can
+// still click Pay on (the saved-address auto-apply skips the moment a manual
+// save used to force this choice). Pick the first option (cheapest listed)
+// as a real server-side selection the customer can change, exactly as if
+// they clicked it.
+watch(
+  () => [state.addressValid, state.shippingId, deliveryMethods.value.length],
+  () => {
+    if (
+      state.fulfilment === 'delivery' &&
+      state.addressValid &&
+      !state.shippingId &&
+      deliveryMethods.value.length > 0
+    ) {
+      selectShipping(deliveryMethods.value[0].id)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
