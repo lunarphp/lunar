@@ -337,7 +337,10 @@ test('can return new instance when current cart has completed order', function (
         'placed_at' => now(),
     ]);
 
-    $cart = CartSession::current()->calculate();
+    // No manual calculate(): the replacement cart must come back already
+    // calculated, or consumers projecting the current cart right after an
+    // order completes hit null Money accessors.
+    $cart = CartSession::current();
 
     expect($order->cart_id)->not->toBe($cart->id)
         ->and($cart->subTotal->value)->toBe(0)
