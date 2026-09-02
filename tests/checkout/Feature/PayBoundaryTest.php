@@ -6,7 +6,11 @@ use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
+use Lunar\Core\Contracts\SyncsPaymentIntents;
+use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Order;
+use Lunar\Core\PaymentTypes\OfflinePayment;
 use Lunar\Tests\Checkout\TestCase;
 use Lunar\Tests\Checkout\Utils\CheckoutCart;
 
@@ -77,6 +81,56 @@ it('completes the session in place for a method that needs no intent', function 
         ->and(Order::query()->count())->toBe(1);
 });
 
+/**
+ * A gateway that records the amount the pay boundary synced onto its intent.
+ */
+class SyncingTestGateway extends OfflinePayment implements SyncsPaymentIntents
+{
+    public static ?int $syncedAmount = null;
+
+    public function syncIntent(Cart $cart): void
+    {
+        static::$syncedAmount = $cart->calculate()->total->value;
+    }
+}
+
+/**
+ * An intent method whose gateway supports amount syncing.
+ */
+class SyncingIntentTestMethod extends IntentTestMethod
+{
+    public function handle(): string
+    {
+        return 'sync-card';
+    }
+
+    public function driver(): string
+    {
+        return 'sync-test';
+    }
+}
+
+it('syncs the gateway intent to the live total before pinning', function () {
+    Payments::extend('sync-test', fn () => app(SyncingTestGateway::class));
+    SyncingTestGateway::$syncedAmount = null;
+
+    app(PaymentMethodRegistry::class)->add(SyncingIntentTestMethod::class);
+
+    $session = CheckoutCart::session(CheckoutCart::orderable());
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'sync-card',
+    ])->assertSuccessful();
+
+    $session->refresh();
+
+    // The intent was created at payment-form mount time; the basket may have
+    // changed since. The boundary must hand the gateway the amount it pins.
+    expect(SyncingTestGateway::$syncedAmount)->toBe($session->amount_total)
+        ->and($session->status)->toBeInstanceOf(PaymentProcessing::class);
+});
+
 it('still pins for confirmation when the method needs an intent', function () {
     app(PaymentMethodRegistry::class)->add(IntentTestMethod::class);
 
@@ -116,7 +170,9 @@ it('refuses to complete synchronously on a stale fingerprint', function () {
     $this->postJson(route('lunar.checkout.pay', $session->uuid), [
         'fingerprint' => 'not-the-current-state',
         'payment_method' => 'on-account',
-    ])->assertStatus(422);
+    ])->assertStatus(422)
+        // Customer-facing copy, not the developer reason code.
+        ->assertJsonPath('errors.fingerprint.0', 'Your order changed while you were checking out. Check the details above and try again.');
 
     expect($session->refresh()->status)->not->toBeInstanceOf(Completed::class)
         ->and(Order::query()->count())->toBe(0);

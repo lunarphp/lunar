@@ -528,9 +528,15 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(TaxManagerImpl::class);
         });
 
-        $this->app->singleton(PaymentManager::class, function ($app) {
-            return $app->make(PaymentManagerImpl::class);
-        });
+        /*
+         * One shared manager under BOTH names. The closure form built a fresh
+         * concrete instance per resolution of the concrete class, so a driver
+         * registered through the facade (bound to the contract) was invisible
+         * to anything type-hinting the concrete manager — checkout's
+         * PaymentIntentGateway could never resolve an extended gateway.
+         */
+        $this->app->singleton(PaymentManagerImpl::class);
+        $this->app->alias(PaymentManagerImpl::class, PaymentManager::class);
 
         $this->app->scoped(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);

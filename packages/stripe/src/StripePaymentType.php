@@ -4,6 +4,7 @@ namespace Lunar\Stripe;
 
 use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
+use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentCheck;
@@ -26,7 +27,7 @@ use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 
-class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents, SupportsPaymentIntents
+class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents, SupportsPaymentIntents, SyncsPaymentIntents
 {
     /**
      * The Stripe instance.
@@ -72,6 +73,18 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
             reference: $intent->id,
             clientSecret: $intent->client_secret,
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * The intent is created when the payment form mounts; the basket keeps
+     * changing after that (shipping, addresses, discounts). The pay boundary
+     * calls this before pinning so the confirmed charge is the shown total.
+     */
+    public function syncIntent(Cart $cart): void
+    {
+        Stripe::syncIntent($cart);
     }
 
     /**
