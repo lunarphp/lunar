@@ -93,9 +93,31 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Store return URLs
+    |--------------------------------------------------------------------------
+    |
+    | Where a finished checkout sends the customer. A session-level
+    | success_url / cancel_url (hosted flow) always wins; these are the
+    | store-wide defaults behind it, and '/' is the last resort.
+    |
+    */
+
+    'urls' => [
+        'success' => env('CHECKOUT_SUCCESS_URL'),
+        'cancel' => env('CHECKOUT_CANCEL_URL'),
+    ],
+
     'reconciliation' => [
         'after_minutes' => 60,
         'max_attempts' => 5,
+
+        // A customer viewing/polling a PaymentProcessing session settles it
+        // against the gateway inline once the pin is at least this old — the
+        // webhook-less fallback. Small enough that a stuck customer is not
+        // stuck, large enough not to race the immediate post-confirm webhook.
+        'on_view_after_seconds' => 5,
     ],
 
     /*

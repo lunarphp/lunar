@@ -3,6 +3,7 @@
 namespace Lunar\Checkout\Http\Controllers;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,12 +13,14 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Checkout\Contracts\Actions\ReconcilesCheckoutSession;
 use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
+use Lunar\Checkout\DataObjects\CheckoutAddress;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Events\CheckoutElementStored;
 use Lunar\Checkout\Exceptions\AddressLookupException;
@@ -26,9 +29,13 @@ use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
+use Lunar\Checkout\States\CheckoutSession\Open;
+use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
 use Lunar\Core\Contracts\CreatesPaymentIntents;
+use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Order;
@@ -59,12 +66,17 @@ class CheckoutController extends Controller
     {
         $cart = CartSession::current();
 
-        // No cart to check out — bounce back to wherever the request came from
-        // (the cart page), never a hard 500. Empty-lines gating is a UI concern
-        // (the storefront only shows the CTA for a non-empty cart); a zero-total
-        // cart is itself a valid, driver-handled case (spec 0010).
-        if ($cart === null) {
-            return redirect()->back()->with('checkout_error', 'Your basket is empty.');
+        // No cart, or a cart with nothing in it, cannot produce an order —
+        // bounce back to wherever the request came from (the cart page),
+        // never a hard 500 and never an empty checkout. The storefront hides
+        // the CTA for empty baskets, but a stale tab or crafted POST still
+        // lands here. A zero-TOTAL cart with lines remains valid (spec 0010).
+        if ($cart === null || ! $cart->lines()->exists()) {
+            return redirect()->back()->with('lunar.checkout.error', $this->checkoutError(
+                'cart_empty',
+                'Your basket is empty, so there is nothing to check out.',
+                'view_basket',
+            ));
         }
 
         $session = $checkoutDriver->resolveOrCreateSession($cart);
@@ -104,6 +116,19 @@ class CheckoutController extends Controller
             $cart = CartSession::current();
 
             if ($cart !== null && (string) $cart->id !== $session->cart_reference) {
+                // The live cart is a different one (a sign-in merge, or a new
+                // cart minted after this session's order completed). If it is
+                // EMPTY there is nothing to move the customer onto — minting a
+                // session for it would render a £0.00 checkout that cannot
+                // pay. Back to the basket, with the reason attached.
+                if (! $cart->lines()->exists()) {
+                    return redirect()->to($this->cancelUrl($session))->with('lunar.checkout.error', $this->checkoutError(
+                        'cart_empty',
+                        'Your basket is empty, so there is nothing to check out.',
+                        'view_basket',
+                    ));
+                }
+
                 $fresh = $checkoutDriver->resolveOrCreateSession($cart);
 
                 if ($fresh->uuid !== $session->uuid) {
@@ -120,18 +145,56 @@ class CheckoutController extends Controller
             }
         }
 
-        // Order already placed — send to the stored return URL if the caller
-        // set one (hosted flow), otherwise home. TODO(payment): the storefront
-        // return routes (checkout.success / order-issue) land with the payment
-        // section; wire them here then.
+        /*
+         * A pinned session normally completes via the gateway webhook, but
+         * webhooks can be slow, misconfigured or absent (local dev). The
+         * customer polling this page is the other reliable signal, so settle
+         * against the gateway's actual outcome here: captured completes,
+         * failed reopens, in-flight stays pinned. The short age gate keeps the
+         * immediate post-confirm poll from racing the webhook, and complete()
+         * is idempotent either way. Failures are swallowed: this render must
+         * never die on a gateway blip.
+         */
+        if ($session->status instanceof PaymentProcessing
+            && $session->payment_processing_at?->lt(now()->subSeconds(
+                (int) config('lunar.checkout.reconciliation.on_view_after_seconds', 5),
+            ))
+        ) {
+            try {
+                app(ReconcilesCheckoutSession::class)->execute($session);
+                $session->refresh();
+            } catch (\Throwable $e) {
+                // Reconciliation sweep owns whatever this could not settle,
+                // but the failure must not vanish.
+                report($e);
+            }
+        }
+
+        // Order already placed: send to the stored return URL if the caller
+        // set one (hosted flow), else the configured store success URL.
         if ($session->status instanceof Completed) {
-            return redirect()->to($session->success_url ?: '/');
+            return $this->redirectToSuccess($session);
         }
 
         // A dead capability token (expired window / cancelled) can't render a
         // live checkout. Bounce home; the customer restarts from the cart.
         if ($session->isExpired() || $session->status instanceof Cancelled) {
-            return redirect()->to($session->cancel_url ?: '/')->with('checkout_error', 'Your checkout session has expired.');
+            return $this->redirectDeadSession($session);
+        }
+
+        /*
+         * The session's own cart can be emptied from another tab mid-checkout,
+         * and nothing empty may render as a payable checkout. Same exit as an
+         * expired session: the basket, with the reason attached.
+         */
+        $cart = Cart::query()->find((int) $session->cart_reference);
+
+        if ($cart === null || ! $cart->lines()->exists()) {
+            return redirect()->to($this->cancelUrl($session))->with('lunar.checkout.error', $this->checkoutError(
+                'cart_empty',
+                'Your basket is empty, so there is nothing to check out.',
+                'view_basket',
+            ));
         }
 
         Inertia::setRootView('lunar-checkout::app');
@@ -224,6 +287,7 @@ class CheckoutController extends Controller
             ], $driver->getShippingOptions($session)),
             'shippingId' => $driver->getSelectedShippingOption($session),
             'shippingAddress' => $driver->getShippingAddress($session),
+            'savedAddresses' => $this->projectSavedAddresses(),
             'totals' => $driver->getTotals($session),
             'coupon' => $driver->getCoupon($session),
             // The pay boundary echoes back the fingerprint of the state the
@@ -247,6 +311,11 @@ class CheckoutController extends Controller
                 'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
                 'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
                 'pay' => route('lunar.checkout.pay', $session->uuid),
+                'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
+                'processing' => route('lunar.checkout.processing', $session->uuid),
+                // Escape hatch back to the store (the basket, usually):
+                // session cancel_url, then the store-wide config default.
+                'back' => $this->cancelUrl($session),
                 // Null when no driver can answer, which is how the delivery
                 // step knows to render manual entry instead of a dead search.
                 'addressLookup' => $this->addressLookup->isAvailable()
@@ -360,8 +429,79 @@ class CheckoutController extends Controller
         $data = $request->validate($this->addressRules());
 
         $checkoutDriver->storeShippingAddress($session, $data);
+        $this->touchSavedAddress($data);
 
         return back();
+    }
+
+    /**
+     * Track address-book usage: when the stored delivery address matches one
+     * of the signed-in customer's saved addresses, stamp it so the book leads
+     * with "last used" next time (the projection orders by last_used_at
+     * first). Line one + postcode is the same identity the frontend picker
+     * uses; a card selection posts those fields verbatim, so the match holds.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function touchSavedAddress(array $data): void
+    {
+        $customer = auth()->user()?->latestCustomer();
+
+        if ($customer === null) {
+            return;
+        }
+
+        $customer->addresses()
+            ->where('line_one', $data['line1'])
+            ->where('postcode', $data['postcode'])
+            ->update(['last_used_at' => now()]);
+    }
+
+    /**
+     * The signed-in customer's address book, mapped to the same backend-neutral
+     * shape the cart address round-trips in (spec 0010 §B), so the delivery
+     * step can offer one-click selection. Selecting one still writes through
+     * the shipping-address route: this is a read-only projection, never a
+     * second write path. Guests get an empty list. Lunar's Address model is
+     * customer domain rather than cart domain, which is why this lives here
+     * beside ensureOwnership() instead of on the CheckoutDriver.
+     *
+     * @return array<int, array{id: string, title: string|null, shippingDefault: bool, address: CheckoutAddress}>
+     */
+    private function projectSavedAddresses(): array
+    {
+        $customer = auth()->user()?->latestCustomer();
+
+        if ($customer === null) {
+            return [];
+        }
+
+        return $customer->addresses()
+            ->with('country')
+            ->orderByDesc('last_used_at')
+            ->orderByDesc('shipping_default')
+            ->orderByDesc('id')
+            ->limit(20)
+            ->get()
+            ->map(fn (Address $address): array => [
+                'id' => $address->public_id,
+                'title' => $address->title,
+                'shippingDefault' => (bool) $address->shipping_default,
+                'address' => new CheckoutAddress(
+                    countryCode: $address->country?->iso2 ?? 'GB',
+                    firstName: $address->first_name,
+                    lastName: $address->last_name,
+                    companyName: $address->company_name,
+                    line1: $address->line_one,
+                    line2: $address->line_two,
+                    line3: $address->line_three,
+                    city: $address->city,
+                    state: $address->state,
+                    postcode: $address->postcode,
+                    phone: $address->contact_phone,
+                ),
+            ])
+            ->all();
     }
 
     /**
@@ -407,13 +547,26 @@ class CheckoutController extends Controller
      * Store the billing address through the driver — same neutral payload as
      * the shipping address; the frontend defaults it to the delivery address.
      */
-    public function storeBillingAddress(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    public function storeBillingAddress(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): JsonResponse|RedirectResponse
     {
         $this->ensureOwnership($session);
 
         $data = $request->validate($this->addressRules());
 
         $checkoutDriver->storeBillingAddress($session, $data);
+
+        /*
+         * The billing address is a fingerprint input (spec 0010 §D), and the
+         * pay() flow writes it via XHR moments before pinning the session, so
+         * a JSON caller gets the post-write fingerprint to pin against; a
+         * redirect would discard it and the stale one would fail the pay
+         * boundary. An Inertia billing element still gets back().
+         */
+        if ($request->wantsJson()) {
+            return response()->json([
+                'fingerprint' => $checkoutDriver->fingerprint($session),
+            ]);
+        }
 
         return back();
     }
@@ -441,13 +594,47 @@ class CheckoutController extends Controller
             ]);
         }
 
-        $descriptor = $gateway->createIntent($cart->calculate());
+        try {
+            $descriptor = $gateway->createIntent($cart->calculate());
+        } catch (\Throwable $e) {
+            // Gateway errors carry internals (Stripe's minimum-charge copy
+            // links to its own docs); log the real one, say something human.
+            report($e);
+
+            throw ValidationException::withMessages([
+                'payment_method' => 'Card payments are unavailable right now. Please try again in a moment.',
+            ]);
+        }
+
+        // Cart-scoped gateways (Stripe) reuse the cart's open intent, so a
+        // successor session for the same cart receives the reference a dead
+        // session still points at. The reference is unique (reconciliation
+        // resolves a session BY intent), so the dead holder relinquishes it
+        // first. A PaymentProcessing holder is never robbed: that pin means
+        // the reference may be mid-charge.
+        CheckoutSessionModel::query()
+            ->where('payment_intent_ref', $descriptor->reference)
+            ->whereKeyNot($session->getKey())
+            ->whereNotState('status', PaymentProcessing::class)
+            ->update(['payment_intent_ref' => null]);
 
         // The intent reference + driver key are what reconciliation resolves
         // by (PaymentIntentGateway reads meta.payment_method).
         $session->payment_intent_ref = $descriptor->reference;
         $session->meta = array_merge((array) $session->meta, ['payment_method' => $method->driver()]);
-        $session->save();
+
+        try {
+            $session->save();
+        } catch (UniqueConstraintViolationException $e) {
+            // A pinned session still owns this intent (or a concurrent request
+            // won the race). Either way: not payable right now, and the raw
+            // SQL never reaches the customer.
+            report($e);
+
+            throw ValidationException::withMessages([
+                'payment_method' => 'Another payment attempt for this basket is still finishing. Wait a moment and try again.',
+            ]);
+        }
 
         return response()->json([
             'intent' => $descriptor->reference,
@@ -488,6 +675,23 @@ class CheckoutController extends Controller
         // inside assertReadyForPayment(), after this decision.
         $amountTotal = $checkoutDriver->snapshot($session)->amountTotal;
 
+        /*
+         * The gateway intent was created when the payment form mounted, and
+         * the basket has usually changed since (shipping selection, address
+         * dependent rates). Bring its amount in line with the total the
+         * customer is looking at BEFORE the pin, so a fingerprint rejection
+         * costs nothing and a confirmed charge is never the stale figure.
+         */
+        if ($method->requiresIntent() && $amountTotal > 0) {
+            $gateway = Payments::driver($method->driver());
+
+            if ($gateway instanceof SyncsPaymentIntents) {
+                $gateway->syncIntent(
+                    Cart::query()->findOrFail((int) $session->cart_reference)->calculate(),
+                );
+            }
+        }
+
         try {
             if (! $method->requiresIntent() || $amountTotal <= 0) {
                 $completed = $checkoutDriver->complete($session, $data['fingerprint']);
@@ -502,10 +706,167 @@ class CheckoutController extends Controller
 
             $checkoutDriver->assertReadyForPayment($session, $data['fingerprint']);
         } catch (PaymentConfirmationException $e) {
-            throw ValidationException::withMessages(['fingerprint' => $e->getMessage()]);
+            // A stale fingerprint is routine customer behaviour; every other
+            // reason (unorderable cart, diverged context) is a state worth a
+            // log line, or the only trace is the generic copy on screen.
+            if ($e->reason !== 'fingerprint_mismatch') {
+                report($e);
+            }
+
+            throw ValidationException::withMessages(['fingerprint' => $this->paymentRejectionMessage($e)]);
         }
 
         return response()->json(['pinned' => true]);
+    }
+
+    /**
+     * Customer-initiated unpin (the client's gateway confirmation failed or
+     * was abandoned). The action reopens the session only once the gateway
+     * confirms no money was captured; a captured intent completes or refunds
+     * instead, and an unconfirmable outcome stays frozen for reconciliation.
+     */
+    public function releasePayment(CheckoutSessionModel $session, ReconcilesCheckoutSession $reconcileCheckoutSession, CheckoutDriver $checkoutDriver): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $outcome = $reconcileCheckoutSession->release($session);
+
+        return response()->json([
+            'outcome' => $outcome,
+            'released' => in_array($outcome, ['released', 'refunded'], true),
+            // The retry pins against the live fingerprint, so hand it over.
+            'fingerprint' => $checkoutDriver->fingerprint($session),
+        ]);
+    }
+
+    /**
+     * The post-confirmation landing (spec 0010 §F, customer-facing half). The
+     * client redirects here the moment the gateway accepts the confirmation;
+     * this endpoint settles the session against the gateway's ACTUAL outcome
+     * rather than trusting the client or waiting on the webhook: captured
+     * completes and forwards to the store's success URL, a failed charge
+     * reopens the session and sends the customer back to retry, and an
+     * outcome still in flight renders a polling page (each poll lands back
+     * here). The webhook remains first-class; everything here is idempotent
+     * against it.
+     */
+    public function processing(CheckoutSessionModel $session, ReconcilesCheckoutSession $reconcileCheckoutSession, CheckoutTheme $theme): Response|RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        if ($session->status instanceof PaymentProcessing) {
+            try {
+                $reconcileCheckoutSession->execute($session);
+                $session->refresh();
+            } catch (\Throwable $e) {
+                // Unknowable outcome: keep polling; the sweep owns the tail,
+                // but the failure must not vanish.
+                report($e);
+            }
+        }
+
+        if ($session->status instanceof Completed) {
+            return $this->redirectToSuccess($session);
+        }
+
+        // Reopened: the gateway says no money was captured. Back to the
+        // checkout to try again; the page reads the flag and explains.
+        if ($session->status instanceof Open && ! $session->isExpired()) {
+            return redirect()->to(route('lunar.checkout.show', $session->uuid).'?payment=failed');
+        }
+
+        if ($session->isExpired() || $session->status instanceof Cancelled) {
+            return $this->redirectDeadSession($session);
+        }
+
+        Inertia::setRootView('lunar-checkout::app');
+
+        return Inertia::render('Processing', [
+            'pollUrl' => route('lunar.checkout.processing', $session->uuid),
+            'merchant' => config('app.name', 'Store'),
+            'theme' => $theme->tokens(),
+            'branding' => $theme->branding(),
+            'stylesheet' => $theme->stylesheet(),
+        ]);
+    }
+
+    /**
+     * Session-level URL (hosted flow) wins, then the store-wide config
+     * default, then home.
+     */
+    /**
+     * Leave the checkout for the store's success page, handing over enough to
+     * render an order confirmation: session()->put, NOT a redirect flash - the
+     * processing page probes this redirect with a fetch before the browser
+     * actually navigates, and a flash would be consumed by that probe. The key
+     * persists until the next completed checkout overwrites it, so the
+     * confirmation page survives a refresh.
+     */
+    private function redirectToSuccess(CheckoutSessionModel $session): RedirectResponse
+    {
+        if ($session->order_reference !== null) {
+            session()->put('lunar.checkout.completed', [
+                'uuid' => $session->uuid,
+                'order_reference' => $session->order_reference,
+            ]);
+        }
+
+        return redirect()->to($this->successUrl($session));
+    }
+
+    private function successUrl(CheckoutSessionModel $session): string
+    {
+        return $session->success_url ?: (config('lunar.checkout.urls.success') ?: '/');
+    }
+
+    private function cancelUrl(CheckoutSessionModel $session): string
+    {
+        return $session->cancel_url ?: (config('lunar.checkout.urls.cancel') ?: '/');
+    }
+
+    /**
+     * The structured error contract for redirects OUT of the checkout. The
+     * storefront reads the `lunar.checkout.error` session flash and decides
+     * how to surface it: `code` is a stable machine code, `reason` is
+     * customer-ready copy, `action` is what a storefront can offer next
+     * (`view_basket`, `restart_checkout`).
+     *
+     * @return array{code: string, reason: string, action: string}
+     */
+    private function checkoutError(string $code, string $reason, string $action): array
+    {
+        return ['code' => $code, 'reason' => $reason, 'action' => $action];
+    }
+
+    /**
+     * The one exit for a session that can no longer render: back to the
+     * store's cancel URL with the reason attached.
+     */
+    private function redirectDeadSession(CheckoutSessionModel $session): RedirectResponse
+    {
+        $expired = $session->isExpired();
+
+        return redirect()->to($this->cancelUrl($session))->with('lunar.checkout.error', $this->checkoutError(
+            $expired ? 'session_expired' : 'session_cancelled',
+            $expired
+                ? 'Your checkout session expired, so we brought you back. Your basket is untouched.'
+                : 'That checkout is no longer active. Your basket is untouched.',
+            'restart_checkout',
+        ));
+    }
+
+    /**
+     * Customer-facing copy for a rejected pay attempt. The exception message
+     * carries the developer reason code ("Payment confirmation rejected
+     * [fingerprint_mismatch]."), which is for logs, not for the customer.
+     */
+    private function paymentRejectionMessage(PaymentConfirmationException $e): string
+    {
+        return match ($e->reason) {
+            'fingerprint_mismatch' => 'Your order changed while you were checking out. Check the details above and try again.',
+            'cart_not_orderable' => 'Your order cannot be placed right now. Check the details above and try again.',
+            default => 'The payment could not be started. Refresh the page and try again.',
+        };
     }
 
     /**

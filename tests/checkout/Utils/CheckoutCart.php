@@ -94,6 +94,48 @@ class CheckoutCart
         return $cart->refresh()->calculate();
     }
 
+    /**
+     * Put one purchasable line on a cart built by another fixture, so it can
+     * pass the empty-cart guards without adopting orderable()'s whole world
+     * (whose factories are not idempotent against an existing context).
+     */
+    public static function addLine(Cart $cart, int $unitPrice = 1000): Cart
+    {
+        // Product creation URL-generates against the default language, and
+        // calculating a cart line needs a default tax zone.
+        if (! Language::query()->where('default', true)->exists()) {
+            Language::factory()->create(['code' => 'en', 'default' => true]);
+        }
+
+        if (! TaxZone::query()->where('default', true)->exists()) {
+            TaxZone::factory()->create(['default' => true]);
+        }
+
+        $taxClass = TaxClass::query()->where('default', true)->first()
+            ?? TaxClass::factory()->create(['default' => true]);
+
+        $variant = ProductVariant::factory()->create([
+            'tax_class_id' => $taxClass->id,
+            'unit_quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => $unitPrice,
+            'min_quantity' => 1,
+            'currency_id' => $cart->currency_id,
+            'priceable_type' => $variant->getMorphClass(),
+            'priceable_id' => $variant->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => $variant->getMorphClass(),
+            'purchasable_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        return $cart->refresh();
+    }
+
     public static function session(Cart $cart): CheckoutSession
     {
         return app(CheckoutDriver::class)->createSession($cart);

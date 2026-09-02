@@ -4,11 +4,16 @@ namespace Lunar\Checkout;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
+use Inertia\ResponseFactory;
+use Inertia\Ssr\ExcludesSsrPaths;
+use Inertia\Ssr\Gateway;
 use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
 use Lunar\Checkout\Console\Commands\ReconcileCheckoutSessions;
 use Lunar\Checkout\Contracts\AddressLookup;
@@ -19,6 +24,8 @@ use Lunar\Checkout\Contracts\ElementDataStore;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Exceptions\CheckoutSessionConflictException;
+use Lunar\Checkout\Exceptions\CheckoutSessionNotOperableException;
 use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
 use Lunar\Checkout\Managers\AddressLookupManager;
 use Lunar\Checkout\Managers\CheckoutSessionManager;
@@ -147,7 +154,77 @@ class CheckoutServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         }
 
+        $this->excludeFromServerSideRendering();
+
+        $this->registerExceptionRenderers();
+
         $this->registerPublishing();
+    }
+
+    /**
+     * Map the domain's state-refusal exceptions onto transport responses with
+     * customer-facing copy (spec 0003 §H). Without this they surface as 500s
+     * whose message is the developer reason code ("Checkout session conflict
+     * [frozen]."). The machine code stays available in the payload as
+     * `reason` for clients that branch on it.
+     */
+    private function registerExceptionRenderers(): void
+    {
+        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler): void {
+            if (! method_exists($handler, 'renderable')) {
+                return;
+            }
+
+            $handler->renderable(function (CheckoutSessionConflictException $e, Request $request) {
+                if (! $request->expectsJson()) {
+                    return null;
+                }
+
+                return response()->json([
+                    'message' => 'This checkout is busy finishing a payment attempt. Wait a moment and try again.',
+                    'reason' => $e->reason,
+                ], 409);
+            });
+
+            $handler->renderable(function (CheckoutSessionNotOperableException $e, Request $request) {
+                if (! $request->expectsJson()) {
+                    return null;
+                }
+
+                return response()->json([
+                    'message' => 'This checkout session has ended. Return to your basket to start again.',
+                    'reason' => 'not_operable',
+                ], 410);
+            });
+        });
+    }
+
+    /**
+     * Exclude the checkout's paths from the host application's Inertia SSR.
+     *
+     * The checkout is a self-contained Inertia app (spec 0008): its own root
+     * view, its own bundle, and page components that ship inside this package.
+     * A host running SSR renders from its own entry, whose page map covers only
+     * the host's own pages, so an SSR attempt on a checkout render can do
+     * nothing but fail ("Page not found: Show") and fall back to a client
+     * render, costing a wasted round trip and a misleading error per view.
+     *
+     * Guarded rather than assumed: `withoutSsr()` arrived in Inertia v3 and the
+     * host may have swapped the gateway for one that cannot exclude paths.
+     */
+    private function excludeFromServerSideRendering(): void
+    {
+        if (! method_exists(ResponseFactory::class, 'withoutSsr')) {
+            return;
+        }
+
+        if (! $this->app->make(Gateway::class) instanceof ExcludesSsrPaths) {
+            return;
+        }
+
+        $path = trim((string) config('lunar.checkout.path', 'checkout'), '/');
+
+        Inertia::withoutSsr([$path, $path.'/*']);
     }
 
     private function registerPublishing(): void

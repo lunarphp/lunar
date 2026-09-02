@@ -10,6 +10,7 @@ use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Tests\Checkout\TestCase;
+use Lunar\Tests\Checkout\Utils\CheckoutCart;
 
 uses(TestCase::class, RefreshDatabase::class);
 
@@ -56,7 +57,8 @@ it('registers the start and show routes under /checkout', function () {
 });
 
 it('starts a checkout and redirects to the session UUID url', function () {
-    $cart = routeTestCart();
+    // Needs lines: start() refuses an empty cart outright.
+    $cart = CheckoutCart::orderable();
     CartSession::use($cart);
 
     $session = null;
@@ -98,7 +100,8 @@ it('forbids viewing a session the requester does not own', function () {
 it('projects the configured merchant name into the header prop', function () {
     config(['checkout.merchant' => 'Edwardes Bros']);
 
-    $cart = routeTestCart();
+    // Needs lines: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::orderable();
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 
@@ -113,7 +116,8 @@ it('projects the configured merchant name into the header prop', function () {
 it('falls back to the app name when no merchant is configured', function () {
     config(['checkout.merchant' => null, 'app.name' => 'Lunar Store']);
 
-    $cart = routeTestCart();
+    // Needs lines: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::orderable();
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 
@@ -130,7 +134,8 @@ it('404s an unknown session uuid', function () {
 });
 
 it('renders the checkout for the owning cart', function () {
-    $cart = routeTestCart();
+    // Needs lines: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::orderable();
     $session = app(CheckoutDriver::class)->createSession($cart);
     CartSession::use($cart);
 

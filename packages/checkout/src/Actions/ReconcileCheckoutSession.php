@@ -69,6 +69,48 @@ final class ReconcileCheckoutSession implements ReconcilesCheckoutSession
         };
     }
 
+    public function release(CheckoutSession $session): string
+    {
+        if (! $session->status instanceof PaymentProcessing) {
+            return 'not-applicable';
+        }
+
+        $gateway = $this->gateways->for($session);
+        $reference = $session->payment_intent_ref;
+
+        if ($reference !== null) {
+            // An intent exists, so money may exist. Reopen only on the
+            // gateway's word that it was not captured; anything unknowable
+            // stays frozen and the reconciliation sweep owns it.
+            if ($gateway === null) {
+                return 'unconfirmed';
+            }
+
+            try {
+                $status = $gateway->fetchIntent($reference);
+            } catch (\Throwable) {
+                return 'unconfirmed';
+            }
+
+            if (in_array($status, [PaymentIntentStatus::Captured, PaymentIntentStatus::RequiresCapture], true)) {
+                return $this->completeOrRefund($session, $gateway, $reference);
+            }
+        }
+
+        // Unlike reopen(), the intent reference survives: the customer's
+        // mounted payment element is still bound to it, the intent is still
+        // confirmable, and the retry re-syncs its amount at the pay boundary.
+        $grace = (int) config('lunar.checkout.session.reopen_grace_minutes', 30);
+
+        $session->transitionGuarded([PaymentProcessing::$name], Open::$name, [
+            'payment_processing_at' => null,
+            'reconciliation_attempts' => 0,
+            'expires_at' => now()->addMinutes($grace),
+        ]);
+
+        return 'released';
+    }
+
     /**
      * Captured money resolves to exactly one of: an order, or a refund.
      */

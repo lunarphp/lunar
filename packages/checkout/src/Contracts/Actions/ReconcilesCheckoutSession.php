@@ -16,4 +16,17 @@ interface ReconcilesCheckoutSession
      * — the sanctioned stall exit. Returns a stable outcome code.
      */
     public function execute(CheckoutSession $session, ?string $resolve = null): string;
+
+    /**
+     * Customer-initiated unpin: the client's gateway confirmation step failed
+     * or was abandoned, so the customer is stuck on a `PaymentProcessing`
+     * session with nothing in flight. Reopens the session for another attempt
+     * ONLY after the gateway confirms no money was captured; a captured intent
+     * resolves through the normal complete-or-refund path instead, and an
+     * unconfirmable outcome stays frozen for the reconciliation sweep.
+     *
+     * Returns a stable outcome code: `released`, `completed`, `refunded`,
+     * `unconfirmed` or `not-applicable`.
+     */
+    public function release(CheckoutSession $session): string;
 }

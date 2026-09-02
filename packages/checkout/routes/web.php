@@ -6,6 +6,11 @@ use Lunar\Checkout\Http\Controllers\CheckoutController;
 $path = config('lunar.checkout.path', 'checkout');
 
 Route::middleware(config('lunar.checkout.middleware', ['web']))
+    // {session} is always a UUID. The constraint matters beyond hygiene: it
+    // lets the host register its own literal paths under the same prefix
+    // (e.g. GET /checkout/confirmation as the success URL) without this
+    // group's {session} routes swallowing them.
+    ->whereUuid('session')
     ->group(function () use ($path) {
         // Start a checkout: resolve-or-create the current cart's session and
         // redirect to its UUID URL (spec 0004/0005). A POST, not a link — the
@@ -67,6 +72,18 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         // client-side confirmation happens after this returns.
         Route::post($path.'/{session}/pay', [CheckoutController::class, 'pay'])
             ->name('lunar.checkout.pay');
+
+        // Customer-initiated unpin after a failed/abandoned gateway
+        // confirmation: reopens the pinned session for another attempt, but
+        // only once the gateway confirms no money was captured.
+        Route::post($path.'/{session}/payment-release', [CheckoutController::class, 'releasePayment'])
+            ->name('lunar.checkout.payment-release');
+
+        // Post-confirmation landing: settles the session against the
+        // gateway's actual outcome and forwards to the store's success URL,
+        // or renders a polling page while the outcome is still in flight.
+        Route::get($path.'/{session}/processing', [CheckoutController::class, 'processing'])
+            ->name('lunar.checkout.processing');
 
         // Render the self-contained Inertia checkout app for one session,
         // addressed by its UUID capability token (spec 0008). Safe/idempotent:
