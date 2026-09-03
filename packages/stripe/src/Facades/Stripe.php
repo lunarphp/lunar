@@ -20,6 +20,7 @@ use Stripe\StripeClient;
  * @method static PaymentIntent fetchOrCreateIntent(Cart $cart, array $createOptions = [])
  * @method static PaymentMethod|null getPaymentMethod(string $paymentMethodId)
  * @method static PaymentIntent createIntent(Cart $cart, array $opts = [], string $flavour = 'standard')
+ * @method static PaymentIntent createHold(Cart $cart)
  * @method static void updateShippingAddress(Cart $cart)
  * @method static void updateIntent(Cart $cart, array $values)
  * @method static void updateIntentById(string $id, array $values)

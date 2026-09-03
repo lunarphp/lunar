@@ -1,0 +1,74 @@
+{
+  "id": "{id}",
+  "object": "payment_intent",
+  "amount": "{amount}",
+  "amount_capturable": "{amount}",
+  "amount_received": 0,
+  "application": null,
+  "application_fee_amount": null,
+  "automatic_payment_methods": null,
+  "canceled_at": null,
+  "cancellation_reason": null,
+  "capture_method": "manual",
+  "incremental_authorization_supported": "{incremental_authorization_supported}",
+  "charges": {
+    "object": "list",
+    "data": [],
+    "has_more": false,
+    "url": "/v1/charges?payment_intent=pi_1DqH152eZvKYlo2CFHYZuxkP"
+  },
+  "client_secret": "pi_1DqH152eZvKYlo2CFHYZuxkP_secret_XNCxrfxMZshhdt1VmraRVGMKY",
+  "confirmation_method": "automatic",
+  "created": 1546940219,
+  "currency": "{currency}",
+  "customer": null,
+  "description": null,
+  "invoice": null,
+  "last_payment_error": null,
+  "livemode": false,
+  "metadata": {},
+  "next_action": null,
+  "on_behalf_of": null,
+  "payment_method": {
+    "id": "{payment_method_id}",
+    "object": "payment_method",
+    "type": "card",
+    "card": {
+      "brand": "visa",
+      "last4": "4242",
+      "wallet": {
+        "type": "{wallet_type}"
+      }
+    }
+  },
+  "payment_method_options": {
+    "card": {
+      "request_incremental_authorization": "if_available"
+    }
+  },
+  "payment_method_types": [
+    "card"
+  ],
+  "processing": null,
+  "receipt_email": null,
+  "redaction": null,
+  "review": null,
+  "setup_future_usage": null,
+  "shipping": {
+      "address": {
+          "city": "ACME Shipping Land",
+          "country": "GB",
+          "line1": "123 ACME Shipping Lane",
+          "line2": null,
+          "postal_code": "AC2 2ME",
+          "state": "ACM3"
+      },
+      "phone": "123456",
+      "name": "Buggs Bunny"
+  },
+  "statement_descriptor": null,
+  "statement_descriptor_suffix": null,
+  "status": "{status}",
+  "transfer_data": null,
+  "transfer_group": null
+}

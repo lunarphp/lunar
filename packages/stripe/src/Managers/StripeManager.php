@@ -124,6 +124,20 @@ class StripeManager
         return $paymentIntent;
     }
 
+    /**
+     * Create (or resume) the cart's authorise-only intent (spec 0012 SB):
+     * capture deferred, incremental authorization requested where available.
+     */
+    public function createHold(Cart $cart): PaymentIntent
+    {
+        return $this->createIntent($cart, [
+            'capture_method' => 'manual',
+            'payment_method_options' => [
+                'card' => ['request_incremental_authorization' => 'if_available'],
+            ],
+        ], 'hold');
+    }
+
     public function updateShippingAddress(Cart $cart): void
     {
         /** @var Cart $cart */

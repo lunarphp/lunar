@@ -1,15 +1,28 @@
 <?php
 
+use Lunar\Core\Enums\HoldAdjustment;
+use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Models\Currency;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
+use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(TestCase::class);
+
+/**
+ * Resolve the Stripe payment driver the way the payment type tests do
+ * (StripePaymentTypeTest.php: `new StripePaymentType`) — the hold verbs
+ * live on the driver, not the manager.
+ */
+function paymentDriver(): StripePaymentType
+{
+    return new StripePaymentType;
+}
 
 it('can create a payment intent', function () {
     $cart = CartBuilder::build();
@@ -247,4 +260,68 @@ it('converts Stripe amounts back to the stored scale', function () {
     ]);
 
     expect(StripeManager::fromStripeAmount(1999, $currency))->toBe(1999);
+});
+
+it('creates holds as manual capture intents with incremental authorization requested', function () {
+    $cart = CartBuilder::build();
+    $mock = Stripe::fake();
+
+    Stripe::createHold($cart->calculate());
+
+    $create = collect($mock->requests)
+        ->first(fn ($r) => $r['method'] === 'post' && str_ends_with($r['url'], 'payment_intents'));
+
+    expect($create['params']['capture_method'])->toBe('manual')
+        ->and($create['params']['payment_method_options']['card']['request_incremental_authorization'])->toBe('if_available');
+
+    expect($cart->paymentIntents()->first()->flavour)->toBe('hold');
+});
+
+it('adjusts a hold: lower amount is Ok with no gateway call', function () {
+    $mock = Stripe::fake();
+
+    $result = paymentDriver()->adjustHold('PI_HOLD', 1500); // authorised 2000
+
+    expect($result)->toBe(HoldAdjustment::Ok);
+    $calls = collect($mock->requests)
+        ->filter(fn ($r) => str_contains($r['url'], 'increment_authorization'));
+    expect($calls)->toBeEmpty();
+});
+
+it('adjusts a hold upward via incremental authorization when supported', function () {
+    $mock = Stripe::fake();
+
+    $result = paymentDriver()->adjustHold('PI_HOLD', 2600);
+
+    expect($result)->toBe(HoldAdjustment::Ok);
+    $call = collect($mock->requests)
+        ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/increment_authorization'));
+    expect($call['params']['amount'])->toBe(2600);
+});
+
+it('reports NeedsReauthorization when the rail cannot increment', function () {
+    Stripe::fake();
+
+    expect(paymentDriver()->adjustHold('PI_HOLD_NOINC', 2600))
+        ->toBe(HoldAdjustment::NeedsReauthorization);
+});
+
+it('describes a hold with status, amount and wallet label', function () {
+    Stripe::fake();
+
+    $description = paymentDriver()->describeHold('PI_HOLD');
+
+    expect($description->status)->toBe(PaymentIntentStatus::RequiresCapture)
+        ->and($description->amountMinor)->toBe(2000)
+        ->and($description->walletLabel)->toBe('Apple Pay');
+});
+
+it('captures a hold for the final amount', function () {
+    $mock = Stripe::fake();
+
+    paymentDriver()->captureHold('PI_HOLD', 1800);
+
+    $call = collect($mock->requests)
+        ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/capture'));
+    expect($call['params']['amount_to_capture'])->toBe(1800);
 });

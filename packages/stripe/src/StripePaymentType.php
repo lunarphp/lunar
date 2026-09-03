@@ -3,14 +3,17 @@
 namespace Lunar\Stripe;
 
 use Lunar\Core\Contracts\CreatesPaymentIntents;
+use Lunar\Core\Contracts\SupportsPaymentHolds;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
+use Lunar\Core\DataObjects\HoldDescription;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentCheck;
 use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\DataObjects\PaymentIntentDescriptor;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Exceptions\Carts\CartException;
@@ -27,7 +30,7 @@ use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 
-class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents, SupportsPaymentIntents, SyncsPaymentIntents
+class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents, SupportsPaymentHolds, SupportsPaymentIntents, SyncsPaymentIntents
 {
     /**
      * The Stripe instance.
@@ -94,17 +97,125 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
     {
         $intent = $this->stripe->paymentIntents->retrieve($reference);
 
+        return $this->fetchIntentStatus($intent);
+    }
+
+    /**
+     * Map a Stripe payment intent already in hand to its gateway-neutral
+     * status, without a second retrieve. Shared by {@see fetchIntent()} and
+     * {@see describeHold()}.
+     */
+    private function fetchIntentStatus(PaymentIntent $intent): PaymentIntentStatus
+    {
         return match ($intent->status) {
             PaymentIntent::STATUS_SUCCEEDED => PaymentIntentStatus::Captured,
             PaymentIntent::STATUS_REQUIRES_CAPTURE => PaymentIntentStatus::RequiresCapture,
             PaymentIntent::STATUS_CANCELED => PaymentIntentStatus::Voided,
             // A declined confirmation drops back to requires_payment_method
-            // with the error recorded — that is a failure, not "pending".
+            // with the error recorded: that is a failure, not "pending".
             PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => $intent->last_payment_error
                 ? PaymentIntentStatus::Failed
                 : PaymentIntentStatus::Pending,
             default => PaymentIntentStatus::Pending,
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Delegates to the manager, which mints a manual-capture intent with
+     * incremental authorization requested where the rail offers it.
+     */
+    public function createHold(Cart $cart): PaymentIntentDescriptor
+    {
+        $intent = Stripe::createHold($cart);
+
+        return new PaymentIntentDescriptor(
+            reference: $intent->id,
+            clientSecret: $intent->client_secret,
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Amounts are returned in Stripe sub-units; convert with
+     * {@see StripeManager::fromStripeAmount()} at the call boundary if a
+     * Lunar-scale value is needed.
+     */
+    public function describeHold(string $reference): ?HoldDescription
+    {
+        try {
+            $intent = $this->stripe->paymentIntents->retrieve($reference, [
+                'expand' => ['payment_method'],
+            ]);
+        } catch (InvalidRequestException) {
+            return null;
+        }
+
+        if ($intent->capture_method !== 'manual') {
+            return null;
+        }
+
+        return new HoldDescription(
+            status: $this->fetchIntentStatus($intent),
+            amountMinor: (int) $intent->amount,
+            walletLabel: match ($intent->payment_method?->card?->wallet?->type ?? null) {
+                'apple_pay' => 'Apple Pay',
+                'google_pay' => 'Google Pay',
+                'link' => 'Link',
+                default => null,
+            },
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * `$amountMinor` is expected in Stripe sub-units, matching the scale
+     * {@see describeHold()} reports the authorised amount in; convert with
+     * {@see StripeManager::toStripeAmount()} when starting from a Lunar cart
+     * total.
+     */
+    public function adjustHold(string $reference, int $amountMinor): HoldAdjustment
+    {
+        $intent = $this->stripe->paymentIntents->retrieve($reference);
+
+        if ($amountMinor <= (int) $intent->amount) {
+            return HoldAdjustment::Ok;
+        }
+
+        if (! ($intent->incremental_authorization_supported ?? false)) {
+            return HoldAdjustment::NeedsReauthorization;
+        }
+
+        $this->stripe->paymentIntents->incrementAuthorization($reference, [
+            'amount' => $amountMinor,
+        ]);
+
+        return HoldAdjustment::Ok;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * `$amountMinor` is expected in Stripe sub-units; convert with
+     * {@see StripeManager::toStripeAmount()} when starting from a Lunar
+     * order total.
+     */
+    public function captureHold(string $reference, int $amountMinor): void
+    {
+        $intent = $this->stripe->paymentIntents->retrieve($reference);
+
+        // Idempotent per reference: a capture that already happened is done.
+        if ($intent->status === PaymentIntent::STATUS_SUCCEEDED) {
+            return;
+        }
+
+        // Throws on failure; an unknown outcome is not a capture.
+        $this->stripe->paymentIntents->capture($reference, [
+            'amount_to_capture' => $amountMinor,
+        ]);
     }
 
     /**
@@ -192,6 +303,15 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
                 'intent_id' => $paymentIntentId,
                 'cart_id' => $this->cart?->id ?: $this->order->cart_id,
                 'order_id' => $this->order?->id,
+                /**
+                 * This row is minted here rather than by
+                 * StripeManager::createIntent()/createHold(), so there is no
+                 * flavour argument to trust; infer it from the fetched
+                 * intent instead of defaulting to standard, or a hold intent
+                 * reaching this fallback would cross-contaminate flavour-keyed
+                 * intent reuse.
+                 */
+                'flavour' => $this->paymentIntent->capture_method === 'manual' ? 'hold' : 'standard',
             ]);
         }
 

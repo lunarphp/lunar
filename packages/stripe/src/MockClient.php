@@ -87,6 +87,34 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_intents')) {
+            // PI_HOLD_NOINC must be checked before PI_HOLD — str_contains is
+            // prefix-greedy and PI_HOLD is a substring of PI_HOLD_NOINC.
+            if (str_contains($absUrl, 'PI_HOLD_NOINC')) {
+                $this->rBody = $this->getResponse('payment_intent_hold', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                    'amount' => 2000,
+                    'wallet_type' => 'apple_pay',
+                    'incremental_authorization_supported' => false,
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
+            if (str_contains($absUrl, 'PI_HOLD')) {
+                $this->rBody = $this->getResponse('payment_intent_hold', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                    'amount' => 2000,
+                    'wallet_type' => 'apple_pay',
+                    'incremental_authorization_supported' => true,
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
             if (str_contains($absUrl, 'PI_CAPTURE_LINK')) {
                 $this->rBody = $this->getResponse('payment_intent_paid', [
                     'id' => $id,
@@ -198,6 +226,39 @@ class MockClient implements ClientInterface
             $this->rBody = $this->getResponse('refund', [
                 'refund_amount' => $params['amount'] ?? 0,
                 'payment_intent' => $params['payment_intent'] ?? 'PI_CAPTURE',
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
+        if ($method == 'post' && str_contains($absUrl, '/increment_authorization')) {
+            $intentId = array_slice(explode('/', $absUrl), -2)[0];
+            $this->rBody = $this->getResponse('payment_intent_hold', [
+                'id' => $intentId,
+                'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                'amount' => $params['amount'],
+                'wallet_type' => 'apple_pay',
+                'incremental_authorization_supported' => true,
+                ...$this->nextData,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
+        if ($method == 'post' && str_contains($absUrl, '/capture')) {
+            $intentId = array_slice(explode('/', $absUrl), -2)[0];
+            $this->rBody = $this->getResponse('payment_intent_paid', [
+                'id' => $intentId,
+                'status' => PaymentIntent::STATUS_SUCCEEDED,
+                'capture_method' => 'manual',
+                'latest_charge_id' => 'CH_CARD',
+                'payment_status' => 'succeeded',
+                'payment_method_id' => 'PM_CARD',
+                'payment_error' => null,
+                'failure_code' => null,
+                'captured' => true,
+                'amount' => $params['amount_to_capture'] ?? 2000,
+                ...$this->nextData,
             ]);
 
             return [$this->rBody, $this->rcode, $this->rheaders];
