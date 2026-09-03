@@ -92,7 +92,7 @@ function addressPayload(name, address, phone) {
 
 // Persist everything the wallet shared, in order: contact (unless already
 // signed in), shipping address, billing address, shipping option. Collect
-// mode skips both shipping writes — there is no delivery address to store.
+// mode skips both shipping writes (there is no delivery address to store).
 async function persistWalletData(event) {
   const contact = state.elements.find((item) => item.handle === 'contact')
   const email = event.billingDetails?.email
@@ -194,8 +194,8 @@ onMounted(async () => {
 
         // Deferred-intent contract: elements.submit() finalises the payment
         // details Elements collected and MUST run before the PaymentIntent
-        // exists server-side, not after — the opposite order silently
-        // confirms against a stale/absent intent.
+        // exists server-side, not after (the opposite order silently
+        // confirms against a stale/absent intent).
         const { error: submitError } = await elements.submit()
 
         if (submitError) {
