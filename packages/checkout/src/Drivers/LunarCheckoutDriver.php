@@ -295,7 +295,22 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     {
         $cart = $this->operableCart($session);
 
+        // Lunar replaces the address row wholesale and the chosen shipping
+        // option rides on that row, so an address edit after a rate was
+        // picked (the express confirm page's name field, say) would silently
+        // strip the selection and fail order creation at pay. Re-apply it
+        // when the new address still offers it.
+        $previousOption = $cart->shippingAddress?->shipping_option;
+
         $cart->setShippingAddress($this->toCartAddressData($data));
+
+        if ($previousOption !== null) {
+            $option = $this->shippingManifest->getOption($cart, $previousOption);
+
+            if ($option !== null) {
+                $cart->setShippingOption($option);
+            }
+        }
 
         $snapshot = $this->resync($session, $cart);
 
