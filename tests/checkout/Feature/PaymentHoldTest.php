@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
+use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
@@ -115,13 +117,43 @@ class FakeHoldGateway extends OfflinePayment implements CreatesPaymentIntents, S
 
 /**
  * A gateway that can only create standard intents, no hold capability, the
- * way most drivers will stay.
+ * way most drivers will stay. Also implements {@see SupportsPaymentIntents}
+ * (fetch/void/refund) so it doubles as the "hold mode flagged on a session
+ * whose driver never actually supports holds" misconfiguration fixture: a
+ * hold-mode session pinned against this gateway reaches completeOrRefund()
+ * with an intent-capable-but-not-hold-capable driver, exercising the flavour
+ * branch that must void rather than refund an uncaptured hold.
  */
-class IntentOnlyGateway extends OfflinePayment implements CreatesPaymentIntents
+class IntentOnlyGateway extends OfflinePayment implements CreatesPaymentIntents, SupportsPaymentIntents
 {
+    /** @var array<int, string> */
+    public static array $voidedReferences = [];
+
+    /** @var array<int, array{reference: string, amount: int}> */
+    public static array $refundCalls = [];
+
+    public static PaymentIntentStatus $fetchStatus = PaymentIntentStatus::RequiresCapture;
+
     public function createIntent(Cart $cart): PaymentIntentDescriptor
     {
         return new PaymentIntentDescriptor('pi_intent_only_'.$cart->id);
+    }
+
+    public function fetchIntent(string $reference): PaymentIntentStatus
+    {
+        return static::$fetchStatus;
+    }
+
+    public function voidIntent(string $reference): void
+    {
+        static::$voidedReferences[] = $reference;
+    }
+
+    public function refundIntent(string $reference, int $amountMinor, string $idempotencyKey): string
+    {
+        static::$refundCalls[] = ['reference' => $reference, 'amount' => $amountMinor];
+
+        return 'refund_intent_only_'.$reference;
     }
 }
 
@@ -287,6 +319,31 @@ function breakCartSoCompletionFails(CheckoutSession $session): void
     CheckoutCart::addLine(Cart::query()->findOrFail((int) $session->cart_reference));
 }
 
+/**
+ * A `PaymentProcessing` session flagged hold mode (`payment_intent_mode`
+ * === 'hold') but pinned against {@see IntentOnlyGateway}, which never
+ * implements `SupportsPaymentHolds`: the misconfiguration completeOrRefund()
+ * defends against (capture is skipped entirely, so a completion failure must
+ * still void, not refund, since nothing was ever captured).
+ */
+function mintPinnedHoldSessionWithoutHoldSupport(): CheckoutSession
+{
+    registerIntentOnlyGateway();
+
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = CheckoutCart::session($cart);
+
+    $session->forceFill([
+        'status' => PaymentProcessing::$name,
+        'payment_intent_ref' => 'pi_intent_only_pinned',
+        'payment_processing_at' => now(),
+        'meta' => ['payment_method' => 'intent-only', 'payment_intent_mode' => 'hold'],
+    ])->save();
+
+    return $session->refresh();
+}
+
 beforeEach(function () {
     FakeHoldGateway::$createIntentCalls = [];
     FakeHoldGateway::$createHoldCalls = [];
@@ -298,6 +355,9 @@ beforeEach(function () {
     FakeHoldGateway::$fetchStatus = PaymentIntentStatus::RequiresCapture;
     FakeHoldGateway::$throwOnCapture = false;
     FakeHoldGateway::$describeOutcome = null;
+    IntentOnlyGateway::$voidedReferences = [];
+    IntentOnlyGateway::$refundCalls = [];
+    IntentOnlyGateway::$fetchStatus = PaymentIntentStatus::RequiresCapture;
 });
 
 it('routes mode hold to createHold and records the mode on the session', function () {
@@ -443,4 +503,33 @@ it('release reopens a pinned hold session keeping the hold intact', function () 
     expect($session->status)->toBeInstanceOf(Open::class)
         ->and($session->payment_intent_ref)->not->toBeNull();
     expect(FakeHoldGateway::$captureCalls)->toBeEmpty();
+});
+
+it('voids the hold when an expired session is invalidated', function () {
+    $session = mintHoldSession();
+    $reference = $session->payment_intent_ref;
+
+    $session->forceFill(['expires_at' => now()->subMinute()])->save();
+
+    Artisan::call('lunar:checkout:expire-sessions');
+
+    expect(FakeHoldGateway::$voidedReferences)->toContain($reference);
+
+    // Void-first invalidation (spec 0010 §F) terminalizes to Cancelled, not
+    // Expired: a session carrying an advisory intent always goes through
+    // InvalidateCheckoutSession rather than the plain expiry transition.
+    expect($session->refresh()->status)->toBeInstanceOf(Cancelled::class);
+});
+
+it('voids, never refunds, a stray hold when the driver never supported holds and completion fails', function () {
+    $session = mintPinnedHoldSessionWithoutHoldSupport();
+
+    breakCartSoCompletionFails($session);
+
+    $this->get(route('lunar.checkout.processing', $session->uuid));
+
+    expect(IntentOnlyGateway::$voidedReferences)->toBe(['pi_intent_only_pinned'])
+        ->and(IntentOnlyGateway::$refundCalls)->toBeEmpty();
+
+    expect($session->refresh()->status)->toBeInstanceOf(Open::class);
 });
