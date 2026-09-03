@@ -16,8 +16,8 @@ uses(TestCase::class);
 
 /**
  * Resolve the Stripe payment driver the way the payment type tests do
- * (StripePaymentTypeTest.php: `new StripePaymentType`) — the hold verbs
- * live on the driver, not the manager.
+ * (StripePaymentTypeTest.php: `new StripePaymentType`), since the hold
+ * verbs live on the driver, not the manager.
  */
 function paymentDriver(): StripePaymentType
 {

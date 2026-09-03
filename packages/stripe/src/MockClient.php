@@ -87,7 +87,7 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_intents')) {
-            // PI_HOLD_NOINC must be checked before PI_HOLD — str_contains is
+            // PI_HOLD_NOINC must be checked before PI_HOLD: str_contains is
             // prefix-greedy and PI_HOLD is a substring of PI_HOLD_NOINC.
             if (str_contains($absUrl, 'PI_HOLD_NOINC')) {
                 $this->rBody = $this->getResponse('payment_intent_hold', [
