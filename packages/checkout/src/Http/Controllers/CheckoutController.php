@@ -548,8 +548,21 @@ class CheckoutController extends Controller
                     'country_code' => $data['country_code'],
                 ]);
 
-                if (! empty($data['shipping_option'])) {
-                    $checkoutDriver->setShippingOption($session, $data['shipping_option']);
+                $options = $checkoutDriver->getShippingOptions($session);
+
+                // The Express Checkout Element auto-selects the first rate the
+                // sheet shows without firing shippingratechange for it, so a
+                // quote with no chosen option must price totals as if that
+                // first deliverable option were selected; otherwise the sheet
+                // authorises a total excluding the shipping it displays.
+                $chosen = $data['shipping_option'] ?? null;
+
+                if (empty($chosen)) {
+                    $chosen = collect($options)->firstWhere('collect', false)['identifier'] ?? null;
+                }
+
+                if (! empty($chosen)) {
+                    $checkoutDriver->setShippingOption($session, $chosen);
                 }
 
                 $quote = [
@@ -559,7 +572,7 @@ class CheckoutController extends Controller
                         'sub' => $option['description'],
                         'price' => $option['price'] ?? 0,
                         'collect' => (bool) ($option['collect'] ?? false),
-                    ], $checkoutDriver->getShippingOptions($session)),
+                    ], $options),
                     'totals' => $checkoutDriver->getTotals($session),
                 ];
 

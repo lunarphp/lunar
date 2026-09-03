@@ -459,7 +459,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         return [
             'sub_total' => $cart->subTotal?->value ?? 0,
             'discount_total' => $cart->discountTotal?->value ?? 0,
-            'shipping_total' => $cart->shippingTotal?->value ?? 0,
+            'shipping_total' => $cart->shippingSubTotal?->value ?? 0,
             'tax_total' => $cart->taxTotal?->value ?? 0,
             'total' => $cart->total?->value ?? 0,
         ];

@@ -132,7 +132,9 @@ interface CheckoutDriver
     public function getCoupon(CheckoutSession $session): ?string;
 
     /**
-     * Live money figures for the order summary, in minor units.
+     * Live money figures for the order summary, in minor units. sub_total and
+     * shipping_total are tax-exclusive; tax_total carries all the tax, so the
+     * summary rows sum to total.
      *
      * @return array{sub_total: int, discount_total: int, shipping_total: int, tax_total: int, total: int}
      */
