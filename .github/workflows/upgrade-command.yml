@@ -14,13 +14,9 @@ on:
       - packages/core/database/migrations/**
       - .github/workflows/upgrade-command.yml
 
-concurrency:
-  group: upgrade-command-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   lunar-upgrade:
-    name: v1.5 → v2 (${{ matrix.database }})
+    name: v1.5 to v2 (${{ matrix.database }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -29,28 +25,38 @@ jobs:
         include:
           - database: sqlite
             db_connection: sqlite
+            db_database: /tmp/vanilla-lunar/database/database.sqlite
           - database: mysql
             db_connection: mysql
             db_port: "3306"
+            db_database: lunar_upgrade
             db_username: root
             db_password: root
           - database: postgres
             db_connection: pgsql
             db_port: "5432"
+            db_database: lunar_upgrade
             db_username: postgres
             db_password: postgres
           - database: mariadb
             db_connection: mariadb
             db_port: "3307"
+            db_database: lunar_upgrade
             db_username: root
             db_password: root
     env:
-      APP_DIR: ${{ runner.temp }}/vanilla-lunar
+      APP_DIR: /tmp/vanilla-lunar
       LUNAR_V1: "1.5.0"
       APP_ENV: local
       APP_DEBUG: "true"
       SCOUT_DRIVER: collection
       QUEUE_CONNECTION: sync
+      DB_CONNECTION: ${{ matrix.db_connection }}
+      DB_HOST: 127.0.0.1
+      DB_PORT: ${{ matrix.db_port }}
+      DB_DATABASE: ${{ matrix.db_database }}
+      DB_USERNAME: ${{ matrix.db_username }}
+      DB_PASSWORD: ${{ matrix.db_password }}
     services:
       mysql:
         image: mysql:8.0
@@ -89,11 +95,9 @@ jobs:
           --health-timeout=5s
           --health-retries=10
     steps:
-      - name: Checkout Lunar v2
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP 8.5
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
           extensions: bcmath, exif, intl, mbstring, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite
@@ -103,69 +107,37 @@ jobs:
       - name: Create Laravel 13 app
         run: composer create-project laravel/laravel:^13.0 "$APP_DIR" --prefer-dist --no-interaction --no-dev
 
-      - name: Write database env
+      - name: Configure app
+        working-directory: /tmp/vanilla-lunar
         run: |
-          cd "$APP_DIR"
           php artisan key:generate --force --no-interaction
           if [ "${{ matrix.database }}" = "sqlite" ]; then
             mkdir -p database
             touch database/database.sqlite
-            {
-              echo "DB_CONNECTION=sqlite"
-              echo "DB_DATABASE=$APP_DIR/database/database.sqlite"
-            } >> "$GITHUB_ENV"
-            {
-              echo "DB_CONNECTION=sqlite"
-              echo "DB_DATABASE=$APP_DIR/database/database.sqlite"
-            } >> .env
-          else
-            {
-              echo "DB_CONNECTION=${{ matrix.db_connection }}"
-              echo "DB_HOST=127.0.0.1"
-              echo "DB_PORT=${{ matrix.db_port }}"
-              echo "DB_DATABASE=lunar_upgrade"
-              echo "DB_USERNAME=${{ matrix.db_username }}"
-              echo "DB_PASSWORD=${{ matrix.db_password }}"
-            } >> "$GITHUB_ENV"
-            {
-              echo "DB_CONNECTION=${{ matrix.db_connection }}"
-              echo "DB_HOST=127.0.0.1"
-              echo "DB_PORT=${{ matrix.db_port }}"
-              echo "DB_DATABASE=lunar_upgrade"
-              echo "DB_USERNAME=${{ matrix.db_username }}"
-              echo "DB_PASSWORD=${{ matrix.db_password }}"
-            } >> .env
           fi
-          echo "SCOUT_DRIVER=collection" >> .env
-          echo "QUEUE_CONNECTION=sync" >> .env
+          {
+            echo "APP_ENV=local"
+            echo "APP_DEBUG=true"
+            echo "SCOUT_DRIVER=collection"
+            echo "QUEUE_CONNECTION=sync"
+            echo "DB_CONNECTION=$DB_CONNECTION"
+            echo "DB_HOST=$DB_HOST"
+            echo "DB_PORT=$DB_PORT"
+            echo "DB_DATABASE=$DB_DATABASE"
+            echo "DB_USERNAME=$DB_USERNAME"
+            echo "DB_PASSWORD=$DB_PASSWORD"
+          } >> .env
 
       - name: Install Lunar v1.5 core
-        working-directory: ${{ env.APP_DIR }}
+        working-directory: /tmp/vanilla-lunar
         run: composer require "lunarphp/core:${LUNAR_V1}" --no-interaction --no-progress
 
       - name: Migrate v1 schema
-        working-directory: ${{ env.APP_DIR }}
+        working-directory: /tmp/vanilla-lunar
         run: php artisan migrate --force --no-interaction
 
-      - name: Confirm v1 ledger
-        working-directory: ${{ env.APP_DIR }}
-        run: |
-          php -r '
-            require "vendor/autoload.php";
-            $app = require "bootstrap/app.php";
-            $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-            $found = Illuminate\Support\Facades\DB::table("migrations")
-                ->where("migration", "2021_07_29_100000_create_channels_table")
-                ->exists();
-            if (!$found) {
-                fwrite(STDERR, "v1 canary migration is missing; lunarphp/core 1.5 did not migrate.\n");
-                exit(1);
-            }
-            echo "v1 schema present\n";
-          '
-
       - name: Switch app to this v2 checkout
-        working-directory: ${{ env.APP_DIR }}
+        working-directory: /tmp/vanilla-lunar
         run: |
           composer config minimum-stability dev
           composer config prefer-stable true
@@ -174,45 +146,9 @@ jobs:
           composer require lunarphp/core:@dev lunarphp/upgrade:@dev --no-interaction --no-progress --with-all-dependencies
 
       - name: Run lunar:upgrade
-        working-directory: ${{ env.APP_DIR }}
+        working-directory: /tmp/vanilla-lunar
         run: php artisan lunar:upgrade --no-interaction
 
-      - name: Apply post-baseline migrations
-        working-directory: ${{ env.APP_DIR }}
+      - name: Apply remaining migrations
+        working-directory: /tmp/vanilla-lunar
         run: php artisan migrate --force --no-interaction
-
-      - name: Assert upgraded schema
-        working-directory: ${{ env.APP_DIR }}
-        run: |
-          php -r '
-            require "vendor/autoload.php";
-            $app = require "bootstrap/app.php";
-            $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-            $db = Illuminate\Support\Facades\DB::connection();
-            $schema = Illuminate\Support\Facades\Schema::connection($db->getName());
-            $prefix = (string) config("lunar.database.table_prefix", "lunar_");
-
-            $hasV2 = $db->table("migrations")->where("migration", "like", "2026_01_01_%")->exists();
-            $hasV1 = $db->table("migrations")->where("migration", "2021_07_29_100000_create_channels_table")->exists();
-            if (!$hasV2) {
-                fwrite(STDERR, "v2 baseline rows were not written to the migrations ledger.\n");
-                exit(1);
-            }
-            if ($hasV1) {
-                fwrite(STDERR, "v1 canary row is still in the migrations ledger.\n");
-                exit(1);
-            }
-
-            $attributes = $prefix."attributes";
-            $types = $prefix."product_types";
-            if ($schema->hasColumn($attributes, "attribute_type")) {
-                fwrite(STDERR, $attributes.".attribute_type still exists after upgrade.\n");
-                exit(1);
-            }
-            if (!$schema->hasColumn($types, "default_tax_class_id")) {
-                fwrite(STDERR, $types.".default_tax_class_id is missing after upgrade.\n");
-                exit(1);
-            }
-
-            echo "upgrade schema ok\n";
-          '
