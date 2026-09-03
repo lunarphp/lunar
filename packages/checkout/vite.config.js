@@ -32,4 +32,13 @@ export default defineConfig({
     vue(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      // Vite's app-mode default (preserveEntrySignatures: false) strips
+      // entry exports, which silently drops express.js's mountExpress and
+      // leaves host pages importing a side-effects-only chunk. Keep entry
+      // signatures so the host-facing entry stays importable (spec 0012 SF).
+      preserveEntrySignatures: 'exports-only',
+    },
+  },
 })

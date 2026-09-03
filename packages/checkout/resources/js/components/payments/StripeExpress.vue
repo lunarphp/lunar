@@ -189,7 +189,11 @@ onMounted(async () => {
       amount: amount.value,
     })
 
-    expressElement = elements.create('expressCheckout')
+    expressElement = elements.create('expressCheckout', {
+      // One row of wallet buttons across the region's full width; anything
+      // beyond four collapses into the element's own overflow menu.
+      layout: { maxColumns: 4, maxRows: 1, overflow: 'auto' },
+    })
     expressElement.mount(el.value)
 
     expressElement.on('click', (event) => {
