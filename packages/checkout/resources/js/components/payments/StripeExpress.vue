@@ -1,0 +1,244 @@
+<script setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useCheckout } from '../../composables/useCheckout.js'
+
+/**
+ * Stripe Express Checkout Element (spec 0012 SC). The sheet quotes rates
+ * through the non-persisting quote endpoint mid-sheet; nothing is written
+ * to the cart until onConfirm, and the hold is minted deferred (after the
+ * writes) so the authorised amount is the final sheet total.
+ */
+const props = defineProps({
+  method: { type: Object, required: true },
+})
+
+const { state, breakdown, postJson } = useCheckout()
+
+const el = ref(null)
+const error = ref('')
+const loading = ref(true)
+
+let stripe = null
+let elements = null
+let expressElement = null
+
+function loadStripeJs() {
+  if (window.Stripe) return Promise.resolve()
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = 'https://js.stripe.com/v3'
+    script.onload = resolve
+    script.onerror = () => reject(new Error('Could not load express checkout.'))
+    document.head.appendChild(script)
+  })
+}
+
+// The three "back()" checkout writes (contact, shipping address, shipping
+// option) never answer JSON, redirect or not, so they can't reuse postJson's
+// response.json() parsing. redirect: 'manual' turns a successful back()
+// redirect into an opaque response instead of a followed HTML fetch; a
+// validation failure still comes back as ordinary 422 JSON because the
+// request's Accept header makes Laravel's exception handler render JSON
+// regardless of the controller's own redirect.
+async function postRedirect(url, body) {
+  const xsrf = decodeURIComponent(document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '')
+
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    redirect: 'manual',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'X-XSRF-TOKEN': xsrf,
+    },
+    body: JSON.stringify(body),
+  })
+
+  if (response.type === 'opaqueredirect' || response.ok) {
+    return
+  }
+
+  const payload = await response.json().catch(() => ({}))
+  const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
+  throw new Error(message || 'The request could not be completed.')
+}
+
+const collectMode = () => state.fulfilment === 'collect'
+
+function splitName(name) {
+  const trimmed = (name || '').trim()
+  const at = trimmed.lastIndexOf(' ')
+
+  return at === -1 ? { first: trimmed, last: trimmed } : { first: trimmed.slice(0, at), last: trimmed.slice(at + 1) }
+}
+
+function addressPayload(name, address, phone) {
+  const { first, last } = splitName(name)
+
+  return {
+    first_name: first,
+    last_name: last,
+    line1: address?.line1 || '',
+    line2: address?.line2 || undefined,
+    city: address?.city || '',
+    state: address?.state || undefined,
+    postcode: address?.postal_code || '',
+    country_code: address?.country || '',
+    phone: phone || undefined,
+  }
+}
+
+// Persist everything the wallet shared, in order: contact (unless already
+// signed in), shipping address, billing address, shipping option. Collect
+// mode skips both shipping writes — there is no delivery address to store.
+async function persistWalletData(event) {
+  const contact = state.elements.find((item) => item.handle === 'contact')
+  const email = event.billingDetails?.email
+
+  if (!contact?.props?.signedIn && contact?.props?.contactUrl && email) {
+    await postRedirect(contact.props.contactUrl, { email })
+  }
+
+  if (!collectMode() && event.shippingAddress) {
+    await postRedirect(
+      state.urls.shippingAddress,
+      addressPayload(event.shippingAddress.name, event.shippingAddress.address, event.billingDetails?.phone),
+    )
+  }
+
+  await postJson(
+    state.urls.billingAddress,
+    addressPayload(event.billingDetails?.name, event.billingDetails?.address, event.billingDetails?.phone),
+    'Your billing address could not be saved.',
+  )
+
+  if (!collectMode() && event.shippingRate?.id) {
+    await postRedirect(state.urls.shippingOption, { shipping_option: event.shippingRate.id })
+  }
+}
+
+onMounted(async () => {
+  try {
+    const key = props.method.config?.publishableKey
+
+    if (!key) throw new Error('Express checkout is not configured.')
+
+    await loadStripeJs()
+
+    stripe = window.Stripe(key)
+    elements = stripe.elements({
+      mode: 'payment',
+      capture_method: 'manual',
+      currency: (state.currency || 'GBP').toLowerCase(),
+      amount: breakdown.value.total,
+    })
+
+    expressElement = elements.create('expressCheckout')
+    expressElement.mount(el.value)
+
+    expressElement.on('click', (event) => {
+      event.resolve({
+        emailRequired: true,
+        shippingAddressRequired: !collectMode(),
+        shippingRates: collectMode() ? undefined : [{ id: 'pending', displayName: 'Calculating', amount: 0 }],
+      })
+    })
+
+    expressElement.on('shippingaddresschange', async (event) => {
+      try {
+        const quote = await postJson(state.urls.quote, {
+          postcode: event.address.postal_code,
+          country_code: event.address.country,
+          city: event.address.city,
+        })
+
+        const rates = quote.methods
+          .filter((m) => !m.collect)
+          .map((m) => ({ id: m.id, displayName: m.name, amount: m.price }))
+
+        if (!rates.length) {
+          event.reject()
+          return
+        }
+
+        elements.update({ amount: quote.totals.total })
+        event.resolve({ shippingRates: rates })
+      } catch {
+        event.reject()
+      }
+    })
+
+    expressElement.on('shippingratechange', async (event) => {
+      try {
+        const quote = await postJson(state.urls.quote, {
+          postcode: event.address?.postal_code,
+          country_code: event.address?.country,
+          city: event.address?.city,
+          shipping_option: event.shippingRate.id,
+        })
+
+        elements.update({ amount: quote.totals.total })
+        event.resolve()
+      } catch {
+        event.reject()
+      }
+    })
+
+    expressElement.on('confirm', async (event) => {
+      try {
+        // Persist everything the wallet shared, THEN mint the hold so the
+        // authorised amount is the final total (spec 0012 SC step 4).
+        await persistWalletData(event)
+
+        // Deferred-intent contract: elements.submit() finalises the payment
+        // details Elements collected and MUST run before the PaymentIntent
+        // exists server-side, not after — the opposite order silently
+        // confirms against a stale/absent intent.
+        const { error: submitError } = await elements.submit()
+
+        if (submitError) {
+          event.paymentFailed({ reason: 'fail' })
+          return
+        }
+
+        const { clientSecret } = await postJson(
+          state.urls.paymentIntent,
+          { payment_method: props.method.handle, mode: 'hold' },
+          'Your payment could not be started.',
+        )
+
+        const { error: confirmError } = await stripe.confirmPayment({
+          elements,
+          clientSecret,
+          redirect: 'if_required',
+          confirmParams: { return_url: state.urls.confirm },
+        })
+
+        if (confirmError) {
+          event.paymentFailed({ reason: 'fail' })
+          return
+        }
+
+        window.location.assign(state.urls.confirm)
+      } catch {
+        event.paymentFailed({ reason: 'fail' })
+      }
+    })
+  } catch (e) {
+    error.value = e?.message || 'Could not load express checkout.'
+  } finally {
+    loading.value = false
+  }
+})
+
+onBeforeUnmount(() => expressElement?.destroy())
+</script>
+
+<template>
+  <div>
+    <p v-if="error" class="help" style="color: var(--error-700)">{{ error }}</p>
+    <div ref="el"></div>
+  </div>
+</template>

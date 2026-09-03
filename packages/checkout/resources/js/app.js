@@ -9,16 +9,13 @@
 import * as Vue from 'vue'
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
-import {
-  registerCheckoutElement,
-  resolveCheckoutElement,
-  hasCheckoutElement,
-} from './composables/elements.js'
+import { registerCheckoutElement, resolveCheckoutElement, hasCheckoutElement } from './composables/elements.js'
 import { useCheckout } from './composables/useCheckout.js'
 import ContactSection from './components/ContactSection.vue'
 import OrderDetails from './components/OrderDetails.vue'
 import OfflineNotice from './components/payments/OfflineNotice.vue'
 import StripeCard from './components/payments/StripeCard.vue'
+import StripeExpress from './components/payments/StripeExpress.vue'
 import '../css/checkout.css'
 
 // Built-in element components (spec 0009 §A). Registered before boot so the
@@ -29,6 +26,7 @@ registerCheckoutElement('order-details', OrderDetails)
 // First-party gateway components are prebuilt into the app (spec 0002 §C);
 // third-party gateways self-register via a contributed runtime chunk.
 registerCheckoutElement('stripe-card', StripeCard)
+registerCheckoutElement('stripe-express', StripeExpress)
 registerCheckoutElement('offline-notice', OfflineNotice)
 
 // --- The shared runtime contributed chunks build against -----------------------
