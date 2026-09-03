@@ -69,6 +69,7 @@ const loading = ref(true)
 let stripe = null
 let elements = null
 let expressElement = null
+let quotedAddress = null
 
 function loadStripeJs() {
   if (window.Stripe) return Promise.resolve()
@@ -212,6 +213,10 @@ onMounted(async () => {
     expressElement.on('shippingaddresschange', async (event) => {
       try {
         const session = await ensureSession()
+        // The shippingratechange event carries only the chosen rate, not the
+        // address, so the address is stashed here for the rate quotes that
+        // follow it.
+        quotedAddress = event.address
         const quote = await postJson(session.quote, {
           postcode: event.address.postal_code,
           country_code: event.address.country,
@@ -236,11 +241,16 @@ onMounted(async () => {
 
     expressElement.on('shippingratechange', async (event) => {
       try {
+        if (!quotedAddress) {
+          event.reject()
+          return
+        }
+
         const session = await ensureSession()
         const quote = await postJson(session.quote, {
-          postcode: event.address?.postal_code,
-          country_code: event.address?.country,
-          city: event.address?.city,
+          postcode: quotedAddress.postal_code,
+          country_code: quotedAddress.country,
+          city: quotedAddress.city,
           shipping_option: event.shippingRate.id,
         })
 
