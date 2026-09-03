@@ -65,9 +65,8 @@ const expressMethod = computed(() => state.paymentMethods.find((m) => m.supports
 
 // The main checkout page has its own full editor; anything this page doesn't
 // handle inline (changing collection branch) deep-links there instead of
-// duplicating it. No dedicated URL is projected for it, so it's derived from
-// the confirm URL this page is already on.
-const showUrl = computed(() => state.urls.confirm?.replace(/\/confirm\/?$/, '') || state.urls.back)
+// duplicating it.
+const showUrl = computed(() => state.urls.show || state.urls.back)
 
 // Only one row expands at a time, mirroring the design's accordion.
 const editingRow = ref(null)

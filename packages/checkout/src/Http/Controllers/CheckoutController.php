@@ -423,6 +423,7 @@ class CheckoutController extends Controller
     private function sessionUrls(CheckoutSessionModel $session): array
     {
         return [
+            'show' => route('lunar.checkout.show', $session->uuid),
             'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
             'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
             'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
@@ -797,6 +798,35 @@ class CheckoutController extends Controller
             }
         }
 
+        /*
+         * Switching away from a confirmed hold to a standard intent (the
+         * customer backed out of the wallet flow and picked the card tab):
+         * void the old hold FIRST, since nothing that follows can reach it
+         * once its reference is overwritten below: an unvoided hold would
+         * otherwise ride out its ~7 day authorisation window unreachable on
+         * the customer's card. The old hold belongs to whichever driver
+         * actually authorised it, not necessarily the driver the customer is
+         * switching to, so it is resolved from the session's own meta rather
+         * than $gateway (the incoming method's driver). A void the gateway
+         * cannot confirm aborts, mirroring the renew branch above, rather
+         * than silently orphaning the authorisation.
+         */
+        if (! $holdMode && $session->isHoldMode() && $session->payment_intent_ref !== null) {
+            $previousGateway = Payments::driver((string) ($session->meta['payment_method'] ?? ''));
+
+            if ($previousGateway instanceof SupportsPaymentIntents) {
+                try {
+                    $previousGateway->voidIntent($session->payment_intent_ref);
+                } catch (\Throwable $e) {
+                    report($e);
+
+                    throw ValidationException::withMessages([
+                        'payment_method' => 'Your previous authorisation could not be released. Try again in a moment.',
+                    ]);
+                }
+            }
+        }
+
         try {
             $descriptor = $holdMode
                 ? $gateway->createHold($cart->calculate())
@@ -927,6 +957,30 @@ class CheckoutController extends Controller
             if (! $method->requiresIntent() || $amountTotal <= 0) {
                 $completed = $checkoutDriver->complete($session, $data['fingerprint']);
 
+                /*
+                 * A hold-mode session can still reach this synchronous branch
+                 * (a 100% discount applied on the squeeze page drops the
+                 * total to zero): there is nothing left to charge, but the
+                 * wallet's authorisation is still live on the gateway. Void
+                 * it best-effort so it doesn't ride out its authorisation
+                 * window dangling on a session that is already Completed.
+                 * Best-effort only: a customer who owes nothing must not be
+                 * blocked by a gateway hiccup on their way to a free order,
+                 * and an operator can still void the hold from the gateway
+                 * dashboard if this fails.
+                 */
+                if ($session->isHoldMode() && $session->payment_intent_ref !== null) {
+                    $holdGateway = Payments::driver((string) ($session->meta['payment_method'] ?? ''));
+
+                    if ($holdGateway instanceof SupportsPaymentIntents) {
+                        try {
+                            $holdGateway->voidIntent($session->payment_intent_ref);
+                        } catch (\Throwable $e) {
+                            report($e);
+                        }
+                    }
+                }
+
                 return response()->json([
                     'completed' => true,
                     'order' => $completed instanceof Order
@@ -1008,10 +1062,27 @@ class CheckoutController extends Controller
             return $this->redirectToSuccess($session);
         }
 
-        // Reopened: the gateway says no money was captured. Back to the
-        // checkout to try again; the page reads the flag and explains.
+        /*
+         * Reopened: the gateway says no money was captured. A hold-mode
+         * session whose hold is still live and gateway-verified (the
+         * manual-capture failure path that keeps the hold intact rather than
+         * voiding it) belongs on the confirm ("squeeze") page, not the
+         * standard checkout: landing on show() is the on-ramp to orphaning
+         * that hold if the customer picks the card tab there instead (the
+         * standard-intent branch of storePaymentIntent() now voids it, but
+         * there's no reason to route the customer past that hazard at all
+         * when the hold can simply be re-confirmed). Every other reopened
+         * session (no hold, or one that no longer verifies) falls through to
+         * the ordinary retry page. `?payment=failed` is read off
+         * window.location.search by useCheckout.js regardless of which page
+         * it lands on, so the error state still renders either way.
+         */
         if ($session->status instanceof Open && ! $session->isExpired()) {
-            return redirect()->to(route('lunar.checkout.show', $session->uuid).'?payment=failed');
+            $retryUrl = $this->liveHold($session) !== null
+                ? route('lunar.checkout.confirm', $session->uuid)
+                : route('lunar.checkout.show', $session->uuid);
+
+            return redirect()->to($retryUrl.'?payment=failed');
         }
 
         if ($session->isExpired() || $session->status instanceof Cancelled) {

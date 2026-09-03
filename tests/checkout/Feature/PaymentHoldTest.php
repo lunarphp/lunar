@@ -57,6 +57,8 @@ class FakeHoldGateway extends OfflinePayment implements CreatesPaymentIntents, S
 
     public static bool $throwOnCapture = false;
 
+    public static bool $throwOnVoid = false;
+
     /**
      * Verified against by the confirm-page guard: null (the default) means
      * "gateway doesn't recognise this reference", exactly like a real driver
@@ -104,6 +106,10 @@ class FakeHoldGateway extends OfflinePayment implements CreatesPaymentIntents, S
 
     public function voidIntent(string $reference): void
     {
+        if (static::$throwOnVoid) {
+            throw new RuntimeException('fake gateway void failed');
+        }
+
         static::$voidedReferences[] = $reference;
     }
 
@@ -354,6 +360,7 @@ beforeEach(function () {
     FakeHoldGateway::$adjustOutcome = HoldAdjustment::Ok;
     FakeHoldGateway::$fetchStatus = PaymentIntentStatus::RequiresCapture;
     FakeHoldGateway::$throwOnCapture = false;
+    FakeHoldGateway::$throwOnVoid = false;
     FakeHoldGateway::$describeOutcome = null;
     IntentOnlyGateway::$voidedReferences = [];
     IntentOnlyGateway::$refundCalls = [];
@@ -400,18 +407,67 @@ it('renew voids the existing hold before minting a fresh one', function () {
         ->and(FakeHoldGateway::$createHoldCalls)->toHaveCount(2);
 });
 
-it('a standard intent request clears a stale hold mode', function () {
+it('a standard intent request clears a stale hold mode and voids the old hold', function () {
     $session = mintOpenSessionWithMethod();
 
     $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
         'payment_method' => 'fake', 'mode' => 'hold',
     ])->assertOk();
 
+    $oldHoldReference = $session->refresh()->payment_intent_ref;
+
     $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
         'payment_method' => 'fake',
     ])->assertOk();
 
-    expect($session->refresh()->meta['payment_intent_mode'] ?? null)->toBeNull();
+    expect($session->refresh()->meta['payment_intent_mode'] ?? null)->toBeNull()
+        ->and(FakeHoldGateway::$voidedReferences)->toBe([$oldHoldReference])
+        ->and($session->payment_intent_ref)->not->toBe($oldHoldReference);
+});
+
+it('switching to a different payment method voids the old hold via its own driver, not the new one', function () {
+    $session = mintOpenSessionWithMethod();
+    registerIntentOnlyGateway();
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'fake', 'mode' => 'hold',
+    ])->assertOk();
+
+    $oldHoldReference = $session->refresh()->payment_intent_ref;
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'intent-only',
+    ])->assertOk();
+
+    expect(FakeHoldGateway::$voidedReferences)->toBe([$oldHoldReference])
+        ->and(IntentOnlyGateway::$voidedReferences)->toBeEmpty();
+
+    $session->refresh();
+    expect($session->meta['payment_intent_mode'] ?? null)->toBeNull()
+        ->and($session->meta['payment_method'] ?? null)->toBe('intent-only')
+        ->and($session->payment_intent_ref)->not->toBe($oldHoldReference);
+});
+
+it('aborts a hold-to-standard switch when the old hold cannot be voided, leaving ref and mode untouched', function () {
+    $session = mintOpenSessionWithMethod();
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'fake', 'mode' => 'hold',
+    ])->assertOk();
+
+    $session->refresh();
+    $oldHoldReference = $session->payment_intent_ref;
+    FakeHoldGateway::$throwOnVoid = true;
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'fake',
+    ])->assertUnprocessable();
+
+    expect(FakeHoldGateway::$createIntentCalls)->toBeEmpty();
+
+    $session->refresh();
+    expect($session->payment_intent_ref)->toBe($oldHoldReference)
+        ->and($session->meta['payment_intent_mode'] ?? null)->toBe('hold');
 });
 
 it('adjusts the hold before pinning and rejects with NeedsReauthorization while still Open', function () {
@@ -530,6 +586,78 @@ it('voids, never refunds, a stray hold when the driver never supported holds and
 
     expect(IntentOnlyGateway::$voidedReferences)->toBe(['pi_intent_only_pinned'])
         ->and(IntentOnlyGateway::$refundCalls)->toBeEmpty();
+
+    expect($session->refresh()->status)->toBeInstanceOf(Open::class);
+});
+
+it('completes synchronously and voids the hold when a discount drops a hold session to zero', function () {
+    registerFakeHoldGateway();
+
+    $cart = CheckoutCart::orderable(unitPrice: 0);
+    CartSession::use($cart);
+    $session = CheckoutCart::session($cart);
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'fake', 'mode' => 'hold',
+    ])->assertOk();
+
+    $holdReference = $session->refresh()->payment_intent_ref;
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'payment_method' => 'fake',
+        'fingerprint' => CheckoutCart::fingerprint($session),
+    ])->assertOk()
+        ->assertJsonPath('completed', true);
+
+    expect($session->refresh()->status)->toBeInstanceOf(Completed::class)
+        ->and(FakeHoldGateway::$voidedReferences)->toBe([$holdReference]);
+});
+
+it('completes a zero-total hold session even when the best-effort void fails', function () {
+    registerFakeHoldGateway();
+
+    $cart = CheckoutCart::orderable(unitPrice: 0);
+    CartSession::use($cart);
+    $session = CheckoutCart::session($cart);
+
+    $this->postJson(route('lunar.checkout.payment-intent.store', $session->uuid), [
+        'payment_method' => 'fake', 'mode' => 'hold',
+    ])->assertOk();
+
+    FakeHoldGateway::$throwOnVoid = true;
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'payment_method' => 'fake',
+        'fingerprint' => CheckoutCart::fingerprint($session),
+    ])->assertOk()
+        ->assertJsonPath('completed', true);
+
+    expect($session->refresh()->status)->toBeInstanceOf(Completed::class);
+});
+
+it('processing routes a reopened hold session to confirm, keeping the payment=failed flag', function () {
+    $session = mintPinnedHoldSession();
+    FakeHoldGateway::$throwOnCapture = true;
+    FakeHoldGateway::$describeOutcome = new HoldDescription(
+        status: PaymentIntentStatus::RequiresCapture,
+        amountMinor: $session->amount_total,
+        walletLabel: 'Apple Pay',
+    );
+
+    $this->get(route('lunar.checkout.processing', $session->uuid))
+        ->assertRedirect(route('lunar.checkout.confirm', $session->uuid).'?payment=failed');
+
+    expect($session->refresh()->status)->toBeInstanceOf(Open::class)
+        ->and($session->payment_intent_ref)->toBe('hold_fake_pinned');
+});
+
+it('processing falls back to show when a reopened hold no longer verifies', function () {
+    $session = mintPinnedHoldSession();
+    FakeHoldGateway::$throwOnCapture = true;
+    FakeHoldGateway::$describeOutcome = null;
+
+    $this->get(route('lunar.checkout.processing', $session->uuid))
+        ->assertRedirect(route('lunar.checkout.show', $session->uuid).'?payment=failed');
 
     expect($session->refresh()->status)->toBeInstanceOf(Open::class);
 });
