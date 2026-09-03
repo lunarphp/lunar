@@ -3,12 +3,13 @@ name: Upgrade command
 on:
   workflow_dispatch:
   push:
-    branches: [2.x, ci/upgrade-command]
+    branches: [2.x]
     paths:
       - packages/upgrade/**
       - packages/core/database/migrations/**
       - .github/workflows/upgrade-command.yml
   pull_request:
+    branches: [2.x]
     paths:
       - packages/upgrade/**
       - packages/core/database/migrations/**
