@@ -118,6 +118,11 @@ class CheckoutServiceProvider extends ServiceProvider
         // merchant's money.
         RateLimiter::for('checkout-address-lookup', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
 
+        // Same shape again: the quote endpoint runs the real driver writes
+        // (rolled back) for a candidate address, so it is throttled like the
+        // other lookups rather than left open to abuse.
+        RateLimiter::for('checkout-shipping-quote', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
+
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');

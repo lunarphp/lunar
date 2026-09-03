@@ -38,6 +38,14 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
             ->middleware('throttle:checkout-address-lookup')
             ->name('lunar.checkout.address-lookup');
 
+        // Non-persisting rate quote for wallet sheets (spec 0012 SC): mid-sheet
+        // a wallet shares an anonymised address; rates must be quoted WITHOUT
+        // writing to the cart, so a dismissed sheet never clobbers an address
+        // the customer already entered. Throttled like the lookups.
+        Route::post($path.'/{session}/shipping-rates/quote', [CheckoutController::class, 'quoteShippingRates'])
+            ->middleware('throttle:checkout-shipping-quote')
+            ->name('lunar.checkout.shipping-quote');
+
         // Persist the contact email onto the checkout session model (guest) or
         // associate the authenticated customer. Inertia POST, returns back().
         Route::post($path.'/{session}/contact', [CheckoutController::class, 'storeContact'])

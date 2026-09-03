@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -25,6 +26,7 @@ use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Events\CheckoutElementStored;
 use Lunar\Checkout\Exceptions\AddressLookupException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
+use Lunar\Checkout\Exceptions\RollbackQuote;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
@@ -395,6 +397,62 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['addresses' => $addresses]);
+    }
+
+    /**
+     * Quote shipping rates and totals for a candidate address (and optionally a
+     * candidate option) WITHOUT persisting either (spec 0012 SC). Runs the real
+     * driver writes inside a transaction that always rolls back: one code path
+     * with the store routes, zero risk of divergence, nothing written.
+     */
+    public function quoteShippingRates(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate([
+            'city' => ['nullable', 'string', 'max:255'],
+            'state' => ['nullable', 'string', 'max:255'],
+            'postcode' => ['required', 'string', 'max:12'],
+            'country_code' => ['required', 'string', Rule::exists(Country::class, 'iso2')],
+            'shipping_option' => ['nullable', 'string'],
+        ]);
+
+        $quote = null;
+
+        try {
+            DB::transaction(function () use ($session, $checkoutDriver, $data, &$quote): void {
+                $checkoutDriver->storeShippingAddress($session, [
+                    'first_name' => 'Quote',
+                    'last_name' => 'Quote',
+                    'line1' => 'Quote',
+                    'city' => $data['city'] ?? '',
+                    'state' => $data['state'] ?? null,
+                    'postcode' => $data['postcode'],
+                    'country_code' => $data['country_code'],
+                ]);
+
+                if (! empty($data['shipping_option'])) {
+                    $checkoutDriver->setShippingOption($session, $data['shipping_option']);
+                }
+
+                $quote = [
+                    'methods' => array_map(fn (array $option): array => [
+                        'id' => $option['identifier'],
+                        'name' => $option['name'],
+                        'sub' => $option['description'],
+                        'price' => $option['price'] ?? 0,
+                        'collect' => (bool) ($option['collect'] ?? false),
+                    ], $checkoutDriver->getShippingOptions($session)),
+                    'totals' => $checkoutDriver->getTotals($session),
+                ];
+
+                throw new RollbackQuote;
+            });
+        } catch (RollbackQuote) {
+            // Deliberate: the transaction exists to be rolled back.
+        }
+
+        return response()->json($quote);
     }
 
     /**
