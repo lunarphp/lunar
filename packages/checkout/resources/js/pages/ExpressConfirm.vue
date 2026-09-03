@@ -363,14 +363,17 @@ async function confirmAndPay() {
         payError.value =
           payForm.errors.fingerprint || payForm.errors.payment_method || 'Payment could not be confirmed.'
       }
+      confirming.value = false
       return
     }
 
     const target = (response?.data ?? response)?.processing
     window.location.assign(target || state.urls.processing)
+    // Deliberately still `confirming`: the pay is pinned and the browser is
+    // navigating to the processing page. Re-arming the button here opens a
+    // double-submit window for as long as that navigation takes.
   } catch {
     payError.value = 'Something went wrong confirming your payment. Please try again.'
-  } finally {
     confirming.value = false
   }
 }
