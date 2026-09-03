@@ -263,13 +263,19 @@ class CheckoutController extends Controller
 
     /**
      * The session's hold, verified against the gateway (never the client's
-     * claim): non-null only when the session is `Open`, its intent is
-     * hold-flavoured, and the gateway reports it authorised and awaiting
-     * capture (spec 0012 §D render guard).
+     * claim): non-null only when the session is `Open` and not expired, its
+     * intent is hold-flavoured, and the gateway reports it authorised and
+     * awaiting capture (spec 0012 §D render guard).
+     *
+     * Expiry is swept lazily, so `isExpired()` (expires_at in the past, not
+     * just the `Expired` state) must be checked alongside `Open` here, the
+     * same combined check `show()` and `processing()` already use elsewhere
+     * in this controller: a session whose window has closed but whose row
+     * has not yet been transitioned still reads `Open` and must not render.
      */
     private function liveHold(CheckoutSessionModel $session): ?HoldDescription
     {
-        if (! $session->status instanceof Open || ! $session->isHoldMode() || $session->payment_intent_ref === null) {
+        if (! $session->status instanceof Open || $session->isExpired() || ! $session->isHoldMode() || $session->payment_intent_ref === null) {
             return null;
         }
 
