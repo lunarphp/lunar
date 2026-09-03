@@ -37,7 +37,9 @@ use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
+use Lunar\Core\DataObjects\HoldDescription;
 use Lunar\Core\Enums\HoldAdjustment;
+use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Address;
@@ -218,6 +220,77 @@ class CheckoutController extends Controller
     }
 
     /**
+     * The express confirm ("squeeze") page (spec 0012 §D): the wallet sheet
+     * authorised a hold, this page reviews it and captures only at "Confirm &
+     * pay". Mirrors show()'s ownership + render mechanics exactly; only the
+     * guard and the extra `hold` prop differ.
+     *
+     * Unreachable without a live, gateway-verified hold: any guard failure
+     * (no intent, a non-hold intent, or the gateway not confirming
+     * requires-capture) redirects to the normal show(), which itself owns
+     * every terminal-session redirect (Completed/PaymentProcessing/Expired).
+     * `liveHold()` only ever returns non-null for an `Open` session, so those
+     * states always fall into this same redirect.
+     */
+    public function confirm(CheckoutSessionModel $session, CheckoutDriver $checkoutDriver, CheckoutTheme $theme): Response|RedirectResponse|SymfonyResponse
+    {
+        $this->ensureOwnership($session);
+
+        $hold = $this->liveHold($session);
+
+        if ($hold === null) {
+            return redirect()->route('lunar.checkout.show', $session->uuid);
+        }
+
+        Inertia::setRootView('lunar-checkout::app');
+
+        return Inertia::render('ExpressConfirm', [
+            'checkout' => array_merge(
+                $this->projectCheckout($checkoutDriver, $session),
+                [
+                    'elements' => $this->projectElements($session),
+                    'hold' => [
+                        'amountAuthorised' => $hold->amountMinor,
+                        'walletLabel' => $hold->walletLabel,
+                    ],
+                ],
+            ),
+            'theme' => $theme->tokens(),
+            'branding' => $theme->branding(),
+            'stylesheet' => $theme->stylesheet(),
+        ]);
+    }
+
+    /**
+     * The session's hold, verified against the gateway (never the client's
+     * claim): non-null only when the session is `Open`, its intent is
+     * hold-flavoured, and the gateway reports it authorised and awaiting
+     * capture (spec 0012 §D render guard).
+     */
+    private function liveHold(CheckoutSessionModel $session): ?HoldDescription
+    {
+        if (! $session->status instanceof Open || ! $session->isHoldMode() || $session->payment_intent_ref === null) {
+            return null;
+        }
+
+        $gateway = Payments::driver((string) ($session->meta['payment_method'] ?? ''));
+
+        if (! $gateway instanceof SupportsPaymentHolds) {
+            return null;
+        }
+
+        try {
+            $description = $gateway->describeHold($session->payment_intent_ref);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return null;
+        }
+
+        return $description?->status === PaymentIntentStatus::RequiresCapture ? $description : null;
+    }
+
+    /**
      * Ownership says who may touch the session; this says whether it is still
      * touchable at all. `show()` tests the same three terminal conditions and
      * redirects a browser out of them; an XHR write has nowhere to redirect
@@ -318,6 +391,11 @@ class CheckoutController extends Controller
                 'pay' => route('lunar.checkout.pay', $session->uuid),
                 'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
                 'processing' => route('lunar.checkout.processing', $session->uuid),
+                // The express confirm ("squeeze") page, and the non-persisting
+                // shipping-rate quote it (and the wallet sheet) use to price an
+                // edit before committing it (spec 0012 §C/§D).
+                'confirm' => route('lunar.checkout.confirm', $session->uuid),
+                'quote' => route('lunar.checkout.shipping-quote', $session->uuid),
                 // Escape hatch back to the store (the basket, usually):
                 // session cancel_url, then the store-wide config default.
                 'back' => $this->cancelUrl($session),

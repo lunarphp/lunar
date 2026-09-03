@@ -93,6 +93,16 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::get($path.'/{session}/processing', [CheckoutController::class, 'processing'])
             ->name('lunar.checkout.processing');
 
+        // The express confirm ("squeeze") page (spec 0012 §D): review the
+        // wallet's data, fill what it did not share, capture only at Confirm &
+        // pay. Unreachable without a live, gateway-verified hold; the guard
+        // redirects to show() otherwise. Registered above show() (both are GET
+        // with one segment after the prefix) even though {session}'s UUID
+        // constraint already stops it from swallowing the literal /confirm
+        // segment.
+        Route::get($path.'/{session}/confirm', [CheckoutController::class, 'confirm'])
+            ->name('lunar.checkout.confirm');
+
         // Render the self-contained Inertia checkout app for one session,
         // addressed by its UUID capability token (spec 0008). Safe/idempotent:
         // a refresh re-renders, it never mints or mutates a session. Ownership

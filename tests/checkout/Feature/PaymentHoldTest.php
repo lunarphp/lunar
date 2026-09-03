@@ -55,6 +55,13 @@ class FakeHoldGateway extends OfflinePayment implements CreatesPaymentIntents, S
 
     public static bool $throwOnCapture = false;
 
+    /**
+     * Verified against by the confirm-page guard: null (the default) means
+     * "gateway doesn't recognise this reference", exactly like a real driver
+     * would answer for a non-hold or unknown reference.
+     */
+    public static ?HoldDescription $describeOutcome = null;
+
     public function createIntent(Cart $cart): PaymentIntentDescriptor
     {
         static::$createIntentCalls[] = $cart->id;
@@ -71,7 +78,7 @@ class FakeHoldGateway extends OfflinePayment implements CreatesPaymentIntents, S
 
     public function describeHold(string $reference): ?HoldDescription
     {
-        return null;
+        return static::$describeOutcome;
     }
 
     public function adjustHold(string $reference, int $amountMinor): HoldAdjustment
@@ -290,6 +297,7 @@ beforeEach(function () {
     FakeHoldGateway::$adjustOutcome = HoldAdjustment::Ok;
     FakeHoldGateway::$fetchStatus = PaymentIntentStatus::RequiresCapture;
     FakeHoldGateway::$throwOnCapture = false;
+    FakeHoldGateway::$describeOutcome = null;
 });
 
 it('routes mode hold to createHold and records the mode on the session', function () {
