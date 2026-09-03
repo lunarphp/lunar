@@ -416,23 +416,32 @@ return new class extends Migration
     }
 
     /**
+     * Drop a v1 index by its live name. `Schema::hasIndex(..., 'index')` misses
+     * SQLite, which reports the type as `btree` rather than `index`.
+     *
      * @param  list<string>  $columns
      */
     protected function dropIndexIfExists(string $table, array $columns, string $type = 'index'): void
     {
-        if (! Schema::hasIndex($table, $columns, $type)) {
-            return;
-        }
+        $wantUnique = $type === 'unique';
 
-        Schema::table($table, function (Blueprint $blueprint) use ($columns, $type): void {
-            if ($type === 'unique') {
-                $blueprint->dropUnique($columns);
-
-                return;
+        foreach (Schema::getIndexes($table) as $index) {
+            if ($index['columns'] !== $columns || (bool) $index['unique'] !== $wantUnique) {
+                continue;
             }
 
-            $blueprint->dropIndex($columns);
-        });
+            Schema::table($table, function (Blueprint $blueprint) use ($index, $wantUnique): void {
+                if ($wantUnique) {
+                    $blueprint->dropUnique($index['name']);
+
+                    return;
+                }
+
+                $blueprint->dropIndex($index['name']);
+            });
+
+            return;
+        }
     }
 
     protected function normaliseMorph(?string $value): ?string

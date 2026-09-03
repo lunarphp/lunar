@@ -50,7 +50,7 @@ function simulateV1AttributeShape(): void
 
     Schema::create(SPEC0019_PREFIX.'attribute_groups', function (Blueprint $table) {
         $table->id();
-        $table->string('attributable_type');
+        $table->string('attributable_type')->index();
         $table->json('name');
         $table->string('handle');
         $table->integer('position');
@@ -59,7 +59,7 @@ function simulateV1AttributeShape(): void
 
     Schema::create(SPEC0019_PREFIX.'attributes', function (Blueprint $table) {
         $table->id();
-        $table->string('attribute_type');
+        $table->string('attribute_type')->index();
         $table->foreignId('attribute_group_id');
         $table->integer('position');
         $table->json('name');
@@ -74,6 +74,8 @@ function simulateV1AttributeShape(): void
         $table->boolean('searchable')->default(true);
         $table->boolean('filterable')->default(false);
         $table->timestamps();
+
+        $table->unique(['attribute_type', 'handle']);
     });
 
     Schema::create(SPEC0019_PREFIX.'attributables', function (Blueprint $table) {
