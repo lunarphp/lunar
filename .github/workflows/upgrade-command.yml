@@ -15,7 +15,7 @@ on:
       - .github/workflows/upgrade-command.yml
 
 concurrency:
-  group: upgrade-command-${{ github.workflow }}-${{ github.ref }}-${{ matrix.database || 'lock' }}
+  group: upgrade-command-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -51,12 +51,6 @@ jobs:
       APP_DEBUG: "true"
       SCOUT_DRIVER: collection
       QUEUE_CONNECTION: sync
-      DB_CONNECTION: ${{ matrix.db_connection }}
-      DB_HOST: 127.0.0.1
-      DB_PORT: ${{ matrix.db_port }}
-      DB_DATABASE: lunar_upgrade
-      DB_USERNAME: ${{ matrix.db_username }}
-      DB_PASSWORD: ${{ matrix.db_password }}
     services:
       mysql:
         image: mysql:8.0
@@ -109,33 +103,45 @@ jobs:
       - name: Create Laravel 13 app
         run: composer create-project laravel/laravel:^13.0 "$APP_DIR" --prefer-dist --no-interaction --no-dev
 
-      - name: Configure SQLite file
-        if: matrix.database == 'sqlite'
+      - name: Write database env
         run: |
-          mkdir -p "$APP_DIR/database"
-          touch "$APP_DIR/database/database.sqlite"
-          echo "DB_CONNECTION=sqlite" >> "$APP_DIR/.env"
-          echo "DB_DATABASE=$APP_DIR/database/database.sqlite" >> "$APP_DIR/.env"
-
-      - name: Configure server database
-        if: matrix.database != 'sqlite'
-        run: |
-          {
-            echo "DB_CONNECTION=${{ matrix.db_connection }}"
-            echo "DB_HOST=127.0.0.1"
-            echo "DB_PORT=${{ matrix.db_port }}"
-            echo "DB_DATABASE=lunar_upgrade"
-            echo "DB_USERNAME=${{ matrix.db_username }}"
-            echo "DB_PASSWORD=${{ matrix.db_password }}"
-          } >> "$APP_DIR/.env"
+          cd "$APP_DIR"
+          php artisan key:generate --force --no-interaction
+          if [ "${{ matrix.database }}" = "sqlite" ]; then
+            mkdir -p database
+            touch database/database.sqlite
+            {
+              echo "DB_CONNECTION=sqlite"
+              echo "DB_DATABASE=$APP_DIR/database/database.sqlite"
+            } >> "$GITHUB_ENV"
+            {
+              echo "DB_CONNECTION=sqlite"
+              echo "DB_DATABASE=$APP_DIR/database/database.sqlite"
+            } >> .env
+          else
+            {
+              echo "DB_CONNECTION=${{ matrix.db_connection }}"
+              echo "DB_HOST=127.0.0.1"
+              echo "DB_PORT=${{ matrix.db_port }}"
+              echo "DB_DATABASE=lunar_upgrade"
+              echo "DB_USERNAME=${{ matrix.db_username }}"
+              echo "DB_PASSWORD=${{ matrix.db_password }}"
+            } >> "$GITHUB_ENV"
+            {
+              echo "DB_CONNECTION=${{ matrix.db_connection }}"
+              echo "DB_HOST=127.0.0.1"
+              echo "DB_PORT=${{ matrix.db_port }}"
+              echo "DB_DATABASE=lunar_upgrade"
+              echo "DB_USERNAME=${{ matrix.db_username }}"
+              echo "DB_PASSWORD=${{ matrix.db_password }}"
+            } >> .env
+          fi
+          echo "SCOUT_DRIVER=collection" >> .env
+          echo "QUEUE_CONNECTION=sync" >> .env
 
       - name: Install Lunar v1.5 core
         working-directory: ${{ env.APP_DIR }}
-        run: |
-          php artisan key:generate --force --no-interaction
-          echo "SCOUT_DRIVER=collection" >> .env
-          echo "QUEUE_CONNECTION=sync" >> .env
-          composer require "lunarphp/core:${LUNAR_V1}" --no-interaction --no-progress
+        run: composer require "lunarphp/core:${LUNAR_V1}" --no-interaction --no-progress
 
       - name: Migrate v1 schema
         working-directory: ${{ env.APP_DIR }}
