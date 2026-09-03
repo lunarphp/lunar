@@ -32,9 +32,14 @@ class StripeManager
         ]);
     }
 
-    public function getCartIntentId(Cart $cart): ?string
+    public function getCartIntentId(Cart $cart, string $flavour = 'standard'): ?string
     {
-        return $cart->meta['payment_intent'] ?? $cart->paymentIntents()->active()->first()?->intent_id;
+        // meta.payment_intent predates flavours; legacy carts are standard flow.
+        if ($flavour === 'standard' && ! empty($cart->meta['payment_intent'])) {
+            return $cart->meta['payment_intent'];
+        }
+
+        return $cart->paymentIntents()->active()->where('flavour', $flavour)->first()?->intent_id;
     }
 
     public function fetchOrCreateIntent(Cart $cart, array $createOptions = []): PaymentIntent
@@ -57,6 +62,7 @@ class StripeManager
             $cart->paymentIntents()->create([
                 'intent_id' => $intent->id,
                 'status' => $intent->status,
+                'flavour' => 'standard',
             ]);
         }
 
@@ -76,10 +82,10 @@ class StripeManager
     /**
      * Create a payment intent from a Cart
      */
-    public function createIntent(Cart $cart, array $opts = []): PaymentIntent
+    public function createIntent(Cart $cart, array $opts = [], string $flavour = 'standard'): PaymentIntent
     {
         /** @var Cart $cart */
-        $existingId = $this->getCartIntentId($cart);
+        $existingId = $this->getCartIntentId($cart, $flavour);
 
         if (
             $existingId &&
@@ -112,6 +118,7 @@ class StripeManager
         $cart->paymentIntents()->create([
             'intent_id' => $paymentIntent->id,
             'status' => $paymentIntent->status,
+            'flavour' => $flavour,
         ]);
 
         return $paymentIntent;

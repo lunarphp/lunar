@@ -16,10 +16,10 @@ use Stripe\StripeClient;
 
 /**
  * @method static StripeClient getClient()
- * @method static string|null getCartIntentId(Cart $cart)
+ * @method static string|null getCartIntentId(Cart $cart, string $flavour = 'standard')
  * @method static PaymentIntent fetchOrCreateIntent(Cart $cart, array $createOptions = [])
  * @method static PaymentMethod|null getPaymentMethod(string $paymentMethodId)
- * @method static PaymentIntent createIntent(Cart $cart, array $opts = [])
+ * @method static PaymentIntent createIntent(Cart $cart, array $opts = [], string $flavour = 'standard')
  * @method static void updateShippingAddress(Cart $cart)
  * @method static void updateIntent(Cart $cart, array $values)
  * @method static void updateIntentById(string $id, array $values)

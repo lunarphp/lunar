@@ -99,6 +99,32 @@ it('falls back to active payment intent when no legacy meta', function () {
     expect(Stripe::getCartIntentId($cart))->toBe('PI_RELATION');
 });
 
+it('keys cart intent reuse by flavour', function () {
+    $cart = CartBuilder::build();
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_STANDARD',
+        'status' => 'requires_payment_method',
+        'flavour' => 'standard',
+    ]);
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_HOLD',
+        'status' => 'requires_capture',
+        'flavour' => 'hold',
+    ]);
+
+    expect(Stripe::getCartIntentId($cart))->toBe('PI_STANDARD')
+        ->and(Stripe::getCartIntentId($cart, 'hold'))->toBe('PI_HOLD');
+});
+
+it('stamps the flavour on freshly minted intents', function () {
+    $cart = CartBuilder::build();
+
+    Stripe::createIntent($cart->calculate(), [], 'hold');
+
+    expect($cart->paymentIntents()->first()->flavour)->toBe('hold');
+});
+
 it('passes through amounts for standard currencies', function (string $code, int $decimals, int $value) {
     $currency = Currency::factory()->make([
         'code' => $code,
