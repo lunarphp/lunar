@@ -45,10 +45,18 @@ function ensureSession() {
   if (!props.startUrl) return Promise.resolve(sessionUrls.value ?? {})
 
   if (!mintPromise) {
-    mintPromise = postJson(props.startUrl, {}, 'Could not start checkout.').then((data) => {
-      sessionUrls.value = data.urls
-      return data.urls
-    })
+    // A transient failure (network blip, momentary 500) must not wedge every
+    // later wallet interaction behind the same rejected promise: clear it so
+    // the next call mints fresh instead of replaying a dead attempt forever.
+    mintPromise = postJson(props.startUrl, {}, 'Could not start checkout.')
+      .then((data) => {
+        sessionUrls.value = data.urls
+        return data.urls
+      })
+      .catch((error) => {
+        mintPromise = null
+        throw error
+      })
   }
 
   return mintPromise
