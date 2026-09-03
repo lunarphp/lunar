@@ -32,6 +32,8 @@ use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
 use Lunar\Core\Contracts\CreatesPaymentIntents;
+use Lunar\Core\Contracts\SupportsPaymentHolds;
+use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Payments;
@@ -580,22 +582,50 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate(['payment_method' => ['required', 'string']]);
+        $data = $request->validate([
+            'payment_method' => ['required', 'string'],
+            'mode' => ['sometimes', 'string', 'in:hold'],
+            'renew' => ['sometimes', 'boolean'],
+        ]);
 
         $cart = Cart::query()->findOrFail((int) $session->cart_reference);
 
         $method = $this->resolveAvailableMethod($methods, $cart, $data['payment_method']);
 
         $gateway = Payments::driver($method->driver());
+        $holdMode = ($data['mode'] ?? null) === 'hold';
 
-        if (! $gateway instanceof CreatesPaymentIntents) {
+        if ($holdMode && ! $gateway instanceof SupportsPaymentHolds) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'The selected payment method cannot authorise a hold.',
+            ]);
+        }
+
+        if (! $holdMode && ! $gateway instanceof CreatesPaymentIntents) {
             throw ValidationException::withMessages([
                 'payment_method' => 'The selected payment method cannot create a payment intent.',
             ]);
         }
 
+        // Re-authorisation (payment change, or a hold the rail could not
+        // stretch): release the old hold FIRST, so the customer is never
+        // double-held. A void the gateway cannot confirm aborts the renewal.
+        if ($holdMode && ($data['renew'] ?? false) && $session->payment_intent_ref !== null && $gateway instanceof SupportsPaymentIntents) {
+            try {
+                $gateway->voidIntent($session->payment_intent_ref);
+            } catch (\Throwable $e) {
+                report($e);
+
+                throw ValidationException::withMessages([
+                    'payment_method' => 'Your previous authorisation could not be released. Try again in a moment.',
+                ]);
+            }
+        }
+
         try {
-            $descriptor = $gateway->createIntent($cart->calculate());
+            $descriptor = $holdMode
+                ? $gateway->createHold($cart->calculate())
+                : $gateway->createIntent($cart->calculate());
         } catch (\Throwable $e) {
             // Gateway errors carry internals (Stripe's minimum-charge copy
             // links to its own docs); log the real one, say something human.
@@ -621,7 +651,16 @@ class CheckoutController extends Controller
         // The intent reference + driver key are what reconciliation resolves
         // by (PaymentIntentGateway reads meta.payment_method).
         $session->payment_intent_ref = $descriptor->reference;
-        $session->meta = array_merge((array) $session->meta, ['payment_method' => $method->driver()]);
+
+        $meta = array_merge((array) $session->meta, ['payment_method' => $method->driver()]);
+
+        if ($holdMode) {
+            $meta['payment_intent_mode'] = 'hold';
+        } else {
+            unset($meta['payment_intent_mode']);
+        }
+
+        $session->meta = $meta;
 
         try {
             $session->save();
