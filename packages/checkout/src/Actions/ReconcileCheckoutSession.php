@@ -14,6 +14,7 @@ use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
 use Lunar\Checkout\Support\PaymentIntentGateway;
+use Lunar\Core\Contracts\SupportsPaymentHolds;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Enums\PaymentIntentStatus;
 
@@ -93,7 +94,12 @@ final class ReconcileCheckoutSession implements ReconcilesCheckoutSession
             }
 
             if (in_array($status, [PaymentIntentStatus::Captured, PaymentIntentStatus::RequiresCapture], true)) {
-                return $this->completeOrRefund($session, $gateway, $reference);
+                // An authorise-only hold at RequiresCapture is not money
+                // moved: the customer may keep editing and re-confirm, so
+                // reopen with the hold intact instead of forcing completion.
+                if (! ($session->isHoldMode() && $status === PaymentIntentStatus::RequiresCapture)) {
+                    return $this->completeOrRefund($session, $gateway, $reference);
+                }
             }
         }
 
@@ -112,19 +118,67 @@ final class ReconcileCheckoutSession implements ReconcilesCheckoutSession
     }
 
     /**
-     * Captured money resolves to exactly one of: an order, or a refund.
+     * Captured money resolves to exactly one of: an order, or money back.
+     * Money back is flavour-aware: an authorise-only hold that was never
+     * captured voids; anything actually captured (a standard intent, or a
+     * hold captured by this very call) refunds.
      */
     private function completeOrRefund(
         CheckoutSession $session,
         SupportsPaymentIntents $gateway,
         string $reference,
     ): string {
+        // An authorise-only hold is not money moved yet: capture it now, in
+        // the one idempotent place every completion path funnels through, so
+        // a crash between pin and capture recovers on the next reconcile.
+        // Policy-mode requires_capture (store-wide manual capture, settled
+        // later from the panel) keeps its existing complete-without-capture
+        // behaviour.
+        $holdCaptured = false;
+
+        if ($session->isHoldMode() && $gateway instanceof SupportsPaymentHolds) {
+            try {
+                $gateway->captureHold($reference, (int) $session->amount_total);
+                $holdCaptured = true;
+            } catch (\Throwable $e) {
+                report($e);
+
+                // Nothing was captured: the intent reference survives so the
+                // customer can retry against the SAME hold, or the wallet
+                // re-opens against it, instead of minting a fresh
+                // authorisation.
+                $this->reopenKeepingIntent($session, 'hold_capture_failed');
+                $this->events->dispatch(new CheckoutCompletionFailed($session, 'hold-capture-failed'));
+
+                return 'reopened';
+            }
+        }
+
         try {
             $this->driver->complete($session);
 
             return 'completed';
         } catch (PaymentConfirmationException) {
             // The cart no longer matches what the customer paid for.
+        }
+
+        // Money back: captured funds refund; an uncaptured hold voids. A
+        // hold-mode session that reaches here with $holdCaptured still false
+        // means $gateway lacked SupportsPaymentHolds (a misconfiguration);
+        // voiding is still the safe answer.
+        if ($session->isHoldMode() && ! $holdCaptured) {
+            try {
+                $gateway->voidIntent($reference);
+            } catch (\Throwable) {
+                $this->events->dispatch(new CheckoutCompletionFailed($session, 'void-failed'));
+
+                return $this->recordAttempt($session);
+            }
+
+            $this->reopen($session, 'hold_voided');
+            $this->events->dispatch(new CheckoutCompletionFailed($session, 'hold-voided'));
+
+            return 'voided';
         }
 
         try {
@@ -215,6 +269,25 @@ final class ReconcileCheckoutSession implements ReconcilesCheckoutSession
 
         $session->transitionGuarded([PaymentProcessing::$name], Open::$name, [
             'payment_intent_ref' => null,
+            'payment_processing_at' => null,
+            'reconciliation_attempts' => 0,
+            'expires_at' => now()->addMinutes($grace),
+        ]);
+
+        return $reason;
+    }
+
+    /**
+     * Back to `Open` like {@see reopen()} but the intent reference survives:
+     * nothing was captured (the hold's own capture call failed), so there is
+     * no double-hold risk in leaving the customer bound to the same
+     * authorisation instead of forcing a fresh one.
+     */
+    private function reopenKeepingIntent(CheckoutSession $session, string $reason): string
+    {
+        $grace = (int) config('lunar.checkout.session.reopen_grace_minutes', 30);
+
+        $session->transitionGuarded([PaymentProcessing::$name], Open::$name, [
             'payment_processing_at' => null,
             'reconciliation_attempts' => 0,
             'expires_at' => now()->addMinutes($grace),

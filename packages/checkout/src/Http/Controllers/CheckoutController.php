@@ -35,6 +35,7 @@ use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
+use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Address;
@@ -720,11 +721,28 @@ class CheckoutController extends Controller
          * dependent rates). Bring its amount in line with the total the
          * customer is looking at BEFORE the pin, so a fingerprint rejection
          * costs nothing and a confirmed charge is never the stale figure.
+         *
+         * A confirmed hold cannot be synced like an unconfirmed intent
+         * (Task 3 unit note: `$amountTotal` is Lunar minor units, equal to
+         * Stripe's for GBP): it stretches (incremental authorization) or it
+         * does not, so hold-mode sessions branch to adjustHold() instead of
+         * SyncsPaymentIntents::syncIntent().
          */
         if ($method->requiresIntent() && $amountTotal > 0) {
             $gateway = Payments::driver($method->driver());
 
-            if ($gateway instanceof SyncsPaymentIntents) {
+            if ($session->isHoldMode() && $gateway instanceof SupportsPaymentHolds && $session->payment_intent_ref !== null) {
+                $adjustment = $gateway->adjustHold($session->payment_intent_ref, $amountTotal);
+
+                if ($adjustment === HoldAdjustment::NeedsReauthorization) {
+                    // Session still Open: nothing to unpin. The client
+                    // re-opens the wallet for a fresh hold (payment-intent
+                    // renew).
+                    throw ValidationException::withMessages([
+                        'hold' => 'hold_reauthorization_required',
+                    ]);
+                }
+            } elseif ($gateway instanceof SyncsPaymentIntents) {
                 $gateway->syncIntent(
                     Cart::query()->findOrFail((int) $session->cart_reference)->calculate(),
                 );
@@ -755,7 +773,15 @@ class CheckoutController extends Controller
             throw ValidationException::withMessages(['fingerprint' => $this->paymentRejectionMessage($e)]);
         }
 
-        return response()->json(['pinned' => true]);
+        return response()->json([
+            'pinned' => true,
+            // A hold session needs no gateway confirmation step client-side:
+            // the client navigates straight to the poll, which captures at
+            // reconcile.
+            'processing' => $session->isHoldMode()
+                ? route('lunar.checkout.processing', $session->uuid)
+                : null,
+        ]);
     }
 
     /**

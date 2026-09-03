@@ -127,6 +127,16 @@ class CheckoutSession extends Base
     }
 
     /**
+     * Whether this session's payment intent is an authorise-only hold
+     * (spec 0012): captured by the reconcile completion path at confirm,
+     * not by the gateway at sheet close.
+     */
+    public function isHoldMode(): bool
+    {
+        return ($this->meta['payment_intent_mode'] ?? null) === 'hold';
+    }
+
+    /**
      * The element bag (spec 0010 §C): price-neutral custom element data, keyed
      * by element handle.
      *
