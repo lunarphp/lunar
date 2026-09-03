@@ -56,7 +56,8 @@ export function createCheckout(data) {
   // Bounced back from the processing page: the gateway reported the charge
   // failed and the session was reopened for another attempt.
   if (new URLSearchParams(window.location.search).get('payment') === 'failed') {
-    state.payError = 'Your payment could not be completed and you have not been charged. Check your payment details and try again.'
+    state.payError =
+      'Your payment could not be completed and you have not been charged. Check your payment details and try again.'
     window.history.replaceState({}, '', window.location.pathname)
   }
 
@@ -87,9 +88,7 @@ export function createCheckout(data) {
   const subtotal = computed(() => state.items.reduce((s, i) => s + i.price * i.qty, 0))
   const itemCount = computed(() => state.items.reduce((s, i) => s + i.qty, 0))
   const shippingMethod = computed(() => state.shippingMethods.find((m) => m.id === state.shippingId))
-  const baseShipping = computed(() =>
-    state.fulfilment === 'collect' ? 0 : (shippingMethod.value?.price ?? 0),
-  )
+  const baseShipping = computed(() => (state.fulfilment === 'collect' ? 0 : (shippingMethod.value?.price ?? 0)))
 
   const breakdown = computed(() => {
     // Server totals win outright — shipping, VAT and discounts are cart
@@ -212,14 +211,18 @@ export function createCheckout(data) {
     const previous = state.shippingId
     state.shippingId = id
 
-    router.post(state.urls.shippingOption, { shipping_option: id }, {
-      preserveScroll: true,
-      preserveState: true,
-      only: ['checkout'],
-      onError: () => {
-        state.shippingId = previous
+    router.post(
+      state.urls.shippingOption,
+      { shipping_option: id },
+      {
+        preserveScroll: true,
+        preserveState: true,
+        only: ['checkout'],
+        onError: () => {
+          state.shippingId = previous
+        },
       },
-    })
+    )
   }
 
   // Switching to click & collect selects the collect-flagged option so the
@@ -243,9 +246,7 @@ export function createCheckout(data) {
     }
   }
 
-  const activePaymentMethod = computed(
-    () => state.paymentMethods.find((m) => m.handle === state.method) ?? null,
-  )
+  const activePaymentMethod = computed(() => state.paymentMethods.find((m) => m.handle === state.method) ?? null)
 
   // The active method's component registers how to confirm with the gateway
   // (e.g. stripe.confirmPayment). Null means nothing client-side to confirm.
@@ -259,9 +260,7 @@ export function createCheckout(data) {
   // a hardcoded "Payment could not be started." made no sense surfacing on
   // the delivery step's address lookup.
   async function postJson(url, body, fallbackMessage = 'The request could not be completed.') {
-    const xsrf = decodeURIComponent(
-      document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '',
-    )
+    const xsrf = decodeURIComponent(document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '')
 
     const response = await fetch(url, {
       method: 'POST',
@@ -415,6 +414,10 @@ export function createCheckout(data) {
     activePaymentMethod,
     registerPaymentConfirm,
     registerPendingWrite,
+    // Exposed so a page that posts to the pay boundary itself (the express
+    // confirm squeeze page, spec 0012 SD) can await the same in-flight
+    // element writes `pay()` does below, rather than duplicating the set.
+    flushPendingWrites,
     postJson,
     pay,
   }

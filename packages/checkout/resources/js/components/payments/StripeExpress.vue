@@ -10,6 +10,10 @@ import { useCheckout } from '../../composables/useCheckout.js'
  */
 const props = defineProps({
   method: { type: Object, required: true },
+  // Set from the express confirm page's re-open-wallet panel (spec 0012 SD):
+  // an existing hold is live, so the intent request must renew it in place
+  // rather than mint a second, competing hold.
+  renew: { type: Boolean, default: false },
 })
 
 const { state, breakdown, postJson } = useCheckout()
@@ -205,7 +209,11 @@ onMounted(async () => {
 
         const { clientSecret } = await postJson(
           state.urls.paymentIntent,
-          { payment_method: props.method.handle, mode: 'hold' },
+          {
+            payment_method: props.method.handle,
+            mode: 'hold',
+            ...(props.renew ? { renew: true } : {}),
+          },
           'Your payment could not be started.',
         )
 
