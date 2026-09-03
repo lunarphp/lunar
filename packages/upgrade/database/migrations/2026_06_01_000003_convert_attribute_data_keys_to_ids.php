@@ -24,9 +24,9 @@ use Lunar\Core\Facades\DB;
  * 6. Convert `attributes.validation_rules` from the v1 pipe-delimited string
  *    (`min:1|max:10`) to the v2 json list (`["min:1", "max:10"]`) — split on
  *    `|` exactly as Laravel's validator parses string rules.
- * 7. Add `attribute_groups.system`, drop the morph columns and unused
- *    `section` / `default_value`, make `attributes.attribute_group_id`
- *    nullable.
+ * 7. Add `attribute_groups.system`, drop the morph columns (and the v1
+ *    indexes that still sit on them) and unused `section` / `default_value`,
+ *    make `attributes.attribute_group_id` nullable.
  *
  * One-way — `down()` is intentionally absent. Restore from backup to reverse.
  */
@@ -319,6 +319,9 @@ return new class extends Migration
         }
 
         if (Schema::hasColumn($table, 'attributable_type')) {
+            // SQLite refuses DROP COLUMN while the v1 index remains.
+            $this->dropIndexIfExists($table, ['attributable_type']);
+
             Schema::table($table, function (Blueprint $table) {
                 $table->dropColumn('attributable_type');
             });
@@ -393,6 +396,12 @@ return new class extends Migration
         ));
 
         if ($drops !== []) {
+            if (in_array('attribute_type', $drops, true)) {
+                // MariaDB 1072 / SQLite: DROP COLUMN fails while these remain.
+                $this->dropIndexIfExists($table, ['attribute_type', 'handle'], 'unique');
+                $this->dropIndexIfExists($table, ['attribute_type']);
+            }
+
             Schema::table($table, function (Blueprint $blueprint) use ($drops) {
                 $blueprint->dropColumn($drops);
             });
@@ -404,6 +413,26 @@ return new class extends Migration
                 $blueprint->unsignedBigInteger('attribute_group_id')->nullable()->change();
             });
         }
+    }
+
+    /**
+     * @param  list<string>  $columns
+     */
+    protected function dropIndexIfExists(string $table, array $columns, string $type = 'index'): void
+    {
+        if (! Schema::hasIndex($table, $columns, $type)) {
+            return;
+        }
+
+        Schema::table($table, function (Blueprint $blueprint) use ($columns, $type): void {
+            if ($type === 'unique') {
+                $blueprint->dropUnique($columns);
+
+                return;
+            }
+
+            $blueprint->dropIndex($columns);
+        });
     }
 
     protected function normaliseMorph(?string $value): ?string
