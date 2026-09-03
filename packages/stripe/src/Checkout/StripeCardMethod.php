@@ -38,4 +38,19 @@ class StripeCardMethod extends AbstractPaymentMethod
             'publishableKey' => (string) config('services.stripe.public_key'),
         ];
     }
+
+    /**
+     * Same method, second placement (spec 0002 SC / 0012 SC): the card tab
+     * stays, and the express region renders Stripe's Express Checkout
+     * Element. Which wallets appear inside it is Stripe dashboard config.
+     */
+    public function supportsExpress(): bool
+    {
+        return true;
+    }
+
+    public function expressComponent(): ?string
+    {
+        return 'stripe-express';
+    }
 }
