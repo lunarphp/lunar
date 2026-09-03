@@ -4,6 +4,36 @@ import { money } from '../utils/money.js'
 
 export const CHECKOUT_KEY = Symbol('lunar-checkout')
 
+// Plain JSON POST outside Inertia: the pay boundary and gateway calls are
+// request/response, not page visits. Module-level (not tied to a checkout
+// store) so a component without a <LunarCheckout> ancestor, like the
+// host-page express mount (spec 0012 SF), can use it too. `fallbackMessage`
+// is caller-supplied: a hardcoded "Payment could not be started." made no
+// sense surfacing on the delivery step's address lookup.
+export async function postJson(url, body, fallbackMessage = 'The request could not be completed.') {
+  const xsrf = decodeURIComponent(document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '')
+
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'X-XSRF-TOKEN': xsrf,
+    },
+    body: JSON.stringify(body),
+  })
+
+  const payload = await response.json().catch(() => ({}))
+
+  if (!response.ok) {
+    const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
+    throw new Error(message || fallbackMessage)
+  }
+
+  return payload
+}
+
 /**
  * Instance-scoped checkout store (spec 0003 §F — provide/inject, never a
  * module singleton, so concurrent SSR requests don't bleed). Created once per
@@ -255,34 +285,6 @@ export function createCheckout(data) {
     paymentConfirm = fn
   }
 
-  // Plain JSON POST outside Inertia — the pay boundary and gateway calls are
-  // request/response, not page visits. `fallbackMessage` is caller-supplied:
-  // a hardcoded "Payment could not be started." made no sense surfacing on
-  // the delivery step's address lookup.
-  async function postJson(url, body, fallbackMessage = 'The request could not be completed.') {
-    const xsrf = decodeURIComponent(document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '')
-
-    const response = await fetch(url, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'X-XSRF-TOKEN': xsrf,
-      },
-      body: JSON.stringify(body),
-    })
-
-    const payload = await response.json().catch(() => ({}))
-
-    if (!response.ok) {
-      const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
-      throw new Error(message || fallbackMessage)
-    }
-
-    return payload
-  }
-
   // Unpin a session whose gateway confirmation failed. The server reopens it
   // only after the gateway confirms no money was captured; a captured charge
   // completes the order instead, which lands here as `completed`.
@@ -426,8 +428,16 @@ export function createCheckout(data) {
   return store
 }
 
-export function useCheckout() {
-  const store = inject(CHECKOUT_KEY)
-  if (!store) throw new Error('useCheckout() must be used inside <LunarCheckout>')
+// `optional: true` returns null instead of throwing when there is no
+// <LunarCheckout> ancestor: the host-page express mount (spec 0012 SF) reads
+// this to fall back to its own props rather than requiring the full checkout
+// provider.
+export function useCheckout({ optional = false } = {}) {
+  const store = inject(CHECKOUT_KEY, null)
+
+  if (!store && !optional) {
+    throw new Error('useCheckout() must be used inside <LunarCheckout>')
+  }
+
   return store
 }

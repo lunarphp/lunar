@@ -14,7 +14,10 @@ export default defineConfig({
   base: './',
   plugins: [
     laravel({
-      input: ['resources/js/app.js'],
+      // express.js (spec 0012 SF) is a second, standalone entry: the express
+      // wallet region mounted on host pages (the cart) outside this app's
+      // own Inertia bundle, published + resolved the same way (below).
+      input: ['resources/js/app.js', 'resources/js/express.js'],
       publicDirectory: 'resources/dist',
       hotFile: 'resources/dist/hot',
       refresh: false,

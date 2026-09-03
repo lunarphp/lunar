@@ -1,11 +1,27 @@
 {
+  "_StripeExpress-DUMufaFM.js": {
+    "file": "assets/StripeExpress-DUMufaFM.js",
+    "name": "StripeExpress"
+  },
   "resources/js/app.js": {
-    "file": "assets/app-BMXeXJfa.js",
+    "file": "assets/app-CJN6msSf.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
+    "imports": [
+      "_StripeExpress-DUMufaFM.js"
+    ],
     "css": [
       "assets/app-BiqNzk0K.css"
+    ]
+  },
+  "resources/js/express.js": {
+    "file": "assets/express-DoIgCOM6.js",
+    "name": "express",
+    "src": "resources/js/express.js",
+    "isEntry": true,
+    "imports": [
+      "_StripeExpress-DUMufaFM.js"
     ]
   }
 }

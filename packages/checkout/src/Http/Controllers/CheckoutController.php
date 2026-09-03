@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -27,6 +28,7 @@ use Lunar\Checkout\Events\CheckoutElementStored;
 use Lunar\Checkout\Exceptions\AddressLookupException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
 use Lunar\Checkout\Exceptions\RollbackQuote;
+use Lunar\Checkout\Express;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\Session\ModelElementStore;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
@@ -69,7 +71,7 @@ class CheckoutController extends Controller
      * resumes the cart's live `Open` session, so re-pressing "Checkout" lands
      * back on the same session rather than churning a new one.
      */
-    public function start(CheckoutDriver $checkoutDriver): SymfonyResponse
+    public function start(Request $request, CheckoutDriver $checkoutDriver): SymfonyResponse
     {
         $cart = CartSession::current();
 
@@ -87,6 +89,22 @@ class CheckoutController extends Controller
         }
 
         $session = $checkoutDriver->resolveOrCreateSession($cart);
+
+        // A host-page caller (the express wallet mount, spec 0012 SF) mints
+        // the session lazily on first wallet interaction and needs the raw
+        // session urls back, not a page navigation: it never leaves the host
+        // page, so Inertia::location (which forces one) does not apply here.
+        if ($request->expectsJson()) {
+            return response()->json([
+                'uuid' => $session->uuid,
+                'urls' => Arr::only(
+                    array_merge($this->sessionUrls($session), [
+                        'contact' => route('lunar.checkout.contact.store', $session->uuid),
+                    ]),
+                    ['quote', 'paymentIntent', 'shippingAddress', 'billingAddress', 'shippingOption', 'confirm', 'contact'],
+                ),
+            ]);
+        }
 
         // The session URL renders the checkout's OWN Inertia app (its own root
         // view + bundle). That's a different Inertia app to the consumer's, so
@@ -384,33 +402,47 @@ class CheckoutController extends Controller
                 'requiresIntent' => $method->requiresIntent(),
                 'component' => $method->component(),
                 'config' => $method->config(),
-                'supportsExpress' => $method->supportsExpress(),
+                // A method's own claim is never trusted alone: the wallet
+                // region only renders for a driver that can actually hold
+                // (spec 0012 SF; see Express::driverSupportsHolds()).
+                'supportsExpress' => $method->supportsExpress() && Express::driverSupportsHolds($method),
                 'expressComponent' => $method->expressComponent(),
             ], app(PaymentMethodRegistry::class)->availableFor(
                 Cart::query()->findOrFail((int) $session->cart_reference)
             )),
-            'urls' => [
-                'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
-                'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
-                'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
-                'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
-                'pay' => route('lunar.checkout.pay', $session->uuid),
-                'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
-                'processing' => route('lunar.checkout.processing', $session->uuid),
-                // The express confirm ("squeeze") page, and the non-persisting
-                // shipping-rate quote it (and the wallet sheet) use to price an
-                // edit before committing it (spec 0012 §C/§D).
-                'confirm' => route('lunar.checkout.confirm', $session->uuid),
-                'quote' => route('lunar.checkout.shipping-quote', $session->uuid),
-                // Escape hatch back to the store (the basket, usually):
-                // session cancel_url, then the store-wide config default.
-                'back' => $this->cancelUrl($session),
-                // Null when no driver can answer, which is how the delivery
-                // step knows to render manual entry instead of a dead search.
-                'addressLookup' => $this->addressLookup->isAvailable()
-                    ? route('lunar.checkout.address-lookup', $session->uuid)
-                    : null,
-            ],
+            'urls' => $this->sessionUrls($session),
+        ];
+    }
+
+    /**
+     * The session's write/navigation endpoints the checkout Vue app (and the
+     * host-page express mount's JSON start response) drive it through.
+     *
+     * @return array<string, string|null>
+     */
+    private function sessionUrls(CheckoutSessionModel $session): array
+    {
+        return [
+            'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
+            'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
+            'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
+            'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
+            'pay' => route('lunar.checkout.pay', $session->uuid),
+            'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
+            'processing' => route('lunar.checkout.processing', $session->uuid),
+            // The express confirm ("squeeze") page, and the non-persisting
+            // shipping-rate quote it (and the wallet sheet) use to price an
+            // edit before committing it (spec 0012 §C/§D).
+            'confirm' => route('lunar.checkout.confirm', $session->uuid),
+            'quote' => route('lunar.checkout.shipping-quote', $session->uuid),
+            // Escape hatch back to the store (the basket, usually):
+            // session cancel_url, then the store-wide config default.
+            'back' => $this->cancelUrl($session),
+            // Null when no driver can answer, which is how the delivery
+            // step knows to render manual entry instead of a dead search.
+            'addressLookup' => $this->addressLookup->isAvailable()
+                ? route('lunar.checkout.address-lookup', $session->uuid)
+                : null,
         ];
     }
 

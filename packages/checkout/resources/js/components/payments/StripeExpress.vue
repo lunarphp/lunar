@@ -1,12 +1,18 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useCheckout } from '../../composables/useCheckout.js'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { postJson, useCheckout } from '../../composables/useCheckout.js'
 
 /**
  * Stripe Express Checkout Element (spec 0012 SC). The sheet quotes rates
  * through the non-persisting quote endpoint mid-sheet; nothing is written
  * to the cart until onConfirm, and the hold is minted deferred (after the
  * writes) so the authorised amount is the final sheet total.
+ *
+ * Also mounts standalone on host pages outside the checkout bundle (spec
+ * 0012 SF, e.g. the cart's ExpressWalletsHost): `urls`/`amount`/`currency`
+ * override useCheckout() state when given, and `startUrl` lets the wallet
+ * mint its own checkout session lazily, on first interaction, rather than
+ * requiring one to already exist.
  */
 const props = defineProps({
   method: { type: Object, required: true },
@@ -14,9 +20,39 @@ const props = defineProps({
   // an existing hold is live, so the intent request must renew it in place
   // rather than mint a second, competing hold.
   renew: { type: Boolean, default: false },
+  urls: { type: Object, default: null },
+  amount: { type: Number, default: null },
+  currency: { type: String, default: null },
+  startUrl: { type: String, default: null },
 })
 
-const { state, breakdown, postJson } = useCheckout()
+// No <LunarCheckout> ancestor on a host page: `optional: true` returns null
+// there instead of throwing, and every read below falls back to props.
+const checkout = useCheckout({ optional: true })
+const state = checkout?.state ?? { elements: [], fulfilment: 'delivery' }
+const currency = computed(() => props.currency || state.currency || 'GBP')
+const amount = computed(() => props.amount ?? checkout?.breakdown?.value?.total ?? 0)
+
+// Session urls: already present (checkout mode) or minted lazily on first
+// wallet interaction against `startUrl` (host mode). `ensureSession()` is a
+// no-op once one set of urls exists, so a host page's second click reuses
+// the same session rather than minting another.
+const sessionUrls = ref(props.urls || state.urls || null)
+let mintPromise = null
+
+function ensureSession() {
+  if (sessionUrls.value?.confirm) return Promise.resolve(sessionUrls.value)
+  if (!props.startUrl) return Promise.resolve(sessionUrls.value ?? {})
+
+  if (!mintPromise) {
+    mintPromise = postJson(props.startUrl, {}, 'Could not start checkout.').then((data) => {
+      sessionUrls.value = data.urls
+      return data.urls
+    })
+  }
+
+  return mintPromise
+}
 
 const el = ref(null)
 const error = ref('')
@@ -97,29 +133,35 @@ function addressPayload(name, address, phone) {
 // Persist everything the wallet shared, in order: contact (unless already
 // signed in), shipping address, billing address, shipping option. Collect
 // mode skips both shipping writes (there is no delivery address to store).
-async function persistWalletData(event) {
+// `session` is the (by now minted) session urls: checkout mode's contact
+// write goes through the contact ELEMENT's own props (it may already be
+// filled in for a signed-in customer); host mode has no such element, so it
+// falls back to the plain `contact` url the start action's JSON answer
+// includes (spec 0012 SF).
+async function persistWalletData(event, session) {
   const contact = state.elements.find((item) => item.handle === 'contact')
+  const contactUrl = contact?.props?.contactUrl ?? session.contact
   const email = event.billingDetails?.email
 
-  if (!contact?.props?.signedIn && contact?.props?.contactUrl && email) {
-    await postRedirect(contact.props.contactUrl, { email })
+  if (!contact?.props?.signedIn && contactUrl && email) {
+    await postRedirect(contactUrl, { email })
   }
 
   if (!collectMode() && event.shippingAddress) {
     await postRedirect(
-      state.urls.shippingAddress,
+      session.shippingAddress,
       addressPayload(event.shippingAddress.name, event.shippingAddress.address, event.billingDetails?.phone),
     )
   }
 
   await postJson(
-    state.urls.billingAddress,
+    session.billingAddress,
     addressPayload(event.billingDetails?.name, event.billingDetails?.address, event.billingDetails?.phone),
     'Your billing address could not be saved.',
   )
 
   if (!collectMode() && event.shippingRate?.id) {
-    await postRedirect(state.urls.shippingOption, { shipping_option: event.shippingRate.id })
+    await postRedirect(session.shippingOption, { shipping_option: event.shippingRate.id })
   }
 }
 
@@ -135,14 +177,19 @@ onMounted(async () => {
     elements = stripe.elements({
       mode: 'payment',
       capture_method: 'manual',
-      currency: (state.currency || 'GBP').toLowerCase(),
-      amount: breakdown.value.total,
+      currency: currency.value.toLowerCase(),
+      amount: amount.value,
     })
 
     expressElement = elements.create('expressCheckout')
     expressElement.mount(el.value)
 
     expressElement.on('click', (event) => {
+      // The wallet gesture window only tolerates a synchronous resolve, so
+      // the session mint (host mode) fires in parallel rather than being
+      // awaited here; later handlers await it once they actually need urls.
+      ensureSession()
+
       event.resolve({
         emailRequired: true,
         shippingAddressRequired: !collectMode(),
@@ -152,7 +199,8 @@ onMounted(async () => {
 
     expressElement.on('shippingaddresschange', async (event) => {
       try {
-        const quote = await postJson(state.urls.quote, {
+        const session = await ensureSession()
+        const quote = await postJson(session.quote, {
           postcode: event.address.postal_code,
           country_code: event.address.country,
           city: event.address.city,
@@ -176,7 +224,8 @@ onMounted(async () => {
 
     expressElement.on('shippingratechange', async (event) => {
       try {
-        const quote = await postJson(state.urls.quote, {
+        const session = await ensureSession()
+        const quote = await postJson(session.quote, {
           postcode: event.address?.postal_code,
           country_code: event.address?.country,
           city: event.address?.city,
@@ -192,9 +241,11 @@ onMounted(async () => {
 
     expressElement.on('confirm', async (event) => {
       try {
+        const session = await ensureSession()
+
         // Persist everything the wallet shared, THEN mint the hold so the
         // authorised amount is the final total (spec 0012 SC step 4).
-        await persistWalletData(event)
+        await persistWalletData(event, session)
 
         // Deferred-intent contract: elements.submit() finalises the payment
         // details Elements collected and MUST run before the PaymentIntent
@@ -208,7 +259,7 @@ onMounted(async () => {
         }
 
         const { clientSecret } = await postJson(
-          state.urls.paymentIntent,
+          session.paymentIntent,
           {
             payment_method: props.method.handle,
             mode: 'hold',
@@ -221,7 +272,7 @@ onMounted(async () => {
           elements,
           clientSecret,
           redirect: 'if_required',
-          confirmParams: { return_url: state.urls.confirm },
+          confirmParams: { return_url: session.confirm },
         })
 
         if (confirmError) {
@@ -229,7 +280,7 @@ onMounted(async () => {
           return
         }
 
-        window.location.assign(state.urls.confirm)
+        window.location.assign(session.confirm)
       } catch {
         event.paymentFailed({ reason: 'fail' })
       }
