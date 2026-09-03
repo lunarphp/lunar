@@ -252,6 +252,14 @@ onMounted(async () => {
     })
 
     expressElement.on('confirm', async (event) => {
+      error.value = ''
+
+      // Once stripe.confirmPayment has been called the confirm event is
+      // settled as far as the element is concerned: calling paymentFailed()
+      // after that point is an IntegrationError. Track which side of that
+      // line a failure lands on.
+      let confirming = false
+
       try {
         const session = await ensureSession()
 
@@ -267,6 +275,7 @@ onMounted(async () => {
 
         if (submitError) {
           event.paymentFailed({ reason: 'fail' })
+          error.value = submitError.message || 'The payment was not completed. Try again or pay another way.'
           return
         }
 
@@ -280,6 +289,7 @@ onMounted(async () => {
           'Your payment could not be started.',
         )
 
+        confirming = true
         const { error: confirmError } = await stripe.confirmPayment({
           elements,
           clientSecret,
@@ -288,13 +298,18 @@ onMounted(async () => {
         })
 
         if (confirmError) {
-          event.paymentFailed({ reason: 'fail' })
+          // A declined wallet closes its sheet with no trace of its own, so
+          // this message is the only signal the customer gets.
+          error.value = confirmError.message || 'The payment was not completed. Try again or pay another way.'
           return
         }
 
         window.location.assign(session.confirm)
-      } catch {
-        event.paymentFailed({ reason: 'fail' })
+      } catch (e) {
+        if (!confirming) {
+          event.paymentFailed({ reason: 'fail' })
+        }
+        error.value = e?.message || 'The payment was not completed. Try again or pay another way.'
       }
     })
   } catch (e) {
