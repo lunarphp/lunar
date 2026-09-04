@@ -62,6 +62,8 @@
         "psr-4": {
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
+            "Lunar\\Api\\": "packages/api/src/",
+            "Lunar\\Api\\Database\\Factories\\": "packages/api/database/factories",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
@@ -85,6 +87,7 @@
         "psr-4": {
             "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
+            "Lunar\\Tests\\Api\\": "tests/api",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\DemoData\\": "tests/demo-data",
             "Lunar\\Tests\\Filament\\": "tests/filament",
@@ -101,6 +104,7 @@
     "extra": {
         "lunar": {
             "name": [
+                "API",
                 "Table Rate Shipping",
                 "Search",
                 "Meilisearch",
@@ -112,6 +116,7 @@
         },
         "laravel": {
             "providers": [
+                "Lunar\\Api\\ApiServiceProvider",
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
@@ -129,6 +134,7 @@
     "replace": {
         "lunarphp/core": "self.version",
         "lunarphp/admin": "self.version",
+        "lunarphp/api": "self.version",
         "lunarphp/demo-data": "self.version",
         "lunarphp/filament": "self.version",
         "lunarphp/meilisearch": "self.version",

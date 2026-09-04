@@ -16,10 +16,11 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
+- API platform — `lunarphp/api` with storefront and admin surfaces, extension registry, and outbound webhooks (spec 0077; kernel, admin auth and a proving slice of each surface are in; child specs 0078 storefront, 0079 admin, 0080 webhooks carry the rest)
 
 ## Ideas
 
-- Cache toolkit follow-ons — outbound webhooks, change feed / sync cursor, internal derived caches (ride spec 0043 events)
+- Cache toolkit follow-ons — change feed / sync cursor, internal derived caches (ride spec 0043 events; outbound webhooks now under spec 0077)
 - Cache-invalidation deferrals — media as a tracked satellite; a `CartLinesUpdated` event (from spec 0043)
 - Stock events — `StockMovementRecorded`, a variant stock-changed event and the Scout re-index on `stock_available` change (spec 0038's unshipped events section; split out of spec 0065)
 - Location-scoped availability & stock routing — per-location stock selection + sell-time routing/splitting (follow-on to 0038)
@@ -27,7 +28,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
 - Low-stock thresholds & notifications — reorder thresholds firing notifications (follow-on to 0038)
 - Returned-goods quarantine — route returns through `unavailable` for inspection; pairs with RMA
-- Storefront REST API — first-party `lunar/api` storefront API (see `specs/draft-storefront-api.md`)
 - RMA
 - Admin MCP
 - Storefront MCP

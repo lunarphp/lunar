@@ -51,12 +51,12 @@ test('the default product graph resolves the full dependency tag set', function 
     ['product' => $product, 'brand' => $brand, 'collectionA' => $a, 'collectionB' => $b, 'option' => $option, 'target' => $target] = productWithDependencies();
 
     expect(CacheTags::for($product))->toEqualCanonicalizing([
-        "product:{$product->id}",
-        "brand:{$brand->id}",
-        "collection:{$a->id}",
-        "collection:{$b->id}",
-        "product_option:{$option->id}",
-        "product:{$target->id}",
+        "product:{$product->public_id}",
+        "brand:{$brand->public_id}",
+        "collection:{$a->public_id}",
+        "collection:{$b->public_id}",
+        "product_option:{$option->public_id}",
+        "product:{$target->public_id}",
     ]);
 });
 
@@ -67,8 +67,8 @@ test('a dotted path collects the leaf tag and leaves the non-cacheable hop untag
 
     // The ProductAssociation hop has no tag; only the target product is collected.
     expect(CacheTags::for($product, 'assoc-only'))->toEqualCanonicalizing([
-        "product:{$product->id}",
-        "product:{$target->id}",
+        "product:{$product->public_id}",
+        "product:{$target->public_id}",
     ]);
 });
 
@@ -78,8 +78,8 @@ test('a registered graph can be overridden', function () {
     CacheDependencies::define('product', ['brand']);
 
     expect(CacheTags::for($product))->toEqualCanonicalizing([
-        "product:{$product->id}",
-        "brand:{$brand->id}",
+        "product:{$product->public_id}",
+        "brand:{$brand->public_id}",
     ]);
 });
 
@@ -89,8 +89,8 @@ test('a closure graph resolves models and tags', function () {
     CacheDependencies::define('product-card', fn (Product $p) => [$p->brand, 'static:promo']);
 
     expect(CacheTags::for($product, 'product-card'))->toEqualCanonicalizing([
-        "product:{$product->id}",
-        "brand:{$brand->id}",
+        "product:{$product->public_id}",
+        "brand:{$brand->public_id}",
         'static:promo',
     ]);
 });
@@ -98,7 +98,7 @@ test('a closure graph resolves models and tags', function () {
 test('an unregistered graph resolves to the root tag only', function () {
     ['product' => $product] = productWithDependencies();
 
-    expect(CacheTags::for($product, 'does-not-exist'))->toBe(["product:{$product->id}"]);
+    expect(CacheTags::for($product, 'does-not-exist'))->toBe(["product:{$product->public_id}"]);
 });
 
 test('tags are deduplicated', function () {
@@ -107,8 +107,8 @@ test('tags are deduplicated', function () {
     CacheDependencies::define('dupes', ['brand', 'brand']);
 
     expect(CacheTags::for($product, 'dupes'))->toEqualCanonicalizing([
-        "product:{$product->id}",
-        "brand:{$brand->id}",
+        "product:{$product->public_id}",
+        "brand:{$brand->public_id}",
     ]);
 });
 
@@ -127,5 +127,5 @@ test('an unknown relation path is skipped in production', function () {
 
     $lenient = new DependencyResolver(app(CacheDependenciesContract::class), strict: false);
 
-    expect($lenient->for($product, 'broken'))->toBe(["product:{$product->id}"]);
+    expect($lenient->for($product, 'broken'))->toBe(["product:{$product->public_id}"]);
 });

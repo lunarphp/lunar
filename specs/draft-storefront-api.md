@@ -3,7 +3,7 @@
 - Status: draft
 - Author: Glenn Jacobs
 - Created: 2026-05-26
-- TODO item: (not yet on TODO; under consideration)
+- TODO item: API platform (spec 0077). This draft is the basis for spec 0078; see 0077 section F for the deltas it must absorb.
 
 ## Problem
 
