@@ -273,3 +273,94 @@ test('it re-encodes a store that carries only the secret column', function () {
 
     expect(Crypt::decryptString(DB::table(STAFF_2FA_UPG_PREFIX.'staff')->find(1)->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
 });
+
+test('it skips the rename when a store carries both the v1 and v2 columns, reconciling the v2 column', function () {
+    // A store part-way through a manual fix that COPIED (not renamed) two_factor_secret
+    // into app_authentication_secret carries both columns. renameColumn() would throw on
+    // the collision and abort the upgrade, so the rename is skipped and the data pass
+    // reconciles whatever sits in the v2 column.
+    Schema::create(STAFF_2FA_UPG_PREFIX.'staff', function (Blueprint $table) {
+        $table->id();
+        $table->string('email')->unique();
+        $table->string('password');
+        $table->text('two_factor_secret')->nullable();
+        $table->text('two_factor_recovery_codes')->nullable();
+        $table->text('app_authentication_secret')->nullable();
+        $table->text('app_authentication_recovery_codes')->nullable();
+        $table->timestamps();
+    });
+
+    // The v1 encoding was copied into both columns, so the v2 column still carries the
+    // serialize wrapper that needs re-encoding.
+    $legacySecret = Crypt::encrypt('JBSWY3DPEHPK3PXP');
+    $legacyCodes = Crypt::encrypt(json_encode(['aaaa111111-bbbb222222']));
+    DB::table(STAFF_2FA_UPG_PREFIX.'staff')->insert([
+        'id' => 1, 'email' => 'staff1@example.com', 'password' => bcrypt('secret'),
+        'two_factor_secret' => $legacySecret,
+        'two_factor_recovery_codes' => $legacyCodes,
+        'app_authentication_secret' => $legacySecret,
+        'app_authentication_recovery_codes' => $legacyCodes,
+        'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    // Must not throw on the rename collision.
+    staffTwoFactorMigration()->up();
+
+    $table = STAFF_2FA_UPG_PREFIX.'staff';
+
+    // The rename was skipped: the v1 columns are left in place (renaming onto the
+    // existing v2 columns is what would have aborted the upgrade).
+    expect(Schema::hasColumn($table, 'app_authentication_secret'))->toBeTrue()
+        ->and(Schema::hasColumn($table, 'two_factor_secret'))->toBeTrue();
+
+    // The data pass reconciled the v2 column: its serialize wrapper is now plain base32.
+    $row = DB::table($table)->find(1);
+    expect(Crypt::decryptString($row->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
+
+    $codes = json_decode(Crypt::decryptString($row->app_authentication_recovery_codes), true);
+    expect($codes)->toBeArray()->toHaveCount(1)
+        ->and(Hash::check('aaaa111111-bbbb222222', $codes[0]))->toBeTrue();
+});
+
+test('it leaves an already-reconciled v2 column untouched when a store carries both columns', function () {
+    // Both columns present, but the operator has ALREADY reconciled the v2 column by hand
+    // to the v2 encoding (secret behind encryptString, recovery an array of bcrypt hashes).
+    // The rename is skipped (both exist) and the data pass must be a no-op — the idempotency
+    // guards (a plain secret fails the serialize probe, a hashed recovery set is already a
+    // JSON array) leave the ciphertext byte-identical rather than re-encrypting it.
+    Schema::create(STAFF_2FA_UPG_PREFIX.'staff', function (Blueprint $table) {
+        $table->id();
+        $table->string('email')->unique();
+        $table->string('password');
+        $table->text('two_factor_secret')->nullable();
+        $table->text('two_factor_recovery_codes')->nullable();
+        $table->text('app_authentication_secret')->nullable();
+        $table->text('app_authentication_recovery_codes')->nullable();
+        $table->timestamps();
+    });
+
+    // v1 encoding still in the old columns; the v2 column is already in v2 form.
+    DB::table(STAFF_2FA_UPG_PREFIX.'staff')->insert([
+        'id' => 1, 'email' => 'staff1@example.com', 'password' => bcrypt('secret'),
+        'two_factor_secret' => Crypt::encrypt('JBSWY3DPEHPK3PXP'),
+        'two_factor_recovery_codes' => Crypt::encrypt(json_encode(['aaaa111111-bbbb222222'])),
+        'app_authentication_secret' => Crypt::encryptString('JBSWY3DPEHPK3PXP'),
+        'app_authentication_recovery_codes' => Crypt::encryptString(json_encode([Hash::make('aaaa111111-bbbb222222')])),
+        'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    $before = DB::table(STAFF_2FA_UPG_PREFIX.'staff')->find(1);
+
+    staffTwoFactorMigration()->up();
+
+    $after = DB::table(STAFF_2FA_UPG_PREFIX.'staff')->find(1);
+
+    // The already-reconciled v2 columns are byte-identical — not re-encrypted.
+    expect($after->app_authentication_secret)->toBe($before->app_authentication_secret)
+        ->and($after->app_authentication_recovery_codes)->toBe($before->app_authentication_recovery_codes);
+
+    // …and still read back correctly in the v2 form.
+    expect(Crypt::decryptString($after->app_authentication_secret))->toBe('JBSWY3DPEHPK3PXP');
+    $codes = json_decode(Crypt::decryptString($after->app_authentication_recovery_codes), true);
+    expect(Hash::check('aaaa111111-bbbb222222', $codes[0]))->toBeTrue();
+});

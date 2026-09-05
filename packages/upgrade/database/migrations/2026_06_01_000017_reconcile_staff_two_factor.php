@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
 
@@ -19,8 +20,10 @@ use Lunar\Core\Database\Migration;
  *    the redundant two_factor_confirmed_at — via an admin-package migration. A
  *    store upgraded straight from a pre-1.5 line never ran it, so it lands with the
  *    old names and the v2 Staff model (which reads app_authentication_*) sees no
- *    2FA. Apply the rename here when the v1 columns are still present; a 1.5+ store
- *    already has the v2 names and is left untouched. A half-finished enrolment
+ *    2FA. Apply the rename here when a v1 column is still present and its v2 target
+ *    is absent; a 1.5+ store (or one part-way through a manual fix that already has
+ *    the v2 column) is left untouched, the data pass reconciling the v2 column
+ *    directly. A half-finished enrolment
  *    (secret written but two_factor_confirmed_at still null) was 2FA-off in v1, so
  *    its columns are cleared before the rename rather than promoted to an active v2
  *    secret the user never confirmed.
@@ -36,10 +39,10 @@ use Lunar\Core\Database\Migration;
  *    bcrypt-hash each still-plaintext recovery code — matching the `encrypted` /
  *    `encrypted:array` casts so the Staff model reads them back natively.
  *
- * Idempotent: the rename is guarded on the v1 columns' presence, a secret already a
- * plain base32 string fails the serialize probe, a recovery value already a JSON
- * array is left alone, and an already-hashed code is not re-hashed. One-way, no
- * down().
+ * Idempotent: the rename is guarded on the v1 source being present and the v2
+ * target absent, a secret already a plain base32 string fails the serialize probe,
+ * a recovery value already a JSON array is left alone, and an already-hashed code is
+ * not re-hashed. One-way, no down().
  */
 return new class extends Migration
 {
@@ -98,10 +101,18 @@ return new class extends Migration
                         }
                     } catch (DecryptException) {
                         // A 2FA record this database's APP_KEY cannot decrypt — a stale
-                        // value from a prior key rotation, say — is left as-is rather
-                        // than aborting the whole upgrade; that staff member re-enrols.
-                        // A key wrong for the entire database surfaces earlier in the
-                        // upgrade, not just here.
+                        // value from a prior key rotation, say — is left untouched rather
+                        // than aborting the whole upgrade. Clearing it would be a silent
+                        // 2FA downgrade, and it was equally unusable in v1. The staff
+                        // member cannot self-serve a re-enrolment (the encrypted cast
+                        // throws when their challenge reads the stale secret), so an admin
+                        // must clear the columns — warn so the operator knows who needs
+                        // attention. A key wrong for the entire database surfaces earlier
+                        // in the upgrade, not just here.
+                        Log::warning(
+                            'Skipped staff two-factor reconciliation: the stored value could not be decrypted with the current APP_KEY.',
+                            ['staff_id' => $row->id],
+                        );
                     }
                 }
             });
@@ -113,11 +124,18 @@ return new class extends Migration
      */
     private function renameLegacyColumns(string $staff): void
     {
-        // Guard each column independently: Fortify's migration adds and renames the
-        // pair together, but a store part-way through a manual fix could carry only
-        // one, and renaming a missing column would throw.
-        $renameSecret = Schema::hasColumn($staff, 'two_factor_secret');
-        $renameRecoveryCodes = Schema::hasColumn($staff, 'two_factor_recovery_codes');
+        // Guard each rename on the v1 (source) column being present AND the v2
+        // (target) column being absent. Fortify's migration renames the pair
+        // together, but a store part-way through a manual fix could carry only one —
+        // or could have COPIED (not renamed) two_factor_secret into
+        // app_authentication_secret, leaving both columns present, at which point
+        // renameColumn() would throw and abort the whole upgrade. When both exist,
+        // skipping the rename is enough: the data pass below reconciles whatever is
+        // already in the v2 column.
+        $renameSecret = Schema::hasColumn($staff, 'two_factor_secret')
+            && ! Schema::hasColumn($staff, 'app_authentication_secret');
+        $renameRecoveryCodes = Schema::hasColumn($staff, 'two_factor_recovery_codes')
+            && ! Schema::hasColumn($staff, 'app_authentication_recovery_codes');
         $hasConfirmedAt = Schema::hasColumn($staff, 'two_factor_confirmed_at');
 
         if (! $renameSecret && ! $renameRecoveryCodes && ! $hasConfirmedAt) {
