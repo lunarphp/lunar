@@ -15,6 +15,7 @@ use Lunar\Core\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
@@ -196,13 +197,16 @@ class StripePaymentType extends AbstractPayment
         if ($this->order) {
             $expectedAmount = $this->order->total;
             $expectedCurrency = $this->order->currency_code;
+            $currency = $this->order->currency;
         } else {
             $calculated = $this->cart->calculate();
             $expectedAmount = $calculated->total->value;
             $expectedCurrency = $calculated->currency->code;
+            $currency = $calculated->currency;
         }
 
-        $amountMatches = $expectedAmount === (int) $this->paymentIntent->amount;
+        // The intent amount is in Stripe's sub-unit scale, not Lunar's.
+        $amountMatches = StripeManager::toStripeAmount($expectedAmount, $currency) === (int) $this->paymentIntent->amount;
         $currencyMatches = strtolower((string) $expectedCurrency) === strtolower((string) $this->paymentIntent->currency);
 
         if ($amountMatches && $currencyMatches) {
@@ -232,7 +236,7 @@ class StripePaymentType extends AbstractPayment
         $payload = [];
 
         if ($amount > 0) {
-            $payload['amount_to_capture'] = $amount;
+            $payload['amount_to_capture'] = StripeManager::toStripeAmount($amount, $transaction->order->currency);
         }
 
         $charge = Stripe::getCharge($transaction->reference);
@@ -268,7 +272,7 @@ class StripePaymentType extends AbstractPayment
 
         try {
             $refund = $this->stripe->refunds->create(
-                ['payment_intent' => $charge->payment_intent, 'amount' => $amount]
+                ['payment_intent' => $charge->payment_intent, 'amount' => StripeManager::toStripeAmount($amount, $transaction->order->currency)]
             );
         } catch (InvalidRequestException $e) {
             return new PaymentRefund(
@@ -277,11 +281,11 @@ class StripePaymentType extends AbstractPayment
             );
         }
 
-        $transaction->order->transactions()->create([
+        $refundTransaction = $transaction->order->transactions()->create([
             'success' => $refund->status != 'failed',
             'type' => 'refund',
             'driver' => 'stripe',
-            'amount' => $refund->amount,
+            'amount' => StripeManager::fromStripeAmount($refund->amount, $transaction->order->currency),
             'reference' => $refund->payment_intent,
             'status' => $refund->status,
             'notes' => $notes,
@@ -290,7 +294,8 @@ class StripePaymentType extends AbstractPayment
         ]);
 
         return new PaymentRefund(
-            success: true
+            success: true,
+            transaction: $refundTransaction,
         );
     }
 

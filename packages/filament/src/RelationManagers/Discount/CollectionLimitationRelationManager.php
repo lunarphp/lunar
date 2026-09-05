@@ -40,7 +40,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             ->modifyQueryUsing(
                 fn ($query) => $query
                     ->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
-                    ->with('ancestors')
+                    ->with(['group', 'ancestors'])
             )
             ->paginated(false)
             ->headerActions([
@@ -66,7 +66,10 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                     ->label(
                         __('lunar-filament::discount.relationmanagers.collections.table.name.label')
                     )
-                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
+                    ->description(fn (Collection $record): string => collect([$record->group?->name])
+                        ->concat($record->breadcrumb)
+                        ->filter()
+                        ->implode(' > '))
                     ->formatStateUsing(
                         fn (Model $record) => $record->translate('name')
                     ),

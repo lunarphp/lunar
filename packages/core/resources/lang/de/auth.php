@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Erlaubt dem Mitarbeiter, Kunden zu verwalten',
     'permissions.sales:manage-discounts.label' => 'Rabatte verwalten',
     'permissions.sales:manage-discounts.description' => 'Erlaubt dem Mitarbeiter, Rabatte zu verwalten',
+    'permissions.shipping:manage.label' => 'Versand verwalten',
+    'permissions.shipping:manage.description' => 'Erlaubt dem Mitarbeiter, den Versand zu verwalten',
 ];

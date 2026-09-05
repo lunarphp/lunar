@@ -1,0 +1,24 @@
+{
+    "id": "5O190127TN364715T",
+    "status": "COMPLETED",
+    "purchase_units": [
+        {
+            "reference_id": "default",
+            "payments": {
+                "authorizations": [
+                    {
+                        "id": "0VF52814937998046",
+                        "status": "CREATED",
+                        "amount": {
+                            "currency_code": "GBP",
+                            "value": "19.99"
+                        },
+                        "expiration_time": "2026-09-26T10:05:00Z",
+                        "create_time": "2026-08-27T10:05:00Z",
+                        "update_time": "2026-08-27T10:05:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

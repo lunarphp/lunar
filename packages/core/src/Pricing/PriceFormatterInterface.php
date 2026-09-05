@@ -10,7 +10,7 @@ interface PriceFormatterInterface
 
     public function unitDecimal(bool $rounding = true): float;
 
-    public function formatted(?string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
+    public function formatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
 
-    public function unitFormatted(?string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
+    public function unitFormatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
 }

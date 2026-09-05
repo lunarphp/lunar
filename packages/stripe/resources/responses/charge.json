@@ -45,7 +45,7 @@
     "type": "authorized"
   },
   "paid": true,
-  "payment_intent": null,
+  "payment_intent": "{payment_intent}",
   "payment_method": "card_1MmlLrLkdIwHu7ixIJwEWSNR",
   "payment_method_details": {
     "card": {

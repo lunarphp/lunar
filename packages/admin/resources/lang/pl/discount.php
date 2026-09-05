@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Kup X, Zdobądź Y',
         ],
-        'amount_off' => [
-            'heading' => 'Kwota zniżki',
+        'percentage_off' => [
+            'heading' => 'Rabat procentowy',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Rabat kwotowy',
         ],
         'name' => [
             'label' => 'Nazwa',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Automatically add rewards',
             'helper_text' => 'Switch on to add reward products when not present in the basket.',
-        ],
-        'fixed_value' => [
-            'label' => 'Stała wartość',
         ],
         'percentage' => [
             'label' => 'Procent',

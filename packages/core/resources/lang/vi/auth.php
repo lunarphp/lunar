@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Cho phép nhân viên quản lý khách hàng',
     'permissions.sales:manage-discounts.label' => 'Quản lý giảm giá',
     'permissions.sales:manage-discounts.description' => 'Cho phép nhân viên quản lý giảm giá',
+    'permissions.shipping:manage.label' => 'Quản lý vận chuyển',
+    'permissions.shipping:manage.description' => 'Cho phép nhân viên quản lý vận chuyển',
 ];

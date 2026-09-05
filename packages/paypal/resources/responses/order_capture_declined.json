@@ -1,0 +1,22 @@
+{
+    "id": "5O190127TN364715T",
+    "status": "DECLINED",
+    "purchase_units": [
+        {
+            "reference_id": "default",
+            "payments": {
+                "captures": [
+                    {
+                        "id": "3C679366HH908993F",
+                        "status": "DECLINED",
+                        "amount": {
+                            "currency_code": "GBP",
+                            "value": "19.99"
+                        },
+                        "create_time": "2026-08-27T10:05:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

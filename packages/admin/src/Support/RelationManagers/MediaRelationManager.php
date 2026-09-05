@@ -98,16 +98,24 @@ class MediaRelationManager extends BaseRelationManager
                             ->usingFileName(
                                 $data['media']->getClientOriginalName()
                             )
-                            ->withCustomProperties([
-                                'name' => $data['custom_properties']['name'],
-                                'primary' => $data['custom_properties']['primary'],
-                            ])
+                            ->withCustomProperties($data['custom_properties'] ?? [])
                             ->preservingOriginal()
                             ->toMediaCollection($this->mediaCollection);
                     }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->mutateDataUsing(function (array $data, Media $record): array {
+                        // The column is array-cast, so writing the submitted set
+                        // wholesale drops any key this form did not render — an
+                        // extension's own properties, for instance.
+                        $data['custom_properties'] = array_merge(
+                            $record->custom_properties ?? [],
+                            $data['custom_properties'] ?? [],
+                        );
+
+                        return $data;
+                    }),
                 DeleteAction::make(),
                 Action::make('view_open')
                     ->label(__('lunarpanel::relationmanagers.medias.actions.view.label'))

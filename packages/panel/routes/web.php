@@ -10,11 +10,14 @@ use Lunar\Panel\Http\Controllers\Account\TwoFactorController;
 use Lunar\Panel\Http\Controllers\Auth\AuthenticatedSessionController;
 use Lunar\Panel\Http\Controllers\DashboardController;
 use Lunar\Panel\Http\Controllers\DashboardPreferencesController;
+use Lunar\Panel\Http\Controllers\Search\GlobalSearchController;
 use Lunar\Panel\Http\Controllers\SettingsController;
 
 Route::get('/', DashboardController::class)->name('panel.dashboard');
 Route::put('dashboard/preferences', [DashboardPreferencesController::class, 'update'])->name('panel.dashboard.preferences.update');
 Route::delete('dashboard/preferences', [DashboardPreferencesController::class, 'destroy'])->name('panel.dashboard.preferences.destroy');
+
+Route::get('search', GlobalSearchController::class)->name('panel.search');
 
 Route::get('settings', SettingsController::class)->name('panel.settings');
 

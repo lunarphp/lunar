@@ -4,7 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "vite build && npm run build:types",
-        "build:types": "vue-tsc -p tsconfig.build-types.json && node scripts/copy-runtime-types.mjs",
+        "build:types": "rm -rf resources/panel-package/dist && vue-tsc -p tsconfig.build-types.json && node scripts/copy-runtime-types.mjs",
         "type-check": "vue-tsc -p tsconfig.json",
         "dev": "vite",
         "test": "vitest run"

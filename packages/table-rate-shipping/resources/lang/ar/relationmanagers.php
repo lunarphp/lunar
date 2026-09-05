@@ -39,7 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'الحد الأدنى للوزن',
-                        'helper_text' => 'أدخل الوزن بالكيلوغرام',
+                        'helper_text' => 'أدخل الوزن بوحدة :unit',
                     ],
                     'price' => [
                         'label' => 'السعر',

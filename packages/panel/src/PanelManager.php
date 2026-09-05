@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Lunar\Panel\Actions\PageActionResolver;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\WidgetRegistry;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchCommandResolver;
+use Lunar\Panel\Search\SearchSource;
+use Lunar\Panel\Search\SearchSourceResolver;
 use Lunar\Panel\Sections\ProvidesNavigation;
 use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Sections\SectionExtension;
@@ -37,8 +42,17 @@ class PanelManager
     /** @var array<string, string[]> */
     protected array $pageActions = [];
 
+    /** @var array<int, class-string<SearchSource>> */
+    protected array $searchSources = [];
+
+    /** @var array<int, class-string<SearchCommand>> */
+    protected array $searchCommands = [];
+
     /** @var array<class-string<Model>, DraftableResource> */
     protected array $draftables = [];
+
+    /** @var array<class-string, class-string<DiscountTypeForm>> */
+    protected array $discountTypeForms = [];
 
     /** @var Closure[] */
     protected array $routeRegistrars = [];
@@ -147,8 +161,20 @@ class PanelManager
             $this->draftable($definitionClass);
         }
 
+        foreach ($entity->discountTypeForms() as $discountType => $formClass) {
+            $this->discountTypeForm($discountType, $formClass);
+        }
+
         foreach ($entity->widgets() as $widgetClass) {
             $this->widget($widgetClass);
+        }
+
+        foreach ($entity->searchSources() as $sourceClass) {
+            $this->searchSource($sourceClass);
+        }
+
+        foreach ($entity->searchCommands() as $commandClass) {
+            $this->searchCommand($commandClass);
         }
 
         if ($viteConfig = $entity->vite()) {
@@ -221,6 +247,23 @@ class PanelManager
         return new TableExtensionResolver($this->getTableExtensions($tableId), $this->user());
     }
 
+    /**
+     * @param  class-string  $discountType
+     * @param  class-string<DiscountTypeForm>  $formClass
+     */
+    public function discountTypeForm(string $discountType, string $formClass): static
+    {
+        $this->discountTypeForms[$discountType] = $formClass;
+
+        return $this;
+    }
+
+    /** @return array<class-string, class-string<DiscountTypeForm>> */
+    public function discountTypeForms(): array
+    {
+        return $this->discountTypeForms;
+    }
+
     /** @param class-string $actionClass */
     public function addPageAction(string $pageId, string $actionClass): static
     {
@@ -238,6 +281,44 @@ class PanelManager
     public function resolvePageActions(string $pageId): PageActionResolver
     {
         return new PageActionResolver($this->getPageActions($pageId), $this->user());
+    }
+
+    /** @param class-string<SearchSource> $sourceClass */
+    public function searchSource(string $sourceClass): static
+    {
+        $this->searchSources[] = $sourceClass;
+
+        return $this;
+    }
+
+    /** @return array<int, class-string<SearchSource>> */
+    public function getSearchSources(): array
+    {
+        return $this->searchSources;
+    }
+
+    public function resolveSearchSources(): SearchSourceResolver
+    {
+        return new SearchSourceResolver($this->getSearchSources(), $this->user());
+    }
+
+    /** @param class-string<SearchCommand> $commandClass */
+    public function searchCommand(string $commandClass): static
+    {
+        $this->searchCommands[] = $commandClass;
+
+        return $this;
+    }
+
+    /** @return array<int, class-string<SearchCommand>> */
+    public function getSearchCommands(): array
+    {
+        return $this->searchCommands;
+    }
+
+    public function resolveSearchCommands(): SearchCommandResolver
+    {
+        return new SearchCommandResolver($this->getSearchCommands(), $this->user());
     }
 
     /**

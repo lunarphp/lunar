@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Sections\Settings\Tables;
 
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Support\Position;
 use Lunar\Panel\Tables\TableAction;
 
@@ -41,7 +42,7 @@ class DeleteStaffAction extends TableAction
     /** Your own account and the last admin are protected, so they carry no delete action. */
     public function url(mixed $record = null): ?string
     {
-        if (! $record instanceof Staff || $record->id === auth('staff')->id()) {
+        if (! $record instanceof Staff || $record->id === auth(Panel::guard())->id()) {
             return null;
         }
 

@@ -17,12 +17,27 @@ class TimelineActivity
     public static function toArray(Activity $activity): array
     {
         return [
-            'description' => (string) $activity->description,
+            'description' => static::description($activity),
             'created_at' => $activity->created_at,
             'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
             'avatar' => Gravatar::url($activity->causer?->email),
             'changes' => static::changedKeys($activity),
         ];
+    }
+
+    /**
+     * The display label for an entry — custom panel events get a translated
+     * label; plain model events keep spatie's created/updated description.
+     */
+    protected static function description(Activity $activity): string
+    {
+        if ($activity->event === 'order-address-update') {
+            $type = $activity->getExtraProperty('type') === 'billing' ? 'billing' : 'shipping';
+
+            return __('panel::orders.activity_'.$type.'_address_updated');
+        }
+
+        return (string) $activity->description;
     }
 
     /**
@@ -40,6 +55,17 @@ class TimelineActivity
      */
     protected static function changedKeys(Activity $activity): array
     {
+        if ($activity->event === 'order-address-update') {
+            $fields = (array) $activity->properties->get('fields', []);
+            $new = (array) $activity->properties->get('new', []);
+            $previous = (array) $activity->properties->get('previous', []);
+
+            return array_values(array_filter(
+                $fields,
+                fn (string $field) => ! static::valuesEqual($previous[$field] ?? null, $new[$field] ?? null),
+            ));
+        }
+
         if ($activity->description !== 'updated') {
             return [];
         }

@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Salvează opțiunile',
                 ],
+                'save-variants' => [
+                    'label' => 'Salvează variantele',
+                ],
                 'add-shared-option' => [
                     'label' => 'Adaugă opțiune partajată',
                     'form' => [

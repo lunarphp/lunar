@@ -6,5 +6,8 @@
         "packages/panel/resources/package",
         "packages/panel/resources/panel-package",
         "packages/panel-addon-example"
-    ]
+    ],
+    "scripts": {
+        "check-npm-drift": "node scripts/check-npm-drift.mjs"
+    }
 }

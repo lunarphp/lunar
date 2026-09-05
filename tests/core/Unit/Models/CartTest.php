@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
-use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
 use Lunar\Core\Facades\Discounts;
@@ -79,11 +79,10 @@ test('can save coupon code', function () {
     ]);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => 'valid-coupon',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -757,11 +756,10 @@ test('can create a discount breakdown', function () {
     ]);
 
     $discount = Discount::factory()->create([
-        'type' => AmountOff::class,
+        'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'coupon' => 'valid-coupon',
         'data' => [
-            'fixed_value' => false,
             'percentage' => 10,
         ],
     ]);
@@ -1341,4 +1339,34 @@ test('a cart produces a storefront context from its stored selections', function
         ->and($context->currency->id)->toBe($currency->id)
         ->and($context->customer->id)->toBe($customer->id)
         ->and($context->customerGroups->pluck('id')->all())->toBe([$trade->id]);
+});
+
+test('orders cart lines by id', function () {
+    $cart = Cart::factory()->create();
+
+    // Cart::lines() must carry an explicit ordering contract. Without an
+    // ORDER BY, row order is undefined by the SQL standard: MySQL/InnoDB
+    // returns clustered primary-key order by coincidence, but PostgreSQL
+    // returns heap order, which changes after an UPDATE. Lunar relies on a
+    // stable line sequence (e.g. GenerateFingerprint reduces $cart->lines in
+    // iteration order), so it must be deterministic across engines.
+    expect($cart->lines()->toBase()->orders)
+        ->toBe([['column' => 'id', 'direction' => 'asc']]);
+});
+
+test('can retrieve cart lines in ascending id order', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $lines = CartLine::factory()
+        ->count(5)
+        ->create(['cart_id' => $cart->id]);
+
+    $expectedOrder = $lines->pluck('id')->sort()->values()->all();
+
+    expect($cart->load('lines')->lines->pluck('id')->all())
+        ->toBe($expectedOrder);
 });

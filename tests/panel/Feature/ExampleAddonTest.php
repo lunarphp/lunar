@@ -356,3 +356,43 @@ it('denies the example add-on settings screen to staff without the permission', 
     $this->get(route('panel.settings.example-addon.index'))->assertForbidden();
     $this->post(route('panel.settings.example-addon.update'))->assertForbidden();
 });
+
+it('contributes a global search source and quick action', function () {
+    Language::factory()->create(['default' => true]);
+
+    $staff = Staff::factory()->create(['admin' => true]);
+    $customer = Customer::factory()->create(['account_ref' => 'ACC-5521', 'first_name' => 'Ada', 'last_name' => 'Lovelace']);
+
+    $rows = collect(
+        $this->actingAs($staff, 'staff')->getJson('/panel/search?q=ACC-5521')->assertOk()->json('data')
+    );
+
+    $row = $rows->firstWhere('kind', 'example-accounts');
+
+    expect($row['id'])->toBe($customer->id)
+        ->and($row['label'])->toBe('ACC-5521')
+        ->and($row['hint'])->toBe('Ada Lovelace')
+        ->and($row['kind_label'])->toBe('Account references');
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('searchCommands.6.key', 'example-addon.widgets')
+            ->where('searchCommands.6.label', 'Ping widgets')
+            ->where('searchSources.5.key', 'example-accounts'));
+});
+
+it('hides the add-on search source from staff without its permission', function () {
+    Language::factory()->create(['default' => true]);
+
+    $staff = Staff::factory()->create(['admin' => false]);
+    $staff->givePermissionTo('catalog:manage-products');
+
+    Customer::factory()->create(['account_ref' => 'ACC-9001']);
+
+    $rows = collect(
+        $this->actingAs($staff, 'staff')->getJson('/panel/search?q=ACC-9001')->assertOk()->json('data')
+    );
+
+    expect($rows)->toBeEmpty();
+});

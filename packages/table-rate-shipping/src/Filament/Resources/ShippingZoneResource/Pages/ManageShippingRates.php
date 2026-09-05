@@ -122,12 +122,20 @@ class ManageShippingRates extends ManageRelatedRecords
                             : __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label')
                         )
                         ->helperText(fn (Get $get) => static::isWeightCharge($get)
-                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text')
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text', [
+                                'unit' => static::getShippingWeightUnit($get('../../shipping_method_id')),
+                            ])
                             : null
                         )
                         // Unit symbol — intentionally not translated.
-                        ->suffix(fn (Get $get) => static::isWeightCharge($get) ? 'kg' : null)
+                        ->suffix(fn (Get $get) => static::isWeightCharge($get)
+                            ? static::getShippingWeightUnit($get('../../shipping_method_id'))
+                            : null
+                        )
                         ->numeric()
+                        // Weight tiers are stored as raw integers in the method's
+                        // weight unit — reject decimals instead of truncating them.
+                        ->rules(fn (Get $get) => static::isWeightCharge($get) ? ['integer'] : [])
                         ->required(),
                 ])->afterStateHydrated(
                     static function (Repeater $component, ?Model $record = null): void {
@@ -226,6 +234,19 @@ class ManageShippingRates extends ManageRelatedRecords
     private static function isWeightCharge(Get $get): bool
     {
         return static::getShippingChargeBy($get('../../shipping_method_id')) === 'weight';
+    }
+
+    private static function getShippingWeightUnit(ShippingMethod|int|null $method): string
+    {
+        if (blank($method)) {
+            return 'kg';
+        }
+
+        if (! $method instanceof ShippingMethod) {
+            $method = ShippingMethod::find($method);
+        }
+
+        return $method?->weight_unit ?: 'kg';
     }
 
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void

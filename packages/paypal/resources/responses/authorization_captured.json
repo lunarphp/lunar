@@ -1,0 +1,11 @@
+{
+    "id": "3C679366HH908993F",
+    "status": "COMPLETED",
+    "amount": {
+        "currency_code": "GBP",
+        "value": "19.99"
+    },
+    "final_capture": true,
+    "create_time": "2026-08-27T10:10:00Z",
+    "update_time": "2026-08-27T10:10:00Z"
+}

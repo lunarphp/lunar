@@ -27,11 +27,11 @@ class CollectionSelect extends Select
         $this->label(__('lunar-filament::forms/selectors.collection.label'));
         $this->placeholder(__('lunar-filament::forms/selectors.collection.placeholder'));
         $this->searchable();
-        $this->modifyOptionsQueryUsing(fn ($query) => method_exists($query, 'with') ? $query->with('ancestors') : $query);
+        $this->modifyOptionsQueryUsing(fn ($query) => method_exists($query, 'with') ? $query->with(['group', 'ancestors']) : $query);
         $this->getSearchResultsUsing(fn (string $search): array => $this->searchLunarRecords($search));
         $this->getOptionLabelUsing(function ($value): ?string {
             $model = $this->lunarModel();
-            $record = $model::with('ancestors')->find($value);
+            $record = $model::with(['group', 'ancestors'])->find($value);
 
             return $record ? $this->optionLabel($record) : null;
         });
@@ -84,11 +84,20 @@ class CollectionSelect extends Select
         return $this;
     }
 
+    public function optionLabelRelations(): array
+    {
+        return ['group', 'ancestors'];
+    }
+
     public function optionLabel(Model $record): string
     {
         $breadcrumb = $record->breadcrumb ?? collect();
 
-        $trail = $breadcrumb->push($record->translate('name'))
+        // Group first: two collections can share a name and an ancestry in
+        // different groups, and the trail alone leaves them indistinguishable.
+        $trail = collect([$record->group?->name])
+            ->concat($breadcrumb)
+            ->push($record->translate('name'))
             ->filter()
             ->implode(' > ');
 

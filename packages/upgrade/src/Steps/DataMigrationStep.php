@@ -10,6 +10,24 @@ use Lunar\Upgrade\Support\StepReport;
 
 class DataMigrationStep implements UpgradeStep
 {
+    /**
+     * Changes the data migrations cannot finish on the consumer's behalf.
+     *
+     * The AmountOff split is the one breaking change in v2's discount types that
+     * gets no Rector rule: which of the two replacements a code reference means
+     * depends on the discount's runtime `data.fixed_value`, so a rename rule would
+     * be wrong about half the time. Stored rows are converted by
+     * 2026_06_01_000015; source references are the consumer's to resolve.
+     *
+     * @var array<int, string>
+     */
+    public const MANUAL_ACTIONS = [
+        'Lunar\\DiscountTypes\\AmountOff has been split into Lunar\\Core\\DiscountTypes\\PercentageOff '
+            .'and Lunar\\Core\\DiscountTypes\\FixedAmountOff. Your discount records have been converted; '
+            .'update any code that references AmountOff to whichever type it meant. Its data.fixed_values key '
+            .'is now data.amounts, and the data.fixed_value flag has been removed.',
+    ];
+
     public function __construct(protected Migrator $migrator) {}
 
     public function name(): string
@@ -52,6 +70,7 @@ class DataMigrationStep implements UpgradeStep
                 $this->name(),
                 StepReport::STATUS_DRY_RUN,
                 "Would run {$files->count()} data migration(s).",
+                self::MANUAL_ACTIONS,
             );
 
             return;
@@ -67,6 +86,7 @@ class DataMigrationStep implements UpgradeStep
             $this->name(),
             StepReport::STATUS_OK,
             "Ran {$files->count()} data migration(s).",
+            self::MANUAL_ACTIONS,
         );
     }
 }

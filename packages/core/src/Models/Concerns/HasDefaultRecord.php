@@ -22,7 +22,10 @@ trait HasDefaultRecord
     /**
      * Get the default record.
      *
-     * @return self
+     * Null when nothing is marked as default — an install that has not been
+     * seeded, or a record that was unset.
+     *
+     * @return null|self
      */
     public static function getDefault()
     {

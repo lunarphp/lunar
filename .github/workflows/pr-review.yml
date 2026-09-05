@@ -82,11 +82,20 @@ jobs:
           gh pr view "$PR_NUMBER" \
             --json number,title,body,author,baseRefName,headRefOid,isDraft,additions,deletions,changedFiles,labels \
             > pr.json
+          # Payload author_association reports org members with private
+          # membership as CONTRIBUTOR, so ask the permission API instead.
+          author=$(jq -r .author.login pr.json)
+          perm=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$author/permission" --jq .permission 2>/dev/null || echo "none")
+          case "$perm" in
+            admin|maintain|write) maintainer=true ;;
+            *) maintainer=false ;;
+          esac
           {
             echo "base=$(jq -r .baseRefName pr.json)"
             echo "draft=$(jq -r .isDraft pr.json)"
             echo "changed=$(jq -r '.additions + .deletions' pr.json)"
             echo "files=$(jq -r .changedFiles pr.json)"
+            echo "maintainer=$maintainer"
           } >> "$GITHUB_OUTPUT"
 
       - name: Decide whether to review
@@ -96,11 +105,19 @@ jobs:
           CHANGED: ${{ steps.pr.outputs.changed }}
           FILES: ${{ steps.pr.outputs.files }}
           EVENT: ${{ github.event_name }}
+          MAINTAINER: ${{ steps.pr.outputs.maintainer }}
         run: |
           # Drafts are labelled but never reviewed automatically, so parking work
           # in draft form buys a contributor nothing. A maintainer can still force
           # a review with `@claude review` or workflow_dispatch.
-          if [ "$DRAFT" = "true" ] && [ "$EVENT" = "pull_request_target" ]; then
+          #
+          # Maintainers' own PRs are also skipped on the automatic trigger: the
+          # bot reviews first so contributors fix things before a maintainer
+          # looks, and that ordering is meaningless when the author IS the
+          # maintainer. Explicit requests (@claude review, dispatch) still work.
+          if [ "$EVENT" = "pull_request_target" ] && [ "$MAINTAINER" = "true" ]; then
+            reason=maintainer
+          elif [ "$DRAFT" = "true" ] && [ "$EVENT" = "pull_request_target" ]; then
             reason=draft
           elif [ "$CHANGED" -gt "$MAX_LINES" ] || [ "$FILES" -gt "$MAX_FILES" ]; then
             reason=too_large
@@ -114,6 +131,10 @@ jobs:
       - name: Note skipped draft
         if: steps.decide.outputs.reason == 'draft'
         run: echo "PR #$PR_NUMBER is a draft. Labelled by triage, not reviewed." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Note skipped maintainer PR
+        if: steps.decide.outputs.reason == 'maintainer'
+        run: echo "PR #$PR_NUMBER is authored by a maintainer. Skipped on the automatic trigger; use @claude review or workflow_dispatch to request one." >> "$GITHUB_STEP_SUMMARY"
 
       # Oversized PRs never reach the model, so they cost nothing.
       - name: Comment on oversized PR

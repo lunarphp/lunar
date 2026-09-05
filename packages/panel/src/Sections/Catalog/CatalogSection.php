@@ -44,6 +44,15 @@ use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeIndexController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeMediaController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\Commands\CreateBrandCommand;
+use Lunar\Panel\Search\Commands\CreateCollectionCommand;
+use Lunar\Panel\Search\Commands\CreateProductCommand;
+use Lunar\Panel\Search\Commands\CreateProductTypeCommand;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
+use Lunar\Panel\Search\Sources\BrandSearchSource;
+use Lunar\Panel\Search\Sources\CollectionSearchSource;
+use Lunar\Panel\Search\Sources\ProductSearchSource;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\ProductsTableExtension;
@@ -142,6 +151,27 @@ class CatalogSection extends Section
             ProductDraftResource::class,
             ProductVariantDraftResource::class,
             ProductTypeDraftResource::class,
+        ];
+    }
+
+    /** @return array<int, class-string<SearchSource>> */
+    public function searchSources(): array
+    {
+        return [
+            ProductSearchSource::class,
+            CollectionSearchSource::class,
+            BrandSearchSource::class,
+        ];
+    }
+
+    /** @return array<int, class-string<SearchCommand>> */
+    public function searchCommands(): array
+    {
+        return [
+            CreateProductCommand::class,
+            CreateCollectionCommand::class,
+            CreateBrandCommand::class,
+            CreateProductTypeCommand::class,
         ];
     }
 

@@ -3,9 +3,12 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Slots\SlotRegistry;
 
 abstract class SectionExtension implements ProvidesNavigation
@@ -54,12 +57,44 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
+     * Return panel forms for discount types this extension contributes, keyed
+     * by the discount type class, e.g.
+     * [PercentageOff::class => PercentageOffForm::class].
+     *
+     * @return array<class-string, class-string<DiscountTypeForm>>
+     */
+    public function discountTypeForms(): array
+    {
+        return [];
+    }
+
+    /**
      * Return dashboard widget classes this extension contributes, e.g.
      * [RevenueChartWidget::class].
      *
      * @return array<int, class-string<Widget>>
      */
     public function widgets(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search sources this extension contributes.
+     *
+     * @return array<int, class-string<SearchSource>>
+     */
+    public function searchSources(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return global-search commands this extension contributes.
+     *
+     * @return array<int, class-string<SearchCommand>>
+     */
+    public function searchCommands(): array
     {
         return [];
     }

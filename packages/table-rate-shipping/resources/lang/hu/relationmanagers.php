@@ -39,7 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Min. súly',
-                        'helper_text' => 'Adja meg a súlyt kilogrammban',
+                        'helper_text' => 'Adja meg a súlyt :unit egységben',
                     ],
                     'price' => [
                         'label' => 'Ár',

@@ -115,7 +115,32 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
             }
-            const current = context.payload.pull_request.labels.map((l) => l.name)
+
+            // The model call takes a minute; a fast merge can beat it. Never
+            // decorate a PR that is no longer open.
+            const { data: livePr } = await github.rest.pulls.get({
+              owner: issue.owner,
+              repo: issue.repo,
+              pull_number: issue.issue_number,
+            })
+            if (livePr.state !== 'open') {
+              core.summary.addRaw(`PR is ${livePr.merged ? 'merged' : 'closed'} — skipping labels and comments.\n`)
+              await core.summary.write()
+              return
+            }
+            const current = livePr.labels.map((l) => l.name)
+
+            // Maintainers get the tier label (useful for scanning) but not the
+            // issue-gate nudge — the gate exists to save contributors wasted
+            // effort, and maintainers answer to no such gate. Checked via the
+            // permission API: the webhook payload's author_association reports
+            // org members with private membership as CONTRIBUTOR.
+            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: issue.owner,
+              repo: issue.repo,
+              username: livePr.user.login,
+            })
+            const isMaintainer = ['admin', 'maintain', 'write'].includes(perm.permission)
 
             core.summary.addHeading('PR triage', 3)
             core.summary.addRaw(`Proposed tier: \`${triage.tier}\` — ${triage.reason}\n\n`)
@@ -139,7 +164,7 @@ jobs:
 
             // A typo fix does not need an issue, and demanding one is how you
             // lose a first-time contributor over nothing.
-            if (!triage.references_issue && triage.tier !== 'trivial' && !current.includes('needs-issue')) {
+            if (!triage.references_issue && triage.tier !== 'trivial' && !isMaintainer && !current.includes('needs-issue')) {
               await github.rest.issues.addLabels({ ...issue, labels: ['needs-issue'] })
               await github.rest.issues.createComment({
                 ...issue,

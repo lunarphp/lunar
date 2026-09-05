@@ -23,4 +23,6 @@ return [
     'permissions.sales:manage-customers.description' => 'Personelin müşterileri yönetmesine izin verir',
     'permissions.sales:manage-discounts.label' => 'İndirim Yönetimi',
     'permissions.sales:manage-discounts.description' => 'Personelin indirimleri yönetmesine izin verir',
+    'permissions.shipping:manage.label' => 'Kargo Yönetimi',
+    'permissions.shipping:manage.description' => 'Personelin kargo işlemlerini yönetmesine izin verir',
 ];

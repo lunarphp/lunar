@@ -44,6 +44,9 @@ return [
                 'save-options' => [
                     'label' => 'Opciók mentése',
                 ],
+                'save-variants' => [
+                    'label' => 'Termékváltozatok mentése',
+                ],
                 'add-shared-option' => [
                     'label' => 'Megosztott opció hozzáadása',
                     'form' => [

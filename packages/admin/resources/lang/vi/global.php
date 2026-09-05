@@ -7,4 +7,8 @@ return [
         'reports' => 'Báo cáo',
         'settings' => 'Cài đặt',
     ],
+
+    'yes' => 'Có',
+    'no' => 'Không',
+
 ];

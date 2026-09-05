@@ -90,11 +90,9 @@ class TaxZoneForm
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Model $record): array {
-                $record->loadMissing('countries.country');
-
-                return $record->countries
-                    ->pluck('country.name', 'country.iso3')
+            })->getOptionLabelsUsing(static function (array $values): array {
+                return Country::whereIn('iso3', $values)
+                    ->pluck('name', 'iso3')
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state) {
@@ -151,11 +149,10 @@ class TaxZoneForm
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Model $record): array {
-                $record->loadMissing('states.state');
-
-                return $record->states
-                    ->pluck('state.name', 'state.code')
+            })->getOptionLabelsUsing(static function (array $values, $get): array {
+                return State::where('country_id', $get('zone_country'))
+                    ->whereIn('code', $values)
+                    ->pluck('name', 'code')
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state, $get) {

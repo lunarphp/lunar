@@ -144,7 +144,9 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'
-        )->withTimestamps();
+        )->withTimestamps()
+            ->orderBy('position')
+            ->orderByPivot('id');
     }
 
     public function getPrices(): Collection

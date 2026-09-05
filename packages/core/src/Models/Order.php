@@ -26,6 +26,7 @@ use Lunar\Core\Contracts\RoutesToOrderContact;
 use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\DataObjects\RefundRequest;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -208,7 +209,7 @@ class Order extends Base implements HasCurrency
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::class);
+        return $this->hasMany(OrderLine::class)->orderBy('id');
     }
 
     public function fulfilments(): HasMany
@@ -402,11 +403,12 @@ class Order extends Base implements HasCurrency
     }
 
     /**
-     * Refund an amount against a captured transaction.
+     * Refund lines, shipping, and/or a manual adjustment against a captured
+     * transaction. See {@see RefundRequest}.
      */
-    public function refund(int|string $transactionId, float|int|string $amount, ?string $notes = null): PaymentRefund
+    public function refund(RefundRequest $request): PaymentRefund
     {
-        return app(RefundsOrder::class)->execute($this, $transactionId, $amount, $notes);
+        return app(RefundsOrder::class)->execute($this, $request);
     }
 
     public static function getDefaultLogExcept(): array

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lunar\Upgrade\Rector;
 
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
+use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
+use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
 
 /**
  * Catalog of Rector renames contributed by v2 breaking specs.
@@ -177,7 +179,6 @@ final class LunarSetList
         'Lunar\\Database\\Seeders\\DemoSeeder' => 'Lunar\\Core\\Database\\Seeders\\DemoSeeder',
         'Lunar\\Database\\Seeders\\TestingSeeder' => 'Lunar\\Core\\Database\\Seeders\\TestingSeeder',
         'Lunar\\DiscountTypes\\AbstractDiscountType' => 'Lunar\\Core\\DiscountTypes\\AbstractDiscountType',
-        'Lunar\\DiscountTypes\\AmountOff' => 'Lunar\\Core\\DiscountTypes\\AmountOff',
         'Lunar\\DiscountTypes\\BuyXGetY' => 'Lunar\\Core\\DiscountTypes\\BuyXGetY',
         'Lunar\\Drivers\\SystemTaxDriver' => 'Lunar\\Core\\Drivers\\SystemTaxDriver',
         'Lunar\\Events\\PaymentAttemptEvent' => 'Lunar\\Core\\Events\\PaymentAttemptEvent',
@@ -346,6 +347,7 @@ final class LunarSetList
         'Lunar\\Observers\\UrlObserver' => 'Lunar\\Core\\Observers\\UrlObserver',
         'Lunar\\PaymentTypes\\AbstractPayment' => 'Lunar\\Core\\PaymentTypes\\AbstractPayment',
         'Lunar\\PaymentTypes\\OfflinePayment' => 'Lunar\\Core\\PaymentTypes\\OfflinePayment',
+        'Lunar\\Paypal\\PaypalInterface' => 'Lunar\\Paypal\\Contracts\\PaypalInterface',
         'Lunar\\Pipelines\\CartLine\\GetUnitPrice' => 'Lunar\\Core\\Pipelines\\CartLine\\GetUnitPrice',
         'Lunar\\Pipelines\\CartPrune\\PruneAfter' => 'Lunar\\Core\\Pipelines\\CartPrune\\PruneAfter',
         'Lunar\\Pipelines\\CartPrune\\WhereNotMerged' => 'Lunar\\Core\\Pipelines\\CartPrune\\WhereNotMerged',
@@ -400,7 +402,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Tables\\Actions\\Collections\\CreateChildCollection' => 'Lunar\\Filament\\Tables\\Actions\\Collections\\CreateChildCollection',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Livewire' => 'Filament\\Schemas\\Components\\Livewire',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Tags' => 'Lunar\\Filament\\Infolists\\Components\\Tags',
-        'Lunar\\Admin\\Support\\Infolists\\Components\\Timeline' => 'Lunar\\Filament\\Infolists\\Components\\Timeline',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Transaction' => 'Lunar\\Filament\\Infolists\\Components\\Transaction',
         'Lunar\\Admin\\Support\\FieldTypes\\BaseFieldType' => 'Lunar\\Filament\\FieldTypes\\BaseFieldType',
         'Lunar\\Admin\\Support\\FieldTypes\\Dropdown' => 'Lunar\\Filament\\FieldTypes\\Dropdown',
@@ -519,6 +520,9 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
         'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
 
+        // --- Spec 0075: first staff account creation moves to core ---
+        'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
+
     ];
 
     /**
@@ -528,6 +532,8 @@ final class LunarSetList
      */
     public const V1_TO_V2 = [
         RewriteModelClassCallRector::class,
+        RewriteOrderRefundCallRector::class,
+        RetypeFormatterStyleParamRector::class,
     ];
 
     /**

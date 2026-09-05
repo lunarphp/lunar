@@ -1,0 +1,22 @@
+{
+    "id": "WH-58D329510W468432D-8HN650336L201105X",
+    "event_version": "1.0",
+    "create_time": "2026-08-27T10:04:00.000Z",
+    "resource_type": "checkout-order",
+    "event_type": "CHECKOUT.ORDER.APPROVED",
+    "summary": "An order has been approved by buyer",
+    "resource": {
+        "id": "5O190127TN364715T",
+        "status": "APPROVED",
+        "intent": "CAPTURE",
+        "purchase_units": [
+            {
+                "reference_id": "default",
+                "amount": {
+                    "currency_code": "GBP",
+                    "value": "19.99"
+                }
+            }
+        ]
+    }
+}

@@ -10,8 +10,11 @@ return [
         'buy_x_get_y' => [
             'heading' => 'Купи X Вземи Y',
         ],
-        'amount_off' => [
-            'heading' => 'Отстъпка от сума',
+        'percentage_off' => [
+            'heading' => 'Процентна отстъпка',
+        ],
+        'fixed_amount_off' => [
+            'heading' => 'Отстъпка с фиксирана сума',
         ],
         'name' => [
             'label' => 'Име',
@@ -63,9 +66,6 @@ return [
         'automatic_rewards' => [
             'label' => 'Автоматично добавяне на награди',
             'helper_text' => 'Включете, за да се добавят автоматично наградни продукти, ако липсват в количката.',
-        ],
-        'fixed_value' => [
-            'label' => 'Фиксирана стойност',
         ],
         'percentage' => [
             'label' => 'Процент',

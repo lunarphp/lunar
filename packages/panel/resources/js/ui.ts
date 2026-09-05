@@ -62,6 +62,14 @@ export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/
 export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
 export type { DraftConflict } from './lib/http';
 
+// Discounts — exported so a third-party discount type's form can reuse the
+// same targeting and usage widgets the first-party forms use.
+export { default as TargetChipList } from './components/TargetChipList.vue';
+export type { TargetChip } from './components/TargetChipList.vue';
+export { default as TargetPickerDialog } from './components/TargetPickerDialog.vue';
+export type { TargetOption } from './components/TargetPickerDialog.vue';
+export { default as UsageMeter } from './components/UsageMeter.vue';
+
 // Primitives
 export { default as Button } from './components/Button.vue';
 export { default as Icon } from './components/Icon.vue';

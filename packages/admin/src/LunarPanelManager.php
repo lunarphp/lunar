@@ -5,6 +5,9 @@ namespace Lunar\Admin;
 use Closure;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -201,6 +204,11 @@ class LunarPanelManager
         Grid::configureUsing(fn (Grid $grid) => $grid->columnSpanFull());
         Fieldset::configureUsing(fn (Fieldset $fieldset) => $fieldset->columnSpanFull());
 
+        // Livewire skips the TrimStrings middleware, so trim at the form layer instead.
+        TextInput::configureUsing(fn (TextInput $input) => $input->trim());
+        Textarea::configureUsing(fn (Textarea $textarea) => $textarea->trim());
+        TagsInput::configureUsing(fn (TagsInput $tagsInput) => $tagsInput->trim());
+
         return $this;
     }
 
@@ -277,7 +285,7 @@ class LunarPanelManager
             ->brandLogoHeight('2rem')
             ->topbar(false)
             ->path('admin')
-            ->authGuard('staff')
+            ->authGuard(config('lunar.staff.guard', 'staff'))
             ->defaultAvatarProvider(GravatarProvider::class)
             ->login()
             ->colors([
@@ -287,7 +295,7 @@ class LunarPanelManager
             ->middleware($panelMiddleware)
             ->assets([
                 Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-            ], 'lunarphp/panel')
+            ], 'lunarphp/admin')
             ->pages(
                 static::getPages()
             )
@@ -306,11 +314,16 @@ class LunarPanelManager
             ->livewireComponents([
                 OrderItemsTable::class,
             ])
+            // Group labels must match the translated names the resources
+            // return from getNavigationGroup(), so both sides read the same
+            // lang keys — literals only coincide in English.
             ->navigationGroups([
-                'Catalog',
-                'Sales',
                 NavigationGroup::make()
-                    ->label('Settings')
+                    ->label(fn (): string => __('lunarpanel::global.sections.catalog')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('lunarpanel::global.sections.sales')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('lunarpanel::global.sections.settings'))
                     ->collapsed(),
             ])->sidebarCollapsibleOnDesktop()
             ->profile();

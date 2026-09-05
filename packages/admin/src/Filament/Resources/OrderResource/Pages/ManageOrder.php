@@ -30,6 +30,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderTotals;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysShippingInfo;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysTransactions;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
+use Lunar\Admin\Support\Actions\Orders\DownloadOrderPdfAction;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Core\Models\Order;
@@ -37,7 +38,6 @@ use Lunar\Core\Models\Tag;
 use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
 use Lunar\Filament\Actions\Orders\CloseOrderAction;
-use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
 use Lunar\Filament\Actions\Orders\NotifyCustomerAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
 use Lunar\Filament\Actions\Orders\ReopenOrderAction;
@@ -201,7 +201,9 @@ class ManageOrder extends BaseViewRecord
                         }
 
                         return TextEntry::make('meta_'.$key)
-                            ->getStateUsing(fn () => $value)
+                            ->getStateUsing(fn () => is_bool($value)
+                                ? __($value ? 'lunarpanel::global.yes' : 'lunarpanel::global.no')
+                                : $value)
                             ->label($key)
                             ->copyable()
                             ->limit(50)->tooltip(function (TextEntry $component): ?string {
