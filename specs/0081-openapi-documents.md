@@ -155,7 +155,7 @@ Tags are emitted at document root in registration order, built-ins first, each w
 
 ## Open questions
 
-- **Filter parameter shape for clients.** `deepObject` gives Orval a typed filter object but some generators flatten `filter[price][gte]` badly. If that bites, an alternative is one flat parameter per filter and operator, at the cost of very long parameter lists. Decide after generating against Orval in slice 4.
+- **Filter parameter shape for clients.** Resolved for `deepObject`, with a caveat. Orval 8 types the filter as an object with one property per filter (`filter?: { price?: number | { gte?: number, ... } }`), which is the typed client the spec wanted. Its built-in `fetch` URL builder serialises `deepObject` one level deep, so `filter[price]=1000` works while the operator form needs a nested serialiser: the `axios` client with a `qs`-based `paramsSerializer`, or a custom mutator. Flat per-operator parameters would sidestep that at the cost of a parameter per filter and operator on every list endpoint, and would lose the object type; not worth it. Documented in the storefront guide when it lands.
 - **Storefront customer security scheme.** The customer guard is host-configured, so the document can only assume bearer. If a host uses a cookie session guard the scheme is wrong. A `lunar.api.storefront.security` config entry (`bearer`, `cookie`, `none`) is the likely answer; decide in [[0078-storefront-api]] when the customer area lands.
 
 ## References
