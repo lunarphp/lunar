@@ -16,7 +16,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
-- API platform — `lunarphp/api` with storefront and admin surfaces, extension registry, and outbound webhooks (spec 0077; kernel, admin auth and a proving slice of each surface are in; child specs 0078 storefront, 0079 admin, 0080 webhooks carry the rest)
+- API platform — `lunarphp/api` with storefront and admin surfaces, extension registry, and outbound webhooks (spec 0077; kernel, admin auth and a proving slice of each surface are in; child specs 0078 storefront, 0079 admin, 0080 webhooks carry the rest; 0081 generates OpenAPI documents from the registry)
 
 ## Ideas
 

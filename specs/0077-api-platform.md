@@ -269,7 +269,7 @@ Deltas the child spec must absorb from the draft: `id` is `public_id`; one packa
 - **Admin write validation.** The panel's form requests are Inertia-shaped and cannot be reused as-is. Whether rule sets move into core `Validation/` so both admin UIs and the API share them is a candidate refactor for [[0079-admin-api]], not a blocker.
 - **Rate limiting defaults.** `throttle:api` on both surfaces to start; separate read/write budgets when there is a complaint.
 - **Cursor pagination on the storefront by default.** Page-based is the draft's default; cursor is cheaper for large catalogues. Decide per resource in [[0078-storefront-api]].
-- **OpenAPI and a TypeScript client generated from `_schema`.** Worth doing; separate small spec once the registry is stable.
+- **OpenAPI documents.** [[0081-openapi-documents]] generates them from the registry and replaces `_schema`; TypeScript clients come from Orval or similar against those documents.
 
 ## References
 
@@ -297,3 +297,4 @@ Slices owned by this spec; the child specs carry their own.
 - [ ] Slice 6 — Admin surface (per 0079): catalogue, then sales, inventory, settings; idempotency keys. *Products read-only shipped as the proving resource.*
 - [ ] Slice 7 — Webhooks (per 0080): topics, endpoints, deliveries, signing, retry, management endpoints and command.
 - [ ] Slice 8 — Search filter extension in `lunarphp/search`; Stripe storefront intent route in `lunarphp/stripe`; docs and upgrade notes.
+- [ ] Slice 9 — OpenAPI documents (per [[0081-openapi-documents]]): typed fields and filters, descriptions, `openapi.json` and `lunar:api:openapi` replacing `_schema`, CI generation and lint.
