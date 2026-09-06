@@ -18,17 +18,22 @@ class CustomerResource extends Resource
         return Customer::class;
     }
 
+    public static function description(): string
+    {
+        return 'The customer record behind an authenticated storefront user.';
+    }
+
     public function fields(): array
     {
         return [
-            Field::make('title'),
-            Field::make('first_name'),
-            Field::make('last_name'),
-            Field::make('company_name'),
-            Field::make('tax_identifier'),
-            Field::make('account_ref'),
-            Field::make('created_at'),
-            Field::make('updated_at'),
+            Field::make('title')->nullable()->describe('Honorific, such as Mr or Dr.'),
+            Field::make('first_name')->describe('Given name.'),
+            Field::make('last_name')->describe('Family name.'),
+            Field::make('company_name')->nullable()->describe('Company the customer buys on behalf of.'),
+            Field::make('tax_identifier')->nullable()->describe('VAT or tax registration number.'),
+            Field::make('account_ref')->nullable()->describe('The account reference in an external system.'),
+            Field::make('created_at')->describe('When the customer record was created.'),
+            Field::make('updated_at')->describe('When the customer record was last updated.'),
         ];
     }
 }

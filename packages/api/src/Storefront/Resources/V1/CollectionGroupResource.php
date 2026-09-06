@@ -22,36 +22,42 @@ class CollectionGroupResource extends Resource
         return CollectionGroup::class;
     }
 
+    public static function description(): string
+    {
+        return 'Named sets of collections, such as a main menu or a seasonal campaign.';
+    }
+
     public function fields(): array
     {
         return [
-            Field::make('name'),
-            Field::make('handle'),
-            Field::make('created_at'),
-            Field::make('updated_at'),
+            Field::make('name')->describe('The group name.'),
+            Field::make('handle')->describe('The unique handle, used by the handle filter.'),
+            Field::make('created_at')->describe('When the group was created.'),
+            Field::make('updated_at')->describe('When the group was last updated.'),
         ];
     }
 
     public function includes(): array
     {
         return [
-            Embed::relation('collections', CollectionResource::class, constrain: fn ($query, SerializationContext $context) => CollectionResource::visible($query, $context)),
+            Embed::relation('collections', CollectionResource::class, constrain: fn ($query, SerializationContext $context) => CollectionResource::visible($query, $context))
+                ->describe('Collections in the group visible to the request.'),
         ];
     }
 
     public function filters(): array
     {
         return [
-            Filter::exact('id', 'public_id'),
-            Filter::exact('handle'),
+            Filter::exact('id', 'public_id')->describe('Match by public id.'),
+            Filter::exact('handle')->describe('Match by handle.'),
         ];
     }
 
     public function sorts(): array
     {
         return [
-            Sort::column('name'),
-            Sort::column('created_at'),
+            Sort::column('name')->describe('Alphabetical by name.'),
+            Sort::column('created_at')->describe('By creation time.'),
         ];
     }
 }

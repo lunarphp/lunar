@@ -58,7 +58,8 @@ packages/api/
     │   └── Auth/                     ApiKeyGuard, ApiKeyUserProvider, Abilities
     ├── Models/                       ApiKey, WebhookEndpoint, WebhookDelivery
     ├── Webhooks/                     Topic, TopicRegistry, Dispatcher, Jobs/DeliverWebhook, Signer
-    └── Console/                      lunar:api:key, lunar:api:webhook, lunar:api:schema
+    ├── OpenApi/                      Schema, Generator, Document, attributes (spec 0081)
+    └── Console/                      lunar:api:key, lunar:api:webhook, lunar:api:openapi
 ```
 
 The surfaces share the kernel but never import from each other. If admin later needs to become its own Composer package, the split runs along the `Storefront/` / `Admin/` / `Webhooks/` namespace lines with the kernel staying in `lunarphp/api`; nothing in this design blocks that, and nothing forces it before the registry has been exercised by real add-ons.
@@ -158,7 +159,7 @@ abstract class ResourceExtension
 
 Extensions compose: many add-ons can extend one resource, and later registrations cannot remove earlier fields (a field named twice is a boot-time exception). A host that needs to change a built-in resource's own fields replaces it: `Api::storefront('v1')->replace(ProductResource::class, MyProductResource::class)` where the replacement extends the built-in. Extensions are keyed by the built-in class, so they keep applying to the replacement. This closes the draft's open question H.5.
 
-The registry is introspectable. `GET /{surface}/v1/_schema` returns every registered resource with its fields, includes, filters (and operators), sorts and routes, honouring the caller's abilities. `lunar:api:schema` prints the same. An OpenAPI document and a TypeScript client are generated from this later (follow-on, not in scope).
+The registry is introspectable through the OpenAPI 3.1 document each surface serves at `GET /{surface}/v1/openapi.json` and `lunar:api:openapi` prints ([[0081-openapi-documents]]): every registered resource with typed fields, includes, filters (and operators), sorts, routes and request bodies. The document describes the whole surface; ability-gated members carry `x-lunar-requires`. TypeScript clients are generated from it with Orval or similar.
 
 #### Query grammar
 
@@ -226,11 +227,11 @@ Each surface's controllers are thin: parse the grammar, resolve the resource, ca
 
 **Storefront v1** ([[0078-storefront-api]]): the draft's catalogue reads (products, collections, collection groups, brands, URL resolve), cart (lines, coupons, addresses, shipping options), checkout (order creation via `Cart::createOrder()`; payment through `PaymentType::authorize()` with driver data in the body), and the customer area (`/me`, addresses, orders). Payment-intent creation is driver-specific, so a driver registers its own storefront routes through `ResourceExtension::routes()`: the Stripe package adds `POST /checkout/stripe/intent` calling `StripeManager::createIntent()`. The API package knows no driver by name.
 
-Deltas the child spec must absorb from the draft: `id` is `public_id`; one package with surface namespaces rather than `lunar/api` alone; the class-based `Resource` / `ResourceExtension` model from section C in place of the closure-only facade builder; cart token and H.5 resolved as above; search is a filter the search package registers (below); a `_schema` endpoint exists.
+Deltas the child spec must absorb from the draft: `id` is `public_id`; one package with surface namespaces rather than `lunar/api` alone; the class-based `Resource` / `ResourceExtension` model from section C in place of the closure-only facade builder; cart token and H.5 resolved as above; search is a filter the search package registers (below); the OpenAPI document replaces the draft's `_schema` idea.
 
 **Admin v1** ([[0079-admin-api]]): reads and writes for catalogue (products, variants, prices, options and values, collections and groups, brands, product types, attributes and groups, tags, URLs, media), sales (orders with verb endpoints `cancel`, `capture`, `refund`, `notify`, `close`, `reopen`; fulfilments with `ship`, `fulfil`, `hold`, `release`, `split`, `merge`, tracking; customers and addresses; discounts), inventory (locations, stock levels via `AdjustsStock`, movements read-only), and settings (channels, currencies, languages, regions, countries read-only, tax classes and zones, customer groups). Every write calls the matching `Contracts\Actions\*` binding. Verbs are `POST /{resource}/{id}/{verb}` sub-resources, not status patches, so the state machines stay the only path. Admin writes accept an `Idempotency-Key` header, honoured for 24 hours.
 
-**Search.** `lunarphp/search`, when installed, registers a `ResourceExtension` on the storefront products resource adding `Filter::make('search', ...)` that routes through the bound engine and returns hits in engine order (with `Sort::make('relevance')`). Without the search package the filter is absent and `_schema` says so.
+**Search.** `lunarphp/search`, when installed, registers a `ResourceExtension` on the storefront products resource adding `Filter::make('search', ...)` that routes through the bound engine and returns hits in engine order (with `Sort::make('relevance')`). Without the search package the filter is absent from the OpenAPI document.
 
 ### G. Package plumbing
 
@@ -246,7 +247,7 @@ Deltas the child spec must absorb from the draft: `id` is `public_id`; one packa
 - **Ship the API inside core.** Every consumer would carry routes, middleware and guards they may not want. Rejected, as in the draft.
 - **Sanctum personal access tokens on `Staff` for admin.** Adds a Sanctum dependency to core, gives integrations no actor of their own, and needs an abilities scheme regardless. Rejected in favour of a Lunar-owned `ApiKey`; Sanctum remains the documented default for storefront customers because Lunar does not own customer accounts.
 - **Laravel `JsonResource` as the resource base.** Bound to the request; unusable for webhook payloads and console output without shims. A thin own abstraction with the same feel is cheaper than fighting it.
-- **`spatie/laravel-query-builder` for the grammar.** A good library, but it has no per-surface registry, no introspection for `_schema`, and no extension keyed by resource class; we would wrap it and own the wrapper. Rejected to avoid a dependency that adds little once the registry exists.
+- **`spatie/laravel-query-builder` for the grammar.** A good library, but it has no per-surface registry, no introspection for the OpenAPI document, and no extension keyed by resource class; we would wrap it and own the wrapper. Rejected to avoid a dependency that adds little once the registry exists.
 - **GraphQL.** Strongest fit for embedded relationships and free introspection, but a heavy runtime dependency and a harder add-on story (schema fragments plus resolvers). Rejected for v1; a `lunarphp/graphql` add-on could read the same registry later.
 - **Strict JSON:API.** Grammar kept, `included` stitching dropped, for the reasons in the draft.
 - **Header versioning.** Path versioning is visible in logs, CDNs and browser tabs and costs nothing. Rejected.
@@ -290,11 +291,11 @@ Slices owned by this spec; the child specs carry their own.
 
 - [ ] Slice 0 — Write and land [[0078-storefront-api]], [[0079-admin-api]], [[0080-webhooks]] against this spec; retire `specs/draft-storefront-api.md` into 0078.
 - [x] Slice 1 — Package skeleton: `packages/api`, service provider, config, middleware groups, root `composer.json` autoload, `api` testsuite in `phpunit.xml` and CI, 16-locale `resources/lang` scaffold.
-- [x] Slice 2 — Kernel: `Resource`, `Field`, `Embed`, `Filter`, `Sort`, `SerializationContext`, `QueryParser` and appliers, envelope and error handler, `public_id` route binding, `ApiManager` with `resource()` / `extend()` / `replace()`, `_schema` endpoint and `lunar:api:schema`. Unit-tested against a fixture resource; strict lazy loading on.
+- [x] Slice 2 — Kernel: `Resource`, `Field`, `Embed`, `Filter`, `Sort`, `SerializationContext`, `QueryParser` and appliers, envelope and error handler, `public_id` route binding, `ApiManager` with `resource()` / `extend()` / `replace()`. Unit-tested against a fixture resource; strict lazy loading on.
 - [x] Slice 3 — Core prerequisites: `cacheKey()` on `public_id`; `settings:manage-api-keys` and read abilities in `Auth\Manifest`.
 - [ ] Slice 4 — Storefront surface (per 0078): context and cart-token middleware, customer resolver, then catalogue, cart, checkout, customer area. *Shipped ahead of 0078 to prove the kernel end to end: context headers, cart token, customer resolver, catalogue reads (products, brands, collections, collection groups), `GET /cart`, `POST /cart/lines`, `GET /me`. Remaining cart writes, checkout and the customer area's addresses and orders follow 0078.*
 - [x] Slice 5 — Admin auth: `ApiKey` model and migration, guard driver, abilities gate, activity-log attribution, `lunar:api:key`, `/admin/v1/api-keys`.
 - [ ] Slice 6 — Admin surface (per 0079): catalogue, then sales, inventory, settings; idempotency keys. *Products read-only shipped as the proving resource.*
 - [ ] Slice 7 — Webhooks (per 0080): topics, endpoints, deliveries, signing, retry, management endpoints and command.
 - [ ] Slice 8 — Search filter extension in `lunarphp/search`; Stripe storefront intent route in `lunarphp/stripe`; docs and upgrade notes.
-- [ ] Slice 9 — OpenAPI documents (per [[0081-openapi-documents]]): typed fields and filters, descriptions, `openapi.json` and `lunar:api:openapi` replacing `_schema`, CI generation and lint.
+- [x] Slice 9 — OpenAPI documents (per [[0081-openapi-documents]]): typed fields and filters, descriptions, `openapi.json` and `lunar:api:openapi` replacing `_schema`, CI generation and lint.

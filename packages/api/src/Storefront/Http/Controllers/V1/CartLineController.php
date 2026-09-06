@@ -5,6 +5,8 @@ namespace Lunar\Api\Storefront\Http\Controllers\V1;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Lunar\Api\Http\Responses\Envelope;
+use Lunar\Api\OpenApi\Attributes\Operation;
+use Lunar\Api\OpenApi\Attributes\Responds;
 use Lunar\Api\Storefront\Http\Requests\V1\StoreCartLineRequest;
 use Lunar\Api\Storefront\Resources\V1\CartResource;
 use Lunar\Api\Storefront\Resources\V1\ProductResource;
@@ -20,6 +22,8 @@ class CartLineController extends Controller
      * Add a purchasable to the cart, creating the cart when the request
      * carries none. The new cart's token comes back on `X-Lunar-Cart`.
      */
+    #[Operation(summary: 'Add a line to the cart', description: 'Adds a variant to the cart, creating the cart when the request carries no X-Lunar-Cart token. Adding a variant already in the cart increments its line. The response carries the cart token on X-Lunar-Cart; send it on every later cart request.')]
+    #[Responds(CartResource::class, status: 201, description: 'The cart after the line was added.')]
     public function store(StoreCartLineRequest $request): JsonResponse
     {
         $context = $this->context($request);

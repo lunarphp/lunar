@@ -20,4 +20,14 @@ class StoreCartLineRequest extends FormRequest
             'meta' => ['sometimes', 'nullable', 'array'],
         ];
     }
+
+    /** @return array<string, string> */
+    public function descriptions(): array
+    {
+        return [
+            'purchasable_id' => 'Public id of the variant to add. It must be enabled and its product visible to the request.',
+            'quantity' => 'Units to add; defaults to 1.',
+            'meta' => 'Arbitrary metadata stored on the line.',
+        ];
+    }
 }

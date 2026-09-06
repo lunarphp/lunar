@@ -5,6 +5,7 @@ namespace Lunar\Api\Registry;
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Lunar\Api\Exceptions\ResourceDefinitionException;
+use Lunar\Api\OpenApi\Document;
 use Lunar\Api\Resources\Resource;
 use Lunar\Api\Resources\ResourceExtension;
 
@@ -27,6 +28,12 @@ final class SurfaceRegistry
 
     /** @var array<int, Closure> */
     private array $routeRegistrars = [];
+
+    /** @var array<int, Closure(Document): void> */
+    private array $documentTaps = [];
+
+    /** Bumped by every registration so a memoised OpenAPI document knows it is stale. */
+    private int $revision = 0;
 
     public function __construct(
         public readonly string $surface,
@@ -54,6 +61,7 @@ final class SurfaceRegistry
         }
 
         $this->definitions = [];
+        $this->revision++;
 
         return $this;
     }
@@ -73,6 +81,7 @@ final class SurfaceRegistry
         }
 
         $this->definitions = [];
+        $this->revision++;
 
         return $this;
     }
@@ -96,6 +105,7 @@ final class SurfaceRegistry
 
         $this->resources[$resource] = $replacement;
         $this->definitions = [];
+        $this->revision++;
 
         return $this;
     }
@@ -112,6 +122,32 @@ final class SurfaceRegistry
     public function routeRegistrars(): array
     {
         return $this->routeRegistrars;
+    }
+
+    /**
+     * Adjust the generated OpenAPI document before it is served: extra
+     * servers, `x-mint` content, callbacks, anything the declarative model
+     * does not cover.
+     *
+     * @param  Closure(Document): void  $tap
+     */
+    public function tapDocument(Closure $tap): static
+    {
+        $this->documentTaps[] = $tap;
+        $this->revision++;
+
+        return $this;
+    }
+
+    /** @return array<int, Closure(Document): void> */
+    public function documentTaps(): array
+    {
+        return $this->documentTaps;
+    }
+
+    public function revision(): int
+    {
+        return $this->revision;
     }
 
     public function has(string $classOrType): bool

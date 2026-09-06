@@ -18,14 +18,15 @@ use Lunar\Api\Admin\Auth\ApiKeyGuard;
 use Lunar\Api\Admin\Http\Middleware\AuthenticateApiKey;
 use Lunar\Api\Admin\Resources\V1 as AdminV1;
 use Lunar\Api\Console\ApiKeyCommand;
-use Lunar\Api\Console\SchemaCommand;
+use Lunar\Api\Console\OpenApiCommand;
 use Lunar\Api\Contracts\ApiManager as ApiManagerContract;
 use Lunar\Api\Contracts\CartTokenCodec;
 use Lunar\Api\Contracts\CustomerResolver;
-use Lunar\Api\Http\Controllers\SchemaController;
+use Lunar\Api\Http\Controllers\OpenApiController;
 use Lunar\Api\Http\Exceptions\ErrorRenderer;
 use Lunar\Api\Http\Middleware\EnforceJson;
 use Lunar\Api\Models\ApiKey;
+use Lunar\Api\OpenApi\Generator;
 use Lunar\Api\Query\QueryParser;
 use Lunar\Api\Registry\SurfaceRegistry;
 use Lunar\Api\Storefront\Http\Middleware\ResolveCart;
@@ -59,6 +60,8 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->singleton(ErrorRenderer::class, fn ($app): ErrorRenderer => new ErrorRenderer(
             (bool) $app['config']->get('app.debug', false),
         ));
+
+        $this->app->singleton(Generator::class, fn ($app): Generator => new Generator($app['router'], $app, $app['config']));
     }
 
     public function boot(): void
@@ -76,7 +79,7 @@ class ApiServiceProvider extends ServiceProvider
 
             $this->commands([
                 ApiKeyCommand::class,
-                SchemaCommand::class,
+                OpenApiCommand::class,
             ]);
         }
 
@@ -261,8 +264,8 @@ class ApiServiceProvider extends ServiceProvider
             ->prefix($prefix)
             ->name("lunar.api.{$surface}.{$version}.")
             ->group(function () use ($registry, $surface, $version): void {
-                Route::get('_schema', SchemaController::class)
-                    ->name('schema')
+                Route::get('openapi.json', OpenApiController::class)
+                    ->name('openapi')
                     ->defaults('surface', $surface)
                     ->defaults('version', $version);
 

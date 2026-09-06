@@ -40,11 +40,17 @@ test('an extension adds fields, filters, sorts and routes to a built-in resource
         ->assertOk()
         ->assertJsonPath('data.product', $featured->public_id);
 
-    $schema = collect($this->getJson('/api/storefront/v1/_schema')->json('data.resources'))->firstWhere('type', 'products');
+    $document = $this->getJson('/api/storefront/v1/openapi.json')->assertOk()->json();
 
-    expect(collect($schema['fields'])->pluck('name'))->toContain('average_rating');
-    expect(collect($schema['filters'])->pluck('name'))->toContain('featured');
-    expect(collect($schema['routes'])->pluck('name'))->toContain('lunar.api.storefront.v1.products.reviews');
+    expect($document['components']['schemas']['Product']['properties'])->toHaveKeys(['average_rating', 'review_count', 'cost_price']);
+    expect($document['components']['schemas']['Product']['properties']['cost_price']['x-lunar-requires'])->toBe(['catalog:manage-products']);
+    expect($document['components']['schemas']['Product']['properties']['average_rating'])->toHaveKey('x-lunar-untyped');
+
+    $filter = collect($document['paths']['/products']['get']['parameters'])->firstWhere('name', 'filter');
+    expect($filter['schema']['properties'])->toHaveKey('featured');
+    expect(collect($document['paths']['/products']['get']['parameters'])->firstWhere('name', 'sort')['x-lunar-sorts'])->toContain('rating');
+
+    expect($document['paths']['/products/{id}/reviews']['get'])->toMatchArray(['operationId' => 'productsReviews', 'tags' => ['products']]);
 });
 
 test('a replacement resource keeps the extensions registered against the built-in', function (): void {

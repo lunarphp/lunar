@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Lunar\Api\OpenApi\Schema;
 
 /**
  * One attribute of a serialised resource. Built with `make()` and a closure
@@ -40,6 +41,12 @@ final class Field
     private bool $translatable = false;
 
     private ?string $attribute = null;
+
+    private ?Schema $type = null;
+
+    private bool $nullable = false;
+
+    private ?string $description = null;
 
     private function __construct(public readonly string $name) {}
 
@@ -103,6 +110,59 @@ final class Field
         $this->abilities = array_merge($this->abilities, $abilities);
 
         return $this;
+    }
+
+    /**
+     * The wire type for the OpenAPI document. Fields without a closure infer
+     * it from the model's casts; closure fields must declare it or emit an
+     * untyped schema.
+     */
+    public function type(Schema $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /** Mark the declared or inferred type as accepting null. */
+    public function nullable(bool $nullable = true): self
+    {
+        $this->nullable = $nullable;
+
+        return $this;
+    }
+
+    /** The property description in the OpenAPI document. */
+    public function describe(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function declaredType(): ?Schema
+    {
+        return $this->type;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    /** The model attribute the field reads when it has no closure, or null for closure fields. */
+    public function attribute(): ?string
+    {
+        if ($this->translatable) {
+            return $this->attribute;
+        }
+
+        return $this->resolver === null ? $this->name : null;
     }
 
     /** @return array<int, string> */
@@ -174,15 +234,5 @@ final class Field
         foreach ($this->withMax as $relation => $column) {
             $query->withMax($relation, $column);
         }
-    }
-
-    /** @return array{name: string, translatable: bool, requires: array<int, string>} */
-    public function toSchema(): array
-    {
-        return [
-            'name' => $this->name,
-            'translatable' => $this->translatable,
-            'requires' => $this->abilities,
-        ];
     }
 }

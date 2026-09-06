@@ -250,37 +250,4 @@ final class ResourceDefinition
 
         return $out;
     }
-
-    /**
-     * The introspection shape served by `_schema`, honouring the caller's abilities.
-     *
-     * @return array<string, mixed>
-     */
-    public function schema(SerializationContext $context): array
-    {
-        return [
-            'type' => $this->type(),
-            'fields' => array_values(array_map(
-                fn (Field $field) => $field->toSchema(),
-                array_filter($this->fields, fn (Field $field) => $field->visibleTo($context)),
-            )),
-            'includes' => array_values(array_map(
-                fn (Embed $include) => $include->toSchema(),
-                array_filter($this->includes, fn (Embed $include) => $include->visibleTo($context)),
-            )),
-            'filters' => array_values(array_map(
-                fn (Filter $filter) => $filter->toSchema(),
-                array_filter($this->filters, fn (Filter $filter) => $filter->visibleTo($context)),
-            )),
-            'sorts' => array_values(array_map(
-                fn (Sort $sort) => $sort->toSchema(),
-                array_filter($this->sorts, fn (Sort $sort) => $sort->visibleTo($context)),
-            )),
-            'pagination' => [
-                'default_size' => $this->resource->defaultPageSize(),
-                'max_size' => $this->resource->maxPageSize(),
-                'cursor' => $this->resource->supportsCursorPagination(),
-            ],
-        ];
-    }
 }

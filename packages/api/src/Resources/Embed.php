@@ -22,6 +22,10 @@ final class Embed
     /** @var array<int, string> */
     private array $with = [];
 
+    private ?bool $many = null;
+
+    private ?string $description = null;
+
     /**
      * @param  class-string<resource>  $resource
      */
@@ -75,6 +79,49 @@ final class Embed
         return $this;
     }
 
+    /**
+     * Declare that the include resolves to a list. Relation includes read
+     * this from the relation type; `make()` includes default to a single
+     * resource unless they say otherwise.
+     */
+    public function many(bool $many = true): self
+    {
+        $this->many = $many;
+
+        return $this;
+    }
+
+    /** The include description in the OpenAPI document. */
+    public function describe(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /** Explicit cardinality, or null to infer it from the relation. */
+    public function declaredMany(): ?bool
+    {
+        return $this->many;
+    }
+
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    /** @return array<int, string> */
+    public function abilities(): array
+    {
+        return $this->abilities;
+    }
+
+    /** The Eloquent relation a relation include reads, or null for `make()` includes. */
+    public function eloquentRelation(): ?string
+    {
+        return $this->relation;
+    }
+
     public function visibleTo(SerializationContext $context): bool
     {
         foreach ($this->abilities as $ability) {
@@ -121,15 +168,5 @@ final class Embed
         }
 
         return $model->getRelationValue($this->relation);
-    }
-
-    /** @return array{name: string, type: string, requires: array<int, string>} */
-    public function toSchema(): array
-    {
-        return [
-            'name' => $this->name,
-            'type' => $this->resource::type(),
-            'requires' => $this->abilities,
-        ];
     }
 }

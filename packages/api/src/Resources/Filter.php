@@ -5,6 +5,7 @@ namespace Lunar\Api\Resources;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Api\OpenApi\Schema;
 
 /**
  * A registered `?filter[name]` (optionally `?filter[name][operator]`). Only
@@ -20,6 +21,15 @@ final class Filter
 
     /** @var array<int, string> */
     private array $abilities = [];
+
+    private ?Schema $type = null;
+
+    private ?string $description = null;
+
+    /** The column a `column()` / `exact()` filter compares, for type inference. */
+    private ?string $column = null;
+
+    private bool $scope = false;
 
     private function __construct(public readonly string $name, private readonly Closure $apply) {}
 
@@ -39,6 +49,7 @@ final class Filter
         $filter = new self($name, function (Builder $query, mixed $value, string $operator) use ($column): void {
             self::applyToColumn($query, $query->qualifyColumn($column), $value, $operator);
         });
+        $filter->column = $column;
 
         return $filter->operators(self::OPERATORS);
     }
@@ -60,7 +71,7 @@ final class Filter
     {
         $scope ??= $name;
 
-        return new self($name, function (Builder $query, mixed $value) use ($scope): void {
+        $filter = new self($name, function (Builder $query, mixed $value) use ($scope): void {
             if (in_array($value, [false, 'false', '0', 0], true)) {
                 return;
             }
@@ -73,6 +84,9 @@ final class Filter
 
             $query->{$scope}($value);
         });
+        $filter->scope = true;
+
+        return $filter;
     }
 
     /** @param  array<int, string>  $operators */
@@ -88,6 +102,53 @@ final class Filter
         $this->abilities = array_merge($this->abilities, $abilities);
 
         return $this;
+    }
+
+    /**
+     * The type of the filter value for the OpenAPI document. Column filters
+     * infer it from the model's casts and scope filters default to boolean;
+     * `make()` filters must declare it.
+     */
+    public function type(Schema $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /** The parameter description in the OpenAPI document. */
+    public function describe(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function declaredType(): ?Schema
+    {
+        return $this->type;
+    }
+
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    /** The column a `column()` or `exact()` filter compares, or null for scope and `make()` filters. */
+    public function comparedColumn(): ?string
+    {
+        return $this->column;
+    }
+
+    public function isScope(): bool
+    {
+        return $this->scope;
+    }
+
+    /** @return array<int, string> */
+    public function abilities(): array
+    {
+        return $this->abilities;
     }
 
     /** @return array<int, string> */
@@ -150,15 +211,5 @@ final class Filter
             'not_in' => $query->whereNotIn($column, self::listValue($value)),
             'like' => $query->where($column, 'like', '%'.$value.'%'),
         };
-    }
-
-    /** @return array{name: string, operators: array<int, string>, requires: array<int, string>} */
-    public function toSchema(): array
-    {
-        return [
-            'name' => $this->name,
-            'operators' => $this->operators,
-            'requires' => $this->abilities,
-        ];
     }
 }

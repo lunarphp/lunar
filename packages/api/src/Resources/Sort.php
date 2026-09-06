@@ -14,6 +14,8 @@ final class Sort
     /** @var array<int, string> */
     private array $abilities = [];
 
+    private ?string $description = null;
+
     private function __construct(public readonly string $name, private readonly Closure $apply) {}
 
     public static function column(string $name, ?string $column = null): self
@@ -40,6 +42,25 @@ final class Sort
         return $this;
     }
 
+    /** How the sort is described in the OpenAPI document. */
+    public function describe(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    /** @return array<int, string> */
+    public function abilities(): array
+    {
+        return $this->abilities;
+    }
+
     public function visibleTo(SerializationContext $context): bool
     {
         foreach ($this->abilities as $ability) {
@@ -57,14 +78,5 @@ final class Sort
     public function apply(Builder $query, string $direction, SerializationContext $context): void
     {
         ($this->apply)($query, $direction, $context);
-    }
-
-    /** @return array{name: string, requires: array<int, string>} */
-    public function toSchema(): array
-    {
-        return [
-            'name' => $this->name,
-            'requires' => $this->abilities,
-        ];
     }
 }

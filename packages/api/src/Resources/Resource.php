@@ -4,6 +4,7 @@ namespace Lunar\Api\Resources;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * The unit of the API. Not Laravel's JsonResource: that class is bound to the
@@ -17,6 +18,22 @@ abstract class Resource
 
     /** @return class-string<Model> */
     abstract public static function model(): string;
+
+    /**
+     * The human name of the type, plural: the OpenAPI tag's display name and,
+     * with spaces removed, its component schema name. Defaults to the
+     * headline form of `type()` (`collection-groups` becomes "Collection groups").
+     */
+    public static function label(): string
+    {
+        return Str::ucfirst(str_replace('-', ' ', static::type()));
+    }
+
+    /** What the resource represents, for the OpenAPI tag and schema description. */
+    public static function description(): string
+    {
+        return '';
+    }
 
     /** @return array<int, Field> */
     public function fields(): array

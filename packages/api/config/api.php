@@ -10,6 +10,8 @@ return [
     | Guests and customers. `guard` names the host auth guard that protects
     | the customer area (`/me`); null leaves those endpoints unregistered.
     | Set `register_routes` to false to require the route files yourself.
+    | `servers` lists the base URLs the OpenAPI document advertises, each
+    | `['url' => ..., 'description' => ...]`; empty derives one from app.url.
     |
     */
     'storefront' => [
@@ -20,6 +22,7 @@ return [
         'middleware' => ['lunar.api.storefront'],
         'throttle' => 60,
         'cart_token_ttl_days' => 30,
+        'servers' => [],
     ],
 
     /*
@@ -40,6 +43,7 @@ return [
         'register_routes' => true,
         'middleware' => ['lunar.api.admin'],
         'throttle' => 120,
+        'servers' => [],
     ],
 
     /*

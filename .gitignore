@@ -13,3 +13,4 @@ phpstan.neon
 .phpunit.cache
 Thumbs.db
 yarn.lock
+/build

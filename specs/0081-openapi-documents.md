@@ -1,6 +1,6 @@
 # 0081 — OpenAPI documents generated from the API registry
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-09-06
 - TODO item: API platform — OpenAPI documents for the storefront and admin surfaces (follow-on to spec 0077)
@@ -33,8 +33,10 @@ Schema::map(Schema $values)                          // additionalProperties
 Schema::money()                                      // component $ref: Money
 Schema::translations()                               // component $ref: TranslationMap
 Schema::ref(BrandResource::class)                    // component $ref to a resource schema
-->nullable()  ->describe(string)  ->example(mixed)  ->format(string)
+->nullable()  ->describe(string)  ->example(mixed)  ->format(string)  ->constrain([...])
 ```
+
+`Field::nullable()` marks a field's declared or inferred type as accepting null, so `Field::make('gtin')->nullable()` keeps cast inference and `Field::translatable('description')->nullable()` stays a string or `TranslationMap` per surface. A field is `required` in its resource schema unless its type is nullable.
 
 Declaring types:
 
@@ -101,16 +103,16 @@ The generator walks the router for routes whose name starts with `lunar.api.{sur
   - `page[number]`, `page[size]` (integer, maximum from the resource) and, when `supportsCursorPagination()`, `page[cursor]`.
   - Show routes get `include` and `fields` only.
 - **Headers** are component parameters referenced per surface. Storefront: `X-Lunar-Channel`, `X-Lunar-Currency`, `X-Lunar-Cart`, `Accept-Language`, all optional, described from the middleware behaviour; the response headers `X-Lunar-Cart`, `Content-Language` and the echoed context headers are declared on responses. Admin: none beyond authorization.
-- **Security**: admin declares an `http` bearer scheme named `apiKey` applied to every operation. Storefront operations are unauthenticated except those behind `ResolveCustomer`, which reference a `customer` bearer scheme; the scheme is emitted only when `lunar.api.storefront.guard` is set.
+- **Security**: admin declares an `http` bearer scheme named `apiKey` applied to every operation. Storefront operations are unauthenticated, stated with an empty root `security` list so linters know it is deliberate, except those behind `ResolveCustomer`, which reference a `customer` bearer scheme; the scheme is emitted only when `lunar.api.storefront.guard` is set.
 - **Responses**: the declared success response; 401 on authenticated routes; 403 when the route requires an ability; 404 on routes with `{id}`; 422 when the route has a request body or accepts query parameters; 429 on every route. All errors reference the shared `ErrorResponse` component.
 
 Tags are emitted at document root in registration order, built-ins first, each with `name` (the type), `x-group` (the label, which Mintlify renders as the group name while keeping the type as the URL) and `description`.
 
 ### E. Components
 
-- One schema per registered resource, named by `label()` with spaces removed (`Product`, `CollectionGroup`), with every field and embed as a property. Fields are `required` unless nullable. Embeds are optional and described as "present when included". A `replace()`d resource contributes its own schema under the same name.
+- One schema per registered resource, named by the singular studly form of `type()` (`products` is `Product`, `collection-groups` is `CollectionGroup`, `api-keys` is `ApiKey`), with every field and embed as a property. The label stays a display name for tags and summaries. Fields are `required` unless nullable. Embeds are optional and described as "present when included". A `replace()`d resource contributes its own schema under the same name.
 - `Money` (`amount` integer, `currency` string, `decimal_places` integer, `formatted` string), `TranslationMap` (map of string), `ErrorResponse` (`errors` array of `Error`: `status`, `code`, `title`, optional `detail`, optional `source` with `parameter`, `pointer` or `header`), `PaginationMeta` (page and cursor variants), `Links`.
-- Item and collection envelopes are inlined per response as `{ data: $ref, meta?, links? }` rather than one component per resource per shape, which keeps `components.schemas` to the data models Mintlify turns into pages.
+- Item and collection envelopes are inlined per response as `{ data: $ref, meta?, links? }` rather than one component per resource per shape, which keeps `components.schemas` to the data models Mintlify turns into pages. Shared schemas and error responses nothing references are pruned (the storefront never emits `TranslationMap`); resource schemas always stay.
 
 ### F. Output
 
@@ -123,7 +125,7 @@ Tags are emitted at document root in registration order, built-ins first, each w
 ### G. Extension points
 
 - Add-on `ResourceExtension` fields, filters, embeds, sorts and routes appear in the document with no extra step. Their obligations are `->type()` on closure fields and filters, `->describe()` where the name is not self-explanatory, and `Operation`/`Responds` attributes on their controller methods. Missing types degrade to `x-lunar-untyped`; missing attributes fall back to the method-and-path title Mintlify generates.
-- `SurfaceRegistry::tapDocument(Closure $tap)` registers a closure receiving the finished `Lunar\Api\OpenApi\Document` before serialisation. This is the escape hatch for anything the declarative model does not cover: a host adding a second `servers` entry, an add-on attaching a `callbacks` block, a store adding `x-mint` content. The `Document` exposes `paths()`, `components()`, `tags()` and `set(string $path, mixed $value)` over the array.
+- `SurfaceRegistry::tapDocument(Closure $tap)` registers a closure receiving the finished `Lunar\Api\OpenApi\Document` before serialisation. This is the escape hatch for anything the declarative model does not cover: a host adding a second `servers` entry, an add-on attaching a `callbacks` block, a store adding `x-mint` content. The `Document` exposes `paths()`, `components()`, `tags()`, `get()`, `set()` and `forget()` over the array; paths are dotted strings, or arrays of segments when a key contains a dot (`['paths', '/products/{id}', 'get']`).
 - `x-lunar-*` is the reserved extension namespace. Other vendors' extensions (`x-mint`, `x-group`, `x-hidden`) are emitted only where this spec says.
 
 ### H. Consumption
@@ -132,7 +134,7 @@ Tags are emitted at document root in registration order, built-ins first, each w
 
 **Mintlify.** The Lunar docs repo lists both documents in `docs.json` under two tabs, "Storefront API" and "Admin API". Auto-generated pages group by tag and take their title from `summary`. `components.schemas` back the data model pages through `openapi-schema` frontmatter. Prose beyond the in-code descriptions goes in the docs repo through overlays or MDX pages with `openapi:` frontmatter, so a wording change does not need a package release.
 
-**Publishing.** The `api` CI job runs `lunar:api:openapi` for both surfaces from the test application, lints each document with `npx @redocly/cli lint` (a CI-only tool, not a Composer or workspace dependency), and uploads the two documents as build artefacts; a release workflow step pushes them to the docs repo. A store running add-ons generates its own documents from its own install, which is where the derived tags and descriptions earn their place.
+**Publishing.** An `openapi` CI job boots the packages through `testbench.yaml` (no host app, no database), runs `lunar:api:openapi` for both surfaces, lints each document with `npx @redocly/cli lint` (a CI-only tool, not a Composer or workspace dependency), and uploads the two documents as build artefacts; a release workflow step pushes them to the docs repo. A store running add-ons generates its own documents from its own install, which is where the derived tags and descriptions earn their place.
 
 ## Alternatives considered
 
@@ -166,7 +168,7 @@ Tags are emitted at document root in registration order, built-ins first, each w
 
 ## Implementation plan
 
-- [ ] Slice 1 — `Schema` value class; `type()` on `Field` and `Filter`; `many()` on `Embed`; cast inference; relation cardinality; `x-lunar-untyped` fallback; every built-in field and filter typed; `OpenApiCoverageTest`.
-- [ ] Slice 2 — `label()` and `description()` on `Resource`; `describe()` on `Field`, `Filter`, `Embed`, `Sort`; `Operation` and `Responds` attributes; `DescribesSchema`; `descriptions()` on form requests; `ResourceController` conventions; every built-in endpoint, field and filter described.
-- [ ] Slice 3 — `RulesToSchema`; the generator (paths, parameters, headers, security, responses, components, tags, servers, info); `Document` and `tapDocument()`; `openapi.json` route and `lunar:api:openapi`; remove `_schema`, `SchemaController`, `SchemaCommand` and `ResourceDefinition::schema()`; update `README.md` and the 0077 spec; feature tests for both surfaces and for an extension's fields and routes appearing in the document.
-- [ ] Slice 4 — CI: generate both documents in the `api` job, lint them with `@redocly/cli`, upload as artefacts; structural tests in the `api` suite (every operation has a summary, every `$ref` resolves); Orval smoke run against the storefront document recorded in the PR; docs repo wiring (`docs.json` tabs, overlays) tracked in the docs repo.
+- [x] Slice 1 — `Schema` value class; `type()` on `Field` and `Filter`; `many()` on `Embed`; cast inference; relation cardinality; `x-lunar-untyped` fallback; every built-in field and filter typed; `OpenApiCoverageTest`.
+- [x] Slice 2 — `label()` and `description()` on `Resource`; `describe()` on `Field`, `Filter`, `Embed`, `Sort`; `Operation` and `Responds` attributes; `DescribesSchema`; `descriptions()` on form requests; `ResourceController` conventions; every built-in endpoint, field and filter described.
+- [x] Slice 3 — `RulesToSchema`; the generator (paths, parameters, headers, security, responses, components, tags, servers, info); `Document` and `tapDocument()`; `openapi.json` route and `lunar:api:openapi`; remove `_schema`, `SchemaController`, `SchemaCommand` and `ResourceDefinition::schema()`; update `README.md` and the 0077 spec; feature tests for both surfaces and for an extension's fields and routes appearing in the document.
+- [x] Slice 4 — CI: generate both documents in the `api` job, lint them with `@redocly/cli`, upload as artefacts; structural tests in the `api` suite (every operation has a summary, every `$ref` resolves); Orval smoke run against the storefront document recorded in the PR; docs repo wiring (`docs.json` tabs, overlays) tracked in the docs repo.
