@@ -101,6 +101,21 @@ interface CheckoutDriver
 
     public function setShippingOption(CheckoutSession $session, string $identifier): CartSnapshot;
 
+    /**
+     * Record the customer's fulfilment mode (spec 0013 §B). `collect` stores
+     * the cart's collect option as soon as a shipping address row exists and
+     * auto-selects a single offered point; `delivery` forgets the point and
+     * hands the option to the first courier.
+     *
+     * @param  'delivery'|'collect'  $mode
+     */
+    public function setFulfilment(CheckoutSession $session, string $mode): CartSnapshot;
+
+    /**
+     * Choose one of the host's offered collection points by handle.
+     */
+    public function setCollectionPoint(CheckoutSession $session, string $handle): CartSnapshot;
+
     public function applyCoupon(CheckoutSession $session, string $code): CartSnapshot;
 
     public function removeCoupon(CheckoutSession $session): CartSnapshot;
@@ -123,6 +138,14 @@ interface CheckoutDriver
     public function getShippingOptions(CheckoutSession $session): array;
 
     public function getSelectedShippingOption(CheckoutSession $session): ?string;
+
+    /** @return 'delivery'|'collect' */
+    public function getFulfilment(CheckoutSession $session): string;
+
+    /** @return list<array{id: string, name: string, lines: list<string>}> */
+    public function getCollectionPoints(CheckoutSession $session): array;
+
+    public function getSelectedCollectionPoint(CheckoutSession $session): ?string;
 
     /**
      * @return list<array<string, mixed>>

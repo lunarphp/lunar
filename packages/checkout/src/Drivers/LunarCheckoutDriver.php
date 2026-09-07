@@ -7,16 +7,20 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Validation\ValidationException;
 use Lunar\Checkout\Contracts\Actions\CreatesCheckoutSession;
 use Lunar\Checkout\Contracts\Actions\InvalidatesCheckoutSession;
+use Lunar\Checkout\Contracts\Actions\SetsFulfilment;
 use Lunar\Checkout\Contracts\Actions\SyncsCheckoutSession;
 use Lunar\Checkout\DataObjects\CartSnapshot;
 use Lunar\Checkout\DataObjects\CheckoutAddress;
+use Lunar\Checkout\DataTypes\CollectionPoint;
 use Lunar\Checkout\Events\BillingAddressStored;
 use Lunar\Checkout\Events\CheckoutCompletionFailed;
 use Lunar\Checkout\Events\CheckoutPaymentConfirmationFailed;
 use Lunar\Checkout\Events\CheckoutSessionCompleted;
+use Lunar\Checkout\Events\CollectionPointSet;
 use Lunar\Checkout\Events\CouponApplied;
 use Lunar\Checkout\Events\CouponRemoved;
 use Lunar\Checkout\Events\CustomerAssociated;
+use Lunar\Checkout\Events\FulfilmentSet;
 use Lunar\Checkout\Events\OrderPlacing;
 use Lunar\Checkout\Events\ShippingAddressStored;
 use Lunar\Checkout\Events\ShippingOptionSet;
@@ -51,6 +55,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         private ShippingManifest $shippingManifest,
         private ConnectionInterface $db,
         private Dispatcher $events,
+        private SetsFulfilment $setFulfilment,
     ) {}
 
     public function createSession(mixed $source, array $attributes = []): CheckoutSession
@@ -319,6 +324,12 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             }
         }
 
+        // A cart that chose collect before it had an address (spec 0013 §B)
+        // gets its collect option stored now that the row exists.
+        if (CollectionPoints::fulfilment($cart) === CollectionPoints::COLLECT && ! CollectionPoints::storedOptionCollects($cart)) {
+            $cart = $this->setFulfilment->execute($cart->refresh(), CollectionPoints::COLLECT);
+        }
+
         $snapshot = $this->resync($session, $cart);
 
         $this->events->dispatch(new ShippingAddressStored($session));
@@ -353,9 +364,44 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
         $cart->setShippingOption($option);
 
+        // Mode and option never disagree (spec 0013 §B): a courier chosen
+        // while collecting drops the point; the collect option chosen while
+        // delivering records collect and applies a single offered point.
+        $mode = $option->collect ? CollectionPoints::COLLECT : CollectionPoints::DELIVERY;
+
+        if (CollectionPoints::fulfilment($cart) !== $mode || $option->collect) {
+            $cart = $this->setFulfilment->execute($cart->refresh(), $mode);
+        }
+
         $snapshot = $this->resync($session, $cart);
 
         $this->events->dispatch(new ShippingOptionSet($session, $identifier));
+
+        return $snapshot;
+    }
+
+    public function setFulfilment(CheckoutSession $session, string $mode): CartSnapshot
+    {
+        $cart = $this->operableCart($session);
+
+        $cart = $this->setFulfilment->execute($cart, $mode);
+
+        $snapshot = $this->resync($session, $cart);
+
+        $this->events->dispatch(new FulfilmentSet($session, $mode));
+
+        return $snapshot;
+    }
+
+    public function setCollectionPoint(CheckoutSession $session, string $handle): CartSnapshot
+    {
+        $cart = $this->operableCart($session);
+
+        $cart = $this->setFulfilment->execute($cart, CollectionPoints::COLLECT, $handle);
+
+        $snapshot = $this->resync($session, $cart);
+
+        $this->events->dispatch(new CollectionPointSet($session, $handle));
 
         return $snapshot;
     }
@@ -450,6 +496,28 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     public function getSelectedShippingOption(CheckoutSession $session): ?string
     {
         return $this->resolveCart($session)->shippingAddress?->shipping_option;
+    }
+
+    public function getFulfilment(CheckoutSession $session): string
+    {
+        return CollectionPoints::fulfilment($this->resolveCart($session));
+    }
+
+    public function getCollectionPoints(CheckoutSession $session): array
+    {
+        return CollectionPoints::offered($this->resolveCart($session))
+            ->map(fn (CollectionPoint $point): array => [
+                'id' => $point->handle,
+                'name' => $point->name,
+                'lines' => $point->lines,
+            ])
+            ->values()
+            ->all();
+    }
+
+    public function getSelectedCollectionPoint(CheckoutSession $session): ?string
+    {
+        return CollectionPoints::chosenHandle($this->resolveCart($session));
     }
 
     public function getLines(CheckoutSession $session): array
