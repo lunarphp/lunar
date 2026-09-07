@@ -12,6 +12,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
+- Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec 0077)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
