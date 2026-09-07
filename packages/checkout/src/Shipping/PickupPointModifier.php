@@ -10,7 +10,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Modifiers\ShippingModifier;
 
 /**
- * Copies the cart's chosen collection point onto every collect option's meta
+ * Copies the cart's chosen pickup point onto every collect option's meta
  * (spec 0013 §C), so core's CreateShippingLine stamps it onto the shipping
  * order line with no order write of our own. Acts after the rest of the
  * pipeline has pushed its options, so provider boot order does not matter.

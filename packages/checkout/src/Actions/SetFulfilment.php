@@ -47,7 +47,7 @@ class SetFulfilment implements SetsFulfilment
             if ($point === null) {
                 if ($pickupPoint !== null) {
                     throw ValidationException::withMessages([
-                        'pickup_point' => 'The selected collection point is not available.',
+                        'pickup_point' => 'The selected pickup point is not available.',
                     ]);
                 }
 

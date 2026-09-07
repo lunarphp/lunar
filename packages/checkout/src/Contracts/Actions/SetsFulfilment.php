@@ -6,7 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Lunar\Core\Models\Cart;
 
 /**
- * The only writer of a cart's fulfilment mode and collection point
+ * The only writer of a cart's fulfilment mode and pickup point
  * (spec 0013 §B). Takes a cart, not a session, so a host's basket page can
  * call it before any checkout session exists (§G).
  */

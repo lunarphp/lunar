@@ -763,7 +763,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Record which collection point the customer picked, spec 0013 §E. The
+     * Record which pickup point the customer picked, spec 0013 §E. The
      * driver validates the handle against the host's offered points before
      * writing it to the cart.
      */

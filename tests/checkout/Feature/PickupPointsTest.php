@@ -11,7 +11,7 @@ uses(TestCase::class, RefreshDatabase::class);
 
 afterEach(fn () => PickupPointsStub::unbind());
 
-it('round-trips a collection point through an array', function () {
+it('round-trips a pickup point through an array', function () {
     $point = new PickupPoint('dartford', 'Dartford', ['Unit 4', 'DA2 6EP'], ['phone' => '01322 000000']);
 
     expect($point->toArray())->toBe([

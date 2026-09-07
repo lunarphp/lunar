@@ -128,7 +128,7 @@ class CheckoutServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
-        // Spec 0013 §C: the chosen collection point rides on the collect
+        // Spec 0013 §C: the chosen pickup point rides on the collect
         // option's meta so core stamps it onto the shipping order line.
         $this->app->make(ShippingModifiers::class)->add(PickupPointModifier::class);
 

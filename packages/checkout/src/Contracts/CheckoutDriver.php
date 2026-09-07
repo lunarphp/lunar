@@ -112,7 +112,7 @@ interface CheckoutDriver
     public function setFulfilment(CheckoutSession $session, string $mode): CartSnapshot;
 
     /**
-     * Choose one of the host's offered collection points by handle.
+     * Choose one of the host's offered pickup points by handle.
      */
     public function setPickupPoint(CheckoutSession $session, string $handle): CartSnapshot;
 
