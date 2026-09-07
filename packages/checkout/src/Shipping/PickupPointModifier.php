@@ -3,7 +3,7 @@
 namespace Lunar\Checkout\Shipping;
 
 use Closure;
-use Lunar\Checkout\Support\CollectionPoints;
+use Lunar\Checkout\Support\PickupPoints;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Cart;
@@ -15,13 +15,13 @@ use Lunar\Core\Modifiers\ShippingModifier;
  * order line with no order write of our own. Acts after the rest of the
  * pipeline has pushed its options, so provider boot order does not matter.
  */
-class CollectionPointModifier extends ShippingModifier
+class PickupPointModifier extends ShippingModifier
 {
     public function handle(Cart $cart, Closure $next): mixed
     {
         $result = $next($cart);
 
-        $point = $cart->meta[CollectionPoints::POINT_KEY] ?? null;
+        $point = $cart->meta[PickupPoints::POINT_KEY] ?? null;
 
         if (! is_array($point) || ! isset($point['handle'])) {
             return $result;
@@ -29,7 +29,7 @@ class CollectionPointModifier extends ShippingModifier
 
         foreach (app(ShippingManifest::class)->options as $option) {
             if ($option instanceof ShippingOption && $option->collect) {
-                $option->meta = array_merge($option->meta ?? [], [CollectionPoints::POINT_KEY => $point]);
+                $option->meta = array_merge($option->meta ?? [], [PickupPoints::POINT_KEY => $point]);
             }
         }
 

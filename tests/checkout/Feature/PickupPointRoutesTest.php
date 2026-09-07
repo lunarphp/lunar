@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
@@ -10,11 +10,11 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Checkout\TestCase;
 use Lunar\Tests\Checkout\Utils\CheckoutCart;
-use Lunar\Tests\Checkout\Utils\CollectionPointsStub;
+use Lunar\Tests\Checkout\Utils\PickupPointsStub;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-afterEach(fn () => CollectionPointsStub::unbind());
+afterEach(fn () => PickupPointsStub::unbind());
 
 function routesCart(): Cart
 {
@@ -33,7 +33,7 @@ function routesCart(): Cart
 }
 
 it('projects delivery mode with the offered points and no selection by default', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London', ['SE20 8RA'])]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London', ['SE20 8RA'])]);
     $session = CheckoutCart::session(routesCart());
 
     // X-Inertia makes show() return the prop payload as JSON, so the
@@ -45,20 +45,20 @@ it('projects delivery mode with the offered points and no selection by default',
         ->assertOk();
 
     expect($response->json('props.checkout.fulfilment'))->toBe('delivery');
-    expect($response->json('props.checkout.collectionPoints.0.id'))->toBe('london');
-    expect($response->json('props.checkout.collectionPoints.0.lines.0'))->toBe('SE20 8RA');
-    expect($response->json('props.checkout.collectionPointId'))->toBeNull();
+    expect($response->json('props.checkout.pickupPoints.0.id'))->toBe('london');
+    expect($response->json('props.checkout.pickupPoints.0.lines.0'))->toBe('SE20 8RA');
+    expect($response->json('props.checkout.pickupPointId'))->toBeNull();
     expect($response->json('props.checkout.urls.fulfilment'))->not->toBeNull();
-    expect($response->json('props.checkout.urls.collectionPoint'))->not->toBeNull();
+    expect($response->json('props.checkout.urls.pickupPoint'))->not->toBeNull();
 });
 
 it('stores the mode and the point through their routes and re-projects them', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London'), new CollectionPoint('dartford', 'Dartford')]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London'), new PickupPoint('dartford', 'Dartford')]);
     $session = CheckoutCart::session(routesCart());
 
     $this->post(route('lunar.checkout.fulfilment.store', $session->uuid), ['fulfilment' => 'collect'])
         ->assertRedirect();
-    $this->post(route('lunar.checkout.collection-point.store', $session->uuid), ['collection_point' => 'dartford'])
+    $this->post(route('lunar.checkout.pickup-point.store', $session->uuid), ['pickup_point' => 'dartford'])
         ->assertRedirect();
 
     $response = $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
@@ -66,15 +66,15 @@ it('stores the mode and the point through their routes and re-projects them', fu
 
     expect($response->json('props.checkout.fulfilment'))->toBe('collect');
     expect($response->json('props.checkout.shippingId'))->toBe('collection');
-    expect($response->json('props.checkout.collectionPointId'))->toBe('dartford');
+    expect($response->json('props.checkout.pickupPointId'))->toBe('dartford');
 });
 
 it('rejects an unknown point and an unknown mode', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London')]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London')]);
     $session = CheckoutCart::session(routesCart());
 
-    $this->postJson(route('lunar.checkout.collection-point.store', $session->uuid), ['collection_point' => 'mars'])
-        ->assertStatus(422)->assertJsonValidationErrors('collection_point');
+    $this->postJson(route('lunar.checkout.pickup-point.store', $session->uuid), ['pickup_point' => 'mars'])
+        ->assertStatus(422)->assertJsonValidationErrors('pickup_point');
     $this->postJson(route('lunar.checkout.fulfilment.store', $session->uuid), ['fulfilment' => 'teleport'])
         ->assertStatus(422)->assertJsonValidationErrors('fulfilment');
 });
@@ -89,10 +89,10 @@ it('hydrates collect mode on reload from the stored option alone', function () {
 });
 
 it('returns the collect keys from the JSON start response', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London')]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London')]);
     routesCart();
 
     $this->postJson(route('lunar.checkout.start'))
         ->assertOk()
-        ->assertJsonStructure(['uuid', 'fulfilment', 'collectionPoints', 'collectionPointId', 'urls' => ['fulfilment', 'collectionPoint']]);
+        ->assertJsonStructure(['uuid', 'fulfilment', 'pickupPoints', 'pickupPointId', 'urls' => ['fulfilment', 'pickupPoint']]);
 });

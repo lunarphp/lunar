@@ -4,7 +4,7 @@ namespace Lunar\Checkout\Events;
 
 use Lunar\Checkout\Models\CheckoutSession;
 
-class CollectionPointSet extends CheckoutSessionEvent
+class PickupPointSet extends CheckoutSessionEvent
 {
     public function __construct(
         CheckoutSession $session,

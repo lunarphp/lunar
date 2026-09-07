@@ -3,7 +3,7 @@
 namespace Lunar\Checkout\Contracts;
 
 use Illuminate\Support\Collection;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\Models\Cart;
 
 /**
@@ -11,10 +11,10 @@ use Lunar\Core\Models\Cart;
  * binds this in its own provider; the package never binds a default. Unbound
  * or empty means "no pickup points": the order simply collects.
  */
-interface CollectionPointProvider
+interface PickupPointProvider
 {
     /**
-     * @return Collection<int, CollectionPoint>
+     * @return Collection<int, PickupPoint>
      */
     public function pointsFor(Cart $cart): Collection;
 }

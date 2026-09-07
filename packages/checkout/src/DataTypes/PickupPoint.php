@@ -7,7 +7,7 @@ namespace Lunar\Checkout\DataTypes;
  * (spec 0013 §A). `lines` are display lines, not a structured address: the
  * package renders them and never interprets them.
  */
-final readonly class CollectionPoint
+final readonly class PickupPoint
 {
     /**
      * @param  list<string>  $lines

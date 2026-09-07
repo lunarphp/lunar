@@ -3,16 +3,16 @@
 namespace Lunar\Tests\Checkout\Utils;
 
 use Illuminate\Support\Collection;
-use Lunar\Checkout\Contracts\CollectionPointProvider;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\Contracts\PickupPointProvider;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\Models\Cart;
 
-class CollectionPointsStub
+class PickupPointsStub
 {
-    /** @param  list<CollectionPoint>  $points */
+    /** @param  list<PickupPoint>  $points */
     public static function bind(array $points): void
     {
-        app()->instance(CollectionPointProvider::class, new class($points) implements CollectionPointProvider
+        app()->instance(PickupPointProvider::class, new class($points) implements PickupPointProvider
         {
             public function __construct(private array $points) {}
 
@@ -25,7 +25,7 @@ class CollectionPointsStub
 
     public static function unbind(): void
     {
-        app()->forgetInstance(CollectionPointProvider::class);
-        app()->offsetUnset(CollectionPointProvider::class);
+        app()->forgetInstance(PickupPointProvider::class);
+        app()->offsetUnset(PickupPointProvider::class);
     }
 }

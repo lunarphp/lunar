@@ -3,9 +3,9 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Lunar\Checkout\Contracts\CheckoutDriver;
-use Lunar\Checkout\DataTypes\CollectionPoint;
-use Lunar\Checkout\Events\CollectionPointSet;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Checkout\Events\FulfilmentSet;
+use Lunar\Checkout\Events\PickupPointSet;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\CartSession;
@@ -15,11 +15,11 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Checkout\TestCase;
 use Lunar\Tests\Checkout\Utils\CheckoutCart;
-use Lunar\Tests\Checkout\Utils\CollectionPointsStub;
+use Lunar\Tests\Checkout\Utils\PickupPointsStub;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-afterEach(fn () => CollectionPointsStub::unbind());
+afterEach(fn () => PickupPointsStub::unbind());
 
 function driverCart(): Cart
 {
@@ -40,8 +40,8 @@ function driverCart(): Cart
 }
 
 it('sets the mode and the point through the driver and fires events', function () {
-    Event::fake([FulfilmentSet::class, CollectionPointSet::class]);
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London', ['SE20 8RA']), new CollectionPoint('dartford', 'Dartford')]);
+    Event::fake([FulfilmentSet::class, PickupPointSet::class]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London', ['SE20 8RA']), new PickupPoint('dartford', 'Dartford')]);
 
     $cart = driverCart();
     $driver = app(CheckoutDriver::class);
@@ -50,32 +50,32 @@ it('sets the mode and the point through the driver and fires events', function (
     $driver->setFulfilment($session, 'collect');
     expect($driver->getFulfilment($session))->toBe('collect')
         ->and($driver->getSelectedShippingOption($session))->toBe('collection')
-        ->and($driver->getSelectedCollectionPoint($session))->toBeNull()
-        ->and($driver->getCollectionPoints($session))->toBe([
+        ->and($driver->getSelectedPickupPoint($session))->toBeNull()
+        ->and($driver->getPickupPoints($session))->toBe([
             ['id' => 'london', 'name' => 'London', 'lines' => ['SE20 8RA']],
             ['id' => 'dartford', 'name' => 'Dartford', 'lines' => []],
         ]);
 
-    $driver->setCollectionPoint($session, 'dartford');
-    expect($driver->getSelectedCollectionPoint($session))->toBe('dartford');
+    $driver->setPickupPoint($session, 'dartford');
+    expect($driver->getSelectedPickupPoint($session))->toBe('dartford');
 
     Event::assertDispatched(FulfilmentSet::class, fn (FulfilmentSet $e): bool => $e->mode === 'collect');
-    Event::assertDispatched(CollectionPointSet::class, fn (CollectionPointSet $e): bool => $e->handle === 'dartford');
+    Event::assertDispatched(PickupPointSet::class, fn (PickupPointSet $e): bool => $e->handle === 'dartford');
 });
 
 it('flips the mode when a courier option is stored directly while collecting', function () {
-    CollectionPointsStub::bind([new CollectionPoint('dartford', 'Dartford')]);
+    PickupPointsStub::bind([new PickupPoint('dartford', 'Dartford')]);
     $cart = driverCart();
     $driver = app(CheckoutDriver::class);
     $session = $driver->resolveOrCreateSession($cart);
 
     $driver->setFulfilment($session, 'collect');
-    expect($driver->getSelectedCollectionPoint($session))->toBe('dartford');
+    expect($driver->getSelectedPickupPoint($session))->toBe('dartford');
 
     $driver->setShippingOption($session, 'standard');
 
     expect($driver->getFulfilment($session))->toBe('delivery')
-        ->and($driver->getSelectedCollectionPoint($session))->toBeNull();
+        ->and($driver->getSelectedPickupPoint($session))->toBeNull();
 });
 
 it('flips the mode to collect when the collect option is stored directly', function () {

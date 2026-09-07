@@ -17,7 +17,7 @@ interface SetsFulfilment
      *
      * @throws ValidationException on an unknown mode
      *                             (`fulfilment`) or a point the provider does not offer
-     *                             (`collection_point`)
+     *                             (`pickup_point`)
      */
-    public function execute(Cart $cart, string $mode, ?string $collectionPoint = null): Cart;
+    public function execute(Cart $cart, string $mode, ?string $pickupPoint = null): Cart;
 }

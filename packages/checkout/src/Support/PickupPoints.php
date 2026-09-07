@@ -3,8 +3,8 @@
 namespace Lunar\Checkout\Support;
 
 use Illuminate\Support\Collection;
-use Lunar\Checkout\Contracts\CollectionPointProvider;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\Contracts\PickupPointProvider;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 
@@ -12,31 +12,31 @@ use Lunar\Core\Models\Cart;
  * Reads the collect state a cart carries (spec 0013 §B). The only place the
  * two `cart.meta` keys are spelled; `Actions\SetFulfilment` is the only writer.
  */
-final class CollectionPoints
+final class PickupPoints
 {
     public const MODE_KEY = 'fulfilment';
 
-    public const POINT_KEY = 'collection_point';
+    public const POINT_KEY = 'pickup_point';
 
     public const DELIVERY = 'delivery';
 
     public const COLLECT = 'collect';
 
     /**
-     * @return Collection<int, CollectionPoint>
+     * @return Collection<int, PickupPoint>
      */
     public static function offered(Cart $cart): Collection
     {
-        if (! app()->bound(CollectionPointProvider::class)) {
+        if (! app()->bound(PickupPointProvider::class)) {
             return collect();
         }
 
-        return app(CollectionPointProvider::class)->pointsFor($cart)->values();
+        return app(PickupPointProvider::class)->pointsFor($cart)->values();
     }
 
-    public static function find(Cart $cart, string $handle): ?CollectionPoint
+    public static function find(Cart $cart, string $handle): ?PickupPoint
     {
-        return self::offered($cart)->first(fn (CollectionPoint $point): bool => $point->handle === $handle);
+        return self::offered($cart)->first(fn (PickupPoint $point): bool => $point->handle === $handle);
     }
 
     /**
@@ -59,7 +59,7 @@ final class CollectionPoints
             return null;
         }
 
-        return CollectionPoint::fromArray($stored)->toArray();
+        return PickupPoint::fromArray($stored)->toArray();
     }
 
     public static function chosenHandle(Cart $cart): ?string

@@ -114,7 +114,7 @@ interface CheckoutDriver
     /**
      * Choose one of the host's offered collection points by handle.
      */
-    public function setCollectionPoint(CheckoutSession $session, string $handle): CartSnapshot;
+    public function setPickupPoint(CheckoutSession $session, string $handle): CartSnapshot;
 
     public function applyCoupon(CheckoutSession $session, string $code): CartSnapshot;
 
@@ -143,9 +143,9 @@ interface CheckoutDriver
     public function getFulfilment(CheckoutSession $session): string;
 
     /** @return list<array{id: string, name: string, lines: list<string>}> */
-    public function getCollectionPoints(CheckoutSession $session): array;
+    public function getPickupPoints(CheckoutSession $session): array;
 
-    public function getSelectedCollectionPoint(CheckoutSession $session): ?string;
+    public function getSelectedPickupPoint(CheckoutSession $session): ?string;
 
     /**
      * @return list<array<string, mixed>>

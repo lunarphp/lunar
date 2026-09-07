@@ -98,13 +98,13 @@ class CheckoutController extends Controller
             return response()->json([
                 'uuid' => $session->uuid,
                 'fulfilment' => $checkoutDriver->getFulfilment($session),
-                'collectionPoints' => $checkoutDriver->getCollectionPoints($session),
-                'collectionPointId' => $checkoutDriver->getSelectedCollectionPoint($session),
+                'pickupPoints' => $checkoutDriver->getPickupPoints($session),
+                'pickupPointId' => $checkoutDriver->getSelectedPickupPoint($session),
                 'urls' => Arr::only(
                     array_merge($this->sessionUrls($session), [
                         'contact' => route('lunar.checkout.contact.store', $session->uuid),
                     ]),
-                    ['quote', 'paymentIntent', 'shippingAddress', 'billingAddress', 'shippingOption', 'fulfilment', 'collectionPoint', 'confirm', 'contact'],
+                    ['quote', 'paymentIntent', 'shippingAddress', 'billingAddress', 'shippingOption', 'fulfilment', 'pickupPoint', 'confirm', 'contact'],
                 ),
             ]);
         }
@@ -395,8 +395,8 @@ class CheckoutController extends Controller
             // back to delivery while the cart holds the collect option); the
             // points are the host's; the selection is the cart's.
             'fulfilment' => $driver->getFulfilment($session),
-            'collectionPoints' => $driver->getCollectionPoints($session),
-            'collectionPointId' => $driver->getSelectedCollectionPoint($session),
+            'pickupPoints' => $driver->getPickupPoints($session),
+            'pickupPointId' => $driver->getSelectedPickupPoint($session),
             'shippingAddress' => $driver->getShippingAddress($session),
             'savedAddresses' => $this->projectSavedAddresses(),
             'totals' => $driver->getTotals($session),
@@ -437,7 +437,7 @@ class CheckoutController extends Controller
             'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
             'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
             'fulfilment' => route('lunar.checkout.fulfilment.store', $session->uuid),
-            'collectionPoint' => route('lunar.checkout.collection-point.store', $session->uuid),
+            'pickupPoint' => route('lunar.checkout.pickup-point.store', $session->uuid),
             'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
             'pay' => route('lunar.checkout.pay', $session->uuid),
             'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
@@ -767,13 +767,13 @@ class CheckoutController extends Controller
      * driver validates the handle against the host's offered points before
      * writing it to the cart.
      */
-    public function storeCollectionPoint(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    public function storePickupPoint(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate(['collection_point' => ['required', 'string']]);
+        $data = $request->validate(['pickup_point' => ['required', 'string']]);
 
-        $checkoutDriver->setCollectionPoint($session, $data['collection_point']);
+        $checkoutDriver->setPickupPoint($session, $data['pickup_point']);
 
         return back();
     }
@@ -1232,7 +1232,7 @@ class CheckoutController extends Controller
         return match ($e->reason) {
             'fingerprint_mismatch' => 'Your order changed while you were checking out. Check the details above and try again.',
             'cart_not_orderable' => 'Your order cannot be placed right now. Check the details above and try again.',
-            'collection_point_required' => 'Choose where you would like to collect your order, then try again.',
+            'pickup_point_required' => 'Choose where you would like to collect your order, then try again.',
             default => 'The payment could not be started. Refresh the page and try again.',
         };
     }

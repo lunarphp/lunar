@@ -2,7 +2,7 @@
 
 namespace Lunar\Checkout\Validation\Cart;
 
-use Lunar\Checkout\Support\CollectionPoints;
+use Lunar\Checkout\Support\PickupPoints;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Validation\BaseValidator;
 
@@ -11,7 +11,7 @@ use Lunar\Core\Validation\BaseValidator;
  * point is required when the host offers any, and the recorded mode must
  * agree with the stored option. Runs after core's ValidateCartForOrderCreation.
  */
-class CollectionPointRequired extends BaseValidator
+class PickupPointRequired extends BaseValidator
 {
     public function validate(): bool
     {
@@ -22,15 +22,15 @@ class CollectionPointRequired extends BaseValidator
             return $this->pass();
         }
 
-        $mode = $cart->meta[CollectionPoints::MODE_KEY] ?? null;
-        $collects = CollectionPoints::storedOptionCollects($cart);
+        $mode = $cart->meta[PickupPoints::MODE_KEY] ?? null;
+        $collects = PickupPoints::storedOptionCollects($cart);
 
-        if ($mode !== null && (($mode === CollectionPoints::COLLECT) !== $collects)) {
+        if ($mode !== null && (($mode === PickupPoints::COLLECT) !== $collects)) {
             return $this->fail('fulfilment', 'The fulfilment mode and the shipping option disagree.');
         }
 
-        if (CollectionPoints::missing($cart)) {
-            return $this->fail('collection_point', 'Choose where you would like to collect your order.');
+        if (PickupPoints::missing($cart)) {
+            return $this->fail('pickup_point', 'Choose where you would like to collect your order.');
         }
 
         return $this->pass();

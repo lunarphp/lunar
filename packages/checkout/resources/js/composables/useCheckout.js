@@ -48,8 +48,8 @@ export function createCheckout(data) {
     // Server state (spec 0013 §E): a reload must not fall back to delivery
     // while the cart holds the collect option.
     fulfilment: data.fulfilment ?? 'delivery', // 'delivery' | 'collect'
-    collectionPoints: data.collectionPoints ?? [], // [{ id, name, lines }]
-    collectionPointId: data.collectionPointId ?? null,
+    pickupPoints: data.pickupPoints ?? [], // [{ id, name, lines }]
+    pickupPointId: data.pickupPointId ?? null,
     method: 'card', // card | paypal | clearpay | klarna
     items: data.items ?? [],
     currency: data.currency ?? 'GBP',
@@ -99,8 +99,8 @@ export function createCheckout(data) {
   // options, selection and totals are all server-owned.
   function sync(fresh) {
     state.fulfilment = fresh.fulfilment ?? 'delivery'
-    state.collectionPoints = fresh.collectionPoints ?? []
-    state.collectionPointId = fresh.collectionPointId ?? null
+    state.pickupPoints = fresh.pickupPoints ?? []
+    state.pickupPointId = fresh.pickupPointId ?? null
     state.items = fresh.items ?? []
     state.shippingMethods = fresh.shippingMethods ?? []
     state.shippingId = fresh.shippingId ?? null
@@ -232,12 +232,12 @@ export function createCheckout(data) {
   const collectOption = computed(() => state.shippingMethods.find((m) => m.collect) ?? null)
 
   const collectAvailable = computed(() => collectOption.value !== null)
-  const collectionPoint = computed(
-    () => state.collectionPoints.find((p) => p.id === state.collectionPointId) ?? null,
+  const pickupPoint = computed(
+    () => state.pickupPoints.find((p) => p.id === state.pickupPointId) ?? null,
   )
   // Several points on offer and none chosen: pay is blocked until one is.
-  const collectionPointRequired = computed(
-    () => state.fulfilment === 'collect' && state.collectionPoints.length > 1 && !state.collectionPointId,
+  const pickupPointRequired = computed(
+    () => state.fulfilment === 'collect' && state.pickupPoints.length > 1 && !state.pickupPointId,
   )
 
   // Store the delivery address on the cart. Options are address-dependent, so
@@ -293,19 +293,19 @@ export function createCheckout(data) {
     )
   }
 
-  function selectCollectionPoint(id) {
-    const previous = state.collectionPointId
-    state.collectionPointId = id
+  function selectPickupPoint(id) {
+    const previous = state.pickupPointId
+    state.pickupPointId = id
 
     router.post(
-      state.urls.collectionPoint,
-      { collection_point: id },
+      state.urls.pickupPoint,
+      { pickup_point: id },
       {
         preserveScroll: true,
         preserveState: true,
         only: ['checkout'],
         onError: () => {
-          state.collectionPointId = previous
+          state.pickupPointId = previous
         },
       },
     )
@@ -344,7 +344,7 @@ export function createCheckout(data) {
   async function pay() {
     if (state.processing || !state.addressValid || !activePaymentMethod.value) return
 
-    if (collectionPointRequired.value) {
+    if (pickupPointRequired.value) {
       state.payError = 'Choose where you would like to collect your order.'
       return
     }
@@ -444,9 +444,9 @@ export function createCheckout(data) {
     deliveryMethods,
     collectOption,
     collectAvailable,
-    collectionPoint,
-    collectionPointRequired,
-    selectCollectionPoint,
+    pickupPoint,
+    pickupPointRequired,
+    selectPickupPoint,
     baseShipping,
     breakdown,
     totalLabel,

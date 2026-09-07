@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Lunar\Checkout\Contracts\Actions\SetsFulfilment;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
@@ -12,11 +12,11 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Checkout\TestCase;
 use Lunar\Tests\Checkout\Utils\CheckoutCart;
-use Lunar\Tests\Checkout\Utils\CollectionPointsStub;
+use Lunar\Tests\Checkout\Utils\PickupPointsStub;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-afterEach(fn () => CollectionPointsStub::unbind());
+afterEach(fn () => PickupPointsStub::unbind());
 
 /**
  * A deliverable cart that also has a collect option on the manifest, with
@@ -56,25 +56,25 @@ it('stores the collect option when a shipping address exists', function () {
 });
 
 it('auto-selects a single offered point', function () {
-    CollectionPointsStub::bind([new CollectionPoint('dartford', 'Dartford', ['DA2 6EP'])]);
+    PickupPointsStub::bind([new PickupPoint('dartford', 'Dartford', ['DA2 6EP'])]);
 
     $cart = app(SetsFulfilment::class)->execute(fulfilmentCart(), 'collect');
 
-    expect($cart->meta['collection_point']['handle'])->toBe('dartford');
+    expect($cart->meta['pickup_point']['handle'])->toBe('dartford');
 });
 
 it('leaves several offered points unchosen until one is named', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London'), new CollectionPoint('dartford', 'Dartford')]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London'), new PickupPoint('dartford', 'Dartford')]);
 
     $cart = app(SetsFulfilment::class)->execute(fulfilmentCart(), 'collect');
-    expect($cart->meta['collection_point'] ?? null)->toBeNull();
+    expect($cart->meta['pickup_point'] ?? null)->toBeNull();
 
     $cart = app(SetsFulfilment::class)->execute($cart, 'collect', 'dartford');
-    expect($cart->meta['collection_point']['name'])->toBe('Dartford');
+    expect($cart->meta['pickup_point']['name'])->toBe('Dartford');
 });
 
 it('rejects a handle the provider does not offer', function () {
-    CollectionPointsStub::bind([new CollectionPoint('london', 'London')]);
+    PickupPointsStub::bind([new PickupPoint('london', 'London')]);
 
     app(SetsFulfilment::class)->execute(fulfilmentCart(), 'collect', 'mars');
 })->throws(ValidationException::class);
@@ -84,14 +84,14 @@ it('rejects a mode that is neither delivery nor collect', function () {
 })->throws(ValidationException::class);
 
 it('returns to delivery: forgets the point and hands the option to the first courier', function () {
-    CollectionPointsStub::bind([new CollectionPoint('dartford', 'Dartford')]);
+    PickupPointsStub::bind([new PickupPoint('dartford', 'Dartford')]);
     $cart = app(SetsFulfilment::class)->execute(fulfilmentCart(), 'collect');
     expect($cart->shippingAddress->shipping_option)->toBe('collection');
 
     $cart = app(SetsFulfilment::class)->execute($cart, 'delivery');
 
     expect($cart->meta['fulfilment'])->toBe('delivery')
-        ->and($cart->meta['collection_point'] ?? null)->toBeNull()
+        ->and($cart->meta['pickup_point'] ?? null)->toBeNull()
         ->and($cart->shippingAddress->shipping_option)->toBe('standard');
 });
 

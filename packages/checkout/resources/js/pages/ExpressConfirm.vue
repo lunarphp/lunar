@@ -33,9 +33,9 @@ const {
   shippingMethod,
   deliveryMethods,
   collectOption,
-  collectionPoint,
-  collectionPointRequired,
-  selectCollectionPoint,
+  pickupPoint,
+  pickupPointRequired,
+  selectPickupPoint,
   storeShippingAddress,
   storeElement,
   selectShipping,
@@ -338,7 +338,7 @@ const payForm = useHttp({ payment_method: '', fingerprint: '' })
 async function confirmAndPay() {
   if (confirming.value || !canConfirm.value) return
 
-  if (collectionPointRequired.value) {
+  if (pickupPointRequired.value) {
     payError.value = 'Choose where you would like to collect your order.'
     return
   }
@@ -566,17 +566,17 @@ async function confirmAndPay() {
               </div>
 
               <!-- Collect from (spec 0013 §F) -->
-              <div v-else class="xc-row" :class="{ editing: editing('collect') }">
+              <div v-else class="xc-row" :class="{ editing: editing('pickup') }">
                 <div class="xc-row-head">
                   <span class="xc-row-ico"><Icon name="store" :size="15" /></span>
                   <div class="xc-row-main">
                     <div class="xc-row-label">Collect from</div>
                     <div class="xc-row-value">
-                      <template v-if="collectionPoint">
-                        <span class="ln">{{ collectionPoint.name }}</span>
-                        <span v-for="line in collectionPoint.lines" :key="line" class="ln muted">{{ line }}</span>
+                      <template v-if="pickupPoint">
+                        <span class="ln">{{ pickupPoint.name }}</span>
+                        <span v-for="line in pickupPoint.lines" :key="line" class="ln muted">{{ line }}</span>
                       </template>
-                      <template v-else-if="state.collectionPoints.length > 1">
+                      <template v-else-if="state.pickupPoints.length > 1">
                         <span class="ln muted">Choose a branch</span>
                       </template>
                       <template v-else>
@@ -586,24 +586,24 @@ async function confirmAndPay() {
                     </div>
                   </div>
                   <button
-                    v-if="state.collectionPoints.length > 1"
+                    v-if="state.pickupPoints.length > 1"
                     type="button"
                     class="xc-row-edit-btn"
                     @click="openEdit('collect')"
                   >
-                    <Icon name="pencil" :size="14" />{{ collectionPoint ? 'Change' : 'Choose' }}
+                    <Icon name="pencil" :size="14" />{{ pickupPoint ? 'Change' : 'Choose' }}
                   </button>
                 </div>
-                <div v-if="state.collectionPoints.length > 1" class="xc-row-edit">
+                <div v-if="state.pickupPoints.length > 1" class="xc-row-edit">
                   <div role="radiogroup" aria-label="Choose where to collect your order">
                     <button
-                      v-for="point in state.collectionPoints"
+                      v-for="point in state.pickupPoints"
                       :key="point.id"
                       type="button"
                       class="pick"
                       role="radio"
-                      :aria-checked="state.collectionPointId === point.id"
-                      @click="(selectCollectionPoint(point.id), closeEdit())"
+                      :aria-checked="state.pickupPointId === point.id"
+                      @click="(selectPickupPoint(point.id), closeEdit())"
                     >
                       <span class="radio" aria-hidden="true"></span>
                       <span class="pbody">
@@ -827,7 +827,7 @@ async function confirmAndPay() {
               type="button"
               id="d-confirm-btn"
               class="btn btn-primary xc-pay-btn"
-              :disabled="!canConfirm || collectionPointRequired"
+              :disabled="!canConfirm || pickupPointRequired"
               @click="confirmAndPay"
             >
               <span v-if="confirming" class="spinner"></span>
@@ -845,7 +845,7 @@ async function confirmAndPay() {
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || collectionPointRequired" @click="confirmAndPay">
+      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired" @click="confirmAndPay">
         <span v-if="confirming" class="spinner"></span>
         <template v-else>
           <Icon name="lock" :size="16" />

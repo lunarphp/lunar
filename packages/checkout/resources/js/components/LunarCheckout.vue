@@ -6,7 +6,7 @@ import FulfilmentToggle from './FulfilmentToggle.vue'
 import ExpressWallets from './ExpressWallets.vue'
 import ContactSection from './ContactSection.vue'
 import DeliverySection from './DeliverySection.vue'
-import CollectSection from './CollectSection.vue'
+import PickupSection from './PickupSection.vue'
 import ShippingMethods from './ShippingMethods.vue'
 import PaymentSection from './PaymentSection.vue'
 import OrderSummary from './OrderSummary.vue'
@@ -104,7 +104,7 @@ const mSummaryOpen = ref(false)
               <DeliverySection />
               <ShippingMethods />
             </template>
-            <CollectSection v-else />
+            <PickupSection v-else />
 
             <!-- Consumer-registered custom elements (main region), placed above
                  payment. Server-projected; rendered via the component registry.

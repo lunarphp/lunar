@@ -11,17 +11,17 @@ use Lunar\Checkout\Contracts\Actions\SetsFulfilment;
 use Lunar\Checkout\Contracts\Actions\SyncsCheckoutSession;
 use Lunar\Checkout\DataObjects\CartSnapshot;
 use Lunar\Checkout\DataObjects\CheckoutAddress;
-use Lunar\Checkout\DataTypes\CollectionPoint;
+use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Checkout\Events\BillingAddressStored;
 use Lunar\Checkout\Events\CheckoutCompletionFailed;
 use Lunar\Checkout\Events\CheckoutPaymentConfirmationFailed;
 use Lunar\Checkout\Events\CheckoutSessionCompleted;
-use Lunar\Checkout\Events\CollectionPointSet;
 use Lunar\Checkout\Events\CouponApplied;
 use Lunar\Checkout\Events\CouponRemoved;
 use Lunar\Checkout\Events\CustomerAssociated;
 use Lunar\Checkout\Events\FulfilmentSet;
 use Lunar\Checkout\Events\OrderPlacing;
+use Lunar\Checkout\Events\PickupPointSet;
 use Lunar\Checkout\Events\ShippingAddressStored;
 use Lunar\Checkout\Events\ShippingOptionSet;
 use Lunar\Checkout\Exceptions\CheckoutSessionConflictException;
@@ -31,7 +31,7 @@ use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
-use Lunar\Checkout\Support\CollectionPoints;
+use Lunar\Checkout\Support\PickupPoints;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Managers\DiscountManager;
 use Lunar\Core\Models\Cart;
@@ -152,7 +152,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             }
 
             if ($isSync) {
-                $this->assertCollectionPointChosen($cart);
+                $this->assertPickupPointChosen($cart);
             }
 
             if ($isSync && ! $cart->canCreateOrder()) {
@@ -244,7 +244,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             throw new PaymentConfirmationException('fingerprint_mismatch');
         }
 
-        $this->assertCollectionPointChosen($cart);
+        $this->assertPickupPointChosen($cart);
 
         if (! $cart->canCreateOrder()) {
             throw new PaymentConfirmationException('cart_not_orderable');
@@ -326,8 +326,8 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
         // A cart that chose collect before it had an address (spec 0013 §B)
         // gets its collect option stored now that the row exists.
-        if (CollectionPoints::fulfilment($cart) === CollectionPoints::COLLECT && ! CollectionPoints::storedOptionCollects($cart)) {
-            $cart = $this->setFulfilment->execute($cart->refresh(), CollectionPoints::COLLECT);
+        if (PickupPoints::fulfilment($cart) === PickupPoints::COLLECT && ! PickupPoints::storedOptionCollects($cart)) {
+            $cart = $this->setFulfilment->execute($cart->refresh(), PickupPoints::COLLECT);
         }
 
         $snapshot = $this->resync($session, $cart);
@@ -367,9 +367,9 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         // Mode and option never disagree (spec 0013 §B): a courier chosen
         // while collecting drops the point; the collect option chosen while
         // delivering records collect and applies a single offered point.
-        $mode = $option->collect ? CollectionPoints::COLLECT : CollectionPoints::DELIVERY;
+        $mode = $option->collect ? PickupPoints::COLLECT : PickupPoints::DELIVERY;
 
-        if (CollectionPoints::fulfilment($cart) !== $mode || $option->collect) {
+        if (PickupPoints::fulfilment($cart) !== $mode || $option->collect) {
             $cart = $this->setFulfilment->execute($cart->refresh(), $mode);
         }
 
@@ -393,15 +393,15 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         return $snapshot;
     }
 
-    public function setCollectionPoint(CheckoutSession $session, string $handle): CartSnapshot
+    public function setPickupPoint(CheckoutSession $session, string $handle): CartSnapshot
     {
         $cart = $this->operableCart($session);
 
-        $cart = $this->setFulfilment->execute($cart, CollectionPoints::COLLECT, $handle);
+        $cart = $this->setFulfilment->execute($cart, PickupPoints::COLLECT, $handle);
 
         $snapshot = $this->resync($session, $cart);
 
-        $this->events->dispatch(new CollectionPointSet($session, $handle));
+        $this->events->dispatch(new PickupPointSet($session, $handle));
 
         return $snapshot;
     }
@@ -500,13 +500,13 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
     public function getFulfilment(CheckoutSession $session): string
     {
-        return CollectionPoints::fulfilment($this->resolveCart($session));
+        return PickupPoints::fulfilment($this->resolveCart($session));
     }
 
-    public function getCollectionPoints(CheckoutSession $session): array
+    public function getPickupPoints(CheckoutSession $session): array
     {
-        return CollectionPoints::offered($this->resolveCart($session))
-            ->map(fn (CollectionPoint $point): array => [
+        return PickupPoints::offered($this->resolveCart($session))
+            ->map(fn (PickupPoint $point): array => [
                 'id' => $point->handle,
                 'name' => $point->name,
                 'lines' => $point->lines,
@@ -515,9 +515,9 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             ->all();
     }
 
-    public function getSelectedCollectionPoint(CheckoutSession $session): ?string
+    public function getSelectedPickupPoint(CheckoutSession $session): ?string
     {
-        return CollectionPoints::chosenHandle($this->resolveCart($session));
+        return PickupPoints::chosenHandle($this->resolveCart($session));
     }
 
     public function getLines(CheckoutSession $session): array
@@ -642,8 +642,8 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             'shipping_address' => $this->addressIdentity($cart->shippingAddress),
             'billing_address' => $this->addressIdentity($cart->billingAddress),
             'shipping_option' => $cart->shippingAddress?->shipping_option,
-            'fulfilment' => CollectionPoints::fulfilment($cart),
-            'collection_point' => CollectionPoints::chosenHandle($cart),
+            'fulfilment' => PickupPoints::fulfilment($cart),
+            'pickup_point' => PickupPoints::chosenHandle($cart),
             'coupon' => $cart->coupon_code,
             'amount_total' => $cart->total?->value ?? 0,
             'currency' => $cart->currency->code,
@@ -696,10 +696,10 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
      * A collect cart with points on offer and none chosen gets its own
      * reason ahead of the generic cart_not_orderable (spec 0013 §D).
      */
-    private function assertCollectionPointChosen(Cart $cart): void
+    private function assertPickupPointChosen(Cart $cart): void
     {
-        if (CollectionPoints::missing($cart)) {
-            throw new PaymentConfirmationException('collection_point_required');
+        if (PickupPoints::missing($cart)) {
+            throw new PaymentConfirmationException('pickup_point_required');
         }
     }
 

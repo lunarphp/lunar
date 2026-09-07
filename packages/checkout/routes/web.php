@@ -69,8 +69,8 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::post($path.'/{session}/fulfilment', [CheckoutController::class, 'storeFulfilment'])
             ->name('lunar.checkout.fulfilment.store');
 
-        Route::post($path.'/{session}/collection-point', [CheckoutController::class, 'storeCollectionPoint'])
-            ->name('lunar.checkout.collection-point.store');
+        Route::post($path.'/{session}/pickup-point', [CheckoutController::class, 'storePickupPoint'])
+            ->name('lunar.checkout.pickup-point.store');
 
         // Store the billing address (same payload shape as shipping). The
         // frontend defaults to copying the delivery address; a later billing
