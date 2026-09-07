@@ -1,6 +1,6 @@
 # 0076 — Rename the collection fulfilment method to pickup
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-09-07
 - TODO item: Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec 0076)
