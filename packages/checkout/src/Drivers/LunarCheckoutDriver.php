@@ -343,6 +343,18 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
         $cart->setBillingAddress($this->toCartAddressData($data));
 
+        // Spec 0013 §F: a wallet sheet started in collect mode asks for no
+        // shipping address, so this billing address is the only one the cart
+        // gets. Lunar keeps the chosen option on the shipping row, so mirror
+        // the address there when no row exists and store the collect option
+        // the row now allows. Without it a guest's express collect order has
+        // no address and no collect option, and the hold is refused. The
+        // address is the customer's own either way.
+        if ($cart->shippingAddress === null && PickupPoints::fulfilment($cart) === PickupPoints::COLLECT) {
+            $cart->setShippingAddress($this->toCartAddressData($data));
+            $cart = $this->setFulfilment->execute($cart->refresh(), PickupPoints::COLLECT);
+        }
+
         $snapshot = $this->resync($session, $cart);
 
         $this->events->dispatch(new BillingAddressStored($session));

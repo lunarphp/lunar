@@ -106,3 +106,45 @@ it('stores the collect option once the address arrives for a cart that chose col
     expect($driver->getSelectedShippingOption($session))->toBe('collection')
         ->and($driver->getFulfilment($session))->toBe('collect');
 });
+
+it('mirrors a billing address onto the shipping row in collect mode and stores the option', function () {
+    PickupPointsStub::bind([new PickupPoint('dartford', 'Dartford', ['DA2 6EP'])]);
+
+    $cart = driverCart();
+    $cart->addresses()->delete();
+    $cart = $cart->refresh();
+    $driver = app(CheckoutDriver::class);
+    $session = $driver->resolveOrCreateSession($cart);
+
+    $driver->setFulfilment($session, 'collect');
+    expect($driver->getSelectedShippingOption($session))->toBeNull();
+
+    $driver->storeBillingAddress($session, [
+        'first_name' => 'Terry', 'last_name' => 'Sparks', 'line1' => '4 Wallet Road',
+        'city' => 'London', 'postcode' => 'SE1 1AA', 'country_code' => 'GB',
+    ]);
+
+    $cart = $cart->refresh();
+
+    expect($cart->shippingAddress)->not->toBeNull()
+        ->and($cart->shippingAddress->line_one)->toBe('4 Wallet Road')
+        ->and($driver->getSelectedShippingOption($session))->toBe('collection')
+        ->and($driver->getFulfilment($session))->toBe('collect')
+        ->and($driver->getSelectedPickupPoint($session))->toBe('dartford')
+        ->and($cart->canCreateOrder())->toBeTrue();
+});
+
+it('leaves the shipping row alone when a billing address arrives in delivery mode', function () {
+    $cart = driverCart();
+    $cart->addresses()->delete();
+    $cart = $cart->refresh();
+    $driver = app(CheckoutDriver::class);
+    $session = $driver->resolveOrCreateSession($cart);
+
+    $driver->storeBillingAddress($session, [
+        'first_name' => 'Terry', 'last_name' => 'Sparks', 'line1' => '4 Wallet Road',
+        'city' => 'London', 'postcode' => 'SE1 1AA', 'country_code' => 'GB',
+    ]);
+
+    expect($cart->refresh()->shippingAddress)->toBeNull();
+});
