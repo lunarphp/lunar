@@ -11,7 +11,7 @@ import ShippingMethods from './ShippingMethods.vue'
 import PaymentSection from './PaymentSection.vue'
 import OrderSummary from './OrderSummary.vue'
 import SuccessOverlay from './SuccessOverlay.vue'
-import { createCheckout } from '../composables/useCheckout.js'
+import { COLLECT_UNAVAILABLE, createCheckout } from '../composables/useCheckout.js'
 import { useCheckoutTheme } from '../composables/useCheckoutTheme.js'
 import { resolveElement } from '../composables/elements.js'
 
@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const store = createCheckout(props.checkout)
-const { state, totalLabel, pay, elementsIn } = store
+const { state, totalLabel, pay, elementsIn, collectUnavailable } = store
 
 // Partial reloads replace the `checkout` prop wholesale (only: ['checkout']);
 // pull the server-owned pieces back into the store.
@@ -124,14 +124,18 @@ const mSummaryOpen = ref(false)
             <PaymentSection :step="FIRST_MAIN_STEP + mainElements.length" />
 
             <div class="cta-wrap desktop-cta">
-              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing">
+              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable">
                 <span v-if="state.processing" class="spinner"></span>
                 <template v-else>
                   <span class="ico"><Icon name="lock" :size="16" /></span>
                   <span class="cta-label">Pay <span class="mono">{{ totalLabel }}</span></span>
                 </template>
               </button>
-              <p v-if="!state.addressValid && state.fulfilment === 'delivery'" class="cta-hint">
+              <p v-if="collectUnavailable" class="cta-hint" role="alert">
+                <span class="ico"><Icon name="alert-circle" :size="15" /></span>
+                {{ COLLECT_UNAVAILABLE }}
+              </p>
+              <p v-else-if="!state.addressValid && state.fulfilment === 'delivery'" class="cta-hint">
                 <span class="ico"><Icon name="arrow-up" :size="15" /></span>
                 Complete the steps above to pay — you won't be charged until you confirm.
               </p>
@@ -161,7 +165,7 @@ const mSummaryOpen = ref(false)
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing" @click="pay">
+      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable" @click="pay">
         <span v-if="state.processing" class="spinner"></span>
         <template v-else>
           <span class="ico"><Icon name="lock" :size="16" /></span>

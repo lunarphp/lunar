@@ -5,7 +5,7 @@ import Icon from '../components/primitives/Icon.vue'
 import FloatingField from '../components/primitives/FloatingField.vue'
 import BrandHead from '../components/BrandHead.vue'
 import OrderSummary from '../components/OrderSummary.vue'
-import { createCheckout } from '../composables/useCheckout.js'
+import { COLLECT_UNAVAILABLE, createCheckout } from '../composables/useCheckout.js'
 import { useCheckoutTheme } from '../composables/useCheckoutTheme.js'
 import { resolveElement } from '../composables/elements.js'
 
@@ -35,6 +35,7 @@ const {
   collectOption,
   pickupPoint,
   pickupPointRequired,
+  collectUnavailable,
   selectPickupPoint,
   storeShippingAddress,
   storeElement,
@@ -337,6 +338,11 @@ const payForm = useHttp({ payment_method: '', fingerprint: '' })
 
 async function confirmAndPay() {
   if (confirming.value || !canConfirm.value) return
+
+  if (collectUnavailable.value) {
+    payError.value = COLLECT_UNAVAILABLE
+    return
+  }
 
   if (pickupPointRequired.value) {
     payError.value = 'Choose where you would like to collect your order.'
@@ -827,7 +833,7 @@ async function confirmAndPay() {
               type="button"
               id="d-confirm-btn"
               class="btn btn-primary xc-pay-btn"
-              :disabled="!canConfirm || pickupPointRequired"
+              :disabled="!canConfirm || pickupPointRequired || collectUnavailable"
               @click="confirmAndPay"
             >
               <span v-if="confirming" class="spinner"></span>
@@ -845,7 +851,7 @@ async function confirmAndPay() {
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired" @click="confirmAndPay">
+      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired || collectUnavailable" @click="confirmAndPay">
         <span v-if="confirming" class="spinner"></span>
         <template v-else>
           <Icon name="lock" :size="16" />

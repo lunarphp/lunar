@@ -4,6 +4,10 @@ import { money } from '../utils/money.js'
 
 export const CHECKOUT_KEY = Symbol('lunar-checkout')
 
+// Shown wherever a collecting cart has no collect option to store, so both the
+// pay boundary's refusal and the CTA hint read the same (spec 0013 §F).
+export const COLLECT_UNAVAILABLE = 'Collection is not available for this address. Switch to delivery to continue.'
+
 // Plain JSON POST outside Inertia: the pay boundary and gateway calls are
 // request/response, not page visits. Module-level (not tied to a checkout
 // store) so a component without a <LunarCheckout> ancestor, like the
@@ -235,9 +239,18 @@ export function createCheckout(data) {
   const pickupPoint = computed(
     () => state.pickupPoints.find((p) => p.id === state.pickupPointId) ?? null,
   )
+  // Collect chosen, no collect option for this address (outside the zone, say):
+  // the order cannot be created, and the only thing the customer can do about
+  // it is switch to delivery. Say that instead of asking for a branch that
+  // would not help.
+  const collectUnavailable = computed(() => state.fulfilment === 'collect' && !collectAvailable.value)
   // Several points on offer and none chosen: pay is blocked until one is.
   const pickupPointRequired = computed(
-    () => state.fulfilment === 'collect' && state.pickupPoints.length > 1 && !state.pickupPointId,
+    () =>
+      state.fulfilment === 'collect' &&
+      collectAvailable.value &&
+      state.pickupPoints.length > 1 &&
+      !state.pickupPointId,
   )
 
   // Store the delivery address on the cart. Options are address-dependent, so
@@ -344,6 +357,11 @@ export function createCheckout(data) {
   async function pay() {
     if (state.processing || !state.addressValid || !activePaymentMethod.value) return
 
+    if (collectUnavailable.value) {
+      state.payError = COLLECT_UNAVAILABLE
+      return
+    }
+
     if (pickupPointRequired.value) {
       state.payError = 'Choose where you would like to collect your order.'
       return
@@ -444,6 +462,7 @@ export function createCheckout(data) {
     deliveryMethods,
     collectOption,
     collectAvailable,
+    collectUnavailable,
     pickupPoint,
     pickupPointRequired,
     selectPickupPoint,
