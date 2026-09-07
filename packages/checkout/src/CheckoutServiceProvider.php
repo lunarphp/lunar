@@ -30,9 +30,11 @@ use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
 use Lunar\Checkout\Managers\AddressLookupManager;
 use Lunar\Checkout\Managers\CheckoutSessionManager;
 use Lunar\Checkout\Session\SessionElementStore;
+use Lunar\Checkout\Shipping\CollectionPointModifier;
 use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
 use Lunar\Checkout\Support\CheckoutAssets;
 use Lunar\Core\Events\PaymentAttemptEvent;
+use Lunar\Core\Modifiers\ShippingModifiers;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -124,6 +126,10 @@ class CheckoutServiceProvider extends ServiceProvider
         RateLimiter::for('checkout-shipping-quote', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
 
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
+
+        // Spec 0013 §C: the chosen collection point rides on the collect
+        // option's meta so core stamps it onto the shipping order line.
+        $this->app->make(ShippingModifiers::class)->add(CollectionPointModifier::class);
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
 
