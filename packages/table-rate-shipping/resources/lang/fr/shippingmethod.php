@@ -45,7 +45,7 @@ return [
             'label' => 'Type',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Collecte',
+                'pickup' => 'Retrait',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Type',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Collecte',
+                'pickup' => 'Retrait',
             ],
         ],
     ],

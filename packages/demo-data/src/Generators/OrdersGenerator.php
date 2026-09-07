@@ -8,7 +8,7 @@ use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
-use Lunar\Core\States\Fulfilment\ReadyForCollection;
+use Lunar\Core\States\Fulfilment\ReadyForPickup;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DemoData\Support\DemoContext;
 
@@ -95,11 +95,11 @@ class OrdersGenerator implements Generator
             $order->createFulfilment($this->coverAll($order), ['method' => 'shipping'])->ship($this->tracking());
         });
 
-        // Paid + fulfilled by collection (Pending -> ReadyForCollection -> Collected).
-        $this->scenario('DEMO-PAID-COLLECTION', [['variant' => $physical(5), 'quantity' => 1]], function (Order $order) {
+        // Paid + fulfilled by pickup (Pending -> ReadyForPickup -> PickedUp).
+        $this->scenario('DEMO-PAID-PICKUP', [['variant' => $physical(5), 'quantity' => 1]], function (Order $order) {
             $this->capture($order, $order->total);
-            $fulfilment = $order->createFulfilment($this->coverAll($order), ['method' => 'collection']);
-            $fulfilment->transition(ReadyForCollection::class);
+            $fulfilment = $order->createFulfilment($this->coverAll($order), ['method' => 'pickup']);
+            $fulfilment->transition(ReadyForPickup::class);
             $fulfilment->fulfil();
         });
 

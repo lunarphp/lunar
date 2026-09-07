@@ -15,7 +15,7 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
  * *category* rather than a literal state name:
  *
  *  - entering a `Fulfilled`-category state stamps `shipped_at` (it reads as
- *    shipped-at / collected-at / provisioned-at per method), unless it is
+ *    shipped-at / picked-up-at / provisioned-at per method), unless it is
  *    already set — so an undo-return back to a `Fulfilled` state keeps the
  *    original timestamp;
  *  - reverting from a `Fulfilled` state back to an `Outstanding` one un-stamps

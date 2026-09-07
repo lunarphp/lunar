@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'În așteptare',
         'in-progress' => 'În curs',
-        'ready-for-collection' => 'Gata de ridicare',
+        'ready-for-pickup' => 'Gata de ridicare',
         'shipped' => 'Expediată',
-        'collected' => 'Ridicată',
+        'picked-up' => 'Ridicată',
         'provisioned' => 'Furnizată',
         'cancelled' => 'Anulată',
         'returned' => 'Returnată',
