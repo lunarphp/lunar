@@ -45,7 +45,11 @@ export async function postJson(url, body, fallbackMessage = 'The request could n
  */
 export function createCheckout(data) {
   const state = reactive({
-    fulfilment: 'delivery', // 'delivery' | 'collect'
+    // Server state (spec 0013 §E): a reload must not fall back to delivery
+    // while the cart holds the collect option.
+    fulfilment: data.fulfilment ?? 'delivery', // 'delivery' | 'collect'
+    collectionPoints: data.collectionPoints ?? [], // [{ id, name, lines }]
+    collectionPointId: data.collectionPointId ?? null,
     method: 'card', // card | paypal | clearpay | klarna
     items: data.items ?? [],
     currency: data.currency ?? 'GBP',
@@ -94,6 +98,9 @@ export function createCheckout(data) {
   // Re-sync from a fresh `checkout` prop after an Inertia partial reload —
   // options, selection and totals are all server-owned.
   function sync(fresh) {
+    state.fulfilment = fresh.fulfilment ?? 'delivery'
+    state.collectionPoints = fresh.collectionPoints ?? []
+    state.collectionPointId = fresh.collectionPointId ?? null
     state.items = fresh.items ?? []
     state.shippingMethods = fresh.shippingMethods ?? []
     state.shippingId = fresh.shippingId ?? null
@@ -224,6 +231,15 @@ export function createCheckout(data) {
   const deliveryMethods = computed(() => state.shippingMethods.filter((m) => !m.collect))
   const collectOption = computed(() => state.shippingMethods.find((m) => m.collect) ?? null)
 
+  const collectAvailable = computed(() => collectOption.value !== null)
+  const collectionPoint = computed(
+    () => state.collectionPoints.find((p) => p.id === state.collectionPointId) ?? null,
+  )
+  // Several points on offer and none chosen: pay is blocked until one is.
+  const collectionPointRequired = computed(
+    () => state.fulfilment === 'collect' && state.collectionPoints.length > 1 && !state.collectionPointId,
+  )
+
   // Store the delivery address on the cart. Options are address-dependent, so
   // the partial reload re-projects them (and the totals) fresh.
   function storeShippingAddress(payload, options = {}) {
@@ -255,25 +271,44 @@ export function createCheckout(data) {
     )
   }
 
-  // Switching to click & collect selects the collect-flagged option so the
-  // cart carries a real zero-charge shipping choice, not a UI-only mode.
+  // The mode is cart state (spec 0013 §B). The server stores or releases
+  // the collect option itself, so this no longer posts a shipping option.
   function setFulfilment(mode) {
+    if (state.fulfilment === mode) return
+
+    const previous = state.fulfilment
     state.fulfilment = mode
 
-    if (mode === 'collect' && collectOption.value && state.shippingId !== collectOption.value.id) {
-      selectShipping(collectOption.value.id)
-    }
+    router.post(
+      state.urls.fulfilment,
+      { fulfilment: mode },
+      {
+        preserveScroll: true,
+        preserveState: true,
+        only: ['checkout'],
+        onError: () => {
+          state.fulfilment = previous
+        },
+      },
+    )
+  }
 
-    // Back to delivery while the cart still holds the collect option: hand
-    // the choice to the cheapest courier option so the stored selection always
-    // matches the mode on screen.
-    if (mode === 'delivery' && state.shippingId === collectOption.value?.id) {
-      const fallback = deliveryMethods.value[0]
+  function selectCollectionPoint(id) {
+    const previous = state.collectionPointId
+    state.collectionPointId = id
 
-      if (fallback) {
-        selectShipping(fallback.id)
-      }
-    }
+    router.post(
+      state.urls.collectionPoint,
+      { collection_point: id },
+      {
+        preserveScroll: true,
+        preserveState: true,
+        only: ['checkout'],
+        onError: () => {
+          state.collectionPointId = previous
+        },
+      },
+    )
   }
 
   const activePaymentMethod = computed(() => state.paymentMethods.find((m) => m.handle === state.method) ?? null)
@@ -308,6 +343,11 @@ export function createCheckout(data) {
 
   async function pay() {
     if (state.processing || !state.addressValid || !activePaymentMethod.value) return
+
+    if (collectionPointRequired.value) {
+      state.payError = 'Choose where you would like to collect your order.'
+      return
+    }
 
     state.processing = true
     state.payError = ''
@@ -403,6 +443,10 @@ export function createCheckout(data) {
     shippingMethod,
     deliveryMethods,
     collectOption,
+    collectAvailable,
+    collectionPoint,
+    collectionPointRequired,
+    selectCollectionPoint,
     baseShipping,
     breakdown,
     totalLabel,
