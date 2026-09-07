@@ -6,6 +6,19 @@ import { useCheckout } from '../composables/useCheckout.js'
 
 const { state, storeShippingAddress, postJson } = useCheckout()
 
+// 'delivery' (default) or 'collect'. Collect keeps the same form and saved
+// address picker: Lunar stores the shipping option on the shipping address
+// row, and the payment step defaults billing to it, so the customer's own
+// address is still captured (spec 0013 §F.1).
+const props = defineProps({
+  variant: { type: String, default: 'delivery' },
+})
+
+const heading = computed(() => (props.variant === 'collect' ? 'Your details' : 'Delivery details'))
+const subcopy = computed(() =>
+  props.variant === 'collect' ? "We'll use this as your billing address." : '',
+)
+
 // Hydrate from the cart's stored address so a returning session round-trips.
 const stored = state.shippingAddress
 
@@ -231,7 +244,7 @@ function save() {
         <span class="block-step"
           ><span class="num">2</span><span class="chk ico"><Icon name="check" /></span
         ></span>
-        Delivery details
+        {{ heading }}
       </h2>
       <button v-if="mode === 'book' && !choosing" type="button" class="block-action" @click="choosing = true">
         Change
@@ -245,6 +258,7 @@ function save() {
         Use a saved address
       </button>
     </div>
+    <p v-if="subcopy" class="block-sub">{{ subcopy }}</p>
 
     <!-- Address book (signed in): the picker replaces the form entirely.
          Collapsed it names the destination; Change re-opens the cards. -->

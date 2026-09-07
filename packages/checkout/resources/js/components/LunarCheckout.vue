@@ -6,6 +6,7 @@ import FulfilmentToggle from './FulfilmentToggle.vue'
 import ExpressWallets from './ExpressWallets.vue'
 import ContactSection from './ContactSection.vue'
 import DeliverySection from './DeliverySection.vue'
+import CollectSection from './CollectSection.vue'
 import ShippingMethods from './ShippingMethods.vue'
 import PaymentSection from './PaymentSection.vue'
 import OrderSummary from './OrderSummary.vue'
@@ -24,7 +25,7 @@ const props = defineProps({
 })
 
 const store = createCheckout(props.checkout)
-const { state, totalLabel, pay, elementsIn, collectOption } = store
+const { state, totalLabel, pay, elementsIn } = store
 
 // Partial reloads replace the `checkout` prop wholesale (only: ['checkout']);
 // pull the server-owned pieces back into the store.
@@ -103,18 +104,7 @@ const mSummaryOpen = ref(false)
               <DeliverySection />
               <ShippingMethods />
             </template>
-            <section v-else class="block">
-              <div v-if="collectOption" class="locked">
-                <span class="ico"><Icon name="store" :size="17" /></span>
-                <span>
-                  <strong>{{ collectOption.name }}</strong> — {{ collectOption.sub || 'collect from your local branch at no charge.' }}
-                </span>
-              </div>
-              <div v-else class="locked">
-                <span class="ico"><Icon name="store" :size="17" /></span>
-                Click &amp; collect isn't available for this order.
-              </div>
-            </section>
+            <CollectSection v-else />
 
             <!-- Consumer-registered custom elements (main region), placed above
                  payment. Server-projected; rendered via the component registry.
