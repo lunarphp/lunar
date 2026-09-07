@@ -45,7 +45,7 @@ return [
             'label' => 'Tip',
             'options' => [
                 'ship-by' => 'Standardno',
-                'collection' => 'Preuzimanje',
+                'pickup' => 'Preuzimanje',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Tip',
             'options' => [
                 'ship-by' => 'Standardno',
-                'collection' => 'Preuzimanje',
+                'pickup' => 'Preuzimanje',
             ],
         ],
     ],

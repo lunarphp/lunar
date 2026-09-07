@@ -60,7 +60,7 @@ test('it exercises all three fulfilment methods', function () {
     generateStore();
 
     expect(Fulfilment::query()->pluck('method')->unique()->values()->all())
-        ->toContain('shipping', 'collection', 'digital');
+        ->toContain('shipping', 'pickup', 'digital');
 });
 
 test('it produces cancelled, closed and on-hold states', function () {
