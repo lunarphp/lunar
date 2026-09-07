@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Хүргэлт',
-        'collection' => 'Очиж авах',
+        'pickup' => 'Очиж авах',
         'digital' => 'Цахим',
     ],
 

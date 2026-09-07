@@ -87,15 +87,15 @@ it('scopes the fulfilment routes to the order', function () {
     $this->post(route('panel.orders.fulfilments.ship', [$order, $fulfilment]))->assertNotFound();
 });
 
-it('marks a collection fulfilment collected via fulfil', function () {
+it('marks a pickup fulfilment picked up via fulfil', function () {
     $order = Order::factory()->placed()->create();
-    $fulfilment = Fulfilment::factory()->for($order)->collection()->create(['state' => 'pending']);
+    $fulfilment = Fulfilment::factory()->for($order)->pickup()->create(['state' => 'pending']);
 
     $this->from(route('panel.orders.show', $order))
         ->post(route('panel.orders.fulfilments.fulfil', [$order, $fulfilment]), ['notify' => false])
         ->assertSessionHas('success');
 
-    expect($fulfilment->refresh()->state::$name)->toBe('collected');
+    expect($fulfilment->refresh()->state::$name)->toBe('picked-up');
 });
 
 it('forbids fulfil on a tracking method', function () {
@@ -208,7 +208,7 @@ it('rejects merging into a fulfilment of a different method', function () {
     $location = Location::factory()->create();
 
     $source = Fulfilment::factory()->for($order)->create(['method' => 'shipping', 'state' => 'pending', 'location_id' => $location->id]);
-    $target = Fulfilment::factory()->for($order)->collection()->create(['state' => 'pending', 'location_id' => $location->id]);
+    $target = Fulfilment::factory()->for($order)->pickup()->create(['state' => 'pending', 'location_id' => $location->id]);
 
     $lineA = OrderLine::factory()->for($order)->create(['type' => 'physical', 'requires_fulfilment' => true, 'quantity' => 1]);
     FulfilmentLine::factory()->create(['fulfilment_id' => $source->id, 'order_line_id' => $lineA->id, 'quantity' => 1]);

@@ -12,7 +12,7 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
  * its state graph, which order lines it claims, and whether it carries carrier
  * tracking. A `Fulfilment` stores its method as a key (like a carrier key) and
  * resolves it through the {@see FulfilmentMethodManifest}. Core ships three
- * built on this seam (`shipping`, `collection`, `digital`); a consumer registers
+ * built on this seam (`shipping`, `pickup`, `digital`); a consumer registers
  * their own (`prescription`, a 3PL hand-off, …) exactly as core registers these.
  */
 interface FulfilmentMethod

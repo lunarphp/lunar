@@ -14,7 +14,7 @@ use Lunar\Core\Models\Fulfilment;
  * fulfilled quantity, so the rollups are untouched. The target's tracking
  * wins; the action errors rather than silently discarding conflicting
  * tracking carried by a source. Source and target must share a method — you
- * can't fold a shipping fulfilment into a collection one.
+ * can't fold a shipping fulfilment into a pickup one.
  */
 class MergeFulfilments implements MergesFulfilments
 {

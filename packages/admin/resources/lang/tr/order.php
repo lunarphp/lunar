@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Gönderim tarihi',
             'handed_over' => [
                 'shipping' => 'Gönderim tarihi',
-                'collection' => 'Teslim alma tarihi',
+                'pickup' => 'Teslim alma tarihi',
                 'digital' => 'Sağlanma tarihi',
             ],
             'handed_over_default' => 'Karşılanma tarihi',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Karşılandı olarak işaretle',
                 'modal_heading' => 'Karşılamayı karşılandı olarak işaretle',
                 'labels' => [
-                    'collection' => 'Teslim alındı olarak işaretle',
+                    'pickup' => 'Teslim alındı olarak işaretle',
                 ],
                 'notification' => [
                     'success' => 'Karşılama karşılandı olarak işaretlendi.',

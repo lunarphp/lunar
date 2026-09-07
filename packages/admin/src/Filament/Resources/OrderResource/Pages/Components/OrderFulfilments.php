@@ -175,7 +175,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * The no-tracking terminal action for methods that don't carry tracking
-     * (collection → "Mark collected", digital → "Mark fulfilled"). Routes
+     * (pickup → "Mark picked up", digital → "Mark fulfilled"). Routes
      * through the `fulfil()` verb, so the agent/API path is identical.
      */
     public function fulfilAction(): Action
@@ -201,7 +201,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * The terminal action label for a method — a per-method override (e.g.
-     * collection → "Mark collected") falling back to the generic label.
+     * pickup → "Mark picked up") falling back to the generic label.
      */
     protected function fulfilLabel(Fulfilment $fulfilment): string
     {
@@ -214,7 +214,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * The handed-over timestamp label for a fulfilment — a per-method override
-     * (shipped at / collected at / provisioned at) falling back to a generic
+     * (shipped at / picked up at / provisioned at) falling back to a generic
      * "fulfilled at". Public so the card can render it off `shipped_at`.
      */
     public function handedOverLabel(Fulfilment $fulfilment): string
@@ -475,7 +475,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * Undo a mistaken return — moves the fulfilment back to its method's fulfilled
-     * state (shipped / collected), keeping the handover (shipped_at + tracking)
+     * state (shipped / picked up), keeping the handover (shipped_at + tracking)
      * intact. Only the return is reversed.
      */
     public function undoReturnAction(): Action

@@ -45,7 +45,7 @@ return [
             'label' => 'Típus',
             'options' => [
                 'ship-by' => 'Házhozszállítás',
-                'collection' => 'Személyes átvétel',
+                'pickup' => 'Személyes átvétel',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Típus',
             'options' => [
                 'ship-by' => 'Házhozszállítás',
-                'collection' => 'Személyes átvétel',
+                'pickup' => 'Személyes átvétel',
             ],
         ],
     ],

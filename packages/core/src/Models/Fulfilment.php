@@ -171,7 +171,7 @@ class Fulfilment extends Base
 
     /**
      * Advance the fulfilment to its method's canonical "done" state with no
-     * tracking — collection → `Collected`, digital → `Provisioned`, a custom
+     * tracking — pickup → `PickedUp`, digital → `Provisioned`, a custom
      * method → its terminal. The generic terminal verb; `ship()` is the
      * tracking-bearing specialisation for methods that carry tracking.
      */

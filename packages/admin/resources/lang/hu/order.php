@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Kiszállítva',
             'handed_over' => [
                 'shipping' => 'Kiszállítva',
-                'collection' => 'Átvéve',
+                'pickup' => 'Átvéve',
                 'digital' => 'Hozzáférhetővé téve',
             ],
             'handed_over_default' => 'Teljesítve',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Teljesítettnek jelölés',
                 'modal_heading' => 'Teljesítés megjelölése teljesítettként',
                 'labels' => [
-                    'collection' => 'Átvettnek jelölés',
+                    'pickup' => 'Átvettnek jelölés',
                 ],
                 'notification' => [
                     'success' => 'Teljesítés teljesítettként megjelölve.',

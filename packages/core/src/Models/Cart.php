@@ -695,7 +695,7 @@ class Cart extends Base
         $this->shippingEstimateMeta = $params;
         $option = ShippingManifest::getOptions($this)
             ->filter(
-                fn ($option) => ! $option->collect
+                fn ($option) => ! $option->pickup
             )->sortBy('price.value')->first();
 
         if ($setOverride && $option) {

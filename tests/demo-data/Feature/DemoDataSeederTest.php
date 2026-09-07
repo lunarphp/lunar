@@ -36,7 +36,7 @@ test('a small seed produces every derived state and all three methods', function
         ->toContain('unfulfilled', 'partially-fulfilled', 'fulfilled', 'partially-returned', 'returned');
 
     expect(Fulfilment::query()->pluck('method')->unique()->values()->all())
-        ->toContain('shipping', 'collection', 'digital');
+        ->toContain('shipping', 'pickup', 'digital');
 });
 
 test('--fresh wipes and rebuilds without duplicating', function () {
