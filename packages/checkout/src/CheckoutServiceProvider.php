@@ -36,6 +36,7 @@ use Lunar\Checkout\Support\CheckoutAssets;
 use Lunar\Checkout\Validation\Cart\PickupPointRequired;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Modifiers\ShippingModifiers;
+use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -135,9 +136,12 @@ class CheckoutServiceProvider extends ServiceProvider
         // Spec 0013 §D: order creation refuses a collect cart with no chosen
         // point through Lunar's own validator seam, so canCreateOrder() is
         // the authority for every caller, not only this package's pay boundary.
+        // The default matches core's own fallback for a missing key: setting
+        // the key ends that fallback, so reading it as an empty list would
+        // silently replace core's validator with this package's alone.
         config([
             'lunar.cart.validators.order_create' => array_values(array_unique([
-                ...config('lunar.cart.validators.order_create', []),
+                ...config('lunar.cart.validators.order_create', [ValidateCartForOrderCreation::class]),
                 PickupPointRequired::class,
             ])),
         ]);
