@@ -94,4 +94,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
 | 0075 | First staff account creation without the Filament admin | implemented |
-| 0076 | Rename the collection fulfilment method to pickup | proposed    |
+| 0076 | Rename the collection fulfilment method to pickup | accepted    |
