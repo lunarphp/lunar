@@ -33,6 +33,9 @@ const {
   shippingMethod,
   deliveryMethods,
   collectOption,
+  collectionPoint,
+  collectionPointRequired,
+  selectCollectionPoint,
   storeShippingAddress,
   storeElement,
   selectShipping,
@@ -62,11 +65,6 @@ const orderDetailsElement = computed(() => state.elements.find((el) => el.handle
 // there is exactly one express-capable payment method to re-open: found the
 // same way ExpressWallets.vue picks which methods to render.
 const expressMethod = computed(() => state.paymentMethods.find((m) => m.supportsExpress && m.expressComponent) ?? null)
-
-// The main checkout page has its own full editor; anything this page doesn't
-// handle inline (changing collection branch) deep-links there instead of
-// duplicating it.
-const showUrl = computed(() => state.urls.show || state.urls.back)
 
 // Only one row expands at a time, mirroring the design's accordion.
 const editingRow = ref(null)
@@ -340,6 +338,11 @@ const payForm = useHttp({ payment_method: '', fingerprint: '' })
 async function confirmAndPay() {
   if (confirming.value || !canConfirm.value) return
 
+  if (collectionPointRequired.value) {
+    payError.value = 'Choose where you would like to collect your order.'
+    return
+  }
+
   confirming.value = true
   payError.value = ''
 
@@ -562,18 +565,56 @@ async function confirmAndPay() {
                 </div>
               </div>
 
-              <!-- Collect from -->
-              <div v-else class="xc-row">
+              <!-- Collect from (spec 0013 §F) -->
+              <div v-else class="xc-row" :class="{ editing: editing('collect') }">
                 <div class="xc-row-head">
                   <span class="xc-row-ico"><Icon name="store" :size="15" /></span>
                   <div class="xc-row-main">
                     <div class="xc-row-label">Collect from</div>
                     <div class="xc-row-value">
-                      <span class="ln">{{ collectOption?.name }}</span>
-                      <span v-if="collectOption?.sub" class="ln muted">{{ collectOption.sub }}</span>
+                      <template v-if="collectionPoint">
+                        <span class="ln">{{ collectionPoint.name }}</span>
+                        <span v-for="line in collectionPoint.lines" :key="line" class="ln muted">{{ line }}</span>
+                      </template>
+                      <template v-else-if="state.collectionPoints.length > 1">
+                        <span class="ln muted">Choose a branch</span>
+                      </template>
+                      <template v-else>
+                        <span class="ln">{{ collectOption?.name }}</span>
+                        <span v-if="collectOption?.sub" class="ln muted">{{ collectOption.sub }}</span>
+                      </template>
                     </div>
                   </div>
-                  <a v-if="showUrl" class="xc-row-edit-btn" :href="showUrl"><Icon name="pencil" :size="14" />Change</a>
+                  <button
+                    v-if="state.collectionPoints.length > 1"
+                    type="button"
+                    class="xc-row-edit-btn"
+                    @click="openEdit('collect')"
+                  >
+                    <Icon name="pencil" :size="14" />{{ collectionPoint ? 'Change' : 'Choose' }}
+                  </button>
+                </div>
+                <div v-if="state.collectionPoints.length > 1" class="xc-row-edit">
+                  <div role="radiogroup" aria-label="Choose where to collect your order">
+                    <button
+                      v-for="point in state.collectionPoints"
+                      :key="point.id"
+                      type="button"
+                      class="pick"
+                      role="radio"
+                      :aria-checked="state.collectionPointId === point.id"
+                      @click="(selectCollectionPoint(point.id), closeEdit())"
+                    >
+                      <span class="radio" aria-hidden="true"></span>
+                      <span class="pbody">
+                        <span class="ptop"><span class="pname">{{ point.name }}</span></span>
+                        <span class="pmeta">{{ point.lines.join(' · ') }}</span>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="xc-edit-actions">
+                    <button type="button" class="xc-edit-cancel" @click="closeEdit">Cancel</button>
+                  </div>
                 </div>
               </div>
 
@@ -786,7 +827,7 @@ async function confirmAndPay() {
               type="button"
               id="d-confirm-btn"
               class="btn btn-primary xc-pay-btn"
-              :disabled="!canConfirm"
+              :disabled="!canConfirm || collectionPointRequired"
               @click="confirmAndPay"
             >
               <span v-if="confirming" class="spinner"></span>
@@ -804,7 +845,7 @@ async function confirmAndPay() {
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm" @click="confirmAndPay">
+      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || collectionPointRequired" @click="confirmAndPay">
         <span v-if="confirming" class="spinner"></span>
         <template v-else>
           <Icon name="lock" :size="16" />
