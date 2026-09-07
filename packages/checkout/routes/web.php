@@ -63,6 +63,15 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::post($path.'/{session}/shipping-option', [CheckoutController::class, 'storeShippingOption'])
             ->name('lunar.checkout.shipping-option.store');
 
+        // Record the fulfilment mode (delivery / collect) and, when the host
+        // offers pickup points, which one (spec 0013 §E). Both are cart
+        // state written through the driver, like the shipping option.
+        Route::post($path.'/{session}/fulfilment', [CheckoutController::class, 'storeFulfilment'])
+            ->name('lunar.checkout.fulfilment.store');
+
+        Route::post($path.'/{session}/collection-point', [CheckoutController::class, 'storeCollectionPoint'])
+            ->name('lunar.checkout.collection-point.store');
+
         // Store the billing address (same payload shape as shipping). The
         // frontend defaults to copying the delivery address; a later billing
         // element can post its own capture here.

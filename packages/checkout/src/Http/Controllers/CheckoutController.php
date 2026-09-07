@@ -97,11 +97,14 @@ class CheckoutController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'uuid' => $session->uuid,
+                'fulfilment' => $checkoutDriver->getFulfilment($session),
+                'collectionPoints' => $checkoutDriver->getCollectionPoints($session),
+                'collectionPointId' => $checkoutDriver->getSelectedCollectionPoint($session),
                 'urls' => Arr::only(
                     array_merge($this->sessionUrls($session), [
                         'contact' => route('lunar.checkout.contact.store', $session->uuid),
                     ]),
-                    ['quote', 'paymentIntent', 'shippingAddress', 'billingAddress', 'shippingOption', 'confirm', 'contact'],
+                    ['quote', 'paymentIntent', 'shippingAddress', 'billingAddress', 'shippingOption', 'fulfilment', 'collectionPoint', 'confirm', 'contact'],
                 ),
             ]);
         }
@@ -388,6 +391,12 @@ class CheckoutController extends Controller
                 'collect' => (bool) ($option['collect'] ?? false),
             ], $driver->getShippingOptions($session)),
             'shippingId' => $driver->getSelectedShippingOption($session),
+            // Spec 0013 §E. The mode is server state (a reload must not fall
+            // back to delivery while the cart holds the collect option); the
+            // points are the host's; the selection is the cart's.
+            'fulfilment' => $driver->getFulfilment($session),
+            'collectionPoints' => $driver->getCollectionPoints($session),
+            'collectionPointId' => $driver->getSelectedCollectionPoint($session),
             'shippingAddress' => $driver->getShippingAddress($session),
             'savedAddresses' => $this->projectSavedAddresses(),
             'totals' => $driver->getTotals($session),
@@ -427,6 +436,8 @@ class CheckoutController extends Controller
             'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
             'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
             'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
+            'fulfilment' => route('lunar.checkout.fulfilment.store', $session->uuid),
+            'collectionPoint' => route('lunar.checkout.collection-point.store', $session->uuid),
             'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
             'pay' => route('lunar.checkout.pay', $session->uuid),
             'paymentRelease' => route('lunar.checkout.payment-release', $session->uuid),
@@ -730,6 +741,39 @@ class CheckoutController extends Controller
         $data = $request->validate(['shipping_option' => ['required', 'string']]);
 
         $checkoutDriver->setShippingOption($session, $data['shipping_option']);
+
+        return back();
+    }
+
+    /**
+     * Record the fulfilment mode (delivery / collect), spec 0013 §E. Cart
+     * state written through the driver, same shape as storeShippingOption
+     * above: ownership only, no ensureOperable (the driver's operableCart()
+     * already covers a frozen/terminal session).
+     */
+    public function storeFulfilment(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['fulfilment' => ['required', 'string', 'in:delivery,collect']]);
+
+        $checkoutDriver->setFulfilment($session, $data['fulfilment']);
+
+        return back();
+    }
+
+    /**
+     * Record which collection point the customer picked, spec 0013 §E. The
+     * driver validates the handle against the host's offered points before
+     * writing it to the cart.
+     */
+    public function storeCollectionPoint(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['collection_point' => ['required', 'string']]);
+
+        $checkoutDriver->setCollectionPoint($session, $data['collection_point']);
 
         return back();
     }
