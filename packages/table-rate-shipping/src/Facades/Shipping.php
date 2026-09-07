@@ -16,7 +16,7 @@ use Lunar\Shipping\Resolvers\ShippingZoneResolver;
  * @method static void createFreeShippingDriver()
  * @method static void createFlatRateDriver()
  * @method static void createShipByDriver()
- * @method static void createCollectionDriver()
+ * @method static void createPickupDriver()
  * @method static Collection getSupportedDrivers()
  * @method static ShippingZoneResolver zones()
  * @method static ShippingRateResolver shippingRates(Cart|null $cart = null)

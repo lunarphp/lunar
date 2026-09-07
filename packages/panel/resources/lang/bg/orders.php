@@ -175,13 +175,13 @@ return [
     'update_status' => 'Update status',
 
     'handed_over_shipping' => 'Shipped',
-    'handed_over_collection' => 'Collected',
+    'handed_over_pickup' => 'Picked up',
     'handed_over_digital' => 'Provisioned',
     'handed_over_default' => 'Fulfilled',
 
     'mark_shipped' => 'Mark shipped',
     'fulfil_label' => 'Mark fulfilled',
-    'fulfil_label_collection' => 'Mark collected',
+    'fulfil_label_pickup' => 'Mark picked up',
 
     'action_split' => 'Split…',
     'action_merge' => 'Merge into…',

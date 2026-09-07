@@ -13,10 +13,10 @@ namespace Lunar\Core\Enums;
  */
 enum FulfilmentStateCategory
 {
-    /** Not yet handed over: pending, in-progress, ready-for-collection, … */
+    /** Not yet handed over: pending, in-progress, ready-for-pickup, … */
     case Outstanding;
 
-    /** Gone to the customer: shipped, collected, provisioned, … */
+    /** Gone to the customer: shipped, picked up, provisioned, … */
     case Fulfilled;
 
     /** Came back after being handed over. */

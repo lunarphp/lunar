@@ -45,7 +45,7 @@ return [
             'label' => 'Tipo',
             'options' => [
                 'ship-by' => 'Padrão',
-                'collection' => 'Coleta',
+                'pickup' => 'Retirada',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Tipo',
             'options' => [
                 'ship-by' => 'Padrão',
-                'collection' => 'Coleta',
+                'pickup' => 'Retirada',
             ],
         ],
     ],

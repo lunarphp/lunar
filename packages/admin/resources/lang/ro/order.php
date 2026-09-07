@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Expediat la',
             'handed_over' => [
                 'shipping' => 'Expediat la',
-                'collection' => 'Ridicat la',
+                'pickup' => 'Ridicat la',
                 'digital' => 'Furnizat la',
             ],
             'handed_over_default' => 'Onorat la',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Marchează onorat',
                 'modal_heading' => 'Marchează onorarea ca onorată',
                 'labels' => [
-                    'collection' => 'Marchează ridicat',
+                    'pickup' => 'Marchează ridicat',
                 ],
                 'notification' => [
                     'success' => 'Onorare marcată ca onorată.',

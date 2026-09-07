@@ -5,8 +5,8 @@ namespace Lunar\Core\Manifests;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\FulfilmentMethodManifest as FulfilmentMethodManifestContract;
-use Lunar\Core\Drivers\FulfilmentMethods\Collection as CollectionMethod;
 use Lunar\Core\Drivers\FulfilmentMethods\Digital;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
@@ -190,7 +190,7 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     protected function registerCoreMethods(): void
     {
         $this->register(app(Digital::class));
-        $this->register(app(CollectionMethod::class));
+        $this->register(app(Pickup::class));
         $this->register(app(Shipping::class));
     }
 

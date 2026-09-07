@@ -17,7 +17,7 @@ class TestPurchasable implements Purchasable
         public TaxClass $taxClass,
         public $taxReference = null,
         public $option = null,
-        public bool $collect = false,
+        public bool $pickup = false,
         public $meta = null,
     ) {
         //  ..

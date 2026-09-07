@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Thời điểm giao',
             'handed_over' => [
                 'shipping' => 'Thời điểm giao',
-                'collection' => 'Thời điểm nhận',
+                'pickup' => 'Thời điểm nhận',
                 'digital' => 'Thời điểm cung cấp',
             ],
             'handed_over_default' => 'Thời điểm hoàn thành',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Đánh dấu đã hoàn thành',
                 'modal_heading' => 'Đánh dấu đơn giao hàng là đã hoàn thành',
                 'labels' => [
-                    'collection' => 'Đánh dấu đã nhận',
+                    'pickup' => 'Đánh dấu đã nhận',
                 ],
                 'notification' => [
                     'success' => 'Đã đánh dấu đơn giao hàng là đã hoàn thành.',
