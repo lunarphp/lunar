@@ -589,7 +589,7 @@ async function confirmAndPay() {
                     v-if="state.pickupPoints.length > 1"
                     type="button"
                     class="xc-row-edit-btn"
-                    @click="openEdit('collect')"
+                    @click="openEdit('pickup')"
                   >
                     <Icon name="pencil" :size="14" />{{ pickupPoint ? 'Change' : 'Choose' }}
                   </button>
