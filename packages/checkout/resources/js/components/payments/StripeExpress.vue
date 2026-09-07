@@ -43,10 +43,9 @@ const amount = computed(() => props.amount ?? checkout?.breakdown?.value?.total 
 // no-op once one set of urls exists, so a host page's second click reuses
 // the same session rather than minting another.
 const sessionUrls = ref(props.urls || state.urls || null)
-// The start response projects the cart's own mode (spec 0013 §E). It arrives
-// after the sheet has opened (the mint is fired, not awaited, inside the
-// wallet's gesture window), so it refines the host's prop rather than
-// replacing it: by the time anything is written it is the server's answer.
+// The start response projects the cart's own mode (spec 0013 §E), which is
+// how a host that mounts the region without passing one still gets a sheet
+// that matches the cart.
 const startedFulfilment = ref(null)
 let mintPromise = null
 
@@ -126,9 +125,11 @@ async function postRedirect(url, body) {
   throw new Error(message || 'The request could not be completed.')
 }
 
-// Server answer first (host mode, once the session has been minted), then the
-// host page's own projection, then the running checkout's state.
-const collectMode = () => (startedFulfilment.value ?? props.fulfilment ?? state.fulfilment) === 'collect'
+// The host page's own projection first: it is kept current by whatever owns
+// the switch, where the start response is a snapshot of the cart as it was
+// when the session was minted. That snapshot covers a host that projects the
+// methods but not the mode, and the checkout's own state covers checkout mode.
+const collectMode = () => (props.fulfilment ?? startedFulfilment.value ?? state.fulfilment) === 'collect'
 
 function splitName(name) {
   const trimmed = (name || '').trim()
