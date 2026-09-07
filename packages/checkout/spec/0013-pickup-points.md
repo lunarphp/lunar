@@ -1,6 +1,6 @@
 # 0013: Pickup points, fulfilment mode, and the branch on the order
 
-- Status: accepted (2026-09-07)
+- Status: accepted (2026-09-07), implemented on feature/checkout (2026-09-07)
 - Author: Alec Ritson
 - Created: 2026-09-07
 - Depends on: [[0010-cart-session-reconciliation]] (fingerprint, pay boundary),
