@@ -15,6 +15,10 @@ defineProps({
   startUrl: { type: String, required: true },
   amount: { type: Number, required: true },
   currency: { type: String, default: 'GBP' },
+  // The cart's own fulfilment mode (spec 0013 §G). There is no checkout state
+  // to read it from here, and a wallet sheet opened in collect mode must ask
+  // for neither a shipping address nor a courier rate.
+  fulfilment: { type: String, default: 'delivery' },
 })
 </script>
 
@@ -28,6 +32,7 @@ defineProps({
       :start-url="startUrl"
       :amount="amount"
       :currency="currency"
+      :fulfilment="fulfilment"
     />
   </div>
 </template>

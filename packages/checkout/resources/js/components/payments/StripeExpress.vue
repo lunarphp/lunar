@@ -24,6 +24,11 @@ const props = defineProps({
   amount: { type: Number, default: null },
   currency: { type: String, default: null },
   startUrl: { type: String, default: null },
+  // Host mode only (spec 0013 §G): the cart's fulfilment mode, which there is
+  // no checkout state to read. Without it the sheet assumes delivery, asks
+  // for a shipping address and a rate, and writing that rate flips a
+  // collecting cart to delivery, dropping the customer's branch.
+  fulfilment: { type: String, default: null },
 })
 
 // No <LunarCheckout> ancestor on a host page: `optional: true` returns null
@@ -38,6 +43,11 @@ const amount = computed(() => props.amount ?? checkout?.breakdown?.value?.total 
 // no-op once one set of urls exists, so a host page's second click reuses
 // the same session rather than minting another.
 const sessionUrls = ref(props.urls || state.urls || null)
+// The start response projects the cart's own mode (spec 0013 §E). It arrives
+// after the sheet has opened (the mint is fired, not awaited, inside the
+// wallet's gesture window), so it refines the host's prop rather than
+// replacing it: by the time anything is written it is the server's answer.
+const startedFulfilment = ref(null)
 let mintPromise = null
 
 function ensureSession() {
@@ -51,6 +61,8 @@ function ensureSession() {
     mintPromise = postJson(props.startUrl, {}, 'Could not start checkout.')
       .then((data) => {
         sessionUrls.value = data.urls
+        startedFulfilment.value = data.fulfilment ?? null
+
         return data.urls
       })
       .catch((error) => {
@@ -114,7 +126,9 @@ async function postRedirect(url, body) {
   throw new Error(message || 'The request could not be completed.')
 }
 
-const collectMode = () => state.fulfilment === 'collect'
+// Server answer first (host mode, once the session has been minted), then the
+// host page's own projection, then the running checkout's state.
+const collectMode = () => (startedFulfilment.value ?? props.fulfilment ?? state.fulfilment) === 'collect'
 
 function splitName(name) {
   const trimmed = (name || '').trim()
