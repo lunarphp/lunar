@@ -34,31 +34,32 @@ class SetFulfilment implements SetsFulfilment
             return $cart->refresh()->calculate(force: true);
         }
 
-        $this->writeMeta($cart, $meta);
-        $this->storeCollectOption($cart);
-
+        // Resolve the point BEFORE anything is written: the basket page posts
+        // the mode and the handle in one call, so a stale or tampered handle
+        // has to leave the cart exactly as it was rather than flip it to
+        // collect and then 422.
         $offered = PickupPoints::offered($cart);
         $handle = $pickupPoint
             ?? ($offered->count() === 1 ? $offered->first()->handle : ($meta[PickupPoints::POINT_KEY]['handle'] ?? null));
+        $point = $handle === null
+            ? null
+            : $offered->first(fn (PickupPoint $candidate): bool => $candidate->handle === $handle);
 
-        if ($handle !== null) {
-            $point = $offered->first(fn (PickupPoint $candidate): bool => $candidate->handle === $handle);
-
-            if ($point === null) {
-                if ($pickupPoint !== null) {
-                    throw ValidationException::withMessages([
-                        'pickup_point' => 'The selected pickup point is not available.',
-                    ]);
-                }
-
-                // A stored point the provider no longer offers is forgotten.
-                unset($meta[PickupPoints::POINT_KEY]);
-            } else {
-                $meta[PickupPoints::POINT_KEY] = $point->toArray();
-            }
-
-            $this->writeMeta($cart, $meta);
+        if ($handle !== null && $point === null && $pickupPoint !== null) {
+            throw ValidationException::withMessages([
+                'pickup_point' => 'The selected pickup point is not available.',
+            ]);
         }
+
+        if ($point !== null) {
+            $meta[PickupPoints::POINT_KEY] = $point->toArray();
+        } elseif ($handle !== null) {
+            // A stored point the provider no longer offers is forgotten.
+            unset($meta[PickupPoints::POINT_KEY]);
+        }
+
+        $this->writeMeta($cart, $meta);
+        $this->storeCollectOption($cart);
 
         return $cart->refresh()->calculate(force: true);
     }

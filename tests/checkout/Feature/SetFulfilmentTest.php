@@ -114,3 +114,22 @@ it('merges into existing cart meta rather than replacing it', function () {
 
     expect($cart->meta['gift_note'])->toBe('Happy birthday');
 });
+
+it('leaves the cart untouched when the named point is rejected', function () {
+    PickupPointsStub::bind([new PickupPoint('london', 'London')]);
+    $cart = fulfilmentCart();
+    $storedOption = $cart->shippingAddress->shipping_option;
+
+    try {
+        app(SetsFulfilment::class)->execute($cart, 'collect', 'mars');
+        $this->fail('The unknown handle should have been rejected.');
+    } catch (ValidationException) {
+        // Asserted below: nothing was written before the handle was checked.
+    }
+
+    $cart = $cart->refresh();
+
+    expect($cart->meta['fulfilment'] ?? null)->toBeNull()
+        ->and($cart->meta['pickup_point'] ?? null)->toBeNull()
+        ->and($cart->shippingAddress->shipping_option)->toBe($storedOption);
+});
