@@ -45,7 +45,7 @@ return [
             'label' => 'Тип',
             'options' => [
                 'ship-by' => 'Стандартен',
-                'collection' => 'Колекция',
+                'pickup' => 'Получаване на място',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Тип',
             'options' => [
                 'ship-by' => 'Стандартен',
-                'collection' => 'Колекция',
+                'pickup' => 'Получаване на място',
             ],
         ],
     ],
