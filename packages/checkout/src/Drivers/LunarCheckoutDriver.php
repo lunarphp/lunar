@@ -27,10 +27,12 @@ use Lunar\Checkout\Events\ShippingOptionSet;
 use Lunar\Checkout\Exceptions\CheckoutSessionConflictException;
 use Lunar\Checkout\Exceptions\CheckoutSessionNotOperableException;
 use Lunar\Checkout\Exceptions\PaymentConfirmationException;
+use Lunar\Checkout\Exceptions\PaymentRecordingException;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
+use Lunar\Checkout\Support\PaymentIntentGateway;
 use Lunar\Checkout\Support\PickupPoints;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Managers\DiscountManager;
@@ -38,6 +40,8 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Order;
+use Lunar\Core\PaymentTypes\AbstractPayment;
 
 /**
  * The default checkout driver — ingests a Lunar {@see Cart} into a session,
@@ -56,6 +60,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         private ConnectionInterface $db,
         private Dispatcher $events,
         private SetsFulfilment $setFulfilment,
+        private PaymentIntentGateway $paymentIntentGateways,
     ) {}
 
     public function createSession(mixed $source, array $attributes = []): CheckoutSession
@@ -177,18 +182,6 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
              */
             $this->events->dispatch(new OrderPlacing(clone $order, $session));
 
-            /*
-             * Completing the session places the order (spec 0002 §D). A gateway
-             * that placed it during authorize() keeps its own timestamp; a
-             * synchronous method — offline, pay-on-collection, a zero total —
-             * has no gateway to do it, and would otherwise leave a draft order
-             * behind a completed checkout. Stamping placed_at is what emits
-             * OrderPlaced, so stock and fulfilment react either way.
-             */
-            if (! $order->isPlaced()) {
-                $order->update(['placed_at' => now()]);
-            }
-
             $attributes = [
                 'order_reference' => (string) $order->id,
                 'completed_at' => now(),
@@ -201,6 +194,14 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
                 $attributes['cart_fingerprint'] = $live->fingerprint;
             }
 
+            /*
+             * The session leaves PaymentProcessing before the gateway records
+             * the payment below: authorize() fires PaymentAttemptEvent, and
+             * CompleteSessionOnPaymentSuccess would otherwise find this very
+             * session still pinned and complete it a second time from inside
+             * the first. All of it sits in one transaction under the cart lock,
+             * so nothing observes the session completed without its order.
+             */
             $transitioned = $session->transitionGuarded(
                 [Open::$name, PaymentProcessing::$name],
                 Completed::$name,
@@ -211,10 +212,65 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
                 throw new CheckoutSessionConflictException('frozen');
             }
 
+            /*
+             * The webhook is a backstop over the gateway's shared authorize()
+             * path, not the only writer of payment evidence (spec 0002 §E).
+             * A PaymentProcessing session reaching here has captured money
+             * behind its intent; run that same authorize() against the order
+             * now, so the Transaction rows exist whether or not a webhook
+             * ever arrives. Webhook-first placement already recorded them.
+             */
+            if (! $isSync && ! $order->isPlaced()) {
+                $this->recordPayment($session, $order);
+            }
+
+            /*
+             * Completing the session places the order (spec 0002 §D). A gateway
+             * that placed it during authorize() keeps its own timestamp; a
+             * synchronous method — offline, pay-on-collection, a zero total —
+             * has no gateway to do it, and would otherwise leave a draft order
+             * behind a completed checkout. Stamping placed_at is what emits
+             * OrderPlaced, so stock and fulfilment react either way.
+             */
+            if (! $order->isPlaced()) {
+                $order->update(['placed_at' => now()]);
+            }
+
             $this->events->dispatch(new CheckoutSessionCompleted($session));
 
             return $order;
         });
+    }
+
+    /**
+     * Run the gateway's authorize() against the order for the session's
+     * captured intent, so the money is recorded as Transaction rows on the
+     * sync path exactly as the webhook path records it. The order is placed
+     * either way: a charge without an order is the one outcome the completion
+     * boundary must never produce, and missing evidence is recoverable.
+     */
+    private function recordPayment(CheckoutSession $session, Order $order): void
+    {
+        $reference = $session->payment_intent_ref;
+
+        if ($reference === null) {
+            return;
+        }
+
+        $gateway = $this->paymentIntentGateways->for($session);
+
+        if (! $gateway instanceof AbstractPayment) {
+            return;
+        }
+
+        try {
+            $gateway->order($order)->withData(['payment_intent' => $reference])->authorize();
+        } catch (\Throwable $e) {
+            report(new PaymentRecordingException(
+                "Could not record payment intent [{$reference}] on order [{$order->id}]: {$e->getMessage()}",
+                previous: $e,
+            ));
+        }
     }
 
     public function snapshot(CheckoutSession $session): CartSnapshot

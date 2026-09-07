@@ -144,7 +144,12 @@ re-verifying against the **session** total/currency before transition:
   `Open` session **voids its advisory intent first** (`voidIntent`)
   ([[0010-cart-session-reconciliation]] §E/§F).
 - The webhook is a **reconciliation backstop over a shared idempotent `authorize()` path**, not
-  a separate writer of success.
+  a separate writer of success. The Lunar checkout driver runs that same `authorize()` itself
+  when it completes a `PaymentProcessing` session (`->order($order)->withData(['payment_intent'
+  => $ref])`), so the `Transaction` rows exist whether or not a webhook ever arrives; a webhook
+  that lands afterwards finds the order placed and is a no-op. Completion never fails on a
+  recording error: the order is placed and the failure is reported, because a captured charge
+  without an order is the one outcome the boundary must not produce (2026-09-07, EDW2-161).
 - **Void-first invalidation and the refund invariant.** When checkout invalidates a
   `PaymentProcessing` session ([[0010-cart-session-reconciliation]] §F) the gateway driver first
   attempts to abort the intent (`voidIntent`); an unabortable/captured intent resolves through the completion
