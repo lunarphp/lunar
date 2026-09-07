@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_collection' => 'Collection',
+    'collect_from' => 'Collect from {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -94,6 +96,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'Customer address',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Notes',

@@ -422,13 +422,28 @@ class OrderShowController
     }
 
     /**
-     * The delivery method chosen at checkout — the shipping-breakdown snapshot,
-     * falling back to the shipping line for orders without a breakdown.
+     * The delivery method chosen at checkout: the shipping-breakdown snapshot,
+     * falling back to the shipping line for orders without a breakdown. The
+     * collect flag and the pickup point always come from the shipping
+     * line's meta, which is where core stamps them (checkout spec 0013 §H).
      *
-     * @return array{name: string, identifier: ?string, price: ?string}|null
+     * @return array{name: string, identifier: ?string, price: ?string, collect: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
      */
     protected function shippingOption(Order $order, callable $money): ?array
     {
+        $line = $order->lines->firstWhere('type', 'shipping');
+        $meta = $line?->meta ?? [];
+        $point = $meta['pickup_point'] ?? null;
+
+        $collect = [
+            'collect' => (bool) ($meta['collect'] ?? false),
+            'pickup_point' => is_array($point) && isset($point['handle']) ? [
+                'handle' => (string) $point['handle'],
+                'name' => (string) ($point['name'] ?? $point['handle']),
+                'lines' => array_values(array_map('strval', $point['lines'] ?? [])),
+            ] : null,
+        ];
+
         $item = $order->shipping_breakdown?->items?->first();
 
         if ($item) {
@@ -436,10 +451,9 @@ class OrderShowController
                 'name' => $item->name,
                 'identifier' => $item->identifier,
                 'price' => $item->price->format(),
+                ...$collect,
             ];
         }
-
-        $line = $order->lines->firstWhere('type', 'shipping');
 
         if (! $line) {
             return null;
@@ -449,6 +463,7 @@ class OrderShowController
             'name' => $line->description,
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
+            ...$collect,
         ];
     }
 

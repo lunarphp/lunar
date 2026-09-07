@@ -342,3 +342,45 @@ it('forbids staff without the manage-orders permission', function () {
 
     $this->get(route('panel.orders.show', $order))->assertForbidden();
 });
+
+it('exposes the pickup point from the shipping line meta', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Click & collect',
+        'identifier' => 'collection',
+        'unit_price' => 0,
+        'total' => 0,
+        'meta' => [
+            'collect' => true,
+            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP'], 'meta' => []],
+        ],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.collect', true)
+            ->where('shippingOption.pickup_point.name', 'Dartford')
+            ->where('shippingOption.pickup_point.lines.0', 'DA2 6EP'));
+});
+
+it('marks a courier line as not collect', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Standard Delivery',
+        'identifier' => 'standard',
+        'unit_price' => 500,
+        'total' => 500,
+        'meta' => ['collect' => false],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.collect', false)
+            ->where('shippingOption.pickup_point', null));
+});
