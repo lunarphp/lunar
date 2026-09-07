@@ -24,7 +24,7 @@ jobs:
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.4","8.5"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
-        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, upgrade]
+        testsuite: [core, api, admin, panel, filament, shipping, stripe, paypal, search, upgrade]
         include:
           - laravel: 12.*
             testbench: 10.*
@@ -145,6 +145,50 @@ jobs:
           DB_PASSWORD: postgres
         # See the mysql step above for why --do-not-fail-on-empty-test-suite is needed.
         run: ./vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite
+
+  openapi:
+    runs-on: ubuntu-latest
+    name: openapi - generate and lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: "--prefer-dist"
+          custom-cache-key: composer-p8.4-openapi-${{ hashFiles('composer.json') }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # testbench.yaml boots the packages without a host app or database; the
+      # generator reads the registry and the router only.
+      - name: Generate the OpenAPI documents
+        run: |
+          vendor/bin/testbench lunar:api:openapi storefront --out=build/openapi/storefront.json
+          vendor/bin/testbench lunar:api:openapi admin --out=build/openapi/admin.json
+
+      # Redocly is a CI-only tool, not a Composer or workspace dependency.
+      - name: Lint the OpenAPI documents
+        run: npx -y @redocly/cli@2 lint build/openapi/storefront.json build/openapi/admin.json --format=stylish
+
+      - name: Upload the OpenAPI documents
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: build/openapi/
+          if-no-files-found: error
 
   panel-js:
     runs-on: ubuntu-latest
