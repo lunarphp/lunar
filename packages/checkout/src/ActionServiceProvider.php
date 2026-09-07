@@ -23,6 +23,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\SyncsCheckoutSession::class => Actions\SyncCheckoutSession::class,
         Contracts\InvalidatesCheckoutSession::class => Actions\InvalidateCheckoutSession::class,
         Contracts\ReconcilesCheckoutSession::class => Actions\ReconcileCheckoutSession::class,
+        Contracts\SetsFulfilment::class => Actions\SetFulfilment::class,
     ];
 
     public function register(): void
