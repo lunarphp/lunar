@@ -239,16 +239,19 @@ export function createCheckout(data) {
   const pickupPoint = computed(
     () => state.pickupPoints.find((p) => p.id === state.pickupPointId) ?? null,
   )
-  // Collect chosen, no collect option for this address (outside the zone, say):
-  // the order cannot be created, and the only thing the customer can do about
-  // it is switch to delivery. Say that instead of asking for a branch that
-  // would not help.
-  const collectUnavailable = computed(() => state.fulfilment === 'collect' && !collectAvailable.value)
+  // Collect chosen, an address saved, and still no collect option (outside the
+  // zone, say): the order cannot be created, and the only thing the customer
+  // can do about it is switch to delivery. Say that instead of asking for a
+  // branch that would not help. Before an address exists Lunar offers no
+  // options at all, so that state is "not yet", never "unavailable".
+  const collectUnavailable = computed(
+    () => state.fulfilment === 'collect' && state.addressValid && !collectAvailable.value,
+  )
   // Several points on offer and none chosen: pay is blocked until one is.
   const pickupPointRequired = computed(
     () =>
       state.fulfilment === 'collect' &&
-      collectAvailable.value &&
+      !collectUnavailable.value &&
       state.pickupPoints.length > 1 &&
       !state.pickupPointId,
   )
