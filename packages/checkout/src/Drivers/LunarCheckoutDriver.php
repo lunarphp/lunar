@@ -27,6 +27,7 @@ use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
+use Lunar\Checkout\Support\CollectionPoints;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Managers\DiscountManager;
 use Lunar\Core\Models\Cart;
@@ -145,6 +146,10 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
                 throw new PaymentConfirmationException('fingerprint_mismatch');
             }
 
+            if ($isSync) {
+                $this->assertCollectionPointChosen($cart);
+            }
+
             if ($isSync && ! $cart->canCreateOrder()) {
                 throw new PaymentConfirmationException('cart_not_orderable');
             }
@@ -233,6 +238,8 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
             throw new PaymentConfirmationException('fingerprint_mismatch');
         }
+
+        $this->assertCollectionPointChosen($cart);
 
         if (! $cart->canCreateOrder()) {
             throw new PaymentConfirmationException('cart_not_orderable');
@@ -567,6 +574,8 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             'shipping_address' => $this->addressIdentity($cart->shippingAddress),
             'billing_address' => $this->addressIdentity($cart->billingAddress),
             'shipping_option' => $cart->shippingAddress?->shipping_option,
+            'fulfilment' => CollectionPoints::fulfilment($cart),
+            'collection_point' => CollectionPoints::chosenHandle($cart),
             'coupon' => $cart->coupon_code,
             'amount_total' => $cart->total?->value ?? 0,
             'currency' => $cart->currency->code,
@@ -613,6 +622,17 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         $this->invalidateCheckoutSession->execute($session, 'context_diverged');
 
         throw new PaymentConfirmationException('context_diverged');
+    }
+
+    /**
+     * A collect cart with points on offer and none chosen gets its own
+     * reason ahead of the generic cart_not_orderable (spec 0013 §D).
+     */
+    private function assertCollectionPointChosen(Cart $cart): void
+    {
+        if (CollectionPoints::missing($cart)) {
+            throw new PaymentConfirmationException('collection_point_required');
+        }
     }
 
     /**

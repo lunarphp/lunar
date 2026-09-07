@@ -33,6 +33,7 @@ use Lunar\Checkout\Session\SessionElementStore;
 use Lunar\Checkout\Shipping\CollectionPointModifier;
 use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
 use Lunar\Checkout\Support\CheckoutAssets;
+use Lunar\Checkout\Validation\Cart\CollectionPointRequired;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Modifiers\ShippingModifiers;
 
@@ -130,6 +131,16 @@ class CheckoutServiceProvider extends ServiceProvider
         // Spec 0013 §C: the chosen collection point rides on the collect
         // option's meta so core stamps it onto the shipping order line.
         $this->app->make(ShippingModifiers::class)->add(CollectionPointModifier::class);
+
+        // Spec 0013 §D: order creation refuses a collect cart with no chosen
+        // point through Lunar's own validator seam, so canCreateOrder() is
+        // the authority for every caller, not only this package's pay boundary.
+        config([
+            'lunar.cart.validators.order_create' => array_values(array_unique([
+                ...config('lunar.cart.validators.order_create', []),
+                CollectionPointRequired::class,
+            ])),
+        ]);
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
 

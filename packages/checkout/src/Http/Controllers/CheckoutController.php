@@ -1188,6 +1188,7 @@ class CheckoutController extends Controller
         return match ($e->reason) {
             'fingerprint_mismatch' => 'Your order changed while you were checking out. Check the details above and try again.',
             'cart_not_orderable' => 'Your order cannot be placed right now. Check the details above and try again.',
+            'collection_point_required' => 'Choose where you would like to collect your order, then try again.',
             default => 'The payment could not be started. Refresh the page and try again.',
         };
     }
