@@ -305,3 +305,18 @@ it('records the chosen method handle on the session for both paths', function ()
     expect($async->refresh()->meta['payment_handle'])->toBe('card')
         ->and($async->status)->toBeInstanceOf(PaymentProcessing::class);
 });
+
+it('stamps the chosen method onto the placed order', function () {
+    app(PaymentMethodRegistry::class)->add(SynchronousTestMethod::class);
+
+    $session = CheckoutCart::session(CheckoutCart::orderable());
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'on-account',
+    ])->assertSuccessful();
+
+    $order = Order::query()->findOrFail((int) $session->refresh()->order_reference);
+
+    expect($order->meta['payment_method'])->toBe('on-account')
+        ->and($order->transactions()->count())->toBe(0);
+});

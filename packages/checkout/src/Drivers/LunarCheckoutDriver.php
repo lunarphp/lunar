@@ -172,6 +172,18 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             $order = $cart->completedOrder ?: $cart->draftOrder ?: $cart->createOrder();
 
             /*
+             * How the customer chose to pay, for the panel, mails and any
+             * ERP feed (spec 0014 §D). The session records the handle at the
+             * pay boundary; a webhook-first placement arrives here through
+             * CompleteSessionOnPaymentSuccess with the same session.
+             */
+            $handle = $session->meta['payment_handle'] ?? null;
+
+            if (is_string($handle) && $handle !== '' && ($order->meta['payment_method'] ?? null) !== $handle) {
+                $order->update(['meta' => array_merge((array) $order->meta, ['payment_method' => $handle])]);
+            }
+
+            /*
              * Last point before the order becomes real, and the one place both
              * the sync and webhook-first paths converge (spec 0011 §F). Inside
              * the transaction and the cart-row lock, so a listener's writes are

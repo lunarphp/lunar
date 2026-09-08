@@ -131,7 +131,7 @@ function pinnedRecordingSession(): CheckoutSession
         'payment_intent_ref' => 'pi_recording_pinned',
         'payment_processing_at' => now(),
         'cart_fingerprint' => CheckoutCart::fingerprint($session),
-        'meta' => ['payment_method' => 'recording'],
+        'meta' => ['payment_method' => 'recording', 'payment_handle' => 'recording'],
     ])->save();
 
     return $session->refresh();
@@ -190,4 +190,14 @@ it('does not authorize again when the gateway already placed the order webhook-f
     expect($session->status)->toBeInstanceOf(Completed::class)
         ->and($order->transactions()->count())->toBe(1)
         ->and(RecordingGateway::$authorizeCalls)->toBeEmpty();
+});
+
+it('stamps the chosen method onto an order completed by reconcile', function () {
+    $session = pinnedRecordingSession();
+
+    $this->get(route('lunar.checkout.processing', $session->uuid));
+
+    $order = Order::query()->findOrFail((int) $session->refresh()->order_reference);
+
+    expect($order->meta['payment_method'])->toBe('recording');
 });
