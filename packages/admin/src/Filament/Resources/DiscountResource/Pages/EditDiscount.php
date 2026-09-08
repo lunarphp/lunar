@@ -4,15 +4,16 @@ namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\RelationManagers\RelationGroup;
-use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
+use Lunar\Filament\Contracts\DiscountFormType;
 use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
+use Lunar\Filament\Support\Facades\LunarFilament;
 
 class EditDiscount extends BaseEditRecord
 {
@@ -37,12 +38,8 @@ class EditDiscount extends BaseEditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        if (class_exists($data['type'])) {
-            $type = new $data['type'];
-
-            if ($type instanceof LunarPanelDiscountInterface) {
-                return $type->lunarPanelOnFill($data);
-            }
+        if ($form = $this->typeForm($data['type'] ?? null)) {
+            return $form->lunarPanelOnFill($data);
         }
 
         return $data;
@@ -50,12 +47,8 @@ class EditDiscount extends BaseEditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if (class_exists($data['type'])) {
-            $type = new $data['type'];
-
-            if ($type instanceof LunarPanelDiscountInterface) {
-                return $type->lunarPanelOnSave($data);
-            }
+        if ($form = $this->typeForm($data['type'] ?? null)) {
+            return $form->lunarPanelOnSave($data);
         }
 
         $minPrices = $data['data']['min_prices'] ?? [];
@@ -99,11 +92,20 @@ class EditDiscount extends BaseEditRecord
             $managers[] = ProductRewardRelationManager::class;
         }
 
-        $type = $this->record->getType();
-        if ($type instanceof LunarPanelDiscountInterface) {
-            $managers = array_merge($managers, $type->lunarPanelRelationManagers());
+        if ($form = LunarFilament::discountFormFor($this->record->getType())) {
+            $managers = array_merge($managers, $form->lunarPanelRelationManagers());
         }
 
         return $managers;
+    }
+
+    /** The Filament form for a stored type class, if the type contributes one. */
+    protected function typeForm(?string $typeClass): ?DiscountFormType
+    {
+        if (! $typeClass || ! class_exists($typeClass)) {
+            return null;
+        }
+
+        return LunarFilament::discountFormFor(new $typeClass);
     }
 }

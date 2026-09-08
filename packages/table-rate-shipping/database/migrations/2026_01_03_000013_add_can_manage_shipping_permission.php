@@ -1,19 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Core\Database\Migration;
+use Lunar\Core\Support\Facades\LunarAccessControl;
 use Spatie\Permission\Models\Permission;
 
 return new class extends Migration
 {
     public function up()
     {
-        try {
-            $guard = LunarPanel::getPanel()->getAuthGuard();
-        } catch (Throwable $e) {
-            return;
-        }
+        // Resolved through core so the permission is seeded whichever admin
+        // (Filament, the Inertia panel, or neither) is installed.
+        $guard = LunarAccessControl::getAuthGuard();
 
         $tableNames = config('permission.table_names');
 

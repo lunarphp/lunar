@@ -43,7 +43,7 @@ class ShippingServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel.shipping');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'shipping');
 
         if (! config('lunar.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');

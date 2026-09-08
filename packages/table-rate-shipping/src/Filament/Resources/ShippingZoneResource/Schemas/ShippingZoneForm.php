@@ -41,7 +41,7 @@ class ShippingZoneForm
             static::getCountriesComponent(),
             Callout::make()
                 ->status('info')
-                ->heading(__('lunarpanel.shipping::shippingzone.form.unrestricted.content'))
+                ->heading(__('shipping::shippingzone.form.unrestricted.content'))
                 ->hidden(fn (Get $get) => $get('type') != 'unrestricted'),
         ];
     }
@@ -49,7 +49,7 @@ class ShippingZoneForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel.shipping::shippingzone.form.name.label'))
+            ->label(__('shipping::shippingzone.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -58,20 +58,20 @@ class ShippingZoneForm
     public static function getTypeComponent(): Component
     {
         return Select::make('type')
-            ->label(__('lunarpanel.shipping::shippingzone.form.type.label'))
+            ->label(__('shipping::shippingzone.form.type.label'))
             ->required()
             ->options([
-                'unrestricted' => __('lunarpanel.shipping::shippingzone.form.type.options.unrestricted'),
-                'countries' => __('lunarpanel.shipping::shippingzone.form.type.options.countries'),
-                'states' => __('lunarpanel.shipping::shippingzone.form.type.options.states'),
-                'postcodes' => __('lunarpanel.shipping::shippingzone.form.type.options.postcodes'),
+                'unrestricted' => __('shipping::shippingzone.form.type.options.unrestricted'),
+                'countries' => __('shipping::shippingzone.form.type.options.countries'),
+                'states' => __('shipping::shippingzone.form.type.options.states'),
+                'postcodes' => __('shipping::shippingzone.form.type.options.postcodes'),
             ])->live();
     }
 
     public static function getCountryComponent(): Component
     {
         return Select::make('country')
-            ->label(__('lunarpanel.shipping::shippingzone.form.country.label'))
+            ->label(__('shipping::shippingzone.form.country.label'))
             ->dehydrated(false)
             ->visible(fn (Get $get) => ! in_array($get('type'), ['countries', 'unrestricted']))
             ->options(Country::get()->pluck('name', 'id'))
@@ -98,7 +98,7 @@ class ShippingZoneForm
     public static function getCountriesComponent(): Component
     {
         return Select::make('countries')
-            ->label(__('lunarpanel.shipping::shippingzone.form.countries.label'))
+            ->label(__('shipping::shippingzone.form.countries.label'))
             ->visible(fn ($get) => $get('type') == 'countries')
             ->dehydrated(false)
             ->options(Country::get()->pluck('name', 'id'))
@@ -127,7 +127,7 @@ class ShippingZoneForm
     public static function getStatesComponent(): Component
     {
         return Select::make('states')
-            ->label(__('lunarpanel.shipping::shippingzone.form.states.label'))
+            ->label(__('shipping::shippingzone.form.states.label'))
             ->visible(fn ($get) => $get('type') == 'states')
             ->dehydrated(false)
             ->options(fn ($get) => State::where('country_id', $get('country'))->get()->pluck('name', 'id'))
@@ -157,11 +157,11 @@ class ShippingZoneForm
     public static function getPostcodesComponent(): Component
     {
         return Textarea::make('postcodes')
-            ->label(__('lunarpanel.shipping::shippingzone.form.postcodes.label'))
+            ->label(__('shipping::shippingzone.form.postcodes.label'))
             ->visible(fn ($get) => $get('type') == 'postcodes')
             ->dehydrated(false)
             ->rows(10)
-            ->helperText(__('lunarpanel.shipping::shippingzone.form.postcodes.helper'))
+            ->helperText(__('shipping::shippingzone.form.postcodes.helper'))
             ->required()
             ->afterStateHydrated(static function (Textarea $component, Model $record): void {
                 $relatedModels = $record->postcodes;

@@ -35,9 +35,9 @@ class ShippingExclusionListTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel.shipping::shippingexclusionlist.table.name.label')),
+                ->label(__('shipping::shippingexclusionlist.table.name.label')),
             TextColumn::make('exclusions_count')
-                ->label(__('lunarpanel.shipping::shippingexclusionlist.table.exclusions_count.label'))
+                ->label(__('shipping::shippingexclusionlist.table.exclusions_count.label'))
                 ->counts('exclusions'),
         ];
     }
