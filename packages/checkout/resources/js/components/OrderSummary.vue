@@ -22,7 +22,8 @@ const onApply = () => {
     <ul class="os-items" :class="{ 'is-scroll': state.items.length > 5 }">
       <li v-for="it in state.items" :key="it.id" class="os-item">
         <span class="os-thumb">
-          <Icon :name="it.icon || 'package'" :size="22" />
+          <img v-if="it.image" :src="it.image" alt="" loading="lazy" />
+          <Icon v-else :name="it.icon || 'package'" :size="22" />
           <span class="qty">{{ it.qty }}</span>
         </span>
         <span class="meta">

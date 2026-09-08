@@ -34,6 +34,7 @@ use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
 use Lunar\Checkout\Support\PaymentIntentGateway;
 use Lunar\Checkout\Support\PickupPoints;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Managers\DiscountManager;
 use Lunar\Core\Models\Cart;
@@ -41,6 +42,7 @@ use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\PaymentTypes\AbstractPayment;
 
 /**
@@ -608,6 +610,10 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             ->map(fn ($line): array => [
                 'identifier' => (string) $line->id,
                 'description' => $line->purchasable?->getDescription(),
+                'sku' => $line->purchasable?->getIdentifier(),
+                // Variant thumbnail, falling back to the product's; the order
+                // summary shows a placeholder icon when there is none.
+                'image' => $this->lineImage($line->purchasable),
                 'quantity' => $line->quantity,
                 'unit_price' => $line->unitPrice?->value,
                 'sub_total' => $line->subTotal?->value,
@@ -615,6 +621,15 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
             ])
             ->values()
             ->all();
+    }
+
+    private function lineImage(?Purchasable $purchasable): ?string
+    {
+        if (! $purchasable instanceof ProductVariant) {
+            return null;
+        }
+
+        return $purchasable->getThumbnail()?->getUrl('small') ?: null;
     }
 
     public function getCoupon(CheckoutSession $session): ?string

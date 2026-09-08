@@ -1663,6 +1663,14 @@
     place-items: center;
     color: var(--slate-400);
   }
+  /* No overflow clipping: the qty badge hangs outside the corner. */
+  .os-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: inherit;
+  }
   .os-thumb .qty {
     position: absolute;
     top: -7px;

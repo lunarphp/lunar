@@ -382,6 +382,8 @@ class CheckoutController extends Controller
             'items' => array_map(fn (array $line): array => [
                 'id' => $line['identifier'],
                 'title' => $line['description'],
+                'sku' => $line['sku'] ?? null,
+                'image' => $line['image'] ?? null,
                 'qty' => $line['quantity'],
                 'price' => $line['unit_price'] ?? 0,
             ], $driver->getLines($session)),
