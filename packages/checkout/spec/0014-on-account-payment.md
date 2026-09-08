@@ -1,6 +1,6 @@
 # 0014: On-account payment, exclusive methods, and pay-time guards
 
-- Status: accepted (2026-09-08), not yet implemented
+- Status: accepted (2026-09-08), implemented on feature/checkout (2026-09-08)
 - Author: Alec Ritson
 - Created: 2026-09-08
 - Depends on: [[0002-payment-methods-and-driver]] §A (`PaymentMethod`, `requiresIntent`,
