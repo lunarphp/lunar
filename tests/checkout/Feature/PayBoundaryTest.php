@@ -2,7 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Checkout\Contracts\CheckoutDriver;
+use Lunar\Checkout\Contracts\GuardsPayment;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
+use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
@@ -225,4 +227,81 @@ it('refuses a pay request once the session has completed', function () {
     ])->assertForbidden();
 
     expect(Order::query()->count())->toBe(1);
+});
+
+/**
+ * A synchronous method that refuses to proceed until a flag is cleared, the
+ * shape of "enter your PO reference first" (spec 0014 §C).
+ */
+class GuardedTestMethod extends SynchronousTestMethod implements GuardsPayment
+{
+    public static ?string $blocker = 'Enter your purchase order reference to place this order on account.';
+
+    public function handle(): string
+    {
+        return 'guarded';
+    }
+
+    public function paymentBlocker(CheckoutSession $session, Cart $cart): ?string
+    {
+        return static::$blocker;
+    }
+}
+
+it('projects each method\'s payment blocker', function () {
+    GuardedTestMethod::$blocker = 'Enter your purchase order reference to place this order on account.';
+    app(PaymentMethodRegistry::class)->add(SynchronousTestMethod::class)->add(GuardedTestMethod::class);
+
+    $session = CheckoutCart::session(CheckoutCart::orderable());
+
+    $response = $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk();
+
+    expect($response->json('props.checkout.paymentMethods.0.paymentBlocker'))->toBeNull();
+    expect($response->json('props.checkout.paymentMethods.1.paymentBlocker'))->toBe('Enter your purchase order reference to place this order on account.');
+});
+
+it('refuses to pay with a method whose guard blocks, and proceeds once it clears', function () {
+    GuardedTestMethod::$blocker = 'Enter your purchase order reference to place this order on account.';
+    app(PaymentMethodRegistry::class)->add(GuardedTestMethod::class);
+
+    $session = CheckoutCart::session(CheckoutCart::orderable());
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'guarded',
+    ])->assertStatus(422)
+        ->assertJsonPath('errors.payment_method.0', 'Enter your purchase order reference to place this order on account.');
+
+    expect($session->refresh()->status)->not->toBeInstanceOf(Completed::class);
+
+    GuardedTestMethod::$blocker = null;
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'guarded',
+    ])->assertSuccessful();
+
+    expect($session->refresh()->status)->toBeInstanceOf(Completed::class);
+});
+
+it('records the chosen method handle on the session for both paths', function () {
+    app(PaymentMethodRegistry::class)->add(SynchronousTestMethod::class)->add(IntentTestMethod::class);
+
+    $sync = CheckoutCart::session(CheckoutCart::orderable());
+    $this->postJson(route('lunar.checkout.pay', $sync->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($sync),
+        'payment_method' => 'on-account',
+    ])->assertSuccessful();
+
+    expect($sync->refresh()->meta['payment_handle'])->toBe('on-account');
+
+    $async = CheckoutCart::session(CheckoutCart::orderable());
+    $this->postJson(route('lunar.checkout.pay', $async->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($async),
+        'payment_method' => 'card',
+    ])->assertSuccessful();
+
+    expect($async->refresh()->meta['payment_handle'])->toBe('card')
+        ->and($async->status)->toBeInstanceOf(PaymentProcessing::class);
 });

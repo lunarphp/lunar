@@ -20,6 +20,7 @@ use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\ElementRegistry;
+use Lunar\Checkout\Contracts\GuardsPayment;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\DataObjects\CheckoutAddress;
@@ -372,6 +373,7 @@ class CheckoutController extends Controller
     private function projectCheckout(CheckoutDriver $driver, CheckoutSessionModel $session): array
     {
         $snapshot = $driver->snapshot($session);
+        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
 
         return [
             'uuid' => $session->uuid,
@@ -411,14 +413,13 @@ class CheckoutController extends Controller
                 'requiresIntent' => $method->requiresIntent(),
                 'component' => $method->component(),
                 'config' => $method->config(),
+                'paymentBlocker' => $method instanceof GuardsPayment ? $method->paymentBlocker($session, $cart) : null,
                 // A method's own claim is never trusted alone: the wallet
                 // region only renders for a driver that can actually hold
                 // (spec 0012 SF; see Express::driverSupportsHolds()).
                 'supportsExpress' => $method->supportsExpress() && Express::driverSupportsHolds($method),
                 'expressComponent' => $method->expressComponent(),
-            ], app(PaymentMethodRegistry::class)->availableFor(
-                Cart::query()->findOrFail((int) $session->cart_reference)
-            )),
+            ], app(PaymentMethodRegistry::class)->availableFor($cart)),
             'urls' => $this->sessionUrls($session),
         ];
     }
@@ -966,11 +967,20 @@ class CheckoutController extends Controller
             'payment_method' => ['required', 'string'],
         ]);
 
-        $method = $this->resolveAvailableMethod(
-            $methods,
-            Cart::query()->findOrFail((int) $session->cart_reference),
-            $data['payment_method'],
-        );
+        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
+
+        $method = $this->resolveAvailableMethod($methods, $cart, $data['payment_method']);
+
+        if ($method instanceof GuardsPayment && ($blocker = $method->paymentBlocker($session, $cart)) !== null) {
+            throw ValidationException::withMessages(['payment_method' => $blocker]);
+        }
+
+        // Which method the customer chose, for the order stamp at completion
+        // (spec 0014 §D). Distinct from meta.payment_method, which is the
+        // gateway driver the intent code resolves.
+        $session->forceFill([
+            'meta' => array_merge((array) $session->meta, ['payment_handle' => $method->handle()]),
+        ])->save();
 
         // Live amount, not the session's pinned figure — the pin happens
         // inside assertReadyForPayment(), after this decision.
