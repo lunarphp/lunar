@@ -403,58 +403,58 @@ async function signOut() {
       </template>
     </div>
 
-    <!-- Two-factor challenge, in place. Teleported to body so the fixed
-         overlay is not clipped by the section's layout. -->
-    <Teleport to="body">
-      <div
-        v-if="twoFactorOpen"
-        class="tf-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="contact-two-factor-title"
-        @keydown.esc.prevent="closeTwoFactor"
-      >
-        <div class="tf-card">
-          <div class="tf-icon ico"><Icon name="shield-check" :size="26" /></div>
-          <h2 id="contact-two-factor-title">Confirm it's you</h2>
-          <p v-if="!useRecoveryCode">Enter the 6-digit code from your authenticator app to finish signing in.</p>
-          <p v-else>Enter one of the recovery codes you saved when you set up two-step sign-in.</p>
+    <!-- Two-factor challenge, in place. Rendered inside the section (not
+         teleported): every checkout style is nested under .lunar-checkout, so
+         a node moved to <body> loses the kit. Fixed positioning does the
+         rest, as SuccessOverlay does. -->
+    <div
+      v-if="twoFactorOpen"
+      class="tf-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contact-two-factor-title"
+      @keydown.esc.prevent="closeTwoFactor"
+    >
+      <div class="tf-card">
+        <div class="tf-icon ico"><Icon name="shield-check" :size="26" /></div>
+        <h2 id="contact-two-factor-title">Confirm it's you</h2>
+        <p v-if="!useRecoveryCode">Enter the 6-digit code from your authenticator app to finish signing in.</p>
+        <p v-else>Enter one of the recovery codes you saved when you set up two-step sign-in.</p>
 
-          <FloatingField
-            v-if="!useRecoveryCode"
-            id="contact-two-factor-code"
-            v-model="twoFactor.code"
-            label="Authentication code"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            maxlength="6"
-            mono
-            :error="twoFactorError"
-            @keydown.enter.prevent="verifyTwoFactor"
-          />
-          <FloatingField
-            v-else
-            id="contact-two-factor-code"
-            v-model="twoFactor.recovery_code"
-            label="Recovery code"
-            autocomplete="off"
-            mono
-            :error="twoFactorError"
-            @keydown.enter.prevent="verifyTwoFactor"
-          />
+        <FloatingField
+          v-if="!useRecoveryCode"
+          id="contact-two-factor-code"
+          v-model="twoFactor.code"
+          label="Authentication code"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          mono
+          :error="twoFactorError"
+          @keydown.enter.prevent="verifyTwoFactor"
+        />
+        <FloatingField
+          v-else
+          id="contact-two-factor-code"
+          v-model="twoFactor.recovery_code"
+          label="Recovery code"
+          autocomplete="off"
+          mono
+          :error="twoFactorError"
+          @keydown.enter.prevent="verifyTwoFactor"
+        />
 
-          <div class="tf-actions">
-            <button type="button" class="btn btn-primary" :disabled="twoFactor.processing || !twoFactorValue" @click="verifyTwoFactor">
-              {{ twoFactor.processing ? 'Checking…' : 'Sign in' }}
-            </button>
-            <button type="button" class="btn btn-secondary" :disabled="twoFactor.processing" @click="closeTwoFactor">Cancel</button>
-          </div>
-
-          <button type="button" class="tf-toggle" @click="toggleRecoveryCode">
-            {{ useRecoveryCode ? 'Use an authenticator code instead' : 'Lost your device? Use a recovery code' }}
+        <div class="tf-actions">
+          <button type="button" class="btn btn-primary" :disabled="twoFactor.processing || !twoFactorValue" @click="verifyTwoFactor">
+            {{ twoFactor.processing ? 'Checking…' : 'Sign in' }}
           </button>
+          <button type="button" class="btn btn-secondary" :disabled="twoFactor.processing" @click="closeTwoFactor">Cancel</button>
         </div>
+
+        <button type="button" class="tf-toggle" @click="toggleRecoveryCode">
+          {{ useRecoveryCode ? 'Use an authenticator code instead' : 'Lost your device? Use a recovery code' }}
+        </button>
       </div>
-    </Teleport>
+    </div>
   </section>
 </template>

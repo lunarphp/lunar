@@ -1951,6 +1951,10 @@
     gap: 10px;
     margin-top: 6px;
   }
+  .tf-actions .btn {
+    flex: 1;
+    height: 44px;
+  }
   .tf-toggle {
     display: block;
     margin: 14px auto 0;
