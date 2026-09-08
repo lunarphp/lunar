@@ -160,6 +160,7 @@ async function continueWithEmail() {
 
 function persistGuest() {
   saving.value = true
+  resetLogin()
   router.post(
     p.value.contactUrl,
     { email: candidate.value },
@@ -191,9 +192,11 @@ async function signIn() {
   try {
     response = await login.post(p.value.loginUrl, { onHttpException: () => {} })
   } catch {
-    return // 422 → login.errors renders under the password field
+    rejectPassword() // 422 → login.errors renders under the (now empty) field
+    return
   }
   if (login.hasErrors || !response) {
+    rejectPassword()
     return
   }
 
@@ -261,9 +264,33 @@ async function verifyTwoFactor() {
   signedInReload()
 }
 
+// A refused password is cleared so the next attempt starts from an empty
+// field, the way native sign-in forms behave; the error stays until typing.
+function rejectPassword() {
+  login.password = ''
+  nextTick(() => document.getElementById('contact-password')?.focus())
+}
+
+watch(
+  () => login.password,
+  (value) => {
+    if (value && login.hasErrors) {
+      login.clearErrors()
+    }
+  },
+)
+
+// Leaving the sign-in path (guest, or coming back to edit later) drops the
+// typed password and any refusal, so nothing stale greets the next visit.
+function resetLogin() {
+  login.password = ''
+  login.clearErrors()
+}
+
 function change() {
   phase.value = 'editing'
   fieldError.value = ''
+  resetLogin()
 }
 
 // Signing out invalidates the HTTP session, which orphans the cart this
