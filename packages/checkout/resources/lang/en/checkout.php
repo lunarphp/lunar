@@ -5,6 +5,13 @@ return [
         'offline' => [
             'label' => 'Pay later',
         ],
+        'on_account' => [
+            'label' => 'Pay on account',
+        ],
+    ],
+
+    'pay' => [
+        'place_order' => 'Place order',
     ],
 
     'states' => [

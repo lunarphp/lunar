@@ -30,14 +30,21 @@ class CheckoutCart
 {
     public static function orderable(int $unitPrice = 1000, bool $collect = false): Cart
     {
-        Language::factory()->create(['code' => 'en', 'default' => true]);
-        CustomerGroup::factory()->create(['default' => true]);
-        TaxZone::factory()->create(['default' => true]);
+        Language::query()->where('code', 'en')->exists()
+            || Language::factory()->create(['code' => 'en', 'default' => true]);
+        CustomerGroup::query()->where('default', true)->exists()
+            || CustomerGroup::factory()->create(['default' => true]);
+        TaxZone::query()->where('default', true)->exists()
+            || TaxZone::factory()->create(['default' => true]);
 
-        $channel = Channel::factory()->create(['handle' => 'webstore', 'default' => true]);
-        $currency = Currency::factory()->create(['code' => 'GBP', 'default' => true, 'decimal_places' => 2]);
-        $taxClass = TaxClass::factory()->create(['default' => true]);
-        $country = Country::factory()->create(['iso2' => 'GB']);
+        $channel = Channel::query()->where('handle', 'webstore')->first()
+            ?? Channel::factory()->create(['handle' => 'webstore', 'default' => true]);
+        $currency = Currency::query()->where('code', 'GBP')->first()
+            ?? Currency::factory()->create(['code' => 'GBP', 'default' => true, 'decimal_places' => 2]);
+        $taxClass = TaxClass::query()->where('default', true)->first()
+            ?? TaxClass::factory()->create(['default' => true]);
+        $country = Country::query()->where('iso2', 'GB')->first()
+            ?? Country::factory()->create(['iso2' => 'GB']);
 
         app(StorefrontSession::class)->setChannel($channel)->setCurrency($currency);
 
