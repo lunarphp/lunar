@@ -13,6 +13,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
+- Table-rate shipping in the Inertia panel — Settings > Shipping (zones, methods, exclusion lists), the shipping-discount form, Filament made optional (spec 0078)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages

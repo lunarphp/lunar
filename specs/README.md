@@ -93,3 +93,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
+| 0078 | Table-rate shipping in the Inertia panel | accepted    |
