@@ -32,6 +32,7 @@ use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Panel\Support\FulfilmentTransitions;
 use Lunar\Panel\Support\TimelineActivity;
@@ -64,7 +65,8 @@ class OrderShowController
         $captured = (int) $order->transactions->where('type', 'capture')->where('success', true)->sum('amount');
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
-        $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
+        $paymentMethod = is_string($order->meta['payment_method'] ?? null) ? $order->meta['payment_method'] : null;
+        $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor, $paymentMethod);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -79,8 +81,11 @@ class OrderShowController
                 'id' => $order->id,
                 'reference' => $order->reference ?: '#'.$order->id,
                 'customer_reference' => $order->customer_reference,
+                'payment_method' => $paymentMethod,
                 'payment_status' => $order->payment_status::$name,
-                'payment_status_label' => $order->payment_status->label(),
+                'payment_status_label' => $paymentMethod === 'on-account' && $order->payment_status instanceof Pending
+                    ? __('panel::orders.payment_on_account')
+                    : $order->payment_status->label(),
                 'fulfilment_status' => $order->fulfilment_status::$name,
                 'fulfilment_status_label' => $order->fulfilment_status->label(),
                 'lifecycle' => $order->lifecycleStatus(),
@@ -389,27 +394,29 @@ class OrderShowController
      * How the transaction ledger compares to what the order should have
      * settled to: `outstanding` when the customer has paid something but not
      * everything, `refund_due` when settled money exceeds that reference,
-     * `balanced` otherwise. A zero-capture order (pending/authorized) stays
-     * balanced — that's the ordinary pre-payment state, not a divergence to
-     * flag. A cancelled order's reference is 0, not its total — nothing
-     * should be kept, so any money still held is a refund due regardless of
-     * how much of the original total it represents.
+     * `on_account` when the order was invoiced on account and nothing has
+     * been captured or refunded, `balanced` otherwise. A zero-capture order
+     * (pending/authorized) stays balanced, that's the ordinary pre-payment
+     * state, not a divergence to flag. A cancelled order's reference is 0,
+     * not its total, nothing should be kept, so any money still held is a
+     * refund due regardless of how much of the original total it represents.
      *
      * @return array{status: string, captured: ?string, refunded: ?string, total: string, variance: ?string, varianceMajor: float}
      */
-    protected function settlement(Order $order, int $captured, int $refunded, callable $money, callable $toMajor): array
+    protected function settlement(Order $order, int $captured, int $refunded, callable $money, callable $toMajor, ?string $paymentMethod = null): array
     {
         $total = (int) $order->total;
         $settled = $captured - $refunded;
         $reference = $order->isCancelled() ? 0 : $total;
 
         $status = match (true) {
+            $paymentMethod === 'on-account' && $captured === 0 && $refunded === 0 => 'on_account',
             $settled > $reference => 'refund_due',
             $captured > 0 && $settled < $reference => 'outstanding',
             default => 'balanced',
         };
 
-        $varianceMinor = $status === 'balanced' ? 0 : abs($settled - $reference);
+        $varianceMinor = in_array($status, ['balanced', 'on_account'], true) ? 0 : abs($settled - $reference);
 
         return [
             'status' => $status,

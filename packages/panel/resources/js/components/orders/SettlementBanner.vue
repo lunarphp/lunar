@@ -25,7 +25,7 @@ const iconClasses = computed(() =>
 
 <template>
     <div
-        v-if="settlement.status !== 'balanced'"
+        v-if="settlement.status !== 'balanced' && settlement.status !== 'on_account'"
         class="flex items-start gap-3 rounded-md border px-4 py-3 mb-5"
         :class="wrapClasses"
         data-testid="settlement-banner"

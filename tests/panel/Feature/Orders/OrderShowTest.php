@@ -384,3 +384,33 @@ it('marks a courier line as not collect', function () {
             ->where('shippingOption.collect', false)
             ->where('shippingOption.pickup_point', null));
 });
+
+it('shows an on-account order as on account rather than pending', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'total' => 10000,
+        'meta' => ['payment_method' => 'on-account', 'account_ref' => 'ACC-1234'],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('order.payment_method', 'on-account')
+            ->where('order.payment_status_label', 'On account')
+            ->where('settlement.status', 'on_account')
+            ->where('settlement.captured', null)
+        );
+});
+
+it('keeps the card rollup for an order paid any other way', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000, 'meta' => ['payment_method' => 'card']]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('order.payment_method', 'card')
+            ->where('settlement.status', 'balanced')
+        );
+});

@@ -65,6 +65,7 @@ const props = defineProps<{
         id: number;
         reference: string;
         customer_reference: string | null;
+        payment_method: string | null;
         payment_status: string;
         payment_status_label: string;
         fulfilment_status: string;
@@ -139,7 +140,8 @@ const FULFILMENT_TONES: Record<string, Tone> = {
     'partially-returned': 'warn',
     returned: 'danger',
 };
-const paymentTone = (key: string): Tone => PAYMENT_TONES[key] ?? 'neutral';
+const paymentTone = (key: string): Tone =>
+    props.order.payment_method === 'on-account' && key === 'pending' ? 'neutral' : (PAYMENT_TONES[key] ?? 'neutral');
 const fulfilmentTone = (key: string): Tone => FULFILMENT_TONES[key] ?? 'neutral';
 
 const TXN_TYPE_LABELS: Record<string, string> = {
@@ -427,7 +429,7 @@ const addressLines = (address: Address): string[] =>
                         </Section>
 
                         <!-- Transactions -->
-                        <Section :title="t('orders.section_transactions')">
+                        <Section v-if="transactions.length || order.payment_method !== 'on-account'" :title="t('orders.section_transactions')">
                             <div v-if="transactions.length" class="overflow-x-auto">
                                 <table class="w-full text-[12.5px] border-collapse">
                                     <thead>
@@ -501,7 +503,10 @@ const addressLines = (address: Address): string[] =>
                             <dl class="text-[12.5px] space-y-2">
                                 <div class="flex items-center justify-between gap-2">
                                     <dt class="text-ink-500">{{ t('orders.column_payment') }}</dt>
-                                    <dd><StatusBadge :tone="paymentTone(order.payment_status)" size="sm" dot>{{ order.payment_status_label }}</StatusBadge></dd>
+                                    <dd>
+                                        <StatusBadge :tone="paymentTone(order.payment_status)" size="sm" dot>{{ order.payment_status_label }}</StatusBadge>
+                                        <p v-if="order.payment_method === 'on-account'" class="m-0 mt-1 text-[12px] text-ink-500">{{ t('orders.payment_on_account_sub') }}</p>
+                                    </dd>
                                 </div>
                                 <div class="flex items-center justify-between gap-2">
                                     <dt class="text-ink-500">{{ t('orders.column_fulfilment') }}</dt>
