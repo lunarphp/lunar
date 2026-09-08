@@ -7,11 +7,8 @@ return [
         ],
         'on_account' => [
             'label' => 'Pay on account',
+            'guard' => 'Enter your purchase order reference to place this order on account.',
         ],
-    ],
-
-    'pay' => [
-        'place_order' => 'Place order',
     ],
 
     'states' => [

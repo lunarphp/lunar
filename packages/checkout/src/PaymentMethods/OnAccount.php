@@ -80,7 +80,7 @@ class OnAccount extends Offline implements ExclusivePaymentMethod, GuardsPayment
         $reference = trim((string) (($session->getElementData('order-details') ?? [])['reference'] ?? ''));
 
         return $reference === ''
-            ? 'Enter your purchase order reference to place this order on account.'
+            ? __('lunar-checkout::checkout.payments.on_account.guard')
             : null;
     }
 }

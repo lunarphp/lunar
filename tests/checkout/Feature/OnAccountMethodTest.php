@@ -15,6 +15,8 @@ beforeEach(function () {
     OnAccount::reset();
 });
 
+afterEach(fn () => OnAccount::reset());
+
 function accountCart(?string $accountRef = 'ACC-1234'): Cart
 {
     $cart = CheckoutCart::orderable();

@@ -975,13 +975,6 @@ class CheckoutController extends Controller
             throw ValidationException::withMessages(['payment_method' => $blocker]);
         }
 
-        // Which method the customer chose, for the order stamp at completion
-        // (spec 0014 §D). Distinct from meta.payment_method, which is the
-        // gateway driver the intent code resolves.
-        $session->forceFill([
-            'meta' => array_merge((array) $session->meta, ['payment_handle' => $method->handle()]),
-        ])->save();
-
         // Live amount, not the session's pinned figure — the pin happens
         // inside assertReadyForPayment(), after this decision.
         $amountTotal = $checkoutDriver->snapshot($session)->amountTotal;
@@ -1019,6 +1012,17 @@ class CheckoutController extends Controller
                 );
             }
         }
+
+        // Which method the customer chose, for the order stamp at completion
+        // (spec 0014 §D). Distinct from meta.payment_method, which is the
+        // gateway driver the intent code resolves. Written here, after the
+        // guard and the hold/sync adjustment above have both already had the
+        // chance to reject the attempt (a blocked guard, a reauthorization
+        // requirement, an unvoidable previous hold), so a rejected attempt
+        // never leaves a handle behind on the session.
+        $session->forceFill([
+            'meta' => array_merge((array) $session->meta, ['payment_handle' => $method->handle()]),
+        ])->save();
 
         try {
             if (! $method->requiresIntent() || $amountTotal <= 0) {
@@ -1249,15 +1253,22 @@ class CheckoutController extends Controller
 
     /**
      * The registered method for this handle, provided the basket can actually
-     * use it. Availability is enforced on writes as well as hidden in the
-     * projection, so selecting a method the cart doesn't qualify for is
-     * rejected rather than quietly honoured.
+     * use it right now. "Available" means a survivor of
+     * PaymentMethodRegistry::availableFor($cart), not merely
+     * $method->isAvailable($cart) in isolation: that registry call is also
+     * where the ExclusivePaymentMethod filter lives (spec 0014 §B), so a
+     * handle that is individually available but excluded by a qualifying
+     * exclusive method (e.g. card while on-account is offered) is rejected
+     * here exactly as it is hidden from the projection, rather than quietly
+     * honoured because the caller bypassed the UI.
      */
     private function resolveAvailableMethod(PaymentMethodRegistry $methods, Cart $cart, string $handle): PaymentMethod
     {
-        $method = $methods->get($handle);
+        $method = collect($methods->availableFor($cart))->first(
+            fn (PaymentMethod $method): bool => $method->handle() === $handle,
+        );
 
-        if ($method === null || ! $method->isAvailable($cart)) {
+        if ($method === null) {
             throw ValidationException::withMessages([
                 'payment_method' => 'The selected payment method is not available.',
             ]);
