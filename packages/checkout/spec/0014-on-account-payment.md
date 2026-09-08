@@ -15,7 +15,7 @@
 A trade customer with an account does not pay at the checkout. The order is placed, the
 goods go out, and the ERP invoices the account on terms. This package already has the
 mechanics: `PaymentMethods\Offline` completes a session synchronously with no gateway and
-core's `OfflinePayment` places the order unpaid. Three things are missing before a host can
+`LunarCheckoutDriver::complete()` places the order itself on that path with no `authorize()` and no `Transaction`. Three things are missing before a host can
 ship it.
 
 1. **Nothing decides who may pay on account.** Lunar's `lunar_customers.account_ref` exists,
@@ -72,7 +72,7 @@ class OnAccount extends Offline implements ExclusivePaymentMethod, GuardsPayment
   cart has neither, so guests never qualify unless a host says otherwise.
 - `requireReference()` defaults to **off**. When on, §C blocks pay until the order
   details element's `reference` is filled.
-- `driver()` stays `offline`: core's `OfflinePayment` places the order and writes no
+- `driver()` stays `offline`: on the synchronous path `complete()` places the order and never calls the driver, so no
   transaction. The package does not invent a "paid on account" transaction; nothing was
   paid.
 
@@ -127,7 +127,7 @@ interface GuardsPayment
   computed server-side on every projection, so it tracks element edits through the existing
   partial reloads.
 - `OnAccount::paymentBlocker()` returns null unless `requireReference` is on and
-  `$session->element_data['order_details']['reference']` is blank, in which case:
+  `$session->element_data['order-details']['reference']` is blank, in which case:
   "Enter your purchase order reference to place this order on account." The element key is
   the one `Elements\OrderDetails` writes; a host that replaced that element carries its own
   method.
@@ -162,8 +162,7 @@ interface GuardsPayment
 
 The order screen's payment summary reads `order.meta.payment_method`. When it is
 `on-account` the state chip reads "On account" instead of "Pending", the sub-copy reads
-"Invoiced on account, no payment taken at checkout", and the transactions table is hidden
-rather than shown empty. Any other handle keeps today's rollup. Translation keys
+"Invoiced on account, no payment taken at checkout", `settlement()` reports `on_account` rather than `balanced`, and the transactions table is hidden when empty (a later refund or manual capture still shows). Any other handle keeps today's rollup. Translation keys
 `payments.on_account`, `payments.on_account_sub`.
 
 ## Testing
