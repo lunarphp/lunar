@@ -120,6 +120,19 @@ Selecting a returned address fills the delivery form client-side; it does not
 write the cart. Persistence stays the existing `shipping-address` route, so
 address writes keep one path.
 
+### D. Inline sign-in stays inside the checkout
+
+`ContactInformation` projects `loginUrl`, `twoFactorUrl` and `logoutUrl` from the
+host's named routes (`login`, `two-factor.login`, `logout`), null when absent.
+`ContactSection.vue` posts credentials to `loginUrl` as JSON. Fortify answers a
+two-factor account with `{ two_factor: true }` instead of a session; the
+component then collects the authenticator code, or a recovery code, in a
+modal on the checkout page and posts it to `twoFactorUrl` (Fortify returns 204
+for a JSON request, 422 with `code` / `recovery_code` errors otherwise). A full
+page visit to the host's challenge page is never made: its post-login redirect
+is the host's `home`, which is not this checkout. Success reloads the page so
+`show()` reconciles the merged cart.
+
 ### D. The element data store
 
 The contract elements use is a key/value store for captured data. It is **not**

@@ -28,6 +28,18 @@ const phase = ref(!signedIn.value && p.value.email ? 'done' : 'editing')
 const lookup = useHttp({ email: '' })
 const login = useHttp({ email: '', password: '' })
 const logout = useHttp({})
+
+// Two-factor challenge, answered in place. Fortify replies to the login with
+// `two_factor: true` instead of a session; the code (or a recovery code) then
+// posts to twoFactorUrl and a 204 means the session is signed in. A full page
+// visit to the challenge would land the customer wherever the host's login
+// redirect points, which is not this checkout.
+const twoFactor = useHttp({ code: '', recovery_code: '' })
+const twoFactorOpen = ref(false)
+const useRecoveryCode = ref(false)
+const twoFactorUrl = computed(
+  () => p.value.twoFactorUrl || (p.value.loginUrl ? new URL('/two-factor-challenge', p.value.loginUrl).toString() : null),
+)
 const saving = ref(false)
 const signingOut = ref(false)
 const confirmingSignOut = ref(false)
@@ -185,16 +197,68 @@ async function signIn() {
     return
   }
 
-  // Fortify can answer with a 2FA challenge instead of a session; that page
-  // lives on the host app at Fortify's default path.
   if ((response?.data ?? response)?.two_factor) {
-    window.location.assign(new URL('/two-factor-challenge', p.value.loginUrl))
+    openTwoFactor()
     return
   }
 
-  // Full page load, not an Inertia visit: logging in can merge/swap the cart,
-  // and show() reconciles to the surviving session (possibly a new UUID).
+  signedInReload()
+}
+
+// Full page load, not an Inertia visit: logging in can merge/swap the cart,
+// and show() reconciles to the surviving session (possibly a new UUID).
+function signedInReload() {
   window.location.reload()
+}
+
+function openTwoFactor() {
+  twoFactor.code = ''
+  twoFactor.recovery_code = ''
+  twoFactor.clearErrors()
+  useRecoveryCode.value = false
+  twoFactorOpen.value = true
+  nextTick(() => document.getElementById('contact-two-factor-code')?.focus())
+}
+
+function closeTwoFactor() {
+  twoFactorOpen.value = false
+  nextTick(() => document.getElementById('contact-password')?.focus())
+}
+
+function toggleRecoveryCode() {
+  useRecoveryCode.value = !useRecoveryCode.value
+  twoFactor.code = ''
+  twoFactor.recovery_code = ''
+  twoFactor.clearErrors()
+  nextTick(() => document.getElementById('contact-two-factor-code')?.focus())
+}
+
+const twoFactorValue = computed(() => (useRecoveryCode.value ? twoFactor.recovery_code : twoFactor.code).trim())
+const twoFactorError = computed(() => twoFactor.errors.code || twoFactor.errors.recovery_code || '')
+
+async function verifyTwoFactor() {
+  if (twoFactor.processing || !twoFactorUrl.value || !twoFactorValue.value) {
+    return
+  }
+
+  // Fortify checks `code` first and falls back to `recovery_code`; the unused
+  // field posts as an empty string, which the host reads as absent.
+  if (useRecoveryCode.value) {
+    twoFactor.code = ''
+  } else {
+    twoFactor.recovery_code = ''
+  }
+
+  try {
+    await twoFactor.post(twoFactorUrl.value, { onHttpException: () => {} })
+  } catch {
+    return // 422 → twoFactor.errors renders under the field
+  }
+  if (twoFactor.hasErrors) {
+    return
+  }
+
+  signedInReload()
 }
 
 function change() {
@@ -300,7 +364,7 @@ async function signOut() {
       <template v-if="canSignIn">
         <p class="signin-note">
           <span class="ico"><Icon name="circle-user-round" :size="16" /></span>
-          <span>Welcome back — sign in for your saved details, or continue as a guest.</span>
+          <span>Welcome back. Sign in for your saved details, or continue as a guest.</span>
         </p>
         <FloatingField
           id="contact-password"
@@ -338,5 +402,59 @@ async function signOut() {
         </button>
       </template>
     </div>
+
+    <!-- Two-factor challenge, in place. Teleported to body so the fixed
+         overlay is not clipped by the section's layout. -->
+    <Teleport to="body">
+      <div
+        v-if="twoFactorOpen"
+        class="tf-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-two-factor-title"
+        @keydown.esc.prevent="closeTwoFactor"
+      >
+        <div class="tf-card">
+          <div class="tf-icon ico"><Icon name="shield-check" :size="26" /></div>
+          <h2 id="contact-two-factor-title">Confirm it's you</h2>
+          <p v-if="!useRecoveryCode">Enter the 6-digit code from your authenticator app to finish signing in.</p>
+          <p v-else>Enter one of the recovery codes you saved when you set up two-step sign-in.</p>
+
+          <FloatingField
+            v-if="!useRecoveryCode"
+            id="contact-two-factor-code"
+            v-model="twoFactor.code"
+            label="Authentication code"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            mono
+            :error="twoFactorError"
+            @keydown.enter.prevent="verifyTwoFactor"
+          />
+          <FloatingField
+            v-else
+            id="contact-two-factor-code"
+            v-model="twoFactor.recovery_code"
+            label="Recovery code"
+            autocomplete="off"
+            mono
+            :error="twoFactorError"
+            @keydown.enter.prevent="verifyTwoFactor"
+          />
+
+          <div class="tf-actions">
+            <button type="button" class="btn btn-primary" :disabled="twoFactor.processing || !twoFactorValue" @click="verifyTwoFactor">
+              {{ twoFactor.processing ? 'Checking…' : 'Sign in' }}
+            </button>
+            <button type="button" class="btn btn-secondary" :disabled="twoFactor.processing" @click="closeTwoFactor">Cancel</button>
+          </div>
+
+          <button type="button" class="tf-toggle" @click="toggleRecoveryCode">
+            {{ useRecoveryCode ? 'Use an authenticator code instead' : 'Lost your device? Use a recovery code' }}
+          </button>
+        </div>
+      </div>
+    </Teleport>
   </section>
 </template>

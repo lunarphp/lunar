@@ -172,6 +172,33 @@ it('projects a null login url when the host has no login route', function () {
         ->assertJsonPath('props.checkout.elements.0.props.loginUrl', null);
 });
 
+it('projects the two-factor challenge url when the host names one', function () {
+    Route::post('two-factor-test-stub', fn () => '')->name('two-factor.login');
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.twoFactorUrl', route('two-factor.login'));
+});
+
+it('projects a null two-factor url when the host has no challenge route', function () {
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    // Needs a line: show() bounces a session whose cart is empty.
+    $cart = CheckoutCart::addLine(routeTestCart());
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.twoFactorUrl', null);
+});
+
 it('projects a logout url when the host names a logout route', function () {
     Route::post('logout-test-stub', fn () => '')->name('logout');
     app(ElementRegistry::class)->add(ContactInformation::class);

@@ -1904,6 +1904,75 @@
     display: none;
   }
 
+  /* ───────────── TWO-FACTOR OVERLAY ───────────── */
+  .tf-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(3px);
+  }
+  .tf-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    padding: 30px 30px 22px;
+    animation: lc-pop var(--dur-slow) var(--ease-out);
+  }
+  .tf-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--indigo-50);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    margin-bottom: 14px;
+  }
+  .tf-card h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-snug);
+    margin: 0 0 6px;
+  }
+  .tf-card p {
+    margin: 0 0 16px;
+    font-size: var(--text-sm);
+    color: var(--fg-secondary);
+    line-height: var(--leading-normal);
+  }
+  .tf-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .tf-toggle {
+    display: block;
+    margin: 14px auto 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--text-sm);
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .tf-toggle:hover {
+    color: var(--fg-primary);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tf-card {
+      animation: none;
+    }
+  }
+
   /* ───────────── SUCCESS OVERLAY ───────────── */
   /* Post-confirmation landing (pages/Processing.vue): one centred card, the
      same brand head as the checkout, nothing the customer could mistake for
