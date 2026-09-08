@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const store = createCheckout(props.checkout)
-const { state, totalLabel, pay, elementsIn, collectUnavailable } = store
+const { state, totalLabel, pay, elementsIn, collectUnavailable, paymentBlocker, payLabel } = store
 
 // Partial reloads replace the `checkout` prop wholesale (only: ['checkout']);
 // pull the server-owned pieces back into the store.
@@ -124,16 +124,20 @@ const mSummaryOpen = ref(false)
             <PaymentSection :step="FIRST_MAIN_STEP + mainElements.length" />
 
             <div class="cta-wrap desktop-cta">
-              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable">
+              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null">
                 <span v-if="state.processing" class="spinner"></span>
                 <template v-else>
                   <span class="ico"><Icon name="lock" :size="16" /></span>
-                  <span class="cta-label">Pay <span class="mono">{{ totalLabel }}</span></span>
+                  <span class="cta-label">{{ payLabel }}</span>
                 </template>
               </button>
               <p v-if="collectUnavailable" class="cta-hint" role="alert">
                 <span class="ico"><Icon name="alert-circle" :size="15" /></span>
                 {{ COLLECT_UNAVAILABLE }}
+              </p>
+              <p v-else-if="paymentBlocker" class="cta-hint" role="alert">
+                <span class="ico"><Icon name="alert-circle" :size="15" /></span>
+                {{ paymentBlocker }}
               </p>
               <p v-else-if="!state.addressValid && state.fulfilment === 'delivery'" class="cta-hint">
                 <span class="ico"><Icon name="arrow-up" :size="15" /></span>
@@ -165,11 +169,11 @@ const mSummaryOpen = ref(false)
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable" @click="pay">
+      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null" @click="pay">
         <span v-if="state.processing" class="spinner"></span>
         <template v-else>
           <span class="ico"><Icon name="lock" :size="16" /></span>
-          <span class="cta-label">Pay <span class="mono">{{ totalLabel }}</span></span>
+          <span class="cta-label">{{ payLabel }}</span>
         </template>
       </button>
     </div>

@@ -67,3 +67,18 @@ it('blocks pay until a purchase order reference is entered when the host require
 
     expect((new OnAccount)->paymentBlocker($session->refresh(), $cart))->toBeNull();
 });
+
+it('wires the on-account notice and the payment blocker into the checkout app', function () {
+    $base = dirname(__DIR__, 3).'/packages/checkout/resources/js';
+
+    $app = file_get_contents($base.'/app.js');
+    $checkout = file_get_contents($base.'/components/LunarCheckout.vue');
+    $composable = file_get_contents($base.'/composables/useCheckout.js');
+
+    expect($app)->toContain("registerCheckoutElement('on-account-notice', OnAccountNotice)")
+        ->and(file_exists($base.'/components/payments/OnAccountNotice.vue'))->toBeTrue()
+        ->and($composable)->toContain('const paymentBlocker = computed(')
+        ->and($composable)->toContain('const payLabel = computed(')
+        ->and(substr_count($checkout, ':disabled="state.processing || collectUnavailable || paymentBlocker !== null"'))->toBe(2)
+        ->and(substr_count($checkout, '{{ payLabel }}'))->toBe(2);
+});

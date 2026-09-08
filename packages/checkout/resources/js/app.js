@@ -14,6 +14,7 @@ import { useCheckout } from './composables/useCheckout.js'
 import ContactSection from './components/ContactSection.vue'
 import OrderDetails from './components/OrderDetails.vue'
 import OfflineNotice from './components/payments/OfflineNotice.vue'
+import OnAccountNotice from './components/payments/OnAccountNotice.vue'
 import StripeCard from './components/payments/StripeCard.vue'
 import StripeExpress from './components/payments/StripeExpress.vue'
 import '../css/checkout.css'
@@ -28,6 +29,7 @@ registerCheckoutElement('order-details', OrderDetails)
 registerCheckoutElement('stripe-card', StripeCard)
 registerCheckoutElement('stripe-express', StripeExpress)
 registerCheckoutElement('offline-notice', OfflineNotice)
+registerCheckoutElement('on-account-notice', OnAccountNotice)
 
 // --- The shared runtime contributed chunks build against -----------------------
 //

@@ -329,6 +329,19 @@ export function createCheckout(data) {
 
   const activePaymentMethod = computed(() => state.paymentMethods.find((m) => m.handle === state.method) ?? null)
 
+  // The active method's own reason pay must wait (spec 0014 §C): a purchase
+  // order reference the account requires, say. Server-computed on every
+  // projection, so it tracks element edits through the partial reloads.
+  const paymentBlocker = computed(() => activePaymentMethod.value?.paymentBlocker ?? null)
+
+  // Nothing is charged at the checkout for a synchronous method, so the
+  // button must not promise a payment.
+  const payLabel = computed(() =>
+    activePaymentMethod.value && activePaymentMethod.value.requiresIntent === false
+      ? 'Place order'
+      : `Pay ${totalLabel.value}`,
+  )
+
   // The active method's component registers how to confirm with the gateway
   // (e.g. stripe.confirmPayment). Null means nothing client-side to confirm.
   let paymentConfirm = null
@@ -367,6 +380,11 @@ export function createCheckout(data) {
 
     if (pickupPointRequired.value) {
       state.payError = 'Choose where you would like to collect your order.'
+      return
+    }
+
+    if (paymentBlocker.value) {
+      state.payError = paymentBlocker.value
       return
     }
 
@@ -480,6 +498,8 @@ export function createCheckout(data) {
     selectShipping,
     setFulfilment,
     activePaymentMethod,
+    paymentBlocker,
+    payLabel,
     registerPaymentConfirm,
     registerPendingWrite,
     // Exposed so a page that posts to the pay boundary itself (the express
