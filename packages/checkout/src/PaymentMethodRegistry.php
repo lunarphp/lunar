@@ -4,6 +4,7 @@ namespace Lunar\Checkout;
 
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
+use Lunar\Checkout\Contracts\ExclusivePaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethod;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Core\Models\Cart;
@@ -50,10 +51,17 @@ class PaymentMethodRegistry implements PaymentMethodRegistryContract
 
     public function availableFor(Cart $cart): array
     {
-        return array_values(array_filter(
+        $available = array_values(array_filter(
             $this->all(),
             fn (PaymentMethod $method): bool => $method->isAvailable($cart),
         ));
+
+        $exclusive = array_values(array_filter(
+            $available,
+            fn (PaymentMethod $method): bool => $method instanceof ExclusivePaymentMethod,
+        ));
+
+        return $exclusive !== [] ? $exclusive : $available;
     }
 
     public function get(string $handle): ?PaymentMethod
