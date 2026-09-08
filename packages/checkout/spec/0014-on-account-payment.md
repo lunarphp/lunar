@@ -151,7 +151,7 @@ interface GuardsPayment
   on your usual terms." No account reference is shown at the checkout; the customer knows
   their own account and the number belongs on the invoice, not the screen.
 - When the active method's `requiresIntent` is false the pay button reads "Place order"
-  (translation key `checkout.pay.place_order`), not "Pay £x". The total still shows in the
+  (hardcoded in the bundle beside `Pay {total}`; the bundle has no translation layer), not "Pay £x". The total still shows in the
   summary.
 - With one available method the existing single-method layout applies: no tabs.
 - The express squeeze page is unaffected: an exclusive offline method never reaches it,
