@@ -238,6 +238,9 @@ a stored address that differs from delivery (line 1 and postcode, the address
 book's identity) resumes unticked on reload. `pay()` refuses with "Save your
 billing address before paying." when the box is unticked and nothing is
 stored, instead of letting Lunar's order validator fail at the boundary.
+Collecting, neither the box nor the form renders: step 2 is "Your details"
+and is the billing address by definition ([[0013-pickup-points]] §F.1), so
+`pay()` always copies it across.
 
 ## Testing
 

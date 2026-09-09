@@ -59,15 +59,19 @@ const panelFor = (method) => resolveElement(method.component)
         :method="activePaymentMethod"
       />
 
-      <label class="check" style="margin-top: 14px">
-        <input v-model="state.billingSame" type="checkbox" />
-        <span class="box ico"><Icon name="check" /></span>
-        <span class="txt">Use delivery address as billing address</span>
-      </label>
+      <!-- Delivery only: a collecting customer's step 2 is "Your details" and
+           already the billing address (spec 0013 §F.1), so there is nothing
+           to ask. Unticked: the customer's own billing address, captured here
+           and stored on the cart before pay() pins the session. -->
+      <template v-if="state.fulfilment !== 'collect'">
+        <label class="check" style="margin-top: 14px">
+          <input v-model="state.billingSame" type="checkbox" />
+          <span class="box ico"><Icon name="check" /></span>
+          <span class="txt">Use delivery address as billing address</span>
+        </label>
 
-      <!-- Unticked: the customer's own billing address, captured here and
-           stored on the cart before pay() pins the session. -->
-      <BillingSection v-if="!state.billingSame" />
+        <BillingSection v-if="!state.billingSame" />
+      </template>
 
       <div v-if="state.payError" class="alert a-error" role="alert" style="margin-top: 14px">
         <Icon name="alert-circle" :size="18" />

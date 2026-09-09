@@ -429,16 +429,20 @@ export function createCheckout(data) {
       // before we pin the fingerprint and post to the pay boundary.
       await flushPendingWrites()
 
+      // Collecting, step 2 is "Your details" and is the billing address by
+      // definition (spec 0013 §F.1); the choice only exists for delivery.
+      const billingFromDelivery = state.billingSame || state.fulfilment === 'collect'
+
       // The box unticked is a promise of a billing address; without one the
       // order validator would refuse at the boundary with a message about
       // the cart, so say what is actually missing here.
-      if (!state.billingSame && !state.billingAddress) {
+      if (!billingFromDelivery && !state.billingAddress) {
         throw new Error('Save your billing address before paying.')
       }
 
       // Billing defaults to the delivery address unless the customer has
       // captured their own below the payment method.
-      if (state.billingSame && state.shippingAddress) {
+      if (billingFromDelivery && state.shippingAddress) {
         const a = state.shippingAddress
         const billing = await postJson(
           state.urls.billingAddress,
