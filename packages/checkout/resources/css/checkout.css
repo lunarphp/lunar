@@ -829,6 +829,17 @@
     color: var(--fg-secondary);
     font-size: var(--text-sm);
   }
+  /* The one deliverable country, stated where the select would be. */
+  .country-fixed {
+    margin: 0;
+    padding: 0 13px;
+    color: var(--fg-secondary);
+    font-size: var(--text-sm);
+  }
+  .country-fixed strong {
+    color: var(--fg-primary);
+    font-weight: var(--weight-semibold);
+  }
   /* The one escape hatch out of the checkout (under the brand head). Quiet
      on purpose: present when looked for, no competition with the steps. */
   .back-to-store {

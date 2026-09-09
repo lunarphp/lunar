@@ -27,10 +27,10 @@ const id = (name) => `${props.idPrefix}${name}`
 const fieldError = (...keys) => keys.map((key) => props.errors[key]).find(Boolean) || ''
 
 // Spec 0011 §H: the server projects the only countries it will accept. One
-// country needs no choice, so the select stays out of the way; the value is
-// still posted.
+// country needs no choice, so a read-only line names it instead of a select
+// with nothing to pick; the value is still posted.
 const countries = computed(() => state.countries ?? [])
-const showCountry = computed(() => countries.value.length !== 1)
+const onlyCountry = computed(() => (countries.value.length === 1 ? countries.value[0] : null))
 
 // A null url means no driver can answer, so the search never renders.
 const lookupEnabled = computed(() => Boolean(state.urls.addressLookup))
@@ -176,7 +176,10 @@ function chooseAddress(index) {
           :error="fieldError('postcode')"
         />
       </div>
-      <div v-if="showCountry">
+      <p v-if="onlyCountry" class="country-fixed">
+        Country / region: <strong>{{ onlyCountry.name }}</strong>
+      </p>
+      <div v-else>
         <div class="fl" :class="{ 'has-error': fieldError('country_code') }">
           <select :id="id('country')" v-model="form.country" autocomplete="country">
             <option v-for="country in countries" :key="country.code" :value="country.code">

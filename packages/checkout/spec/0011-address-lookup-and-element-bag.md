@@ -214,8 +214,8 @@ address the store cannot ship to and then find no delivery options.
 
 `Contracts\DeliveryCountries::available(Cart): Collection<Country>` is the
 one source for both sides. The projection carries it as `countries:
-[{ code, name }]`; `AddressFields.vue` renders exactly that list (and hides
-the select when there is one country, still posting it); the shipping-address
+[{ code, name }]`; `AddressFields.vue` renders exactly that list (one country
+becomes a read-only "Country / region" line, still posted); the shipping-address
 store validates `country_code` with `Rule::in` against the same list and
 answers "We do not deliver to that country." The billing store keeps
 `Rule::exists`: a card may be registered anywhere.
@@ -226,8 +226,8 @@ or every country when null. `lunar/table-rate-shipping` rebinds it at boot to
 `Checkout\ShippingZoneCountries` when the contract exists: the countries of
 every zone that carries a rate for an enabled method (country, postcode and
 state zones all name theirs), or everything when an unrestricted zone has a
-live rate. A store with only UK zones therefore shows no country select at
-all, and no host code is involved.
+live rate. A store with only UK zones therefore shows "Country / region:
+United Kingdom" and no select, and no host code is involved.
 
 The same pass made "Use delivery address as billing address" real. Unticked,
 `BillingSection.vue` renders under the payment method: the shared
