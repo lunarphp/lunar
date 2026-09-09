@@ -219,4 +219,5 @@ The panel / Filament settings surfaces do not expose it; it is a deploy-time val
 - [x] Slice 3 — Invalidation wiring: `CartLineObserver` / new `CartAddressObserver`, `Cart::updating` hook, `UpdateCartLine` model save, `clear()`; per-verb tests.
 - [x] Slice 4 — Payment drivers read through `recalculate()`; `CLAUDE.md` payment-driver note; Stripe / PayPal guard tests.
 - [x] Slice 5 — Upgrade data migration `add_cart_totals_columns`.
-- [ ] Follow-up — `lunarphp/docs` PR; move spec to `completed/` once merged.
+- [x] Follow-up — `lunarphp/docs` PR (lunarphp/docs#50).
+- [ ] Follow-up — move spec to `completed/` once merged.
