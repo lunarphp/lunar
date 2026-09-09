@@ -3,7 +3,9 @@
 namespace Lunar\Checkout\Support;
 
 use Illuminate\Support\Collection;
+use Lunar\Checkout\Contracts\LocatesCustomer;
 use Lunar\Checkout\Contracts\PickupPointProvider;
+use Lunar\Checkout\DataTypes\Coordinates;
 use Lunar\Checkout\DataTypes\PickupPoint;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -34,6 +36,22 @@ final class PickupPoints
         return app(PickupPointProvider::class)->pointsFor($cart)->values();
     }
 
+    /**
+     * Where the customer is, if the bound provider can say (spec 0013 §A).
+     * Null when no provider is bound, the provider does not locate, or it
+     * cannot place this cart.
+     */
+    public static function origin(Cart $cart): ?Coordinates
+    {
+        if (! app()->bound(PickupPointProvider::class)) {
+            return null;
+        }
+
+        $provider = app(PickupPointProvider::class);
+
+        return $provider instanceof LocatesCustomer ? $provider->originFor($cart) : null;
+    }
+
     public static function find(Cart $cart, string $handle): ?PickupPoint
     {
         return self::offered($cart)->first(fn (PickupPoint $point): bool => $point->handle === $handle);
@@ -43,7 +61,7 @@ final class PickupPoints
      * The stored snapshot, or null when none is stored or the stored one is
      * no longer offered for this cart (spec 0013 §B: treated as unselected).
      *
-     * @return array{handle: string, name: string, lines: list<string>, meta: array<string, mixed>}|null
+     * @return array{handle: string, name: string, lines: list<string>, meta: array<string, mixed>, location?: array{latitude: float, longitude: float}|null}|null
      */
     public static function chosen(Cart $cart): ?array
     {

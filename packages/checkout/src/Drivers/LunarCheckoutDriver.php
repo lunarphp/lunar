@@ -592,6 +592,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
                 'id' => $point->handle,
                 'name' => $point->name,
                 'lines' => $point->lines,
+                'location' => $point->location?->toArray(),
             ])
             ->values()
             ->all();

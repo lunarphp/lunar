@@ -28,6 +28,7 @@ it('stamps the chosen point onto the collect option and not onto couriers', func
         'name' => 'Dartford',
         'lines' => ['DA2 6EP'],
         'meta' => [],
+        'location' => null,
     ]);
 
     $options->where('collect', false)->each(fn ($option) => expect($option->meta['pickup_point'] ?? null)->toBeNull());

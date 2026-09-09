@@ -61,6 +61,11 @@ export function createCheckout(data) {
     fulfilment: data.fulfilment ?? 'delivery', // 'delivery' | 'collect'
     pickupPoints: data.pickupPoints ?? [], // [{ id, name, lines }]
     pickupPointId: data.pickupPointId ?? null,
+    // Where the customer is, if the host could say (spec 0013 §A):
+    // { latitude, longitude } or null. The browser can fill it in later.
+    pickupOrigin: data.pickupOrigin ?? null,
+    // 'mi' | 'km' | null (follow the delivery country).
+    distanceUnit: data.distanceUnit ?? null,
     method: 'card', // card | paypal | clearpay | klarna
     items: data.items ?? [],
     currency: data.currency ?? 'GBP',
@@ -120,6 +125,10 @@ export function createCheckout(data) {
     state.fulfilment = fresh.fulfilment ?? 'delivery'
     state.pickupPoints = fresh.pickupPoints ?? []
     state.pickupPointId = fresh.pickupPointId ?? null
+    // A browser-supplied origin survives the reload; the host's only
+    // replaces nothing.
+    state.pickupOrigin = fresh.pickupOrigin ?? state.pickupOrigin
+    state.distanceUnit = fresh.distanceUnit ?? null
     state.items = fresh.items ?? []
     state.shippingMethods = fresh.shippingMethods ?? []
     state.shippingId = fresh.shippingId ?? null

@@ -992,6 +992,29 @@
     color: var(--fg-primary);
     white-space: nowrap;
   }
+  /* "Show distances from my location": a quiet text action under the branch
+     list. Present when looked for, no competition with the cards. */
+  .locate {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--fg-secondary);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .locate:hover {
+    color: var(--fg-primary);
+    text-decoration: underline;
+  }
+  .locate:disabled {
+    cursor: default;
+    text-decoration: none;
+  }
   .locked {
     display: flex;
     align-items: center;

@@ -37,6 +37,7 @@ use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
+use Lunar\Checkout\Support\PickupPoints;
 use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
 use Lunar\Core\Contracts\SupportsPaymentIntents;
@@ -402,6 +403,11 @@ class CheckoutController extends Controller
             'fulfilment' => $driver->getFulfilment($session),
             'pickupPoints' => $driver->getPickupPoints($session),
             'pickupPointId' => $driver->getSelectedPickupPoint($session),
+            // Where the customer is, when the host can say, so the branch
+            // list can lead with the nearest; the unit is the host's choice
+            // or, null, follows the delivery country in the browser.
+            'pickupOrigin' => PickupPoints::origin($cart)?->toArray(),
+            'distanceUnit' => config('lunar.checkout.pickup.distance_unit'),
             'shippingAddress' => $driver->getShippingAddress($session),
             // Null until the customer captures one of their own or pay()
             // copies the delivery address across; the frontend reads a

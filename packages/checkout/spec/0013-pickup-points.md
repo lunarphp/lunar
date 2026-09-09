@@ -80,6 +80,19 @@ final readonly class PickupPoint
 }
 ```
 
+**Location (added in run 1 of the master test plan).** A point may carry
+`location: ?Coordinates` (WGS84 latitude and longitude; `DataTypes\Coordinates`). A provider
+may also implement the optional companion contract `Contracts\LocatesCustomer` with
+`originFor(Cart): ?Coordinates`, saying where the customer is as far as the host can tell,
+typically by geocoding the cart's shipping postcode. How it geocodes is the host's concern:
+the package names no geocoder. The projection carries each point's `location`, the host's
+`pickupOrigin` (or null) and `distanceUnit` from `lunar.checkout.pickup.distance_unit`
+(`'mi'`, `'km'`, or null to follow the delivery country: miles for GB and US, kilometres
+elsewhere). Distance is computed in the browser, straight line, for points with a location;
+with an origin the list is sorted nearest first, otherwise host order is kept. With no host
+origin and at least one located point, the section offers "Show distances from my location";
+only that click asks the browser for permission, and a refusal changes nothing.
+
 The host binds the contract in its own service provider. The package never binds a default.
 Resolution is `app()->bound(PickupPointProvider::class)`; unbound means "no points", and
 so does an empty collection. The provider receives the cart so a host can filter by basket

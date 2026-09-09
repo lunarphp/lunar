@@ -159,4 +159,20 @@ return [
 
     'delivery_countries' => null,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Pickup points
+    |--------------------------------------------------------------------------
+    |
+    | `distance_unit` is how far each branch is shown: 'mi', 'km', or null to
+    | follow the delivery country (miles for GB and US, kilometres elsewhere).
+    | Distances only appear when the points carry coordinates and the customer
+    | is located, by the host's LocatesCustomer provider or by the browser.
+    |
+    */
+
+    'pickup' => [
+        'distance_unit' => null,
+    ],
+
 ];

@@ -52,8 +52,8 @@ it('sets the mode and the point through the driver and fires events', function (
         ->and($driver->getSelectedShippingOption($session))->toBe('collection')
         ->and($driver->getSelectedPickupPoint($session))->toBeNull()
         ->and($driver->getPickupPoints($session))->toBe([
-            ['id' => 'london', 'name' => 'London', 'lines' => ['SE20 8RA']],
-            ['id' => 'dartford', 'name' => 'Dartford', 'lines' => []],
+            ['id' => 'london', 'name' => 'London', 'lines' => ['SE20 8RA'], 'location' => null],
+            ['id' => 'dartford', 'name' => 'Dartford', 'lines' => [], 'location' => null],
         ]);
 
     $driver->setPickupPoint($session, 'dartford');
