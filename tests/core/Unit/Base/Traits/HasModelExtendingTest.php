@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
+use Laravel\Scout\Jobs\MakeSearchable;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
@@ -10,6 +12,7 @@ use Lunar\Models\ProductOption;
 use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
 use Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
 use Lunar\Tests\Core\Stubs\Models\CustomOrder;
+use Lunar\Tests\Core\Stubs\TestOrderObserver;
 use Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase;
 
 uses(ExtendableTestCase::class)->group('model_extending');
@@ -119,4 +122,38 @@ test('multi-level extended model returns correct table name without prefix dupli
 
     // Ensure prefix is not duplicated
     expect($deepCustomProduct->getTable())->not->toContain(config('lunar.database.table_prefix').config('lunar.database.table_prefix'));
+});
+
+test('observers registered by a trait boot only run once for a replaced model', function () {
+    ModelManifest::replace(
+        Lunar\Models\Contracts\Order::class,
+        Lunar\Tests\Core\Stubs\Models\Order::class
+    );
+
+    // Both the Lunar model and its replacement boot their traits, and Scout registers its
+    // observer from `bootSearchable()`. Model events are dispatched under both class names, so
+    // the observer has to be registered for one of them only.
+    config(['scout.queue' => true]);
+
+    Queue::fake();
+
+    Lunar\Tests\Core\Stubs\Models\Order::factory()->create();
+
+    Queue::assertPushed(MakeSearchable::class, 1);
+});
+
+test('an observer registered on both the lunar model and its replacement runs once', function () {
+    ModelManifest::replace(
+        Lunar\Models\Contracts\Order::class,
+        Lunar\Tests\Core\Stubs\Models\Order::class
+    );
+
+    TestOrderObserver::$created = 0;
+
+    Order::observe(TestOrderObserver::class);
+    Lunar\Tests\Core\Stubs\Models\Order::observe(TestOrderObserver::class);
+
+    Lunar\Tests\Core\Stubs\Models\Order::factory()->create();
+
+    expect(TestOrderObserver::$created)->toBe(1);
 });
