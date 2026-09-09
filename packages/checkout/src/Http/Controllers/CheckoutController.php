@@ -140,6 +140,47 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
+        /*
+         * A pinned session normally completes via the gateway webhook, but
+         * webhooks can be slow, misconfigured or absent (local dev). The
+         * customer polling this page is the other reliable signal, so settle
+         * against the gateway's actual outcome here: captured completes,
+         * failed reopens, in-flight stays pinned. The short age gate keeps the
+         * immediate post-confirm poll from racing the webhook, and complete()
+         * is idempotent either way. Failures are swallowed: this render must
+         * never die on a gateway blip.
+         */
+        if ($session->status instanceof PaymentProcessing
+            && $session->payment_processing_at?->lt(now()->subSeconds(
+                (int) config('lunar.checkout.reconciliation.on_view_after_seconds', 5),
+            ))
+        ) {
+            try {
+                app(ReconcilesCheckoutSession::class)->execute($session);
+                $session->refresh();
+            } catch (\Throwable $e) {
+                // Reconciliation sweep owns whatever this could not settle,
+                // but the failure must not vanish.
+                report($e);
+            }
+        }
+
+        // Order already placed: send to the stored return URL if the caller
+        // set one (hosted flow), else the configured store success URL. This
+        // runs BEFORE the live-cart check below: once the order exists the
+        // customer's live cart is a fresh empty one, and a reload of this URL
+        // (the synchronous pay path does exactly that) must land on the
+        // confirmation, not bounce to an empty basket.
+        if ($session->status instanceof Completed) {
+            return $this->redirectToSuccess($session);
+        }
+
+        // A dead capability token (expired window / cancelled) can't render a
+        // live checkout. Bounce home; the customer restarts from the cart.
+        if ($session->isExpired() || $session->status instanceof Cancelled) {
+            return $this->redirectDeadSession($session);
+        }
+
         // A login mid-checkout can merge/swap the live cart (auth_policy=merge).
         // cart_reference is pinned identity, so rather than mutate it, re-resolve
         // to the surviving cart's session and move the customer there. Guarded to
@@ -175,43 +216,6 @@ class CheckoutController extends Controller
             if ($customerId !== '' && $session->customer_reference !== $customerId) {
                 $checkoutDriver->associateCustomer($session, $customerId, $user->email);
             }
-        }
-
-        /*
-         * A pinned session normally completes via the gateway webhook, but
-         * webhooks can be slow, misconfigured or absent (local dev). The
-         * customer polling this page is the other reliable signal, so settle
-         * against the gateway's actual outcome here: captured completes,
-         * failed reopens, in-flight stays pinned. The short age gate keeps the
-         * immediate post-confirm poll from racing the webhook, and complete()
-         * is idempotent either way. Failures are swallowed: this render must
-         * never die on a gateway blip.
-         */
-        if ($session->status instanceof PaymentProcessing
-            && $session->payment_processing_at?->lt(now()->subSeconds(
-                (int) config('lunar.checkout.reconciliation.on_view_after_seconds', 5),
-            ))
-        ) {
-            try {
-                app(ReconcilesCheckoutSession::class)->execute($session);
-                $session->refresh();
-            } catch (\Throwable $e) {
-                // Reconciliation sweep owns whatever this could not settle,
-                // but the failure must not vanish.
-                report($e);
-            }
-        }
-
-        // Order already placed: send to the stored return URL if the caller
-        // set one (hosted flow), else the configured store success URL.
-        if ($session->status instanceof Completed) {
-            return $this->redirectToSuccess($session);
-        }
-
-        // A dead capability token (expired window / cancelled) can't render a
-        // live checkout. Bounce home; the customer restarts from the cart.
-        if ($session->isExpired() || $session->status instanceof Cancelled) {
-            return $this->redirectDeadSession($session);
         }
 
         /*

@@ -522,8 +522,10 @@ export function createCheckout(data) {
       )
 
       if (result.completed) {
+        // Same exit as the gateway path: the processing route settles a
+        // completed session straight onto the store's confirmation page.
         state.paid = true
-        window.location.reload()
+        window.location.assign(state.urls.processing)
 
         return
       }

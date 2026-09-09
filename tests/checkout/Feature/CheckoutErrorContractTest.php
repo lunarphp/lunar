@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
+use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\DataObjects\PaymentIntentDescriptor;
 use Lunar\Core\Facades\CartSession;
@@ -66,6 +67,38 @@ it('flashes the structured expiry error when a session has died', function () {
         ->assertSessionHas('lunar.checkout.error.action', 'restart_checkout');
 
     expect(session('lunar.checkout.error.reason'))->toContain('expired');
+});
+
+it('sends a completed session to the confirmation even when the live cart is a new empty one', function () {
+    // The synchronous pay path (on account, offline) reloads the checkout URL
+    // after completing. By then the customer's live cart is a fresh empty
+    // one; that must not outrank the placed order.
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+    $session = CheckoutCart::session($cart);
+    $session->forceFill([
+        'status' => Completed::$name,
+        'order_reference' => '1',
+        'success_url' => 'https://store.test/thanks',
+    ])->save();
+
+    $user = User::factory()->create();
+    $customer = Customer::factory()->create();
+    $user->customers()->attach($customer);
+    $session->update(['customer_reference' => (string) $customer->id]);
+
+    $emptyLiveCart = Cart::factory()->create([
+        'channel_id' => $cart->channel_id,
+        'currency_id' => $cart->currency_id,
+    ]);
+    CartSession::use($emptyLiveCart);
+
+    $this->actingAs($user)
+        ->get(route('lunar.checkout.show', $session->uuid))
+        ->assertRedirect('https://store.test/thanks')
+        ->assertSessionMissing('lunar.checkout.error');
+
+    expect(session('lunar.checkout.completed.order_reference'))->toBe('1');
 });
 
 it('does not mint a session for the empty cart a signed-in refresh resolves to', function () {
