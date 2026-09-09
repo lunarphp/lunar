@@ -26,12 +26,12 @@ class ShippingExclusionListResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return __('lunarpanel.shipping::shippingexclusionlist.label');
+        return __('shipping::shippingexclusionlist.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('lunarpanel.shipping::shippingexclusionlist.label_plural');
+        return __('shipping::shippingexclusionlist.label_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -41,7 +41,7 @@ class ShippingExclusionListResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('lunarpanel.shipping::plugin.navigation.group');
+        return __('shipping::plugin.navigation.group');
     }
 
     public static function form(Schema $schema): Schema

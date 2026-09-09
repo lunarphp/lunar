@@ -27,12 +27,12 @@ class ShippingMethodResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return __('lunarpanel.shipping::shippingmethod.label');
+        return __('shipping::shippingmethod.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('lunarpanel.shipping::shippingmethod.label_plural');
+        return __('shipping::shippingmethod.label_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -42,7 +42,7 @@ class ShippingMethodResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('lunarpanel.shipping::plugin.navigation.group');
+        return __('shipping::plugin.navigation.group');
     }
 
     public static function form(Schema $schema): Schema

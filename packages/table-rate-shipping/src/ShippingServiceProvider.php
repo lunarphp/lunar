@@ -4,12 +4,27 @@ namespace Lunar\Shipping;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Modifiers\ShippingModifiers;
+use Lunar\Panel\Facades\Panel;
+use Lunar\Panel\PanelManager;
+use Lunar\Shipping\Actions\ShippingExclusionLists\CreateShippingExclusionList;
+use Lunar\Shipping\Actions\ShippingExclusionLists\DeleteShippingExclusionList;
+use Lunar\Shipping\Actions\ShippingExclusionLists\UpdateShippingExclusionList;
+use Lunar\Shipping\Actions\ShippingMethods\CreateShippingMethod;
+use Lunar\Shipping\Actions\ShippingMethods\DeleteShippingMethod;
+use Lunar\Shipping\Actions\ShippingMethods\UpdateShippingMethod;
+use Lunar\Shipping\Actions\ShippingRates\DeleteShippingRate;
+use Lunar\Shipping\Actions\ShippingRates\SaveShippingRate;
+use Lunar\Shipping\Actions\ShippingZones\CreateShippingZone;
+use Lunar\Shipping\Actions\ShippingZones\DeleteShippingZone;
+use Lunar\Shipping\Actions\ShippingZones\UpdateShippingZone;
+use Lunar\Shipping\Contracts\Actions;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\PostcodeManager;
@@ -21,13 +36,38 @@ use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
 use Lunar\Shipping\Observers\OrderObserver;
+use Lunar\Shipping\Panel\ShippingSection;
 use Lunar\Shipping\Resolvers\PostcodeResolver;
 
 class ShippingServiceProvider extends ServiceProvider
 {
+    /**
+     * The package's swappable action seams. A consumer overrides one by
+     * binding the same contract in their own service provider.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $actions = [
+        Actions\ShippingZones\CreatesShippingZone::class => CreateShippingZone::class,
+        Actions\ShippingZones\UpdatesShippingZone::class => UpdateShippingZone::class,
+        Actions\ShippingZones\DeletesShippingZone::class => DeleteShippingZone::class,
+        Actions\ShippingMethods\CreatesShippingMethod::class => CreateShippingMethod::class,
+        Actions\ShippingMethods\UpdatesShippingMethod::class => UpdateShippingMethod::class,
+        Actions\ShippingMethods\DeletesShippingMethod::class => DeleteShippingMethod::class,
+        Actions\ShippingRates\SavesShippingRate::class => SaveShippingRate::class,
+        Actions\ShippingRates\DeletesShippingRate::class => DeleteShippingRate::class,
+        Actions\ShippingExclusionLists\CreatesShippingExclusionList::class => CreateShippingExclusionList::class,
+        Actions\ShippingExclusionLists\UpdatesShippingExclusionList::class => UpdateShippingExclusionList::class,
+        Actions\ShippingExclusionLists\DeletesShippingExclusionList::class => DeleteShippingExclusionList::class,
+    ];
+
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/shipping-tables.php', 'lunar.shipping-tables');
+
+        foreach ($this->actions as $contract => $concrete) {
+            $this->app->bind($contract, $concrete);
+        }
 
         $this->app->singleton(PostcodeManager::class, function () {
             $manager = new PostcodeManager;
@@ -43,7 +83,7 @@ class ShippingServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel.shipping');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'shipping');
 
         if (! config('lunar.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -88,6 +128,19 @@ class ShippingServiceProvider extends ServiceProvider
         ModelManifest::addDirectory(
             __DIR__.'/Models'
         );
+
+        // The Inertia panel is optional: the Settings > Shipping section
+        // registers itself only when lunarphp/panel is installed.
+        if (class_exists(PanelManager::class)) {
+            Panel::section(new ShippingSection);
+
+            // The ShippingDiscount type form needs the method list, and a type
+            // form has no endpoint of its own; share it on the discount pages
+            // only, so every other panel response stays free of the query.
+            Inertia::share('shippingMethods', fn () => request()->routeIs('panel.discounts.*')
+                ? ShippingMethod::query()->orderBy('name')->get(['id', 'name'])
+                : null);
+        }
 
         Relation::morphMap([
             'shipping_exclusion' => ShippingExclusion::class,

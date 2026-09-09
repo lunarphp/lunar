@@ -19,8 +19,8 @@ use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Currency;
-use Lunar\Filament\Contracts\DiscountFormType;
 use Lunar\Filament\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Facades\LunarFilament;
 
 class DiscountForm
 {
@@ -29,7 +29,9 @@ class DiscountForm
     public static function configure(Schema $schema): Schema
     {
         $discountSchemas = Discounts::getTypes()->map(function ($discount) {
-            if (! $discount instanceof DiscountFormType) {
+            $form = LunarFilament::discountFormFor($discount);
+
+            if (! $form) {
                 return;
             }
 
@@ -37,7 +39,7 @@ class DiscountForm
                 ->heading($discount->getName())
                 ->visible(
                     fn (Get $get) => $get('type') == get_class($discount)
-                )->schema($discount->lunarPanelSchema());
+                )->schema($form->lunarPanelSchema());
         })->filter();
 
         return self::callStaticLunarHook(

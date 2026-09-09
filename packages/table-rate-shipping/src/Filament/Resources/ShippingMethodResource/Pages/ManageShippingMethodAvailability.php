@@ -18,7 +18,7 @@ class ManageShippingMethodAvailability extends BaseManageRelatedRecords
     public function getTitle(): string
     {
 
-        return __('lunarpanel.shipping::shippingmethod.pages.availability.label');
+        return __('shipping::shippingmethod.pages.availability.label');
     }
 
     public static function getNavigationIcon(): ?string
@@ -28,7 +28,7 @@ class ManageShippingMethodAvailability extends BaseManageRelatedRecords
 
     public static function getNavigationLabel(): string
     {
-        return __('lunarpanel.shipping::shippingmethod.pages.availability.label');
+        return __('shipping::shippingmethod.pages.availability.label');
     }
 
     protected function getDefaultHeaderWidgets(): array
@@ -43,7 +43,7 @@ class ManageShippingMethodAvailability extends BaseManageRelatedRecords
         return [
             RelationGroup::make('Availability', [
                 CustomerGroupRelationManager::make([
-                    'description' => __('lunarpanel.shipping::relationmanagers.shipping_methods.customer_groups.description'),
+                    'description' => __('shipping::relationmanagers.shipping_methods.customer_groups.description'),
                 ]),
             ]),
         ];
