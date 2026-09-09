@@ -3,7 +3,7 @@
 return [
     'title' => 'Méthodes d\'expédition',
     'description' => 'Les services que vous proposez. Les tarifs de chaque zone déterminent le coût d\'une méthode à cet endroit.',
-    'edit_title' => 'Modifier :name',
+    'edit_title' => 'Modifier {name}',
     'create_method' => 'Ajouter une méthode',
     'create_description' => 'Nommez la méthode et choisissez son type. Les contraintes, l\'horaire et la disponibilité se définissent à l\'écran suivant.',
     'empty_title' => 'Aucune méthode d\'expédition pour le moment',
@@ -68,7 +68,7 @@ return [
 
     'confirm_delete' => 'Supprimer cette méthode d\'expédition ? Ses tarifs dans toutes les zones seront supprimés avec elle.',
     'confirm_delete_title' => 'Supprimer la méthode d\'expédition',
-    'confirm_delete_body' => 'Supprimer « :name » ? Ses tarifs dans toutes les zones seront supprimés. Les commandes qui l\'ont utilisée ne sont pas affectées.',
+    'confirm_delete_body' => 'Supprimer « {name} » ? Ses tarifs dans toutes les zones seront supprimés. Les commandes qui l\'ont utilisée ne sont pas affectées.',
 
     'flash_created' => 'Méthode d\'expédition créée.',
     'flash_updated' => 'Méthode d\'expédition enregistrée.',

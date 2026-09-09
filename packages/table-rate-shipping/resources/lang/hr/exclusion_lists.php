@@ -3,7 +3,7 @@
 return [
     'title' => 'Popisi isključenja',
     'description' => 'Proizvodi koji se ne mogu dostaviti kroz zonu. Priložite popis zoni kako biste ga primijenili.',
-    'edit_title' => 'Uredi :name',
+    'edit_title' => 'Uredi {name}',
     'create_list' => 'Dodaj popis',
     'create_description' => 'Imenujte popis. Proizvodi se dodaju na sljedećem zaslonu.',
     'empty_title' => 'Još nema popisa isključenja',
@@ -28,7 +28,7 @@ return [
 
     'confirm_delete' => 'Izbrisati ovaj popis isključenja? Bit će odvojen od svih zona.',
     'confirm_delete_title' => 'Izbriši popis isključenja',
-    'confirm_delete_body' => 'Izbrisati ":name"? Bit će odvojen od svih zona na koje se primjenjuje.',
+    'confirm_delete_body' => 'Izbrisati "{name}"? Bit će odvojen od svih zona na koje se primjenjuje.',
 
     'flash_created' => 'Popis isključenja stvoren.',
     'flash_updated' => 'Popis isključenja spremljen.',

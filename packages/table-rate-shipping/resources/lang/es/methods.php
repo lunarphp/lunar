@@ -3,7 +3,7 @@
 return [
     'title' => 'Métodos de envío',
     'description' => 'Los servicios que ofreces. Las tarifas de cada zona determinan lo que cuesta un método allí.',
-    'edit_title' => 'Editar :name',
+    'edit_title' => 'Editar {name}',
     'create_method' => 'Añadir método',
     'create_description' => 'Asigna un nombre al método y elige su tipo. Las restricciones, el horario y la disponibilidad se configuran en la siguiente pantalla.',
     'empty_title' => 'Aún no hay métodos de envío',
@@ -68,7 +68,7 @@ return [
 
     'confirm_delete' => '¿Eliminar este método de envío? Sus tarifas en todas las zonas se eliminarán con él.',
     'confirm_delete_title' => 'Eliminar método de envío',
-    'confirm_delete_body' => '¿Eliminar ":name"? Se eliminarán sus tarifas en todas las zonas. Los pedidos que lo usaron no se ven afectados.',
+    'confirm_delete_body' => '¿Eliminar "{name}"? Se eliminarán sus tarifas en todas las zonas. Los pedidos que lo usaron no se ven afectados.',
 
     'flash_created' => 'Método de envío creado.',
     'flash_updated' => 'Método de envío guardado.',

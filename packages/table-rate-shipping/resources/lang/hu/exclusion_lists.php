@@ -3,7 +3,7 @@
 return [
     'title' => 'Kizárási listák',
     'description' => 'Termékek, amelyek nem szállíthatók egy zónán keresztül. Rendelj egy listát egy zónához az alkalmazásához.',
-    'edit_title' => ':name szerkesztése',
+    'edit_title' => '{name} szerkesztése',
     'create_list' => 'Lista hozzáadása',
     'create_description' => 'Nevezd el a listát. A termékek a következő képernyőn adhatók hozzá.',
     'empty_title' => 'Még nincsenek kizárási listák',
@@ -28,7 +28,7 @@ return [
 
     'confirm_delete' => 'Törlöd ezt a kizárási listát? Minden zónáról leválasztjuk.',
     'confirm_delete_title' => 'Kizárási lista törlése',
-    'confirm_delete_body' => 'Törlöd a(z) ":name" listát? Minden zónáról leválasztjuk, amelyre érvényes.',
+    'confirm_delete_body' => 'Törlöd a(z) "{name}" listát? Minden zónáról leválasztjuk, amelyre érvényes.',
 
     'flash_created' => 'Kizárási lista létrehozva.',
     'flash_updated' => 'Kizárási lista mentve.',

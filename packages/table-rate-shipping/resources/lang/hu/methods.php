@@ -3,7 +3,7 @@
 return [
     'title' => 'Szállítási módok',
     'description' => 'Az általad kínált szolgáltatások. Az egyes zónák díjai határozzák meg, mennyibe kerül ott egy mód.',
-    'edit_title' => ':name szerkesztése',
+    'edit_title' => '{name} szerkesztése',
     'create_method' => 'Mód hozzáadása',
     'create_description' => 'Nevezd el a módot, és válaszd ki a típusát. A korlátozások, az ütemezés és az elérhetőség a következő képernyőn állíthatók be.',
     'empty_title' => 'Még nincsenek szállítási módok',
@@ -68,7 +68,7 @@ return [
 
     'confirm_delete' => 'Törlöd ezt a szállítási módot? A díjai minden zónában törlődnek vele.',
     'confirm_delete_title' => 'Szállítási mód törlése',
-    'confirm_delete_body' => 'Törlöd a(z) ":name" módot? A díjai minden zónában törlődnek. Az ezt használó rendeléseket nem érinti.',
+    'confirm_delete_body' => 'Törlöd a(z) "{name}" módot? A díjai minden zónában törlődnek. Az ezt használó rendeléseket nem érinti.',
 
     'flash_created' => 'Szállítási mód létrehozva.',
     'flash_updated' => 'Szállítási mód mentve.',

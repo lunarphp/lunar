@@ -3,7 +3,7 @@
 return [
     'title' => 'Listes d\'exclusion',
     'description' => 'Produits qui ne peuvent pas être expédiés via une zone. Associez une liste à une zone pour l\'appliquer.',
-    'edit_title' => 'Modifier :name',
+    'edit_title' => 'Modifier {name}',
     'create_list' => 'Ajouter une liste',
     'create_description' => 'Nommez la liste. Les produits s\'ajoutent à l\'écran suivant.',
     'empty_title' => 'Aucune liste d\'exclusion pour le moment',
@@ -28,7 +28,7 @@ return [
 
     'confirm_delete' => 'Supprimer cette liste d\'exclusion ? Elle sera dissociée de toutes les zones.',
     'confirm_delete_title' => 'Supprimer la liste d\'exclusion',
-    'confirm_delete_body' => 'Supprimer « :name » ? Elle sera dissociée de toutes les zones auxquelles elle s\'applique.',
+    'confirm_delete_body' => 'Supprimer « {name} » ? Elle sera dissociée de toutes les zones auxquelles elle s\'applique.',
 
     'flash_created' => 'Liste d\'exclusion créée.',
     'flash_updated' => 'Liste d\'exclusion enregistrée.',

@@ -3,7 +3,7 @@
 return [
     'title' => 'Listas de exclusión',
     'description' => 'Productos que no pueden enviarse a través de una zona. Asocia una lista a una zona para aplicarla.',
-    'edit_title' => 'Editar :name',
+    'edit_title' => 'Editar {name}',
     'create_list' => 'Añadir lista',
     'create_description' => 'Asigna un nombre a la lista. Los productos se añaden en la siguiente pantalla.',
     'empty_title' => 'Aún no hay listas de exclusión',
@@ -28,7 +28,7 @@ return [
 
     'confirm_delete' => '¿Eliminar esta lista de exclusión? Se desvinculará de todas las zonas.',
     'confirm_delete_title' => 'Eliminar lista de exclusión',
-    'confirm_delete_body' => '¿Eliminar ":name"? Se desvinculará de todas las zonas a las que se aplica.',
+    'confirm_delete_body' => '¿Eliminar "{name}"? Se desvinculará de todas las zonas a las que se aplica.',
 
     'flash_created' => 'Lista de exclusión creada.',
     'flash_updated' => 'Lista de exclusión guardada.',

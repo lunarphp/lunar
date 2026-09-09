@@ -3,7 +3,7 @@
 return [
     'title' => 'Ausschlusslisten',
     'description' => 'Produkte, die nicht über eine Zone versendet werden können. Verknüpfen Sie eine Liste mit einer Zone, um sie anzuwenden.',
-    'edit_title' => ':name bearbeiten',
+    'edit_title' => '{name} bearbeiten',
     'create_list' => 'Liste hinzufügen',
     'create_description' => 'Benennen Sie die Liste. Produkte werden im nächsten Schritt hinzugefügt.',
     'empty_title' => 'Noch keine Ausschlusslisten',
@@ -28,7 +28,7 @@ return [
 
     'confirm_delete' => 'Diese Ausschlussliste löschen? Sie wird von allen Zonen getrennt.',
     'confirm_delete_title' => 'Ausschlussliste löschen',
-    'confirm_delete_body' => '":name" löschen? Sie wird von allen Zonen getrennt, auf die sie angewendet wird.',
+    'confirm_delete_body' => '"{name}" löschen? Sie wird von allen Zonen getrennt, auf die sie angewendet wird.',
 
     'flash_created' => 'Ausschlussliste erstellt.',
     'flash_updated' => 'Ausschlussliste gespeichert.',

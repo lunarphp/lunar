@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Section;
+use Lunar\Shipping\DiscountTypes\ShippingDiscount;
+use Lunar\Shipping\Panel\DiscountTypeForms\ShippingDiscountForm;
 use Lunar\Shipping\Panel\Http\Controllers\ExclusionListCreateController;
 use Lunar\Shipping\Panel\Http\Controllers\ExclusionListEditController;
 use Lunar\Shipping\Panel\Http\Controllers\ExclusionListIndexController;
@@ -42,6 +44,14 @@ class ShippingSection extends Section
             'shipping.zones.index' => ZonesTableExtension::class,
             'shipping.methods.index' => MethodsTableExtension::class,
             'shipping.exclusion-lists.index' => ExclusionListsTableExtension::class,
+        ];
+    }
+
+    /** @return array<class-string, class-string> */
+    public function discountTypeForms(): array
+    {
+        return [
+            ShippingDiscount::class => ShippingDiscountForm::class,
         ];
     }
 

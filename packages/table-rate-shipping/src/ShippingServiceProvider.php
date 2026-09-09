@@ -4,6 +4,7 @@ namespace Lunar\Shipping;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\CustomerGroup;
@@ -132,6 +133,13 @@ class ShippingServiceProvider extends ServiceProvider
         // registers itself only when lunarphp/panel is installed.
         if (class_exists(PanelManager::class)) {
             Panel::section(new ShippingSection);
+
+            // The ShippingDiscount type form needs the method list, and a type
+            // form has no endpoint of its own; share it on the discount pages
+            // only, so every other panel response stays free of the query.
+            Inertia::share('shippingMethods', fn () => request()->routeIs('panel.discounts.*')
+                ? ShippingMethod::query()->orderBy('name')->get(['id', 'name'])
+                : null);
         }
 
         Relation::morphMap([

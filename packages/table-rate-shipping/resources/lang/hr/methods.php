@@ -3,7 +3,7 @@
 return [
     'title' => 'Načini dostave',
     'description' => 'Usluge koje nudite. Stope u svakoj zoni određuju koliko način dostave tamo stoji.',
-    'edit_title' => 'Uredi :name',
+    'edit_title' => 'Uredi {name}',
     'create_method' => 'Dodaj način',
     'create_description' => 'Imenujte način dostave i odaberite njegov tip. Ograničenja, raspored i dostupnost postavljaju se na sljedećem zaslonu.',
     'empty_title' => 'Još nema načina dostave',
@@ -68,7 +68,7 @@ return [
 
     'confirm_delete' => 'Izbrisati ovaj način dostave? Njegove stope u svim zonama uklanjaju se zajedno s njim.',
     'confirm_delete_title' => 'Izbriši način dostave',
-    'confirm_delete_body' => 'Izbrisati ":name"? Njegove stope u svim zonama bit će uklonjene. Narudžbe koje su ga koristile ostaju nepromijenjene.',
+    'confirm_delete_body' => 'Izbrisati "{name}"? Njegove stope u svim zonama bit će uklonjene. Narudžbe koje su ga koristile ostaju nepromijenjene.',
 
     'flash_created' => 'Način dostave stvoren.',
     'flash_updated' => 'Način dostave spremljen.',

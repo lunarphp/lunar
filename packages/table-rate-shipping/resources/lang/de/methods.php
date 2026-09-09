@@ -3,7 +3,7 @@
 return [
     'title' => 'Versandarten',
     'description' => 'Die Dienste, die Sie anbieten. Die Tarife in jeder Zone bestimmen, was eine Versandart dort kostet.',
-    'edit_title' => ':name bearbeiten',
+    'edit_title' => '{name} bearbeiten',
     'create_method' => 'Versandart hinzufügen',
     'create_description' => 'Benennen Sie die Versandart und wählen Sie ihren Typ. Einschränkungen, Zeitplan und Verfügbarkeit werden im nächsten Schritt festgelegt.',
     'empty_title' => 'Noch keine Versandarten',
@@ -68,7 +68,7 @@ return [
 
     'confirm_delete' => 'Diese Versandart löschen? Ihre Tarife in allen Zonen werden mit ihr entfernt.',
     'confirm_delete_title' => 'Versandart löschen',
-    'confirm_delete_body' => '":name" löschen? Ihre Tarife in allen Zonen werden entfernt. Bestellungen, die sie verwendet haben, bleiben unberührt.',
+    'confirm_delete_body' => '"{name}" löschen? Ihre Tarife in allen Zonen werden entfernt. Bestellungen, die sie verwendet haben, bleiben unberührt.',
 
     'flash_created' => 'Versandart erstellt.',
     'flash_updated' => 'Versandart gespeichert.',
