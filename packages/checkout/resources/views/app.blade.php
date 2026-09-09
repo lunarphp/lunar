@@ -13,7 +13,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Checkout</title>
+    <title>Checkout · {{ config('checkout.merchant') ?: config('app.name') }}</title>
+
+    {{-- Tab icon (CheckoutTheme::favicon). The checkout is its own document,
+         so without this the tab shows the browser's blank globe. --}}
+    @if (! empty($page['props']['favicon']))
+        <link rel="icon" href="{{ $page['props']['favicon'] }}">
+    @endif
 
     @inertiaHead
 

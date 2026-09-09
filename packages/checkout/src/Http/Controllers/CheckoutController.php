@@ -241,6 +241,7 @@ class CheckoutController extends Controller
             // Consumer override stylesheet; the root view injects it as a <link>
             // after the checkout's own CSS (see lunar-checkout::app).
             'stylesheet' => $theme->stylesheet(),
+            'favicon' => $theme->favicon(),
         ]);
     }
 
@@ -283,6 +284,7 @@ class CheckoutController extends Controller
             'theme' => $theme->tokens(),
             'branding' => $theme->branding(),
             'stylesheet' => $theme->stylesheet(),
+            'favicon' => $theme->favicon(),
         ]);
     }
 
@@ -1216,6 +1218,7 @@ class CheckoutController extends Controller
             'theme' => $theme->tokens(),
             'branding' => $theme->branding(),
             'stylesheet' => $theme->stylesheet(),
+            'favicon' => $theme->favicon(),
         ]);
     }
 

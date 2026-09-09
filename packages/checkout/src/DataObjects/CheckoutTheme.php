@@ -69,6 +69,9 @@ final class CheckoutTheme
         // own CSS so it can override any var OR rule the token allowlist does not
         // cover — the full vanilla-CSS escape hatch. Validated by {@see stylesheet()}.
         public readonly ?string $stylesheet = null,
+        // Browser tab icon (URL/path). The checkout is its own document, so the
+        // store's icon does not carry over on its own. Validated by {@see favicon()}.
+        public readonly ?string $favicon = null,
     ) {}
 
     /**
@@ -100,6 +103,7 @@ final class CheckoutTheme
         ?string $logo = null,
         ?string $logoAlt = null,
         ?string $stylesheet = null,
+        ?string $favicon = null,
     ): self {
         return new self(
             accent: $accent ?? $this->accent,
@@ -118,6 +122,7 @@ final class CheckoutTheme
             logo: $logo ?? $this->logo,
             logoAlt: $logoAlt ?? $this->logoAlt,
             stylesheet: $stylesheet ?? $this->stylesheet,
+            favicon: $favicon ?? $this->favicon,
         );
     }
 
@@ -167,6 +172,15 @@ final class CheckoutTheme
     public function stylesheet(): ?string
     {
         return $this->stylesheet === null ? null : $this->sanitiseUrl($this->stylesheet);
+    }
+
+    /**
+     * Validated URL of the tab icon, or null. Injected as <link rel="icon">
+     * by the root view; the browser works the type out from the file.
+     */
+    public function favicon(): ?string
+    {
+        return $this->favicon === null ? null : $this->sanitiseUrl($this->favicon);
     }
 
     /**
