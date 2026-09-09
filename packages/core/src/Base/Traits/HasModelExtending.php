@@ -5,6 +5,7 @@ namespace Lunar\Base\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Lunar\Base\BaseModel;
@@ -166,8 +167,66 @@ trait HasModelExtending
         }
 
         foreach (Arr::wrap($classes) as $class) {
+            if (static::observerIsAlreadyRegistered($instance, $class)) {
+                continue;
+            }
+
             $instance->registerObserver($class);
         }
+    }
+
+    /**
+     * Whether the given observer already listens to every event it would be registered for.
+     *
+     * Model events are dispatched twice for a replaced model: under its own class name, and
+     * under the Lunar model it replaces (see fireModelEvent()). Both classes boot their traits,
+     * so an observer registered from a trait boot - Scout's ModelObserver, for one - would be
+     * attached to both names and run twice for a single save.
+     */
+    protected static function observerIsAlreadyRegistered(Model $instance, object|string $class): bool
+    {
+        if (! static::$dispatcher instanceof Dispatcher) {
+            return false;
+        }
+
+        $observer = is_object($class) ? $class::class : $class;
+
+        $events = array_filter(
+            $instance->getObservableEvents(),
+            fn (string $event) => method_exists($class, $event)
+        );
+
+        if ($events === []) {
+            return false;
+        }
+
+        $modelClasses = array_unique([
+            $instance::class,
+            static::lunarModelClass($instance::class),
+        ]);
+
+        $listeners = static::$dispatcher->getRawListeners();
+
+        foreach ($events as $event) {
+            $registered = array_merge(...array_map(
+                fn (string $modelClass) => (array) ($listeners["eloquent.{$event}: {$modelClass}"] ?? []),
+                $modelClasses
+            ));
+
+            if (! in_array("{$observer}@{$event}", $registered, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * The Lunar model a replacement re-dispatches its events under.
+     */
+    protected static function lunarModelClass(string $modelClass): string
+    {
+        return str_replace('Contracts\\', '', ModelManifest::guessContractClass($modelClass));
     }
 
     /**
@@ -178,7 +237,7 @@ trait HasModelExtending
         // Fire the actual models events
         $result = parent::fireModelEvent($event, $halt);
 
-        $lunarClass = str_replace('Contracts\\', '', ModelManifest::guessContractClass(static::class));
+        $lunarClass = static::lunarModelClass(static::class);
 
         if ($lunarClass == static::class) {
             return $result;
