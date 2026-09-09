@@ -57,7 +57,6 @@ const { state, collectOption, collectUnavailable, pickupPointRequired, selectPic
         <span class="pbody">
           <span class="ptop">
             <span class="pname">{{ point.name }}</span>
-            <span class="pprice">Free</span>
           </span>
           <span class="pmeta">{{ point.lines.join(' · ') }}</span>
         </span>
