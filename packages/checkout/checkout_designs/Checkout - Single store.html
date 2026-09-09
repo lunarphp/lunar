@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  CHECKOUT · built on the “Tender” design system
+  Single self-contained file · vanilla JS · no build step
+  Pattern: canonical e-commerce checkout (Shopify-style) — form-left on white,
+  sticky order summary on a quiet slate canvas to the right.
+  ────────────────────────────────────────────────────────────────────────
+  DESIGN SYSTEM (inlined :root tokens, verbatim from Tender colors_and_type.css)
+    • Type      — Manrope (UI/headings/body) · JetBrains Mono (numerics)
+    • Color     — surgical indigo (--accent) on a cool-slate neutral ramp
+    • Icons     — Lucide (CDN)
+    • Fields    — 6px radius, slate-300 border, 3px indigo focus ring
+    • Buttons   — beveled (top highlight + bottom inner shadow), press sinks 1px
+  ────────────────────────────────────────────────────────────────────────
+  BRAND-AGNOSTIC THEMING
+    • Re-skin any store by changing ONE token: --accent in :root.
+      Everything action-colored (CTA, links, selected/active states, focus
+      rings, the floating-label active colour) derives from it.
+    • Drop in a logo: replace the markup inside  .brand-lockup  (mark + name).
+  ────────────────────────────────────────────────────────────────────────
+  FLOWS
+    • A toggle at the top of the form swaps between “Deliver” and
+      “Click & collect”. Only the middle two sections differ.
+  STRIPE SWAP POINT
+    • Payment → #card-fields is the placeholder; comments mark where Stripe
+      Elements would mount. Markup is grouped in <section> blocks with stable
+      data-* hooks so it ports cleanly to Vue.
+  ════════════════════════════════════════════════════════════════════════
+-->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout</title>
+
+<!-- Fonts (Manrope + JetBrains Mono) and icons (Lucide) — per the Tender DS -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<style>
+/* ═════════════════════════════════════════════════════════════════════
+   1 · DESIGN TOKENS  (Tender — colors_and_type.css, inlined)
+   ═════════════════════════════════════════════════════════════════════ */
+:root{
+  /* Indigo — the single action colour. 600 canonical, 700 hover, 800 press. */
+  --indigo-50:#EEF2FF; --indigo-100:#E0E7FF; --indigo-200:#C7D2FE; --indigo-300:#A5B4FC;
+  --indigo-400:#818CF8; --indigo-500:#6366F1; --indigo-600:#4F46E5; --indigo-700:#4338CA;
+  --indigo-800:#3730A3; --indigo-900:#312E81; --indigo-950:#1E1B4B;
+
+  /* Cool slate — the workhorse neutrals */
+  --slate-0:#FFFFFF; --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0;
+  --slate-300:#CBD5E1; --slate-400:#94A3B8; --slate-500:#64748B; --slate-600:#475569;
+  --slate-700:#334155; --slate-800:#1E293B; --slate-900:#0F172A; --slate-950:#020617;
+
+  /* Semantic */
+  --success:#16A34A; --success-soft:#DCFCE7; --success-700:#15803D;
+  --error:#DC2626;   --error-soft:#FEE2E2;   --error-700:#B91C1C;
+  --warning:#D97706; --warning-soft:#FEF3C7;
+
+  /* Roles */
+  --bg-page:var(--slate-50); --bg-surface:var(--slate-0); --bg-subtle:var(--slate-100); --bg-inverse:var(--slate-900);
+  --fg-primary:var(--slate-900); --fg-secondary:var(--slate-600); --fg-tertiary:var(--slate-400);
+  --fg-on-accent:var(--slate-0); --fg-link:var(--indigo-600);
+  --border:var(--slate-200); --border-strong:var(--slate-300); --border-focus:var(--indigo-600);
+
+  /* ── The ONE brand knob ─────────────────────────────────── */
+  --accent:var(--indigo-600);
+  --accent-hover:var(--indigo-700);
+  --accent-press:var(--indigo-800);
+  --accent-ring:rgba(79,70,229,0.16);
+
+  --font-sans:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --text-xs:0.75rem; --text-sm:0.875rem; --text-base:1rem; --text-lg:1.125rem;
+  --text-xl:1.375rem; --text-2xl:1.75rem; --text-3xl:2.25rem; --text-4xl:3rem;
+  --weight-regular:400; --weight-medium:500; --weight-semibold:600; --weight-bold:700; --weight-extra:800;
+  --leading-tight:1.15; --leading-snug:1.3; --leading-normal:1.55;
+  --tracking-tight:-0.02em; --tracking-snug:-0.01em; --tracking-wide:0.04em;
+
+  --space-1:0.25rem; --space-2:0.5rem; --space-3:0.75rem; --space-4:1rem; --space-5:1.25rem;
+  --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem; --space-16:4rem;
+
+  --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-xl:20px; --radius-full:999px;
+
+  --shadow-xs:0 1px 2px rgba(15,23,42,0.06);
+  --shadow-sm:0 1px 3px rgba(15,23,42,0.08),0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md:0 4px 12px rgba(15,23,42,0.08),0 2px 4px rgba(15,23,42,0.04);
+  --shadow-lg:0 12px 32px rgba(15,23,42,0.12),0 4px 8px rgba(15,23,42,0.04);
+  --shadow-card:0 1px 2px rgba(15,23,42,0.04),0 8px 28px rgba(15,23,42,0.08);
+  --ring-focus:0 0 0 3px var(--accent-ring);
+
+  --ease-out:cubic-bezier(0.16,1,0.3,1); --ease-in-out:cubic-bezier(0.65,0,0.35,1);
+  --dur-fast:120ms; --dur-base:180ms; --dur-slow:300ms;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   2 · BASE
+   ═════════════════════════════════════════════════════════════════════ */
+*{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; font-family:var(--font-sans); color:var(--fg-primary);
+  background:var(--bg-surface); font-size:var(--text-base); line-height:var(--leading-normal);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+button{ font-family:inherit; }
+a{ color:inherit; }
+.mono{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:0.01em; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+[hidden]{ display:none !important; }
+.ico{ display:inline-flex; align-items:center; justify-content:center; line-height:0; }
+.ico svg{ width:1em; height:1em; stroke-width:1.9; }
+
+/* keyboard focus ring for generic interactive elements */
+.focusable:focus-visible{ outline:none; box-shadow:var(--ring-focus); border-radius:var(--radius-sm); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   3 · PAGE SHELL  (form-left on white · summary-right on slate-50)
+   ═════════════════════════════════════════════════════════════════════ */
+.page{ display:flex; min-height:100vh; align-items:stretch; }
+.form-side{ flex:1 1 63%; display:flex; justify-content:flex-end; background:var(--bg-surface); }
+.summary-side{ flex:1 1 37%; background:var(--bg-page); }
+.form-col{ width:100%; max-width:620px; padding:48px clamp(24px,3.5vw,56px) 64px; }
+.summary-col{ width:100%; max-width:410px; padding:48px clamp(24px,3.5vw,52px) 64px; position:sticky; top:24px; align-self:flex-start; }
+.summary-sticky{ }
+
+/* brand lockup (logo slot) */
+/* brand header — mark left, name + secured stacked right */
+.brand-head{ display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+.brand-mark{ width:36px; height:36px; flex:none; border-radius:9px; background:var(--accent); display:grid; place-items:center; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.18); }
+.brand-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.brand-name{ font-size:18px; font-weight:var(--weight-extra); letter-spacing:var(--tracking-tight); color:var(--fg-primary); white-space:nowrap; text-decoration:none; line-height:1.15; }
+.brand-name .dot{ color:var(--accent); }
+
+/* secured line (sits under the store name) */
+.secured{ display:inline-flex; align-items:center; gap:6px; font-size:var(--text-sm); color:var(--fg-tertiary); white-space:nowrap; }
+.secured .ico{ font-size:14px; color:var(--success); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   4 · FULFILMENT TOGGLE  (segmented)
+   ═════════════════════════════════════════════════════════════════════ */
+.seg{ position:relative; display:grid; grid-template-columns:1fr 1fr; gap:4px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px; margin-bottom:28px; }
+.seg-thumb{ position:absolute; z-index:0; top:4px; left:4px; height:calc(100% - 8px); width:calc(50% - 6px); background:var(--bg-surface); border-radius:var(--radius-sm); box-shadow:var(--shadow-sm); transition:transform var(--dur-base) var(--ease-out); }
+.seg[data-active="collect"] .seg-thumb{ transform:translateX(calc(100% + 4px)); }
+.seg-btn{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:8px; height:42px; border:0; background:transparent; cursor:pointer; font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-secondary); transition:color var(--dur-base); }
+.seg-btn .ico{ font-size:17px; }
+.seg-btn[aria-selected="true"]{ color:var(--fg-primary); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   5 · EXPRESS WALLETS + DIVIDER
+   ═════════════════════════════════════════════════════════════════════ */
+.express-h{ font-size:var(--text-xs); font-weight:var(--weight-bold); letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); text-align:center; margin:0 0 12px; }
+.wallets{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.wallet{ height:48px; border-radius:var(--radius-md); border:1px solid transparent; display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer; font-weight:var(--weight-bold); font-size:var(--text-sm); transition:transform var(--dur-fast), filter var(--dur-fast); box-shadow:var(--shadow-xs); }
+.wallet:active{ transform:translateY(1px); }
+.wallet:hover{ filter:brightness(0.97); }
+.wallet.apple{ background:#000; color:#fff; }
+.wallet.gpay{ background:#fff; color:var(--slate-900); border-color:var(--border-strong); }
+.wallet.paypal{ background:#FFC439; color:#003087; }
+.wallet svg{ display:block; }
+.divider{ display:flex; align-items:center; gap:14px; margin:24px 0; }
+.divider::before,.divider::after{ content:""; height:1px; flex:1; background:var(--border); }
+.divider span{ font-size:var(--text-xs); font-weight:var(--weight-semibold); letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); white-space:nowrap; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   6 · SECTIONS
+   ═════════════════════════════════════════════════════════════════════ */
+.block{ padding:30px 0; }
+.block + .block{ border-top:1px solid var(--border); }
+.block-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.block-title{ display:flex; align-items:center; gap:9px; font-size:1.25rem; font-weight:var(--weight-bold); letter-spacing:var(--tracking-snug); color:var(--fg-primary); margin:0; }
+.block-tick{ width:20px; height:20px; border-radius:var(--radius-full); background:var(--success); color:#fff; display:grid; place-items:center; font-size:13px; opacity:0; transform:scale(0.6); transition:opacity var(--dur-base), transform var(--dur-base) var(--ease-out); }
+.block.is-done .block-tick{ opacity:1; transform:scale(1); }
+.block-sub{ font-size:var(--text-sm); color:var(--fg-tertiary); margin:-8px 0 16px; }
+.head-link{ font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-link); text-decoration:none; cursor:pointer; white-space:nowrap; }
+.head-link:hover{ text-decoration:underline; text-underline-offset:2px; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   7 · FIELDS  ·  one vocabulary: floating-label inputs (real <label>s)
+   ═════════════════════════════════════════════════════════════════════ */
+.stack{ display:flex; flex-direction:column; gap:12px; }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.fl{ position:relative; }
+.fl > input, .fl > select{
+  width:100%; height:48px; padding:18px 13px 5px; font-family:var(--font-sans); font-size:14px;
+  color:var(--fg-primary); background:var(--bg-surface); border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm); transition:border-color var(--dur-fast), box-shadow var(--dur-fast);
+  appearance:none;
+}
+.fl > select{ cursor:pointer; }
+.fl > input:hover, .fl > select:hover{ border-color:var(--slate-400); }
+.fl > input:focus, .fl > select:focus{ outline:none; border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+.fl > input::placeholder{ color:transparent; }   /* placeholder=" " powers the float */
+.fl > label{
+  position:absolute; left:13px; top:14px; font-size:14px; color:var(--fg-tertiary); white-space:nowrap;
+  pointer-events:none; transform-origin:left top; transition:color var(--dur-fast) var(--ease-out);
+}
+.fl > input:focus ~ label,
+.fl > input:not(:placeholder-shown) ~ label,
+.fl.is-filled > label{
+  top:6px; font-size:10.5px; font-weight:var(--weight-semibold); letter-spacing:0.01em; color:var(--fg-secondary);
+}
+.fl > input:focus ~ label{ color:var(--accent); }
+.fl > select ~ label{ top:6px; font-size:10.5px; font-weight:var(--weight-semibold); color:var(--fg-secondary); } /* selects always show value */
+.fl .chev{ position:absolute; right:13px; top:50%; transform:translateY(-50%); color:var(--fg-tertiary); pointer-events:none; font-size:18px; }
+.fl .opt{ color:var(--fg-tertiary); font-weight:var(--weight-regular); }
+.fl > input.mono{ font-family:var(--font-mono); letter-spacing:0.02em; }
+
+/* error state */
+.fl.has-error > input{ border-color:var(--error); }
+.fl.has-error > input:focus{ box-shadow:0 0 0 3px rgba(220,38,38,.14); }
+.err-msg{ display:none; align-items:center; gap:5px; margin-top:6px; font-size:var(--text-sm); color:var(--error-700); }
+.err-msg.show{ display:flex; }
+.err-msg .ico{ font-size:14px; flex:none; }
+.help{ font-size:var(--text-sm); color:var(--fg-tertiary); margin-top:6px; }
+
+/* search field (address / store) — icon + placeholder, with sr-only label */
+.search{ position:relative; }
+.search > input{ width:100%; height:48px; padding:0 14px 0 42px; font-size:14px; font-family:var(--font-sans);
+  color:var(--fg-primary); background:var(--bg-surface); border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm); transition:border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.search > input::placeholder{ color:var(--fg-tertiary); }
+.search > input:hover{ border-color:var(--slate-400); }
+.search > input:focus{ outline:none; border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+.search .lead{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--fg-tertiary); font-size:18px; pointer-events:none; }
+.search .spin-ico{ position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--fg-tertiary); font-size:17px; }
+
+/* autocomplete results */
+.ac{ position:absolute; z-index:30; left:0; right:0; top:calc(100% + 6px); background:var(--bg-surface);
+  border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-lg); overflow:hidden; padding:4px; }
+.ac-item{ display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left; border:0; background:transparent;
+  padding:10px 11px; border-radius:var(--radius-sm); cursor:pointer; }
+.ac-item:hover, .ac-item.active{ background:var(--bg-subtle); }
+.ac-item .ico{ font-size:16px; color:var(--fg-tertiary); margin-top:2px; flex:none; }
+.ac-item .l1{ font-size:var(--text-sm); font-weight:var(--weight-medium); color:var(--fg-primary); }
+.ac-item .l2{ font-size:var(--text-xs); color:var(--fg-tertiary); }
+
+.manual-link{ display:inline-flex; align-items:center; gap:5px; margin-top:10px; font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-link); cursor:pointer; white-space:nowrap; background:none; border:0; padding:0; }
+.manual-link:hover{ text-decoration:underline; text-underline-offset:2px; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   8 · SELECTABLE CARDS  (radiogroups: shipping, stores, payment methods)
+   ═════════════════════════════════════════════════════════════════════ */
+.pick{ position:relative; display:flex; gap:13px; align-items:flex-start; width:100%; text-align:left;
+  background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:var(--radius-md);
+  padding:15px 16px; cursor:pointer; transition:border-color var(--dur-fast), box-shadow var(--dur-fast), background var(--dur-fast); }
+.pick + .pick{ margin-top:10px; }
+.pick:hover{ border-color:var(--slate-400); }
+.pick[aria-checked="true"]{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent), var(--shadow-sm); background:var(--bg-surface); }
+.pick[aria-disabled="true"]{ opacity:.55; cursor:not-allowed; background:var(--bg-subtle); }
+.pick:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+.pick[aria-checked="true"]:focus-visible{ box-shadow:0 0 0 1px var(--accent), var(--ring-focus); }
+.radio{ flex:none; width:18px; height:18px; margin-top:1px; border-radius:50%; border:1.5px solid var(--border-strong); background:var(--bg-surface); display:grid; place-items:center; transition:border-color var(--dur-fast); }
+.pick[aria-checked="true"] .radio{ border-color:var(--accent); }
+.radio::after{ content:""; width:9px; height:9px; border-radius:50%; background:var(--accent); transform:scale(0); transition:transform var(--dur-fast) var(--ease-out); }
+.pick[aria-checked="true"] .radio::after{ transform:scale(1); }
+.pick .pbody{ flex:1; min-width:0; }
+.pick .ptop{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.pick .pname{ font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-primary); }
+.pick .pmeta{ font-size:var(--text-sm); color:var(--fg-secondary); margin-top:2px; }
+.pick .pmuted{ font-size:var(--text-xs); color:var(--fg-tertiary); margin-top:2px; }
+.pick .pprice{ font-family:var(--font-mono); font-size:var(--text-sm); font-weight:var(--weight-medium); color:var(--fg-primary); white-space:nowrap; }
+
+/* locked placeholder (shipping before address) */
+.locked{ display:flex; align-items:center; gap:10px; padding:16px; border:1px dashed var(--border-strong);
+  border-radius:var(--radius-md); background:var(--bg-subtle); color:var(--fg-tertiary); font-size:var(--text-sm); }
+.locked .ico{ font-size:17px; flex:none; }
+
+/* status pills */
+.pill{ display:inline-flex; align-items:center; gap:5px; font-size:var(--text-xs); font-weight:var(--weight-semibold); padding:3px 9px; border-radius:var(--radius-full); }
+.pill .dot{ width:6px; height:6px; border-radius:50%; }
+.pill.in{ color:var(--success-700); background:var(--success-soft); }
+.pill.low{ color:var(--warning); background:var(--warning-soft); }
+.pill.out{ color:var(--fg-tertiary); background:var(--bg-subtle); }
+.pill.free{ color:var(--success-700); background:var(--success-soft); }
+.lead-time{ display:inline-flex; align-items:center; gap:5px; font-size:var(--text-xs); color:var(--success-700); }
+.lead-time .ico{ font-size:13px; }
+/* express order-cutoff countdown (urgency cue) */
+.ship-cutoff{ display:inline-flex; align-items:center; gap:6px; margin-top:7px; font-size:12px; font-weight:var(--weight-semibold);
+  color:var(--warning); background:var(--warning-soft); padding:3px 9px; border-radius:var(--radius-full); font-variant-numeric:tabular-nums; }
+.ship-cutoff .ico{ font-size:13px; }
+
+/* mini-map placeholder */
+.map{ position:relative; height:120px; border-radius:var(--radius-md); border:1px solid var(--border); margin:12px 0 4px; overflow:hidden;
+  background:linear-gradient(0deg,rgba(79,70,229,.04),rgba(79,70,229,.04)),
+    repeating-linear-gradient(0deg,var(--slate-100) 0 1px,transparent 1px 26px),
+    repeating-linear-gradient(90deg,var(--slate-100) 0 1px,transparent 1px 26px),
+    var(--slate-50); }
+.map .chip{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:rgba(255,255,255,.85);
+  border:1px solid var(--border); border-radius:var(--radius-full); padding:4px 11px; font-size:var(--text-xs); color:var(--fg-tertiary); }
+.map .pin{ position:absolute; left:38%; top:40%; color:var(--accent); font-size:24px; }
+
+/* single collection point — static (no choosing UI) */
+.store-static{ display:flex; gap:14px; align-items:flex-start; background:var(--bg-surface); border:1px solid var(--border-strong);
+  border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-xs); }
+.store-static > .ico{ font-size:22px; color:var(--accent); flex:none; margin-top:1px; }
+.store-static .sbody{ flex:1; min-width:0; }
+.store-static .sname{ font-size:var(--text-base); font-weight:var(--weight-bold); color:var(--fg-primary); letter-spacing:var(--tracking-snug); }
+.store-static .saddr{ font-size:var(--text-sm); color:var(--fg-secondary); margin-top:3px; }
+.store-static .shours{ font-size:var(--text-xs); color:var(--fg-tertiary); margin-top:3px; }
+.store-static .srow{ display:flex; gap:10px; align-items:center; margin-top:11px; flex-wrap:wrap; }
+.store-note{ display:flex; gap:7px; align-items:flex-start; margin:12px 2px 0; font-size:var(--text-sm); color:var(--fg-tertiary); line-height:var(--leading-snug); }
+.store-note .ico{ font-size:15px; margin-top:1px; flex:none; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   9 · PAYMENT ACCORDION
+   ═════════════════════════════════════════════════════════════════════ */
+.secure-note{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.secure-note .txt{ display:flex; align-items:center; gap:7px; font-size:var(--text-sm); color:var(--fg-secondary); }
+.secure-note .txt .ico{ font-size:15px; color:var(--success); }
+
+/* payment method tabs (DS-native pattern) */
+.pm-tabs{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+.pm-tab{ position:relative; height:64px; border:1px solid var(--border-strong); border-radius:var(--radius-md); background:var(--bg-surface); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; cursor:pointer; }
+.pm-tab:hover{ border-color:var(--slate-400); }
+.pm-tab.on{ border-color:var(--accent); background:var(--indigo-50); box-shadow:inset 0 0 0 1px var(--accent); }
+.pm-tab:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+.pm-tab.on:focus-visible{ box-shadow:inset 0 0 0 1px var(--accent), var(--ring-focus); }
+.pm-tab .mk{ height:18px; display:flex; align-items:center; justify-content:center; color:var(--fg-secondary); }
+.pm-tab.on .mk{ color:var(--accent); }
+.pm-tab .mk .ico{ font-size:21px; }
+.pm-tab .lbl{ font-size:11.5px; font-weight:var(--weight-semibold); color:var(--fg-secondary); letter-spacing:0.01em; white-space:nowrap; }
+.pm-tab.on .lbl{ color:var(--accent); }
+.pm-panel{ animation:reveal var(--dur-base) var(--ease-out); }
+
+/* redirect note (PayPal) */
+.pm-redirect{ display:flex; gap:13px; align-items:flex-start; padding:16px 17px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg-subtle); }
+.pm-redirect .ico{ font-size:20px; color:var(--accent); flex:none; margin-top:1px; }
+.pm-redirect .rt{ margin:0; font-size:var(--text-sm); color:var(--fg-secondary); line-height:var(--leading-snug); }
+.pm-redirect .rt strong{ color:var(--fg-primary); font-weight:var(--weight-semibold); }
+
+/* instalment timeline (Clearpay / Klarna) */
+.instal-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:11px; }
+.instal-head .t{ font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-primary); }
+.instal-head .s{ font-size:var(--text-xs); color:var(--fg-tertiary); }
+.instal{ display:flex; gap:8px; }
+.instal-step{ flex:1; text-align:center; border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 6px; background:var(--bg-surface); }
+.instal-step.first{ border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+.instal-step .a{ font-family:var(--font-mono); font-weight:var(--weight-semibold); font-size:13px; color:var(--fg-primary); font-variant-numeric:tabular-nums; }
+.instal-step .w{ font-size:10px; color:var(--fg-tertiary); margin-top:4px; }
+.pm-note{ display:flex; gap:6px; align-items:flex-start; font-size:var(--text-xs); color:var(--fg-tertiary); margin:11px 0 0; }
+.pm-note .ico{ font-size:13px; margin-top:1px; flex:none; }
+
+/* fused card group (number / exp / cvc) */
+.card-group{ border:1px solid var(--border-strong); border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-surface);
+  transition:border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.card-group.is-focus{ border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+.card-group.has-error{ border-color:var(--error); }
+.cg-cell{ position:relative; display:flex; align-items:center; height:46px; padding:0 13px; }
+.cg-num{ border-bottom:1px solid var(--border); }
+.cg-split{ display:grid; grid-template-columns:1fr 1fr; }
+.cg-split .cg-cvc{ border-left:1px solid var(--border); }
+.card-group input{ border:0; outline:none; background:transparent; width:100%; font-family:var(--font-mono);
+  font-size:14px; letter-spacing:0.02em; color:var(--fg-primary); font-variant-numeric:tabular-nums; }
+.card-group input::placeholder{ font-family:var(--font-sans); letter-spacing:0; color:var(--fg-tertiary); }
+.card-group .lead{ color:var(--fg-tertiary); font-size:18px; margin-right:10px; display:inline-flex; flex:none; }
+.card-group .trail{ position:absolute; right:13px; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:6px; color:var(--fg-tertiary); }
+
+/* card-network marks (placeholders — source official art in prod) */
+.netmarks{ display:flex; gap:4px; }
+.nmk{ height:21px; min-width:31px; padding:0 4px; border-radius:3px; display:flex; align-items:center; justify-content:center;
+  font-weight:var(--weight-extra); font-size:9px; color:#fff; letter-spacing:.02em; }
+.nmk.visa{ background:#1A1F71; }
+.nmk.amex{ background:#0077A6; }
+.nmk.mc{ background:#16161a; position:relative; min-width:34px; }
+.nmk.mc .c1,.nmk.mc .c2{ position:absolute; width:13px; height:13px; border-radius:50%; }
+.nmk.mc .c1{ background:#EB001B; left:5px; }
+.nmk.mc .c2{ background:#F79E1B; right:5px; mix-blend-mode:screen; }
+.nmk.more{ background:var(--slate-200); color:var(--slate-600); }
+
+/* checkbox row */
+.check{ display:flex; gap:11px; align-items:flex-start; cursor:pointer; }
+.check .box{ width:20px; height:20px; border-radius:var(--radius-sm); border:1.5px solid var(--border-strong); flex:none;
+  display:grid; place-items:center; color:#fff; transition:all var(--dur-fast); margin-top:1px; }
+.check input{ position:absolute; opacity:0; width:0; height:0; }
+.check input:checked ~ .box{ background:var(--accent); border-color:var(--accent); }
+.check .box .ico{ font-size:14px; opacity:0; }
+.check input:checked ~ .box .ico{ opacity:1; }
+.check input:focus-visible ~ .box{ box-shadow:var(--ring-focus); }
+.check .txt{ font-size:var(--text-sm); color:var(--fg-secondary); line-height:var(--leading-snug); }
+
+/* toggle switch (someone else collecting) */
+.switch-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 16px; border:1px solid var(--border-strong); border-radius:var(--radius-md); cursor:pointer; }
+.switch{ position:relative; width:42px; height:24px; flex:none; }
+.switch input{ position:absolute; opacity:0; width:0; height:0; }
+.switch .track{ position:absolute; inset:0; background:var(--slate-300); border-radius:var(--radius-full); transition:background var(--dur-base); }
+.switch .knob{ position:absolute; top:2px; left:2px; width:20px; height:20px; background:#fff; border-radius:50%; box-shadow:var(--shadow-sm); transition:transform var(--dur-base) var(--ease-out); }
+.switch input:checked ~ .track{ background:var(--accent); }
+.switch input:checked ~ .knob{ transform:translateX(18px); }
+.switch input:focus-visible ~ .track{ box-shadow:var(--ring-focus); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   10 · BUTTONS  (beveled, per DS)
+   ═════════════════════════════════════════════════════════════════════ */
+.btn{ position:relative; font-size:15px; font-weight:var(--weight-semibold); border:none; border-radius:var(--radius-md);
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap;
+  transition:background var(--dur-base) var(--ease-out), box-shadow var(--dur-fast), transform var(--dur-fast); }
+.btn:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+.btn .ico{ font-size:17px; }
+.btn-primary{ background:var(--accent); color:#fff; border:1px solid var(--accent-press);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.16), 0 1px 2px rgba(15,23,42,.18); }
+.btn-primary:hover{ background:var(--accent-hover); border-color:var(--indigo-900); }
+.btn-primary:active{ background:var(--accent-press); transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.18); }
+.btn-primary:disabled{ background:var(--slate-200); color:var(--slate-400); border-color:var(--slate-300); cursor:not-allowed; box-shadow:none; transform:none; }
+.btn-secondary{ background:var(--bg-surface); color:var(--fg-primary); border:1px solid var(--border-strong);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.06); }
+.btn-secondary:hover{ background:var(--bg-subtle); }
+.btn-secondary:active{ transform:translateY(1px); }
+.btn-outline{ background:var(--bg-surface); color:var(--accent); border:1px solid var(--indigo-300);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(15,23,42,.06); }
+.btn-outline:hover{ border-color:var(--accent); background:#fff; }
+.btn-outline:active{ transform:translateY(1px); box-shadow:none; }
+.btn-block{ width:100%; height:50px; font-size:15px; }
+.cta-wrap{ padding-top:28px; }
+.legal{ font-size:var(--text-xs); color:var(--fg-tertiary); line-height:var(--leading-normal); margin:14px 0 0; text-align:center; }
+.legal a{ color:var(--fg-secondary); text-decoration:underline; text-underline-offset:2px; }
+.spinner{ width:18px; height:18px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* footer policy links */
+.foot{ display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:34px; padding-top:22px; border-top:1px solid var(--border); }
+.foot a{ font-size:var(--text-sm); color:var(--fg-link); text-decoration:none; white-space:nowrap; }
+.foot a:hover{ text-decoration:underline; text-underline-offset:2px; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   11 · ORDER SUMMARY
+   ═════════════════════════════════════════════════════════════════════ */
+.collect-banner{ display:flex; gap:11px; align-items:flex-start; background:var(--bg-surface); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:14px; margin-bottom:20px; box-shadow:var(--shadow-xs); }
+.collect-banner .ico{ font-size:18px; color:var(--accent); margin-top:1px; flex:none; }
+.collect-banner .eyebrow{ font-size:var(--text-xs); font-weight:var(--weight-bold); letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); }
+.collect-banner .sname{ font-size:var(--text-sm); font-weight:var(--weight-bold); color:var(--fg-primary); }
+.collect-banner .sline{ font-size:var(--text-xs); color:var(--fg-secondary); }
+.collect-banner .change{ font-size:var(--text-xs); font-weight:var(--weight-semibold); color:var(--fg-link); cursor:pointer; flex:none; background:none; border:0; padding:3px 6px; border-radius:var(--radius-sm); }
+.collect-banner .change:hover{ text-decoration:underline; text-underline-offset:2px; }
+.collect-banner .change:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+
+/* inline alert component (Tender DS — preview/alerts.html) */
+.alert{ display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border-radius:var(--radius-md); font-size:var(--text-sm); line-height:1.45; }
+.alert .ico{ font-size:18px; flex:none; margin-top:1px; }
+.alert b, .alert strong{ font-weight:var(--weight-bold); }
+.a-success{ background:var(--success-soft); color:var(--success-700); }
+.a-error{ background:var(--error-soft); color:var(--error-700); }
+.a-info{ background:var(--indigo-50); color:var(--indigo-800); }
+
+.os-h{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.os-h h2{ font-size:var(--text-lg); font-weight:var(--weight-bold); letter-spacing:var(--tracking-snug); margin:0; white-space:nowrap; }
+.os-h .count{ font-size:var(--text-sm); color:var(--fg-tertiary); white-space:nowrap; flex:none; }
+
+.os-items{ list-style:none; margin:0; padding:0; }
+.os-item{ display:flex; gap:13px; align-items:center; padding:11px 0; }
+.os-thumb{ position:relative; width:56px; height:56px; flex:none; border-radius:var(--radius-md); background:var(--bg-surface);
+  border:1px solid var(--border); display:grid; place-items:center; color:var(--slate-400); box-shadow:var(--shadow-xs); }
+.os-thumb .qty{ position:absolute; top:-7px; right:-7px; min-width:20px; height:20px; padding:0 5px; border-radius:var(--radius-full);
+  background:var(--slate-700); color:#fff; font-size:11px; font-weight:var(--weight-bold); display:inline-flex; align-items:center; justify-content:center;
+  font-variant-numeric:tabular-nums; box-shadow:0 0 0 2px var(--bg-page); }
+.os-item .meta{ flex:1; min-width:0; }
+.os-item .iname{ font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-primary); line-height:var(--leading-snug); }
+.os-item .ivar{ font-size:var(--text-xs); color:var(--fg-tertiary); margin-top:2px; }
+.os-item .isku{ font-size:10.5px; font-family:var(--font-mono); letter-spacing:0.02em; color:var(--fg-tertiary); margin-top:3px; }
+.os-item .iprice{ font-family:var(--font-mono); font-size:var(--text-sm); font-weight:var(--weight-medium); color:var(--fg-primary); white-space:nowrap; }
+
+.os-rule{ height:1px; background:var(--border); margin:6px 0; }
+
+/* discount — compact, always-visible input + apply */
+.disc-form{ display:flex; gap:8px; padding:2px 0 4px; }
+.disc-input{ flex:1; min-width:0; height:40px; border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+  padding:0 12px; font-size:13px; font-family:var(--font-sans); color:var(--fg-primary); background:var(--bg-surface);
+  transition:border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.disc-input::placeholder{ color:var(--fg-tertiary); }
+.disc-input:focus{ outline:none; border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+.disc-input.is-err{ border-color:var(--error); box-shadow:0 0 0 3px rgba(220,38,38,.14); }
+.disc-apply-btn{ flex:none; height:40px; padding:0 14px; border-radius:var(--radius-sm); border:1px solid var(--border-strong);
+  background:var(--bg-surface); font-size:13px; font-weight:var(--weight-semibold); color:var(--fg-primary); cursor:pointer; transition:background var(--dur-fast); }
+.disc-apply-btn:hover{ background:var(--bg-subtle); }
+.disc-apply-btn:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+.disc-applied{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; }
+.disc-applied .tag{ display:inline-flex; align-items:center; gap:7px; font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--success-700); }
+.disc-applied .tag .ico{ font-size:15px; }
+.disc-applied .remove{ font-size:var(--text-xs); color:var(--fg-tertiary); text-decoration:underline; cursor:pointer; background:none; border:0; }
+
+.os-lines{ display:flex; flex-direction:column; gap:10px; padding-top:6px; }
+.os-line{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:var(--text-sm); color:var(--fg-secondary); }
+.os-line > span:first-child{ white-space:nowrap; }
+.os-line .v{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; color:var(--fg-primary); }
+.os-line.discount .v{ color:var(--success-700); }
+.os-line.tax > span:first-child{ color:var(--fg-secondary); font-weight:var(--weight-medium); }
+.os-line.tax .v{ color:var(--fg-primary); font-weight:var(--weight-semibold); }
+.os-total{ display:flex; align-items:flex-end; justify-content:space-between; padding-top:14px; margin-top:6px; border-top:1px solid var(--border); }
+.os-total .tl{ font-size:var(--text-base); font-weight:var(--weight-bold); color:var(--fg-primary); }
+.os-total .tv{ display:flex; align-items:baseline; gap:7px; }
+.os-total .cur{ font-size:var(--text-xs); font-weight:var(--weight-semibold); color:var(--fg-tertiary); }
+.os-total .amt{ font-family:var(--font-mono); font-size:var(--text-2xl); font-weight:var(--weight-bold); color:var(--fg-primary); font-variant-numeric:tabular-nums; letter-spacing:var(--tracking-tight); }
+
+.os-trust{ display:flex; flex-direction:column; gap:9px; margin-top:26px; }
+.os-trust .line{ display:flex; align-items:center; gap:8px; font-size:var(--text-xs); color:var(--fg-tertiary); }
+.os-trust .ico{ font-size:14px; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   12 · MOBILE BARS
+   ═════════════════════════════════════════════════════════════════════ */
+.m-summary-bar, .m-pay-bar{ display:none; }
+@media (max-width:860px){
+  .page{ display:block; }
+  .form-side, .summary-side{ width:100%; max-width:none; }
+  .summary-side{ display:none; }            /* desktop summary hidden; mobile uses bars */
+  .form-col{ max-width:none; padding:24px 20px 120px; }
+  .desktop-cta{ display:none; }
+
+  .m-summary-bar{ display:block; position:sticky; top:0; z-index:40; background:rgba(255,255,255,.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+  .m-summary-toggle{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:13px 20px; background:none; border:0; cursor:pointer; }
+  .m-summary-toggle .lft{ display:flex; align-items:center; gap:9px; font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-primary); }
+  .m-summary-toggle .lft .ico{ font-size:18px; color:var(--fg-secondary); }
+  .m-summary-toggle .chev{ transition:transform var(--dur-base); color:var(--fg-tertiary); font-size:16px; }
+  .m-summary-toggle[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+  .m-summary-toggle .rgt{ display:flex; align-items:center; gap:10px; }
+  .m-summary-toggle .rgt .ct{ font-size:var(--text-xs); color:var(--fg-tertiary); }
+  .m-summary-toggle .rgt .tot{ font-family:var(--font-mono); font-size:15px; font-weight:var(--weight-bold); color:var(--fg-primary); }
+  .m-summary-panel{ padding:4px 20px 20px; border-top:1px solid var(--border); }
+
+  .m-pay-bar{ display:block; position:fixed; bottom:0; left:0; right:0; z-index:40; background:rgba(255,255,255,.95);
+    backdrop-filter:blur(8px); border-top:1px solid var(--border); padding:12px 20px; padding-bottom:max(12px,env(safe-area-inset-bottom)); }
+}
+@media (min-width:861px){
+  .m-summary-bar, .m-pay-bar{ display:none !important; }
+}
+
+/* reveal animation */
+.reveal{ animation:reveal var(--dur-base) var(--ease-out); }
+@keyframes reveal{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+
+/* ═════════════════════════════════════════════════════════════════════
+   13 · SUCCESS OVERLAY
+   ═════════════════════════════════════════════════════════════════════ */
+.success-overlay{ position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:24px;
+  background:rgba(15,23,42,.4); backdrop-filter:blur(3px); }
+.success-card{ width:100%; max-width:420px; background:var(--bg-surface); border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-card); padding:40px 36px 30px; text-align:center; animation:pop var(--dur-slow) var(--ease-out); }
+@keyframes pop{ from{ transform:scale(.94); opacity:0; } to{ transform:scale(1); opacity:1; } }
+.success-check{ width:62px; height:62px; border-radius:50%; background:var(--success-soft); color:var(--success);
+  display:grid; place-items:center; margin:0 auto 18px; font-size:32px; }
+.success-card h2{ font-size:var(--text-2xl); font-weight:var(--weight-bold); letter-spacing:var(--tracking-snug); margin:0 0 8px; }
+.success-card p{ font-size:var(--text-sm); color:var(--fg-secondary); margin:0 0 22px; }
+</style>
+</head>
+
+<body>
+
+<!-- ░░ MOBILE · collapsible summary bar (top) ░░ -->
+<div class="m-summary-bar">
+  <button class="m-summary-toggle" id="m-summary-toggle" aria-expanded="false" aria-controls="m-summary-panel">
+    <span class="lft"><span class="ico"><i data-lucide="shopping-bag"></i></span> Order summary</span>
+    <span class="rgt">
+      <span class="ct" id="m-count">3 items</span>
+      <span class="tot mono" id="m-total">£289.00</span>
+      <span class="chev ico"><i data-lucide="chevron-down"></i></span>
+    </span>
+  </button>
+  <div class="m-summary-panel" id="m-summary-panel" hidden></div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════════════ LEFT · FORM ══════════════════ -->
+  <div class="form-side">
+    <div class="form-col">
+
+      <!-- Logo slot — replace contents to rebrand. "Secure checkout" sits under the store name. -->
+      <div class="brand-head">
+        <span class="brand-mark"><span class="ico" style="font-size:20px"><i data-lucide="mountain"></i></span></span>
+        <div class="brand-text">
+          <a href="#" class="brand-name" aria-label="Atelier Hudson — home">Atelier Hudson<span class="dot">.</span></a>
+          <div class="secured"><span class="ico"><i data-lucide="lock"></i></span> Secure checkout — encrypted, never stored</div>
+        </div>
+      </div>
+
+      <!-- Fulfilment toggle -->
+      <div class="seg" id="fulfilment-seg" data-active="delivery" role="tablist" aria-label="How would you like your order?">
+        <span class="seg-thumb" aria-hidden="true"></span>
+        <button type="button" class="seg-btn" role="tab" aria-selected="true" data-flow="delivery">
+          <span class="ico"><i data-lucide="truck"></i></span> Deliver
+        </button>
+        <button type="button" class="seg-btn" role="tab" aria-selected="false" data-flow="collect">
+          <span class="ico"><i data-lucide="store"></i></span> Click &amp; collect
+        </button>
+      </div>
+
+      <!-- Express wallets -->
+      <p class="express-h">Express checkout</p>
+      <div class="wallets">
+        <button type="button" class="wallet apple" aria-label="Pay with Apple Pay">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.71-1.04-2.74-4.13M14.6 4.59c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44"/></svg>
+          <span style="font-weight:600">Pay</span>
+        </button>
+        <button type="button" class="wallet gpay" aria-label="Pay with Google Pay">
+          <svg viewBox="0 0 48 48" width="19" height="19" aria-hidden="true">
+            <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+            <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+            <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/>
+            <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+          </svg>
+          <span style="font-weight:600;color:#3c4043">Pay</span>
+        </button>
+        <button type="button" class="wallet paypal" aria-label="Pay with PayPal">
+          <span style="font-style:italic;font-weight:800;font-size:15px;letter-spacing:-.01em"><span style="color:#003087">Pay</span><span style="color:#009cde">Pal</span></span>
+        </button>
+      </div>
+      <div class="divider"><span>or pay another way</span></div>
+
+      <form id="checkout-form" novalidate>
+
+        <!-- ══════ CONTACT ══════ -->
+        <section class="block" data-block="contact" style="border-top:0;padding-top:8px">
+          <div class="block-head">
+            <h2 class="block-title">Contact <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+          <div class="stack">
+            <div class="fl">
+              <input id="email" type="email" autocomplete="email" inputmode="email" placeholder=" " data-validate="email" aria-describedby="email-err" />
+              <label for="email">Email address</label>
+            </div>
+            <div class="err-msg" id="email-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <label class="check">
+              <input type="checkbox" id="news" checked />
+              <span class="box ico"><i data-lucide="check"></i></span>
+              <span class="txt">Email me with order updates and occasional offers.</span>
+            </label>
+          </div>
+
+          <!-- STATE A · recognised account → passwordless phone-code entry.
+               Triggered on blur when the email domain is a known account (@user.com). -->
+          <div id="acct-recognised" hidden class="reveal" style="margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--indigo-50);padding:15px">
+            <div id="otc-intro" style="display:flex;gap:11px;align-items:flex-start">
+              <span class="ico" style="font-size:18px;color:var(--accent);margin-top:1px"><i data-lucide="shield-check"></i></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Welcome back</p>
+                <p style="margin:3px 0 0;font-size:var(--text-sm);color:var(--fg-secondary)">Enter the 6-digit code we texted to your phone ending <strong style="color:var(--fg-primary)">••89</strong> to use your saved details.</p>
+              </div>
+              <button type="button" id="acct-dismiss" class="focusable" aria-label="Dismiss" style="flex:none;background:none;border:0;cursor:pointer;color:var(--fg-tertiary);padding:2px"><span class="ico" style="font-size:16px"><i data-lucide="x"></i></span></button>
+            </div>
+
+            <div id="otc-wrap" style="margin-top:13px">
+              <div id="otc" role="group" aria-label="One-time code" style="display:flex;gap:8px">
+                <input class="otc-box mono" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+              </div>
+              <div class="err-msg" id="otc-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+              <div style="display:flex;gap:18px;margin-top:11px">
+                <button type="button" id="otc-resend" class="head-link" style="background:none;border:0;padding:0">Resend code</button>
+                <button type="button" id="otc-cancel" class="head-link" style="background:none;border:0;padding:0;color:var(--fg-tertiary)">Continue as guest</button>
+              </div>
+            </div>
+
+            <!-- Signed-in -->
+            <div id="signed-in" hidden class="alert a-success reveal">
+              <span class="ico"><i data-lucide="check-circle"></i></span>
+              <span><b>Signed in.</b> Your saved details will be used.</span>
+            </div>
+          </div>
+
+          <!-- STATE B · guest → offer to save details for next time.
+               Shown on blur for any non-account email (e.g. @guest.com). -->
+          <div id="acct-guest" hidden class="reveal" style="margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-md);padding:15px">
+            <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+              <span class="ico" style="font-size:18px;color:var(--accent);margin-top:1px"><i data-lucide="bookmark"></i></span>
+              <span style="flex:1;min-width:0">
+                <span style="display:block;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Save my details for next time</span>
+                <span style="display:block;margin-top:3px;font-size:var(--text-sm);color:var(--fg-secondary)">Securely store your contact, delivery and payment preferences for a faster checkout.</span>
+              </span>
+              <span class="switch" style="margin-top:2px"><input type="checkbox" id="guest-save" /><span class="track"></span><span class="knob"></span></span>
+            </label>
+            <div id="guest-saved-note" hidden class="alert a-info reveal" style="margin-top:13px">
+              <span class="ico"><i data-lucide="info"></i></span>
+              <span>We'll text a secure link to <strong id="guest-email">your phone</strong> to finish setting up your account after you pay.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════ DELIVERY ADDRESS (Flow A) ══════ -->
+        <section class="block" data-block="address" data-flow="delivery">
+          <div class="block-head">
+            <h2 class="block-title">Delivery <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+
+          <!-- Autocomplete-first -->
+          <div id="addr-search-wrap" style="position:relative">
+            <div class="search">
+              <span class="lead ico"><i data-lucide="search"></i></span>
+              <label class="sr-only" for="addr-search">Search for your address</label>
+              <input id="addr-search" type="text" autocomplete="off" placeholder="Start typing a postcode or street…" role="combobox" aria-expanded="false" aria-controls="addr-results" aria-autocomplete="list" />
+            </div>
+            <div id="addr-results" class="ac" role="listbox" hidden></div>
+            <span class="manual-link" id="addr-manual" role="button" tabindex="0">Enter address manually</span>
+          </div>
+
+          <!-- Structured fields (single column → reliable autofill) -->
+          <div id="addr-fields" hidden class="stack" style="margin-top:14px">
+            <div id="addr-found" hidden class="alert a-success reveal">
+              <span class="ico"><i data-lucide="check-circle"></i></span>
+              <span>Address found — check the details below.</span>
+            </div>
+            <div class="row2">
+              <div class="fl">
+                <input id="first" type="text" autocomplete="given-name" placeholder=" " data-validate="required" aria-describedby="first-err" />
+                <label for="first">First name</label>
+              </div>
+              <div class="fl">
+                <input id="last" type="text" autocomplete="family-name" placeholder=" " data-validate="required" aria-describedby="last-err" />
+                <label for="last">Last name</label>
+              </div>
+            </div>
+            <div class="err-msg" id="first-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="err-msg" id="last-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <div class="fl">
+              <input id="line1" type="text" autocomplete="address-line1" placeholder=" " data-validate="required" aria-describedby="line1-err" />
+              <label for="line1">Address</label>
+            </div>
+            <div class="err-msg" id="line1-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <div class="fl">
+              <input id="line2" type="text" autocomplete="address-line2" placeholder=" " />
+              <label for="line2">Apartment, suite, etc. <span class="opt">(optional)</span></label>
+            </div>
+
+            <div class="row2">
+              <div class="fl">
+                <input id="city" type="text" autocomplete="address-level2" placeholder=" " data-validate="required" aria-describedby="city-err" />
+                <label for="city">Town / city</label>
+              </div>
+              <div class="fl">
+                <input id="postcode" type="text" autocomplete="postal-code" placeholder=" " data-validate="postcode" aria-describedby="postcode-err" style="text-transform:uppercase" />
+                <label for="postcode">Postcode</label>
+              </div>
+            </div>
+            <div class="err-msg" id="city-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="err-msg" id="postcode-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <!-- Country: defaults UK, hidden until changed -->
+            <div id="country-row">
+              <span class="manual-link" id="country-toggle" role="button" tabindex="0" style="color:var(--fg-secondary)">
+                <span class="ico"><i data-lucide="globe"></i></span> Country / region: <strong id="country-label" style="color:var(--fg-primary);margin-left:3px">United Kingdom</strong>
+              </span>
+              <div class="fl" id="country-field" hidden style="margin-top:10px">
+                <select id="country" autocomplete="country">
+                  <option value="GB" selected>United Kingdom</option>
+                  <option value="IE">Ireland</option>
+                  <option value="FR">France</option>
+                  <option value="DE">Germany</option>
+                  <option value="US">United States</option>
+                </select>
+                <label for="country">Country / region</label>
+                <span class="chev ico"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+
+            <div class="fl" style="margin-top:2px">
+              <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder=" " data-validate="phone" aria-describedby="phone-err" />
+              <label for="phone">Phone <span class="opt">(for delivery updates)</span></label>
+            </div>
+            <div class="err-msg" id="phone-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+          </div>
+        </section>
+
+        <!-- ══════ COLLECTION POINT (Flow B) — single location ══════ -->
+        <section class="block" data-block="store" data-flow="collect" hidden>
+          <div class="block-head">
+            <h2 class="block-title">Collect in store <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+          <div class="store-static">
+            <span class="ico"><i data-lucide="map-pin"></i></span>
+            <div class="sbody">
+              <div class="sname">Covent Garden</div>
+              <div class="saddr">21 Long Acre, London WC2E 9LD</div>
+              <div class="shours">Mon–Sat 10–8 · Sun 12–6</div>
+              <div class="srow">
+                <span class="pill in"><span class="dot" style="background:var(--success)"></span>In stock</span>
+                <span class="lead-time"><span class="ico"><i data-lucide="clock"></i></span>Ready to collect in ~2 hrs</span>
+              </div>
+            </div>
+          </div>
+          <p class="store-note"><span class="ico"><i data-lucide="info"></i></span> This is our only collection point. We'll text you the moment your order is ready.</p>
+        </section>
+
+        <!-- ══════ SHIPPING METHOD (Flow A) ══════ -->
+        <section class="block" data-block="shipping" data-flow="delivery">
+          <div class="block-head">
+            <h2 class="block-title">Shipping method <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+          <div id="shipping-locked" class="locked">
+            <span class="ico"><i data-lucide="lock"></i></span> Enter your delivery address to see shipping options.
+          </div>
+          <div id="shipping-list" role="radiogroup" aria-label="Select a shipping method" hidden></div>
+        </section>
+
+        <!-- ══════ COLLECTOR DETAILS (Flow B) ══════ -->
+        <section class="block" data-block="collector" data-flow="collect" hidden>
+          <div class="block-head">
+            <h2 class="block-title">Collector details <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+          <div class="stack">
+            <div class="row2">
+              <div class="fl">
+                <input id="c-first" type="text" autocomplete="given-name" placeholder=" " data-validate="required" aria-describedby="c-first-err" />
+                <label for="c-first">First name</label>
+              </div>
+              <div class="fl">
+                <input id="c-last" type="text" autocomplete="family-name" placeholder=" " data-validate="required" aria-describedby="c-last-err" />
+                <label for="c-last">Last name</label>
+              </div>
+            </div>
+            <div class="err-msg" id="c-first-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="err-msg" id="c-last-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="fl">
+              <input id="c-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder=" " data-validate="phone" aria-describedby="c-phone-err" />
+              <label for="c-phone">Mobile number</label>
+            </div>
+            <div class="err-msg" id="c-phone-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <p class="help" style="margin-top:0">We'll text you when your order is ready to collect.</p>
+
+            <label class="switch-row" style="margin-top:4px">
+              <span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Someone else is collecting</span>
+              <span class="switch"><input type="checkbox" id="alt-collector" /><span class="track"></span><span class="knob"></span></span>
+            </label>
+            <div id="alt-fields" hidden class="reveal">
+              <div class="fl">
+                <input id="alt-name" type="text" autocomplete="name" placeholder=" " data-validate="required" aria-describedby="alt-name-err" />
+                <label for="alt-name">Collector's full name</label>
+              </div>
+              <div class="err-msg" id="alt-name-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+              <p class="help" style="display:flex;gap:6px;align-items:flex-start"><span class="ico" style="font-size:14px;margin-top:2px"><i data-lucide="badge-check"></i></span> They'll need photo ID matching this name to collect.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════ PAYMENT ══════ -->
+        <section class="block" data-block="payment">
+          <div class="block-head">
+            <h2 class="block-title">Payment <span class="block-tick ico"><i data-lucide="check"></i></span></h2>
+          </div>
+          <div class="secure-note">
+            <span class="txt"><span class="ico"><i data-lucide="lock"></i></span> All transactions are secure and encrypted</span>
+            <span class="netmarks" aria-hidden="true">
+              <span class="nmk visa">VISA</span>
+              <span class="nmk mc"><span class="c1"></span><span class="c2"></span></span>
+              <span class="nmk amex">AMEX</span>
+              <span class="nmk more">+4</span>
+            </span>
+          </div>
+
+          <!-- Payment method — DS-native tabs (distinct from a stacked radio list) -->
+          <div class="pm-tabs" id="pm-tabs" role="radiogroup" aria-label="Payment method">
+            <button type="button" class="pm-tab" role="radio" aria-checked="true" tabindex="0" data-method="card" aria-label="Pay by card">
+              <span class="mk"><span class="ico"><i data-lucide="credit-card"></i></span></span>
+              <span class="lbl">Card</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="paypal" aria-label="Pay with PayPal">
+              <span class="mk"><span style="font-style:italic;font-weight:800;font-size:13px;color:#003087">Pay<span style="color:#0070E0">Pal</span></span></span>
+              <span class="lbl">PayPal</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="clearpay" aria-label="Pay in 4 with Clearpay">
+              <span class="mk"><span style="background:#B2FCE4;color:#0F172A;font-weight:800;font-size:9px;padding:2px 5px;border-radius:4px">Clearpay</span></span>
+              <span class="lbl">Pay in 4</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="klarna" aria-label="Pay later with Klarna">
+              <span class="mk"><span style="background:#FFB3C7;color:#0F172A;font-weight:800;font-size:9px;padding:2px 5px;border-radius:4px">Klarna</span></span>
+              <span class="lbl">Pay later</span>
+            </button>
+          </div>
+
+          <!-- Card panel -->
+          <div class="pm-panel" data-panel="card">
+            <!-- ░░ STRIPE ELEMENTS SWAP POINT — replace #card-fields with a mounted Payment Element ░░ -->
+            <div class="card-group" id="card-fields">
+              <div class="cg-cell cg-num">
+                <span class="lead ico"><i data-lucide="credit-card"></i></span>
+                <input id="card-number" inputmode="numeric" autocomplete="cc-number" placeholder="Card number" data-validate="card" aria-label="Card number" aria-describedby="card-err" />
+                <span class="trail netmarks"><span class="ico" style="font-size:16px"><i data-lucide="lock"></i></span></span>
+              </div>
+              <div class="cg-split">
+                <div class="cg-cell cg-exp">
+                  <input id="card-exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" data-validate="exp" aria-label="Expiry date" aria-describedby="card-err" />
+                </div>
+                <div class="cg-cell cg-cvc">
+                  <input id="card-cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC" data-validate="cvc" aria-label="Security code" aria-describedby="card-err" />
+                  <span class="trail"><span class="ico" style="font-size:16px"><i data-lucide="help-circle"></i></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="err-msg" id="card-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <div class="fl" style="margin-top:12px">
+              <input id="card-name" autocomplete="cc-name" placeholder=" " data-validate="required" aria-describedby="card-name-err" />
+              <label for="card-name">Name on card</label>
+            </div>
+            <div class="err-msg" id="card-name-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <label class="check" id="billing-check-row" style="margin-top:14px">
+              <input type="checkbox" id="billing-same" checked />
+              <span class="box ico"><i data-lucide="check"></i></span>
+              <span class="txt" id="billing-label">Use delivery address as billing address</span>
+            </label>
+          </div>
+
+          <!-- PayPal panel -->
+          <div class="pm-panel" data-panel="paypal" hidden>
+            <div class="pm-redirect">
+              <span class="ico"><i data-lucide="external-link"></i></span>
+              <p class="rt">You'll be securely redirected to <strong>PayPal</strong> to approve your payment of <strong class="mono" data-total>£289.00</strong>. No card details are entered here.</p>
+            </div>
+          </div>
+
+          <!-- Clearpay panel — live instalment timeline -->
+          <div class="pm-panel" data-panel="clearpay" hidden>
+            <div class="instal-head"><span class="t">4 interest-free payments</span><span class="s">with Clearpay</span></div>
+            <div class="instal" data-instal="clearpay"></div>
+            <p class="pm-note"><span class="ico"><i data-lucide="info"></i></span> First payment today, then every 2 weeks. No interest, no fees when you pay on time.</p>
+          </div>
+
+          <!-- Klarna panel — live instalment timeline -->
+          <div class="pm-panel" data-panel="klarna" hidden>
+            <div class="instal-head"><span class="t">Pay in 3, interest-free</span><span class="s">with Klarna</span></div>
+            <div class="instal" data-instal="klarna"></div>
+            <p class="pm-note"><span class="ico"><i data-lucide="info"></i></span> Klarna will confirm your plan and run a soft check that won't affect your credit score.</p>
+          </div>
+        </section>
+
+        <!-- ══════ PRIMARY CTA (desktop) ══════ -->
+        <div class="cta-wrap desktop-cta">
+          <button type="submit" id="pay-btn" class="btn btn-primary btn-block">
+            <span class="ico"><i data-lucide="lock"></i></span>
+            <span class="cta-label">Pay <span class="mono" data-total>£289.00</span></span>
+          </button>
+          <p class="legal">By paying you agree to our <a href="#">terms</a> and <a href="#">refund policy</a>. You can cancel anytime before dispatch.</p>
+        </div>
+
+        <!-- footer policy links -->
+        <div class="foot">
+          <a href="#">Refund policy</a><a href="#">Shipping</a><a href="#">Privacy policy</a><a href="#">Terms of service</a><a href="#">Contact</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════ RIGHT · ORDER SUMMARY ══════════════════ -->
+  <aside class="summary-side" aria-label="Order summary">
+    <div class="summary-col">
+      <div class="summary-sticky" id="summary-card"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- ░░ MOBILE · sticky bottom pay bar ░░ -->
+<div class="m-pay-bar">
+  <button type="button" id="m-pay-btn" class="btn btn-primary btn-block">
+    <span class="ico"><i data-lucide="lock"></i></span>
+    <span class="cta-label">Pay <span class="mono" data-total>£289.00</span></span>
+  </button>
+</div>
+
+<!-- ░░ Success overlay ░░ -->
+<div id="success" class="success-overlay" hidden>
+  <div class="success-card">
+    <div class="success-check ico"><i data-lucide="check"></i></div>
+    <h2>Payment confirmed</h2>
+    <p id="success-msg">Thanks — a receipt is on its way to your inbox.</p>
+    <button type="button" id="success-close" class="btn btn-secondary btn-block">Done</button>
+  </div>
+</div>
+
+<div aria-live="polite" class="sr-only" id="live"></div>
+
+<style>
+/* OTC boxes (kept near markup for clarity) */
+.otc-box{ width:42px; height:48px; text-align:center; font-size:19px; font-weight:var(--weight-semibold);
+  border:1px solid var(--border-strong); border-radius:var(--radius-sm); background:var(--bg-surface); color:var(--fg-primary);
+  transition:border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.otc-box:focus{ outline:none; border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+</style>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   STATE — single source of truth (maps to a Vue reactive store)
+   ════════════════════════════════════════════════════════════════════ */
+const fmt = (p) => '£' + (p/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const state = {
+  fulfilment:'delivery',          // 'delivery' | 'collect'
+  method:'card',                  // payment method
+  items:[
+    { id:'knit',   title:'Merino crew knit',    variant:'Charcoal · M', sku:'AH-2241-CHM', qty:1, price:12800, icon:'shirt' },
+    { id:'oxford', title:'Cotton oxford shirt', variant:'White · M',    sku:'AH-1180-WHM', qty:2, price:5800,  icon:'shirt' },
+    { id:'card',   title:'Leather card holder', variant:'Tan',          sku:'AH-0563-TAN', qty:1, price:4500,  icon:'wallet' },
+  ],
+  shippingId:'standard',
+  store:null,
+  addressValid:false,
+  discount:null,                  // { code, pct }
+  VAT_RATE:0.20,
+};
+
+const shippingMethods = [
+  { id:'standard', name:'Standard delivery', sub:'Free over £50',  price:0,   etaMin:3, etaMax:5 },
+  { id:'express',  name:'Express delivery',  sub:'Jump the queue', price:695, etaMin:1, etaMax:1 },
+  { id:'nominated',name:'Nominated day',     sub:'Choose a weekday',price:495, etaMin:2, etaMax:4 },
+];
+
+// Single collection point — this store has only one location.
+const allStores = [
+  { id:'covent', name:'Covent Garden', addr:'21 Long Acre, London WC2E 9LD', stock:'in', lead:'~2 hrs', hours:'Mon–Sat 10–8 · Sun 12–6' },
+];
+// Only one location, so it is always the collection point — pre-select it.
+state.store = allStores[0];
+
+const addressIndex = [
+  { line1:'12 Marchmont Street', city:'London',     postcode:'WC1N 1AB' },
+  { line1:'8 Lavender Hill',     city:'London',     postcode:'SW11 5RW' },
+  { line1:'140 Old Street',      city:'London',     postcode:'EC1V 9BD' },
+  { line1:'27 Bold Street',      city:'Liverpool',  postcode:'L1 4DN'   },
+  { line1:'45 Gloucester Road',  city:'Bristol',    postcode:'BS7 8AE'  },
+  { line1:'3 King’s Parade',     city:'Cambridge',  postcode:'CB2 1SJ'  },
+  { line1:'92 Deansgate',        city:'Manchester', postcode:'M3 2QG'   },
+];
+
+const VALID_CODES = { 'WELCOME10':10, 'SAVE15':15 };
+let processing=false;   // true while a mock payment is in flight (keeps the CTA disabled)
+
+/* ════════════════════════════════════════════════════════════════════
+   DATE HELPERS — business-day ETAs
+   ════════════════════════════════════════════════════════════════════ */
+function addBusinessDays(date,n){ const d=new Date(date); let a=0; while(a<n){ d.setDate(d.getDate()+1); const w=d.getDay(); if(w!==0&&w!==6) a++; } return d; }
+function fmtDay(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+function etaLabel(m){ const now=new Date();
+  if(m.etaMin===m.etaMax){ const d=addBusinessDays(now,m.etaMin); return (m.id==='express')?('Tomorrow · '+fmtDay(d)):fmtDay(d); }
+  return fmtDay(addBusinessDays(now,m.etaMin))+' – '+fmtDay(addBusinessDays(now,m.etaMax)); }
+
+/* ════════════════════════════════════════════════════════════════════
+   PRICING — recompute() derives every figure from state
+   ════════════════════════════════════════════════════════════════════ */
+function getShipping(){ return shippingMethods.find(m=>m.id===state.shippingId); }
+function calc(){
+  const subtotal = state.items.reduce((s,i)=>s+i.price*i.qty,0);
+  const shipping = state.fulfilment==='collect' ? 0 : (getShipping()?.price ?? 0);
+  const discount = state.discount ? Math.round(subtotal*state.discount.pct/100) : 0;
+  const total = Math.max(0, subtotal+shipping-discount);
+  const vat = Math.round(total*state.VAT_RATE/(1+state.VAT_RATE));
+  return { subtotal, shipping, discount, total, vat };
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   THUMBNAILS — monochrome line glyphs (Lucide names)
+   ════════════════════════════════════════════════════════════════════ */
+function thumb(icon, qty){
+  return `<span class="os-thumb"><span class="ico" style="font-size:24px"><i data-lucide="${icon}"></i></span><span class="qty">${qty}</span></span>`;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SUMMARY render (shared → desktop card + mobile panel)
+   ════════════════════════════════════════════════════════════════════ */
+function summaryHTML(){
+  const c = calc();
+  const itemCount = state.items.reduce((s,i)=>s+i.qty,0);
+
+  let collect = '';
+  if(state.fulfilment==='collect' && state.store){
+    const s = state.store;
+    collect = `<div class="collect-banner">
+      <span class="ico"><i data-lucide="map-pin"></i></span>
+      <div style="flex:1;min-width:0">
+        <p class="eyebrow" style="margin:0 0 2px">Collecting from</p>
+        <p class="sname" style="margin:0">${s.name}</p>
+        <p class="sline" style="margin:2px 0 0">${s.addr} · ready ${s.lead}</p>
+      </div>
+    </div>`;
+  }
+
+  const lines = state.items.map(i=>`
+    <li class="os-item">
+      ${thumb(i.icon, i.qty)}
+      <div class="meta">
+        <div class="iname">${i.title}</div>
+        <div class="ivar">${i.variant}</div>
+        <div class="isku">SKU ${i.sku}</div>
+      </div>
+      <div class="iprice">${fmt(i.price*i.qty)}</div>
+    </li>`).join('');
+
+  const discountBlock = state.discount
+    ? `<div class="disc-applied">
+        <span class="tag"><span class="ico"><i data-lucide="badge-percent"></i></span>${state.discount.code} · −${state.discount.pct}%</span>
+        <button type="button" class="remove" data-remove-discount>Remove</button>
+      </div>`
+    : `<div class="disc-form">
+         <label class="sr-only" for="disc-input">Discount code</label>
+         <input id="disc-input" class="disc-input" placeholder="Discount code" aria-describedby="disc-err" />
+         <button type="button" class="disc-apply-btn" id="disc-apply">Apply</button>
+       </div>
+       <div class="err-msg" id="disc-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>`;
+
+  const shipLabel = state.fulfilment==='collect' ? 'Collection' : (getShipping()?.name || 'Shipping');
+  const shipValue = (state.fulfilment==='collect' || c.shipping===0)
+    ? '<span class="pill free"><span class="dot" style="background:var(--success)"></span>Free</span>'
+    : `<span class="v">${fmt(c.shipping)}</span>`;
+
+  return `
+    ${collect}
+    <div class="os-h"><h2>Order summary</h2><span class="count">${itemCount} item${itemCount!==1?'s':''}</span></div>
+    <ul class="os-items">${lines}</ul>
+    <div class="os-rule"></div>
+    ${discountBlock}
+    <div class="os-rule"></div>
+    <div class="os-lines">
+      <div class="os-line"><span>Subtotal</span><span class="v">${fmt(c.subtotal)}</span></div>
+      <div class="os-line tax"><span>VAT (20%, included)</span><span class="v">${fmt(c.vat)}</span></div>
+      ${state.discount?`<div class="os-line discount"><span>Discount (${state.discount.code})</span><span class="v">−${fmt(c.discount)}</span></div>`:''}
+      <div class="os-line"><span>${shipLabel}</span>${shipValue}</div>
+      <div class="os-total">
+        <span class="tl">Total</span>
+        <span class="tv"><span class="cur">GBP</span><span class="amt">${fmt(c.total)}</span></span>
+      </div>
+    </div>
+    <div class="os-trust">
+      <div class="line"><span class="ico"><i data-lucide="lock"></i></span> Secured with 256-bit TLS encryption</div>
+      <div class="line"><span class="ico"><i data-lucide="shield-check"></i></span> Card details never touch the merchant's servers</div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SHIPPING + STORE render
+   ════════════════════════════════════════════════════════════════════ */
+function renderShipping(){
+  document.getElementById('shipping-list').innerHTML = shippingMethods.map(m=>{
+    const checked = m.id===state.shippingId;
+    const price = m.price===0 ? '<span class="pill free"><span class="dot" style="background:var(--success)"></span>Free</span>' : `<span class="pprice">${fmt(m.price)}</span>`;
+    const sub = m.id==='express'
+      ? `<div class="ship-cutoff" data-cutoff><span class="ico"><i data-lucide="zap"></i></span><span class="t"></span></div>`
+      : `<div class="pmuted">${m.sub}</div>`;
+    return `<div class="pick" role="radio" tabindex="${checked?0:-1}" aria-checked="${checked}" data-ship="${m.id}">
+      <span class="radio"></span>
+      <div class="pbody">
+        <div class="ptop"><span class="pname">${m.name}</span>${price}</div>
+        <div class="pmeta">${etaLabel(m)}</div>
+        ${sub}
+      </div>
+    </div>`;
+  }).join('');
+  if(window.lucide) lucide.createIcons();
+  updateCutoff();
+}
+
+/* Live order-cutoff countdown shown on the Express option (cutoff = 2pm). */
+function updateCutoff(){
+  const els=document.querySelectorAll('[data-cutoff] .t'); if(!els.length) return;
+  const now=new Date(); const cut=new Date(now); cut.setHours(14,0,0,0);
+  let txt;
+  if(now < cut){
+    let ms=cut-now; const h=Math.floor(ms/3.6e6); ms-=h*3.6e6; const m=Math.floor(ms/6e4); ms-=m*6e4; const s=Math.floor(ms/1000);
+    const rem = h>0 ? `${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s` : `${m}m ${String(s).padStart(2,'0')}s`;
+    txt = `Order within ${rem} for delivery tomorrow`;
+  } else {
+    txt = 'Order before 2 PM for next-day delivery';
+  }
+  els.forEach(e=> e.textContent=txt);
+}
+setInterval(updateCutoff, 1000);
+
+function stockPill(s){
+  if(s==='in')  return '<span class="pill in"><span class="dot" style="background:var(--success)"></span>In stock</span>';
+  if(s==='low') return '<span class="pill low"><span class="dot" style="background:var(--warning)"></span>Low stock</span>';
+  return '<span class="pill out"><span class="dot" style="background:var(--slate-400)"></span>Out of stock</span>';
+}
+/* Collection point is rendered as static markup (single location), so there is
+   no dynamic store list to render. */
+
+/* ════════════════════════════════════════════════════════════════════
+   MASTER render
+   ════════════════════════════════════════════════════════════════════ */
+function render(){
+  const html = summaryHTML();
+  document.getElementById('summary-card').innerHTML = html;
+  document.getElementById('m-summary-panel').innerHTML = html;
+  const c = calc();
+  document.querySelectorAll('[data-total]').forEach(el=> el.textContent = fmt(c.total));
+  document.getElementById('m-total').textContent = fmt(c.total);
+  const itemCount = state.items.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('m-count').textContent = itemCount + (itemCount!==1?' items':' item');
+  renderInstal();
+  updateCtaLabels();
+  wireSummary();
+  updateCompletion();
+  if(window.lucide) lucide.createIcons();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VALIDATION — on blur; re-validate live once errored; value-preserving
+   ════════════════════════════════════════════════════════════════════ */
+const validators = {
+  email:   v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || 'Your email address looks incomplete.',
+  required:v => v.trim().length>0 || 'This field is required.',
+  postcode:v => /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(v.trim()) || 'Enter a valid UK postcode.',
+  phone:   v => /^[\d\s+()-]{7,}$/.test(v.trim()) || 'Enter a valid phone number.',
+  card:    v => (v.replace(/\s/g,'').length>=15 && /^\d+$/.test(v.replace(/\s/g,''))) || 'Your card number looks incomplete.',
+  exp:     v => /^(0[1-9]|1[0-2])\s*\/\s*\d{2}$/.test(v.trim()) || 'Use the MM / YY format.',
+  cvc:     v => /^\d{3,4}$/.test(v.trim()) || 'Your security code is 3–4 digits.',
+};
+function fieldError(input){
+  const rule=input.dataset.validate; if(!rule) return true;
+  if(input.disabled || input.closest('[hidden]')) return true;
+  const r = validators[rule] ? validators[rule](input.value) : true;
+  return r===true ? true : r;
+}
+function showError(input,msg){
+  const fl = input.closest('.fl, .card-group'); if(fl) fl.classList.add('has-error');
+  input.setAttribute('aria-invalid','true');
+  const err = document.getElementById(input.getAttribute('aria-describedby'));
+  if(err){ err.querySelector('.t').textContent=msg; err.classList.add('show'); }
+}
+function clearError(input){
+  const fl = input.closest('.fl, .card-group'); if(fl) fl.classList.remove('has-error');
+  input.removeAttribute('aria-invalid');
+  // only hide the message if no sibling input still errors (card-group shares one err)
+  const err = document.getElementById(input.getAttribute('aria-describedby'));
+  if(err){
+    const grp = input.closest('.card-group');
+    if(grp){ const stillBad=[...grp.querySelectorAll('input')].some(i=>i.getAttribute('aria-invalid')==='true'); if(stillBad) return; }
+    err.classList.remove('show');
+  }
+}
+function validateField(input){ const r=fieldError(input); if(r===true){ clearError(input); return true; } showError(input,r); return false; }
+
+document.querySelectorAll('[data-validate]').forEach(input=>{
+  input.addEventListener('blur', ()=> validateField(input));
+  input.addEventListener('input', ()=>{ if(input.getAttribute('aria-invalid')==='true') validateField(input); });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   COMPLETION ticks + shipping unlock
+   ════════════════════════════════════════════════════════════════════ */
+function setDone(block,done){ const el=document.querySelector(`[data-block="${block}"]`); if(el) el.classList.toggle('is-done',!!done); }
+function val(id){ return (document.getElementById(id)?.value || '').trim(); }
+function hasShippableAddress(){ return !!(val('line1') && val('city') && val('postcode')); }
+function updateCompletion(){
+  setDone('contact', validators.email(val('email'))===true);
+
+  const addrDone = ['first','last','line1','city'].every(id=>val(id)) && validators.postcode(val('postcode'))===true;
+  setDone('address', addrDone);
+  state.addressValid = !!addrDone;
+  toggleShippingLock();
+  setDone('shipping', hasShippableAddress() && !!state.shippingId);
+
+  setDone('store', !!state.store);
+  const colDone = ['c-first','c-last'].every(id=>val(id)) && validators.phone(val('c-phone'))===true;
+  setDone('collector', colDone);
+
+  let payDone;
+  if(state.method==='card'){
+    payDone = validators.card(val('card-number'))===true && validators.exp(val('card-exp'))===true
+           && validators.cvc(val('card-cvc'))===true && !!val('card-name');
+  } else { payDone = true; }
+  setDone('payment', payDone);
+  updatePayDisabled();
+}
+
+/* Pay button stays disabled until everything required for the current flow + method is filled in. */
+function isComplete(){
+  if(validators.email(val('email'))!==true) return false;
+  if(state.fulfilment==='delivery'){
+    if(!(val('first') && val('last') && val('line1') && val('city') && validators.postcode(val('postcode'))===true)) return false;
+    if(!state.shippingId) return false;
+  } else {
+    if(!state.store) return false;
+    if(!(val('c-first') && val('c-last') && validators.phone(val('c-phone'))===true)) return false;
+    if(document.getElementById('alt-collector').checked && !val('alt-name')) return false;
+  }
+  if(state.method==='card'){
+    if(validators.card(val('card-number'))!==true) return false;
+    if(validators.exp(val('card-exp'))!==true) return false;
+    if(validators.cvc(val('card-cvc'))!==true) return false;
+    if(!val('card-name')) return false;
+  }
+  return true;
+}
+function updatePayDisabled(){
+  if(processing) return;
+  const ok=isComplete();
+  document.querySelectorAll('#pay-btn,#m-pay-btn').forEach(b=> b.disabled=!ok);
+}
+function toggleShippingLock(){
+  const locked=document.getElementById('shipping-locked'); const list=document.getElementById('shipping-list');
+  if(hasShippableAddress()){ if(!locked.hidden){ locked.hidden=true; list.hidden=false; list.classList.add('reveal'); renderShipping(); if(window.lucide) lucide.createIcons(); } }
+  else { locked.hidden=false; list.hidden=true; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FLOW TOGGLE
+   ════════════════════════════════════════════════════════════════════ */
+function setFlow(flow){
+  state.fulfilment=flow;
+  const seg=document.getElementById('fulfilment-seg'); seg.dataset.active=flow;
+  seg.querySelectorAll('.seg-btn').forEach(b=> b.setAttribute('aria-selected', b.dataset.flow===flow));
+  document.querySelectorAll('[data-flow]').forEach(el=>{ if(el.classList.contains('seg-btn')) return; el.hidden = el.dataset.flow!==flow; });
+  // billing label follows fulfilment
+  const bl=document.getElementById('billing-label'); if(bl) bl.textContent = flow==='collect' ? 'Use collector details as billing address' : 'Use delivery address as billing address';
+  render();
+}
+document.querySelectorAll('#fulfilment-seg .seg-btn').forEach(b=> b.addEventListener('click', ()=> setFlow(b.dataset.flow)));
+
+/* ════════════════════════════════════════════════════════════════════
+   CONTACT · passwordless OTC
+   ════════════════════════════════════════════════════════════════════ */
+const emailInput=document.getElementById('email');
+const acctRecognised=document.getElementById('acct-recognised');
+const acctGuest=document.getElementById('acct-guest');
+
+// Mock account directory: emails on these domains are "recognised" accounts and get
+// the passwordless phone-code flow. Everything else is treated as a guest.
+const KNOWN_DOMAINS = ['user.com'];
+
+// On blur, branch on the email's domain into one of two states:
+//   • recognised account  → show the 6-digit phone-code entry
+//   • guest               → offer to save details for next time
+function classifyEmail(){
+  const valid = validators.email(emailInput.value)===true;
+  const signedIn = !document.getElementById('signed-in').hidden;
+  if(!valid){ acctRecognised.hidden=true; acctGuest.hidden=true; return; }
+  if(signedIn) return; // already verified — leave the signed-in state in place
+  const domain = emailInput.value.split('@')[1].toLowerCase();
+  if(KNOWN_DOMAINS.includes(domain)){
+    acctGuest.hidden=true;
+    acctRecognised.hidden=false;
+    document.getElementById('otc-intro').hidden=false;
+    document.getElementById('otc-wrap').hidden=false;
+    clearOTC();
+    announce('Welcome back — we texted a 6-digit code to your phone.');
+  } else {
+    acctRecognised.hidden=true;
+    acctGuest.hidden=false;
+  }
+}
+emailInput.addEventListener('blur', ()=>{ classifyEmail(); updateCompletion(); });
+
+document.getElementById('acct-dismiss').addEventListener('click', ()=>{ acctRecognised.hidden=true; announce('Continuing as a guest.'); });
+document.getElementById('otc-cancel').addEventListener('click', ()=>{ acctRecognised.hidden=true; announce('Continuing as a guest.'); });
+document.getElementById('otc-resend').addEventListener('click', ()=> announce('A new code is on its way.'));
+document.getElementById('guest-save').addEventListener('change', e=>{
+  document.getElementById('guest-email').textContent = emailInput.value || 'your phone';
+  document.getElementById('guest-saved-note').hidden = !e.target.checked;
+});
+
+const otc=[...document.querySelectorAll('#otc input')];
+function clearOTC(){ otc.forEach(i=>i.value=''); }
+function checkOTC(){ if(otc.map(i=>i.value).join('').length===6){ document.getElementById('otc-intro').hidden=true; document.getElementById('otc-wrap').hidden=true; document.getElementById('signed-in').hidden=false; announce('Signed in successfully.'); } }
+otc.forEach((box,i)=>{
+  box.addEventListener('input', ()=>{ box.value=box.value.replace(/\D/g,'').slice(0,1); if(box.value && i<otc.length-1) otc[i+1].focus(); checkOTC(); });
+  box.addEventListener('keydown', e=>{ if(e.key==='Backspace'&&!box.value&&i>0){ otc[i-1].focus(); otc[i-1].value=''; } if(e.key==='ArrowLeft'&&i>0) otc[i-1].focus(); if(e.key==='ArrowRight'&&i<otc.length-1) otc[i+1].focus(); });
+  box.addEventListener('paste', e=>{ e.preventDefault(); const d=(e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6).split(''); d.forEach((x,k)=>{ if(otc[k]) otc[k].value=x; }); (otc[Math.min(d.length,5)]||otc[5]).focus(); checkOTC(); });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   ADDRESS · autocomplete + manual escape + country
+   ════════════════════════════════════════════════════════════════════ */
+const addrSearch=document.getElementById('addr-search'); const addrResults=document.getElementById('addr-results'); const addrFields=document.getElementById('addr-fields');
+let acResults=[];
+function showAddrFields(){ addrFields.hidden=false; }
+function fillFloating(id){ const el=document.getElementById(id); el.closest('.fl')?.classList.toggle('is-filled', !!el.value); }
+addrSearch.addEventListener('input', ()=>{
+  const raw=addrSearch.value.trim(); const q=raw.toLowerCase();
+  if(q.length<2){ addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false'); return; }
+  const matches=addressIndex.filter(a=>(a.line1+' '+a.city+' '+a.postcode).toLowerCase().includes(q)).slice(0,5);
+  acResults=matches.slice();
+  // If the query looks like a postcode (contains a digit), offer a generated list at that postcode.
+  if(/\d/.test(raw) && acResults.length<5){
+    const pc=raw.toUpperCase();
+    const streets=['High Street','Station Road','Park Avenue','Church Lane','Queens Road'];
+    for(let i=0; acResults.length<5 && i<streets.length; i++){ acResults.push({ line1:`${i+1} ${streets[i]}`, city:'London', postcode:pc }); }
+  }
+  if(!acResults.length){ addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false'); return; }
+  addrResults.innerHTML=acResults.map((a,i)=>`<button type="button" class="ac-item" role="option" data-ac="${i}">
+    <span class="ico"><i data-lucide="map-pin"></i></span>
+    <span><span class="l1">${a.line1}</span><br><span class="l2">${a.city}, ${a.postcode}</span></span></button>`).join('');
+  addrResults.hidden=false; addrSearch.setAttribute('aria-expanded','true'); if(window.lucide) lucide.createIcons();
+});
+addrResults.addEventListener('click', e=>{
+  const it=e.target.closest('[data-ac]'); if(!it) return;
+  const a=acResults[+it.dataset.ac];
+  document.getElementById('line1').value=a.line1; document.getElementById('city').value=a.city; document.getElementById('postcode').value=a.postcode;
+  ['line1','city','postcode'].forEach(fillFloating);
+  addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false');
+  showAddrFields(); document.getElementById('addr-found').hidden=false;
+  if(!val('first')) document.getElementById('first').focus();
+  updateCompletion();
+});
+document.addEventListener('click', e=>{ if(!e.target.closest('#addr-search-wrap')) addrResults.hidden=true; });
+document.getElementById('addr-manual').addEventListener('click', ()=>{ showAddrFields(); document.getElementById('addr-found').hidden=true; document.getElementById('first').focus(); });
+document.getElementById('addr-manual').addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); document.getElementById('addr-manual').click(); } });
+document.getElementById('country-toggle').addEventListener('click', ()=>{ const f=document.getElementById('country-field'); f.hidden=!f.hidden; if(!f.hidden) document.getElementById('country').focus(); });
+document.getElementById('country').addEventListener('change', e=>{ document.getElementById('country-label').textContent=e.target.selectedOptions[0].textContent; });
+
+/* ════════════════════════════════════════════════════════════════════
+   RADIOGROUP a11y — roving tabindex + arrow keys (shipping & stores)
+   ════════════════════════════════════════════════════════════════════ */
+function wireRadiogroup(groupEl,onSelect){
+  groupEl.addEventListener('click', e=>{ const p=e.target.closest('[role="radio"]'); if(!p||p.getAttribute('aria-disabled')==='true') return; onSelect(p); });
+  groupEl.addEventListener('keydown', e=>{
+    const radios=[...groupEl.querySelectorAll('[role="radio"]:not([aria-disabled="true"])')];
+    const cur=document.activeElement.closest('[role="radio"]'); let i=radios.indexOf(cur);
+    if(['ArrowDown','ArrowRight'].includes(e.key)){ e.preventDefault(); i=(i+1)%radios.length; radios[i].focus(); }
+    else if(['ArrowUp','ArrowLeft'].includes(e.key)){ e.preventDefault(); i=(i-1+radios.length)%radios.length; radios[i].focus(); }
+    else if([' ','Enter'].includes(e.key)){ e.preventDefault(); if(cur) onSelect(cur); }
+  });
+}
+wireRadiogroup(document.getElementById('shipping-list'), p=>{
+  state.shippingId=p.dataset.ship; renderShipping();
+  document.querySelector(`[data-ship="${state.shippingId}"]`)?.focus(); render();
+  announce(getShipping().name+' selected'+(getShipping().price===0?', free':', '+fmt(getShipping().price)));
+});
+/* Single collection point — no store picker, search, or geolocation needed. */
+
+/* ════════════════════════════════════════════════════════════════════
+   PAYMENT accordion (radiogroup)
+   ════════════════════════════════════════════════════════════════════ */
+const pmTabs=document.getElementById('pm-tabs');
+function selectMethod(method){
+  state.method=method;
+  pmTabs.querySelectorAll('.pm-tab').forEach(t=>{
+    const on = t.dataset.method===method;
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-checked',on); t.tabIndex=on?0:-1;
+  });
+  document.querySelectorAll('.pm-panel').forEach(p=> p.hidden = p.dataset.panel!==method);
+  render();
+}
+wireRadiogroup(pmTabs, p=> selectMethod(p.dataset.method));
+
+/* live instalment timelines (recompute with the order total) */
+function renderInstal(){
+  const c = calc();
+  const plans = {
+    clearpay:{ n:4, when:['Today','In 2 weeks','In 4 weeks','In 6 weeks'] },
+    klarna:{   n:3, when:['Today','In 30 days','In 60 days'] },
+  };
+  Object.entries(plans).forEach(([k,p])=>{
+    const wrap=document.querySelector(`[data-instal="${k}"]`); if(!wrap) return;
+    const each=Math.round(c.total/p.n); const last=c.total-each*(p.n-1);
+    wrap.innerHTML=Array.from({length:p.n}).map((_,i)=>
+      `<div class="instal-step${i===0?' first':''}"><span class="a">${fmt(i===p.n-1?last:each)}</span><span class="w">${p.when[i]}</span></div>`).join('');
+  });
+}
+
+/* CTA label adapts to the chosen method */
+function updateCtaLabels(){
+  const c=calc();
+  const lab = state.method==='card'     ? `Pay <span class="mono">${fmt(c.total)}</span>`
+            : state.method==='paypal'   ? 'Continue to PayPal'
+            : state.method==='clearpay' ? 'Continue with Clearpay'
+            :                             'Continue with Klarna';
+  document.querySelectorAll('.cta-label').forEach(el=> el.innerHTML=lab);
+}
+
+/* card-group focus ring */
+const cardGroup=document.getElementById('card-fields');
+cardGroup.querySelectorAll('input').forEach(inp=>{
+  inp.addEventListener('focus', ()=> cardGroup.classList.add('is-focus'));
+  inp.addEventListener('blur', ()=> cardGroup.classList.remove('is-focus'));
+});
+/* auto-format card + expiry */
+const cardNum=document.getElementById('card-number'); const cardExp=document.getElementById('card-exp');
+cardNum.addEventListener('input', ()=>{ cardNum.value=cardNum.value.replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim(); });
+cardExp.addEventListener('input', ()=>{ const d=cardExp.value.replace(/\D/g,'').slice(0,4); cardExp.value=d.length>=3?d.slice(0,2)+' / '+d.slice(2):d; });
+document.getElementById('card-cvc').addEventListener('input', e=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); });
+
+/* collector alt toggle */
+document.getElementById('alt-collector').addEventListener('change', e=>{ document.getElementById('alt-fields').hidden=!e.target.checked; updateCompletion(); });
+
+/* float-label sync for autofilled/selected fields */
+document.querySelectorAll('.fl > input').forEach(inp=> inp.addEventListener('input', ()=> inp.closest('.fl').classList.toggle('is-filled', !!inp.value)));
+
+/* ════════════════════════════════════════════════════════════════════
+   SUMMARY interactions (delegated; re-wired each render)
+   ════════════════════════════════════════════════════════════════════ */
+function wireSummary(){
+  document.querySelectorAll('#disc-apply').forEach(b=> b.addEventListener('click', ()=> applyDiscount(b)));
+  document.querySelectorAll('#disc-input').forEach(i=> i.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); applyDiscount(i); } }));
+  document.querySelectorAll('[data-remove-discount]').forEach(b=> b.addEventListener('click', ()=>{ state.discount=null; render(); announce('Discount removed.'); }));
+}
+function applyDiscount(fromEl){
+  const form=fromEl.closest('.disc-form');
+  const input=form.querySelector('#disc-input'); const err=form.parentElement.querySelector('#disc-err');
+  const code=(input.value||'').trim().toUpperCase();
+  if(VALID_CODES[code]){ state.discount={code,pct:VALID_CODES[code]}; render(); announce(`Code ${code} applied — you saved ${VALID_CODES[code]}%.`); }
+  else { input.classList.add('is-err'); input.setAttribute('aria-invalid','true'); err.querySelector('.t').textContent='That code isn’t valid or has expired.'; err.classList.add('show'); input.focus(); }
+}
+
+/* mobile summary accordion */
+const mToggle=document.getElementById('m-summary-toggle');
+mToggle.addEventListener('click', ()=>{ const p=document.getElementById('m-summary-panel'); const open=p.hidden; p.hidden=!open; mToggle.setAttribute('aria-expanded',open); });
+
+/* ════════════════════════════════════════════════════════════════════
+   SUBMIT — validate visible → focus first error → mock pay
+   ════════════════════════════════════════════════════════════════════ */
+function submitCheckout(triggerBtn){
+  const fields=[...document.querySelectorAll('[data-validate]')].filter(f=> !f.disabled && !f.closest('[hidden]'));
+  let firstError=null;
+  fields.forEach(f=>{ if(!validateField(f) && !firstError) firstError=f; });
+  if(firstError){ firstError.focus(); announce('Please fix the highlighted field.'); return; }
+
+  const btns=document.querySelectorAll('#pay-btn,#m-pay-btn'); processing=true; btns.forEach(b=>b.disabled=true);
+  triggerBtn.dataset.prev=triggerBtn.innerHTML; triggerBtn.innerHTML='<span class="spinner"></span><span>Processing…</span>';
+  setTimeout(()=>{
+    const msg = state.fulfilment==='collect'
+      ? `We'll text you when your order is ready to collect from ${state.store?state.store.name:'your store'}.`
+      : `Thanks — a receipt is on its way to your inbox.`;
+    document.getElementById('success-msg').textContent=msg;
+    document.getElementById('success').hidden=false;
+    processing=false; if(triggerBtn.dataset.prev) triggerBtn.innerHTML=triggerBtn.dataset.prev; updatePayDisabled();
+    if(window.lucide) lucide.createIcons();
+  },1600);
+}
+document.getElementById('checkout-form').addEventListener('submit', e=>{ e.preventDefault(); submitCheckout(document.getElementById('pay-btn')); });
+document.getElementById('m-pay-btn').addEventListener('click', ()=> submitCheckout(document.getElementById('m-pay-btn')));
+document.getElementById('success-close').addEventListener('click', ()=> document.getElementById('success').hidden=true);
+
+function announce(msg){ const l=document.getElementById('live'); l.textContent=''; setTimeout(()=> l.textContent=msg,30); }
+
+/* ════════════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════════════ */
+renderShipping();
+selectMethod('card');
+render();
+document.getElementById('checkout-form').addEventListener('input', updateCompletion);
+if(window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

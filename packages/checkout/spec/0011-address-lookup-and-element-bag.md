@@ -229,6 +229,12 @@ state zones all name theirs), or everything when an unrestricted zone has a
 live rate. A store with only UK zones therefore shows "Country / region:
 United Kingdom" and no select, and no host code is involved.
 
+`Contracts\DeliveryNotice::noticeFor(Cart): ?string` is the optional companion: the
+host's one sentence on why delivery is missing or limited for this cart, projected as
+`deliveryNotice` and shown on the shipping step in place of the generic "No delivery
+options are available for this address." The package binds no default; only the host
+knows what its zones mean.
+
 The same pass made "Use delivery address as billing address" real. Unticked,
 `BillingSection.vue` renders under the payment method: the shared
 `AddressFields`, a "Save billing address" button posting to the existing

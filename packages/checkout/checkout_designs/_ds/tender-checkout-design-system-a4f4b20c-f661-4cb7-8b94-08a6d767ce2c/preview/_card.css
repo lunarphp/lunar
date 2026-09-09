@@ -1,0 +1,35 @@
+/* Shared framing for Design System preview cards.
+   Cards are ~700px wide; keep content flush, minimal chrome. */
+@import url('../colors_and_type.css');
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: var(--slate-0);
+  font-family: var(--font-sans);
+  color: var(--fg-primary);
+  -webkit-font-smoothing: antialiased;
+}
+.card {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; }
+.muted { color: var(--fg-tertiary); }
+.mono-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-tertiary);
+  letter-spacing: 0;
+}
+/* swatch grid */
+.swatches { display: flex; gap: 0; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-xs); }
+.swatch { flex: 1; height: 56px; display: flex; align-items: flex-end; padding: 6px; }
+.swatch span { font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+.chip { display:flex; flex-direction:column; gap:6px; }
+.chip .box { height: 52px; border-radius: var(--radius-md); border: 1px solid var(--border); }
+.chip .lbl { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--fg-primary); }
+.chip .hex { font-family: var(--font-mono); font-size: 10px; color: var(--fg-tertiary); }

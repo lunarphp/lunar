@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  CHECKOUT · built on the “Tender” design system
+  Single self-contained file · vanilla JS · no build step
+  Pattern: canonical e-commerce checkout (Shopify-style) — form-left on white,
+  sticky order summary on a quiet slate canvas to the right.
+  ────────────────────────────────────────────────────────────────────────
+  DESIGN SYSTEM (inlined :root tokens, verbatim from Tender colors_and_type.css)
+    • Type      — Manrope (UI/headings/body) · JetBrains Mono (numerics)
+    • Color     — surgical indigo (--accent) on a cool-slate neutral ramp
+    • Icons     — Lucide (CDN)
+    • Fields    — 6px radius, slate-300 border, 3px indigo focus ring
+    • Buttons   — beveled (top highlight + bottom inner shadow), press sinks 1px
+  ────────────────────────────────────────────────────────────────────────
+  BRAND-AGNOSTIC THEMING
+    • Re-skin any store by changing ONE token: --accent in :root.
+      Everything action-colored (CTA, links, selected/active states, focus
+      rings, the floating-label active colour) derives from it.
+    • Drop in a logo: replace the markup inside  .brand-lockup  (mark + name).
+  ────────────────────────────────────────────────────────────────────────
+  FLOWS
+    • A toggle at the top of the form swaps between “Deliver” and
+      “Click & collect”. Only the middle two sections differ.
+  STRIPE SWAP POINT
+    • Payment → #card-fields is the placeholder; comments mark where Stripe
+      Elements would mount. Markup is grouped in <section> blocks with stable
+      data-* hooks so it ports cleanly to Vue.
+  ════════════════════════════════════════════════════════════════════════
+-->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout</title>
+
+<!-- Fonts (Manrope + JetBrains Mono) and icons (Lucide) — per the Tender DS -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="stylesheet" href="checkout/tokens.css" />
+<link rel="stylesheet" href="checkout/checkout.css" />
+
+<!-- ░░ TWEAKS A/B OVERRIDES — each rule reverts one review change when its toggle is OFF ░░ -->
+<style id="tw-overrides">
+  /* Fields back to 14px (re-introduces iOS focus-zoom) */
+  html.tw-fields-14 .fl > input,
+  html.tw-fields-14 .fl > select,
+  html.tw-fields-14 .fl > textarea,
+  html.tw-fields-14 .search > input,
+  html.tw-fields-14 .disc-input,
+  html.tw-fields-14 .card-group input{ font-size:14px !important; }
+
+  /* Text contrast back to original slate-400 (fails WCAG AA) */
+  html.tw-contrast-orig{ --fg-tertiary:#94A3B8; }
+
+  /* Pay button ghosted again + hint hidden */
+  html.tw-cta-ghost .btn-primary:disabled{ color:var(--slate-400) !important; }
+  html.tw-cta-ghost #cta-hint{ display:none !important; }
+
+  /* VAT line re-emphasised (competes with Total) */
+  html.tw-vat-emph .os-line.tax > span:first-child{ font-weight:var(--weight-medium) !important; }
+  html.tw-vat-emph .os-line.tax .v{ font-weight:var(--weight-semibold) !important; }
+
+  /* Patterned summary backdrop restored */
+  html.tw-pattern .summary-side{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2394A3B8' fill-opacity='0.12'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ░░ MOBILE · collapsible summary bar (top) ░░ -->
+<div class="m-summary-bar">
+  <button class="m-summary-toggle" id="m-summary-toggle" aria-expanded="false" aria-controls="m-summary-panel">
+    <span class="lft"><span class="ico"><i data-lucide="shopping-bag"></i></span> Order summary</span>
+    <span class="rgt">
+      <span class="ct" id="m-count">3 items</span>
+      <span class="tot mono" id="m-total">£289.00</span>
+      <span class="chev ico"><i data-lucide="chevron-down"></i></span>
+    </span>
+  </button>
+  <div class="m-summary-panel" id="m-summary-panel" hidden></div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════════════ LEFT · FORM ══════════════════ -->
+  <div class="form-side">
+    <div class="form-col">
+
+      <!-- Logo slot — replace contents to rebrand. "Secure checkout" sits under the store name. -->
+      <div class="brand-head">
+        <span class="brand-mark"><span class="ico" style="font-size:20px"><i data-lucide="mountain"></i></span></span>
+        <div class="brand-text">
+          <a href="#" class="brand-name" aria-label="Atelier Hudson — home">Atelier Hudson<span class="dot">.</span></a>
+          <div class="secured"><span class="ico"><i data-lucide="lock"></i></span> Secure checkout</div>
+        </div>
+      </div>
+
+      <!-- Fulfilment toggle -->
+      <div class="seg" id="fulfilment-seg" data-active="delivery" role="radiogroup" aria-label="How would you like your order?">
+        <span class="seg-thumb" aria-hidden="true"></span>
+        <button type="button" class="seg-btn" role="radio" aria-checked="true" data-flow="delivery">
+          <span class="ico"><i data-lucide="truck"></i></span> Deliver
+        </button>
+        <button type="button" class="seg-btn" role="radio" aria-checked="false" data-flow="collect">
+          <span class="ico"><i data-lucide="store"></i></span> Click &amp; collect
+        </button>
+      </div>
+
+      <!-- Express wallets -->
+      <div class="wallets">
+        <button type="button" class="wallet apple" aria-label="Pay with Apple Pay">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.71-1.04-2.74-4.13M14.6 4.59c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44"/></svg>
+          <span style="font-weight:600">Pay</span>
+        </button>
+        <button type="button" class="wallet gpay" aria-label="Pay with Google Pay">
+          <svg viewBox="0 0 48 48" width="19" height="19" aria-hidden="true">
+            <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+            <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+            <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/>
+            <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+          </svg>
+          <span style="font-weight:600;color:#3c4043">Pay</span>
+        </button>
+        <button type="button" class="wallet paypal" aria-label="Pay with PayPal">
+          <span style="font-style:italic;font-weight:800;font-size:15px;letter-spacing:-.01em"><span style="color:#003087">Pay</span><span style="color:#009cde">Pal</span></span>
+        </button>
+      </div>
+      <div class="divider"><span>or</span></div>
+
+      <form id="checkout-form" novalidate>
+
+        <!-- ══════ CONTACT ══════ -->
+        <section class="block" data-block="contact" style="border-top:0;padding-top:8px">
+          <div class="block-head">
+            <h2 class="block-title"><span class="block-step"><span class="num">1</span><span class="chk ico"><i data-lucide="check"></i></span></span>Contact information</h2>
+          </div>
+          <div class="stack">
+            <div class="fl">
+              <input id="email" type="email" autocomplete="email" inputmode="email" placeholder=" " data-validate="email" aria-describedby="email-err" />
+              <label for="email">Email address</label>
+            </div>
+            <div class="err-msg" id="email-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <label class="check">
+              <input type="checkbox" id="news" />
+              <span class="box ico"><i data-lucide="check"></i></span>
+              <span class="txt">Email me with order updates and occasional offers.</span>
+            </label>
+          </div>
+
+          <!-- STATE A · recognised account → passwordless phone-code entry.
+               Triggered on blur when the email domain is a known account (@user.com). -->
+          <div id="acct-recognised" hidden class="reveal" style="margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--indigo-50);padding:15px">
+            <div id="otc-intro" style="display:flex;gap:11px;align-items:flex-start">
+              <span class="ico" style="font-size:18px;color:var(--accent);margin-top:1px"><i data-lucide="shield-check"></i></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Welcome back</p>
+                <p style="margin:3px 0 0;font-size:var(--text-sm);color:var(--fg-secondary)">Enter the 6-digit code we texted to your phone ending <strong style="color:var(--fg-primary)">••89</strong> to use your saved details.</p>
+              </div>
+              <button type="button" id="acct-dismiss" class="focusable" aria-label="Dismiss" style="flex:none;background:none;border:0;cursor:pointer;color:var(--fg-tertiary);padding:2px"><span class="ico" style="font-size:16px"><i data-lucide="x"></i></span></button>
+            </div>
+
+            <div id="otc-wrap" style="margin-top:13px">
+              <div id="otc" role="group" aria-label="One-time code" style="display:flex;gap:8px">
+                <input class="otc-box mono" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+                <input class="otc-box mono" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+              </div>
+              <div class="err-msg" id="otc-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+              <div style="display:flex;gap:18px;margin-top:11px">
+                <button type="button" id="otc-resend" class="head-link" style="background:none;border:0;padding:0">Resend code</button>
+                <button type="button" id="otc-cancel" class="head-link" style="background:none;border:0;padding:0;color:var(--fg-tertiary)">Continue as guest</button>
+              </div>
+            </div>
+
+            <!-- Signed-in -->
+            <div id="signed-in" hidden class="alert a-success reveal">
+              <span class="ico"><i data-lucide="check-circle"></i></span>
+              <span><b>Signed in.</b> Your saved details will be used.</span>
+            </div>
+          </div>
+
+          <!-- STATE B · guest → offer to save details for next time.
+               Shown on blur for any non-account email (e.g. @guest.com). -->
+          <div id="acct-guest" hidden class="reveal" style="margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-md);padding:15px">
+            <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+              <span class="ico" style="font-size:18px;color:var(--accent);margin-top:1px"><i data-lucide="bookmark"></i></span>
+              <span style="flex:1;min-width:0">
+                <span style="display:block;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Save my details for next time</span>
+                <span style="display:block;margin-top:3px;font-size:var(--text-sm);color:var(--fg-secondary)">Securely store your contact, delivery and payment preferences for a faster checkout.</span>
+              </span>
+              <span class="switch" style="margin-top:2px"><input type="checkbox" id="guest-save" /><span class="track"></span><span class="knob"></span></span>
+            </label>
+            <div id="guest-saved-note" hidden class="alert a-info reveal" style="margin-top:13px">
+              <span class="ico"><i data-lucide="info"></i></span>
+              <span>We'll text a secure link to <strong id="guest-email">your phone</strong> to finish setting up your account after you pay.</span>
+            </div>
+          </div>
+
+          <!-- Collect flow · who's collecting + contact number (folded into Contact information so it isn't a second "contact" section) -->
+          <div class="stack" data-flow="collect" hidden style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+            <div class="row2">
+              <div class="fl">
+                <input id="c-first" type="text" autocomplete="given-name" placeholder=" " data-validate="required" aria-describedby="c-first-err" />
+                <label for="c-first">First name</label>
+              </div>
+              <div class="fl">
+                <input id="c-last" type="text" autocomplete="family-name" placeholder=" " data-validate="required" aria-describedby="c-last-err" />
+                <label for="c-last">Last name</label>
+              </div>
+            </div>
+            <div class="err-msg" id="c-first-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="err-msg" id="c-last-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="phone-group" data-phone="c-phone" data-country="GB">
+              <button type="button" class="phone-cc" aria-haspopup="listbox" aria-expanded="false" aria-label="Country dial code">
+                <span class="phone-dial">+44</span>
+                <span class="ico phone-chev"><i data-lucide="chevron-down"></i></span>
+              </button>
+              <span class="phone-sep"></span>
+              <input id="c-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="7400 123456" data-validate="phone" aria-describedby="c-phone-err" />
+              <label for="c-phone" class="phone-flabel">Mobile number</label>
+              <div class="ac phone-menu" role="listbox" aria-label="Country" hidden></div>
+            </div>
+            <div class="err-msg" id="c-phone-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <p class="help" style="margin-top:0">We'll text you when your order is ready to collect.</p>
+
+            <label class="switch-row" style="margin-top:4px">
+              <span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--fg-primary)">Someone else is collecting</span>
+              <span class="switch"><input type="checkbox" id="alt-collector" /><span class="track"></span><span class="knob"></span></span>
+            </label>
+            <div id="alt-fields" hidden class="reveal">
+              <div class="fl">
+                <input id="alt-name" type="text" autocomplete="name" placeholder=" " data-validate="required" aria-describedby="alt-name-err" />
+                <label for="alt-name">Collector's full name</label>
+              </div>
+              <div class="err-msg" id="alt-name-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+              <p class="help" style="display:flex;gap:6px;align-items:flex-start"><span class="ico" style="font-size:14px;margin-top:2px"><i data-lucide="badge-check"></i></span> They'll need photo ID matching this name to collect.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════ DELIVERY ADDRESS (Flow A) ══════ -->
+        <section class="block" data-block="address" data-flow="delivery">
+          <div class="block-head">
+            <h2 class="block-title"><span class="block-step"><span class="num">2</span><span class="chk ico"><i data-lucide="check"></i></span></span><span id="addr-title-text">Delivery details</span></h2>
+          </div>
+
+          <!-- Mode A · deliver to an address (autocomplete-first) -->
+          <div id="addr-mode">
+            <!-- Recipient name — always visible, above the address search -->
+            <div class="stack" style="margin-bottom:12px">
+              <div class="fl">
+                <input id="first" type="text" autocomplete="name" placeholder=" " data-validate="required" aria-describedby="first-err" />
+                <label for="first">Full name</label>
+              </div>
+              <div class="err-msg" id="first-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            </div>
+            <!-- Signed-in: choose from saved addresses (rendered by JS). Guests skip straight to the search. -->
+            <div id="saved-addr" hidden style="margin-bottom:14px">
+              <div id="saved-addr-list" role="radiogroup" aria-label="Choose a saved delivery address"></div>
+            </div>
+            <div id="addr-search-wrap" style="position:relative">
+              <div class="search">
+                <span class="lead ico"><i data-lucide="search"></i></span>
+                <label class="sr-only" for="addr-search">Search for your address</label>
+                <input id="addr-search" type="text" autocomplete="off" placeholder="Start typing a postcode or street…" role="combobox" aria-expanded="false" aria-controls="addr-results" aria-autocomplete="list" />
+              </div>
+              <div id="addr-results" class="ac" role="listbox" hidden></div>
+              <span class="addr-manual-btn" id="addr-manual" role="button" tabindex="0"><span class="ico"><i data-lucide="pencil-line"></i></span> Enter address manually</span>
+            </div>
+            <!-- Entry point → ship to a 3rd-party pickup point instead (no home address needed) -->
+            <div class="fulfil-alt">
+              <button type="button" id="to-pickup" class="btn btn-secondary fulfil-alt-btn">
+                <span class="ico"><i data-lucide="package"></i></span>
+                <span class="fa-txt"><span class="fa-t">Ship to a pickup point instead</span><span class="fa-s">InPost, DPD &amp; Evri · collect when it suits you</span></span>
+                <span class="ico fa-chev"><i data-lucide="chevron-right"></i></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mode B · ship to a pickup point — locker finder, no address required -->
+          <div id="pickup-mode" hidden>
+            <button type="button" id="to-address" class="manual-link" style="margin:0 0 12px"><span class="ico"><i data-lucide="arrow-left"></i></span> Deliver to an address instead</button>
+            <div id="pickup-panel">
+              <div id="pickup-finder">
+                <div class="search">
+                  <span class="lead ico"><i data-lucide="search"></i></span>
+                  <label class="sr-only" for="pickup-search">Search pickup points by postcode</label>
+                  <input id="pickup-search" type="text" autocomplete="off" placeholder="Postcode or area — e.g. EC1V 9BD" />
+                </div>
+                <p class="pickup-intro"><span class="ico"><i data-lucide="package"></i></span> Pickup points near you — ranked by distance.</p>
+                <div id="pickup-list" role="radiogroup" aria-label="Select a pickup point"></div>
+                <p id="pickup-empty" class="pickup-empty" hidden>No pickup points match that search. Try a postcode or area.</p>
+              </div>
+              <div id="pickup-selected" hidden></div>
+            </div>
+          </div>
+
+          <!-- Structured fields (single column → reliable autofill) -->
+          <div id="addr-fields" hidden class="stack" style="margin-top:14px">
+            <p id="recipient-sub" class="block-sub" hidden style="margin:0 0 2px">Who's collecting? We'll send collection updates here.</p>
+            <div id="addr-found" hidden class="alert a-success reveal">
+              <span class="ico"><i data-lucide="check-circle"></i></span>
+              <span>Address found — check the details below.</span>
+            </div>
+
+            <div id="addr-street-group" class="stack">
+            <div class="fl">
+              <input id="line1" type="text" autocomplete="address-line1" placeholder=" " data-validate="required" aria-describedby="line1-err" />
+              <label for="line1">Address</label>
+            </div>
+            <div class="err-msg" id="line1-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <div class="fl">
+              <input id="line2" type="text" autocomplete="address-line2" placeholder=" " />
+              <label for="line2">Apartment, suite, etc. <span class="opt">(optional)</span></label>
+            </div>
+
+            <div class="row2">
+              <div class="fl">
+                <input id="city" type="text" autocomplete="address-level2" placeholder=" " data-validate="required" aria-describedby="city-err" />
+                <label for="city">Town / city</label>
+              </div>
+              <div class="fl">
+                <input id="postcode" type="text" autocomplete="postal-code" placeholder=" " data-validate="postcode" aria-describedby="postcode-err" style="text-transform:uppercase" />
+                <label for="postcode">Postcode</label>
+              </div>
+            </div>
+            <div class="err-msg" id="city-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+            <div class="err-msg" id="postcode-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <!-- Country: defaults UK, hidden until changed -->
+            <div id="country-row">
+              <span class="manual-link" id="country-toggle" role="button" tabindex="0" style="color:var(--fg-secondary)">
+                <span class="ico"><i data-lucide="globe"></i></span> Country / region: <strong id="country-label" style="color:var(--fg-primary);margin-left:3px">United Kingdom</strong>
+              </span>
+              <div class="fl" id="country-field" hidden style="margin-top:10px">
+                <select id="country" autocomplete="country">
+                  <option value="GB" selected>United Kingdom</option>
+                  <option value="IE">Ireland</option>
+                  <option value="FR">France</option>
+                  <option value="DE">Germany</option>
+                  <option value="US">United States</option>
+                </select>
+                <label for="country">Country / region</label>
+                <span class="chev ico"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+            </div>
+
+            <div class="phone-group" data-phone="phone" data-country="GB" style="margin-top:2px">
+              <button type="button" class="phone-cc" aria-haspopup="listbox" aria-expanded="false" aria-label="Country dial code">
+                <span class="phone-dial">+44</span>
+                <span class="ico phone-chev"><i data-lucide="chevron-down"></i></span>
+              </button>
+              <span class="phone-sep"></span>
+              <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="7400 123456" data-validate="phone" aria-describedby="phone-err" />
+              <label for="phone" class="phone-flabel">Phone <span class="opt">(for delivery updates)</span></label>
+              <div class="ac phone-menu" role="listbox" aria-label="Country" hidden></div>
+            </div>
+            <div class="err-msg" id="phone-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+          </div>
+        </section>
+
+        <!-- ══════ CHOOSE A STORE (Flow B) ══════ -->
+        <section class="block" data-block="store" data-flow="collect" hidden>
+          <div class="block-head">
+            <h2 class="block-title"><span class="block-step"><span class="num">2</span><span class="chk ico"><i data-lucide="check"></i></span></span>Choose a store</h2>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div class="search" style="flex:1">
+              <span class="lead ico"><i data-lucide="search"></i></span>
+              <label class="sr-only" for="store-search">Search stores by postcode or city</label>
+              <input id="store-search" type="text" placeholder="Postcode or city" />
+            </div>
+            <button type="button" class="btn btn-secondary" id="use-location" style="height:48px;padding:0 14px;font-size:var(--text-sm)">
+              <span class="ico"><i data-lucide="locate-fixed"></i></span> Use my location
+            </button>
+          </div>
+          <div id="store-list" role="radiogroup" aria-label="Select a collection store" style="margin-top:12px"></div>
+          <p id="store-empty" hidden style="text-align:center;color:var(--fg-tertiary);font-size:var(--text-sm);padding:24px 0">No stores match that search. Try a postcode or city name.</p>
+        </section>
+
+        <!-- ══════ SHIPPING METHOD (Flow A) ══════ -->
+        <section class="block" data-block="shipping" data-flow="delivery">
+          <div class="block-head">
+            <h2 class="block-title"><span class="block-step"><span class="num">3</span><span class="chk ico"><i data-lucide="check"></i></span></span>Shipping method</h2>
+          </div>
+          <div id="shipping-locked" class="locked">
+            <span class="ico"><i data-lucide="lock"></i></span> Enter your delivery address to see shipping options.
+          </div>
+          <div id="shipping-list" role="radiogroup" aria-label="Select a shipping method" hidden></div>
+
+          <!-- Nominated-day picker — revealed when "Nominated day" is the chosen method -->
+          <div id="nominated-panel" class="reveal" hidden>
+            <!-- calendar (shown only while choosing a date) -->
+            <div id="nom-picker">
+              <div id="nom-cal" class="cal"></div>
+              <div class="cal-legend">
+                <span class="li"><span class="sw" style="background:var(--accent)"></span>Selected</span>
+                <span class="li"><span class="sw" style="background:var(--bg-surface);box-shadow:inset 0 0 0 1px var(--border-strong)"></span>Available</span>
+                <span class="li"><span class="sw" style="background:var(--slate-100)"></span>Unavailable</span>
+              </div>
+            </div>
+            <!-- collapsed chosen state: date chip + change + inline slot toggles -->
+            <div id="nom-chosen" hidden>
+              <div class="nom-date-row">
+                <span class="nom-date"><span class="ico"><i data-lucide="calendar-check"></i></span><span id="nom-date-label"></span></span>
+                <button type="button" class="nom-change" data-nom-change>Change date</button>
+              </div>
+              <div id="nom-slots" class="nom-slots"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════ DELIVERY NOTES (Flow A) ══════ -->
+        <section class="block block-optional" data-block="notes" data-flow="delivery">
+          <div class="block-head">
+            <h2 class="block-title opt-title"><span class="opt-ico ico"><i data-lucide="pencil-line"></i></span>Delivery notes <span class="opt-tag">Optional</span></h2>
+          </div>
+
+          <!-- For the courier (delivery logistics) -->
+          <div class="opt-group">
+            <div class="fl">
+              <textarea id="delivery-notes" rows="3" placeholder=" " maxlength="200"></textarea>
+              <label for="delivery-notes">Delivery instructions</label>
+            </div>
+            <p class="help">e.g. "Leave with the concierge" or a safe spot if you're out.</p>
+          </div>
+        </section>
+
+        <!-- ══════ FOR YOUR RECORDS (both flows) ══════ -->
+        <section class="block block-optional" data-block="records">
+          <div class="block-head">
+            <h2 class="block-title opt-title"><span class="opt-ico ico"><i data-lucide="file-text"></i></span>For your records <span class="opt-tag">Optional</span></h2>
+          </div>
+          <div class="opt-group">
+            <div class="fl">
+              <input id="order-ref" type="text" placeholder=" " maxlength="40" />
+              <label for="order-ref">Order reference or PO number</label>
+            </div>
+            <p class="help"><span class="ico" style="font-size:14px;margin-top:1px"><i data-lucide="info"></i></span> It'll appear on your receipt — handy for expenses or purchase orders.</p>
+          </div>
+        </section>
+
+        <!-- ══════ PAYMENT ══════ -->
+        <section class="block" data-block="payment">
+          <div class="block-head">
+            <h2 class="block-title"><span class="block-step"><span class="num">4</span><span class="chk ico"><i data-lucide="check"></i></span></span>Payment</h2>
+          </div>
+          <div class="secure-note">
+            <span class="txt"><span class="ico"><i data-lucide="lock"></i></span> All transactions are secure and encrypted</span>
+            <span class="netmarks" aria-hidden="true">
+              <span class="nmk visa">VISA</span>
+              <span class="nmk mc"><span class="c1"></span><span class="c2"></span></span>
+              <span class="nmk amex">AMEX</span>
+              <span class="nmk more">+4</span>
+            </span>
+          </div>
+
+          <!-- Payment method — DS-native tabs (distinct from a stacked radio list) -->
+          <div class="pm-tabs" id="pm-tabs" role="radiogroup" aria-label="Payment method">
+            <button type="button" class="pm-tab" role="radio" aria-checked="true" tabindex="0" data-method="card" aria-label="Pay by card">
+              <span class="mk"><span class="ico"><i data-lucide="credit-card"></i></span></span>
+              <span class="lbl">Card</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="paypal" aria-label="Pay with PayPal">
+              <span class="mk"><span style="font-style:italic;font-weight:800;font-size:13px;color:#003087">Pay<span style="color:#0070E0">Pal</span></span></span>
+              <span class="lbl">PayPal</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="clearpay" aria-label="Pay in 4 with Clearpay">
+              <span class="mk"><span style="background:#B2FCE4;color:#0F172A;font-weight:800;font-size:9px;padding:2px 5px;border-radius:4px">Clearpay</span></span>
+              <span class="lbl">Pay in 4</span>
+            </button>
+            <button type="button" class="pm-tab" role="radio" aria-checked="false" tabindex="-1" data-method="klarna" aria-label="Pay later with Klarna">
+              <span class="mk"><span style="background:#FFB3C7;color:#0F172A;font-weight:800;font-size:9px;padding:2px 5px;border-radius:4px">Klarna</span></span>
+              <span class="lbl">Pay later</span>
+            </button>
+          </div>
+
+          <!-- Card panel -->
+          <div class="pm-panel" data-panel="card">
+            <!-- ░░ STRIPE ELEMENTS SWAP POINT — replace #card-fields with a mounted Payment Element ░░ -->
+            <div class="card-group" id="card-fields">
+              <div class="cg-cell cg-num">
+                <span class="lead ico"><i data-lucide="credit-card"></i></span>
+                <input id="card-number" inputmode="numeric" autocomplete="cc-number" placeholder="Card number" data-validate="card" aria-label="Card number" aria-describedby="card-err" />
+                <span class="trail netmarks"><span class="ico" style="font-size:16px"><i data-lucide="lock"></i></span></span>
+              </div>
+              <div class="cg-split">
+                <div class="cg-cell cg-exp">
+                  <input id="card-exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" data-validate="exp" aria-label="Expiry date" aria-describedby="card-err" />
+                </div>
+                <div class="cg-cell cg-cvc">
+                  <input id="card-cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC" data-validate="cvc" aria-label="Security code" aria-describedby="card-err" />
+                  <span class="trail"><span class="ico" style="font-size:16px"><i data-lucide="help-circle"></i></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="err-msg" id="card-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <div class="fl" style="margin-top:12px">
+              <input id="card-name" autocomplete="cc-name" placeholder=" " data-validate="required" aria-describedby="card-name-err" />
+              <label for="card-name">Name on card</label>
+            </div>
+            <div class="err-msg" id="card-name-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+            <label class="check" id="billing-check-row" style="margin-top:14px">
+              <input type="checkbox" id="billing-same" checked />
+              <span class="box ico"><i data-lucide="check"></i></span>
+              <span class="txt" id="billing-label">Use delivery address as billing address</span>
+            </label>
+
+            <!-- Billing address — revealed when the box above is unchecked -->
+            <div id="billing-fields" hidden class="reveal" style="margin-top:16px">
+              <p class="block-sub" style="margin:0 0 12px">Billing address</p>
+              <!-- Signed-in: saved billing addresses (rendered by JS) -->
+              <div id="saved-bill" hidden style="margin-bottom:14px">
+                <div id="saved-bill-list" role="radiogroup" aria-label="Choose a saved billing address"></div>
+              </div>
+              <div id="bill-manual" class="stack">
+                <div class="fl">
+                  <input id="bill-first" type="text" autocomplete="billing name" placeholder=" " data-validate="required" aria-describedby="bill-first-err" />
+                  <label for="bill-first">Full name</label>
+                </div>
+                <div class="err-msg" id="bill-first-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+                <div class="fl">
+                  <input id="bill-line1" type="text" autocomplete="billing address-line1" placeholder=" " data-validate="required" aria-describedby="bill-line1-err" />
+                  <label for="bill-line1">Address</label>
+                </div>
+                <div class="err-msg" id="bill-line1-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+
+                <div class="fl">
+                  <input id="bill-line2" type="text" autocomplete="billing address-line2" placeholder=" " />
+                  <label for="bill-line2">Apartment, suite, etc. <span class="opt">(optional)</span></label>
+                </div>
+
+                <div class="row2">
+                  <div class="fl">
+                    <input id="bill-city" type="text" autocomplete="billing address-level2" placeholder=" " data-validate="required" aria-describedby="bill-city-err" />
+                    <label for="bill-city">Town / city</label>
+                  </div>
+                  <div class="fl">
+                    <input id="bill-postcode" type="text" autocomplete="billing postal-code" placeholder=" " data-validate="postcode" aria-describedby="bill-postcode-err" style="text-transform:uppercase" />
+                    <label for="bill-postcode">Postcode</label>
+                  </div>
+                </div>
+                <div class="err-msg" id="bill-city-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+                <div class="err-msg" id="bill-postcode-err" role="alert"><span class="ico"><i data-lucide="alert-circle"></i></span><span class="t"></span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PayPal panel -->
+          <div class="pm-panel" data-panel="paypal" hidden>
+            <div class="pm-redirect">
+              <span class="ico"><i data-lucide="external-link"></i></span>
+              <p class="rt">You'll be securely redirected to <strong>PayPal</strong> to approve your payment of <strong class="mono" data-total>£289.00</strong>. No card details are entered here.</p>
+            </div>
+          </div>
+
+          <!-- Clearpay panel — live instalment timeline -->
+          <div class="pm-panel" data-panel="clearpay" hidden>
+            <div class="instal-head"><span class="t">4 interest-free payments</span><span class="s">with Clearpay</span></div>
+            <div class="instal" data-instal="clearpay"></div>
+            <p class="pm-note"><span class="ico"><i data-lucide="info"></i></span> First payment today, then every 2 weeks. No interest, no fees when you pay on time.</p>
+          </div>
+
+          <!-- Klarna panel — live instalment timeline -->
+          <div class="pm-panel" data-panel="klarna" hidden>
+            <div class="instal-head"><span class="t">Pay in 3, interest-free</span><span class="s">with Klarna</span></div>
+            <div class="instal" data-instal="klarna"></div>
+            <p class="pm-note"><span class="ico"><i data-lucide="info"></i></span> Klarna will confirm your plan and run a soft check that won't affect your credit score.</p>
+          </div>
+        </section>
+
+        <!-- ══════ PRIMARY CTA (desktop) ══════ -->
+        <div class="cta-wrap desktop-cta">
+          <button type="submit" id="pay-btn" class="btn btn-primary btn-block">
+            <span class="ico"><i data-lucide="lock"></i></span>
+            <span class="cta-label">Pay <span class="mono" data-total>£289.00</span></span>
+          </button>
+          <p class="cta-hint" id="cta-hint" hidden><span class="ico"><i data-lucide="arrow-up"></i></span> Complete the steps above to pay — you won't be charged until you confirm.</p>
+          <p class="legal">By paying you agree to our <a href="#">terms</a> and <a href="#">refund policy</a>. You can cancel anytime before dispatch.</p>
+        </div>
+
+        <!-- footer policy links -->
+        <div class="foot">
+          <a href="#">Refund policy</a><a href="#">Shipping</a><a href="#">Privacy policy</a><a href="#">Terms of service</a><a href="#">Contact</a>
+        </div>
+
+        <!-- powered-by watermark -->
+        <div class="powered-by">
+          <span>Powered by</span>
+          <img src="assets/powered-by-lunar.svg" alt="Lunar" />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════ RIGHT · ORDER SUMMARY ══════════════════ -->
+  <aside class="summary-side" aria-label="Order summary">
+    <div class="summary-col">
+      <div class="summary-sticky" id="summary-card"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- ░░ MOBILE · sticky bottom pay bar ░░ -->
+<div class="m-pay-bar">
+  <button type="button" id="m-pay-btn" class="btn btn-primary btn-block">
+    <span class="ico"><i data-lucide="lock"></i></span>
+    <span class="cta-label">Pay <span class="mono" data-total>£289.00</span></span>
+  </button>
+</div>
+
+<!-- ░░ Success overlay ░░ -->
+<div id="success" class="success-overlay" hidden>
+  <div class="success-card">
+    <div class="success-check ico"><i data-lucide="check"></i></div>
+    <h2>Payment confirmed</h2>
+    <p id="success-msg">Thanks — a receipt is on its way to your inbox.</p>
+    <button type="button" id="success-close" class="btn btn-secondary btn-block">Done</button>
+  </div>
+</div>
+
+<div aria-live="polite" class="sr-only" id="live"></div>
+
+<script src="checkout/data.js"></script>
+<script src="checkout/render.js"></script>
+<script src="checkout/validation.js"></script>
+<script src="checkout/interactions.js"></script>
+<script src="checkout/phone.js"></script>
+
+<!-- ░░ TWEAKS PANEL (React island — applies the A/B toggles above) ░░ -->
+<div id="tweaks-root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="checkout/tweaks-panel.jsx"></script>
+<script type="text/babel" src="checkout/tweaks-app.jsx"></script>
+</body>
+</html>

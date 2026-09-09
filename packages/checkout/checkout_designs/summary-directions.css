@@ -1,0 +1,170 @@
+/* ════════════════════════════════════════════════════════════════════
+   ORDER-SUMMARY DIRECTIONS · styling
+   Built strictly on Tender DS tokens (checkout/tokens.css).
+   All selectors namespaced .sd-* / .sdA|B|C|D so they never leak.
+   Goal of every direction: a real  PHOTO | DETAILS | PRICE  grid with
+   distinct line parts, fewer competing type sizes/colours, and calmer
+   density than the current build (no "2 × £58.00 each" clutter line).
+   ════════════════════════════════════════════════════════════════════ */
+
+*{ box-sizing:border-box; }
+
+/* ── Panel shell (fills the artboard; sits on the slate canvas) ─────── */
+.sd-panel{
+  width:100%; min-height:100%;
+  background:var(--bg-page);
+  font-family:var(--font-sans);
+  color:var(--fg-primary);
+  -webkit-font-smoothing:antialiased;
+  padding:28px 26px 22px;
+  display:flex; flex-direction:column;
+}
+
+/* Header */
+.sd-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px; }
+.sd-head h2{ margin:0; font-size:var(--text-lg); font-weight:var(--weight-bold); letter-spacing:var(--tracking-snug); }
+.sd-head .sd-count{ font-size:var(--text-sm); color:var(--fg-tertiary); white-space:nowrap; flex:none; }
+
+/* ── Neutral product-photo placeholder tile ────────────────────────── */
+.sd-photo{
+  flex:none; position:relative;
+  border-radius:var(--radius-md);
+  background:var(--slate-100);
+  display:grid; place-items:center;
+  color:var(--slate-300);
+  overflow:hidden;
+}
+.sd-photo svg{ width:42%; height:42%; }
+.sd-photo img{ width:100%; height:100%; object-fit:cover; }
+
+/* Shared price + name primitives */
+.sd-name{ font-size:15px; font-weight:var(--weight-semibold); color:var(--fg-primary);
+  line-height:var(--leading-snug); letter-spacing:var(--tracking-snug); text-wrap:pretty; }
+.sd-var{ font-size:13px; color:var(--fg-tertiary); line-height:var(--leading-snug); }
+.sd-price{ font-family:var(--font-mono); font-size:14px; font-weight:var(--weight-semibold);
+  color:var(--fg-primary); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* Variant tokens rendered as quiet chips (used by D) */
+.sd-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.sd-chip{ font-size:11.5px; font-weight:var(--weight-medium); color:var(--fg-secondary);
+  background:var(--slate-100); border-radius:var(--radius-full); padding:2px 9px; line-height:1.5; }
+
+/* ════════════════════════════════════════════════════════════════════
+   SHARED LEDGER + TOTAL + TRUST  (kept consistent so the LINES differ)
+   ════════════════════════════════════════════════════════════════════ */
+.sd-rule{ height:1px; background:var(--border); margin:4px 0; }
+
+/* Discount — quiet ghost affordance instead of an always-open input */
+.sd-disc{ display:flex; align-items:center; gap:8px; padding:13px 0; cursor:pointer;
+  background:none; border:0; font:inherit; color:var(--fg-link); width:100%; text-align:left;
+  font-size:var(--text-sm); font-weight:var(--weight-semibold); }
+.sd-disc svg{ width:16px; height:16px; flex:none; }
+.sd-disc:hover{ color:var(--accent-hover); }
+
+/* Refined inline discount input (B only) */
+.sd-disc-form{ display:flex; gap:8px; padding:12px 0; }
+.sd-disc-form input{ flex:1; min-width:0; height:42px; border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm); padding:0 12px; font-size:16px; font-family:var(--font-sans);
+  color:var(--fg-primary); background:var(--bg-surface); }
+.sd-disc-form input::placeholder{ color:var(--fg-tertiary); }
+.sd-disc-form input:focus{ outline:none; border-color:var(--border-focus); box-shadow:var(--ring-focus); }
+.sd-disc-form button{ flex:none; height:42px; padding:0 16px; border-radius:var(--radius-sm);
+  border:1px solid var(--indigo-200); background:var(--bg-surface); font-size:13px;
+  font-weight:var(--weight-semibold); color:var(--accent); cursor:pointer; }
+.sd-disc-form button:hover{ background:var(--indigo-50); border-color:var(--accent); }
+
+.sd-ledger{ display:flex; flex-direction:column; gap:11px; padding-top:6px; }
+.sd-line{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  font-size:var(--text-sm); color:var(--fg-secondary); }
+.sd-line .v{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; color:var(--fg-primary); }
+.sd-line.is-sub > span:first-child{ color:var(--fg-primary); font-weight:var(--weight-semibold); }
+.sd-line.is-sub .v{ font-weight:var(--weight-bold); }
+.sd-free{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-sans);
+  font-size:13px; font-weight:var(--weight-semibold); color:var(--success-700); }
+.sd-free .dot{ width:6px; height:6px; border-radius:var(--radius-full); background:var(--success); }
+
+.sd-total{ display:flex; align-items:center; justify-content:space-between;
+  padding-top:15px; margin-top:7px; border-top:1px solid var(--border); }
+.sd-total .tl{ font-size:var(--text-base); font-weight:var(--weight-bold); color:var(--fg-primary); }
+.sd-total .tv{ display:flex; align-items:baseline; gap:7px; }
+.sd-total .cur{ font-size:var(--text-xs); font-weight:var(--weight-semibold); color:var(--fg-tertiary); }
+.sd-total .amt{ font-family:var(--font-mono); font-size:var(--text-2xl); font-weight:var(--weight-bold);
+  color:var(--fg-primary); font-variant-numeric:tabular-nums; letter-spacing:var(--tracking-tight); }
+
+.sd-trust{ display:flex; flex-direction:column; gap:9px; margin-top:20px; padding-top:16px;
+  border-top:1px solid var(--border); }
+.sd-trust .line{ display:flex; align-items:center; gap:9px; font-size:var(--text-xs); color:var(--fg-secondary); }
+.sd-trust .line svg{ width:15px; height:15px; color:var(--success); flex:none; }
+.sd-powered{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:auto;
+  padding-top:16px; font-size:11px; color:var(--fg-tertiary); }
+.sd-powered svg{ width:13px; height:13px; }
+.sd-powered .pw{ font-weight:var(--weight-extra); letter-spacing:var(--tracking-tight); color:var(--fg-secondary); }
+.sd-powered .pw .dot{ color:var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════════
+   DIRECTION A · "Aligned ledger"
+   The calm refinement. Two type colours, two sizes. A hard right price
+   column. Quantity rides a small refined badge on the photo so the
+   detail stack stays a clean two-tier name / variant. Hairline dividers
+   give an even reading rhythm.
+   ════════════════════════════════════════════════════════════════════ */
+.sdA .sd-items{ list-style:none; margin:0; padding:0; }
+.sdA .sd-row{ display:grid; grid-template-columns:48px 1fr auto; align-items:center;
+  column-gap:14px; padding:13px 0; border-top:1px solid var(--border); }
+.sdA .sd-row:first-child{ border-top:0; }
+.sdA .sd-photo{ width:48px; height:48px; }
+.sdA .sd-meta{ min-width:0; display:flex; flex-direction:column; gap:3px; }
+.sdA .qty-badge{ position:absolute; top:-6px; right:-6px; min-width:19px; height:19px; padding:0 5px;
+  border-radius:var(--radius-full); background:var(--slate-700); color:#fff; font-size:10.5px;
+  font-weight:var(--weight-bold); display:inline-flex; align-items:center; justify-content:center;
+  font-variant-numeric:tabular-nums; box-shadow:0 0 0 2px var(--bg-page); }
+
+/* ════════════════════════════════════════════════════════════════════
+   DIRECTION B · "Quantity column"
+   Qty is pulled OUT of the name and given its own leading micro-column
+   ("2×"), so each part — count · photo · details · price — reads as a
+   discrete column. Mono qty + mono price bracket the row like a ledger.
+   ════════════════════════════════════════════════════════════════════ */
+.sdB .sd-items{ list-style:none; margin:0; padding:0; }
+.sdB .sd-row{ display:grid; grid-template-columns:28px 44px 1fr auto; align-items:center;
+  column-gap:13px; padding:14px 0; }
+.sdB .sd-row + .sd-row{ border-top:1px solid var(--border); }
+.sdB .sd-qty{ font-family:var(--font-mono); font-size:13px; font-weight:var(--weight-medium);
+  color:var(--fg-tertiary); text-align:right; font-variant-numeric:tabular-nums; }
+.sdB .sd-photo{ width:44px; height:44px; }
+.sdB .sd-meta{ min-width:0; display:flex; flex-direction:column; gap:3px; }
+
+/* ════════════════════════════════════════════════════════════════════
+   DIRECTION C · "Carded rows"
+   Each line is its own white surface tile on the slate canvas — maximum
+   separation between parts and an even, contained rhythm. Qty is a quiet
+   pill beside the name.
+   ════════════════════════════════════════════════════════════════════ */
+.sdC .sd-items{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+.sdC .sd-row{ display:grid; grid-template-columns:50px 1fr auto; align-items:center; column-gap:13px;
+  background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:11px 13px; box-shadow:var(--shadow-xs); }
+.sdC .sd-photo{ width:50px; height:50px; }
+.sdC .sd-meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
+.sdC .sd-nameline{ display:flex; align-items:center; gap:8px; min-width:0; }
+.sdC .sd-nameline .sd-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sdC .qty-pill{ flex:none; font-family:var(--font-mono); font-size:11px; font-weight:var(--weight-semibold);
+  color:var(--fg-secondary); background:var(--slate-100); border-radius:var(--radius-full);
+  padding:1px 8px; font-variant-numeric:tabular-nums; }
+.sdC .sd-disc, .sdC .sd-ledger{ padding-left:1px; padding-right:1px; }
+
+/* ════════════════════════════════════════════════════════════════════
+   DIRECTION D · "Editorial"
+   Bigger photography, generous whitespace (no dividers — air separates
+   the rows), and the variant broken into discrete chips. Larger, slower
+   rhythm for a more premium read. Qty sits above the price, right-set.
+   ════════════════════════════════════════════════════════════════════ */
+.sdD .sd-items{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+.sdD .sd-row{ display:grid; grid-template-columns:64px 1fr auto; align-items:center; column-gap:16px;
+  padding:14px 0; }
+.sdD .sd-photo{ width:64px; height:64px; border-radius:var(--radius-lg); }
+.sdD .sd-meta{ min-width:0; display:flex; flex-direction:column; gap:7px; }
+.sdD .sd-meta .sd-name{ font-size:16px; }
+.sdD .sd-pricecol{ display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
+.sdD .sd-pricecol .sd-qty{ font-size:12px; color:var(--fg-tertiary); font-variant-numeric:tabular-nums; }
+.sdD .sd-pricecol .sd-price{ font-size:16px; }

@@ -20,6 +20,7 @@ use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\DeliveryCountries;
+use Lunar\Checkout\Contracts\DeliveryNotice;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\GuardsPayment;
 use Lunar\Checkout\Contracts\PaymentMethod;
@@ -414,8 +415,10 @@ class CheckoutController extends Controller
             // stored address that differs from delivery as "not the same".
             'billingAddress' => $driver->getBillingAddress($session),
             'savedAddresses' => $this->projectSavedAddresses(),
-            // Spec 0011 §H: the only countries the delivery step offers.
+            // Spec 0011 §H: the only countries the delivery step offers, and
+            // the host's word on why delivery may be missing for this cart.
             'countries' => $this->projectCountries($cart),
+            'deliveryNotice' => app()->bound(DeliveryNotice::class) ? app(DeliveryNotice::class)->noticeFor($cart) : null,
             'totals' => $driver->getTotals($session),
             'coupon' => $driver->getCoupon($session),
             // The pay boundary echoes back the fingerprint of the state the

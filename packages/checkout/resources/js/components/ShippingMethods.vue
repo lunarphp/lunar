@@ -39,8 +39,10 @@ watch(
       <span class="ico"><Icon name="lock" :size="17" /></span> Enter your delivery address to see shipping options.
     </div>
 
+    <!-- The host's reason when it has one (spec 0011 §H); otherwise the plain fact. -->
     <div v-else-if="!deliveryMethods.length" class="locked">
-      <span class="ico"><Icon name="truck" :size="17" /></span> No delivery options are available for this address.
+      <span class="ico"><Icon name="truck" :size="17" /></span>
+      {{ state.deliveryNotice || 'No delivery options are available for this address.' }}
     </div>
 
     <div v-else role="radiogroup" aria-label="Select a shipping method">

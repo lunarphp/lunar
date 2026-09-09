@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  EXPRESS CHECKOUT · CONFIRM & COMPLETE — built on the "Tender" design system
+  ────────────────────────────────────────────────────────────────────────
+  FLOW
+    1. Buyer taps an express wallet (Apple Pay / Google Pay / PayPal).
+    2. Wallet sheet collects contact + address; payment is AUTHORISED (held,
+       not captured).
+    3. Buyer is redirected here — the merchant's checkout route.
+  THIS PAGE
+    • Confirms everything the wallet handed back as tidy, collapsed read-only
+      rows (each with an Edit affordance).
+    • Surfaces the few blanks the wallet did NOT give us — expanded inline:
+      your name (required), delivery instructions, order reference, marketing.
+    • Reassures prominently: the card is authorised, not charged until Confirm.
+    • One confident CTA captures the held authorisation.
+  Mirrors the structure + tokens of the main Tender checkout (form-left on
+  white, sticky order summary on slate to the right). Parameterised over the
+  three wallets and both fulfilment flows (delivery / click & collect).
+  ════════════════════════════════════════════════════════════════════════
+-->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Confirm your order</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="stylesheet" href="checkout/tokens.css" />
+<link rel="stylesheet" href="checkout/checkout.css" />
+
+<!-- ░░ EXPRESS-CONFIRM page styles — layered on the shared checkout.css, all DS tokens ░░ -->
+<style id="xc-css">
+  /* page intro */
+  .xc-intro{ margin-bottom:20px; }
+  .xc-eyebrow{ display:inline-flex; align-items:center; gap:7px; white-space:nowrap; font-size:var(--text-xs); font-weight:var(--weight-bold);
+    letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); margin-bottom:10px; }
+  .xc-eyebrow .ico{ font-size:14px; color:var(--fg-tertiary); }
+  .xc-h1{ font-size:var(--text-3xl); font-weight:var(--weight-extra); letter-spacing:var(--tracking-tight);
+    line-height:var(--leading-tight); color:var(--fg-primary); margin:0; text-wrap:balance; }
+  .xc-sub{ font-size:var(--text-base); color:var(--fg-secondary); line-height:var(--leading-normal); margin:9px 0 0; max-width:48ch; text-wrap:pretty; }
+  .xc-sub .wallet-name{ font-weight:var(--weight-semibold); color:var(--fg-primary); }
+
+  /* ── Status band — simple, clear: the one thing the buyer must know ── */
+  .xc-auth{ padding:14px 16px; margin:20px 0 30px;
+    border-radius:var(--radius-lg); background:var(--bg-surface); border:1px solid var(--border-strong); }
+  .xc-auth-main{ min-width:0; }
+  .xc-auth-title{ margin:0; font-size:var(--text-base); font-weight:var(--weight-bold); color:var(--fg-primary); letter-spacing:var(--tracking-snug); }
+  .xc-auth-sub{ font-size:var(--text-sm); color:var(--fg-secondary); margin:4px 0 0; line-height:var(--leading-normal); max-width:56ch; text-wrap:pretty; }
+  .xc-auth-sub strong{ color:var(--fg-primary); font-weight:var(--weight-semibold); }
+  .xc-auth-sub .wallet-name{ font-weight:var(--weight-semibold); color:var(--fg-primary); }
+  .xc-auth-sub .hold{ font-family:var(--font-mono); font-weight:var(--weight-semibold); color:var(--fg-primary); font-variant-numeric:tabular-nums; }
+  /* subtle variant — quieter still (Tweak) */
+  .xc-auth.is-subtle{ background:var(--bg-surface); border-color:var(--border); padding:11px 14px; margin:18px 0 28px; }
+
+  /* ── Re-authorise state — the hold no longer matches the total (amber attention) ── */
+  .xc-auth.is-reauth{ display:flex; gap:13px; align-items:flex-start; background:var(--warning-soft); border-color:var(--warning); }
+  .xc-auth-ico{ flex:none; width:34px; height:34px; border-radius:var(--radius-full); display:grid; place-items:center;
+    background:rgba(217,119,6,.13); color:var(--warning); margin-top:1px; }
+  .xc-auth-ico .ico{ font-size:18px; }
+  .xc-auth.is-reauth .xc-auth-title{ color:var(--fg-primary); }
+  .xc-auth-delta{ display:inline-flex; align-items:center; gap:10px; margin-top:12px; font-family:var(--font-mono);
+    font-variant-numeric:tabular-nums; letter-spacing:0.01em; }
+  .xc-auth-delta .from{ color:var(--fg-tertiary); text-decoration:line-through; font-size:var(--text-sm); }
+  .xc-auth-delta .arr{ color:var(--warning); font-size:15px; }
+  .xc-auth-delta .to{ color:var(--fg-primary); font-weight:var(--weight-bold); font-size:var(--text-lg); }
+  /* transient "re-authorised" confirmation line */
+  .xc-reauth-flash{ display:flex; align-items:center; gap:7px; margin:0 0 7px; font-size:var(--text-sm);
+    font-weight:var(--weight-bold); color:var(--accent); letter-spacing:var(--tracking-snug); }
+  .xc-reauth-flash .ico{ font-size:17px; flex:none; }
+
+  /* wallet lockup badge */
+  .wallet-badge{ display:inline-flex; align-items:center; gap:5px; height:22px; padding:0 9px 0 8px; border-radius:var(--radius-full);
+    background:var(--bg-surface); border:1px solid var(--border); font-size:11px; font-weight:var(--weight-bold); color:var(--fg-primary); white-space:nowrap; }
+  .wallet-badge svg{ display:block; }
+  .wallet-badge .wb-apple{ font-weight:600; }
+  .wallet-badge .wb-pp1{ color:#003087; font-style:italic; font-weight:800; }
+  .wallet-badge .wb-pp2{ color:#009cde; font-style:italic; font-weight:800; }
+
+  /* ── Group headings ─────────────────────────────────────────────────────── */
+  .xc-group + .xc-group{ margin-top:30px; }
+  .xc-group-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:13px; }
+  .xc-group-title{ font-size:var(--text-base); font-weight:var(--weight-bold); letter-spacing:var(--tracking-snug); color:var(--fg-primary); margin:0; white-space:nowrap; }
+  .xc-group-meta{ font-size:var(--text-xs); color:var(--fg-tertiary); white-space:nowrap; }
+  .xc-group-meta .ico{ font-size:13px; vertical-align:-2px; margin-right:3px; color:var(--fg-tertiary); }
+
+  /* ── Confirmed review rows (collapsed summaries) ────────────────────────── */
+  .xc-list{ display:flex; flex-direction:column; gap:10px; }
+  .xc-row{ border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg-surface);
+    transition:border-color var(--dur-fast), box-shadow var(--dur-fast); }
+  .xc-row-head{ display:flex; gap:13px; align-items:flex-start; padding:14px 15px; }
+  .xc-row-ico{ width:30px; height:30px; flex:none; border-radius:var(--radius-full); display:grid; place-items:center;
+    font-size:15px; background:var(--bg-subtle); color:var(--fg-secondary); margin-top:1px; }
+  .xc-row-main{ flex:1; min-width:0; }
+  .xc-row-label{ font-size:11px; font-weight:var(--weight-bold); letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); }
+  .xc-row-value{ font-size:var(--text-sm); color:var(--fg-primary); margin-top:4px; line-height:var(--leading-snug); text-wrap:pretty; }
+  .xc-row-value .ln{ display:block; }
+  .xc-row-value .muted{ color:var(--fg-tertiary); }
+  .xc-row-value .pay-mark{ display:inline-flex; align-items:center; gap:7px; }
+  .xc-row-edit-btn{ flex:none; align-self:flex-start; display:inline-flex; align-items:center; gap:5px; margin-top:1px;
+    font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-link); background:none; border:0; cursor:pointer;
+    padding:3px 6px; border-radius:var(--radius-sm); }
+  .xc-row-edit-btn:hover{ text-decoration:underline; text-underline-offset:2px; }
+  .xc-row-edit-btn:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+  .xc-row-edit-btn .ico{ font-size:14px; }
+
+  /* expand-to-edit panel */
+  .xc-row-edit{ padding:2px 15px 16px 58px; }
+  .xc-row:not(.editing) .xc-row-edit{ display:none; }
+  .xc-row.editing{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .xc-row.editing .xc-row-value{ display:none; }
+  .xc-row.editing .xc-row-edit-btn{ display:none; }
+  .xc-edit-actions{ display:flex; gap:10px; align-items:center; margin-top:13px; }
+  .xc-edit-save{ height:36px; padding:0 16px; font-size:var(--text-sm); }
+  .xc-edit-cancel{ font-size:var(--text-sm); font-weight:var(--weight-semibold); color:var(--fg-tertiary); background:none; border:0; cursor:pointer; padding:6px; border-radius:var(--radius-sm); }
+  .xc-edit-cancel:hover{ color:var(--fg-secondary); text-decoration:underline; text-underline-offset:2px; }
+
+  /* payment "change" inline note */
+  .xc-pay-note{ display:flex; gap:11px; align-items:flex-start; padding:13px 14px; border-radius:var(--radius-md);
+    background:var(--bg-subtle); border:1px solid var(--border); }
+  .xc-pay-note .ico{ font-size:18px; color:var(--accent); flex:none; margin-top:1px; }
+  .xc-pay-note p{ margin:0; font-size:var(--text-sm); color:var(--fg-secondary); line-height:var(--leading-snug); }
+  .xc-pay-note p strong{ color:var(--fg-primary); font-weight:var(--weight-semibold); }
+
+  /* ── The blanks to fill (expanded gap fields) ───────────────────────────── */
+  .xc-gaps{ border:1px solid var(--indigo-200); border-radius:var(--radius-lg); background:var(--bg-surface);
+    box-shadow:var(--shadow-xs); padding:20px; }
+  .xc-gaps .xc-group-head{ display:block; position:relative; margin-bottom:4px; padding-right:118px; }
+  .xc-gaps .xc-group-title{ text-wrap:balance; white-space:normal; }
+  .xc-gaps-sub{ font-size:var(--text-sm); color:var(--fg-secondary); margin:0 0 16px; line-height:var(--leading-snug); }
+  .req-tag{ position:absolute; top:1px; right:0; font-size:10px; font-weight:var(--weight-bold); letter-spacing:var(--tracking-wide); text-transform:uppercase;
+    color:var(--accent); background:var(--indigo-50); padding:3px 9px; border-radius:var(--radius-full); white-space:nowrap; }
+  .req-tag[hidden]{ display:none; }
+  /* required field stands alone above the optional cluster */
+  .xc-req-field{ margin-bottom:2px; }
+  .xc-req-field .err-msg{ margin-top:7px; }
+  .xc-req-field.is-err .xc-field-help{ display:none; }
+  /* "Optional" rule separating the must-do field from the nice-to-haves */
+  .xc-opt-divider{ display:flex; align-items:center; gap:12px; margin:18px 0 14px; }
+  .xc-opt-divider .lbl{ flex:none; font-size:10px; font-weight:var(--weight-bold); letter-spacing:var(--tracking-wide);
+    text-transform:uppercase; color:var(--fg-tertiary); }
+  .xc-opt-divider::after{ content:""; height:1px; flex:1; background:var(--border); }
+  .xc-field-help{ display:flex; gap:6px; align-items:flex-start; font-size:var(--text-xs); color:var(--fg-tertiary); margin:6px 0 0; }
+  .xc-field-help .ico{ font-size:13px; margin-top:1px; flex:none; }
+  .xc-gap-marketing{ margin-top:4px; }
+
+  /* CTA reinforcement */
+  .cta-reassure{ display:flex; align-items:center; justify-content:center; gap:7px; margin:14px 0 0; text-align:center;
+    font-size:var(--text-xs); color:var(--fg-tertiary); }
+  .cta-reassure .ico{ font-size:14px; color:var(--fg-tertiary); flex:none; }
+  /* keep any shared in-stock pill neutral on this page — no green */
+  .pill.in .dot{ background:var(--fg-tertiary) !important; }
+  /* shared secured-lock is green by default — neutralise it on this page */
+  .secured .ico{ color:var(--fg-tertiary); }
+
+  /* ── No green anywhere on this page — neutralise every shared --success use
+        that can surface in the order summary / pickers (slate, not green) ── */
+  .os-trust .line .ico{ color:var(--fg-tertiary); }
+  .pill.in, .pill.free{ color:var(--fg-secondary); background:var(--bg-subtle); }
+  .pill.free .dot{ background:var(--fg-tertiary) !important; }
+  .lead-time, .pickup-chosen .hours, .pick-pickup .psub-i.popen{ color:var(--fg-secondary); }
+  .disc-applied .tag, .os-line.discount .v, .a-success{ color:var(--fg-secondary); }
+  .a-success{ background:var(--bg-subtle); }
+  .secure-note .txt .ico{ color:var(--fg-tertiary); }
+
+  /* ══ Persistent desktop confirm bar — fixed, always on screen ══ */
+  .d-pay-bar{ display:none; }
+  @media (min-width:861px){
+    .d-pay-bar{ display:block; position:fixed; left:0; right:0; bottom:0; z-index:45;
+      background:rgba(255,255,255,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border-top:1px solid var(--border-strong); box-shadow:0 -8px 24px -16px rgba(15,23,42,.35); }
+    /* Inner mirrors the page's 60/40 grid so the bar's content aligns to the
+       columns above it: total under the form column, button under the summary. */
+    .d-pay-inner{ max-width:none; margin:0; padding:0; display:flex; align-items:stretch; }
+    .d-pay-zone{ display:flex; align-items:center; min-width:0; }
+    .d-pay-zone--form{ flex:1 1 60%; justify-content:flex-end; }
+    .d-pay-zone--summary{ flex:1 1 40%; justify-content:flex-start; }
+    .d-pay-left{ width:100%; max-width:620px; min-width:0; padding:13px clamp(24px,3.5vw,56px); }
+    .d-pay-total{ display:flex; align-items:baseline; gap:9px; font-size:var(--text-lg); font-weight:var(--weight-bold); color:var(--fg-primary); }
+    .d-pay-total .lbl{ font-size:var(--text-xs); font-weight:var(--weight-semibold); letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--fg-tertiary); white-space:nowrap; }
+    .d-pay-total .mono{ font-variant-numeric:tabular-nums; }
+    .d-pay-note{ display:inline-flex; align-items:center; gap:7px; margin:5px 0 0; padding:3px 11px 3px 8px; white-space:nowrap;
+      border-radius:var(--radius-full); background:var(--indigo-50); border:1px solid var(--indigo-200);
+      font-size:var(--text-xs); font-weight:var(--weight-medium); color:var(--fg-secondary); }
+    .d-pay-note .ico{ font-size:14px; color:var(--accent); flex:none; }
+    .d-pay-note strong{ color:var(--accent); font-weight:var(--weight-bold); }
+    /* re-authorise warning treatment */
+    .d-pay-note.is-warn{ background:var(--warning-soft); border-color:var(--warning); color:var(--warning); }
+    .d-pay-note.is-warn .ico{ color:var(--warning); }
+    .d-pay-note.is-warn strong{ color:var(--warning); }
+    .d-pay-right{ width:100%; max-width:452px; padding:13px clamp(20px,2.6vw,36px); display:flex; align-items:center; justify-content:flex-end; gap:16px; }
+    .d-pay-hint{ display:inline-flex; align-items:center; gap:6px; font-size:var(--text-sm); color:var(--fg-secondary); white-space:nowrap;
+      background:none; border:0; padding:4px 6px; margin:0; border-radius:var(--radius-sm); cursor:pointer; font-family:inherit; }
+    .d-pay-hint:hover{ color:var(--fg-primary); }
+    .d-pay-hint:focus-visible{ outline:none; box-shadow:var(--ring-focus); }
+    .d-pay-hint .ico{ font-size:15px; color:var(--accent); }
+    .d-pay-hint[hidden]{ display:none; }
+    #d-confirm-btn{ height:50px; padding:0 26px; font-size:15px; white-space:nowrap; }
+    #d-confirm-btn .mono{ font-variant-numeric:tabular-nums; }
+    /* keep page content clear of the fixed bar */
+    .form-col{ padding-bottom:124px; }
+    .summary-col{ top:16px; }
+    .summary-side{ padding-bottom:96px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ░░ MOBILE · collapsible summary bar (top) ░░ -->
+<div class="m-summary-bar">
+  <button class="m-summary-toggle" id="m-summary-toggle" aria-expanded="false" aria-controls="m-summary-panel">
+    <span class="lft"><span class="ico"><i data-lucide="shopping-bag"></i></span> Order summary</span>
+    <span class="rgt">
+      <span class="ct" id="m-count">3 items</span>
+      <span class="tot mono" id="m-total">£0.00</span>
+      <span class="chev ico"><i data-lucide="chevron-down"></i></span>
+    </span>
+  </button>
+  <div class="m-summary-panel" id="m-summary-panel" hidden></div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════════════ LEFT · REVIEW & COMPLETE ══════════════════ -->
+  <div class="form-side">
+    <div class="form-col">
+
+      <!-- Brand lockup -->
+      <div class="brand-head">
+        <span class="brand-mark"><span class="ico" style="font-size:20px"><i data-lucide="mountain"></i></span></span>
+        <div class="brand-text">
+          <a href="#" class="brand-name" aria-label="Atelier Hudson — home">Atelier Hudson<span class="dot">.</span></a>
+          <div class="secured"><span class="ico"><i data-lucide="lock"></i></span> Secure checkout</div>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div class="xc-intro">
+        <span class="xc-eyebrow"><span class="ico"><i data-lucide="zap"></i></span> Express checkout</span>
+        <h1 class="xc-h1">Confirm your order</h1>
+        <p class="xc-sub">Review the details below and fill in the last few we still need.</p>
+      </div>
+
+      <!-- Status band — one clear message: not done yet, card only held -->
+      <div class="xc-auth" id="xc-auth">
+        <div class="xc-auth-main">
+          <p class="xc-auth-title">Your order isn't placed yet</p>
+          <p class="xc-auth-sub">Your card's authorised with <span class="wallet-name" data-wallet-name>Apple&nbsp;Pay</span> — a hold for <span class="hold" data-total>£0.00</span>, charged only when you tap <strong>Confirm&nbsp;&amp;&nbsp;pay</strong>.</p>
+        </div>
+      </div>
+
+      <form id="confirm-form" novalidate>
+
+        <!-- ══════ CONFIRMED FROM WALLET (collapsed review rows) ══════ -->
+        <section class="xc-group" aria-label="Details from your wallet">
+          <div class="xc-group-head">
+            <h2 class="xc-group-title">From your wallet</h2>
+            <span class="xc-group-meta"><span class="ico"><i data-lucide="check"></i></span>Confirmed</span>
+          </div>
+
+          <div class="xc-list">
+
+            <!-- Contact -->
+            <div class="xc-row" data-row="contact">
+              <div class="xc-row-head">
+                <span class="xc-row-ico"><span class="ico"><i data-lucide="mail"></i></span></span>
+                <div class="xc-row-main">
+                  <div class="xc-row-label">Contact</div>
+                  <div class="xc-row-value" id="rv-contact">jordan.avery@icloud.com</div>
+                </div>
+                <button type="button" class="xc-row-edit-btn" data-edit="contact"><span class="ico"><i data-lucide="pencil"></i></span>Edit</button>
+              </div>
+              <div class="xc-row-edit">
+                <div class="fl">
+                  <input id="ed-email" type="email" autocomplete="email" inputmode="email" placeholder=" " value="jordan.avery@icloud.com" />
+                  <label for="ed-email">Email address</label>
+                </div>
+                <div class="xc-edit-actions">
+                  <button type="button" class="btn btn-primary xc-edit-save" data-edit-save="contact">Save</button>
+                  <button type="button" class="xc-edit-cancel" data-edit-cancel="contact">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deliver to (delivery flow) -->
+            <div class="xc-row" data-row="address" data-flow="delivery">
+              <div class="xc-row-head">
+                <span class="xc-row-ico"><span class="ico"><i data-lucide="map-pin"></i></span></span>
+                <div class="xc-row-main">
+                  <div class="xc-row-label">Deliver to</div>
+                  <div class="xc-row-value" id="rv-address"></div>
+                </div>
+                <button type="button" class="xc-row-edit-btn" data-edit="address"><span class="ico"><i data-lucide="pencil"></i></span>Edit</button>
+              </div>
+              <div class="xc-row-edit">
+                <div class="stack">
+                  <div class="fl">
+                    <input id="ed-line1" type="text" autocomplete="address-line1" placeholder=" " value="12 Marchmont Street" />
+                    <label for="ed-line1">Address</label>
+                  </div>
+                  <div class="fl">
+                    <input id="ed-line2" type="text" autocomplete="address-line2" placeholder=" " value="" />
+                    <label for="ed-line2">Apartment, suite, etc. <span class="opt">(optional)</span></label>
+                  </div>
+                  <div class="row2">
+                    <div class="fl">
+                      <input id="ed-city" type="text" autocomplete="address-level2" placeholder=" " value="London" />
+                      <label for="ed-city">Town / city</label>
+                    </div>
+                    <div class="fl">
+                      <input id="ed-postcode" type="text" autocomplete="postal-code" placeholder=" " value="WC1N 1AB" style="text-transform:uppercase" />
+                      <label for="ed-postcode">Postcode</label>
+                    </div>
+                  </div>
+                  <div class="fl">
+                    <input id="ed-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder=" " value="+44 7700 900123" />
+                    <label for="ed-phone">Phone <span class="opt">(for delivery updates)</span></label>
+                  </div>
+                </div>
+                <div class="xc-edit-actions">
+                  <button type="button" class="btn btn-primary xc-edit-save" data-edit-save="address">Save</button>
+                  <button type="button" class="xc-edit-cancel" data-edit-cancel="address">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Collect from (collect flow) -->
+            <div class="xc-row" data-row="store" data-flow="collect" hidden>
+              <div class="xc-row-head">
+                <span class="xc-row-ico"><span class="ico"><i data-lucide="store"></i></span></span>
+                <div class="xc-row-main">
+                  <div class="xc-row-label">Collect from</div>
+                  <div class="xc-row-value" id="rv-store"></div>
+                </div>
+                <button type="button" class="xc-row-edit-btn" data-edit="store"><span class="ico"><i data-lucide="pencil"></i></span>Change</button>
+              </div>
+              <div class="xc-row-edit">
+                <div id="ed-store-list" role="radiogroup" aria-label="Choose a collection store"></div>
+                <div class="xc-edit-actions">
+                  <button type="button" class="btn btn-primary xc-edit-save" data-edit-save="store">Save</button>
+                  <button type="button" class="xc-edit-cancel" data-edit-cancel="store">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shipping method (delivery flow) -->
+            <div class="xc-row" data-row="shipping" data-flow="delivery">
+              <div class="xc-row-head">
+                <span class="xc-row-ico"><span class="ico"><i data-lucide="truck"></i></span></span>
+                <div class="xc-row-main">
+                  <div class="xc-row-label">Shipping method</div>
+                  <div class="xc-row-value" id="rv-shipping"></div>
+                </div>
+                <button type="button" class="xc-row-edit-btn" data-edit="shipping"><span class="ico"><i data-lucide="pencil"></i></span>Edit</button>
+              </div>
+              <div class="xc-row-edit">
+                <div id="ed-shipping-list" role="radiogroup" aria-label="Select a shipping method"></div>
+                <div class="xc-edit-actions">
+                  <button type="button" class="btn btn-primary xc-edit-save" data-edit-save="shipping">Save</button>
+                  <button type="button" class="xc-edit-cancel" data-edit-cancel="shipping">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment -->
+            <div class="xc-row" data-row="payment">
+              <div class="xc-row-head">
+                <span class="xc-row-ico"><span class="ico"><i data-lucide="credit-card"></i></span></span>
+                <div class="xc-row-main">
+                  <div class="xc-row-label">Payment</div>
+                  <div class="xc-row-value" id="rv-payment"></div>
+                </div>
+                <button type="button" class="xc-row-edit-btn" data-edit="payment"><span class="ico"><i data-lucide="repeat"></i></span>Change</button>
+              </div>
+              <div class="xc-row-edit">
+                <div class="xc-pay-note">
+                  <span class="ico"><i data-lucide="info"></i></span>
+                  <p>Changing how you pay re-opens <strong data-wallet-name>Apple&nbsp;Pay</strong>. Your current hold is released automatically — you won't be charged twice.</p>
+                </div>
+                <div class="xc-edit-actions">
+                  <button type="button" class="btn btn-secondary xc-edit-save" data-edit-cancel="payment"><span class="ico"><i data-lucide="wallet"></i></span>Re-open wallet</button>
+                  <button type="button" class="xc-edit-cancel" data-edit-cancel="payment">Keep this</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ══════ THE BLANKS — expanded gap fields ══════ -->
+        <section class="xc-group" id="xc-gaps-section">
+          <div class="xc-gaps">
+            <div class="xc-group-head">
+              <h2 class="xc-group-title">A few details to finish</h2>
+              <span class="req-tag" id="gap-req-count">1 still needed</span>
+            </div>
+            <p class="xc-gaps-sub" data-gaps-sub><span data-wallet-name>Apple&nbsp;Pay</span> didn't share these — add them so we can complete your order.</p>
+
+            <!-- Required: name — distinguished from the optional cluster below -->
+            <div class="xc-req-field" id="gap-name-field">
+              <div class="fl" id="gap-name-fl">
+                <input id="gap-name" type="text" autocomplete="name" placeholder=" " data-required aria-required="true" aria-describedby="gap-name-help gap-name-err" />
+                <label for="gap-name" id="gap-name-label">Full name</label>
+              </div>
+              <p class="err-msg" id="gap-name-err"><span class="ico"><i data-lucide="alert-circle"></i></span><span data-name-err>Enter your name to confirm the order.</span></p>
+              <p class="xc-field-help" id="gap-name-help"><span class="ico"><i data-lucide="tag"></i></span><span data-name-help>For your delivery label.</span></p>
+            </div>
+
+            <!-- Optional cluster — clearly separated so the required field stands alone -->
+            <div class="xc-opt-divider"><span class="lbl">Optional</span></div>
+
+            <div class="stack">
+              <!-- Delivery instructions (optional gap, delivery only) -->
+              <div data-flow="delivery">
+                <div class="fl">
+                  <textarea id="gap-notes" rows="2" placeholder=" " maxlength="200"></textarea>
+                  <label for="gap-notes">Delivery instructions <span class="opt">(optional)</span></label>
+                </div>
+                <p class="xc-field-help"><span class="ico"><i data-lucide="info"></i></span>e.g. "Leave with the concierge" or a safe spot if you're out.</p>
+              </div>
+
+              <!-- Order reference (optional gap) -->
+              <div>
+                <div class="fl">
+                  <input id="gap-ref" type="text" placeholder=" " maxlength="40" />
+                  <label for="gap-ref">Order reference or PO number <span class="opt">(optional)</span></label>
+                </div>
+                <p class="xc-field-help"><span class="ico"><i data-lucide="file-text"></i></span>It'll appear on your receipt — handy for expenses.</p>
+              </div>
+
+              <!-- Marketing opt-in -->
+              <label class="check xc-gap-marketing">
+                <input type="checkbox" id="gap-news" />
+                <span class="box ico"><i data-lucide="check"></i></span>
+                <span class="txt">Email me with order updates and occasional offers.</span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- Legal sits in flow; the action itself lives in the persistent bar below -->
+        <div class="cta-wrap desktop-cta">
+          <p class="legal">By confirming you agree to our <a href="#">terms</a> and <a href="#">refund policy</a>. You can cancel anytime before dispatch.</p>
+        </div>
+
+        <!-- footer policy links -->
+        <div class="foot">
+          <a href="#">Refund policy</a><a href="#">Shipping</a><a href="#">Privacy policy</a><a href="#">Terms of service</a><a href="#">Contact</a>
+        </div>
+        <div class="powered-by">
+          <span>Powered by</span>
+          <img src="assets/powered-by-lunar.svg" alt="Lunar" />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════ RIGHT · ORDER SUMMARY ══════════════════ -->
+  <aside class="summary-side" aria-label="Order summary">
+    <div class="summary-col">
+      <div class="summary-sticky" id="summary-card"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- ░░ DESKTOP · persistent confirm bar — always visible, no scrolling required ░░ -->
+<div class="d-pay-bar" id="d-pay-bar">
+  <div class="d-pay-inner">
+    <div class="d-pay-zone d-pay-zone--form">
+      <div class="d-pay-left">
+        <div class="d-pay-total"><span class="lbl">Total due</span> <span class="mono" data-total>£0.00</span></div>
+        <p class="d-pay-note"><span class="ico"><i data-lucide="shield-check"></i></span> Card authorised — <strong>not charged</strong> until you confirm</p>
+      </div>
+    </div>
+    <div class="d-pay-zone d-pay-zone--summary">
+      <div class="d-pay-right">
+        <button type="button" class="d-pay-hint" id="d-pay-hint"><span class="ico"><i data-lucide="arrow-up"></i></span> Add your name to confirm</button>
+        <button type="button" id="d-confirm-btn" class="btn btn-primary xc-pay-btn">
+          <span class="ico"><i data-lucide="lock"></i></span>
+          <span class="cta-label">Confirm &amp; pay <span class="mono" data-total>£0.00</span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ░░ MOBILE · sticky bottom pay bar ░░ -->
+<div class="m-pay-bar">
+  <button type="button" id="m-confirm-btn" class="btn btn-primary btn-block xc-pay-btn">
+    <span class="ico"><i data-lucide="lock"></i></span>
+    <span class="cta-label">Confirm &amp; pay <span class="mono" data-total>£0.00</span></span>
+  </button>
+</div>
+
+<!-- ░░ Success overlay ░░ -->
+<div id="success" class="success-overlay" hidden>
+  <div class="success-card">
+    <div class="success-check ico"><i data-lucide="check"></i></div>
+    <h2>Payment confirmed</h2>
+    <p id="success-msg">Thanks — a receipt is on its way to your inbox.</p>
+    <button type="button" id="success-close" class="btn btn-secondary btn-block">Done</button>
+  </div>
+</div>
+
+<div aria-live="polite" class="sr-only" id="live"></div>
+
+<!-- shared pricing + summary rendering -->
+<script src="checkout/data.js"></script>
+<script src="checkout/render.js"></script>
+<!-- this page's controller -->
+<script src="checkout/xc-app.js"></script>
+
+<!-- ░░ TWEAKS PANEL (React island) ░░ -->
+<div id="tweaks-root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="checkout/tweaks-panel.jsx"></script>
+<script type="text/babel" src="checkout/xc-tweaks.jsx"></script>
+</body>
+</html>

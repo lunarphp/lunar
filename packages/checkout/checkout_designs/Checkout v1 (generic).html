@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  QUIET UTILITY · CHECKOUT
+  Single self-contained file · Tailwind (Play CDN) + vanilla JS · no build step
+  ────────────────────────────────────────────────────────────────────────
+  THEMING (brand-agnostic):
+    • Change ONE variable — --accent in :root below — to re-skin every store.
+      Everything derived (CTA, active radio cards, selected states, focus
+      rings, links) reads from --accent / --accent-soft. Nothing else.
+    • Drop in a logo: replace the <a class="logo"> contents (the SVG mark +
+      wordmark) with the store's logo. No other change required.
+
+  FLOWS:
+    • Toggle at top of the form switches between "Deliver" (Flow A) and
+      "Click & Collect" (Flow B). Sections 2 & 3 swap; the rest is shared.
+
+  PORTING TO VUE:
+    • Markup is grouped into labelled <section> blocks with stable
+      data-* hooks. State lives in one `state` object + a `recompute()` /
+      `render()` pair — maps cleanly onto a component + reactive store.
+
+  STRIPE SWAP POINT:
+    • Section 4 → #card-block is the placeholder. Comments mark exactly
+      where Stripe Elements would mount.
+  ════════════════════════════════════════════════════════════════════════
+-->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // Map design tokens onto Tailwind so utilities stay theme-driven.
+  // (Named to avoid clobbering Tailwind's own border-/text- utilities.)
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: 'var(--accent)',
+          'accent-soft': 'var(--accent-soft)',
+          ink: 'var(--ink)',
+          surface: 'var(--surface)',
+          panel: 'var(--panel)',
+          hair: 'var(--border)',
+          body: 'var(--text)',
+          muted: 'var(--muted)',
+          ok: 'var(--ok)',
+          warn: 'var(--warn)',
+          err: 'var(--err)',
+        },
+        fontFamily: {
+          sans: ['ui-sans-serif','system-ui','-apple-system','"Segoe UI"','Roboto','Helvetica','Arial','sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  :root{
+    /* ── The ONE brand knob ─────────────────────────── */
+    --accent:#4B5BD6;
+    --accent-soft:rgba(75,91,214,.10);
+    --accent-press:#3F4DC0;
+    /* ── Neutrals (Quiet Utility) ───────────────────── */
+    --ink:#0E0E11;
+    --surface:#FCFCFD;
+    --panel:#F8F8FA;
+    --border:#ECECEF;
+    --text:#57575F;
+    --muted:#8A8A93;
+    /* ── State ──────────────────────────────────────── */
+    --ok:#1F8A5B;       --ok-soft:rgba(31,138,91,.10);
+    --warn:#B45309;     --warn-soft:rgba(180,83,9,.10);
+    --err:#C0362C;      --err-soft:rgba(192,54,44,.10);
+    /* ── Form metrics ───────────────────────────────── */
+    --field-h:46px;
+    --radius:12px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--panel);
+    color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .tnum{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+
+  /* ── Type helpers ─────────────────────────────────── */
+  .eyebrow{ font-size:11px; letter-spacing:.10em; text-transform:uppercase; font-weight:600; color:var(--muted); }
+  h1,h2,h3{ letter-spacing:-0.02em; margin:0; }
+
+  /* ── Fields ───────────────────────────────────────── */
+  .label{ display:block; font-size:13px; font-weight:500; color:var(--ink); margin-bottom:7px; }
+  .field{
+    width:100%; height:var(--field-h);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:0 13px;
+    color:var(--ink);
+    font:inherit; font-size:15px;
+    transition:border-color .14s ease, box-shadow .14s ease, background .14s ease;
+  }
+  textarea.field{ height:auto; padding:11px 13px; resize:none; }
+  .field::placeholder{ color:var(--muted); }
+  .field:hover{ border-color:#DBDBDF; }
+  .field:focus, .field:focus-visible{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .field[aria-invalid="true"]{
+    border-color:var(--err);
+    box-shadow:0 0 0 3px var(--err-soft);
+  }
+  .field[disabled]{ background:var(--panel); color:var(--muted); cursor:not-allowed; }
+
+  .err-msg{ display:none; align-items:center; gap:6px; margin-top:7px; color:var(--err); font-size:13px; }
+  .err-msg.show{ display:flex; }
+
+  /* Generic visible focus ring for interactive non-field elements */
+  .focusable:focus-visible{ outline:none; box-shadow:0 0 0 3px var(--accent-soft); border-radius:10px; }
+  button{ font:inherit; }
+  a{ color:inherit; }
+
+  /* ── Numbered section blocks (hairline-divided, not boxed) ── */
+  .block{ padding:30px 0; border-top:1px solid var(--border); }
+  .block:first-of-type{ border-top:0; }
+  .block.is-locked{ opacity:.5; }
+  .block.is-locked .block-body{ pointer-events:none; filter:saturate(0); }
+  .block-head{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .block-num{
+    flex:none; width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center;
+    border:1px solid var(--border); background:var(--surface);
+    font-size:13px; font-weight:600; color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+  .block.is-done .block-num{ background:var(--ok); border-color:var(--ok); color:#fff; }
+  .block.is-done .block-num .num{ display:none; }
+  .block.is-done .block-num .tick{ display:block; }
+  .block-num .tick{ display:none; }
+  .block-title{ font-size:17px; font-weight:600; }
+
+  /* ── Selectable cards (radio: shipping & stores) ──── */
+  .pick{
+    position:relative; display:flex; gap:13px; width:100%; text-align:left;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 15px;
+    cursor:pointer;
+    transition:border-color .14s ease, box-shadow .14s ease, background .14s ease;
+  }
+  .pick:hover{ border-color:#DBDBDF; }
+  .pick[aria-checked="true"]{
+    border-color:var(--accent);
+    background:var(--surface);
+    box-shadow:0 0 0 1px var(--accent), 0 6px 18px -10px rgba(75,91,214,.45);
+  }
+  .pick[aria-disabled="true"]{ opacity:.55; cursor:not-allowed; background:var(--panel); }
+  .pick:focus-visible{ outline:none; box-shadow:0 0 0 3px var(--accent-soft); }
+  .pick[aria-checked="true"]:focus-visible{ box-shadow:0 0 0 1px var(--accent), 0 0 0 3px var(--accent-soft); }
+  /* custom radio dot */
+  .radio-dot{ flex:none; width:18px; height:18px; margin-top:1px; border-radius:50%; border:1.5px solid #CFCFD6; background:var(--surface); display:grid; place-items:center; transition:border-color .14s ease; }
+  .pick[aria-checked="true"] .radio-dot{ border-color:var(--accent); }
+  .radio-dot::after{ content:""; width:9px; height:9px; border-radius:50%; background:var(--accent); transform:scale(0); transition:transform .14s ease; }
+  .pick[aria-checked="true"] .radio-dot::after{ transform:scale(1); }
+
+  /* ── Status pills ─────────────────────────────────── */
+  .pill{ display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:3px 8px; border-radius:999px; }
+  .pill-dot{ width:6px; height:6px; border-radius:50%; }
+  .pill-in{ color:var(--ok); background:var(--ok-soft); }
+  .pill-low{ color:var(--warn); background:var(--warn-soft); }
+  .pill-out{ color:var(--muted); background:var(--panel); }
+  .pill-free{ color:var(--ok); background:var(--ok-soft); }
+
+  /* ── Buttons ──────────────────────────────────────── */
+  .btn-accent{
+    background:var(--accent); color:#fff; border:1px solid transparent;
+    border-radius:12px; font-weight:600; transition:background .14s ease, transform .05s ease, box-shadow .14s ease;
+  }
+  .btn-accent:hover{ background:var(--accent-press); }
+  .btn-accent:active{ transform:translateY(1px); }
+  .btn-accent:focus-visible{ outline:none; box-shadow:0 0 0 3px var(--accent-soft); }
+  .btn-accent[disabled]{ opacity:.55; cursor:not-allowed; }
+  .btn-ghost{ background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--ink); font-weight:500; transition:border-color .14s, background .14s; }
+  .btn-ghost:hover{ border-color:#DBDBDF; background:var(--panel); }
+  .btn-ghost:focus-visible{ outline:none; box-shadow:0 0 0 3px var(--accent-soft); }
+  .link-accent{ color:var(--accent); font-weight:500; text-decoration:none; }
+  .link-accent:hover{ text-decoration:underline; }
+
+  /* ── Segmented toggle (fulfilment) ────────────────── */
+  .seg{ position:relative; display:grid; grid-template-columns:1fr 1fr; gap:4px; background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:4px; }
+  .seg-btn{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:8px; height:42px; border-radius:9px; background:transparent; border:0; cursor:pointer; font-weight:600; font-size:14px; color:var(--text); transition:color .18s ease; }
+  .seg-btn[aria-selected="true"]{ color:var(--ink); }
+  .seg-thumb{ position:absolute; z-index:0; top:4px; left:4px; height:42px; width:calc(50% - 6px); background:var(--surface); border:1px solid var(--border); border-radius:9px; box-shadow:0 2px 8px -4px rgba(14,14,17,.18); transition:transform .22s cubic-bezier(.4,.0,.2,1); }
+  .seg[data-active="collect"] .seg-thumb{ transform:translateX(calc(100% + 4px)); }
+
+  /* ── OTC (one-time-code) boxes ────────────────────── */
+  .otc-box{ width:46px; height:54px; text-align:center; font-size:20px; font-weight:600; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--ink); transition:border-color .14s, box-shadow .14s; }
+  .otc-box:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+
+  /* ── Reveal animation ─────────────────────────────── */
+  .reveal{ animation:reveal .28s cubic-bezier(.4,0,.2,1); }
+  @keyframes reveal{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+  [hidden]{ display:none !important; }
+
+  /* ── Layout shell ─────────────────────────────────── */
+  .shell{ max-width:1080px; margin:0 auto; }
+  .grid{ display:grid; grid-template-columns:1fr; }
+  .summary{ background:var(--surface); }
+
+  /* Desktop ≥820px: two columns, sticky summary */
+  @media (min-width:820px){
+    .grid{ grid-template-columns:minmax(0,1fr) 372px; }
+    .summary-wrap{ position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; }
+    .mobile-only{ display:none !important; }
+  }
+  @media (max-width:819.98px){
+    .desktop-only{ display:none !important; }
+    body{ padding-bottom:84px; } /* room for sticky pay bar */
+  }
+
+  /* thin scrollbar for the sticky summary */
+  .summary-wrap::-webkit-scrollbar{ width:8px; }
+  .summary-wrap::-webkit-scrollbar-thumb{ background:#E2E2E6; border-radius:8px; }
+
+  /* mini-map placeholder texture */
+  .map-ph{
+    background:
+      linear-gradient(0deg, rgba(75,91,214,.04), rgba(75,91,214,.04)),
+      repeating-linear-gradient(0deg, #EEF0F4 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, #EEF0F4 0 1px, transparent 1px 26px),
+      #F4F5F8;
+  }
+
+  .spin{ animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+</style>
+</head>
+
+<body>
+
+<!-- ░░ MOBILE: collapsible summary bar (top) ░░ -->
+<div class="mobile-only sticky top-0 z-30 bg-surface/95 backdrop-blur border-b border-hair">
+  <button id="m-summary-toggle" class="w-full flex items-center justify-between px-5 py-3.5 focusable" aria-expanded="false" aria-controls="m-summary-panel">
+    <span class="flex items-center gap-2.5 text-body">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="text-sm font-medium text-ink">Order summary</span>
+      <svg id="m-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="text-xs text-muted" id="m-count">3 items</span>
+      <span class="text-[15px] font-semibold tnum text-ink" id="m-total">£289.00</span>
+    </span>
+  </button>
+  <div id="m-summary-panel" hidden class="px-5 pb-5 border-t border-hair"></div>
+</div>
+
+<main class="shell px-5 sm:px-7 py-8 sm:py-12">
+  <div class="grid gap-x-12 gap-y-10">
+
+    <!-- ══════════════════ LEFT · FORM COLUMN ══════════════════ -->
+    <div class="min-w-0">
+      <!-- max ~560px reading measure for the form -->
+      <div class="max-w-[560px]">
+
+        <!-- Logo slot — replace this anchor's contents to rebrand -->
+        <a href="#" class="logo inline-flex items-center gap-2.5 mb-8 focusable" aria-label="Store home">
+          <span class="grid place-items-center w-8 h-8 rounded-lg" style="background:var(--accent)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8 12 3l7 5v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8Z"/><path d="M9.5 21V12.5h5V21"/></svg>
+          </span>
+          <span class="text-[17px] font-semibold tracking-tight text-ink">Atelier&nbsp;Hudson</span>
+        </a>
+
+        <h1 class="text-[22px] font-semibold tracking-tight mb-1">Checkout</h1>
+        <p class="text-sm text-body mb-7">Secure checkout. Your details are encrypted and never stored on our servers.</p>
+
+        <!-- ── Fulfilment toggle ─────────────────────────── -->
+        <div class="seg mb-8" id="fulfilment-seg" data-active="delivery" role="tablist" aria-label="Choose how to receive your order">
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button type="button" class="seg-btn" role="tab" aria-selected="true" data-flow="delivery">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h13v9H1zM14 8h4l3 3v3h-7"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/></svg>
+            Deliver
+          </button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" data-flow="collect">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 5 4h14l2 5M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M9 13h6"/></svg>
+            Click &amp; Collect
+          </button>
+        </div>
+
+        <!-- ── Express wallets ───────────────────────────── -->
+        <section aria-labelledby="express-h">
+          <h2 id="express-h" class="eyebrow mb-3">Express checkout</h2>
+          <div class="grid grid-cols-3 gap-2.5">
+            <!-- Placeholder wallet buttons — wire to Apple/Google/PayPal SDKs -->
+            <button type="button" class="h-12 rounded-xl bg-ink text-white flex items-center justify-center gap-1.5 focusable hover:opacity-90 transition" aria-label="Pay with Apple Pay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.6-1.3-.1-2.5.8-3.2.8-.6 0-1.7-.7-2.8-.7-1.4 0-2.7.8-3.5 2.1-1.5 2.6-.4 6.4 1.1 8.5.7 1 1.5 2.2 2.6 2.1 1-.04 1.4-.7 2.7-.7 1.2 0 1.6.7 2.7.6 1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.1-2.3-.02-.02-2.1-.8-2.1-3.2Z"/><path d="M14.6 6.3c.6-.7 1-1.7.9-2.7-.9.04-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .07 1.9-.5 2.5-1.2Z"/></svg>
+              <span class="font-semibold text-sm">Pay</span>
+            </button>
+            <button type="button" class="h-12 rounded-xl bg-surface border border-hair flex items-center justify-center gap-1 focusable hover:bg-panel transition" aria-label="Pay with Google Pay">
+              <span class="font-semibold text-sm text-ink">G</span><span class="font-semibold text-sm text-body">Pay</span>
+            </button>
+            <button type="button" class="h-12 rounded-xl bg-surface border border-hair flex items-center justify-center focusable hover:bg-panel transition" aria-label="Pay with PayPal">
+              <span class="font-semibold text-sm tracking-tight"><span style="color:#003087">Pay</span><span style="color:#0070E0">Pal</span></span>
+            </button>
+          </div>
+          <div class="flex items-center gap-3 my-6" aria-hidden="true">
+            <span class="h-px flex-1 bg-hair"></span>
+            <span class="text-xs text-muted">or pay with card below</span>
+            <span class="h-px flex-1 bg-hair"></span>
+          </div>
+        </section>
+
+        <form id="checkout-form" novalidate>
+
+          <!-- ══════ 1 · CONTACT ══════ -->
+          <section class="block" data-block="contact">
+            <div class="block-head">
+              <span class="block-num"><span class="num">1</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Contact</h2>
+            </div>
+            <div class="block-body">
+              <label class="label" for="email">Email address</label>
+              <input class="field" id="email" name="email" type="email" autocomplete="email" inputmode="email"
+                     placeholder="you@example.com" data-validate="email" required aria-describedby="email-err" />
+              <p class="err-msg" id="email-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+              <p class="text-xs text-muted mt-2">We'll send your receipt and order updates here. No account required.</p>
+
+              <!-- Inline passwordless login offer (non-blocking). Shown when the
+                   email is "recognised" — mocked: any valid email triggers it. -->
+              <div id="returning" hidden class="mt-3 rounded-xl border border-hair bg-panel p-3.5 reveal">
+                <div id="returning-offer" class="flex items-start gap-3">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" class="mt-0.5 flex-none"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>
+                  <div class="min-w-0">
+                    <p class="text-sm text-ink font-medium">Welcome back — you have an account</p>
+                    <p class="text-xs text-body mt-0.5">Sign in faster with a one-time code. It's optional — you can keep checking out as a guest.</p>
+                    <button type="button" id="send-code" class="link-accent text-sm mt-2 focusable">Email me a 6-digit code →</button>
+                  </div>
+                  <button type="button" id="dismiss-returning" class="flex-none text-muted hover:text-ink focusable rounded p-0.5" aria-label="Dismiss">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                  </button>
+                </div>
+
+                <!-- OTC entry -->
+                <div id="otc-wrap" hidden class="mt-1">
+                  <p class="text-xs text-body mb-2.5">Enter the 6-digit code we emailed to <span id="otc-email" class="font-medium text-ink"></span></p>
+                  <div class="flex gap-2" id="otc" role="group" aria-label="One-time code">
+                    <input class="otc-box tnum" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
+                    <input class="otc-box tnum" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+                    <input class="otc-box tnum" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+                    <input class="otc-box tnum" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+                    <input class="otc-box tnum" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+                    <input class="otc-box tnum" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+                  </div>
+                  <p class="err-msg" id="otc-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                  <div class="flex items-center gap-4 mt-2.5">
+                    <button type="button" id="otc-resend" class="text-xs text-body hover:text-ink focusable">Resend code</button>
+                    <button type="button" id="otc-cancel" class="text-xs text-muted hover:text-ink focusable">Use a different email</button>
+                  </div>
+                </div>
+
+                <!-- Signed-in confirmation -->
+                <div id="signed-in" hidden class="flex items-center gap-2.5 reveal">
+                  <span class="grid place-items-center w-7 h-7 rounded-full" style="background:var(--ok)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+                  <p class="text-sm text-ink font-medium">Signed in — your saved details will be used.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ══════ 2 · DELIVERY ADDRESS (Flow A) ══════ -->
+          <section class="block" data-block="address" data-flow="delivery">
+            <div class="block-head">
+              <span class="block-num"><span class="num">2</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Delivery address</h2>
+            </div>
+            <div class="block-body">
+              <!-- Autocomplete-first -->
+              <div id="addr-search-wrap" class="relative">
+                <label class="label" for="addr-search">Find your address</label>
+                <div class="relative">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                  <input class="field pl-10" id="addr-search" type="text" autocomplete="off" placeholder="Start typing a postcode or street…" aria-expanded="false" aria-controls="addr-results" role="combobox" aria-autocomplete="list" />
+                </div>
+                <ul id="addr-results" role="listbox" hidden class="absolute z-20 left-0 right-0 mt-1.5 bg-surface border border-hair rounded-xl shadow-lg overflow-hidden py-1"></ul>
+                <button type="button" id="addr-manual-toggle" class="link-accent text-sm mt-2.5 inline-flex items-center gap-1 focusable">Enter address manually</button>
+              </div>
+
+              <!-- Structured fields (filled by selection or shown via manual toggle). Single column → reliable autofill. -->
+              <div id="addr-fields" hidden class="space-y-4 mt-1">
+                <div id="addr-selected-banner" hidden class="flex items-start gap-2.5 rounded-xl bg-ok-soft/60 border border-hair p-3 reveal" style="background:var(--ok-soft)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" class="mt-0.5 flex-none"><path d="m5 13 4 4L19 7"/></svg>
+                  <p class="text-sm text-ink">Address found. Check the details below.</p>
+                </div>
+                <div>
+                  <label class="label" for="full-name">Full name</label>
+                  <input class="field" id="full-name" name="name" type="text" autocomplete="name" placeholder="Jordan Avery" data-validate="required" aria-describedby="full-name-err" />
+                  <p class="err-msg" id="full-name-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+                <div>
+                  <label class="label" for="line1">Address line 1</label>
+                  <input class="field" id="line1" name="address-line1" type="text" autocomplete="address-line1" placeholder="Street and number" data-validate="required" aria-describedby="line1-err" />
+                  <p class="err-msg" id="line1-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+                <div>
+                  <label class="label" for="line2">Address line 2 <span class="text-muted font-normal">(optional)</span></label>
+                  <input class="field" id="line2" name="address-line2" type="text" autocomplete="address-line2" placeholder="Flat, building, etc." />
+                </div>
+                <div>
+                  <label class="label" for="city">Town or city</label>
+                  <input class="field" id="city" name="city" type="text" autocomplete="address-level2" placeholder="London" data-validate="required" aria-describedby="city-err" />
+                  <p class="err-msg" id="city-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+                <div>
+                  <label class="label" for="postcode">Postcode</label>
+                  <input class="field uppercase" id="postcode" name="postal-code" type="text" autocomplete="postal-code" placeholder="SW1A 1AA" data-validate="postcode" aria-describedby="postcode-err" style="max-width:200px" />
+                  <p class="err-msg" id="postcode-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+                <!-- Country: defaults to UK, hidden until changed -->
+                <div>
+                  <button type="button" id="country-toggle" class="text-sm text-body focusable inline-flex items-center gap-1.5">
+                    <span class="text-muted">Country:</span> <span class="text-ink font-medium" id="country-label">United Kingdom</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                  </button>
+                  <select class="field mt-2" id="country" name="country" autocomplete="country" hidden style="max-width:280px">
+                    <option value="GB" selected>United Kingdom</option>
+                    <option value="IE">Ireland</option>
+                    <option value="FR">France</option>
+                    <option value="DE">Germany</option>
+                    <option value="US">United States</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ══════ 2 · CHOOSE A STORE (Flow B) ══════ -->
+          <section class="block" data-block="store" data-flow="collect" hidden>
+            <div class="block-head">
+              <span class="block-num"><span class="num">2</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Choose a store</h2>
+            </div>
+            <div class="block-body">
+              <div class="flex gap-2.5 mb-3">
+                <div class="relative flex-1">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                  <input class="field pl-10" id="store-search" type="text" placeholder="Postcode or city" aria-label="Search stores by postcode or city" />
+                </div>
+                <button type="button" id="use-location" class="btn-ghost px-3.5 flex items-center gap-2 text-sm whitespace-nowrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+                  Use my location
+                </button>
+              </div>
+
+              <!-- Non-blocking mini-map placeholder -->
+              <div class="map-ph relative h-28 rounded-xl border border-hair mb-4 overflow-hidden" aria-hidden="true">
+                <div class="absolute inset-0 grid place-items-center">
+                  <span class="text-xs text-muted bg-surface/80 px-2.5 py-1 rounded-full border border-hair">Map preview</span>
+                </div>
+                <svg class="absolute" style="left:38%;top:42%" width="22" height="22" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
+              </div>
+
+              <!-- Distance-ranked store list (radiogroup) -->
+              <div id="store-list" role="radiogroup" aria-label="Select a collection store" class="space-y-2.5"></div>
+              <p id="store-empty" hidden class="text-sm text-muted py-6 text-center">No stores match that search. Try a postcode or city name.</p>
+            </div>
+          </section>
+
+          <!-- ══════ 3 · SHIPPING OPTIONS (Flow A) ══════ -->
+          <section class="block is-locked" data-block="shipping" data-flow="delivery">
+            <div class="block-head">
+              <span class="block-num"><span class="num">3</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Shipping options</h2>
+            </div>
+            <div class="block-body">
+              <!-- Locked placeholder until a valid address exists -->
+              <div id="shipping-locked" class="flex items-center gap-2.5 text-sm text-muted rounded-xl border border-dashed border-hair bg-panel p-4">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                Enter your delivery address to see shipping options.
+              </div>
+              <div id="shipping-list" role="radiogroup" aria-label="Select a shipping method" class="space-y-2.5" hidden></div>
+            </div>
+          </section>
+
+          <!-- ══════ 3 · COLLECTOR DETAILS (Flow B) ══════ -->
+          <section class="block" data-block="collector" data-flow="collect" hidden>
+            <div class="block-head">
+              <span class="block-num"><span class="num">3</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Collector details</h2>
+            </div>
+            <div class="block-body space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="label" for="c-first">First name</label>
+                  <input class="field" id="c-first" name="given-name" type="text" autocomplete="given-name" placeholder="Jordan" data-validate="required" aria-describedby="c-first-err" />
+                  <p class="err-msg" id="c-first-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+                <div>
+                  <label class="label" for="c-last">Last name</label>
+                  <input class="field" id="c-last" name="family-name" type="text" autocomplete="family-name" placeholder="Avery" data-validate="required" aria-describedby="c-last-err" />
+                  <p class="err-msg" id="c-last-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                </div>
+              </div>
+              <div>
+                <label class="label" for="c-phone">Mobile number</label>
+                <input class="field" id="c-phone" name="tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="07700 900000" data-validate="phone" aria-describedby="c-phone-err" />
+                <p class="err-msg" id="c-phone-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                <p class="text-xs text-muted mt-2">We'll text you when your order is ready to collect.</p>
+              </div>
+
+              <!-- Someone else is collecting -->
+              <div class="rounded-xl border border-hair p-3.5">
+                <label class="flex items-center justify-between gap-3 cursor-pointer">
+                  <span class="text-sm text-ink font-medium">Someone else is collecting</span>
+                  <span class="relative inline-flex">
+                    <input type="checkbox" id="alt-collector" class="sr-only peer" />
+                    <span class="w-10 h-6 rounded-full bg-hair peer-checked:bg-accent transition-colors"></span>
+                    <span class="absolute left-0.5 top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4"></span>
+                  </span>
+                </label>
+                <div id="alt-fields" hidden class="mt-3.5 pt-3.5 border-t border-hair reveal">
+                  <label class="label" for="alt-name">Collector's full name</label>
+                  <input class="field" id="alt-name" type="text" autocomplete="name" placeholder="Name of the person collecting" data-validate="required" aria-describedby="alt-name-err" />
+                  <p class="err-msg" id="alt-name-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+                  <p class="text-xs text-muted mt-2 flex items-start gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="mt-0.5 flex-none"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M14 9h4M14 13h4M5 16c1-1.5 2.5-2 4-2s3 .5 4 2"/></svg>They'll need photo ID matching this name to collect.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ══════ 4 · PAYMENT ══════ -->
+          <section class="block" data-block="payment">
+            <div class="block-head">
+              <span class="block-num"><span class="num">4</span><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+              <h2 class="block-title">Payment</h2>
+            </div>
+            <div class="block-body">
+              <div class="flex items-center justify-between mb-3">
+                <span class="flex items-center gap-2 text-sm text-body">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                  Secure checkout — encrypted, never stored
+                </span>
+                <!-- Card network marks (placeholders) -->
+                <span class="flex items-center gap-1.5" aria-hidden="true">
+                  <span class="h-5 px-1.5 rounded border border-hair grid place-items-center text-[9px] font-bold italic tracking-tight" style="color:#1A1F71">VISA</span>
+                  <span class="h-5 w-7 rounded border border-hair relative grid place-items-center"><span class="absolute w-2.5 h-2.5 rounded-full left-1.5" style="background:#EB001B"></span><span class="absolute w-2.5 h-2.5 rounded-full right-1.5" style="background:#F79E1B;mix-blend-mode:multiply"></span></span>
+                  <span class="h-5 px-1.5 rounded grid place-items-center text-[8px] font-bold text-white" style="background:#2E77BC">AMEX</span>
+                </span>
+              </div>
+
+              <!-- ░░ STRIPE ELEMENTS SWAP POINT ░░
+                   Replace the inputs inside #card-block with a mounted
+                   Stripe Card/Payment Element. Keep the wrapper styling so
+                   the Element inherits the Quiet Utility look. -->
+              <div id="card-block" class="rounded-xl border border-hair bg-surface overflow-hidden">
+                <div class="relative border-b border-hair">
+                  <label class="sr-only" for="card-number">Card number</label>
+                  <input class="field border-0 rounded-none pr-12" id="card-number" inputmode="numeric" autocomplete="cc-number" placeholder="Card number" data-validate="card" aria-describedby="card-err" />
+                  <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </div>
+                <div class="grid grid-cols-2">
+                  <div class="border-r border-hair">
+                    <label class="sr-only" for="card-exp">Expiry date</label>
+                    <input class="field border-0 rounded-none" id="card-exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" data-validate="exp" aria-describedby="card-err" />
+                  </div>
+                  <div class="relative">
+                    <label class="sr-only" for="card-cvc">Security code</label>
+                    <input class="field border-0 rounded-none pr-10" id="card-cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC" data-validate="cvc" aria-describedby="card-err" />
+                    <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15h4"/></svg>
+                  </div>
+                </div>
+              </div>
+              <p class="err-msg" id="card-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+
+              <div class="mt-4">
+                <label class="label" for="name-on-card">Name on card</label>
+                <input class="field" id="name-on-card" autocomplete="cc-name" placeholder="As shown on the card" data-validate="required" aria-describedby="name-on-card-err" />
+                <p class="err-msg" id="name-on-card-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ══════ PRIMARY CTA ══════ -->
+          <button type="submit" id="pay-btn" class="btn-accent w-full h-14 text-[16px] flex items-center justify-center gap-2.5 desktop-only">
+            <svg class="lock" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <span class="cta-label">Make payment · <span class="tnum" data-total>£289.00</span></span>
+          </button>
+          <p class="text-xs text-muted text-center mt-3 desktop-only flex items-center justify-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m5 13 4 4L19 7"/></svg>
+            By paying you agree to our Terms &amp; Refund policy.
+          </p>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- ══════════════════ RIGHT · ORDER SUMMARY ══════════════════ -->
+    <aside class="desktop-only" aria-label="Order summary">
+      <div class="summary-wrap pt-1">
+        <div class="summary rounded-2xl border border-hair p-5" id="summary-card"></div>
+        <!-- trust strip -->
+        <div class="flex items-center justify-center gap-5 mt-4 text-muted">
+          <span class="flex items-center gap-1.5 text-xs"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>SSL encrypted</span>
+          <span class="flex items-center gap-1.5 text-xs"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/></svg>Buyer protection</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- ░░ MOBILE: sticky bottom pay bar ░░ -->
+<div class="mobile-only fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur border-t border-hair px-5 py-3" style="padding-bottom:max(12px,env(safe-area-inset-bottom))">
+  <button type="button" id="m-pay-btn" class="btn-accent w-full h-13 py-3.5 flex items-center justify-center gap-2.5">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    <span class="font-semibold">Make payment · <span class="tnum" data-total>£289.00</span></span>
+  </button>
+</div>
+
+<!-- ░░ Success overlay (mock confirmation) ░░ -->
+<div id="success" hidden class="fixed inset-0 z-50 grid place-items-center bg-ink/40 backdrop-blur-sm px-6">
+  <div class="bg-surface rounded-2xl border border-hair p-8 max-w-sm w-full text-center reveal">
+    <span class="grid place-items-center w-14 h-14 rounded-full mx-auto mb-4" style="background:var(--ok)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+    <h2 class="text-xl font-semibold tracking-tight mb-1.5">Payment confirmed</h2>
+    <p class="text-sm text-body" id="success-msg">Thanks — a receipt is on its way to your inbox.</p>
+    <button type="button" id="success-close" class="btn-ghost w-full h-11 mt-6">Done</button>
+  </div>
+</div>
+
+<!-- Live region for status announcements (a11y) -->
+<div aria-live="polite" class="sr-only" id="live"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   STATE  ·  single source of truth (maps to a Vue reactive store)
+   ════════════════════════════════════════════════════════════════════ */
+const fmt = (pence) => '£' + (pence/100).toLocaleString('en-GB',{minimumFractionDigits:2, maximumFractionDigits:2});
+
+const state = {
+  fulfilment: 'delivery',            // 'delivery' | 'collect'
+  items: [
+    { id:'knit',   title:'Merino Crew Knit',   variant:'Charcoal · M',  qty:1, price:12800, icon:'knit' },
+    { id:'oxford', title:'Cotton Oxford Shirt', variant:'White · M',     qty:2, price:5800,  icon:'shirt' },
+    { id:'card',   title:'Leather Card Holder', variant:'Tan',           qty:1, price:4500,  icon:'wallet' },
+  ],
+  shippingId: 'standard',            // selected delivery method
+  store: null,                       // selected store object (collect)
+  addressValid: false,
+  discount: null,                    // { code, pct }
+  VAT_RATE: 0.20,                    // UK VAT, inclusive
+};
+
+/* Shipping methods. ETA computed live from today so dates stay real. */
+const shippingMethods = [
+  { id:'standard', name:'Standard Delivery', sub:'Free over £50', price:0,    etaMin:3, etaMax:5 },
+  { id:'express',  name:'Express Delivery',  sub:'Skip the queue', price:695,  etaMin:1, etaMax:1 },
+  { id:'nominated',name:'Nominated Day',     sub:'Pick a weekday', price:495,  etaMin:2, etaMax:4 },
+];
+
+/* Stores (collect). Distance-ranked; stock + lead time per store. */
+const allStores = [
+  { id:'covent',    name:'Covent Garden',       addr:'21 Long Acre, WC2E 9LD',     dist:0.8, stock:'in',  lead:'~2 hrs', hours:'Mon–Sat 10–8 · Sun 12–6' },
+  { id:'shoreditch',name:'Shoreditch',          addr:'48 Redchurch St, E2 7DP',    dist:2.3, stock:'low', lead:'~3 hrs', hours:'Mon–Sat 10–7 · Sun 11–5' },
+  { id:'stratford', name:'Westfield Stratford', addr:'Montfichet Rd, E20 1EJ',     dist:4.1, stock:'in',  lead:'~2 hrs', hours:'Mon–Sun 10–9' },
+  { id:'kingston',  name:'Kingston',            addr:'17 Clarence St, KT1 1NP',    dist:9.7, stock:'out', lead:'—',      hours:'Mon–Sat 9–6 · Sun 11–5' },
+];
+
+/* Mock address autocomplete index */
+const addressIndex = [
+  { line1:'12 Marchmont Street',   city:'London',  postcode:'WC1N 1AB' },
+  { line1:'8 Lavender Hill',       city:'London',  postcode:'SW11 5RW' },
+  { line1:'140 Old Street',        city:'London',  postcode:'EC1V 9BD' },
+  { line1:'27 Bold Street',        city:'Liverpool', postcode:'L1 4DN' },
+  { line1:'45 Gloucester Road',    city:'Bristol', postcode:'BS7 8AE' },
+  { line1:'3 King’s Parade',       city:'Cambridge', postcode:'CB2 1SJ' },
+  { line1:'92 Deansgate',          city:'Manchester', postcode:'M3 2QG' },
+];
+
+const VALID_CODES = { 'WELCOME10': 10, 'SAVE15': 15 };   // mock discount codes
+
+/* ════════════════════════════════════════════════════════════════════
+   DATE HELPERS  ·  business-day ETAs
+   ════════════════════════════════════════════════════════════════════ */
+function addBusinessDays(date, n){
+  const d = new Date(date);
+  let added = 0;
+  while(added < n){ d.setDate(d.getDate()+1); const day=d.getDay(); if(day!==0 && day!==6) added++; }
+  return d;
+}
+function fmtDay(d){
+  return d.toLocaleDateString('en-GB',{ weekday:'short', day:'numeric', month:'short' });
+}
+function etaLabel(m){
+  const now = new Date();
+  if(m.etaMin === m.etaMax){
+    const d = addBusinessDays(now, m.etaMin);
+    return (m.id==='express' && m.etaMin===1) ? 'Tomorrow, ' + fmtDay(d) : fmtDay(d);
+  }
+  return fmtDay(addBusinessDays(now,m.etaMin)) + ' – ' + fmtDay(addBusinessDays(now,m.etaMax));
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PRICING  ·  recompute() derives every figure from state
+   ════════════════════════════════════════════════════════════════════ */
+function getShipping(){ return shippingMethods.find(m=>m.id===state.shippingId); }
+function calc(){
+  const subtotal = state.items.reduce((s,i)=> s + i.price*i.qty, 0);
+  const shipping = state.fulfilment==='collect' ? 0 : (getShipping()?.price ?? 0);
+  const discount = state.discount ? Math.round(subtotal * state.discount.pct/100) : 0;
+  const total = Math.max(0, subtotal + shipping - discount);
+  const vat = Math.round(total * state.VAT_RATE / (1+state.VAT_RATE)); // VAT portion of an inclusive total
+  return { subtotal, shipping, discount, total, vat };
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PRODUCT THUMBNAIL PLACEHOLDERS (monochrome line glyphs)
+   ════════════════════════════════════════════════════════════════════ */
+const glyphs = {
+  knit:  '<path d="M16 18h32l-4 8v22a2 2 0 0 1-2 2H22a2 2 0 0 1-2-2V26l-4-8Z"/><path d="M24 18l8 6 8-6"/>',
+  shirt: '<path d="M22 16l10 5 10-5 6 6-6 6v18H22V28l-6-6 6-6Z"/>',
+  wallet:'<rect x="16" y="20" width="32" height="24" rx="3"/><path d="M16 28h32"/><circle cx="40" cy="36" r="2.5"/>',
+};
+function thumb(icon){
+  return `<span class="flex-none w-14 h-14 rounded-lg border border-hair grid place-items-center" style="background:var(--panel)">
+    <svg width="34" height="34" viewBox="0 0 64 64" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linejoin="round">${glyphs[icon]||glyphs.knit}</svg>
+  </span>`;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SUMMARY RENDER  (shared markup → desktop card + mobile panel)
+   ════════════════════════════════════════════════════════════════════ */
+function summaryHTML(){
+  const c = calc();
+  const itemCount = state.items.reduce((s,i)=>s+i.qty,0);
+
+  // Collecting-from block (collect flow, store chosen)
+  let collectBlock = '';
+  if(state.fulfilment==='collect' && state.store){
+    const s = state.store;
+    collectBlock = `
+      <div class="flex items-start gap-3 rounded-xl border border-hair p-3.5 mb-4" style="background:var(--panel)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" class="mt-0.5 flex-none"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <div class="min-w-0 flex-1">
+          <p class="eyebrow mb-0.5">Collecting from</p>
+          <p class="text-sm font-semibold text-ink">${s.name}</p>
+          <p class="text-xs text-body">${s.addr} · ${s.dist} mi</p>
+          <p class="text-xs text-ok mt-0.5">Ready ${s.lead}</p>
+        </div>
+        <button type="button" class="text-xs link-accent flex-none" data-change-store>Change</button>
+      </div>`;
+  }
+
+  // Line items
+  const lines = state.items.map(i=>`
+    <li class="flex gap-3 py-3 border-b border-hair last:border-0">
+      <div class="relative">${thumb(i.icon)}
+        <span class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-ink text-white text-[11px] font-semibold inline-flex items-center justify-center tnum">${i.qty}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-ink leading-snug">${i.title}</p>
+        <p class="text-xs text-muted mt-0.5">${i.variant}</p>
+      </div>
+      <p class="text-sm font-medium tnum text-ink whitespace-nowrap">${fmt(i.price*i.qty)}</p>
+    </li>`).join('');
+
+  // Discount row (collapsed link → expands)
+  const discountRow = state.discount ? `
+    <div class="flex items-center justify-between text-sm">
+      <span class="flex items-center gap-2 text-ok font-medium">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12 11 14 15 9"/><circle cx="12" cy="12" r="9"/></svg>
+        ${state.discount.code} (−${state.discount.pct}%)
+        <button type="button" class="text-muted hover:text-ink underline ml-1" data-remove-discount>remove</button>
+      </span>
+      <span class="text-ok font-medium tnum">−${fmt(c.discount)}</span>
+    </div>` : '';
+
+  // Shipping / collection line label
+  const shipLabel = state.fulfilment==='collect'
+    ? 'Collection'
+    : (getShipping()?.name || 'Shipping');
+  const shipValue = (state.fulfilment==='collect' || c.shipping===0)
+    ? '<span class="pill pill-free">Free</span>'
+    : `<span class="tnum text-ink">${fmt(c.shipping)}</span>`;
+
+  return `
+    ${collectBlock}
+    <div class="flex items-center justify-between mb-1">
+      <h2 class="text-base font-semibold tracking-tight">Order summary</h2>
+      <span class="text-xs text-muted">${itemCount} item${itemCount!==1?'s':''}</span>
+    </div>
+    <ul class="mb-1">${lines}</ul>
+
+    <!-- Discount: low-emphasis collapsed link (no prominent coupon box) -->
+    <div class="py-3 border-b border-hair">
+      <button type="button" id="discount-toggle" class="text-sm text-body hover:text-ink inline-flex items-center gap-1.5 focusable" ${state.discount?'hidden':''} aria-expanded="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14"/></svg>
+        Have a discount code?
+      </button>
+      <div id="discount-form" hidden class="flex gap-2 mt-1">
+        <input class="field h-10 text-sm flex-1" id="discount-input" placeholder="Enter code" aria-label="Discount code" aria-describedby="discount-err" />
+        <button type="button" id="discount-apply" class="btn-ghost px-4 text-sm font-medium">Apply</button>
+      </div>
+      <p class="err-msg" id="discount-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></p>
+      ${discountRow}
+    </div>
+
+    <!-- Breakdown — all costs visible before payment -->
+    <div class="space-y-2.5 pt-4 text-sm">
+      <div class="flex items-center justify-between"><span class="text-body">Subtotal</span><span class="tnum text-ink">${fmt(c.subtotal)}</span></div>
+      <div class="flex items-center justify-between"><span class="text-body">${shipLabel}</span>${shipValue}</div>
+      <div class="flex items-center justify-between"><span class="text-body">VAT (20%, incl.)</span><span class="tnum text-muted">${fmt(c.vat)}</span></div>
+      <div class="flex items-center justify-between pt-3 mt-1 border-t border-hair">
+        <span class="text-base font-semibold text-ink">Total</span>
+        <span class="text-lg font-semibold tnum text-ink">${fmt(c.total)}</span>
+      </div>
+      <p class="text-xs text-muted pt-0.5">Includes ${fmt(c.vat)} VAT. No surprise charges at checkout.</p>
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SHIPPING + STORE LIST RENDER
+   ════════════════════════════════════════════════════════════════════ */
+function renderShipping(){
+  const list = document.getElementById('shipping-list');
+  list.innerHTML = shippingMethods.map((m,idx)=>{
+    const checked = m.id===state.shippingId;
+    const price = m.price===0 ? '<span class="pill pill-free">Free</span>' : `<span class="text-sm font-medium tnum text-ink">${fmt(m.price)}</span>`;
+    return `<div class="pick" role="radio" tabindex="${checked?0:-1}" aria-checked="${checked}" data-ship="${m.id}">
+      <span class="radio-dot"></span>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm font-medium text-ink">${m.name}</span>${price}
+        </div>
+        <p class="text-xs text-body mt-0.5">${etaLabel(m)}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function stockPill(stock){
+  if(stock==='in')  return '<span class="pill pill-in"><span class="pill-dot" style="background:var(--ok)"></span>In stock</span>';
+  if(stock==='low') return '<span class="pill pill-low"><span class="pill-dot" style="background:var(--warn)"></span>Low stock</span>';
+  return '<span class="pill pill-out"><span class="pill-dot" style="background:var(--muted)"></span>Out of stock</span>';
+}
+function renderStores(stores){
+  const wrap = document.getElementById('store-list');
+  const empty = document.getElementById('store-empty');
+  empty.hidden = stores.length>0;
+  wrap.innerHTML = stores.map((s)=>{
+    const out = s.stock==='out';
+    const checked = state.store && state.store.id===s.id;
+    return `<div class="pick" role="radio" tabindex="${checked?0:-1}" aria-checked="${checked}" aria-disabled="${out}" data-store="${s.id}">
+      <span class="radio-dot"></span>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm font-medium text-ink">${s.name}</span>
+          <span class="text-xs text-muted whitespace-nowrap tnum">${s.dist} mi</span>
+        </div>
+        <p class="text-xs text-body mt-0.5">${s.addr}</p>
+        <p class="text-xs text-muted mt-0.5">${s.hours}</p>
+        <div class="flex items-center gap-2.5 mt-2">
+          ${stockPill(s.stock)}
+          ${out ? '' : `<span class="text-xs text-ok flex items-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Ready ${s.lead}</span>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   MASTER RENDER
+   ════════════════════════════════════════════════════════════════════ */
+function render(){
+  // summary (desktop + mobile)
+  document.getElementById('summary-card').innerHTML = summaryHTML();
+  document.getElementById('m-summary-panel').innerHTML = summaryHTML();
+  // totals on CTAs + mobile bar
+  const c = calc();
+  document.querySelectorAll('[data-total]').forEach(el=> el.textContent = fmt(c.total));
+  document.getElementById('m-total').textContent = fmt(c.total);
+  const itemCount = state.items.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('m-count').textContent = itemCount + (itemCount!==1?' items':' item');
+  wireSummary();
+  updateCompletion();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VALIDATION  ·  on blur; re-validate live once in error; preserves value
+   ════════════════════════════════════════════════════════════════════ */
+const validators = {
+  email:   v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || 'Enter a valid email address.',
+  required:v => v.trim().length>0 || 'This field is required.',
+  postcode:v => /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(v.trim()) || 'Enter a valid UK postcode.',
+  phone:   v => /^[\d\s+()-]{7,}$/.test(v.trim()) || 'Enter a valid phone number.',
+  card:    v => v.replace(/\s/g,'').length>=15 && /^\d+$/.test(v.replace(/\s/g,'')) || 'Enter a valid card number.',
+  exp:     v => /^(0[1-9]|1[0-2])\s*\/\s*\d{2}$/.test(v.trim()) || 'Use MM / YY.',
+  cvc:     v => /^\d{3,4}$/.test(v.trim()) || 'CVC must be 3–4 digits.',
+};
+function fieldError(input){
+  const rule = input.dataset.validate;
+  if(!rule) return true;
+  // skip hidden / disabled fields
+  if(input.disabled || input.closest('[hidden]')) return true;
+  const res = validators[rule] ? validators[rule](input.value) : true;
+  return res===true ? true : res;
+}
+function showError(input, msg){
+  const err = document.getElementById(input.getAttribute('aria-describedby'));
+  input.setAttribute('aria-invalid','true');
+  if(err){ err.querySelector('span').textContent = msg; err.classList.add('show'); }
+}
+function clearError(input){
+  const err = document.getElementById(input.getAttribute('aria-describedby'));
+  input.removeAttribute('aria-invalid');
+  if(err){ err.classList.remove('show'); }
+}
+function validateField(input){
+  const res = fieldError(input);
+  if(res===true){ clearError(input); return true; }
+  showError(input, res); return false;
+}
+// Wire blur validation + live re-validation once errored
+document.querySelectorAll('[data-validate]').forEach(input=>{
+  input.addEventListener('blur', ()=> validateField(input));
+  input.addEventListener('input', ()=>{ if(input.getAttribute('aria-invalid')==='true') validateField(input); });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION COMPLETION TICKS
+   ════════════════════════════════════════════════════════════════════ */
+function isVisible(el){ return el && !el.closest('[hidden]') && !el.hidden; }
+function setDone(block, done){
+  const el = document.querySelector(`[data-block="${block}"]`);
+  if(el) el.classList.toggle('is-done', !!done);
+}
+function updateCompletion(){
+  // Contact
+  const email = document.getElementById('email');
+  setDone('contact', validators.email(email.value)===true);
+  // Address (delivery)
+  const addrDone = ['line1','city','postcode'].every(id=>{
+    const f=document.getElementById(id); return f.value.trim() && fieldError(f)===true;
+  }) && document.getElementById('full-name').value.trim();
+  setDone('address', addrDone);
+  state.addressValid = !!addrDone;
+  // Shipping unlock follows address validity
+  toggleShippingLock();
+  setDone('shipping', state.addressValid && !!state.shippingId);
+  // Store
+  setDone('store', !!state.store);
+  // Collector
+  const colDone = ['c-first','c-last','c-phone'].every(id=>{const f=document.getElementById(id); return f.value.trim() && fieldError(f)===true;});
+  setDone('collector', colDone);
+  // Payment
+  const payDone = ['card-number','card-exp','card-cvc','name-on-card'].every(id=>{const f=document.getElementById(id); return f.value.trim() && fieldError(f)===true;});
+  setDone('payment', payDone);
+}
+
+/* Shipping reveals only after a valid address exists (Flow A) */
+function toggleShippingLock(){
+  const block = document.querySelector('[data-block="shipping"]');
+  const locked = document.getElementById('shipping-locked');
+  const list = document.getElementById('shipping-list');
+  if(state.addressValid){
+    block.classList.remove('is-locked');
+    if(locked.hidden===false){ locked.hidden = true; list.hidden = false; list.classList.add('reveal'); renderShipping(); }
+  } else {
+    block.classList.add('is-locked');
+    locked.hidden = false; list.hidden = true;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FLOW TOGGLE  (Deliver ⇄ Click & Collect)
+   ════════════════════════════════════════════════════════════════════ */
+function setFlow(flow){
+  state.fulfilment = flow;
+  const seg = document.getElementById('fulfilment-seg');
+  seg.dataset.active = flow;
+  seg.querySelectorAll('.seg-btn').forEach(b=> b.setAttribute('aria-selected', b.dataset.flow===flow));
+  // Swap sections
+  document.querySelectorAll('[data-flow]').forEach(el=>{
+    if(el.classList.contains('seg-btn')) return;
+    el.hidden = el.dataset.flow !== flow;
+  });
+  render();
+}
+document.querySelectorAll('#fulfilment-seg .seg-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> setFlow(btn.dataset.flow));
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   CONTACT · passwordless OTC
+   ════════════════════════════════════════════════════════════════════ */
+const emailInput = document.getElementById('email');
+const returning = document.getElementById('returning');
+emailInput.addEventListener('blur', ()=>{
+  // Mock "recognised account": any valid email surfaces the (non-blocking) offer.
+  const valid = validators.email(emailInput.value)===true;
+  const alreadySignedIn = !document.getElementById('signed-in').hidden;
+  if(valid && !alreadySignedIn){
+    returning.hidden = false;            // show passwordless offer (dismissible)
+  } else if(!valid){
+    returning.hidden = true;             // hide while email is incomplete/invalid
+  }
+  updateCompletion();
+});
+document.getElementById('dismiss-returning').addEventListener('click', ()=> returning.hidden = true);
+document.getElementById('send-code').addEventListener('click', ()=>{
+  document.getElementById('returning-offer').hidden = true;
+  const wrap = document.getElementById('otc-wrap');
+  wrap.hidden = false;
+  document.getElementById('otc-email').textContent = emailInput.value;
+  document.querySelector('#otc input').focus();
+  announce('We emailed a 6-digit code to ' + emailInput.value);
+});
+document.getElementById('otc-cancel').addEventListener('click', ()=>{
+  document.getElementById('otc-wrap').hidden = true;
+  document.getElementById('returning-offer').hidden = false;
+  clearOTC();
+});
+document.getElementById('otc-resend').addEventListener('click', ()=> announce('A new code is on its way.'));
+
+// OTC: auto-advance, backspace-to-previous, paste support
+const otc = [...document.querySelectorAll('#otc input')];
+function clearOTC(){ otc.forEach(i=>i.value=''); }
+function checkOTC(){
+  const code = otc.map(i=>i.value).join('');
+  if(code.length===6){
+    // Mock acceptance of any 6 digits
+    document.getElementById('otc-wrap').hidden = true;
+    document.getElementById('signed-in').hidden = false;
+    announce('Signed in successfully.');
+  }
+}
+otc.forEach((box,i)=>{
+  box.addEventListener('input', e=>{
+    box.value = box.value.replace(/\D/g,'').slice(0,1);
+    if(box.value && i<otc.length-1) otc[i+1].focus();
+    checkOTC();
+  });
+  box.addEventListener('keydown', e=>{
+    if(e.key==='Backspace' && !box.value && i>0){ otc[i-1].focus(); otc[i-1].value=''; }
+    if(e.key==='ArrowLeft' && i>0) otc[i-1].focus();
+    if(e.key==='ArrowRight' && i<otc.length-1) otc[i+1].focus();
+  });
+  box.addEventListener('paste', e=>{
+    e.preventDefault();
+    const digits = (e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6).split('');
+    digits.forEach((d,k)=>{ if(otc[k]) otc[k].value=d; });
+    (otc[Math.min(digits.length,5)]||otc[5]).focus();
+    checkOTC();
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   ADDRESS · autocomplete + manual escape + country toggle
+   ════════════════════════════════════════════════════════════════════ */
+const addrSearch = document.getElementById('addr-search');
+const addrResults = document.getElementById('addr-results');
+const addrFields = document.getElementById('addr-fields');
+
+function showAddrFields(reveal){
+  addrFields.hidden = false;
+  if(reveal) addrFields.classList.add('reveal');
+}
+addrSearch.addEventListener('input', ()=>{
+  const q = addrSearch.value.trim().toLowerCase();
+  if(q.length<2){ addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false'); return; }
+  const matches = addressIndex.filter(a=>
+    (a.line1+' '+a.city+' '+a.postcode).toLowerCase().includes(q)
+  ).slice(0,5);
+  if(!matches.length){ addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false'); return; }
+  addrResults.innerHTML = matches.map((a,i)=>`
+    <li role="option" tabindex="-1" data-idx="${addressIndex.indexOf(a)}" class="px-3.5 py-2.5 hover:bg-panel cursor-pointer flex items-start gap-2.5">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.7" class="mt-0.5 flex-none"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span><span class="text-sm text-ink">${a.line1}</span><span class="text-xs text-muted block">${a.city}, ${a.postcode}</span></span>
+    </li>`).join('');
+  addrResults.hidden=false; addrSearch.setAttribute('aria-expanded','true');
+});
+addrResults.addEventListener('click', e=>{
+  const li = e.target.closest('[data-idx]'); if(!li) return;
+  const a = addressIndex[+li.dataset.idx];
+  document.getElementById('line1').value = a.line1;
+  document.getElementById('city').value = a.city;
+  document.getElementById('postcode').value = a.postcode;
+  addrResults.hidden=true; addrSearch.setAttribute('aria-expanded','false');
+  showAddrFields(true);
+  document.getElementById('addr-selected-banner').hidden = false;
+  if(!document.getElementById('full-name').value) document.getElementById('full-name').focus();
+  updateCompletion();
+});
+document.addEventListener('click', e=>{ if(!e.target.closest('#addr-search-wrap')) addrResults.hidden=true; });
+
+// Persistent manual escape hatch
+document.getElementById('addr-manual-toggle').addEventListener('click', ()=>{
+  showAddrFields(true);
+  document.getElementById('addr-selected-banner').hidden = true;
+  document.getElementById('full-name').focus();
+});
+// Country reveal
+document.getElementById('country-toggle').addEventListener('click', ()=>{
+  const sel = document.getElementById('country');
+  sel.hidden = !sel.hidden;
+  if(!sel.hidden) sel.focus();
+});
+document.getElementById('country').addEventListener('change', e=>{
+  document.getElementById('country-label').textContent = e.target.selectedOptions[0].textContent;
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   GENERIC RADIOGROUP a11y  (roving tabindex + arrow keys)
+   Works for #shipping-list and #store-list
+   ════════════════════════════════════════════════════════════════════ */
+function wireRadiogroup(groupEl, onSelect){
+  groupEl.addEventListener('click', e=>{
+    const pick = e.target.closest('[role="radio"]'); if(!pick) return;
+    if(pick.getAttribute('aria-disabled')==='true') return;
+    onSelect(pick);
+  });
+  groupEl.addEventListener('keydown', e=>{
+    const radios = [...groupEl.querySelectorAll('[role="radio"]:not([aria-disabled="true"])')];
+    const cur = document.activeElement.closest('[role="radio"]');
+    let idx = radios.indexOf(cur);
+    if(['ArrowDown','ArrowRight'].includes(e.key)){ e.preventDefault(); idx=(idx+1)%radios.length; radios[idx].focus(); }
+    else if(['ArrowUp','ArrowLeft'].includes(e.key)){ e.preventDefault(); idx=(idx-1+radios.length)%radios.length; radios[idx].focus(); }
+    else if([' ','Enter'].includes(e.key)){ e.preventDefault(); if(cur) onSelect(cur); }
+  });
+}
+wireRadiogroup(document.getElementById('shipping-list'), pick=>{
+  state.shippingId = pick.dataset.ship;
+  renderShipping();
+  // keep focus on the newly-selected card
+  const sel = document.querySelector(`[data-ship="${state.shippingId}"]`); sel && sel.focus();
+  render();
+  announce(getShipping().name + ' selected, ' + (getShipping().price===0?'free':fmt(getShipping().price)));
+});
+wireRadiogroup(document.getElementById('store-list'), pick=>{
+  const s = allStores.find(x=>x.id===pick.dataset.store);
+  state.store = s;
+  renderStores(currentStoreList());
+  const sel = document.querySelector(`[data-store="${s.id}"]`); sel && sel.focus();
+  render();
+  announce(s.name + ' selected for collection.');
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   STORE SEARCH + USE MY LOCATION
+   ════════════════════════════════════════════════════════════════════ */
+let storeOrder = [...allStores].sort((a,b)=>a.dist-b.dist);
+function currentStoreList(){
+  const q = document.getElementById('store-search').value.trim().toLowerCase();
+  if(!q) return storeOrder;
+  return storeOrder.filter(s=> (s.name+' '+s.addr).toLowerCase().includes(q));
+}
+document.getElementById('store-search').addEventListener('input', ()=> renderStores(currentStoreList()));
+document.getElementById('use-location').addEventListener('click', ()=>{
+  // Mock geolocation: jitter distances then re-rank
+  storeOrder = [...allStores].map(s=>({...s, dist:+(Math.max(0.3, s.dist*(0.5+Math.random())) ).toFixed(1)}))
+                             .sort((a,b)=>a.dist-b.dist);
+  document.getElementById('store-search').value='';
+  renderStores(storeOrder);
+  announce('Stores re-ordered by distance from your location.');
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   COLLECTOR · alternate collector toggle
+   ════════════════════════════════════════════════════════════════════ */
+document.getElementById('alt-collector').addEventListener('change', e=>{
+  document.getElementById('alt-fields').hidden = !e.target.checked;
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   SUMMARY interactions (delegated; re-wired each render)
+   ════════════════════════════════════════════════════════════════════ */
+function wireSummary(){
+  document.querySelectorAll('#discount-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const form = btn.parentElement.querySelector('#discount-form');
+      form.hidden = false; btn.hidden = true;
+      form.querySelector('input').focus();
+    });
+  });
+  document.querySelectorAll('#discount-apply').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyDiscount(btn));
+  });
+  document.querySelectorAll('#discount-input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); applyDiscount(inp); } });
+  });
+  document.querySelectorAll('[data-remove-discount]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ state.discount=null; render(); announce('Discount removed.'); });
+  });
+  document.querySelectorAll('[data-change-store]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelector('[data-block="store"] #store-search')?.focus();
+      announce('Choose a different store above.');
+    });
+  });
+}
+function applyDiscount(fromEl){
+  const scope = fromEl.closest('#discount-form') || fromEl.parentElement;
+  const input = scope.querySelector('#discount-input');
+  const errEl = scope.parentElement.querySelector('#discount-err');
+  const code = (input.value||'').trim().toUpperCase();
+  if(VALID_CODES[code]){
+    state.discount = { code, pct: VALID_CODES[code] };
+    render();
+    announce(`Code ${code} applied — you saved ${VALID_CODES[code]}%.`);
+  } else {
+    input.setAttribute('aria-invalid','true');
+    errEl.querySelector('span').textContent = 'That code isn’t valid or has expired.';
+    errEl.classList.add('show');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   MOBILE summary accordion
+   ════════════════════════════════════════════════════════════════════ */
+const mToggle = document.getElementById('m-summary-toggle');
+mToggle.addEventListener('click', ()=>{
+  const panel = document.getElementById('m-summary-panel');
+  const open = panel.hidden;
+  panel.hidden = !open;
+  mToggle.setAttribute('aria-expanded', open);
+  document.getElementById('m-chev').style.transform = open?'rotate(180deg)':'';
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   SUBMIT  ·  validate all visible → focus first error → mock pay
+   ════════════════════════════════════════════════════════════════════ */
+function submitCheckout(triggerBtn){
+  // Collect visible, enabled, required/validated fields
+  const fields = [...document.querySelectorAll('[data-validate]')].filter(f=> !f.disabled && !f.closest('[hidden]'));
+  let firstError = null;
+  fields.forEach(f=>{ if(!validateField(f) && !firstError) firstError = f; });
+
+  // Flow-specific gates
+  if(state.fulfilment==='delivery' && !state.shippingId) { /* default exists */ }
+  if(state.fulfilment==='collect' && !state.store){
+    announce('Please choose a collection store.');
+    if(!firstError){ document.getElementById('store-search').focus(); return; }
+  }
+  if(firstError){
+    firstError.focus();
+    announce('Please fix the highlighted field.');
+    return;
+  }
+  // Mock payment: loading → success
+  const btns = document.querySelectorAll('#pay-btn, #m-pay-btn');
+  btns.forEach(b=>{ b.disabled=true; });
+  triggerBtn.dataset.prev = triggerBtn.innerHTML;
+  triggerBtn.innerHTML = '<svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round"/></svg><span>Processing…</span>';
+  setTimeout(()=>{
+    const c = calc();
+    const msg = state.fulfilment==='collect'
+      ? `We'll text you when your order is ready to collect from ${state.store?state.store.name:'your store'}.`
+      : `Thanks — a receipt is on its way to your inbox.`;
+    document.getElementById('success-msg').textContent = msg;
+    document.getElementById('success').hidden = false;
+    btns.forEach(b=>{ b.disabled=false; });
+    if(triggerBtn.dataset.prev) triggerBtn.innerHTML = triggerBtn.dataset.prev;
+  }, 1500);
+}
+document.getElementById('checkout-form').addEventListener('submit', e=>{ e.preventDefault(); submitCheckout(document.getElementById('pay-btn')); });
+document.getElementById('m-pay-btn').addEventListener('click', ()=> submitCheckout(document.getElementById('m-pay-btn')));
+document.getElementById('success-close').addEventListener('click', ()=> document.getElementById('success').hidden = true);
+
+/* a11y live announcements */
+function announce(msg){ const l=document.getElementById('live'); l.textContent=''; setTimeout(()=> l.textContent=msg, 30); }
+
+/* ════════════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════════════ */
+renderShipping();
+renderStores(storeOrder);
+render();
+// re-check completion as the user fills fields
+document.getElementById('checkout-form').addEventListener('input', ()=> updateCompletion());
+</script>
+</body>
+</html>

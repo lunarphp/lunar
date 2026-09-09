@@ -84,6 +84,8 @@ export function createCheckout(data) {
     savedAddresses: data.savedAddresses ?? [],
     // The only countries the delivery step offers (spec 0011 §H): [{ code, name }].
     countries: data.countries ?? [],
+    // The host's sentence on why delivery is missing or limited here, or null.
+    deliveryNotice: data.deliveryNotice ?? null,
     // Server-derived money figures (minor units). When present they are the
     // single source of truth for the summary; the client calc below is the
     // prototype fallback for payloads without them.
@@ -136,6 +138,7 @@ export function createCheckout(data) {
     state.billingAddress = fresh.billingAddress ?? null
     state.savedAddresses = fresh.savedAddresses ?? []
     state.countries = fresh.countries ?? []
+    state.deliveryNotice = fresh.deliveryNotice ?? null
     state.totals = fresh.totals ?? null
     state.urls = fresh.urls ?? {}
     state.elements = fresh.elements ?? []
