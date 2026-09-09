@@ -31,8 +31,14 @@ export async function postJson(url, body, fallbackMessage = 'The request could n
   const payload = await response.json().catch(() => ({}))
 
   if (!response.ok) {
-    const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
-    throw new Error(message || fallbackMessage)
+    const errors = payload.errors ?? {}
+    const field = Object.keys(errors)[0] ?? null
+    const message = Object.values(errors).flat()[0] ?? payload.message
+    const error = new Error(message || fallbackMessage)
+    // Which input the server refused, so callers can react to one field
+    // (a stale fingerprint) without parsing customer copy.
+    error.field = field
+    throw error
   }
 
   return payload
@@ -469,6 +475,10 @@ export function createCheckout(data) {
             postcode: a.postcode,
             country_code: a.countryCode,
             phone: a.phone,
+            // The cart state the customer is looking at. The write hands
+            // back a fresh fingerprint, so without this the server could
+            // not tell a basket changed elsewhere from this address write.
+            fingerprint: state.fingerprint,
           },
           'Your billing address could not be saved.',
         )
@@ -524,6 +534,13 @@ export function createCheckout(data) {
     } catch (error) {
       state.payError = error?.message || 'Payment failed — you have not been charged.'
       state.paid = false
+
+      // A stale-basket refusal means the totals on screen are not the ones
+      // the server holds. Bring them in line so the customer checks the
+      // real figure and the next Pay pins against it.
+      if (error?.field === 'fingerprint') {
+        router.reload({ only: ['checkout'], preserveScroll: true, preserveState: true })
+      }
     } finally {
       state.processing = false
     }

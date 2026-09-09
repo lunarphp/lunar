@@ -837,7 +837,28 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate($this->addressRules());
+        $data = $request->validate([
+            ...$this->addressRules(),
+            'fingerprint' => ['nullable', 'string'],
+        ]);
+
+        /*
+         * The pay() flow writes the billing address moments before pinning
+         * and then pins against the post-write fingerprint handed back below.
+         * Without this check that hand-back would launder any change made
+         * elsewhere (a line added in another tab) into a matching pin, and the
+         * customer would be charged a total they never saw. So the caller
+         * states which cart it is looking at, and a stale one is refused here
+         * with the same copy the pay boundary uses, before anything is written.
+         */
+        $confirmed = $data['fingerprint'] ?? null;
+        unset($data['fingerprint']);
+
+        if ($confirmed !== null && ! hash_equals($checkoutDriver->fingerprint($session), $confirmed)) {
+            throw ValidationException::withMessages([
+                'fingerprint' => $this->paymentRejectionMessage(new PaymentConfirmationException('fingerprint_mismatch')),
+            ]);
+        }
 
         $checkoutDriver->storeBillingAddress($session, $data);
 

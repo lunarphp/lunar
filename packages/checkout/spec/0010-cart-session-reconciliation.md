@@ -266,6 +266,15 @@ never `Cart::checkFingerprint()`) + `ValidateCartForOrderCreation`. This is the
 contract point the payment layer ([[0002-payment-methods-and-driver]]) calls
 first; 0002 wires it into the payment entry point.
 
+**Store verbs on the pay path carry the token too.** A client that writes a
+fingerprint input moments before paying (the default flow copies the delivery
+address to billing, then pins) is handed the post-write fingerprint so its pin
+can succeed. That hand-back would otherwise launder any change made elsewhere
+into a matching pin, so such a write MUST also accept the token the customer is
+looking at and refuse a stale one (`422`, the step 2 copy) before writing
+anything. The client then re-syncs and re-renders, exactly as after a step 2
+rejection.
+
 **Intent timing & ordering.** Default posture: the intent is created **at the
 pay boundary**, after the pin. A gateway that needs a pre-confirmation intent (a
 mounted payment UI) may **opt in** to creating it while `Open`, at the

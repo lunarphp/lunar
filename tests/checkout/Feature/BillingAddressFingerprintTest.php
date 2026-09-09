@@ -63,3 +63,44 @@ it('still redirects an inertia caller back', function () {
         ->post(route('lunar.checkout.billing-address.store', $session->uuid), billingPayload())
         ->assertRedirect('/checkout/'.$session->uuid);
 });
+
+it('refuses to write when the caller is looking at a stale cart', function () {
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+
+    $driver = app(CheckoutDriver::class);
+    $session = $driver->resolveOrCreateSession($cart);
+
+    $rendered = $driver->fingerprint($session);
+
+    // The basket changes in another tab after the page rendered.
+    $line = $cart->lines()->first();
+    $line->update(['quantity' => $line->quantity + 1]);
+
+    $this->postJson(route('lunar.checkout.billing-address.store', $session->uuid), [
+        ...billingPayload(),
+        'fingerprint' => $rendered,
+    ])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.fingerprint.0', 'Your order changed while you were checking out. Check the details above and try again.');
+
+    // Nothing written: the fixture's billing address is untouched.
+    expect($cart->refresh()->billingAddress->line_one)->not->toBe('12 Analytical Row');
+});
+
+it('writes when the caller is looking at the live cart', function () {
+    $cart = CheckoutCart::orderable();
+    CartSession::use($cart);
+
+    $driver = app(CheckoutDriver::class);
+    $session = $driver->resolveOrCreateSession($cart);
+
+    $this->postJson(route('lunar.checkout.billing-address.store', $session->uuid), [
+        ...billingPayload(),
+        'fingerprint' => $driver->fingerprint($session),
+    ])
+        ->assertOk()
+        ->assertJsonPath('fingerprint', $driver->fingerprint($session));
+
+    expect($cart->refresh()->billingAddress->line_one)->toBe('12 Analytical Row');
+});
