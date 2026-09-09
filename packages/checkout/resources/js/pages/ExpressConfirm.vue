@@ -364,6 +364,9 @@ async function confirmAndPay() {
     const response = await payForm.post(state.urls.pay, { onHttpException: () => {} })
 
     if (payForm.hasErrors) {
+      const basketChanged =
+        payForm.errors.hold === 'hold_reauthorization_required' || Boolean(payForm.errors.fingerprint)
+
       if (payForm.errors.hold === 'hold_reauthorization_required') {
         needsReauth.value = true
         startPaymentEdit()
@@ -372,6 +375,15 @@ async function confirmAndPay() {
         payError.value =
           payForm.errors.fingerprint || payForm.errors.payment_method || 'Payment could not be confirmed.'
       }
+
+      // Either refusal means the basket moved under this page (a line added
+      // in another tab, a rate change). The summary, the delta banner and
+      // the CTA all read from page-load state, so bring them in line with
+      // the server before asking the customer to confirm anything.
+      if (basketChanged) {
+        router.reload({ only: ['checkout'], preserveScroll: true, preserveState: true })
+      }
+
       confirming.value = false
       return
     }
