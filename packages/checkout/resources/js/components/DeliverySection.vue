@@ -1,10 +1,10 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import Icon from './primitives/Icon.vue'
-import FloatingField from './primitives/FloatingField.vue'
+import AddressFields from './AddressFields.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state, storeShippingAddress, postJson } = useCheckout()
+const { state, storeShippingAddress } = useCheckout()
 
 // 'delivery' (default) or 'collect'. Collect keeps the same form and saved
 // address picker: Lunar stores the shipping option on the shipping address
@@ -22,6 +22,10 @@ const subcopy = computed(() =>
 // Hydrate from the cart's stored address so a returning session round-trips.
 const stored = state.shippingAddress
 
+// The first projected delivery country (spec 0011 §H) is the store's home
+// market, so a blank form starts there.
+const defaultCountry = state.countries[0]?.code ?? 'GB'
+
 const form = reactive({
   name: [stored?.firstName, stored?.lastName].filter(Boolean).join(' '),
   companyName: stored?.companyName ?? '',
@@ -29,58 +33,32 @@ const form = reactive({
   line2: stored?.line2 ?? '',
   city: stored?.city ?? '',
   postcode: stored?.postcode ?? '',
-  country: stored?.countryCode ?? 'GB',
+  country: stored?.countryCode ?? defaultCountry,
   phone: stored?.phone ?? '',
 })
 
 const saving = ref(false)
 const errors = ref({})
 
-// Server validation keys are the payload's names (first_name, line1, ...) and
-// the client-side gate below writes the same keys, so every message can land
-// on the field it belongs to. Falls through when a field has no error.
-const fieldError = (...keys) => keys.map((key) => errors.value[key]).find(Boolean) || ''
-
-// Anything without an inline field (country_code, unexpected keys) still
-// surfaces, below the form, instead of failing silently.
-const inlineErrorKeys = ['first_name', 'last_name', 'company_name', 'line1', 'line2', 'city', 'postcode', 'phone']
+// The address fields render their own inline messages by payload key;
+// anything else (unexpected keys) still surfaces below the form instead of
+// failing silently.
+const inlineErrorKeys = [
+  'first_name',
+  'last_name',
+  'company_name',
+  'line1',
+  'line2',
+  'city',
+  'postcode',
+  'country_code',
+  'phone',
+]
 const otherErrors = computed(() =>
   Object.entries(errors.value)
     .filter(([key]) => !inlineErrorKeys.includes(key))
     .map(([, message]) => message),
 )
-
-// A null url means no driver can answer, so the search never renders.
-const lookupEnabled = computed(() => Boolean(state.urls.addressLookup))
-const lookupPostcode = ref('')
-const lookupResults = ref([])
-const lookupBusy = ref(false)
-const lookupError = ref('')
-
-async function findAddresses() {
-  if (lookupBusy.value || !lookupPostcode.value.trim()) return
-
-  lookupBusy.value = true
-  lookupError.value = ''
-  lookupResults.value = []
-
-  try {
-    const result = await postJson(
-      state.urls.addressLookup,
-      { postcode: lookupPostcode.value },
-      'We could not search for that postcode. Enter your address manually.',
-    )
-    lookupResults.value = result.addresses ?? []
-
-    if (lookupResults.value.length === 0) {
-      lookupError.value = 'No addresses found for that postcode. Enter your address manually.'
-    }
-  } catch (error) {
-    lookupError.value = error?.message || 'We could not search for that postcode. Enter your address manually.'
-  } finally {
-    lookupBusy.value = false
-  }
-}
 
 // --- Saved addresses (the signed-in customer's address book) ----------------
 //
@@ -127,7 +105,7 @@ function useSaved(entry) {
   form.line2 = address.line2 ?? ''
   form.city = address.city ?? ''
   form.postcode = address.postcode ?? ''
-  form.country = address.countryCode ?? 'GB'
+  form.country = address.countryCode ?? defaultCountry
   form.phone = address.phone ?? ''
 
   storeShippingAddress(
@@ -172,24 +150,8 @@ function startNewAddress() {
   form.line2 = ''
   form.city = ''
   form.postcode = ''
-  form.country = 'GB'
+  form.country = defaultCountry
   form.phone = ''
-}
-
-// Filling the form is all this does: persistence stays on the shipping-address
-// route, so address writes keep exactly one path (spec 0011 §C).
-function chooseAddress(index) {
-  const address = lookupResults.value[index]
-  if (!address) return
-
-  form.companyName = address.companyName ?? ''
-  form.line1 = address.line1 ?? ''
-  form.line2 = address.line2 ?? ''
-  form.city = address.city ?? ''
-  form.postcode = address.postcode ?? ''
-  form.country = address.countryCode ?? 'GB'
-
-  lookupResults.value = []
 }
 
 // The cart address is the source of truth for whether the shipping step is
@@ -333,123 +295,9 @@ function save() {
     </template>
 
     <template v-else>
-      <div class="stack" style="margin-bottom: 12px">
-        <FloatingField
-          id="first"
-          v-model="form.name"
-          label="Full name"
-          autocomplete="name"
-          :error="fieldError('first_name', 'last_name')"
-        />
-        <FloatingField
-          id="company"
-          v-model="form.companyName"
-          label="Company"
-          autocomplete="organization"
-          optional
-          :error="fieldError('company_name')"
-        />
-      </div>
+      <AddressFields :form="form" :errors="errors" />
 
-      <!-- Postcode lookup (spec 0011 §B). Rendered only when a driver can answer;
-         with the null driver the customer gets honest manual entry below. -->
-      <div v-if="lookupEnabled" class="search-row" style="margin-bottom: 12px">
-        <div class="search">
-          <span class="lead ico"><Icon name="search" :size="18" /></span>
-          <label class="sr-only" for="addr-search">Search for your address by postcode</label>
-          <input
-            id="addr-search"
-            v-model="lookupPostcode"
-            type="text"
-            autocomplete="off"
-            placeholder="Enter your postcode"
-            style="text-transform: uppercase"
-            @keydown.enter.prevent="findAddresses"
-          />
-        </div>
-        <button type="button" class="btn btn-secondary search-btn" :disabled="lookupBusy" @click="findAddresses">
-          {{ lookupBusy ? 'Searching…' : 'Find address' }}
-        </button>
-      </div>
-
-      <p v-if="lookupError" class="help" role="alert" style="color: var(--error-700)">
-        {{ lookupError }}
-      </p>
-
-      <div v-if="lookupResults.length" class="lookup-results" style="margin-bottom: 12px">
-        <p class="lookup-results-caption">
-          <Icon name="map-pin" :size="15" />
-          {{ lookupResults.length }}
-          {{ lookupResults.length === 1 ? 'address' : 'addresses' }}
-          found for {{ lookupPostcode.trim().toUpperCase() }}
-        </p>
-        <div class="fl">
-          <select id="addr-results" @change="chooseAddress($event.target.value)">
-            <option value="">Choose from the list</option>
-            <option v-for="(address, index) in lookupResults" :key="index" :value="index">
-              {{ [address.line1, address.line2, address.city].filter(Boolean).join(', ') }}
-            </option>
-          </select>
-          <label for="addr-results">Select your address</label>
-          <span class="chev ico"><Icon name="chevron-down" :size="18" /></span>
-        </div>
-      </div>
-
-      <div class="stack">
-        <FloatingField
-          id="line1"
-          v-model="form.line1"
-          label="Address"
-          autocomplete="address-line1"
-          :error="fieldError('line1')"
-        />
-        <FloatingField
-          id="line2"
-          v-model="form.line2"
-          label="Apartment, suite, etc."
-          autocomplete="address-line2"
-          optional
-          :error="fieldError('line2')"
-        />
-        <div class="row2">
-          <FloatingField
-            id="city"
-            v-model="form.city"
-            label="Town / city"
-            autocomplete="address-level2"
-            :error="fieldError('city')"
-          />
-          <FloatingField
-            id="postcode"
-            v-model="form.postcode"
-            label="Postcode"
-            autocomplete="postal-code"
-            style="text-transform: uppercase"
-            :error="fieldError('postcode')"
-          />
-        </div>
-        <div class="fl">
-          <select id="country" v-model="form.country" autocomplete="country">
-            <option value="GB">United Kingdom</option>
-            <option value="IE">Ireland</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
-            <option value="US">United States</option>
-          </select>
-          <label for="country">Country / region</label>
-          <span class="chev ico"><Icon name="chevron-down" :size="18" /></span>
-        </div>
-        <FloatingField
-          id="phone"
-          v-model="form.phone"
-          label="Phone (for delivery updates)"
-          type="tel"
-          autocomplete="tel"
-          inputmode="tel"
-          optional
-          :error="fieldError('phone')"
-        />
-
+      <div class="stack" style="margin-top: 12px">
         <p v-for="message in otherErrors" :key="message" class="help" role="alert" style="color: var(--error-700)">
           {{ message }}
         </p>

@@ -206,8 +206,50 @@ is how a host declines it. The package does **not** project the captured values
 onto the order: what `customer_reference` and `notes` mean to a merchant's
 downstream systems is theirs to decide, so they listen to `OrderPlacing` (§F).
 
+### H. Delivery countries and the billing form
+
+The delivery step used to offer a hardcoded handful of countries while the
+server accepted any of the 250 Lunar knows, so a customer could save an
+address the store cannot ship to and then find no delivery options.
+
+`Contracts\DeliveryCountries::available(Cart): Collection<Country>` is the
+one source for both sides. The projection carries it as `countries:
+[{ code, name }]`; `AddressFields.vue` renders exactly that list (and hides
+the select when there is one country, still posting it); the shipping-address
+store validates `country_code` with `Rule::in` against the same list and
+answers "We do not deliver to that country." The billing store keeps
+`Rule::exists`: a card may be registered anywhere.
+
+The package binds `DeliveryCountries\ConfiguredCountries`, which reads
+`lunar.checkout.delivery_countries` (ISO alpha-2 codes, configured order kept)
+or every country when null. `lunar/table-rate-shipping` rebinds it at boot to
+`Checkout\ShippingZoneCountries` when the contract exists: the countries of
+every zone that carries a rate for an enabled method (country, postcode and
+state zones all name theirs), or everything when an unrestricted zone has a
+live rate. A store with only UK zones therefore shows no country select at
+all, and no host code is involved.
+
+The same pass made "Use delivery address as billing address" real. Unticked,
+`BillingSection.vue` renders under the payment method: the shared
+`AddressFields`, a "Save billing address" button posting to the existing
+billing-address route through an Inertia partial reload, and a collapsed
+summary with Change once stored. The projection now carries `billingAddress`;
+a stored address that differs from delivery (line 1 and postcode, the address
+book's identity) resumes unticked on reload. `pay()` refuses with "Save your
+billing address before paying." when the box is unticked and nothing is
+stored, instead of letting Lunar's order validator fail at the boundary.
+
 ## Testing
 
+- **Delivery countries:** bound source projected as code/name pairs; shipping
+  store refuses a country outside the list and accepts one inside; billing
+  store accepts a country outside it; `ConfiguredCountries` offers everything
+  by default and the configured codes in configured order;
+  `ShippingZoneCountries` (shipping suite) lists zone countries sorted by
+  name, skips rate-less zones and disabled methods, follows a state zone to
+  its country, and returns everything for an unrestricted zone.
+- **Billing projection:** the stored billing address is projected beside the
+  delivery address.
 - **Manager/config:** driver resolution by name, `null` default, `extend()`
   registration, unknown driver throws.
 - **`IdealPostcodes`:** faked `Http` — hit maps every field, empty result is an

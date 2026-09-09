@@ -38,6 +38,13 @@ export async function postJson(url, body, fallbackMessage = 'The request could n
   return payload
 }
 
+// Line 1 + postcode is identity enough, the same test the address book uses.
+// Missing either side reads as "not different": nothing to compare yet.
+export function addressesDiffer(a, b) {
+  if (!a || !b) return false
+  return a.line1 !== b.line1 || a.postcode !== b.postcode
+}
+
 /**
  * Instance-scoped checkout store (spec 0003 §F — provide/inject, never a
  * module singleton, so concurrent SSR requests don't bleed). Created once per
@@ -63,9 +70,15 @@ export function createCheckout(data) {
     // default; nothing is "chosen" until the cart says so.
     shippingId: data.shippingId ?? null,
     shippingAddress: data.shippingAddress ?? null,
+    // The cart's stored billing address, if any. pay() copies the delivery
+    // address across when the customer keeps the two the same, so only a
+    // stored address that differs means "the customer captured their own".
+    billingAddress: data.billingAddress ?? null,
     // The signed-in customer's address book (empty for guests), offered for
     // one-click selection; writes still go through the shipping-address route.
     savedAddresses: data.savedAddresses ?? [],
+    // The only countries the delivery step offers (spec 0011 §H): [{ code, name }].
+    countries: data.countries ?? [],
     // Server-derived money figures (minor units). When present they are the
     // single source of truth for the summary; the client calc below is the
     // prototype fallback for payloads without them.
@@ -80,7 +93,9 @@ export function createCheckout(data) {
     // The fingerprint of the cart state being shown; echoed to the pay
     // boundary so the server pins exactly what the customer confirmed.
     fingerprint: data.fingerprint ?? null,
-    billingSame: true,
+    // A reload with a distinct billing address on the cart resumes unticked,
+    // so the customer sees the address they captured rather than losing it.
+    billingSame: !addressesDiffer(data.billingAddress, data.shippingAddress),
     payError: '',
     discount: null, // { code, type, value, label }
     discountError: '',
@@ -109,7 +124,9 @@ export function createCheckout(data) {
     state.shippingMethods = fresh.shippingMethods ?? []
     state.shippingId = fresh.shippingId ?? null
     state.shippingAddress = fresh.shippingAddress ?? null
+    state.billingAddress = fresh.billingAddress ?? null
     state.savedAddresses = fresh.savedAddresses ?? []
+    state.countries = fresh.countries ?? []
     state.totals = fresh.totals ?? null
     state.urls = fresh.urls ?? {}
     state.elements = fresh.elements ?? []
@@ -267,6 +284,22 @@ export function createCheckout(data) {
     })
   }
 
+  // Store a billing address of the customer's own (the box unticked). Same
+  // partial reload as the delivery address: the billing address is a
+  // fingerprint input, and the projection brings the new one back.
+  function storeBillingAddress(payload, options = {}) {
+    router.post(state.urls.billingAddress, payload, {
+      preserveScroll: true,
+      preserveState: true,
+      only: ['checkout'],
+      ...options,
+    })
+  }
+
+  // True once the customer has captured a billing address that is not just
+  // the delivery address copied across.
+  const billingDiffers = computed(() => addressesDiffer(state.billingAddress, state.shippingAddress))
+
   // Select a shipping option. Optimistic highlight, server-confirmed — the
   // reload brings back the cart's stored selection and recalculated totals.
   function selectShipping(id) {
@@ -396,8 +429,15 @@ export function createCheckout(data) {
       // before we pin the fingerprint and post to the pay boundary.
       await flushPendingWrites()
 
-      // Billing defaults to the delivery address until a billing element
-      // captures its own.
+      // The box unticked is a promise of a billing address; without one the
+      // order validator would refuse at the boundary with a message about
+      // the cart, so say what is actually missing here.
+      if (!state.billingSame && !state.billingAddress) {
+        throw new Error('Save your billing address before paying.')
+      }
+
+      // Billing defaults to the delivery address unless the customer has
+      // captured their own below the payment method.
       if (state.billingSame && state.shippingAddress) {
         const a = state.shippingAddress
         const billing = await postJson(
@@ -495,6 +535,8 @@ export function createCheckout(data) {
     elementsIn,
     storeElement,
     storeShippingAddress,
+    storeBillingAddress,
+    billingDiffers,
     selectShipping,
     setFulfilment,
     activePaymentMethod,

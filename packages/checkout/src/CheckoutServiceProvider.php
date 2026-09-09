@@ -20,10 +20,12 @@ use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutSessionStateConfig;
+use Lunar\Checkout\Contracts\DeliveryCountries;
 use Lunar\Checkout\Contracts\ElementDataStore;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\DeliveryCountries\ConfiguredCountries;
 use Lunar\Checkout\Exceptions\CheckoutSessionConflictException;
 use Lunar\Checkout\Exceptions\CheckoutSessionNotOperableException;
 use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
@@ -106,6 +108,10 @@ class CheckoutServiceProvider extends ServiceProvider
 
         // Address lookup (spec 0011 §B): same Manager shape as the checkout
         // driver. Selected by config value; hosts extend() their own.
+        // Delivery countries (spec 0011 §H). Bound, not a singleton, so a
+        // shipping package's boot-time rebind replaces it cleanly.
+        $this->app->bind(DeliveryCountries::class, ConfiguredCountries::class);
+
         $this->app->singleton(AddressLookupManager::class);
         $this->app->bind(
             AddressLookup::class,

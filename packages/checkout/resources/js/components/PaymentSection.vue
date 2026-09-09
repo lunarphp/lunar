@@ -1,5 +1,6 @@
 <script setup>
 import Icon from './primitives/Icon.vue'
+import BillingSection from './BillingSection.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 import { resolveElement } from '../composables/elements.js'
 
@@ -63,6 +64,10 @@ const panelFor = (method) => resolveElement(method.component)
         <span class="box ico"><Icon name="check" /></span>
         <span class="txt">Use delivery address as billing address</span>
       </label>
+
+      <!-- Unticked: the customer's own billing address, captured here and
+           stored on the cart before pay() pins the session. -->
+      <BillingSection v-if="!state.billingSame" />
 
       <div v-if="state.payError" class="alert a-error" role="alert" style="margin-top: 14px">
         <Icon name="alert-circle" :size="18" />

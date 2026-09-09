@@ -4,12 +4,14 @@ namespace Lunar\Shipping;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Checkout\Contracts\DeliveryCountries;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Modifiers\ShippingModifiers;
+use Lunar\Shipping\Checkout\ShippingZoneCountries;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\PostcodeManager;
@@ -84,6 +86,12 @@ class ShippingServiceProvider extends ServiceProvider
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
         });
+
+        // With the checkout package installed, the delivery step offers only
+        // the countries the zones can actually ship to.
+        if (interface_exists(DeliveryCountries::class)) {
+            $this->app->bind(DeliveryCountries::class, ShippingZoneCountries::class);
+        }
 
         ModelManifest::addDirectory(
             __DIR__.'/Models'

@@ -144,4 +144,19 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Delivery countries
+    |--------------------------------------------------------------------------
+    |
+    | The countries the delivery step offers and the shipping-address store
+    | accepts, as ISO 3166-1 alpha-2 codes in the order they should appear.
+    | `null` offers every country Lunar knows. A shipping package that knows
+    | its zones can replace this list entirely by rebinding the
+    | Lunar\Checkout\Contracts\DeliveryCountries contract.
+    |
+    */
+
+    'delivery_countries' => null,
+
 ];

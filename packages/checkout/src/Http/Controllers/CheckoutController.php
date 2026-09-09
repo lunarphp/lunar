@@ -19,6 +19,7 @@ use Lunar\Checkout\Contracts\Actions\ReconcilesCheckoutSession;
 use Lunar\Checkout\Contracts\AddressLookup;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
+use Lunar\Checkout\Contracts\DeliveryCountries;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Contracts\GuardsPayment;
 use Lunar\Checkout\Contracts\PaymentMethod;
@@ -402,7 +403,13 @@ class CheckoutController extends Controller
             'pickupPoints' => $driver->getPickupPoints($session),
             'pickupPointId' => $driver->getSelectedPickupPoint($session),
             'shippingAddress' => $driver->getShippingAddress($session),
+            // Null until the customer captures one of their own or pay()
+            // copies the delivery address across; the frontend reads a
+            // stored address that differs from delivery as "not the same".
+            'billingAddress' => $driver->getBillingAddress($session),
             'savedAddresses' => $this->projectSavedAddresses(),
+            // Spec 0011 §H: the only countries the delivery step offers.
+            'countries' => $this->projectCountries($cart),
             'totals' => $driver->getTotals($session),
             'coupon' => $driver->getCoupon($session),
             // The pay boundary echoes back the fingerprint of the state the
@@ -631,7 +638,12 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate($this->addressRules());
+        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
+
+        $data = $request->validate(
+            $this->addressRules(array_column($this->projectCountries($cart), 'code')),
+            ['country_code.in' => 'We do not deliver to that country.'],
+        );
 
         $checkoutDriver->storeShippingAddress($session, $data);
         $this->touchSavedAddress($data);
@@ -711,11 +723,15 @@ class CheckoutController extends Controller
 
     /**
      * The backend-neutral address payload (spec 0010 §B), shared by the
-     * shipping and billing stores.
+     * shipping and billing stores. The shipping store passes the delivery
+     * countries so an address the store cannot ship to is refused on save;
+     * a billing address may be anywhere a card is registered, so it only
+     * has to be a real country.
      *
+     * @param  list<string>|null  $countryCodes
      * @return array<string, array<int, mixed>>
      */
-    private function addressRules(): array
+    private function addressRules(?array $countryCodes = null): array
     {
         return [
             'first_name' => ['required', 'string', 'max:255'],
@@ -726,9 +742,30 @@ class CheckoutController extends Controller
             'city' => ['required', 'string', 'max:255'],
             'state' => ['nullable', 'string', 'max:255'],
             'postcode' => ['required', 'string', 'max:12'],
-            'country_code' => ['required', 'string', Rule::exists(Country::class, 'iso2')],
+            'country_code' => [
+                'required',
+                'string',
+                $countryCodes === null ? Rule::exists(Country::class, 'iso2') : Rule::in($countryCodes),
+            ],
             'phone' => ['nullable', 'string', 'max:32'],
         ];
+    }
+
+    /**
+     * The delivery countries as the frontend select wants them (spec 0011 §H).
+     *
+     * @return list<array{code: string, name: string}>
+     */
+    private function projectCountries(Cart $cart): array
+    {
+        return app(DeliveryCountries::class)
+            ->available($cart)
+            ->map(fn (Country $country): array => [
+                'code' => $country->iso2,
+                'name' => $country->name,
+            ])
+            ->values()
+            ->all();
     }
 
     /**
