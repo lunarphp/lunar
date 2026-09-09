@@ -90,6 +90,11 @@ it('renders the order view with shaped props', function () {
             // Pending shipping parcel: in-progress (transition) + shipped (ship).
             ->has('fulfilments.0.transitions', 2)
             ->where('fulfilments.0.transitions.1.via', 'ship')
+            // A shipped email is registered, so the ship transition offers the notify toggle.
+            ->where('fulfilments.0.transitions.1.notify', true)
+            ->where('fulfilments.0.transitions.0.notify', false)
+            ->has('notifications', 6)
+            ->where('notifications.order-confirmation', 'Order confirmation')
             // One unit allocated — nothing to split; nothing to merge into.
             ->where('fulfilments.0.can.split', false)
             ->where('fulfilments.0.can.merge', false)

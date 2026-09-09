@@ -361,6 +361,7 @@ it('shows the notify toggle on the ship modal only when a shipped notification i
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
     // Nothing registered for the shipped state — progressive disclosure hides it.
+    OrderNotifications::forget('order-shipped');
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
         ->assertSchemaComponentDoesNotExist('notify');

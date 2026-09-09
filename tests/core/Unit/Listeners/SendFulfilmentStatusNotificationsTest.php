@@ -20,6 +20,10 @@ beforeEach(function () {
     Language::factory()->create(['default' => true, 'code' => 'en']);
     Currency::factory()->create(['default' => true]);
     Location::factory()->default()->create();
+
+    // The default catalogue is covered by DefaultNotificationTriggersTest;
+    // these tests exercise the listener plumbing in isolation.
+    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()), ...['order-shipped', 'order-ready-for-collection', 'order-provisioned', 'return-received']);
 });
 
 class FakeShippedNotification extends Notification
@@ -64,7 +68,7 @@ class FakeParcelCancelledNotification extends Notification
 
 function shippableOrder(): Order
 {
-    $order = Order::factory()->create();
+    $order = Order::factory()->placed()->create();
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'type' => 'physical',

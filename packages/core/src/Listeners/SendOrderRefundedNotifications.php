@@ -8,8 +8,10 @@ use Lunar\Core\Events\Orders\OrderRefunded;
 
 /**
  * Dispatch any notifications registered for a refunded order, when the
- * refund asked for the customer to be notified. Looked up by the `refunded`
- * key in the order-scoped {@see OrderNotificationManifest}.
+ * refund asked for the customer to be notified. Looked up by the `refund-issued`
+ * key in the order-scoped {@see OrderNotificationManifest} — deliberately not
+ * `refunded`, which is the payment-status rollup's (ungated) key and would
+ * otherwise fire the same notification twice on a full refund.
  */
 class SendOrderRefundedNotifications
 {
@@ -23,7 +25,7 @@ class SendOrderRefundedNotifications
             return;
         }
 
-        foreach ($this->notifications->triggeredBy('refunded', NotificationScope::Order) as $class) {
+        foreach ($this->notifications->triggeredBy('refund-issued', NotificationScope::Order) as $class) {
             $event->order->notify(new $class($event->order));
         }
     }

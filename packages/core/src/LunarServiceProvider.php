@@ -78,6 +78,7 @@ use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
+use Lunar\Core\Listeners\SendOrderPlacedNotifications;
 use Lunar\Core\Listeners\SendOrderRefundedNotifications;
 use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
@@ -188,6 +189,7 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar');
 
         $this->registerAddonManifest();
 
@@ -236,6 +238,10 @@ class LunarServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../resources/lang' => lang_path('vendor/lunar'),
             ], 'lunar.translation');
+
+            $this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/lunar'),
+            ], 'lunar.views');
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
@@ -288,6 +294,7 @@ class LunarServiceProvider extends ServiceProvider
             [CartSessionAuthListener::class, 'logout']
         );
 
+        Event::listen(OrderPlaced::class, SendOrderPlacedNotifications::class);
         Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
         Event::listen(FulfilmentStatusUpdated::class, SendFulfilmentStatusNotifications::class);

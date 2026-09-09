@@ -11,11 +11,9 @@ use Lunar\Core\Models\Order;
 /**
  * A general-purpose "here is an update on your order" email an admin can send
  * on demand via the NotifyCustomer action. Renders the optional free-text
- * message the admin attached. This is the one default the OrderNotifications
- * catalogue ships (manual-only, order-scoped) so the feature works out of the
- * box; the branded, auto-triggered lifecycle notifications (confirmation,
- * shipped, refunded, …) are a separate piece of work. Override by re-registering
- * the `order-update` key with your own class.
+ * message the admin attached. The manual-only, order-scoped catch-all beside
+ * the branded lifecycle defaults (confirmation, shipped, refund issued, …).
+ * Override by re-registering the `order-update` key with your own class.
  */
 class OrderUpdate extends Notification implements AcceptsCustomerMessage
 {

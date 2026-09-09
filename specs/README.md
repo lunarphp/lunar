@@ -61,7 +61,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0033 | Multi-tenant homes for this branch's new config | implemented |
 | 0034 | Wire and gate fulfilment notifications | implemented |
 | 0035 | Interactive "Notify customer" order action | implemented |
-| 0036 | Default professional customer notifications | draft       |
+| 0036 | Default professional customer notifications | implemented |
 | 0037 | Move automatic notifications onto manifests | superseded by 0035 |
 | 0038 | Inventory fundamentals | implemented |
 | 0039 | Region | implemented |

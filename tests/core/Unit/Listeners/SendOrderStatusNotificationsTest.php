@@ -18,6 +18,10 @@ beforeEach(function () {
     Language::factory()->create(['default' => true, 'code' => 'en']);
     Currency::factory()->create(['default' => true]);
     Location::factory()->default()->create();
+
+    // The default catalogue is covered by DefaultNotificationTriggersTest;
+    // these tests exercise the listener plumbing in isolation.
+    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()), ...['order-shipped', 'order-ready-for-collection', 'order-provisioned', 'return-received']);
 });
 
 class FakePaidNotification extends Notification
@@ -55,7 +59,7 @@ test('notifications registered for a payment status are dispatched when the orde
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create();
+    $order = Order::factory()->placed()->create();
 
     $order->transactions()->create([
         'type' => 'capture', 'success' => true, 'amount' => $order->total,
@@ -65,10 +69,25 @@ test('notifications registered for a payment status are dispatched when the orde
     NotificationFacade::assertSentTo($order->fresh(), FakePaidNotification::class);
 });
 
-test('no notifications are dispatched when none are registered for the status', function () {
+test('a payment status notification is not dispatched for an unplaced order', function () {
+    OrderNotifications::register('paid', FakePaidNotification::class, on: ['paid']);
+
     NotificationFacade::fake();
 
     $order = Order::factory()->create();
+
+    $order->transactions()->create([
+        'type' => 'capture', 'success' => true, 'amount' => $order->total,
+        'driver' => 'lunar', 'reference' => uniqid(), 'status' => 'settled',
+    ]);
+
+    NotificationFacade::assertNothingSent();
+});
+
+test('no notifications are dispatched when none are registered for the status', function () {
+    NotificationFacade::fake();
+
+    $order = Order::factory()->placed()->create();
 
     $order->transactions()->create([
         'type' => 'capture', 'success' => true, 'amount' => $order->total,
@@ -83,7 +102,7 @@ test('notifications registered for a fulfilment status are dispatched when the o
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create();
+    $order = Order::factory()->placed()->create();
     $line = OrderLine::factory()->create([
         'order_id' => $order->id,
         'type' => 'physical',
@@ -93,6 +112,23 @@ test('notifications registered for a fulfilment status are dispatched when the o
     $order->createFulfilment([$line->id => 1])->ship();
 
     NotificationFacade::assertSentTo($order->fresh(), FakeFulfilledNotification::class);
+});
+
+test('a fulfilment status notification is not dispatched for an unplaced order', function () {
+    OrderNotifications::register('fulfilled', FakeFulfilledNotification::class, on: ['fulfilled']);
+
+    NotificationFacade::fake();
+
+    $order = Order::factory()->create();
+    $line = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'physical',
+        'quantity' => 1,
+    ]);
+
+    $order->createFulfilment([$line->id => 1])->ship();
+
+    NotificationFacade::assertNotSentTo($order->fresh(), FakeFulfilledNotification::class);
 });
 
 test('a cancelled notification is dispatched when the order is cancelled with notify', function () {
