@@ -110,6 +110,15 @@ yet placeable) — core remains gateway-free and Stripe-free.
   checkout app's registry at runtime ([[0009-frontend-element-extension]]); `component()` is the join
   key. First-party gateways are prebuilt into the shipped app; third-party/bespoke gateways load via
   the runtime chunk — either way, no fork and no consumer build.
+- **A form that never came up blocks Pay with the store's words, not the gateway's.** The
+  component registers its submit API only once the gateway form is on screen (Stripe: the Payment
+  Element's `ready` event) and reports a load failure (bad or missing key, intent refused, script
+  blocked, `loaderror`) through `setPaymentFormError()`. The generic Pay action refuses a
+  gateway method with nothing registered to confirm and a non-zero total, repeating that copy
+  ("Card payments are unavailable right now. Please try again in a moment."). Confirmation errors
+  reach the customer only when the gateway wrote them for the cardholder (`card_error`,
+  `validation_error`); every other type is replaced with neutral copy. The raw message goes to
+  the console for the developer.
 
 ### D. Payment success is an OrderState transition, not a new state
 

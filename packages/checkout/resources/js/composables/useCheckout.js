@@ -400,6 +400,13 @@ export function createCheckout(data) {
     paymentConfirm = fn
   }
 
+  // A gateway component that could not bring its form up says so here, so
+  // the pay gate can repeat that copy instead of a raw gateway complaint.
+  let paymentFormError = ''
+  function setPaymentFormError(message) {
+    paymentFormError = message || ''
+  }
+
   // Unpin a session whose gateway confirmation failed. The server reopens it
   // only after the gateway confirms no money was captured; a captured charge
   // completes the order instead, which lands here as `completed`.
@@ -436,6 +443,16 @@ export function createCheckout(data) {
 
     if (paymentBlocker.value) {
       state.payError = paymentBlocker.value
+      return
+    }
+
+    // A gateway method with nothing registered to confirm means its form
+    // never came up (bad key, blocked script, load error). Pinning now would
+    // freeze the session and hand the customer the gateway's own wording.
+    // A zero total completes server-side whatever the method, so no form is
+    // needed there.
+    if (activePaymentMethod.value.requiresIntent !== false && breakdown.value.total > 0 && !paymentConfirm) {
+      state.payError = paymentFormError || 'The payment form has not loaded. Refresh the page and try again.'
       return
     }
 
@@ -576,6 +593,7 @@ export function createCheckout(data) {
     paymentBlocker,
     payLabel,
     registerPaymentConfirm,
+    setPaymentFormError,
     registerPendingWrite,
     // Exposed so a page that posts to the pay boundary itself (the express
     // confirm squeeze page, spec 0012 SD) can await the same in-flight

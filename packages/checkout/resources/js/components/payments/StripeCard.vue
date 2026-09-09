@@ -13,11 +13,24 @@ const props = defineProps({
   method: { type: Object, required: true },
 })
 
-const { state, registerPaymentConfirm, postJson } = useCheckout()
+const { state, registerPaymentConfirm, setPaymentFormError, postJson } = useCheckout()
+
+// One line for every way the form can fail to come up (missing or invalid
+// key, intent refused, script blocked, element load error). Stripe's own
+// wording names its API and methods, which is for logs, not the customer.
+const UNAVAILABLE = 'Card payments are unavailable right now. Please try again in a moment.'
 
 const mountEl = ref(null)
 const error = ref('')
 const loading = ref(true)
+
+function unavailable(e) {
+  if (e) console.error(e)
+  error.value = UNAVAILABLE
+  loading.value = false
+  registerPaymentConfirm(null)
+  setPaymentFormError(UNAVAILABLE)
+}
 
 let stripe = null
 let elements = null
@@ -51,27 +64,46 @@ onMounted(async () => {
 
     stripe = window.Stripe(key)
     elements = stripe.elements({ clientSecret })
-    elements.create('payment').mount(mountEl.value)
+    const paymentElement = elements.create('payment')
 
-    registerPaymentConfirm(async () => {
-      const result = await stripe.confirmPayment({
-        elements,
-        confirmParams: { return_url: window.location.href },
-        redirect: 'if_required',
+    // mount() returns before Stripe has fetched the element; an invalid
+    // publishable key surfaces here, not as a thrown error.
+    paymentElement.on('loaderror', (event) => unavailable(event?.error))
+
+    // Confirm only becomes possible once the element is on screen. Until
+    // then the pay gate refuses with the unavailable copy above.
+    paymentElement.on('ready', () => {
+      loading.value = false
+
+      registerPaymentConfirm(async () => {
+        const result = await stripe.confirmPayment({
+          elements,
+          confirmParams: { return_url: window.location.href },
+          redirect: 'if_required',
+        })
+
+        if (result.error) {
+          // Card and validation errors are written for the cardholder
+          // ("Your card was declined"); anything else is gateway internals.
+          const customerFacing = ['card_error', 'validation_error'].includes(result.error.type)
+
+          throw new Error(
+            customerFacing ? result.error.message : 'The payment could not be confirmed. Please try again.',
+          )
+        }
       })
-
-      if (result.error) {
-        throw new Error(result.error.message)
-      }
     })
+
+    paymentElement.mount(mountEl.value)
   } catch (e) {
-    error.value = e?.message || 'Could not load the payment form.'
-  } finally {
-    loading.value = false
+    unavailable(e)
   }
 })
 
-onBeforeUnmount(() => registerPaymentConfirm(null))
+onBeforeUnmount(() => {
+  registerPaymentConfirm(null)
+  setPaymentFormError('')
+})
 </script>
 
 <template>
