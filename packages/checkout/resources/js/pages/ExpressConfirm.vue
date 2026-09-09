@@ -747,7 +747,7 @@ async function confirmAndPay() {
                       @blur="scheduleDetailsSave"
                       @change="scheduleDetailsSave"
                     ></textarea>
-                    <label for="gap-notes">Delivery instructions <span class="opt">(optional)</span></label>
+                    <label for="gap-notes">Order notes <span class="opt">(optional)</span></label>
                   </div>
                   <p class="xc-field-help">
                     <Icon name="info" :size="13" />e.g. "Leave with the concierge" or a safe spot if you're out.

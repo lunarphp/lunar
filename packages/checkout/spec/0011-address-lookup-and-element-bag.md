@@ -188,7 +188,7 @@ alongside the granular 0010 §G event.
 ### G. `OrderDetails` — the first bag-backed element
 
 `Elements\OrderDetails` (handle `order-details`, region `main`, title "Order
-details") captures a **customer PO reference** and **delivery notes** — the two
+details") captures a **customer PO reference** and **order notes** (labelled so for delivery and collection alike) — the two
 fields every B2B checkout asks for, and the first thing in this package that
 persists through the bag rather than the cart. Component `OrderDetails.vue`,
 registered in the package's `app.js` beside `contact-information` and

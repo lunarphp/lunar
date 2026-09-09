@@ -3,7 +3,7 @@
 namespace Lunar\Checkout\Elements;
 
 /**
- * Captures a customer purchase-order reference and delivery notes (spec 0011
+ * Captures a customer purchase-order reference and order notes (spec 0011
  * §G): the two fields every B2B checkout asks for, and the first thing in
  * this package that persists through the element bag rather than the cart.
  *

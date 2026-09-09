@@ -14,7 +14,15 @@ const props = defineProps({
   step: { type: Number, default: 4 },
 })
 
-const { storeElement, registerPendingWrite } = useCheckout()
+const { state, storeElement, registerPendingWrite } = useCheckout()
+
+// One notes field whatever the fulfilment: it lands on the order as order
+// notes either way. The hint says what is useful to write for this mode.
+const notesHint = computed(() =>
+  state.fulfilment === 'collect'
+    ? 'Anything the branch should know before you arrive.'
+    : 'Access, gate codes, where to leave it, who to ask for.',
+)
 
 const captured = computed(() => props.element?.data ?? {})
 
@@ -126,8 +134,9 @@ onBeforeUnmount(unregisterPendingWrite)
           @blur="scheduleSave"
           @change="scheduleSave"
         ></textarea>
-        <label for="order-notes">Delivery notes (optional)</label>
+        <label for="order-notes">Order notes (optional)</label>
       </div>
+      <p class="help" style="margin-top: -6px">{{ notesHint }}</p>
 
       <button type="button" class="btn btn-secondary btn-step" :disabled="saving" @click="save">
         {{ saving ? 'Saving…' : 'Save order details' }}
