@@ -102,6 +102,14 @@ onMounted(() => {
 // name input, which would mis-split multi-word surnames.
 function useSaved(entry) {
   if (saving.value || !entry) return
+
+  // The ticked card is already on the cart: picking it again is "keep this",
+  // so just close the list rather than re-saving and re-quoting.
+  if (choosing.value && selectedEntry.value?.id === entry.id) {
+    choosing.value = false
+    return
+  }
+
   const address = entry.address
 
   form.name = [address.firstName, address.lastName].filter(Boolean).join(' ')
@@ -215,6 +223,16 @@ function save() {
       </h2>
       <button v-if="mode === 'book' && !choosing" type="button" class="block-action" @click="choosing = true">
         Change
+      </button>
+      <!-- Opened the list and want to keep what was there: a way back that
+           does not mean re-picking the ticked card. -->
+      <button
+        v-else-if="mode === 'book' && choosing && selectedEntry"
+        type="button"
+        class="block-action"
+        @click="((choosing = false), (errors = {}))"
+      >
+        Cancel
       </button>
       <button
         v-else-if="mode === 'form' && state.savedAddresses.length"
