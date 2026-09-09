@@ -10,7 +10,28 @@
   "canceled_at": null,
   "cancellation_reason": null,
   "capture_method": "manual",
-  "incremental_authorization_supported": "{incremental_authorization_supported}",
+  "latest_charge": {
+    "id": "CH_HOLD",
+    "object": "charge",
+    "amount": "{amount}",
+    "amount_captured": 0,
+    "captured": false,
+    "status": "succeeded",
+    "payment_method_details": {
+      "type": "card",
+      "card": {
+        "brand": "visa",
+        "last4": "4242",
+        "amount_authorized": "{amount}",
+        "incremental_authorization": {
+          "status": "{incremental_authorization_status}"
+        },
+        "wallet": {
+          "type": "{wallet_type}"
+        }
+      }
+    }
+  },
   "charges": {
     "object": "list",
     "data": [],

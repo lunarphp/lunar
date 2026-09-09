@@ -26,6 +26,7 @@ use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
+use Stripe\Charge;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
@@ -179,21 +180,55 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
      */
     public function adjustHold(string $reference, int $amountMinor): HoldAdjustment
     {
-        $intent = $this->stripe->paymentIntents->retrieve($reference);
+        $intent = $this->stripe->paymentIntents->retrieve($reference, [
+            'expand' => ['latest_charge'],
+        ]);
 
         if ($amountMinor <= (int) $intent->amount) {
             return HoldAdjustment::Ok;
         }
 
-        if (! ($intent->incremental_authorization_supported ?? false)) {
+        if (! $this->supportsIncrementalAuthorization($intent)) {
             return HoldAdjustment::NeedsReauthorization;
         }
 
-        $this->stripe->paymentIntents->incrementAuthorization($reference, [
-            'amount' => $amountMinor,
-        ]);
+        try {
+            $this->stripe->paymentIntents->incrementAuthorization($reference, [
+                'amount' => $amountMinor,
+            ]);
+        } catch (InvalidRequestException) {
+            // The rail advertised support but refused this increment (over
+            // the issuer's limit, authorisation aged out). Same outcome for
+            // the customer: a fresh hold.
+            return HoldAdjustment::NeedsReauthorization;
+        }
 
         return HoldAdjustment::Ok;
+    }
+
+    /**
+     * Whether the authorised charge can be incremented. Stripe reports this
+     * on the charge, not the intent: online cards carry
+     * `payment_method_details.card.incremental_authorization.status`
+     * ("available" / "unavailable"), Terminal carries
+     * `payment_method_details.card_present.incremental_authorization_supported`.
+     * Requires `latest_charge` expanded on the intent.
+     */
+    protected function supportsIncrementalAuthorization(PaymentIntent $intent): bool
+    {
+        $charge = $intent->latest_charge;
+
+        if (! $charge instanceof Charge) {
+            return false;
+        }
+
+        $details = $charge->payment_method_details;
+
+        if (($details?->card?->incremental_authorization?->status ?? null) === 'available') {
+            return true;
+        }
+
+        return (bool) ($details?->card_present?->incremental_authorization_supported ?? false);
     }
 
     /**

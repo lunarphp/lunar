@@ -294,6 +294,12 @@ it('adjusts a hold upward via incremental authorization when supported', functio
     $result = paymentDriver()->adjustHold('PI_HOLD', 2600);
 
     expect($result)->toBe(HoldAdjustment::Ok);
+
+    // Support is reported on the charge, so the lookup must expand it.
+    $retrieve = collect($mock->requests)
+        ->first(fn ($r) => $r['method'] === 'get' && str_contains($r['url'], 'payment_intents/PI_HOLD'));
+    expect($retrieve['params']['expand'] ?? [])->toContain('latest_charge');
+
     $call = collect($mock->requests)
         ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/increment_authorization'));
     expect($call['params']['amount'])->toBe(2600);

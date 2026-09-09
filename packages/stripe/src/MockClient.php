@@ -95,7 +95,7 @@ class MockClient implements ClientInterface
                     'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
                     'amount' => 2000,
                     'wallet_type' => 'apple_pay',
-                    'incremental_authorization_supported' => false,
+                    'incremental_authorization_status' => 'unavailable',
                     ...$this->nextData,
                 ]);
 
@@ -108,7 +108,7 @@ class MockClient implements ClientInterface
                     'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
                     'amount' => 2000,
                     'wallet_type' => 'apple_pay',
-                    'incremental_authorization_supported' => true,
+                    'incremental_authorization_status' => 'available',
                     ...$this->nextData,
                 ]);
 
@@ -238,7 +238,7 @@ class MockClient implements ClientInterface
                 'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
                 'amount' => $params['amount'],
                 'wallet_type' => 'apple_pay',
-                'incremental_authorization_supported' => true,
+                'incremental_authorization_status' => 'available',
                 ...$this->nextData,
             ]);
 
