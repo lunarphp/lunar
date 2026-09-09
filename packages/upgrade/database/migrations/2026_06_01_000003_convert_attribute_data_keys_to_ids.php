@@ -319,8 +319,11 @@ return new class extends Migration
         }
 
         if (Schema::hasColumn($table, 'attributable_type')) {
-            // SQLite refuses DROP COLUMN while the v1 index remains.
-            $this->dropIndexIfExists($table, ['attributable_type']);
+            if (Schema::hasIndex($table, ['attributable_type'])) {
+                Schema::table($table, function (Blueprint $table) {
+                    $table->dropIndex(['attributable_type']);
+                });
+            }
 
             Schema::table($table, function (Blueprint $table) {
                 $table->dropColumn('attributable_type');
@@ -397,9 +400,17 @@ return new class extends Migration
 
         if ($drops !== []) {
             if (in_array('attribute_type', $drops, true)) {
-                // MariaDB 1072 / SQLite: DROP COLUMN fails while these remain.
-                $this->dropIndexIfExists($table, ['attribute_type', 'handle'], 'unique');
-                $this->dropIndexIfExists($table, ['attribute_type']);
+                if (Schema::hasIndex($table, ['attribute_type', 'handle'])) {
+                    Schema::table($table, function (Blueprint $blueprint) {
+                        $blueprint->dropUnique(['attribute_type', 'handle']);
+                    });
+                }
+
+                if (Schema::hasIndex($table, ['attribute_type'])) {
+                    Schema::table($table, function (Blueprint $blueprint) {
+                        $blueprint->dropIndex(['attribute_type']);
+                    });
+                }
             }
 
             Schema::table($table, function (Blueprint $blueprint) use ($drops) {
@@ -412,35 +423,6 @@ return new class extends Migration
             Schema::table($table, function (Blueprint $blueprint) {
                 $blueprint->unsignedBigInteger('attribute_group_id')->nullable()->change();
             });
-        }
-    }
-
-    /**
-     * Drop a v1 index by its live name. `Schema::hasIndex(..., 'index')` misses
-     * SQLite, which reports the type as `btree` rather than `index`.
-     *
-     * @param  list<string>  $columns
-     */
-    protected function dropIndexIfExists(string $table, array $columns, string $type = 'index'): void
-    {
-        $wantUnique = $type === 'unique';
-
-        foreach (Schema::getIndexes($table) as $index) {
-            if ($index['columns'] !== $columns || (bool) $index['unique'] !== $wantUnique) {
-                continue;
-            }
-
-            Schema::table($table, function (Blueprint $blueprint) use ($index, $wantUnique): void {
-                if ($wantUnique) {
-                    $blueprint->dropUnique($index['name']);
-
-                    return;
-                }
-
-                $blueprint->dropIndex($index['name']);
-            });
-
-            return;
         }
     }
 

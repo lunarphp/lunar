@@ -34,14 +34,15 @@ function stockMigration(): object
 
 /**
  * Stand up the v1-shaped tables: a `product_variants` table carrying the flat
- * `stock` column. v1 has no `locations` table (or any of the stock tables) —
+ * `stock` column (indexed, matching v1 — SQLite cannot DROP COLUMN while that
+ * index remains). v1 has no `locations` table (or any of the stock tables) —
  * the migration must create them itself.
  */
 function simulateV1Variants(): void
 {
     Schema::create(SPEC0038_PREFIX.'product_variants', function (Blueprint $table) {
         $table->id();
-        $table->integer('stock')->default(0);
+        $table->integer('stock')->default(0)->index();
         $table->integer('backorder')->default(0);
         $table->string('purchasable')->default('always');
         $table->timestamps();
