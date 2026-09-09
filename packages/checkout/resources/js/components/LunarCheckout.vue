@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const store = createCheckout(props.checkout)
-const { state, totalLabel, pay, elementsIn, collectUnavailable, paymentBlocker, payLabel } = store
+const { state, totalLabel, pay, elementsIn, collectUnavailable, paymentBlocker, paysAtCheckout, payLabel } = store
 
 // Partial reloads replace the `checkout` prop wholesale (only: ['checkout']);
 // pull the server-owned pieces back into the store.
@@ -141,10 +141,12 @@ const mSummaryOpen = ref(false)
               </p>
               <p v-else-if="!state.addressValid && state.fulfilment === 'delivery'" class="cta-hint">
                 <span class="ico"><Icon name="arrow-up" :size="15" /></span>
-                Complete the steps above to pay — you won't be charged until you confirm.
+                <template v-if="paysAtCheckout">Complete the steps above to pay. You won't be charged until you confirm.</template>
+                <template v-else>Complete the steps above to place your order.</template>
               </p>
               <p class="legal">
-                By paying you agree to our <a href="#">terms</a> and <a href="#">refund policy</a>. You can cancel anytime before dispatch.
+                By {{ paysAtCheckout ? 'paying' : 'placing your order' }} you agree to our <a href="#">terms</a> and
+                <a href="#">refund policy</a>. You can cancel anytime before dispatch.
               </p>
             </div>
 

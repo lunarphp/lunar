@@ -385,13 +385,14 @@ export function createCheckout(data) {
   // projection, so it tracks element edits through the partial reloads.
   const paymentBlocker = computed(() => activePaymentMethod.value?.paymentBlocker ?? null)
 
+  // Whether money changes hands at this checkout. False for on-account,
+  // offline and other synchronous methods: the order is placed, nothing is
+  // paid, and no copy on the page may say otherwise.
+  const paysAtCheckout = computed(() => !(activePaymentMethod.value && activePaymentMethod.value.requiresIntent === false))
+
   // Nothing is charged at the checkout for a synchronous method, so the
   // button must not promise a payment.
-  const payLabel = computed(() =>
-    activePaymentMethod.value && activePaymentMethod.value.requiresIntent === false
-      ? 'Place order'
-      : `Pay ${totalLabel.value}`,
-  )
+  const payLabel = computed(() => (paysAtCheckout.value ? `Pay ${totalLabel.value}` : 'Place order'))
 
   // The active method's component registers how to confirm with the gateway
   // (e.g. stripe.confirmPayment). Null means nothing client-side to confirm.
@@ -459,6 +460,10 @@ export function createCheckout(data) {
     state.processing = true
     state.payError = ''
 
+    // Set once the browser has been told to leave: the button then stays
+    // busy for as long as the navigation takes instead of re-arming.
+    let leaving = false
+
     try {
       // Let any debounced element write in flight (or still pending) land
       // before we pin the fingerprint and post to the pay boundary.
@@ -522,9 +527,11 @@ export function createCheckout(data) {
       )
 
       if (result.completed) {
-        // Same exit as the gateway path: the processing route settles a
-        // completed session straight onto the store's confirmation page.
-        state.paid = true
+        // Order placed, nothing paid: no "payment confirmed" overlay, the
+        // busy button carries the customer to the confirmation. Same exit
+        // as the gateway path: the processing route settles a completed
+        // session straight onto the store's confirmation page.
+        leaving = true
         window.location.assign(state.urls.processing)
 
         return
@@ -549,6 +556,7 @@ export function createCheckout(data) {
       // this client-side signal alone, and never leave the customer parked on
       // the checkout watching a spinner that depends on a webhook arriving.
       state.paid = true
+      leaving = true
       window.location.assign(state.urls.processing)
     } catch (error) {
       state.payError = error?.message || 'Payment failed — you have not been charged.'
@@ -561,7 +569,7 @@ export function createCheckout(data) {
         router.reload({ only: ['checkout'], preserveScroll: true, preserveState: true })
       }
     } finally {
-      state.processing = false
+      if (!leaving) state.processing = false
     }
   }
 
@@ -593,6 +601,7 @@ export function createCheckout(data) {
     setFulfilment,
     activePaymentMethod,
     paymentBlocker,
+    paysAtCheckout,
     payLabel,
     registerPaymentConfirm,
     setPaymentFormError,
