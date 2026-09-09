@@ -99,6 +99,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Persisted totals
+    |--------------------------------------------------------------------------
+    |
+    | Each calculation writes its totals to the cart and line rows, and the
+    | next calculate() is served from those rows while nothing on the cart
+    | has changed and the snapshot is younger than the TTL (in seconds).
+    | The TTL bounds staleness from inputs the cart cannot see: price edits,
+    | discount end dates, tax and shipping rule changes. 0 never serves the
+    | snapshot; it is still written so the reporting columns stay populated.
+    | Checkout and payment always recalculate (see Cart::recalculate()).
+    |
+    */
+    'totals' => [
+        'ttl' => 300,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Default eager loading
     |--------------------------------------------------------------------------
     |

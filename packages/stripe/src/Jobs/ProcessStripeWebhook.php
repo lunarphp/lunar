@@ -69,6 +69,6 @@ class ProcessStripeWebhook implements ShouldQueue
             return;
         }
 
-        $payment->cart($cart->calculate())->authorize();
+        $payment->cart($cart->recalculate())->authorize();
     }
 }

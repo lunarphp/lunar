@@ -14,7 +14,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
-- Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
 
 ## Ideas
@@ -36,6 +35,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
 - Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)
 - Panel Discounts section — list, discount editing, targeting, availability and usage limits (spec 0072)

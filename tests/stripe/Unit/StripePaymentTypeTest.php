@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
@@ -510,4 +511,28 @@ it('converts capture and refund amounts to stripe scale and stores refunds in lu
     $refund = $order->transactions()->where('type', 'refund')->first();
 
     expect($refund->amount)->toBe(500);
+});
+
+it('rejects an intent that matches a stale persisted total but not the pipeline result', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    // Persist a snapshot, then tamper with it so the row reads a lower total
+    // than the pipeline produces, while still looking fresh.
+    $cart->calculate();
+
+    Cart::query()->whereKey($cart->id)->toBase()->update(['total' => 100]);
+
+    Stripe::fake([
+        'amount' => StripeManager::toStripeAmount(100, $cart->currency),
+        'currency' => strtolower($cart->currency->code),
+    ]);
+
+    $response = $payment->cart(Cart::query()->find($cart->id))->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull();
 });

@@ -10,6 +10,10 @@ class UpdateCartLine implements UpdatesCartLine
 {
     /**
      * Execute the action.
+     *
+     * A model save rather than a query-builder update, so the line observer
+     * runs: the purchasable check on `updating` and the totals invalidation
+     * on `saved`, as add() has always had.
      */
     public function execute(
         int $cartLineId,
@@ -25,7 +29,7 @@ class UpdateCartLine implements UpdatesCartLine
                 $data['meta'] = $meta;
             }
 
-            CartLine::whereId($cartLineId)->update($data);
+            CartLine::query()->find($cartLineId)?->update($data);
         });
     }
 }

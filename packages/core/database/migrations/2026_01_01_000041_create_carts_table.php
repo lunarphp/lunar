@@ -23,6 +23,23 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');
             $table->softDeletes();
             $table->foreignId('tax_zone_id')->nullable()->constrained($this->prefix.'tax_zones')->nullOnDelete();
+
+            // Persisted totals snapshot (spec 0076). NULL means "not calculated".
+            $table->unsignedBigInteger('sub_total')->nullable();
+            $table->unsignedBigInteger('sub_total_discounted')->nullable();
+            $table->unsignedBigInteger('discount_total')->nullable();
+            $table->unsignedBigInteger('shipping_sub_total')->nullable();
+            $table->unsignedBigInteger('shipping_tax_total')->nullable();
+            $table->unsignedBigInteger('shipping_total')->nullable();
+            $table->unsignedBigInteger('tax_total')->nullable();
+            $table->unsignedBigInteger('total')->nullable();
+            $table->jsonb('tax_breakdown')->nullable();
+            $table->jsonb('shipping_breakdown')->nullable();
+            $table->jsonb('discount_breakdown')->nullable();
+            $table->jsonb('free_items')->nullable();
+            $table->unsignedInteger('revision')->default(0);
+            $table->unsignedInteger('calculated_revision')->nullable();
+            $table->timestamp('calculated_at')->nullable();
         });
     }
 
