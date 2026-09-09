@@ -24,23 +24,23 @@ final class ColumnType
 
     public static function badge(): static
     {
-        return new static('badge');
+        return new self('badge');
     }
 
     /** @param  string|null  $format  An Intl dateStyle: short, medium, long or full. */
     public static function date(?string $format = null): static
     {
-        return new static('date', array_filter(['format' => $format]));
+        return new self('date', array_filter(['format' => $format]));
     }
 
     public static function boolean(): static
     {
-        return new static('boolean');
+        return new self('boolean');
     }
 
     public static function image(): static
     {
-        return new static('image');
+        return new self('image');
     }
 
     /** @return array<string, mixed> */
