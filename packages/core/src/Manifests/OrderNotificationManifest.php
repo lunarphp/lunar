@@ -4,7 +4,16 @@ namespace Lunar\Core\Manifests;
 
 use Lunar\Core\Contracts\OrderNotificationManifest as OrderNotificationManifestContract;
 use Lunar\Core\Enums\NotificationScope;
+use Lunar\Core\Notifications\OrderCancellation;
+use Lunar\Core\Notifications\OrderConfirmation;
+use Lunar\Core\Notifications\OrderProvisioned;
+use Lunar\Core\Notifications\OrderReadyForCollection;
+use Lunar\Core\Notifications\OrderShipped;
 use Lunar\Core\Notifications\OrderUpdate;
+use Lunar\Core\Notifications\PartialFulfilmentUpdate;
+use Lunar\Core\Notifications\PaymentReceived;
+use Lunar\Core\Notifications\RefundIssued;
+use Lunar\Core\Notifications\ReturnReceived;
 
 class OrderNotificationManifest implements OrderNotificationManifestContract
 {
@@ -23,17 +32,27 @@ class OrderNotificationManifest implements OrderNotificationManifestContract
     }
 
     /**
-     * The code-level default catalogue. Ships a single general-purpose,
-     * manual-only "order update" notification so the admin can compose a send
-     * out of the box; the branded, auto-triggered lifecycle notifications are a
-     * separate piece of work. A consumer forgets or re-registers a key to swap
-     * it.
+     * The code-level default catalogue: the branded lifecycle emails, each
+     * keyed to the status or event name that fires it, plus two manual-only
+     * variants. Fulfilment-scoped entries are per-fulfilment states only (never
+     * the order rollups, which would double-send) and are not manually
+     * sendable, because the "Notify customer" composers are order-scoped. A
+     * consumer forgets or re-registers a key to switch one off or swap it.
      *
      * @return array<string, array{0: class-string, 1?: string, 2?: array<int, string>, 3?: bool, 4?: NotificationScope}>
      */
     protected function defaults(): array
     {
         return [
+            'order-confirmation' => [OrderConfirmation::class, 'lunar::notifications.order_confirmation.label', ['placed'], true, NotificationScope::Order],
+            'payment-received' => [PaymentReceived::class, 'lunar::notifications.payment_received.label', ['paid'], true, NotificationScope::Order],
+            'order-shipped' => [OrderShipped::class, 'lunar::notifications.order_shipped.label', ['shipped'], false, NotificationScope::Fulfilment],
+            'order-ready-for-collection' => [OrderReadyForCollection::class, 'lunar::notifications.order_ready_for_collection.label', ['ready-for-collection'], false, NotificationScope::Fulfilment],
+            'order-provisioned' => [OrderProvisioned::class, 'lunar::notifications.order_provisioned.label', ['provisioned'], false, NotificationScope::Fulfilment],
+            'return-received' => [ReturnReceived::class, 'lunar::notifications.return_received.label', ['returned'], false, NotificationScope::Fulfilment],
+            'order-cancelled' => [OrderCancellation::class, 'lunar::notifications.order_cancelled.label', ['cancelled'], true, NotificationScope::Order],
+            'refund-issued' => [RefundIssued::class, 'lunar::notifications.refund_issued.label', ['refund-issued'], true, NotificationScope::Order],
+            'partial-fulfilment-update' => [PartialFulfilmentUpdate::class, 'lunar::notifications.partial_fulfilment_update.label', [], true, NotificationScope::Order],
             'order-update' => [OrderUpdate::class, 'lunar::notifications.order_update.label'],
         ];
     }

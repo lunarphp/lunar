@@ -93,8 +93,30 @@ Order notifications are configured through an `OrderNotifications` manifest
 (each entry carries its auto-triggers, a manual/resendable flag and a scope)
 rather than a config map. An interactive "Notify customer" order action lets
 staff pick a notification, add a message, choose recipients and record the send.
-Fulfilment events gate on a "notify customer" toggle. (Branded default templates
-for the full lifecycle are still to come.)
+Fulfilment events gate on a "notify customer" toggle.
+
+Core ships branded, overridable defaults for the whole lifecycle, on for every
+install: order confirmation (on placement), payment received (a capture after
+placement), shipped with tracking, ready for collection, digital provisioning,
+return received, cancellation and refund issued, plus two manual-only variants
+(a partial-fulfilment update listing the outstanding lines, and the free-text
+order update). Templates are markdown mail views under the `lunar` namespace
+(`vendor:publish --tag=lunar.views`), themed through Laravel's own
+`laravel-mail` layout, with copy in `lunar::notifications`. To switch one off
+or swap it, forget or re-register its key in a service provider:
+
+```php
+OrderNotifications::forget('payment-received');
+OrderNotifications::register('order-confirmation', MyConfirmation::class, on: ['placed']);
+```
+
+Two trigger rules come with the defaults. Payment and fulfilment rollup emails
+only fire for placed orders, so a card checkout sends one confirmation (which
+carries the payment state) rather than a confirmation plus a "paid" email; a
+driver must record its capture before stamping `placed_at`. And the refund
+event now resolves the `refund-issued` key, not `refunded` (which stays the
+payment-status rollup's key) — a notification registered `on: ['refunded']` for
+the refund event should move to `on: ['refund-issued']`.
 
 ## Caching & events
 

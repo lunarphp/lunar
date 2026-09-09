@@ -10,7 +10,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
-- Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
@@ -35,6 +34,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Default customer notifications for the order lifecycle — nine branded, overridable defaults, the `placed` listener and gate, `refund-issued` key (spec 0036)
 - Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
 - Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)

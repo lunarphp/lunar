@@ -10,7 +10,7 @@ use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
  * Dispatch any notifications registered to fire when the order enters its new
  * derived fulfilment status, when the operation that changed it asked for the
  * customer to be notified. Looked up by the state `$name` in the order-scoped
- * {@see OrderNotificationManifest}.
+ * {@see OrderNotificationManifest}. Draft (unplaced) orders never email.
  */
 class SendOrderFulfilmentStatusNotifications
 {
@@ -20,7 +20,7 @@ class SendOrderFulfilmentStatusNotifications
 
     public function handle(OrderFulfilmentStatusUpdated $event): void
     {
-        if (! $event->notify) {
+        if (! $event->notify || ! $event->order->isPlaced()) {
             return;
         }
 
