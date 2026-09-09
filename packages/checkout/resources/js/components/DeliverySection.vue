@@ -14,7 +14,12 @@ const props = defineProps({
   variant: { type: String, default: 'delivery' },
 })
 
-const heading = computed(() => (props.variant === 'collect' ? 'Your details' : 'Delivery details'))
+const collecting = computed(() => props.variant === 'collect')
+const heading = computed(() => (collecting.value ? 'Your details' : 'Delivery details'))
+// The address book copy says "deliver" only when something is delivered.
+const bookCaption = computed(() => (collecting.value ? 'Use a saved address' : 'Deliver to a saved address'))
+const chosenPrefix = computed(() => (collecting.value ? '' : 'Delivering to '))
+const choosePrompt = computed(() => (collecting.value ? 'Choose your address' : 'Choose a delivery address'))
 const subcopy = computed(() =>
   props.variant === 'collect' ? "We'll use this as your billing address." : '',
 )
@@ -229,7 +234,7 @@ function save() {
         <template v-if="choosing">
           <p class="lookup-results-caption">
             <Icon name="book-user" :size="15" />
-            Deliver to a saved address
+            {{ bookCaption }}
           </p>
           <button
             v-for="entry in state.savedAddresses"
@@ -261,8 +266,8 @@ function save() {
         <template v-else>
           <div v-if="selectedEntry" class="deliver-to">
             <p class="deliver-to-name">
-              Delivering to
-              {{ [selectedEntry.address.firstName, selectedEntry.address.lastName].filter(Boolean).join(' ') }}
+              {{ chosenPrefix
+              }}{{ [selectedEntry.address.firstName, selectedEntry.address.lastName].filter(Boolean).join(' ') }}
             </p>
             <p class="deliver-to-line">
               {{
@@ -278,7 +283,7 @@ function save() {
             </p>
           </div>
           <div v-else class="deliver-to">
-            <p class="deliver-to-name">{{ saving ? 'Applying your address…' : 'Choose a delivery address' }}</p>
+            <p class="deliver-to-name">{{ saving ? 'Applying your address…' : choosePrompt }}</p>
           </div>
         </template>
       </div>
