@@ -9,6 +9,11 @@ name: build-panel-assets
 # Build the bundle on every push to 2.x and commit it back (force-added, since
 # it's gitignored) so any tag cut from 2.x already contains fresh assets and the
 # split -- and therefore composer installs -- ship a working panel.
+#
+# The table-rate-shipping add-on's panel bundle (packages/table-rate-shipping/build,
+# tracked in git) is rebuilt and committed by the same run for the same reason:
+# its pages are compiled through @lunarphp/panel-vite-plugin and the package is
+# installed through Composer, so the split has to carry the compiled output.
 
 on:
   push:
@@ -19,6 +24,9 @@ on:
       - "packages/panel/resources/**"
       - "packages/panel/vite.config.ts"
       - "packages/panel/package.json"
+      - "packages/table-rate-shipping/resources/js/**"
+      - "packages/table-rate-shipping/vite.config.js"
+      - "packages/table-rate-shipping/package.json"
       - ".github/workflows/build_panel_assets.yml"
 
 permissions:
@@ -58,8 +66,13 @@ jobs:
         run: npx vite build
         working-directory: packages/panel
 
+      # The add-on resolves @lunarphp/panel through the workspace, so it builds
+      # against the panel bundle produced above rather than the published types.
+      - name: Build table-rate-shipping panel bundle
+        run: npm run build --workspace @lunarphp/table-rate-shipping-panel
+
       - name: Commit built assets
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(panel): rebuild compiled assets"
-          file_pattern: packages/panel/public/build
+          file_pattern: packages/panel/public/build packages/table-rate-shipping/build

@@ -196,6 +196,14 @@ jobs:
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
 
+      # The table-rate-shipping add-on ships its panel pages prebuilt; type-check
+      # them against the freshly built @lunarphp/panel types and build the bundle.
+      - name: Typecheck table-rate-shipping panel pages
+        run: npm run type-check --workspace @lunarphp/table-rate-shipping-panel
+
+      - name: Build table-rate-shipping panel bundle
+        run: npm run build --workspace @lunarphp/table-rate-shipping-panel
+
       # Fails when a publishable npm package's content no longer matches the
       # tarball published under its current version — the reminder to bump.
       # Relies on the panel build above for fresh @lunarphp/panel types.

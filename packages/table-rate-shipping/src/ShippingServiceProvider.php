@@ -10,6 +10,8 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Modifiers\ShippingModifiers;
+use Lunar\Panel\Facades\Panel;
+use Lunar\Panel\PanelManager;
 use Lunar\Shipping\Actions\ShippingExclusionLists\CreateShippingExclusionList;
 use Lunar\Shipping\Actions\ShippingExclusionLists\DeleteShippingExclusionList;
 use Lunar\Shipping\Actions\ShippingExclusionLists\UpdateShippingExclusionList;
@@ -33,6 +35,7 @@ use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
 use Lunar\Shipping\Observers\OrderObserver;
+use Lunar\Shipping\Panel\ShippingSection;
 use Lunar\Shipping\Resolvers\PostcodeResolver;
 
 class ShippingServiceProvider extends ServiceProvider
@@ -124,6 +127,12 @@ class ShippingServiceProvider extends ServiceProvider
         ModelManifest::addDirectory(
             __DIR__.'/Models'
         );
+
+        // The Inertia panel is optional: the Settings > Shipping section
+        // registers itself only when lunarphp/panel is installed.
+        if (class_exists(PanelManager::class)) {
+            Panel::section(new ShippingSection);
+        }
 
         Relation::morphMap([
             'shipping_exclusion' => ShippingExclusion::class,

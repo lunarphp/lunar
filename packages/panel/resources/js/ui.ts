@@ -43,6 +43,7 @@ export { default as Toggle } from './components/Toggle.vue';
 export { default as FieldLabel } from './components/FieldLabel.vue';
 export { default as ColorPicker } from './components/ColorPicker.vue';
 export { default as DatePicker } from './components/DatePicker.vue';
+export { default as RichTextEditor } from './components/RichTextEditor.vue';
 export { default as ValuePreviewChip } from './components/ValuePreviewChip.vue';
 export type { PreviewValue } from './components/ValuePreviewChip.vue';
 
@@ -53,6 +54,8 @@ export { default as ConfirmDialog } from './components/ConfirmDialog.vue';
 export { default as Tooltip } from './components/Tooltip.vue';
 export { default as SideCard } from './components/SideCard.vue';
 export { default as Tabs } from './components/Tabs.vue';
+export { default as Section } from './components/Section.vue';
+export { default as Flag } from './components/Flag.vue';
 
 // Edit drafts
 export { default as DraftActions } from './components/DraftActions.vue';
