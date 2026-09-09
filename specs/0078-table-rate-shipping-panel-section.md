@@ -295,10 +295,11 @@ the slice [[0072-panel-discounts-section]] deferred:
 
 ### Public surface additions to the panel
 
-Two components move onto `ui.ts` (and `@lunarphp/panel`'s `index.js` / `index.d.ts`)
-because the shipping screens need them and any add-on with prose or country coverage
+Three components move onto `ui.ts` (and `@lunarphp/panel`'s `index.js`) because the
+shipping screens need them and any add-on with settings pages, prose or country coverage
 will too:
 
+- `Section` — the titled card every settings edit page is built from.
 - `RichTextEditor` — for the method description.
 - `Flag` — country flags in coverage chips; `Combobox` already accepts a `flag` option
   field, but the chip list beside it has no way to render one.
@@ -335,9 +336,9 @@ with the catalog's `values` map, while a shipping method has customer groups onl
   contributes its section to `DiscountForm`.
 - **Pest, `shipping` suite, unit** — the permission migration seeds `shipping:manage`
   against the core guard with the admin absent.
-- **npm** — the two new `ui.ts` exports are mirrored by hand into `@lunarphp/panel`'s
-  `index.js` / `index.d.ts` (nothing tests that sync today); `check-npm-drift` then
-  fails until the package version is bumped, which is the intended reminder.
+- **npm** — the new `ui.ts` exports are mirrored by hand into `@lunarphp/panel`'s
+  `index.js` (nothing tests that sync today); `check-npm-drift` then fails until the
+  package version is bumped, which is the intended reminder.
 - **JS** — `vue-tsc` type-check and the Vite build in CI. Component-level vitest for
   `RateTiersEditor`, `ScheduleGrid` and `PostcodeListInput` runs through a small vitest
   config in the package reusing the panel's `happy-dom` setup.
@@ -391,7 +392,7 @@ with the catalog's `values` map, while a shipping method has customer groups onl
     `Lunar\Shipping\Panel\ShippingSection`.
   - Filament bridge: `LunarFilament::discountForm()` and `Support\DiscountForms` are
     additive.
-  - Panel: `RichTextEditor` and `Flag` join `ui.ts` (additive; bump `@lunarphp/panel`).
+  - Panel: `Section`, `RichTextEditor` and `Flag` join `ui.ts` (additive; bump `@lunarphp/panel`).
 - **Upgrade path**: v1.x had no panel and the same Filament resources; nothing for the
   `upgrade` package.
 - **Translations**: four new groups and two new locales in the package; the namespace
@@ -402,6 +403,45 @@ with the catalog's `values` map, while a shipping method has customer groups onl
   installed. Assets publish with `panel-all-assets` or `shipping-panel-assets`, or link
   with `lunar:panel:link`.
 - **npm**: one new private workspace; no new third-party dependencies.
+
+## Decisions taken during implementation
+
+- **The bridge resolver lives on the existing extensions registry.** Rather than a new
+  `Support\DiscountForms` class, `LunarFilament::discountForm()` / `discountForms()` /
+  `discountFormFor()` sit on `ComponentExtensions\Registry`, which the bridge already
+  binds and fronts with the facade. `discountFormFor()` returns the type itself when it
+  implements the contract, so every existing type is untouched.
+- **`Section` is exported to add-ons as well as `Flag` and `RichTextEditor`.** The
+  settings edit pages are built from the panel's `Section` card, and an add-on settings
+  page has no other way to match that layout. Three exports, not two.
+- **The panel's `useForm` reserves `data`.** Inertia v3 rejects `data` as a form field
+  name, so the method forms carry the driver block as `driver_data` (edit) or a flat
+  `charge_by` (create) and rename it back under `data` in `transform()` on submit.
+- **The schedule sits behind a toggle.** A stored schedule with every day disabled makes
+  a method never available, which is what the Filament widget let staff save by
+  accident. The panel stores `schedule: null` (always available) until the toggle is on,
+  and `UpdateShippingMethod` treats a null data key as removal.
+- **The discount type form gets its method list from a shared prop.** A `DiscountTypeForm`
+  has no endpoint of its own and the form must not require `shipping:manage`, so the
+  provider shares `shippingMethods` through Inertia for `panel.discounts.*` routes only.
+  A `props()` hook on the contract would be the cleaner seam; it is a breaking change
+  for every implementer and belongs to its own spec.
+- **A rate's tiers submit with their editing form, not inline in the zone.** Confirmed as
+  specced; enable/disable on the rates table re-submits the rate's own payload with the
+  flag flipped rather than adding a fourth endpoint.
+- **Add-on vitest was dropped.** The add-on imports `@lunarphp/panel`, which resolves to
+  the runtime global; a vitest setup would need an alias into the panel's source tree
+  and its dependency tree. The add-on is type-checked with `vue-tsc` and built in CI;
+  behaviour is covered by the Pest feature tests against the real panel harness.
+- **Rate deletion and per-zone scoping.** The `rates.*` routes 404 when the rate does not
+  belong to the zone in the URL, checked in the controller rather than with scoped
+  bindings, since the rate table has no route key on the zone.
+- **The pre-existing English placeholders in eleven locales' `discounts.php` were
+  translated** while adding the panel keys, as the locale rule requires no placeholder
+  values in shipped lang files.
+- **Vocabulary.** This branch was cut before [[0077-rename-collection-fulfilment-to-pickup]]
+  merged, so the code still reads the `collection` driver key from the registry and its
+  lang key. Nothing here hardcodes the key; the rename lands independently.
 
 ## Open questions
 
@@ -442,20 +482,20 @@ with the catalog's `values` map, while a shipping method has customer groups onl
 
 ## Implementation plan
 
-- [ ] Slice 1 — Decouple the package: core-only `require`, bridge `discountForm()` map +
+- [x] Slice 1 — Decouple the package: core-only `require`, bridge `discountForm()` map +
       `DiscountForms` resolver, Filament `ShippingDiscountForm` extracted from the type,
       permission migration on the core guard, lang namespace rename, `de` / `nl` locales,
       factory namespaces, `ShippingExclusion::list()` fix, tests.
-- [ ] Slice 2 — Actions and contracts for zones, methods, rates and exclusion lists, bound
+- [x] Slice 2 — Actions and contracts for zones, methods, rates and exclusion lists, bound
       in `ShippingServiceProvider`, with unit tests.
-- [ ] Slice 3 — Panel scaffold + Zones: `ShippingSection`, nav group, routes, zone
+- [x] Slice 3 — Panel scaffold + Zones: `ShippingSection`, nav group, routes, zone
       index/create/edit with coverage and exclusion-list attachment, `RateSlideout` and
       the `rates.*` endpoints, `panel.ts`, npm workspace, Vite config, CI build +
       type-check, `build_panel_assets` job, `PanelTestCase`, feature tests.
-- [ ] Slice 4 — Methods: index/create/edit with `DriverSettings`, constraints,
+- [x] Slice 4 — Methods: index/create/edit with `DriverSettings`, constraints,
       `ScheduleGrid`, `CustomerGroupAvailability`; `RichTextEditor` export; tests.
-- [ ] Slice 5 — Exclusion lists: index/create/edit, `products.search`, chip list and
+- [x] Slice 5 — Exclusion lists: index/create/edit, `products.search`, chip list and
       picker; `Flag` export; tests.
-- [ ] Slice 6 — `ShippingDiscountForm` (panel) + `ShippingDiscountForm.vue`,
+- [x] Slice 6 — `ShippingDiscountForm` (panel) + `ShippingDiscountForm.vue`,
       `discountTypeForms()` registration, `getName()` repointed; closes
       [[0072-panel-discounts-section]] slice 6; tests.
