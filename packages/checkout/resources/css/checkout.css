@@ -93,6 +93,9 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-press: var(--accent-press);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-border: var(--accent-soft-border);
+  --color-accent-soft-border-strong: var(--accent-soft-border-strong);
 
   /* TYPE — families. */
   --font-sans: var(--font-sans);
@@ -442,8 +445,8 @@
     border-radius: var(--radius-full);
     display: grid;
     place-items: center;
-    background-color: var(--indigo-50);
-    box-shadow: inset 0 0 0 1px var(--indigo-100);
+    background-color: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent-soft-border);
     transition: box-shadow var(--dur-base);
   }
   .block-step .num {
@@ -728,9 +731,9 @@
      and the select's white surface reads as the actionable part. */
   .lookup-results {
     padding: 10px 12px 12px;
-    border: 1px solid var(--indigo-100);
+    border: 1px solid var(--accent-soft-border);
     border-radius: var(--radius-md);
-    background: var(--indigo-50);
+    background: var(--accent-soft);
   }
   .lookup-results-caption {
     display: flex;
@@ -750,9 +753,9 @@
     display: grid;
     gap: 8px;
     padding: 10px 12px 12px;
-    border: 1px solid var(--indigo-100);
+    border: 1px solid var(--accent-soft-border);
     border-radius: var(--radius-md);
-    background: var(--indigo-50);
+    background: var(--accent-soft);
   }
   .address-book .lookup-results-caption {
     margin: 0;
@@ -796,8 +799,8 @@
     flex: none;
     padding: 2px 8px;
     border-radius: 999px;
-    background: var(--indigo-100);
-    color: var(--indigo-700);
+    background: var(--accent-soft-border);
+    color: var(--accent-hover);
     font-size: var(--text-xs);
     font-weight: var(--weight-medium);
   }
@@ -1067,9 +1070,9 @@
     gap: 9px;
     margin: 0 0 4px;
     padding: 12px 14px;
-    border: 1px solid var(--indigo-100);
+    border: 1px solid var(--accent-soft-border);
     border-radius: var(--radius-md);
-    background: var(--indigo-50);
+    background: var(--accent-soft);
     color: var(--fg-secondary);
     font-size: var(--text-sm);
     line-height: 1.45;
@@ -1180,7 +1183,7 @@
   }
   .pm-tab.on {
     border-color: var(--accent);
-    background: var(--indigo-50);
+    background: var(--accent-soft);
     box-shadow: inset 0 0 0 1px var(--accent);
   }
   .pm-tab:focus-visible {
@@ -1472,6 +1475,11 @@
   .btn .ico {
     font-size: 17px;
   }
+  input[type='checkbox'],
+  input[type='radio'] {
+    accent-color: var(--accent);
+  }
+
   .btn-primary {
     background: var(--accent);
     color: #fff;
@@ -1480,7 +1488,7 @@
   }
   .btn-primary:hover {
     background: var(--accent-hover);
-    border-color: var(--indigo-900);
+    border-color: var(--accent-press);
   }
   .btn-primary:active {
     background: var(--accent-press);
@@ -1641,8 +1649,8 @@
     color: var(--error-700);
   }
   .a-info {
-    background: var(--indigo-50);
-    color: var(--indigo-800);
+    background: var(--accent-soft);
+    color: var(--accent-press);
   }
   .os-h {
     display: flex;
@@ -1797,7 +1805,7 @@
     height: 42px;
     padding: 0 14px;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--indigo-200);
+    border: 1px solid var(--accent-soft-border-strong);
     background: var(--bg-surface);
     font-size: 13px;
     font-weight: var(--weight-semibold);
@@ -1806,7 +1814,7 @@
     transition: background var(--dur-fast), border-color var(--dur-fast);
   }
   .disc-apply-btn:hover {
-    background: var(--indigo-50);
+    background: var(--accent-soft);
     border-color: var(--accent);
   }
   .disc-applied {
@@ -1967,7 +1975,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: var(--indigo-50);
+    background: var(--accent-soft);
     color: var(--accent);
     display: grid;
     place-items: center;
@@ -2044,7 +2052,7 @@
     width: 28px;
     height: 28px;
     border-width: 3px;
-    border-color: var(--indigo-100);
+    border-color: var(--accent-soft-border);
     border-top-color: var(--accent);
   }
   .processing-slow-ico {
@@ -2500,7 +2508,7 @@
 
   /* the blanks to fill */
   .xc-gaps {
-    border: 1px solid var(--indigo-200);
+    border: 1px solid var(--accent-soft-border-strong);
     border-radius: var(--radius-lg);
     background: var(--bg-surface);
     box-shadow: var(--shadow-xs);
@@ -2531,7 +2539,7 @@
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--accent);
-    background: var(--indigo-50);
+    background: var(--accent-soft);
     padding: 3px 9px;
     border-radius: var(--radius-full);
     white-space: nowrap;
@@ -2666,8 +2674,8 @@
       padding: 3px 11px 3px 8px;
       white-space: nowrap;
       border-radius: var(--radius-full);
-      background: var(--indigo-50);
-      border: 1px solid var(--indigo-200);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-soft-border-strong);
       font-size: var(--text-xs);
       font-weight: var(--weight-medium);
       color: var(--fg-secondary);

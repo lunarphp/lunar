@@ -37,3 +37,19 @@ it('refuses an unsafe favicon url', function () {
     expect(fn () => CheckoutTheme::tender()->with(favicon: 'javascript:alert(1)')->favicon())
         ->toThrow(InvalidArgumentException::class);
 });
+
+it('emits the pinnable accent tints as tokens', function () {
+    $tokens = CheckoutTheme::tender()->with(
+        accent: '#2d8e42',
+        accentSoft: '#ecf7ee',
+        accentSoftBorder: '#d3ecd9',
+        accentRing: 'rgba(45, 142, 66, 0.16)',
+    )->tokens();
+
+    expect($tokens)->toBe([
+        '--accent' => '#2d8e42',
+        '--accent-soft' => '#ecf7ee',
+        '--accent-soft-border' => '#d3ecd9',
+        '--accent-ring' => 'rgba(45, 142, 66, 0.16)',
+    ]);
+});

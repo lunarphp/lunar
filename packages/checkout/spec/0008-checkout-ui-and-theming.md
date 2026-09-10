@@ -168,6 +168,13 @@ final class CheckoutTheme
 }
 ```
 
+**One accent re-skins everything.** `tokens.css` derives the accent's tints (`--accent-soft`,
+`--accent-soft-border`, `--accent-soft-border-strong`, `--accent-ring`) from `--accent` with
+`color-mix()`, and `--fg-link`, `--border-focus` and native checkbox/radio `accent-color` follow it,
+so `with(accent:, accentHover:, accentPress:)` alone moves a store off the indigo default. The
+derived tints stay pinnable (`accentSoft`, `accentSoftBorder`, `accentRing`) when a brand's mix
+wants a hand-picked value; `checkout.css` never names an indigo step for an accent role.
+
 **No config keys.** Per the Lunar mandate (config is for values, the container is for substitutions
 — [[0000-overview]] §5), the theme is bound in the container. The package binds the default; the
 consumer rebinds in their own service provider:

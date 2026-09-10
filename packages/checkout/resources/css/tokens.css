@@ -58,16 +58,21 @@
   /* slate-500 (not 400) for WCAG AA on white — Tender v2 fix. */
   --fg-tertiary: var(--slate-500);
   --fg-on-accent: var(--slate-0);
-  --fg-link: var(--indigo-600);
+  --fg-link: var(--accent);
 
   --border: var(--slate-200);
   --border-strong: var(--slate-300);
-  --border-focus: var(--indigo-600);
+  --border-focus: var(--accent);
 
   --accent: var(--indigo-600);
   --accent-hover: var(--indigo-700);
   --accent-press: var(--indigo-800);
-  --accent-ring: rgba(79, 70, 229, 0.16);
+  /* Tints derived from --accent so one token re-skins every selected state,
+     soft panel, tag and ring. A theme may still pin any of them directly. */
+  --accent-soft: color-mix(in srgb, var(--accent) 7%, var(--bg-surface));
+  --accent-soft-border: color-mix(in srgb, var(--accent) 18%, var(--bg-surface));
+  --accent-soft-border-strong: color-mix(in srgb, var(--accent) 32%, var(--bg-surface));
+  --accent-ring: color-mix(in srgb, var(--accent) 16%, transparent);
 
   /* TYPE — families. */
   --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
