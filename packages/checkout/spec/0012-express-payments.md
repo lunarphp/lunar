@@ -202,7 +202,10 @@ The package hands the host two pieces:
 
 1. A server helper, `Express::projection(Cart $cart)`: the express-eligible methods plus client
    config, the same shape as the checkout projection's `paymentMethods`. The host spreads it
-   into its cart page props.
+   into its cart page props. It also carries `payable` (any registered method can serve this
+   basket) and `unavailable` (the reasons withdrawn methods gave, [[0002-payment-methods-and-driver]] §B),
+   so a host can close its checkout button and say why before the customer reaches an empty
+   payment region.
 2. A standalone `express.js` entry exporting `mountExpress(el, { methods, startUrl, amount })`,
    reusing the same `expressComponent` chunks, for host pages that are not the checkout bundle.
 

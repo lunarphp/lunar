@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Checkout\Contracts\ExplainsUnavailability;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\Express;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
@@ -198,6 +199,36 @@ it('projects only express-eligible available methods', function () {
     expect($projection['methods'])->toHaveCount(1)
         ->and($projection['methods'][0]['handle'])->toBe('fake-express')
         ->and($projection['methods'][0]['expressComponent'])->toBe('fake-express');
+});
+
+it('reports whether the basket is payable at all and why not', function () {
+    registerFakeExpressHoldGateway();
+    app(PaymentMethodRegistry::class)->add(FakeExpressMethod::class);
+
+    $projection = Express::projection(CheckoutCart::orderable());
+
+    expect($projection['payable'])->toBeTrue()
+        ->and($projection['unavailable'])->toBe([]);
+
+    app()->forgetInstance(PaymentMethodRegistry::class);
+    app(PaymentMethodRegistry::class)->add(new class extends FakeExpressMethod implements ExplainsUnavailability
+    {
+        public function isAvailable(Cart $cart): bool
+        {
+            return false;
+        }
+
+        public function unavailableReason(Cart $cart): ?string
+        {
+            return 'Too small.';
+        }
+    });
+
+    $projection = Express::projection(CheckoutCart::orderable());
+
+    expect($projection['methods'])->toBe([])
+        ->and($projection['payable'])->toBeFalse()
+        ->and($projection['unavailable'])->toBe(['Too small.']);
 });
 
 it('excludes an express method whose driver cannot actually hold', function () {

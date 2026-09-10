@@ -18,11 +18,19 @@ use Throwable;
 class Express
 {
     /**
-     * @return array{methods: array<int, array<string, mixed>>}
+     * `payable` says whether ANY registered method can serve this basket, and
+     * `unavailable` carries the customer-facing reasons the withdrawn methods
+     * gave (spec 0002 §B), so the host can say why the checkout is closed
+     * before the customer walks into an empty payment region.
+     *
+     * @return array{methods: array<int, array<string, mixed>>, payable: bool, unavailable: array<int, string>}
      */
     public static function projection(Cart $cart): array
     {
-        $methods = collect(app(PaymentMethodRegistry::class)->availableFor($cart))
+        $registry = app(PaymentMethodRegistry::class);
+        $available = $registry->availableFor($cart);
+
+        $methods = collect($available)
             ->filter(fn (PaymentMethod $method): bool => $method->supportsExpress()
                 && $method->expressComponent() !== null
                 && static::driverSupportsHolds($method))
@@ -39,7 +47,11 @@ class Express
             ->values()
             ->all();
 
-        return ['methods' => $methods];
+        return [
+            'methods' => $methods,
+            'payable' => $available !== [],
+            'unavailable' => array_values($registry->unavailableReasons($cart)),
+        ];
     }
 
     /**
