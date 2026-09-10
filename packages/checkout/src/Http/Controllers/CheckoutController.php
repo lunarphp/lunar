@@ -520,7 +520,7 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate(['email' => ['required', 'email']]);
+        $data = $request->validate(['email' => ['required', 'email:rfc,filter']]);
 
         $exists = Auth::getProvider()->retrieveByCredentials(['email' => $data['email']]) !== null;
 
@@ -633,7 +633,7 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate(['email' => ['required', 'email']]);
+        $data = $request->validate(['email' => ['required', 'email:rfc,filter']]);
 
         $customerId = auth()->user()?->latestCustomer()?->id;
 

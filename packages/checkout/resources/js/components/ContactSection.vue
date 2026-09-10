@@ -125,6 +125,13 @@ async function continueWithEmail() {
     return
   }
 
+  // The server refuses "alec@gmail" too (email:rfc,filter); saying so here
+  // saves the round trip and keeps the field from ticking green on a typo.
+  if (!emailValid.value) {
+    fieldError.value = 'Enter a valid email address, like name@example.com.'
+    return
+  }
+
   if (canSignIn.value) {
     document.getElementById('contact-password')?.focus()
     return

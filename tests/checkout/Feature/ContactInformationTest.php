@@ -114,6 +114,18 @@ it('stores a guest email onto the checkout session model', function () {
         ->and($session->fresh()->customer_reference)->toBeNull();
 });
 
+it('refuses an email with no domain', function (string $route) {
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->postJson(route($route, $session->uuid), ['email' => 'alec@gmail'])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('email');
+
+    expect($session->fresh()->customer_email)->toBeNull();
+})->with(['lunar.checkout.contact.store', 'lunar.checkout.contact.lookup']);
+
 it('associates the customer when authenticated', function () {
     [$user, $customer] = makeUserWithCustomer();
     $user->update(['email' => 'trade@example.test']);
