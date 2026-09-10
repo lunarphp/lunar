@@ -244,7 +244,12 @@ pass, in order:
 3. **Gate 2 — cart still orderable, elements still valid** —
    `ValidateCartForOrderCreation` (stock, min-qty, …) plus element re-validation
    / `canCreateOrder`. Gate 2 runs here at the pay boundary **and again inside
-   `complete()`** on the async path (§E.2).
+   `complete()`** on the async path (§E.2). It also insists on a reachable customer:
+   a signed-in account's email, or the guest email the contact step persisted onto the
+   session (and the shipping address). Neither present throws
+   `PaymentConfirmationException('contact_required')` ahead of the generic
+   `cart_not_orderable`, and the client mirrors the check so Pay answers with words,
+   never silence.
 
 Only when all pass does the session **pin** — `amount_total` to the live total
 *and* `cart_fingerprint` to the live fingerprint — and transition to

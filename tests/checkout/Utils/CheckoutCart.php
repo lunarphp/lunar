@@ -76,6 +76,9 @@ class CheckoutCart
             $cart->addresses()->create([
                 'type' => $type,
                 'country_id' => $country->id,
+                // The contact step has been done: an orderable cart knows who
+                // is buying (the pay boundary refuses one that does not).
+                'contact_email' => 'terry@example.com',
                 'first_name' => 'Terry',
                 'last_name' => 'Sparks',
                 'line_one' => '1 Trade Counter Way',

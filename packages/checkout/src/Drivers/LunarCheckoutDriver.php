@@ -160,6 +160,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
             if ($isSync) {
                 $this->assertPickupPointChosen($cart);
+                $this->assertContactKnown($session, $cart);
             }
 
             if ($isSync && ! $cart->canCreateOrder()) {
@@ -315,6 +316,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         }
 
         $this->assertPickupPointChosen($cart);
+        $this->assertContactKnown($session, $cart);
 
         if (! $cart->canCreateOrder()) {
             throw new PaymentConfirmationException('cart_not_orderable');
@@ -796,6 +798,25 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     {
         if (PickupPoints::missing($cart)) {
             throw new PaymentConfirmationException('pickup_point_required');
+        }
+    }
+
+    /**
+     * An order needs someone to send it to (spec 0010 §E Gate 2). A signed-in
+     * customer carries an email through the account; a guest must have left
+     * one through the contact step, which persists onto the session model and
+     * the shipping address. Nothing else on the cart proves a reachable
+     * customer, so the pay boundary refuses with its own reason rather than
+     * placing an order no confirmation can reach.
+     */
+    private function assertContactKnown(CheckoutSession $session, Cart $cart): void
+    {
+        $email = $session->customer_email
+            ?? $cart->shippingAddress?->contact_email
+            ?? $cart->user?->email;
+
+        if (! is_string($email) || trim($email) === '') {
+            throw new PaymentConfirmationException('contact_required');
         }
     }
 

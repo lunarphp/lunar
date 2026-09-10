@@ -148,7 +148,11 @@ it('places an express collect order from the basket page wallet', function () {
 
     $uuid = $start->json('uuid');
 
-    // 2. Collect mode writes no shipping address and no shipping rate: the
+    // 2. The wallet shares the payer's email first (emailRequired on the
+    //    sheet), which is what lets the pay boundary reach the customer.
+    $this->post($start->json('urls.contact'), ['email' => 'terry@example.com'])->assertRedirect();
+
+    //    Collect mode writes no shipping address and no shipping rate: the
     //    wallet's billing address is the only one, mirrored server-side onto
     //    the shipping row so the collect option can be stored.
     $this->postJson($start->json('urls.billingAddress'), [

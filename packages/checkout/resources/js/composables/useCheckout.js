@@ -387,6 +387,14 @@ export function createCheckout(data) {
   // projection, so it tracks element edits through the partial reloads.
   const paymentBlocker = computed(() => activePaymentMethod.value?.paymentBlocker ?? null)
 
+  // Whether the checkout knows who is ordering: a signed-in account or a
+  // guest email the contact step persisted (the element's props round-trip
+  // it). No contact element registered means the host owns that concern.
+  const contactKnown = computed(() => {
+    const contact = state.elements.find((el) => el.handle === 'contact')
+    return !contact || Boolean(contact.props?.signedIn || contact.props?.email)
+  })
+
   // Whether money changes hands at this checkout. False for on-account,
   // offline and other synchronous methods: the order is placed, nothing is
   // paid, and no copy on the page may say otherwise.
@@ -432,7 +440,22 @@ export function createCheckout(data) {
   }
 
   async function pay() {
-    if (state.processing || !state.addressValid || !activePaymentMethod.value) return
+    if (state.processing || !activePaymentMethod.value) return
+
+    // The server refuses every one of these too (spec 0010 §E Gate 2); the
+    // point here is that Pay always answers with what is missing.
+    if (!contactKnown.value) {
+      state.payError = 'Enter your email address so we can send your order confirmation.'
+      return
+    }
+
+    if (!state.addressValid) {
+      state.payError =
+        state.fulfilment === 'collect'
+          ? 'Enter your details above so we know who is collecting.'
+          : 'Enter your delivery address to continue.'
+      return
+    }
 
     if (collectUnavailable.value) {
       state.payError = COLLECT_UNAVAILABLE
@@ -586,6 +609,7 @@ export function createCheckout(data) {
     collectOption,
     collectAvailable,
     collectUnavailable,
+    contactKnown,
     pickupPoint,
     pickupPointRequired,
     selectPickupPoint,

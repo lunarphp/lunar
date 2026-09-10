@@ -6,7 +6,9 @@ use Lunar\Checkout\Contracts\GuardsPayment;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\Models\CheckoutSession;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
+use Lunar\Checkout\PaymentMethods\Offline;
 use Lunar\Checkout\States\CheckoutSession\Completed;
+use Lunar\Checkout\States\CheckoutSession\Open;
 use Lunar\Checkout\States\CheckoutSession\PaymentProcessing;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\Facades\Payments;
@@ -319,4 +321,40 @@ it('stamps the chosen method onto the placed order', function () {
 
     expect($order->meta['payment_method'])->toBe('on-account')
         ->and($order->transactions()->count())->toBe(0);
+});
+
+it('refuses to pay when nobody has said who is ordering', function () {
+    app(PaymentMethodRegistry::class)->add(Offline::class);
+
+    $cart = CheckoutCart::orderable();
+    $cart->shippingAddress->update(['contact_email' => null]);
+    $session = CheckoutCart::session($cart);
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'offline',
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.fingerprint.0', 'Enter your email address so we can send your order confirmation, then try again.');
+
+    expect(Order::query()->count())->toBe(0)
+        ->and($session->refresh()->status)->toBeInstanceOf(Open::class);
+});
+
+it('accepts a guest once the contact step has persisted an email', function () {
+    app(PaymentMethodRegistry::class)->add(Offline::class);
+
+    $cart = CheckoutCart::orderable();
+    $cart->shippingAddress->update(['contact_email' => null]);
+    $session = CheckoutCart::session($cart);
+
+    $this->post(route('lunar.checkout.contact.store', $session->uuid), ['email' => 'guest@example.com'])
+        ->assertRedirect();
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session->refresh()),
+        'payment_method' => 'offline',
+    ])->assertSuccessful();
+
+    expect(Order::query()->count())->toBe(1);
 });
