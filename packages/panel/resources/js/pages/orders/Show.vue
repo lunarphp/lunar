@@ -143,6 +143,14 @@ const TXN_TYPE_LABELS: Record<string, string> = {
 };
 const txnTypeLabel = (type: string): string => TXN_TYPE_LABELS[type] ?? type;
 
+// A transaction the gateway refused (a declined card, a failed refund) is
+// named by its outcome, not the step it was attempting: an unsuccessful
+// intent row is "Failed", never an "Authorization" that looks live.
+const txnLabel = (txn: { type: string; success: boolean }): string =>
+    txn.success ? txnTypeLabel(txn.type) : t('orders.txn_type_failed');
+const txnTone = (txn: { type: string; success: boolean }): Tone =>
+    !txn.success || txn.type === 'refund' ? 'danger' : 'sage';
+
 const page = usePage();
 const activities = computed(() => (page.props.activities as any[] | undefined) ?? []);
 
@@ -436,7 +444,7 @@ const addressLines = (address: Address): string[] =>
                                     <tbody>
                                         <tr v-for="txn in transactions" :key="txn.id" class="border-b border-line last:border-0">
                                             <td class="py-2 pr-2">
-                                                <StatusBadge :tone="txn.type === 'refund' ? 'danger' : (txn.success ? 'sage' : 'warn')" size="sm">{{ txnTypeLabel(txn.type) }}</StatusBadge>
+                                                <StatusBadge :tone="txnTone(txn)" size="sm">{{ txnLabel(txn) }}</StatusBadge>
                                             </td>
                                             <td class="py-2 px-2 text-ink-700">
                                                 {{ txn.card_type || txn.driver }}<span v-if="txn.last_four" class="text-ink-500"> ····{{ txn.last_four }}</span>
