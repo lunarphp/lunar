@@ -101,21 +101,19 @@ function chooseAddress(index) {
 
     <!-- Postcode lookup (spec 0011 §B). Rendered only when a driver can answer;
          with the null driver the customer gets honest manual entry below. -->
-    <div v-if="lookupEnabled" class="search-row" style="margin-bottom: 12px">
-      <div class="search">
-        <span class="lead ico"><Icon name="search" :size="18" /></span>
-        <label class="sr-only" :for="id('addr-search')">Search for your address by postcode</label>
-        <input
-          :id="id('addr-search')"
-          v-model="lookupPostcode"
-          type="text"
-          autocomplete="off"
-          placeholder="Enter your postcode"
-          style="text-transform: uppercase"
-          @keydown.enter.prevent="findAddresses"
-        />
-      </div>
-      <button type="button" class="btn btn-secondary search-btn" :disabled="lookupBusy" @click="findAddresses">
+    <div v-if="lookupEnabled" class="search search-lookup" style="margin-bottom: 12px">
+      <span class="lead ico"><Icon name="search" :size="18" /></span>
+      <label class="sr-only" :for="id('addr-search')">Search for your address by postcode</label>
+      <input
+        :id="id('addr-search')"
+        v-model="lookupPostcode"
+        type="text"
+        autocomplete="off"
+        placeholder="Enter your postcode"
+        style="text-transform: uppercase"
+        @keydown.enter.prevent="findAddresses"
+      />
+      <button type="button" class="search-btn" :disabled="lookupBusy" @click="findAddresses">
         {{ lookupBusy ? 'Searching…' : 'Find address' }}
       </button>
     </div>

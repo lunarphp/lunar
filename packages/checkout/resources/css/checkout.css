@@ -709,21 +709,45 @@
     font-size: 18px;
     pointer-events: none;
   }
-  /* Postcode lookup: the search input sits beside its "Find address" button
-     rather than inside .search, which only lays out its own icon + input. */
-  .search-row {
-    display: flex;
-    gap: 8px;
-    align-items: stretch;
-  }
-  .search-row .search {
-    flex: 1;
-    min-width: 0;
+  /* Postcode lookup: one full-width field with its "Find address" action
+     set inside the input as a quiet grey pill, so the field reads as the
+     unit and the button as its verb rather than a second, similar box. */
+  .search-lookup > input {
+    padding-right: 142px;
   }
   .search-btn {
-    flex: none;
-    height: 48px;
-    padding: 0 16px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    bottom: 6px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 14px;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--slate-700);
+    background: var(--slate-100);
+    border: 1px solid var(--slate-200);
+    border-radius: calc(var(--radius-sm) - 2px);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+  }
+  .search-btn:hover {
+    background: var(--slate-200);
+    border-color: var(--slate-300);
+    color: var(--fg-primary);
+  }
+  .search-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--ring-focus);
+  }
+  .search-btn:disabled {
+    cursor: default;
+    color: var(--fg-tertiary);
+    background: var(--slate-100);
+    border-color: var(--slate-200);
   }
   /* Lookup results are a moment, not a form field: the checkout found
      something and wants a decision. The tinted panel (same idiom as
@@ -1503,14 +1527,17 @@
     box-shadow: none;
     transform: none;
   }
+  /* Secondary actions take a grey fill: on a page of white bordered inputs a
+     white bordered button is one more box, and the step's verb gets lost. */
   .btn-secondary {
-    background: var(--bg-surface);
+    background: var(--slate-100);
     color: var(--fg-primary);
-    border: 1px solid var(--border-strong);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.06);
+    border: 1px solid var(--slate-300);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.06);
   }
   .btn-secondary:hover {
-    background: var(--bg-subtle);
+    background: var(--slate-200);
+    border-color: var(--slate-400);
   }
   .btn-secondary:active {
     transform: translateY(1px);
