@@ -1031,6 +1031,11 @@
     flex: none;
   }
 
+  .locked .reason {
+    display: block;
+    color: var(--fg-secondary);
+  }
+
   /* Contact step — wired states */
   .contact-done {
     display: flex;

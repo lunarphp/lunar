@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Checkout\Contracts\ExplainsUnavailability;
 use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\PaymentMethods\AbstractPaymentMethod;
 use Lunar\Checkout\PaymentMethods\Offline;
@@ -57,6 +58,33 @@ class CollectOnlyMethod extends Offline
     public function isAvailable(Cart $cart): bool
     {
         return (bool) $cart->getShippingOption()?->collect;
+    }
+}
+
+/**
+ * A method with a floor under it, the shape of a gateway minimum charge, that
+ * can say so in the customer's words.
+ */
+class MinimumSpendMethod extends Offline implements ExplainsUnavailability
+{
+    public function handle(): string
+    {
+        return 'minimum-spend';
+    }
+
+    public function label(): string
+    {
+        return 'Minimum spend';
+    }
+
+    public function isAvailable(Cart $cart): bool
+    {
+        return ($cart->total?->value ?? 0) >= 3000;
+    }
+
+    public function unavailableReason(Cart $cart): ?string
+    {
+        return $this->isAvailable($cart) ? null : 'This method needs an order total of at least £30.00.';
     }
 }
 
@@ -149,4 +177,44 @@ it('places a collection order through the shipped offline method', function () {
 
     expect($session->refresh()->status)->toBeInstanceOf(Completed::class)
         ->and(Order::query()->whereNotNull('placed_at')->count())->toBe(1);
+});
+
+it('collects the reasons unavailable methods give', function () {
+    $registry = app(PaymentMethodRegistry::class);
+    $registry->add(MinimalMethod::class)->add(CollectOnlyMethod::class)->add(MinimumSpendMethod::class);
+
+    $small = CheckoutCart::orderable(unitPrice: 1000);
+
+    expect($registry->unavailableReasons($small))
+        ->toBe(['minimum-spend' => 'This method needs an order total of at least £30.00.']);
+
+    $large = CheckoutCart::orderable(unitPrice: 5000);
+
+    expect($registry->unavailableReasons($large))->toBe([]);
+});
+
+it('projects why the payment region is empty', function () {
+    app(PaymentMethodRegistry::class)->add(MinimumSpendMethod::class);
+
+    $cart = CheckoutCart::orderable(unitPrice: 1000);
+    $session = CheckoutCart::session($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonCount(0, 'props.checkout.paymentMethods')
+        ->assertJsonPath('props.checkout.paymentUnavailable', ['This method needs an order total of at least £30.00.']);
+});
+
+it('refuses to pay with a method the basket is too small for', function () {
+    app(PaymentMethodRegistry::class)->add(MinimumSpendMethod::class);
+
+    $cart = CheckoutCart::orderable(unitPrice: 1000);
+    $session = CheckoutCart::session($cart);
+
+    $this->postJson(route('lunar.checkout.pay', $session->uuid), [
+        'fingerprint' => CheckoutCart::fingerprint($session),
+        'payment_method' => 'minimum-spend',
+    ])->assertStatus(422);
+
+    expect(Order::query()->count())->toBe(0);
 });

@@ -444,6 +444,9 @@ class CheckoutController extends Controller
                 'supportsExpress' => $method->supportsExpress() && Express::driverSupportsHolds($method),
                 'expressComponent' => $method->expressComponent(),
             ], app(PaymentMethodRegistry::class)->availableFor($cart)),
+            // Why a registered method is missing, in the customer's words
+            // (spec 0002 §B): shown when the region would otherwise be empty.
+            'paymentUnavailable' => array_values(app(PaymentMethodRegistry::class)->unavailableReasons($cart)),
             'urls' => $this->sessionUrls($session),
         ];
     }

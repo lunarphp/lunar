@@ -53,6 +53,18 @@ return [
     */
     'allow_partial_payment' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Minimum amounts
+    |--------------------------------------------------------------------------
+    |
+    | Stripe refuses charges below a per-currency minimum. The checkout card
+    | method withdraws itself for baskets under that figure; override or add
+    | a currency here, in minor units, e.g. ['GBP' => 30].
+    |
+    */
+    'minimum_amounts' => [],
+
     'actions' => [
         /*
         |--------------------------------------------------------------------------

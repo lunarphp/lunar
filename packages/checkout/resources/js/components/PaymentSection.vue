@@ -27,9 +27,14 @@ const panelFor = (method) => resolveElement(method.component)
       </h2>
     </div>
 
-    <div v-if="!state.paymentMethods.length" class="locked">
+    <div v-if="!state.paymentMethods.length" class="locked" role="status">
       <span class="ico"><Icon name="credit-card" :size="17" /></span>
-      No payment methods are available.
+      <span>
+        <template v-if="state.paymentUnavailable.length">
+          <span v-for="reason in state.paymentUnavailable" :key="reason" class="reason">{{ reason }}</span>
+        </template>
+        <template v-else>No payment methods are available.</template>
+      </span>
     </div>
 
     <template v-else>

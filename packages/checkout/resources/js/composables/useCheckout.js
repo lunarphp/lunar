@@ -103,6 +103,7 @@ export function createCheckout(data) {
     // Registered payment methods (spec 0002) — empty when the host has
     // enabled no gateway, in which case the payment region renders empty.
     paymentMethods: data.paymentMethods ?? [],
+    paymentUnavailable: data.paymentUnavailable ?? [],
     // The fingerprint of the cart state being shown; echoed to the pay
     // boundary so the server pins exactly what the customer confirmed.
     fingerprint: data.fingerprint ?? null,
@@ -149,6 +150,7 @@ export function createCheckout(data) {
     state.urls = fresh.urls ?? {}
     state.elements = fresh.elements ?? []
     state.paymentMethods = fresh.paymentMethods ?? []
+    state.paymentUnavailable = fresh.paymentUnavailable ?? []
     state.fingerprint = fresh.fingerprint ?? null
     state.addressValid = Boolean(fresh.shippingAddress?.postcode)
 

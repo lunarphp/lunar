@@ -95,6 +95,15 @@ Payment::registerMethod(PayPalMethod::class);
 With no method registered, the payment region renders empty (and Gate 2 reports the order not
 yet placeable) — core remains gateway-free and Stripe-free.
 
+**A method that withdraws itself says why.** `isAvailable(Cart)` is the gate: false hides the method
+from the checkout and the express region and refuses it at the pay boundary. A method that can put
+its reason in the customer's words also implements `ExplainsUnavailability::unavailableReason(Cart)`
+(a gateway minimum charge: "Card payments need an order total of at least £0.30."). The registry
+collects those reasons (`unavailableReasons()`), the checkout projects them as `paymentUnavailable`,
+and the payment region shows them in place of the bare "No payment methods are available" when
+nothing remains. Pay stays disabled with no method to pay by. Core knows no gateway's minimum; the
+gateway's method does.
+
 ### C. Host element, express region, submit seam
 
 - The **payment host element** (placed `region(Main)->last()`) renders the registered methods as

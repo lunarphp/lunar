@@ -124,7 +124,7 @@ const mSummaryOpen = ref(false)
             <PaymentSection :step="FIRST_MAIN_STEP + mainElements.length" />
 
             <div class="cta-wrap desktop-cta">
-              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null">
+              <button type="submit" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null || !state.paymentMethods.length">
                 <span v-if="state.processing" class="spinner"></span>
                 <template v-else>
                   <span class="ico"><Icon name="lock" :size="16" /></span>
@@ -171,7 +171,7 @@ const mSummaryOpen = ref(false)
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null" @click="pay">
+      <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || paymentBlocker !== null || !state.paymentMethods.length" @click="pay">
         <span v-if="state.processing" class="spinner"></span>
         <template v-else>
           <span class="ico"><Icon name="lock" :size="16" /></span>
