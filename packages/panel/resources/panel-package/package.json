@@ -16,11 +16,13 @@
         ".": {
             "types": "./dist/ui.d.ts",
             "default": "./index.js"
-        }
+        },
+        "./theme.css": "./theme.css"
     },
     "files": [
+        "dist",
         "index.js",
-        "dist"
+        "theme.css"
     ],
     "scripts": {
         "prepublishOnly": "npm --prefix ../.. run build:types"
