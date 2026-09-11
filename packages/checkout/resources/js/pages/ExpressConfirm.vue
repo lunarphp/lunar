@@ -5,6 +5,7 @@ import Icon from '../components/primitives/Icon.vue'
 import FloatingField from '../components/primitives/FloatingField.vue'
 import BrandHead from '../components/BrandHead.vue'
 import OrderSummary from '../components/OrderSummary.vue'
+import PayErrorToast from '../components/PayErrorToast.vue'
 import { COLLECT_UNAVAILABLE, createCheckout } from '../composables/useCheckout.js'
 import { useCheckoutTheme } from '../composables/useCheckoutTheme.js'
 import { resolveElement } from '../composables/elements.js'
@@ -810,11 +811,6 @@ async function confirmAndPay() {
             </div>
           </section>
 
-          <div v-if="payError" class="alert a-error" role="alert" style="margin-top: 20px">
-            <Icon name="alert-circle" :size="18" />
-            <span>{{ payError }}</span>
-          </div>
-
           <div class="cta-wrap desktop-cta">
             <p class="legal">
               By confirming you agree to our <a href="#">terms</a> and <a href="#">refund policy</a>. You can cancel
@@ -843,6 +839,7 @@ async function confirmAndPay() {
 
     <!-- Desktop · persistent confirm bar -->
     <div class="d-pay-bar">
+      <PayErrorToast :message="payError" @dismiss="payError = ''" />
       <div class="d-pay-inner">
         <div class="d-pay-zone d-pay-zone--form">
           <div class="d-pay-left">
@@ -883,6 +880,7 @@ async function confirmAndPay() {
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
+      <PayErrorToast :message="payError" @dismiss="payError = ''" />
       <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired || collectUnavailable || deliveryUnavailable" @click="confirmAndPay">
         <span v-if="confirming" class="spinner"></span>
         <template v-else>

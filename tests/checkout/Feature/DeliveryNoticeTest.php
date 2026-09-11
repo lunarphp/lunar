@@ -62,3 +62,23 @@ it('blocks and explains the CTA on both pages when nothing delivers', function (
         // A zero charge because nothing delivers is not free delivery.
         ->and($summary)->toContain('<span v-if="deliveryUnavailable" class="v ship-none">Unavailable</span>');
 });
+/**
+ * The pay bars are fixed to the bottom of the viewport, so a refusal rendered
+ * inline further up the page is routinely off screen at the moment the CTA is
+ * pressed. The toast rides the bar that produced it.
+ */
+it('shows pay refusals against the sticky pay bars', function () {
+    $js = dirname(__DIR__, 3).'/packages/checkout/resources/js';
+
+    $page = file_get_contents($js.'/components/LunarCheckout.vue');
+    $express = file_get_contents($js.'/pages/ExpressConfirm.vue');
+    $css = dirname(__DIR__, 3).'/packages/checkout/resources/css/checkout.css';
+
+    expect(file_exists($js.'/components/PayErrorToast.vue'))->toBeTrue()
+        ->and($page)->toContain('<PayErrorToast :message="state.payError" @dismiss="state.payError = \'\'" />')
+        // Both express bars carry it: desktop and mobile render exclusively.
+        ->and(substr_count($express, '<PayErrorToast :message="payError" @dismiss="payError = \'\'" />'))->toBe(2)
+        // ...and the express page keeps no mid-page copy to duplicate it.
+        ->and($express)->not->toContain('<span>{{ payError }}</span>')
+        ->and(file_get_contents($css))->toContain('.pay-error {');
+});

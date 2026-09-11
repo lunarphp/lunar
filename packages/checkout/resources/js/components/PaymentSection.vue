@@ -78,7 +78,7 @@ const panelFor = (method) => resolveElement(method.component)
         <BillingSection v-if="!state.billingSame" />
       </template>
 
-      <div v-if="state.payError" class="alert a-error" role="alert" style="margin-top: 14px">
+      <div v-if="state.payError" class="alert a-error pay-error-inline" role="alert" style="margin-top: 14px">
         <Icon name="alert-circle" :size="18" />
         <span>{{ state.payError }}</span>
       </div>

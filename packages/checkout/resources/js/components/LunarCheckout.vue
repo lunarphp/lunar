@@ -10,6 +10,7 @@ import PickupSection from './PickupSection.vue'
 import ShippingMethods from './ShippingMethods.vue'
 import PaymentSection from './PaymentSection.vue'
 import OrderSummary from './OrderSummary.vue'
+import PayErrorToast from './PayErrorToast.vue'
 import SuccessOverlay from './SuccessOverlay.vue'
 import { COLLECT_UNAVAILABLE, createCheckout } from '../composables/useCheckout.js'
 import { useCheckoutTheme } from '../composables/useCheckoutTheme.js'
@@ -175,6 +176,7 @@ const mSummaryOpen = ref(false)
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
+      <PayErrorToast :message="state.payError" @dismiss="state.payError = ''" />
       <button type="button" class="btn btn-primary btn-block" :disabled="state.processing || collectUnavailable || deliveryUnavailable || paymentBlocker !== null || !state.paymentMethods.length" @click="pay">
         <span v-if="state.processing" class="spinner"></span>
         <template v-else>

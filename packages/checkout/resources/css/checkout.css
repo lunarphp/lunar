@@ -1982,6 +1982,65 @@
     color: var(--error-700);
   }
 
+  /* ───────────── PAY ERROR TOAST ───────────── */
+  /* Below 861px the mobile pay bar carries the toast, so the copy beside the
+     desktop CTA would be a second live region saying the same thing. */
+  @media (max-width: 860px) {
+    .pay-error-inline {
+      display: none;
+    }
+  }
+  /* Absolutely placed against whichever fixed pay bar renders it, so it rides
+     just above the CTA at any scroll position. */
+  .pay-error {
+    position: absolute;
+    bottom: 100%;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: 640px;
+    margin: 0 auto 10px;
+    align-items: center;
+    box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.45);
+  }
+  .pay-error-text {
+    flex: 1;
+  }
+  .pay-error-close {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    margin: -2px -4px -2px 0;
+    color: inherit;
+    opacity: 0.7;
+  }
+  .pay-error-close:hover {
+    opacity: 1;
+  }
+  .pay-error-enter-active,
+  .pay-error-leave-active {
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+  .pay-error-enter-from,
+  .pay-error-leave-to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pay-error-enter-active,
+    .pay-error-leave-active {
+      transition: none;
+    }
+    .pay-error-enter-from,
+    .pay-error-leave-to {
+      transform: none;
+    }
+  }
+
   /* ───────────── TWO-FACTOR OVERLAY ───────────── */
   .tf-overlay {
     position: fixed;

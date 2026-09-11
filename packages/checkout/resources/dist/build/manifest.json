@@ -4,7 +4,7 @@
     "name": "StripeExpress"
   },
   "resources/js/app.js": {
-    "file": "assets/app-D9AeNnN7.js",
+    "file": "assets/app-BRwH5ROC.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -12,7 +12,7 @@
       "_StripeExpress-CoveWqHO.js"
     ],
     "css": [
-      "assets/app-CgChoFea.css"
+      "assets/app-CpM2wqoC.css"
     ]
   },
   "resources/js/express.js": {
