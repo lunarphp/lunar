@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Icon from './primitives/Icon.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state, fmt, itemCount, breakdown, applyDiscount, removeDiscount } = useCheckout()
+const { state, fmt, itemCount, breakdown, deliveryUnavailable, applyDiscount, removeDiscount } = useCheckout()
 
 const code = ref('')
 const onApply = () => {
@@ -66,8 +66,13 @@ const onApply = () => {
       <div class="os-line">
         <span>{{ state.fulfilment === 'collect' ? 'Collection' : 'Shipping' }}</span>
         <span class="ship-v">
-          <span v-if="breakdown.discShip" class="v strike">{{ fmt(breakdown.baseShipping) }}</span>
-          <span class="v">{{ breakdown.shipping ? fmt(breakdown.shipping) : 'Free' }}</span>
+          <!-- Zero because no courier serves this address is not free delivery,
+               and reading it as free hides a total that has quietly dropped. -->
+          <span v-if="deliveryUnavailable" class="v ship-none">Unavailable</span>
+          <template v-else>
+            <span v-if="breakdown.discShip" class="v strike">{{ fmt(breakdown.baseShipping) }}</span>
+            <span class="v">{{ breakdown.shipping ? fmt(breakdown.shipping) : 'Free' }}</span>
+          </template>
         </span>
       </div>
       <div class="os-line tax"><span>VAT (incl.)</span><span class="v">{{ fmt(breakdown.vat) }}</span></div>

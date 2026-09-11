@@ -1978,6 +1978,10 @@
     display: none;
   }
 
+  .os-line .ship-none {
+    color: var(--error-700);
+  }
+
   /* ───────────── TWO-FACTOR OVERLAY ───────────── */
   .tf-overlay {
     position: fixed;
@@ -2434,6 +2438,20 @@
   }
   .xc-row-value .muted {
     color: var(--fg-tertiary);
+  }
+  /* The delivery row when the address has no courier: the warning IS the
+     value, so it carries the error colour rather than sitting beside one. */
+  .xc-row-value .xc-row-warn {
+    color: var(--error-700);
+  }
+  .xc-row-empty {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: var(--error-700);
   }
   .xc-row-value .pay-mark {
     display: inline-flex;

@@ -1144,7 +1144,7 @@ class CheckoutController extends Controller
             // routine customer behaviour; every other reason (unorderable
             // cart, diverged context) is a state worth a log line, or the
             // only trace is the generic copy on screen.
-            if (! in_array($e->reason, ['fingerprint_mismatch', 'contact_required'], true)) {
+            if (! in_array($e->reason, ['fingerprint_mismatch', 'contact_required', 'shipping_option_required'], true)) {
                 report($e);
             }
 
@@ -1327,6 +1327,7 @@ class CheckoutController extends Controller
             'fingerprint_mismatch' => 'Your order changed while you were checking out. Check the details above and try again.',
             'cart_not_orderable' => 'Your order cannot be placed right now. Check the details above and try again.',
             'pickup_point_required' => 'Choose where you would like to collect your order, then try again.',
+            'shipping_option_required' => 'We cannot deliver to this address. Change the delivery address to continue.',
             'contact_required' => 'Enter your email address so we can send your order confirmation, then try again.',
             default => 'The payment could not be started. Refresh the page and try again.',
         };

@@ -81,6 +81,6 @@ it('wires the on-account notice and the payment blocker into the checkout app', 
         ->and(file_exists($base.'/components/payments/OnAccountNotice.vue'))->toBeTrue()
         ->and($composable)->toContain('const paymentBlocker = computed(')
         ->and($composable)->toContain('const payLabel = computed(')
-        ->and(substr_count($checkout, ':disabled="state.processing || collectUnavailable || paymentBlocker !== null || !state.paymentMethods.length"'))->toBe(2)
+        ->and(substr_count($checkout, ':disabled="state.processing || collectUnavailable || deliveryUnavailable || paymentBlocker !== null || !state.paymentMethods.length"'))->toBe(2)
         ->and(substr_count($checkout, '{{ payLabel }}'))->toBe(2);
 });

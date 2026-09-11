@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Checkout\Contracts\CheckoutDriver;
+use Lunar\Checkout\Exceptions\PaymentConfirmationException;
+use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Tests\Checkout\TestCase;
 use Lunar\Tests\Checkout\Utils\CheckoutCart;
 
@@ -27,4 +29,34 @@ it('keeps the chosen shipping option when the shipping address is rewritten', fu
     ])->assertRedirect();
 
     expect(app(CheckoutDriver::class)->getSelectedShippingOption($session->refresh()))->toBe('standard');
+});
+
+it('refuses payment with its own reason when the address leaves no option to deliver on', function () {
+    $cart = CheckoutCart::orderable();
+    $session = CheckoutCart::session($cart);
+
+    // The address moves somewhere no courier serves (Northern Ireland on the
+    // Edwardes zones): nothing on the manifest matches it any more, so the
+    // rewrite below has no option to re-apply and the cart loses its charge.
+    ShippingManifest::clearOptions();
+
+    $this->post(route('lunar.checkout.shipping-address.store', $session->uuid), [
+        'first_name' => 'Alec',
+        'last_name' => 'Ritson',
+        'line1' => '1 Trade Counter Way',
+        'city' => 'Belfast',
+        'postcode' => 'BT7 1NN',
+        'country_code' => 'GB',
+    ])->assertRedirect();
+
+    $session->refresh();
+
+    expect(app(CheckoutDriver::class)->getSelectedShippingOption($session))->toBeNull();
+
+    try {
+        app(CheckoutDriver::class)->assertReadyForPayment($session, $session->cart_fingerprint);
+        $this->fail('expected a PaymentConfirmationException');
+    } catch (PaymentConfirmationException $e) {
+        expect($e->reason)->toBe('shipping_option_required');
+    }
 });

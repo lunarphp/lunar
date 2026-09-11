@@ -8,6 +8,10 @@ export const CHECKOUT_KEY = Symbol('lunar-checkout')
 // pay boundary's refusal and the CTA hint read the same (spec 0013 §F).
 export const COLLECT_UNAVAILABLE = 'Collection is not available for this address. Switch to delivery to continue.'
 
+// The delivering counterpart. The host usually has something better to say
+// (`deliveryNotice`, spec 0011 §H); this is the plain fact when it does not.
+export const DELIVERY_UNAVAILABLE = 'We cannot deliver to this address. Change the delivery address to continue.'
+
 // Plain JSON POST outside Inertia: the pay boundary and gateway calls are
 // request/response, not page visits. Module-level (not tied to a checkout
 // store) so a component without a <LunarCheckout> ancestor, like the
@@ -284,6 +288,15 @@ export function createCheckout(data) {
   const collectUnavailable = computed(
     () => state.fulfilment === 'collect' && state.addressValid && !collectAvailable.value,
   )
+  // The same dead end on the delivering side: an address the couriers will
+  // not serve leaves no option to store, so the cart carries no shipping
+  // charge and cannot create an order. Nothing upstream notices, so without
+  // this the total quietly drops by the delivery charge and Pay fails at the
+  // boundary with the generic "cannot be placed right now".
+  const deliveryUnavailable = computed(
+    () => state.fulfilment === 'delivery' && state.addressValid && deliveryMethods.value.length === 0,
+  )
+  const deliveryUnavailableMessage = computed(() => state.deliveryNotice || DELIVERY_UNAVAILABLE)
   // Several points on offer and none chosen: pay is blocked until one is.
   const pickupPointRequired = computed(
     () =>
@@ -462,6 +475,11 @@ export function createCheckout(data) {
       return
     }
 
+    if (deliveryUnavailable.value) {
+      state.payError = deliveryUnavailableMessage.value
+      return
+    }
+
     if (pickupPointRequired.value) {
       state.payError = 'Choose where you would like to collect your order.'
       return
@@ -606,6 +624,8 @@ export function createCheckout(data) {
     itemCount,
     shippingMethod,
     deliveryMethods,
+    deliveryUnavailable,
+    deliveryUnavailableMessage,
     collectOption,
     collectAvailable,
     collectUnavailable,

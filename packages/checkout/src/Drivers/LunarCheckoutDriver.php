@@ -160,6 +160,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
 
             if ($isSync) {
                 $this->assertPickupPointChosen($cart);
+                $this->assertShippingOptionChosen($cart);
                 $this->assertContactKnown($session, $cart);
             }
 
@@ -316,6 +317,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         }
 
         $this->assertPickupPointChosen($cart);
+        $this->assertShippingOptionChosen($cart);
         $this->assertContactKnown($session, $cart);
 
         if (! $cart->canCreateOrder()) {
@@ -798,6 +800,25 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     {
         if (PickupPoints::missing($cart)) {
             throw new PaymentConfirmationException('pickup_point_required');
+        }
+    }
+
+    /**
+     * A delivering cart with no stored option (spec 0010 §E Gate 2). The
+     * option rides on the shipping address row and Lunar replaces that row
+     * wholesale, so an address edit that lands somewhere the couriers do not
+     * serve leaves the cart deliverable in intent and unpriced in fact. That
+     * is its own refusal: the customer has to change the address, which
+     * "cannot be placed right now" never tells them.
+     */
+    private function assertShippingOptionChosen(Cart $cart): void
+    {
+        if (PickupPoints::fulfilment($cart) === PickupPoints::COLLECT) {
+            return;
+        }
+
+        if (blank($cart->shippingAddress?->shipping_option)) {
+            throw new PaymentConfirmationException('shipping_option_required');
         }
     }
 

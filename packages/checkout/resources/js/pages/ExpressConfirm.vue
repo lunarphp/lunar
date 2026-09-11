@@ -32,6 +32,8 @@ const {
   totalLabel,
   shippingMethod,
   deliveryMethods,
+  deliveryUnavailable,
+  deliveryUnavailableMessage,
   collectOption,
   pickupPoint,
   pickupPointRequired,
@@ -321,6 +323,9 @@ const payError = ref('')
 const canConfirm = computed(() => fullNameValid.value && !needsReauth.value && !confirming.value)
 const payHint = computed(() => {
   if (needsReauth.value) return 'Re-open your wallet to confirm the new total'
+  // Ahead of the name gap: an address we cannot deliver to blocks the order
+  // whatever else is filled in, and the fix is up in the address row.
+  if (deliveryUnavailable.value) return 'Change your delivery address to continue'
   if (!fullNameValid.value) return 'Add your name to confirm'
   return ''
 })
@@ -329,6 +334,10 @@ function focusHint() {
   if (needsReauth.value) {
     startPaymentEdit()
     reopenWallet()
+    return
+  }
+  if (deliveryUnavailable.value) {
+    openEdit('address')
     return
   }
   document.getElementById('gap-name')?.focus()
@@ -341,6 +350,11 @@ async function confirmAndPay() {
 
   if (collectUnavailable.value) {
     payError.value = COLLECT_UNAVAILABLE
+    return
+  }
+
+  if (deliveryUnavailable.value) {
+    payError.value = deliveryUnavailableMessage.value
     return
   }
 
@@ -643,8 +657,11 @@ async function confirmAndPay() {
                   <div class="xc-row-main">
                     <div class="xc-row-label">Shipping method</div>
                     <div class="xc-row-value">
-                      <span class="ln">{{ shippingMethod?.name }}</span>
-                      <span class="ln muted">{{ shippingMethod?.price ? fmt(shippingMethod.price) : 'Free' }}</span>
+                      <template v-if="shippingMethod">
+                        <span class="ln">{{ shippingMethod.name }}</span>
+                        <span class="ln muted">{{ shippingMethod.price ? fmt(shippingMethod.price) : 'Free' }}</span>
+                      </template>
+                      <span v-else class="ln xc-row-warn">{{ deliveryUnavailableMessage }}</span>
                     </div>
                   </div>
                   <button type="button" class="xc-row-edit-btn" @click="openEdit('shipping')">
@@ -652,7 +669,10 @@ async function confirmAndPay() {
                   </button>
                 </div>
                 <div class="xc-row-edit">
-                  <div role="radiogroup" aria-label="Select a shipping method">
+                  <p v-if="!deliveryMethods.length" class="xc-row-empty" role="alert">
+                    <Icon name="alert-circle" :size="15" />{{ deliveryUnavailableMessage }}
+                  </p>
+                  <div v-else role="radiogroup" aria-label="Select a shipping method">
                     <button
                       v-for="m in deliveryMethods"
                       :key="m.id"
@@ -845,7 +865,7 @@ async function confirmAndPay() {
               type="button"
               id="d-confirm-btn"
               class="btn btn-primary xc-pay-btn"
-              :disabled="!canConfirm || pickupPointRequired || collectUnavailable"
+              :disabled="!canConfirm || pickupPointRequired || collectUnavailable || deliveryUnavailable"
               @click="confirmAndPay"
             >
               <span v-if="confirming" class="spinner"></span>
@@ -863,7 +883,7 @@ async function confirmAndPay() {
 
     <!-- Mobile · sticky pay bar -->
     <div class="m-pay-bar">
-      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired || collectUnavailable" @click="confirmAndPay">
+      <button type="button" class="btn btn-primary btn-block xc-pay-btn" :disabled="!canConfirm || pickupPointRequired || collectUnavailable || deliveryUnavailable" @click="confirmAndPay">
         <span v-if="confirming" class="spinner"></span>
         <template v-else>
           <Icon name="lock" :size="16" />
