@@ -82,3 +82,15 @@ it('shows pay refusals against the sticky pay bars', function () {
         ->and($express)->not->toContain('<span>{{ payError }}</span>')
         ->and(file_get_contents($css))->toContain('.pay-error {');
 });
+/**
+ * The host owns the option order, and a table-rate setup routinely lists a
+ * paid rate ahead of the free-over-threshold one the basket qualifies for.
+ * Auto-applying the first would charge for delivery the basket had earned.
+ */
+it('auto-applies the cheapest delivery option, not the first listed', function () {
+    $source = file_get_contents(dirname(__DIR__, 3).'/packages/checkout/resources/js/components/ShippingMethods.vue');
+
+    expect($source)->toContain('const cheapestDelivery = computed(')
+        ->and($source)->toContain('selectShipping(cheapestDelivery.value.id)')
+        ->and($source)->not->toContain('selectShipping(deliveryMethods.value[0].id)');
+});
