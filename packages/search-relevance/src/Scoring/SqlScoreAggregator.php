@@ -14,6 +14,11 @@ use Lunar\SearchRelevance\Signals\QueryAffinitySignal;
  * One aggregation query per run. Drivers differ only in how they express the
  * event age in seconds, the minute bucket for the search-rate guard, and
  * whether a bound float needs a cast.
+ *
+ * Abuse guards applied here: each session contributes at most one event of
+ * each type per query and product; only trusted sessions (a cart or a known
+ * customer) count when `trusted_sessions_only` is set; excluded products
+ * and events before a query reset are ignored.
  */
 abstract class SqlScoreAggregator implements ScoreAggregator
 {
@@ -38,6 +43,9 @@ abstract class SqlScoreAggregator implements ScoreAggregator
         $events = $prefix.'search_events';
         $queries = $prefix.'search_queries';
         $scores = $prefix.'search_query_scores';
+        $overrides = $prefix.'search_learning_overrides';
+        $trustedOnly = (bool) ($config['trusted_sessions_only'] ?? false);
+        $trust = $trustedOnly ? "AND (q.session_id LIKE 'cart:%' OR q.customer_id IS NOT NULL)" : '';
 
         $weights = $config['weights'] ?? [];
         $windowStart = $start->copy()->subDays((int) ($config['window_days'] ?? 180));
@@ -53,20 +61,40 @@ abstract class SqlScoreAggregator implements ScoreAggregator
                 GROUP BY session_id, {$minute}
                 HAVING COUNT(*) > ?
             ),
+            resets AS (
+                SELECT model_type, normalised_query, MAX(created_at) AS reset_at
+                FROM {$overrides}
+                WHERE type = 'reset'
+                GROUP BY model_type, normalised_query
+            ),
+            deduped AS (
+                SELECT q.model_type, q.normalised_query, e.product_id, e.session_id, e.type,
+                    MIN(e.source) AS source, MIN(e.position) AS position, MAX(e.created_at) AS created_at
+                FROM {$events} e
+                JOIN {$queries} q ON q.id = e.search_id
+                LEFT JOIN resets r ON r.model_type = q.model_type AND r.normalised_query = q.normalised_query
+                WHERE e.created_at > ?
+                  AND (r.reset_at IS NULL OR e.created_at > r.reset_at)
+                  AND q.version = ?
+                  AND e.session_id NOT IN (SELECT session_id FROM busy)
+                  {$trust}
+                  AND NOT EXISTS (
+                      SELECT 1 FROM {$overrides} x
+                      WHERE x.type = 'exclude' AND x.model_type = q.model_type
+                        AND x.normalised_query = q.normalised_query AND x.product_id = e.product_id
+                  )
+                GROUP BY q.model_type, q.normalised_query, e.product_id, e.session_id, e.type
+            ),
             raw AS (
-                SELECT q.model_type, q.normalised_query, e.product_id,
+                SELECT e.model_type, e.normalised_query, e.product_id,
                     SUM(
                         (CASE e.type WHEN 'click' THEN {$f} WHEN 'basket' THEN {$f} WHEN 'purchase' THEN {$f} ELSE 0 END)
                         * (CASE WHEN e.source = 'explore' THEN 1 ELSE LEAST(POWER(e.position, {$f}), {$f}) END)
                         * POWER(0.5, ({$age}) / 86400.0 / {$f})
                     ) AS score,
                     COUNT(DISTINCT e.session_id) AS sessions
-                FROM {$events} e
-                JOIN {$queries} q ON q.id = e.search_id
-                WHERE e.created_at > ?
-                  AND q.version = ?
-                  AND e.session_id NOT IN (SELECT session_id FROM busy)
-                GROUP BY q.model_type, q.normalised_query, e.product_id
+                FROM deduped e
+                GROUP BY e.model_type, e.normalised_query, e.product_id
                 HAVING COUNT(DISTINCT e.session_id) >= ?
             ),
             ranked AS (
@@ -83,14 +111,14 @@ abstract class SqlScoreAggregator implements ScoreAggregator
         $rows = $connection->select($sql, [
             $windowStart,
             (int) ($config['max_searches_per_minute'] ?? PHP_INT_MAX),
+            $windowStart,
+            $version,
             (float) ($weights['click'] ?? 1),
             (float) ($weights['basket'] ?? 3),
             (float) ($weights['purchase'] ?? 5),
             (float) ($config['position_eta'] ?? 0.7),
             (float) ($config['max_position_weight'] ?? 5),
             (float) ($config['half_life_days'] ?? 30),
-            $windowStart,
-            $version,
             (int) ($config['min_sessions'] ?? 3),
             (int) ($config['max_products_per_query'] ?? 50),
         ]);

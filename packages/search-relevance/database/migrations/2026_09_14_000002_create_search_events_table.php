@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('session_id', 64);
             $table->timestamp('created_at');
             $table->index(['created_at', 'search_id']);
+            // One event of each type per product per search: replays add nothing.
+            $table->unique(['search_id', 'product_id', 'type']);
         });
     }
 

@@ -10,6 +10,7 @@ use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Slots\Slot;
 use Lunar\Panel\Slots\SlotRegistry;
 use Lunar\Panel\Support\Position;
+use Lunar\SearchRelevance\Panel\Http\Controllers\OverridesController;
 use Lunar\SearchRelevance\Panel\Http\Controllers\SearchRelevanceController;
 use Lunar\SearchRelevance\Panel\Http\Controllers\SettingsController;
 use Lunar\SearchRelevance\Panel\Search\QuerySearchSource;
@@ -67,6 +68,17 @@ class SearchRelevanceSection extends Section
 
                 Route::get('search-relevance/products/{product}', [SearchRelevanceController::class, 'product'])
                     ->name('panel.search-relevance.product');
+
+                // {productId}, not {product}: the panel binds `product` to the model.
+                Route::post('search-relevance/queries/{query}/exclusions/{productId}', [OverridesController::class, 'exclude'])
+                    ->where(['query' => '.*', 'productId' => '[0-9]+'])
+                    ->name('panel.search-relevance.exclude');
+                Route::delete('search-relevance/queries/{query}/exclusions/{productId}', [OverridesController::class, 'include'])
+                    ->where(['query' => '.*', 'productId' => '[0-9]+'])
+                    ->name('panel.search-relevance.include');
+                Route::post('search-relevance/queries/{query}/reset', [OverridesController::class, 'reset'])
+                    ->where('query', '.*')
+                    ->name('panel.search-relevance.reset');
 
                 Route::prefix('settings/search-relevance')
                     ->name('panel.settings.search-relevance.')

@@ -443,6 +443,19 @@ Built as an add-on to `lunarphp/panel`, following `packages/panel-addon-example`
 
 Vue pages use the panel's existing table and card components; nothing custom beyond a small bar for relative score. Ship `en` translations only; other locales fall back per the panel's namespace rules.
 
+#### 2.10.1 Abuse and manipulation guards
+
+Learned ranking is a feedback loop, so bots and bad actors can try to feed it. The design limits the blast radius structurally (the bucketed ranker only reorders within buckets of ten and the learned union lands at position 11 or later, so nothing can be pushed into the top ten unless the engine already put it there) and adds these guards:
+
+- **Event validation**: an event needs a real `search_id`, a product from that search's shown list, a position inside it, and must arrive within `guards.event_window_minutes` of the search (default 120). The events table is unique on `(search_id, product_id, type)`, so replaying a click adds nothing.
+- **Scoring dedupe**: each session contributes at most one event of each type per query and product; a session cannot vote twice by re-running the search.
+- **Trusted sessions**: with `guards.trusted_sessions_only` (default on), only sessions that hold a cart or belong to a known customer count. A bot minting fresh sessions gains nothing; it must interact with the storefront to get a cart, and even then one vote per session.
+- **Crawlers** are neither logged nor ranked (`guards.ignored_user_agents`), so reporting stays honest and the tables stay small. Sessionless headless clients are kept, since they identify the shopper explicitly on the events endpoint.
+- **Refunds and cancellations** remove the purchase events their attributed order lines produced (`ForgetPurchases` on `OrderCancelled` and `OrderRefunded`).
+- **Staff overrides** in the panel query page, stored in `{prefix}search_learning_overrides`: exclude a product from learning for a query (its score is removed immediately and future events ignored, reversible) and reset learning for a query (discards everything learned and ignores events before the reset). Both go through `Lunar\SearchRelevance\Learning\Overrides`, which both aggregators honour.
+
+Not done on purpose: storing IP addresses for abuse analysis. The per-IP rate limit on the events endpoint covers the crude case without the privacy obligations.
+
 #### 2.11 Tests
 
 `tests/search-relevance/` (Pest, per monorepo layout):
@@ -506,5 +519,6 @@ Every class, config key and command in the docs must be verified against the mon
 - [x] Slice 4 — `search-relevance`: contracts, `QueryAffinitySignal`, `BucketedRanker`, `WidenRequest`, `RankResults`, learned union, shadow logging
 - [x] Slice 5 — Panel section, widget, product slot, search source, settings
 - [x] Slice 6 — Docs PR (`lunarphp/docs`)
+- [x] Slice 8 — Abuse guards: event window and dedupe, trusted sessions, crawler skip, refund/cancel forgetting, panel exclusions and reset
 - [x] Slice 7 — Storefront client `@lunarphp/search-relevance` (framework-agnostic + Vue), shared with the Blade component, typed `meta`
 - [ ] Follow-ups (separate specs): `AccountHistorySignal`, exploration strip

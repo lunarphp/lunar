@@ -21,6 +21,7 @@ class ScoreCommand extends Command
         $scoring = [
             ...$config->get('lunar.search_relevance.scoring', []),
             'max_searches_per_minute' => $config->get('lunar.search_relevance.guards.max_searches_per_minute', 30),
+            'trusted_sessions_only' => (bool) $config->get('lunar.search_relevance.guards.trusted_sessions_only', true),
             'keep_versions' => $versions->all(),
         ];
 

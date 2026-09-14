@@ -35,21 +35,46 @@ class PhpScoreAggregator implements ScoreAggregator
         $maxProducts = (int) ($config['max_products_per_query'] ?? 50);
         $windowStart = $start->copy()->subDays((int) ($config['window_days'] ?? 180));
         $busy = $this->busySessions($connection, $prefix, $windowStart, (int) ($config['max_searches_per_minute'] ?? PHP_INT_MAX));
+        $trustedOnly = (bool) ($config['trusted_sessions_only'] ?? false);
+        [$excluded, $resets] = $this->overrides($connection, $prefix);
 
         /** @var array<string, array{model_type: string, query: string, product_id: int, score: float, sessions: array<string, true>}> $groups */
         $groups = [];
+        /** @var array<string, true> $seen one event per query, product, session and type */
+        $seen = [];
 
         $connection->table($prefix.'search_events as e')
             ->join($prefix.'search_queries as q', 'q.id', '=', 'e.search_id')
             ->where('e.created_at', '>', $windowStart)
             ->where('q.version', $version)
-            ->select(['e.id', 'q.model_type', 'q.normalised_query', 'e.product_id', 'e.type', 'e.source', 'e.position', 'e.session_id', 'e.created_at'])
+            ->select(['e.id', 'q.model_type', 'q.normalised_query', 'q.customer_id', 'e.product_id', 'e.type', 'e.source', 'e.position', 'e.session_id', 'e.created_at'])
             ->orderBy('e.id')
-            ->chunk(1000, function ($events) use (&$groups, $busy, $weights, $eta, $maxPositionWeight, $halfLife, $start) {
+            ->chunk(1000, function ($events) use (&$groups, &$seen, $busy, $trustedOnly, $excluded, $resets, $weights, $eta, $maxPositionWeight, $halfLife, $start) {
                 foreach ($events as $event) {
                     if (isset($busy[$event->session_id])) {
                         continue;
                     }
+
+                    if ($trustedOnly && ! str_starts_with($event->session_id, 'cart:') && $event->customer_id === null) {
+                        continue;
+                    }
+
+                    $queryKey = $event->model_type.'|'.$event->normalised_query;
+
+                    if (isset($excluded[$queryKey][(int) $event->product_id])) {
+                        continue;
+                    }
+
+                    if (isset($resets[$queryKey]) && Carbon::parse($event->created_at)->lte($resets[$queryKey])) {
+                        continue;
+                    }
+
+                    $seenKey = $queryKey.'|'.$event->product_id.'|'.$event->session_id.'|'.$event->type;
+
+                    if (isset($seen[$seenKey])) {
+                        continue;
+                    }
+                    $seen[$seenKey] = true;
 
                     $weight = (float) ($weights[$event->type] ?? 0);
                     $positionWeight = $event->source === 'explore' ? 1.0 : min(pow((int) $event->position, $eta), $maxPositionWeight);
@@ -143,6 +168,30 @@ class PhpScoreAggregator implements ScoreAggregator
         }
 
         return $busy;
+    }
+
+    /**
+     * Excluded products per query, and the latest reset per query.
+     *
+     * @return array{0: array<string, array<int, true>>, 1: array<string, Carbon>}
+     */
+    protected function overrides(Connection $connection, string $prefix): array
+    {
+        $excluded = [];
+        $resets = [];
+
+        foreach ($connection->table($prefix.'search_learning_overrides')->get() as $override) {
+            $key = $override->model_type.'|'.$override->normalised_query;
+
+            if ($override->type === 'exclude') {
+                $excluded[$key][(int) $override->product_id] = true;
+            } elseif ($override->type === 'reset') {
+                $at = Carbon::parse($override->created_at);
+                $resets[$key] = isset($resets[$key]) && $resets[$key]->gt($at) ? $resets[$key] : $at;
+            }
+        }
+
+        return [$excluded, $resets];
     }
 
     protected function connection(): Connection

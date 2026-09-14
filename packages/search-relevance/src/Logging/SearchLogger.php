@@ -5,6 +5,7 @@ namespace Lunar\SearchRelevance\Logging;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\Request;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\SearchRelevance\Data\RankingContext;
@@ -18,7 +19,30 @@ class SearchLogger
         protected Repository $config,
         protected Dispatcher $bus,
         protected ?Session $session = null,
+        protected ?Request $request = null,
     ) {}
+
+    /**
+     * Whether this request's searches are worth learning from. Crawlers are
+     * neither logged nor ranked. Sessionless (headless API) clients are kept:
+     * they identify the shopper explicitly on the events endpoint.
+     */
+    public function shouldLog(): bool
+    {
+        if (! $this->request) {
+            return true;
+        }
+
+        $agent = mb_strtolower((string) $this->request->userAgent());
+
+        foreach ($this->config->get('lunar.search_relevance.guards.ignored_user_agents', []) as $needle) {
+            if ($needle !== '' && str_contains($agent, mb_strtolower($needle))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
      * The shopper identifier: `cart:{id}` when session_key is `cart` and a

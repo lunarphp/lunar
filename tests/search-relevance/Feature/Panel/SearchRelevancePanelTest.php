@@ -4,6 +4,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Staff;
+use Lunar\SearchRelevance\Learning\Overrides;
 use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
@@ -318,4 +319,60 @@ it('serves the add-on lang group from the translations endpoint', function () {
     $this->getJson('/panel/translations/en')
         ->assertOk()
         ->assertJsonPath('messages.search-relevance::panel.title', 'Search relevance');
+});
+
+it('lets staff exclude a product from learning and allow it again', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+    $product = Product::factory()->create();
+    SearchQueryScore::factory()->create(['normalised_query' => 'hoodie', 'product_id' => $product->id, 'version' => app(RetrievalVersion::class)->current(Product::class)]);
+
+    $this->actingAs($staff, 'staff')
+        ->from(route('panel.search-relevance.query', ['query' => 'hoodie']))
+        ->post(route('panel.search-relevance.exclude', ['query' => 'hoodie', 'productId' => $product->id]))
+        ->assertRedirect(route('panel.search-relevance.query', ['query' => 'hoodie']))
+        ->assertSessionHas('success');
+
+    expect(SearchQueryScore::query()->count())->toBe(0)
+        ->and(app(Overrides::class)->excluded(Product::class, 'hoodie')->all())->toBe([$product->id]);
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.search-relevance.query', ['query' => 'hoodie']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('search-relevance::Query', false)
+            ->has('excluded', 1)
+            ->where('excluded.0.product_id', $product->id)
+            ->where('reset_at', null)
+            ->has('urls.reset'));
+
+    $this->actingAs($staff, 'staff')
+        ->delete(route('panel.search-relevance.include', ['query' => 'hoodie', 'productId' => $product->id]))
+        ->assertRedirect();
+
+    expect(app(Overrides::class)->excluded(Product::class, 'hoodie')->isEmpty())->toBeTrue();
+});
+
+it('lets staff reset learning for a query', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+    SearchQueryScore::factory()->create(['normalised_query' => 'hoodie', 'product_id' => 1, 'version' => app(RetrievalVersion::class)->current(Product::class)]);
+    SearchQueryScore::factory()->create(['normalised_query' => 'mug', 'product_id' => 1, 'version' => app(RetrievalVersion::class)->current(Product::class)]);
+
+    $this->actingAs($staff, 'staff')
+        ->post(route('panel.search-relevance.reset', ['query' => 'hoodie']))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(SearchQueryScore::query()->pluck('normalised_query')->all())->toBe(['mug'])
+        ->and(app(Overrides::class)->resetAt(Product::class, 'hoodie'))->not->toBeNull();
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.search-relevance.query', ['query' => 'hoodie']))
+        ->assertInertia(fn (Assert $page) => $page->where('reset_at', fn ($value) => $value !== null));
+});
+
+it('gates the override routes behind the permission', function () {
+    $staff = Staff::factory()->create(['admin' => false]);
+
+    $this->actingAs($staff, 'staff')
+        ->post(route('panel.search-relevance.reset', ['query' => 'hoodie']))
+        ->assertForbidden();
 });

@@ -12,7 +12,8 @@ use function Pest\Laravel\artisan;
 uses(TestCase::class)->group('search-relevance');
 
 it('scores every configured model version', function () {
-    foreach (['s1', 's2', 's3'] as $session) {
+    // Sessions must hold a cart to count under the default trusted_sessions_only guard.
+    foreach (['cart:1', 'cart:2', 'cart:3'] as $session) {
         ScoringFixture::event(ScoringFixture::search('w', $session, [1]), 1, 1, 'click');
     }
 

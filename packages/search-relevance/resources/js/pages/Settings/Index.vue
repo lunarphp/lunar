@@ -55,7 +55,7 @@ const submit = (): void => {
     >
         <div data-screen-label="Search relevance settings" class="flex flex-col gap-6">
             <form class="flex flex-col gap-4" @submit.prevent="submit">
-                <div class="max-w-xs">
+                <div class="max-w-sm">
                     <FieldLabel>{{ t('search-relevance::panel.settings_mode') }}</FieldLabel>
                     <Select v-model="form.mode" :invalid="!!form.errors.mode">
                         <option v-for="option in modes" :key="option" :value="option">
@@ -77,7 +77,7 @@ const submit = (): void => {
 
             <div>
                 <h3 class="text-[13px] font-semibold text-ink-900 mb-2">{{ t('search-relevance::panel.settings_weights') }}</h3>
-                <dl class="grid grid-cols-3 gap-2.5 max-w-md">
+                <dl class="grid grid-cols-3 gap-2.5 max-w-xl">
                     <div v-for="(weight, event) in weights" :key="event" class="rounded-md border border-line bg-surface-2 px-3 py-2">
                         <dt class="text-[11px] text-ink-500">{{ t(`search-relevance::panel.settings_weight_${event}`) }}</dt>
                         <dd class="text-[15px] font-semibold text-ink-900 [font-variant-numeric:tabular-nums]">{{ weight }}</dd>
@@ -88,7 +88,7 @@ const submit = (): void => {
             <div>
                 <h3 class="text-[13px] font-semibold text-ink-900 mb-1">{{ t('search-relevance::panel.settings_versions') }}</h3>
                 <p class="text-[11px] text-ink-500 mb-2">{{ t('search-relevance::panel.settings_versions_help') }}</p>
-                <ul class="flex flex-col gap-1.5 max-w-md">
+                <ul class="flex flex-col gap-1.5 max-w-xl">
                     <li v-for="entry in versions" :key="entry.model" class="flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2">
                         <span class="text-[12.5px] text-ink-900 font-medium" :title="entry.model">{{ entry.label }}</span>
                         <code class="text-[11.5px] text-ink-700">{{ entry.version }}</code>

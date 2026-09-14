@@ -78,3 +78,24 @@ it('rate limits per shopper', function () {
     postJson(route('lunar.search-relevance.events'), $payload)->assertNoContent();
     postJson(route('lunar.search-relevance.events'), $payload)->assertStatus(429);
 });
+
+it('records each event type once per search and product', function () {
+    $search = SearchQuery::factory()->create(['shown' => [7, 8]]);
+    $payload = ['search_id' => $search->id, 'product_id' => 7, 'position' => 1];
+
+    $this->postJson(route('lunar.search-relevance.events'), $payload)->assertNoContent();
+    $this->postJson(route('lunar.search-relevance.events'), [...$payload, 'position' => 2])->assertNoContent();
+
+    expect(SearchEvent::query()->count())->toBe(1)
+        ->and(SearchEvent::query()->first()->position)->toBe(1);
+});
+
+it('drops events for searches older than the event window', function () {
+    Config::set('lunar.search_relevance.guards.event_window_minutes', 60);
+    $search = SearchQuery::factory()->create(['shown' => [7], 'created_at' => now()->subMinutes(61)]);
+
+    $this->postJson(route('lunar.search-relevance.events'), ['search_id' => $search->id, 'product_id' => 7, 'position' => 1])->assertNoContent();
+
+    expect(SearchEvent::query()->count())->toBe(0)
+        ->and(session()->has('lunar_search_relevance.attribution.7'))->toBeFalse();
+});

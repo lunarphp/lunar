@@ -86,5 +86,16 @@ return [
         'events_rate_limit' => '60,1',
         // Sessions searching faster than this are ignored by scoring.
         'max_searches_per_minute' => 30,
+        // Events are only accepted this long after the search they belong to.
+        'event_window_minutes' => 120,
+        // Only sessions that hold a cart or belong to a known customer count
+        // towards learning, so a bot minting fresh sessions gains nothing.
+        'trusted_sessions_only' => true,
+        // Searches from these user agents (case-insensitive substrings) are
+        // neither logged nor ranked.
+        'ignored_user_agents' => [
+            'bot', 'crawl', 'spider', 'slurp', 'curl', 'wget', 'python-requests',
+            'headlesschrome', 'phantomjs', 'lighthouse', 'facebookexternalhit',
+        ],
     ],
 ];

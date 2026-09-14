@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Models\Product;
 use Lunar\Panel\Dashboard\DashboardRange;
+use Lunar\SearchRelevance\Learning\Overrides;
 use Lunar\SearchRelevance\Panel\Reports\ProductReport;
 use Lunar\SearchRelevance\Panel\Reports\QueryReport;
 use Lunar\SearchRelevance\Panel\Reports\SearchKpis;
@@ -42,17 +43,35 @@ class SearchRelevanceController
         ]);
     }
 
-    public function query(Request $request, QueryReport $report, string $query): Response
+    public function query(Request $request, QueryReport $report, Overrides $overrides, string $query): Response
     {
         $modelTypes = QueryReport::modelTypes();
         $modelType = (string) $request->query('model', $modelTypes->first());
+        $params = ['query' => $query, 'model' => $modelType];
+
+        $learned = array_map(fn (array $row) => [
+            ...$row,
+            '_actions' => ['exclude' => route('panel.search-relevance.exclude', [...$params, 'productId' => $row['product_id']])],
+        ], $report->learned($modelType, $query));
+
+        $excluded = $overrides->excluded($modelType, $query);
+        $names = Product::query()->whereKey($excluded->all())->get()->keyBy('id');
 
         return Inertia::render('search-relevance::Query', [
             'query' => $query,
             'model_type' => $modelType,
-            'learned' => $report->learned($modelType, $query),
+            'learned' => $learned,
             'variants' => $report->variants($query),
-            'urls' => ['index' => route('panel.search-relevance.index')],
+            'excluded' => $excluded->map(fn (int $id) => [
+                'product_id' => $id,
+                'name' => ($product = $names->get($id)) ? (string) $product->translate('name') : __('search-relevance::panel.query_missing_product', ['id' => $id]),
+                'url' => route('panel.search-relevance.include', [...$params, 'productId' => $id]),
+            ])->values()->all(),
+            'reset_at' => $overrides->resetAt($modelType, $query)?->toIso8601String(),
+            'urls' => [
+                'index' => route('panel.search-relevance.index'),
+                'reset' => route('panel.search-relevance.reset', $params),
+            ],
         ]);
     }
 

@@ -68,9 +68,8 @@ final class ScoringFixture
                 self::event($search, 1, 1, 'click');
             }
         }
-        $search = self::search('m', 'loner', [1, 2, 3]);
         for ($i = 0; $i < 5; $i++) {
-            self::event($search, 3, 1, 'click');
+            self::event(self::search('m', 'loner', [1, 2, 3]), 3, 1, 'click');
         }
 
         // Version: events logged under another retrieval version are ignored.

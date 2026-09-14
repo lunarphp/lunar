@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Events\Orders\OrderPlaced;
+use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Models\CartLine;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\PanelManager;
@@ -21,6 +23,7 @@ use Lunar\SearchRelevance\Contracts\Ranker;
 use Lunar\SearchRelevance\Contracts\ScoreAggregator;
 use Lunar\SearchRelevance\Listeners\AttributeCartLine;
 use Lunar\SearchRelevance\Listeners\AttributeOrderLines;
+use Lunar\SearchRelevance\Listeners\ForgetPurchases;
 use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\Panel\SearchRelevanceSection;
 use Lunar\SearchRelevance\Pipelines\PartNumberRetrieval;
@@ -127,6 +130,7 @@ class SearchRelevanceServiceProvider extends ServiceProvider
     {
         CartLine::observe(AttributeCartLine::class);
         Event::listen(OrderPlaced::class, AttributeOrderLines::class);
+        Event::listen([OrderCancelled::class, OrderRefunded::class], ForgetPurchases::class);
     }
 
     protected function registerConsole(): void

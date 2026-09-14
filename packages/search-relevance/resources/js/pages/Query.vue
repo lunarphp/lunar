@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, PageEmpty, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
+import { Breadcrumbs, Button, ConfirmDialog, DataTable, PageEmpty, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
 import RelativeBar from '../components/RelativeBar.vue';
 
 type LearnedRow = {
@@ -23,15 +24,38 @@ type VariantRow = {
     searches: number;
 }
 
+type ExcludedRow = {
+    product_id: number;
+    name: string;
+    url: string;
+}
+
 const props = defineProps<{
     query: string;
     model_type: string;
     learned: LearnedRow[];
     variants: VariantRow[];
-    urls: { index: string };
+    excluded: ExcludedRow[];
+    reset_at: string | null;
+    urls: { index: string; reset: string };
 }>();
 
 const { t } = useI18n();
+
+// Staff levers against a manipulated or embarrassing learned order.
+const learnedActions = computed(() => [
+    { key: 'exclude', label: t('search-relevance::panel.override_exclude'), icon: 'x', method: 'post', primary: false, confirmation: t('search-relevance::panel.override_exclude_confirm') },
+]);
+
+const resetOpen = ref(false);
+
+const reset = (): void => {
+    router.post(props.urls.reset, {}, { preserveScroll: true });
+};
+
+const include = (row: ExcludedRow): void => {
+    router.delete(row.url, { preserveScroll: true });
+};
 
 const breadcrumbs = computed(() => [
     { label: t('search-relevance::panel.nav_group') },
@@ -72,7 +96,11 @@ const formatDate = (value: string | null): string => {
     <div data-screen-label="Search relevance query" class="contents">
         <Breadcrumbs :items="breadcrumbs" />
 
-        <PageHeader :title="query" :description="t('search-relevance::panel.query_description')" icon="search" />
+        <PageHeader :title="query" :description="t('search-relevance::panel.query_description')" icon="search">
+            <template #actions>
+                <Button icon="refresh" @click="resetOpen = true">{{ t('search-relevance::panel.override_reset') }}</Button>
+            </template>
+        </PageHeader>
 
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
@@ -86,6 +114,7 @@ const formatDate = (value: string | null): string => {
                             :rows="learned"
                             row-key="product_id"
                             :row-to="rowTo"
+                            :row-actions="learnedActions"
                         >
                             <template #cell-relative="{ row }">
                                 <Tooltip :text="`${t('search-relevance::panel.relative_tooltip')} ${t('search-relevance::panel.column_score')}: ${(row as unknown as LearnedRow).score}`">
@@ -100,6 +129,20 @@ const formatDate = (value: string | null): string => {
                             <template #cell-last_event_at="{ value }">{{ formatDate(value as string | null) }}</template>
                         </DataTable>
                         <PageEmpty v-else>{{ t('search-relevance::panel.query_learned_empty') }}</PageEmpty>
+                        <div v-if="reset_at" class="px-4 py-2.5 border-t border-line text-[11px] text-ink-500">
+                            {{ t('search-relevance::panel.reset_at', { date: formatDate(reset_at) }) }}
+                        </div>
+                    </SideCard>
+
+                    <SideCard :title="t('search-relevance::panel.excluded_title')" class="mt-5">
+                        <p class="text-[12px] text-ink-500 mb-2">{{ t('search-relevance::panel.excluded_description') }}</p>
+                        <ul v-if="excluded.length" class="flex flex-col gap-2">
+                            <li v-for="row in excluded" :key="row.product_id" class="flex items-center justify-between gap-3 text-[12.5px] text-ink-900">
+                                <span>{{ row.name }}</span>
+                                <Button size="sm" @click="include(row)">{{ t('search-relevance::panel.override_include') }}</Button>
+                            </li>
+                        </ul>
+                        <p v-else class="text-[12.5px] text-ink-700">{{ t('search-relevance::panel.excluded_empty') }}</p>
                     </SideCard>
                 </div>
 
@@ -114,5 +157,13 @@ const formatDate = (value: string | null): string => {
 
             <PageZone region="main" position="after" />
         </div>
+
+        <ConfirmDialog
+            v-model:open="resetOpen"
+            :title="t('search-relevance::panel.override_reset_title')"
+            :description="t('search-relevance::panel.override_reset_description')"
+            tone="danger"
+            @confirm="reset"
+        />
     </div>
 </template>

@@ -35,6 +35,10 @@ class WidenRequest
             return $next($request);
         }
 
+        if (! $this->logger->shouldLog()) {
+            return $next($request);
+        }
+
         $rawQuery = (string) $engine->getQuery();
         $normalised = $this->normaliser->normalise($rawQuery);
 
