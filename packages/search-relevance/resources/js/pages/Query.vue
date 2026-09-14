@@ -64,15 +64,16 @@ const breadcrumbs = computed(() => [
     { label: t('search-relevance::panel.query_title'), current: true },
 ]);
 
+// Fixed tracks must leave room for the product column: DataTable does not
+// scroll horizontally, so an over-wide template collapses the first column.
 const learnedColumns = [
-    { key: 'name', label: t('search-relevance::panel.column_product'), width: 'minmax(0,1.6fr)' },
-    { key: 'relative', label: t('search-relevance::panel.column_relative'), width: '160px' },
-    { key: 'clicks', label: t('search-relevance::panel.column_clicks'), width: '80px', align: 'right' as const },
-    { key: 'baskets', label: t('search-relevance::panel.column_baskets'), width: '80px', align: 'right' as const },
-    { key: 'purchases', label: t('search-relevance::panel.column_purchases'), width: '90px', align: 'right' as const },
-    { key: 'sessions', label: t('search-relevance::panel.column_sessions'), width: '90px', align: 'right' as const },
-    { key: 'typical_position', label: t('search-relevance::panel.column_typical_position'), width: '120px', align: 'right' as const },
-    { key: 'last_event_at', label: t('search-relevance::panel.column_last_event'), width: '150px' },
+    { key: 'name', label: t('search-relevance::panel.column_product'), width: 'minmax(200px,1fr)' },
+    { key: 'relative', label: t('search-relevance::panel.column_relative'), width: '140px' },
+    { key: 'clicks', label: t('search-relevance::panel.column_clicks'), width: '64px', align: 'right' as const },
+    { key: 'baskets', label: t('search-relevance::panel.column_baskets'), width: '72px', align: 'right' as const },
+    { key: 'purchases', label: t('search-relevance::panel.column_purchases'), width: '84px', align: 'right' as const },
+    { key: 'sessions', label: t('search-relevance::panel.column_sessions'), width: '76px', align: 'right' as const },
+    { key: 'typical_position', label: t('search-relevance::panel.column_typical_position'), width: '84px', align: 'right' as const },
 ];
 
 const variantColumns = [
@@ -117,6 +118,14 @@ const formatDate = (value: string | null): string => {
                             :row-actions="learnedActions"
                             :empty-text="t('search-relevance::panel.query_learned_empty')"
                         >
+                            <template #cell-name="{ row }">
+                                <div class="min-w-0">
+                                    <div class="truncate">{{ (row as unknown as LearnedRow).name }}</div>
+                                    <div class="text-[11px] text-ink-500 truncate">
+                                        {{ t('search-relevance::panel.column_last_event') }}: {{ formatDate((row as unknown as LearnedRow).last_event_at) }}
+                                    </div>
+                                </div>
+                            </template>
                             <template #cell-relative="{ row }">
                                 <Tooltip :text="`${t('search-relevance::panel.relative_tooltip')} ${t('search-relevance::panel.column_score')}: ${(row as unknown as LearnedRow).score}`">
                                     <RelativeBar :value="(row as unknown as LearnedRow).relative" />
@@ -127,7 +136,6 @@ const formatDate = (value: string | null): string => {
                                     <span>{{ value === null ? '-' : value }}</span>
                                 </Tooltip>
                             </template>
-                            <template #cell-last_event_at="{ value }">{{ formatDate(value as string | null) }}</template>
                         </DataTable>
                         <template v-if="reset_at" #footer>{{ t('search-relevance::panel.reset_at', { date: formatDate(reset_at) }) }}</template>
                     </TableBlock>

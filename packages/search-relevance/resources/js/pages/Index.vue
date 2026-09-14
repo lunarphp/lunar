@@ -69,7 +69,7 @@ const topColumns = [
 ];
 
 const simpleColumns = [
-    { key: 'query', label: t('search-relevance::panel.column_query'), width: 'minmax(0,1fr)' },
+    { key: 'query', label: t('search-relevance::panel.column_query'), width: 'minmax(160px,1fr)' },
     { key: 'searches', label: t('search-relevance::panel.column_searches'), width: '110px', align: 'right' as const },
 ];
 

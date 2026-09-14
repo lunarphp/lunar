@@ -54,7 +54,7 @@ return [
     'column_purchases' => 'Purchases',
     'column_sessions' => 'Sessions',
     'column_last_event' => 'Last event',
-    'column_typical_position' => 'Engine position',
+    'column_typical_position' => 'Engine pos.',
     'column_raw_query' => 'Raw query',
     'override_exclude' => 'Exclude from learning',
     'override_exclude_confirm' => 'Stop learning this product for this query? Its learned score is removed now and future events for it are ignored.',

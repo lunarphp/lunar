@@ -30,7 +30,7 @@ const breadcrumbs = computed(() => [
 ]);
 
 const columns = [
-    { key: 'query', label: t('search-relevance::panel.column_query'), width: 'minmax(0,1.4fr)' },
+    { key: 'query', label: t('search-relevance::panel.column_query'), width: 'minmax(160px,1fr)' },
     { key: 'relative', label: t('search-relevance::panel.column_relative'), width: '160px' },
     { key: 'clicks', label: t('search-relevance::panel.column_clicks'), width: '80px', align: 'right' as const },
     { key: 'baskets', label: t('search-relevance::panel.column_baskets'), width: '80px', align: 'right' as const },
