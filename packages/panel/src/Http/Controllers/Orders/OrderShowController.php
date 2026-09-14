@@ -91,6 +91,7 @@ class OrderShowController
                 'channel' => $order->channel?->name,
                 'new_customer' => (bool) $order->new_customer,
                 'notes' => $order->notes,
+                'internal_notes' => $order->meta['internal_notes'] ?? null,
                 'meta' => $order->meta,
                 'placed_at' => $order->placed_at,
                 'created_at' => $order->created_at,
