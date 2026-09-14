@@ -1,0 +1,41 @@
+{
+  "name": "lunarphp/search-relevance",
+  "type": "project",
+  "description": "Learned search ranking for LunarPHP: logs searches and shopper events, scores them nightly and reranks results, engine-agnostic.",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "search", "relevance", "ranking"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "lunarphp/core": "self.version",
+    "lunarphp/search": "self.version"
+  },
+  "suggest": {
+    "lunarphp/panel": "Adds the Search relevance section, dashboard widget and settings screen to the admin panel."
+  },
+  "autoload": {
+    "files": [
+      "src/helpers.php"
+    ],
+    "psr-4": {
+      "Lunar\\SearchRelevance\\": "src/"
+    }
+  },
+  "extra": {
+    "lunar": {
+      "name": "Search Relevance"
+    },
+    "laravel": {
+      "providers": [
+        "Lunar\\SearchRelevance\\SearchRelevanceServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
