@@ -2,7 +2,10 @@
 
 namespace Lunar\SearchRelevance;
 
+use Illuminate\Cache\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +21,7 @@ use Lunar\SearchRelevance\Contracts\Ranker;
 use Lunar\SearchRelevance\Contracts\ScoreAggregator;
 use Lunar\SearchRelevance\Listeners\AttributeCartLine;
 use Lunar\SearchRelevance\Listeners\AttributeOrderLines;
+use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\Panel\SearchRelevanceSection;
 use Lunar\SearchRelevance\Pipelines\PartNumberRetrieval;
 use Lunar\SearchRelevance\Pipelines\RankResults;
@@ -73,6 +77,7 @@ class SearchRelevanceServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath("{$this->root}/resources/views/components", 'lunar-search-relevance');
 
+        $this->registerRateLimiting();
         $this->registerPipelines();
         $this->registerListeners();
         $this->registerConsole();
@@ -102,6 +107,20 @@ class SearchRelevanceServiceProvider extends ServiceProvider
             'lunar.search.pipelines.request' => $request,
             'lunar.search.pipelines.results' => $results,
         ]);
+    }
+
+    /** Events endpoint limit per shopper and per IP, whichever trips first. */
+    protected function registerRateLimiting(): void
+    {
+        $this->app->make(RateLimiter::class)->for('lunar-search-relevance-events', function (Request $request) {
+            [$attempts, $minutes] = array_pad(explode(',', (string) config('lunar.search_relevance.guards.events_rate_limit', '60,1')), 2, 1);
+            $shopper = $request->input('session_id') ?: $this->app->make(SearchLogger::class)->sessionId();
+
+            return [
+                Limit::perMinutes((int) $minutes, (int) $attempts)->by('shopper:'.$shopper),
+                Limit::perMinutes((int) $minutes, (int) $attempts)->by('ip:'.$request->ip()),
+            ];
+        });
     }
 
     protected function registerListeners(): void

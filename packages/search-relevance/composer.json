@@ -23,7 +23,8 @@
       "src/helpers.php"
     ],
     "psr-4": {
-      "Lunar\\SearchRelevance\\": "src/"
+      "Lunar\\SearchRelevance\\": "src/",
+      "Lunar\\SearchRelevance\\Database\\Factories\\": "database/factories"
     }
   },
   "extra": {

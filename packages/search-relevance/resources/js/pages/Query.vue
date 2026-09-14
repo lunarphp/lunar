@@ -1,0 +1,118 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Breadcrumbs, DataTable, PageEmpty, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
+import RelativeBar from '../components/RelativeBar.vue';
+
+type LearnedRow = {
+    product_id: number;
+    name: string;
+    relative: number;
+    score: number;
+    clicks: number;
+    baskets: number;
+    purchases: number;
+    sessions: number;
+    last_event_at: string | null;
+    typical_position: number | null;
+    url: string | null;
+}
+
+type VariantRow = {
+    raw_query: string;
+    searches: number;
+}
+
+const props = defineProps<{
+    query: string;
+    model_type: string;
+    learned: LearnedRow[];
+    variants: VariantRow[];
+    urls: { index: string };
+}>();
+
+const { t } = useI18n();
+
+const breadcrumbs = computed(() => [
+    { label: t('search-relevance::panel.nav_group') },
+    { label: t('search-relevance::panel.title'), href: props.urls.index },
+    { label: t('search-relevance::panel.query_title'), current: true },
+]);
+
+const learnedColumns = [
+    { key: 'name', label: t('search-relevance::panel.column_product'), width: 'minmax(0,1.6fr)' },
+    { key: 'relative', label: t('search-relevance::panel.column_relative'), width: '160px' },
+    { key: 'clicks', label: t('search-relevance::panel.column_clicks'), width: '80px', align: 'right' as const },
+    { key: 'baskets', label: t('search-relevance::panel.column_baskets'), width: '80px', align: 'right' as const },
+    { key: 'purchases', label: t('search-relevance::panel.column_purchases'), width: '90px', align: 'right' as const },
+    { key: 'sessions', label: t('search-relevance::panel.column_sessions'), width: '90px', align: 'right' as const },
+    { key: 'typical_position', label: t('search-relevance::panel.column_typical_position'), width: '120px', align: 'right' as const },
+    { key: 'last_event_at', label: t('search-relevance::panel.column_last_event'), width: '150px' },
+];
+
+const variantColumns = [
+    { key: 'raw_query', label: t('search-relevance::panel.column_raw_query'), width: 'minmax(0,1fr)' },
+    { key: 'searches', label: t('search-relevance::panel.column_searches'), width: '90px', align: 'right' as const },
+];
+
+const rowTo = (row: Record<string, unknown>): string | null => (row.url as string | null) ?? null;
+
+const formatDate = (value: string | null): string => {
+    if (!value) {
+        return '-';
+    }
+
+    const date = new Date(value.replace(' ', 'T'));
+
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+};
+</script>
+
+<template>
+    <div data-screen-label="Search relevance query" class="contents">
+        <Breadcrumbs :items="breadcrumbs" />
+
+        <PageHeader :title="query" :description="t('search-relevance::panel.query_description')" icon="search" />
+
+        <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+            <PageZone region="main" position="before" />
+
+            <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
+                <div class="min-w-0">
+                    <SideCard :title="t('search-relevance::panel.query_learned_title')" body-class="p-0">
+                        <DataTable
+                            v-if="learned.length"
+                            :columns="learnedColumns"
+                            :rows="learned"
+                            row-key="product_id"
+                            :row-to="rowTo"
+                        >
+                            <template #cell-relative="{ row }">
+                                <Tooltip :text="`${t('search-relevance::panel.relative_tooltip')} ${t('search-relevance::panel.column_score')}: ${(row as unknown as LearnedRow).score}`">
+                                    <RelativeBar :value="(row as unknown as LearnedRow).relative" />
+                                </Tooltip>
+                            </template>
+                            <template #cell-typical_position="{ value }">
+                                <Tooltip :text="t('search-relevance::panel.typical_position_tooltip')">
+                                    <span>{{ value === null ? '-' : value }}</span>
+                                </Tooltip>
+                            </template>
+                            <template #cell-last_event_at="{ value }">{{ formatDate(value as string | null) }}</template>
+                        </DataTable>
+                        <PageEmpty v-else>{{ t('search-relevance::panel.query_learned_empty') }}</PageEmpty>
+                    </SideCard>
+                </div>
+
+                <SideCard :title="t('search-relevance::panel.query_variants_title')" body-class="p-0">
+                    <DataTable v-if="variants.length" :columns="variantColumns" :rows="variants" row-key="raw_query" />
+                    <PageEmpty v-else>{{ t('search-relevance::panel.query_variants_empty') }}</PageEmpty>
+                    <div class="px-4 py-2.5 border-t border-line text-[11px] text-ink-500">
+                        {{ t('search-relevance::panel.query_model') }}: <span class="text-ink-700">{{ model_type }}</span>
+                    </div>
+                </SideCard>
+            </div>
+
+            <PageZone region="main" position="after" />
+        </div>
+    </div>
+</template>

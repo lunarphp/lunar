@@ -34,6 +34,11 @@ abstract class AbstractEngine
 
     protected string $sortRaw = '';
 
+    public function getModelType(): string
+    {
+        return $this->modelType;
+    }
+
     public function extendQuery(\Closure $callable): self
     {
         $this->queryExtenders[] = $callable;
