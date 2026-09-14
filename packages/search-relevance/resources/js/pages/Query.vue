@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, Button, ConfirmDialog, DataTable, PageEmpty, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
+import { Breadcrumbs, Button, ConfirmDialog, DataTable, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
 import RelativeBar from '../components/RelativeBar.vue';
 import TableBlock from '../components/TableBlock.vue';
 
@@ -110,12 +110,12 @@ const formatDate = (value: string | null): string => {
                 <div class="min-w-0">
                     <TableBlock :title="t('search-relevance::panel.query_learned_title')" >
                         <DataTable
-                            v-if="learned.length"
                             :columns="learnedColumns"
                             :rows="learned"
                             row-key="product_id"
                             :row-to="rowTo"
                             :row-actions="learnedActions"
+                            :empty-text="t('search-relevance::panel.query_learned_empty')"
                         >
                             <template #cell-relative="{ row }">
                                 <Tooltip :text="`${t('search-relevance::panel.relative_tooltip')} ${t('search-relevance::panel.column_score')}: ${(row as unknown as LearnedRow).score}`">
@@ -129,7 +129,6 @@ const formatDate = (value: string | null): string => {
                             </template>
                             <template #cell-last_event_at="{ value }">{{ formatDate(value as string | null) }}</template>
                         </DataTable>
-                        <PageEmpty v-else>{{ t('search-relevance::panel.query_learned_empty') }}</PageEmpty>
                         <template v-if="reset_at" #footer>{{ t('search-relevance::panel.reset_at', { date: formatDate(reset_at) }) }}</template>
                     </TableBlock>
 
@@ -146,8 +145,7 @@ const formatDate = (value: string | null): string => {
                 </div>
 
                 <TableBlock :title="t('search-relevance::panel.query_variants_title')">
-                    <DataTable v-if="variants.length" :columns="variantColumns" :rows="variants" row-key="raw_query" />
-                    <PageEmpty v-else>{{ t('search-relevance::panel.query_variants_empty') }}</PageEmpty>
+                    <DataTable :columns="variantColumns" :rows="variants" row-key="raw_query" :empty-text="t('search-relevance::panel.query_variants_empty')" />
                     <template #footer>{{ t('search-relevance::panel.query_model') }}: <span class="text-ink-700">{{ model_type }}</span></template>
                 </TableBlock>
             </div>

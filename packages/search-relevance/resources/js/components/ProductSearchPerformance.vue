@@ -60,11 +60,10 @@ onMounted(async () => {
     <TableBlock :title="t('search-relevance::panel.product_title')" :description="t('search-relevance::panel.product_description')" bordered>
         <PageEmpty v-if="loading">{{ t('search-relevance::panel.product_loading') }}</PageEmpty>
         <PageEmpty v-else-if="failed">{{ t('search-relevance::panel.product_error') }}</PageEmpty>
-        <DataTable v-else-if="rows.length" :columns="columns" :rows="rows" row-key="query" :row-to="rowTo">
+        <DataTable v-else :columns="columns" :rows="rows" row-key="query" :row-to="rowTo" :empty-text="t('search-relevance::panel.product_empty')">
             <template #cell-relative="{ value }">
                 <RelativeBar :value="value as number | null" />
             </template>
         </DataTable>
-        <PageEmpty v-else>{{ t('search-relevance::panel.product_empty') }}</PageEmpty>
     </TableBlock>
 </template>

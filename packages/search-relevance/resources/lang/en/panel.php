@@ -36,6 +36,8 @@ return [
     'column_conversions' => 'Conversions',
     'column_conversion_rate' => 'Conv. rate',
     'empty_queries' => 'No searches were logged in this range.',
+    'zero_result_empty' => 'Every search in this range returned results.',
+    'no_click_empty' => 'Every search in this range got a click.',
 
     'query_title' => 'Query',
     'query_description' => 'Learned products for this query in score order, with the events behind each score.',

@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, KpiCard, PageEmpty, PageHeader, PageZone, SideCard } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, KpiCard, PageHeader, PageZone, SideCard } from '@lunarphp/panel';
 import TableBlock from '../components/TableBlock.vue';
 
 type Kpis = {
@@ -142,38 +142,35 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                 <div class="min-w-0">
                     <TableBlock :title="t('search-relevance::panel.top_queries_title')">
                         <DataTable
-                            v-if="top_queries.length"
                             :columns="topColumns"
                             :rows="top_queries"
                             row-key="query"
                             :row-to="rowTo"
+                            :empty-text="t('search-relevance::panel.empty_queries')"
                         >
                             <template #cell-conversion_rate="{ value }">{{ percent(value as number) }}</template>
                         </DataTable>
-                        <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
                     </TableBlock>
 
                     <div class="mt-6 grid gap-5 lg:grid-cols-2">
                         <TableBlock :title="t('search-relevance::panel.zero_result_title')" :description="t('search-relevance::panel.zero_result_description')">
                             <DataTable
-                                v-if="zero_result_queries.length"
                                 :columns="simpleColumns"
                                 :rows="zero_result_queries"
                                 row-key="query"
                                 :row-to="rowTo"
+                                :empty-text="t('search-relevance::panel.zero_result_empty')"
                             />
-                            <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
                         </TableBlock>
 
                         <TableBlock :title="t('search-relevance::panel.no_click_title')" :description="t('search-relevance::panel.no_click_description')">
                             <DataTable
-                                v-if="no_click_queries.length"
                                 :columns="simpleColumns"
                                 :rows="no_click_queries"
                                 row-key="query"
                                 :row-to="rowTo"
+                                :empty-text="t('search-relevance::panel.no_click_empty')"
                             />
-                            <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
                         </TableBlock>
                     </div>
                 </div>
