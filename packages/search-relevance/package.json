@@ -1,5 +1,5 @@
 {
-    "name": "@lunarphp/search-relevance",
+    "name": "@lunarphp/search-relevance-addon",
     "private": true,
     "type": "module",
     "scripts": {

@@ -360,7 +360,18 @@ Blade storefronts:
 
 `lunar_search_attrs()` renders `data-lunar-search-id`, `data-lunar-product-id`, `data-lunar-position`, `data-lunar-source`. The script sends `navigator.sendBeacon()` to `POST /lunar/search/events` on click of any element inside a tracked node that navigates.
 
-Headless and Inertia storefronts: the same endpoint accepts JSON. `SearchResults->meta['search_id']` and `hit->meta` are in the API payload; the docs show the three-line fetch.
+Headless and Inertia storefronts: the same endpoint accepts JSON. `SearchResults->meta['search_id']` and `hit->meta` are in the API payload.
+
+#### 2.6.1 Storefront client (`@lunarphp/search-relevance`)
+
+The Blade component must not be the only packaged implementation, because the Lunar storefront starter kit is Inertia and Vue. One client, published to npm from `packages/search-relevance/resources/client`, serves both:
+
+- Framework-agnostic entry `@lunarphp/search-relevance`: `sendSearchEvent(payload, options)` (`navigator.sendBeacon` with a keepalive `fetch` fallback, CSRF token read from the page or passed in, optional `session_id`), `eventFor()` / `trackHit()` built from the results and hit `meta`, `trackingAttributes()` for the `data-lunar-*` markup, and `attachSearchTracking()` for delegated click tracking.
+- Vue entry `@lunarphp/search-relevance/vue`: `useSearchTracking(results, options)` returning `track(hit)`, `attrs(hit)` and `send(payload)`, plus a `v-lunar-search-hit` directive.
+- An IIFE build (`dist/tracking.iife.js`, `window.LunarSearchRelevance`) that the Blade tracking component inlines, so Blade and headless storefronts run the same code.
+- `SearchHit::$meta` and `SearchResults::$meta` carry `LiteralTypeScriptType` shapes so the generated `Lunar.Search` types describe `search_id`, `position`, `source` and friends.
+
+`dist/` is tracked because the Composer package reads the IIFE at render time. The package is added to the npm workspace, the drift check, the publish workflow and the panel JS CI job (vitest, type-check, build).
 
 Endpoint validation: `search_id` exists, `product_id` is in that search's `shown` list, `position` in range, rate limited per shopper. Everything else is rejected with 204 so bots learn nothing.
 
@@ -494,5 +505,6 @@ Every class, config key and command in the docs must be verified against the mon
 - [x] Slice 3 — `search-relevance`: scoring aggregators, schedule, `RetrievalVersion`, replay command
 - [x] Slice 4 — `search-relevance`: contracts, `QueryAffinitySignal`, `BucketedRanker`, `WidenRequest`, `RankResults`, learned union, shadow logging
 - [x] Slice 5 — Panel section, widget, product slot, search source, settings
-- [ ] Slice 6 — Docs PR (`lunarphp/docs`)
+- [x] Slice 6 — Docs PR (`lunarphp/docs`)
+- [x] Slice 7 — Storefront client `@lunarphp/search-relevance` (framework-agnostic + Vue), shared with the Blade component, typed `meta`
 - [ ] Follow-ups (separate specs): `AccountHistorySignal`, exploration strip

@@ -30,3 +30,11 @@ if (! function_exists('lunar_search_attrs')) {
             ->join(' '));
     }
 }
+
+if (! function_exists('lunar_search_tracking_script')) {
+    /** The shared storefront client's IIFE build, inlined by the Blade tracking component. */
+    function lunar_search_tracking_script(): string
+    {
+        return (string) file_get_contents(dirname(__DIR__).'/resources/client/dist/tracking.iife.js');
+    }
+}

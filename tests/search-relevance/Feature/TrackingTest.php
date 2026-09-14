@@ -42,10 +42,12 @@ it('renders the beacon script once per results page', function () {
 
     $html = Blade::render('<x-lunar-search-relevance::tracking :results="$results" />', ['results' => $results]);
 
+    // The script body is the shared client's IIFE build, inlined so Blade and
+    // headless storefronts run the same code.
     expect($html)->toContain('data-lunar-search-tracking="01ARZ3NDEKTSV4RRFFQ69G5FAV"')
-        ->toContain('var endpoint = '.json_encode(route('lunar.search-relevance.events')))
+        ->toContain('LunarSearchRelevance.attach({ endpoint: '.json_encode(route('lunar.search-relevance.events')))
         ->toContain('navigator.sendBeacon')
         ->toContain('keepalive: true')
-        ->toContain("closest('[data-lunar-search-id]')")
-        ->toContain("'_token'");
+        ->toContain('data-lunar-search-id')
+        ->toContain('_token');
 });
