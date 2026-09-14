@@ -190,14 +190,15 @@ it('renders the query page with explainability rows and raw variants', function 
             ->where('learned.0.sessions', 3)
             ->where('learned.0.typical_position', 1.5)
             ->whereNot('learned.0.last_event_at', null)
-            ->where('learned.0.url', route('panel.products.edit', $product))
+            ->where('learned.0.url', route('panel.search-relevance.product', $product))
+            ->where('learned.0.edit_url', route('panel.products.edit', $product))
             ->has('variants', 2)
             ->where('variants.0.raw_query', 'Red Shoes')
             ->where('variants.0.searches', 2)
             ->where('variants.1.raw_query', 'red  shoes!'));
 });
 
-it('returns the product search performance as json', function () {
+it('renders the product search report page', function () {
     ['product' => $product] = relevanceFixture();
 
     SearchQueryScore::factory()->create([
@@ -211,25 +212,41 @@ it('returns the product search performance as json', function () {
     ]);
 
     $this->actingAs(relevanceStaff(admin: true), 'staff')
-        ->getJson(route('panel.search-relevance.product', $product))
+        ->get(route('panel.search-relevance.product', $product))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('search-relevance::Product', false)
+            ->where('product.id', $product->id)
+            ->where('product.edit_url', route('panel.products.edit', $product))
+            ->has('queries', 1)
+            ->where('queries.0.query', 'red shoes')
+            ->where('queries.0.relative', 0.75)
+            ->where('queries.0.clicks', 2)
+            ->where('queries.0.baskets', 1)
+            ->where('queries.0.purchases', 1)
+            ->where('queries.0.url', route('panel.search-relevance.query', ['query' => 'red shoes'])));
+});
+
+it('returns the top queries and a report link for the product sidebar card', function () {
+    ['product' => $product] = relevanceFixture();
+
+    $this->actingAs(relevanceStaff(admin: true), 'staff')
+        ->getJson(route('panel.search-relevance.product.summary', $product))
         ->assertOk()
         ->assertJsonCount(1, 'queries')
         ->assertJsonPath('queries.0.query', 'red shoes')
-        ->assertJsonPath('queries.0.relative', 0.75)
-        ->assertJsonPath('queries.0.clicks', 2)
-        ->assertJsonPath('queries.0.baskets', 1)
-        ->assertJsonPath('queries.0.purchases', 1)
-        ->assertJsonPath('queries.0.url', route('panel.search-relevance.query', ['query' => 'red shoes']));
+        ->assertJsonPath('total', 1)
+        ->assertJsonPath('url', route('panel.search-relevance.product', $product));
 });
 
-it('shares the product slot entry on the product edit page', function () {
+it('shares the product sidebar card on the product edit page', function () {
     $product = Product::factory()->create();
 
     $this->actingAs(relevanceStaff(admin: true), 'staff')
         ->get(route('panel.products.edit', $product))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where('slots', fn ($slots) => collect($slots->get('products.edit:content:after'))
+            ->where('slots', fn ($slots) => collect($slots->get('products.edit:sidebar:after'))
                 ->contains(fn ($entry) => $entry['component'] === 'search-relevance::ProductSearchPerformance')));
 });
 

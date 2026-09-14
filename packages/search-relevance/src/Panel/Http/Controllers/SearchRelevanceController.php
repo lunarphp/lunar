@@ -75,8 +75,28 @@ class SearchRelevanceController
         ]);
     }
 
-    public function product(Product $product, ProductReport $report): JsonResponse
+    public function product(Product $product, ProductReport $report): Response
     {
-        return response()->json(['queries' => $report->queries($product)]);
+        return Inertia::render('search-relevance::Product', [
+            'product' => [
+                'id' => $product->id,
+                'name' => (string) $product->translate('name'),
+                'edit_url' => route('panel.products.edit', $product),
+            ],
+            'queries' => $report->queries($product, 100),
+            'urls' => ['index' => route('panel.search-relevance.index')],
+        ]);
+    }
+
+    /** The top queries for the product edit sidebar card. */
+    public function productSummary(Product $product, ProductReport $report): JsonResponse
+    {
+        $queries = $report->queries($product, 100);
+
+        return response()->json([
+            'queries' => array_slice($queries, 0, 3),
+            'total' => count($queries),
+            'url' => route('panel.search-relevance.product', $product),
+        ]);
     }
 }

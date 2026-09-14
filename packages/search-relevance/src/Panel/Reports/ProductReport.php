@@ -8,7 +8,7 @@ use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
 use Lunar\SearchRelevance\RetrievalVersion;
 
-/** The queries a product is found through, for the product edit page slot. */
+/** The queries a product is found through, for the product report page and the edit sidebar card. */
 class ProductReport
 {
     public function __construct(protected RetrievalVersion $version) {}

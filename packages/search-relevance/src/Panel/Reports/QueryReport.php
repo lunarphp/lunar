@@ -16,7 +16,7 @@ class QueryReport
     public function __construct(protected RetrievalVersion $version) {}
 
     /**
-     * @return array<int, array{product_id: int, name: string, relative: float, score: float, clicks: int, baskets: int, purchases: int, sessions: int, last_event_at: string|null, typical_position: float|null, url: string|null}>
+     * @return array<int, array{product_id: int, name: string, relative: float, score: float, clicks: int, baskets: int, purchases: int, sessions: int, last_event_at: string|null, typical_position: float|null, url: string|null, edit_url: string|null}>
      */
     public function learned(string $modelType, string $query): array
     {
@@ -53,7 +53,8 @@ class QueryReport
                 'sessions' => (int) $score->sessions,
                 'last_event_at' => $row?->last_event_at ? (string) $row->last_event_at : null,
                 'typical_position' => $typical === null ? null : round((float) $typical, 1),
-                'url' => $product ? route('panel.products.edit', $product) : null,
+                'url' => $product ? route('panel.search-relevance.product', $product) : null,
+                'edit_url' => $product ? route('panel.products.edit', $product) : null,
             ];
         })->values()->all();
     }

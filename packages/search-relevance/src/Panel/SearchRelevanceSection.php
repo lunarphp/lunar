@@ -68,6 +68,8 @@ class SearchRelevanceSection extends Section
 
                 Route::get('search-relevance/products/{product}', [SearchRelevanceController::class, 'product'])
                     ->name('panel.search-relevance.product');
+                Route::get('search-relevance/products/{product}/summary', [SearchRelevanceController::class, 'productSummary'])
+                    ->name('panel.search-relevance.product.summary');
 
                 // {productId}, not {product}: the panel binds `product` to the model.
                 Route::post('search-relevance/queries/{query}/exclusions/{productId}', [OverridesController::class, 'exclude'])
@@ -91,8 +93,9 @@ class SearchRelevanceSection extends Section
 
     public function slots(SlotRegistry $registry): void
     {
+        // A compact sidebar card; the full report lives on its own page.
         $registry->add(new Slot(
-            zone: 'products.edit:content:after',
+            zone: 'products.edit:sidebar:after',
             component: 'search-relevance::ProductSearchPerformance',
             permission: self::PERMISSION,
         ));

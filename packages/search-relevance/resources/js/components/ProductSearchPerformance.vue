@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { DataTable, PageEmpty, http } from '@lunarphp/panel';
+import { SideCard, http } from '@lunarphp/panel';
 import RelativeBar from './RelativeBar.vue';
-import TableBlock from './TableBlock.vue';
 
 type QueryRow = {
     query: string;
     relative: number | null;
     clicks: number;
-    baskets: number;
     purchases: number;
     url: string;
 }
+
+type Summary = { queries: QueryRow[]; total: number; url: string };
 
 const props = defineProps<{
     product?: { id: number };
@@ -21,49 +21,45 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const rows = ref<QueryRow[]>([]);
-const loading = ref(true);
-const failed = ref(false);
-
-const columns = [
-    { key: 'query', label: t('search-relevance::panel.column_query'), width: 'minmax(0,1.4fr)' },
-    { key: 'relative', label: t('search-relevance::panel.column_relative'), width: '150px' },
-    { key: 'clicks', label: t('search-relevance::panel.column_clicks'), width: '80px', align: 'right' as const },
-    { key: 'baskets', label: t('search-relevance::panel.column_baskets'), width: '80px', align: 'right' as const },
-    { key: 'purchases', label: t('search-relevance::panel.column_purchases'), width: '90px', align: 'right' as const },
-];
-
-const rowTo = (row: Record<string, unknown>): string => row.url as string;
+// Renders nothing until data arrives, and nothing at all for products with
+// no search activity, so untouched products pay no cost on the edit page.
+const summary = ref<Summary | null>(null);
 
 const panelPath = (usePage().props.panel as { path?: string } | undefined)?.path ?? 'panel';
-const endpoint = (id: number): string => `/${panelPath}/search-relevance/products/${id}`;
 
 onMounted(async () => {
     if (!props.product) {
-        loading.value = false;
-
         return;
     }
 
     try {
-        const payload = await http.get<{ queries: QueryRow[] }>(endpoint(props.product.id));
-        rows.value = payload.queries;
+        const payload = await http.get<Summary>(`/${panelPath}/search-relevance/products/${props.product.id}/summary`);
+
+        if (payload.queries.length) {
+            summary.value = payload;
+        }
     } catch {
-        failed.value = true;
-    } finally {
-        loading.value = false;
+        summary.value = null;
     }
 });
 </script>
 
 <template>
-    <TableBlock :title="t('search-relevance::panel.product_title')" :description="t('search-relevance::panel.product_description')" bordered>
-        <PageEmpty v-if="loading">{{ t('search-relevance::panel.product_loading') }}</PageEmpty>
-        <PageEmpty v-else-if="failed">{{ t('search-relevance::panel.product_error') }}</PageEmpty>
-        <DataTable v-else :columns="columns" :rows="rows" row-key="query" :row-to="rowTo" :empty-text="t('search-relevance::panel.product_empty')">
-            <template #cell-relative="{ value }">
-                <RelativeBar :value="value as number | null" />
-            </template>
-        </DataTable>
-    </TableBlock>
+    <SideCard v-if="summary" :title="t('search-relevance::panel.product_card_title')">
+        <ul class="flex flex-col gap-2">
+            <li v-for="row in summary.queries" :key="row.query">
+                <Link :href="row.url" class="block rounded-sm -mx-1 px-1 py-0.5 hover:bg-surface-2">
+                    <div class="flex items-center justify-between gap-3 text-[12.5px]">
+                        <span class="text-ink-900 font-medium truncate">{{ row.query }}</span>
+                        <span class="text-ink-500 shrink-0 [font-variant-numeric:tabular-nums]">{{ row.purchases }} / {{ row.clicks }}</span>
+                    </div>
+                    <RelativeBar v-if="row.relative !== null" :value="row.relative" class="mt-1" />
+                </Link>
+            </li>
+        </ul>
+        <div class="mt-3 flex items-center justify-between gap-3 text-[11px]">
+            <span class="text-ink-500">{{ summary.total > summary.queries.length ? t('search-relevance::panel.product_card_more', { count: summary.total - summary.queries.length }) : '' }}</span>
+            <Link :href="summary.url" class="text-ink-700 underline underline-offset-2 hover:text-ink-900">{{ t('search-relevance::panel.product_view_report') }}</Link>
+        </div>
+    </SideCard>
 </template>

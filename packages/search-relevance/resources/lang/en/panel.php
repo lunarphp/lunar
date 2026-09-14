@@ -75,8 +75,10 @@ return [
     'product_title' => 'Search performance',
     'product_description' => 'Queries this product is found through, with the clicks and purchases they produced.',
     'product_empty' => 'No search activity has been recorded for this product yet.',
-    'product_loading' => 'Loading search performance…',
-    'product_error' => 'Search performance could not be loaded.',
+    'product_card_title' => 'Search',
+    'product_card_more' => ':count more',
+    'product_view_report' => 'View search report',
+    'product_edit' => 'Edit product',
 
     'settings_title' => 'Search relevance',
     'settings_description' => 'How learned ranking is configured for this store. These values are set in code, like the rest of Lunar\'s configuration.',
