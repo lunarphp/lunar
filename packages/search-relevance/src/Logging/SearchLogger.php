@@ -8,7 +8,8 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\StorefrontSession;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
+use Lunar\SearchRelevance\Jobs\LogSearch;
 
 /** Resolves who is searching and hands the logged search to the queue. */
 class SearchLogger

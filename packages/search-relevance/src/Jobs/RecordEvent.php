@@ -1,8 +1,9 @@
 <?php
 
-namespace Lunar\SearchRelevance\Events;
+namespace Lunar\SearchRelevance\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,19 +39,18 @@ class RecordEvent implements ShouldQueue
      * True when the search showed the product, the position is one it
      * displayed, and the search is recent enough to still accept events.
      */
-    public static function accepts(SearchQuery $search, int $productId, int $position): bool
+    public static function accepts(SearchQuery $search, int $productId, int $position, int $windowMinutes): bool
     {
         $shown = array_map('intval', $search->shown ?? []);
-        $window = (int) config('lunar.search_relevance.guards.event_window_minutes', 120);
 
-        if ($window > 0 && $search->created_at && $search->created_at->lt(now()->subMinutes($window))) {
+        if ($windowMinutes > 0 && $search->created_at && $search->created_at->lt(now()->subMinutes($windowMinutes))) {
             return false;
         }
 
         return in_array($productId, $shown, true) && $position >= 1 && $position <= count($shown);
     }
 
-    public function handle(): void
+    public function handle(Repository $config): void
     {
         if (! in_array($this->type, self::TYPES, true) || ! in_array($this->source, self::SOURCES, true)) {
             return;
@@ -58,7 +58,9 @@ class RecordEvent implements ShouldQueue
 
         $search = SearchQuery::query()->find($this->searchId);
 
-        if (! $search || ! self::accepts($search, $this->productId, $this->position)) {
+        $window = (int) $config->get('lunar.search_relevance.guards.event_window_minutes', 120);
+
+        if (! $search || ! self::accepts($search, $this->productId, $this->position, $window)) {
             return;
         }
 

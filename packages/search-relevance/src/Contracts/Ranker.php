@@ -2,8 +2,8 @@
 
 namespace Lunar\SearchRelevance\Contracts;
 
-use Lunar\SearchRelevance\Data\HitCollection;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\HitCollection;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 
 interface Ranker
 {

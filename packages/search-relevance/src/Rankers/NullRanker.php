@@ -3,8 +3,8 @@
 namespace Lunar\SearchRelevance\Rankers;
 
 use Lunar\SearchRelevance\Contracts\Ranker;
-use Lunar\SearchRelevance\Data\HitCollection;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\HitCollection;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 
 class NullRanker implements Ranker
 {

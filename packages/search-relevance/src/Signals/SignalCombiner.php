@@ -4,7 +4,7 @@ namespace Lunar\SearchRelevance\Signals;
 
 use Illuminate\Contracts\Container\Container;
 use Lunar\SearchRelevance\Contracts\Signal;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 
 class SignalCombiner
 {

@@ -4,9 +4,9 @@ namespace Lunar\SearchRelevance\Rankers;
 
 use Illuminate\Contracts\Config\Repository;
 use Lunar\SearchRelevance\Contracts\Ranker;
-use Lunar\SearchRelevance\Data\Hit;
-use Lunar\SearchRelevance\Data\HitCollection;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\Hit;
+use Lunar\SearchRelevance\DataObjects\HitCollection;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 use Lunar\SearchRelevance\Signals\SignalCombiner;
 
 /** Reorders only within engine-order buckets so a weak match can never leap above a strong one. */

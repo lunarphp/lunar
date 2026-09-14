@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\SearchRelevance\Data;
+namespace Lunar\SearchRelevance\DataObjects;
 
 /**
  * One candidate in the ranking window. Cached as arrays, never as objects,

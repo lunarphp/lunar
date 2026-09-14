@@ -1,15 +1,15 @@
 <?php
 
-namespace Lunar\SearchRelevance\Listeners;
+namespace Lunar\SearchRelevance\Observers;
 
 use Illuminate\Contracts\Bus\Dispatcher;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\ProductVariant;
-use Lunar\SearchRelevance\Events\Attribution;
-use Lunar\SearchRelevance\Events\RecordEvent;
+use Lunar\SearchRelevance\Support\Attribution;
+use Lunar\SearchRelevance\Jobs\RecordEvent;
 
 /** CartLine `created` observer: credits the line to the search its product was clicked from. */
-class AttributeCartLine
+class CartLineObserver
 {
     public function __construct(
         protected Attribution $attribution,

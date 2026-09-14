@@ -3,13 +3,14 @@
 namespace Lunar\SearchRelevance\Http\Controllers;
 
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
-use Lunar\SearchRelevance\Events\Attribution;
-use Lunar\SearchRelevance\Events\RecordEvent;
+use Lunar\SearchRelevance\Jobs\RecordEvent;
 use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\Models\SearchQuery;
+use Lunar\SearchRelevance\Support\Attribution;
 
 /**
  * Records a click on a search result. Always answers 204, including on bad
@@ -21,6 +22,7 @@ class SearchEventController
         protected Dispatcher $bus,
         protected Attribution $attribution,
         protected SearchLogger $logger,
+        protected Repository $config,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -41,7 +43,9 @@ class SearchEventController
         $position = (int) $data['position'];
         $search = SearchQuery::query()->find($data['search_id']);
 
-        if (! $search || ! RecordEvent::accepts($search, $productId, $position)) {
+        $window = (int) $this->config->get('lunar.search_relevance.guards.event_window_minutes', 120);
+
+        if (! $search || ! RecordEvent::accepts($search, $productId, $position, $window)) {
             return response()->noContent();
         }
 

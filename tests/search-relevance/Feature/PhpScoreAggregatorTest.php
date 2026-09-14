@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\Models\Product;
 use Lunar\SearchRelevance\Contracts\ScoreAggregator;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
 use Lunar\SearchRelevance\Scoring\PhpScoreAggregator;
 use Lunar\SearchRelevance\Signals\QueryAffinitySignal;

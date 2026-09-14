@@ -6,7 +6,7 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
-use Lunar\SearchRelevance\Events\RecordEvent;
+use Lunar\SearchRelevance\Jobs\RecordEvent;
 
 /** Turns the attribution copied from cart lines into purchase events once the order is placed. */
 class AttributeOrderLines

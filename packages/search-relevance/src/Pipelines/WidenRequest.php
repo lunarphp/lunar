@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\Config\Repository;
 use Lunar\Search\Pipelines\SearchRequest;
 use Lunar\SearchRelevance\Contracts\QueryNormaliser;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\RetrievalVersion;
 

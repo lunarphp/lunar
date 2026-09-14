@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\SearchRelevance\Data;
+namespace Lunar\SearchRelevance\DataObjects;
 
 use Illuminate\Support\Collection;
 

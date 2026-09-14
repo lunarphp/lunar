@@ -12,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Events\Orders\OrderRefunded;
+use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\CartLine;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\PanelManager;
@@ -21,10 +22,10 @@ use Lunar\SearchRelevance\Console\ScoreCommand;
 use Lunar\SearchRelevance\Contracts\QueryNormaliser;
 use Lunar\SearchRelevance\Contracts\Ranker;
 use Lunar\SearchRelevance\Contracts\ScoreAggregator;
-use Lunar\SearchRelevance\Listeners\AttributeCartLine;
 use Lunar\SearchRelevance\Listeners\AttributeOrderLines;
 use Lunar\SearchRelevance\Listeners\ForgetPurchases;
 use Lunar\SearchRelevance\Logging\SearchLogger;
+use Lunar\SearchRelevance\Observers\CartLineObserver;
 use Lunar\SearchRelevance\Panel\SearchRelevanceSection;
 use Lunar\SearchRelevance\Pipelines\PartNumberRetrieval;
 use Lunar\SearchRelevance\Pipelines\RankResults;
@@ -77,6 +78,8 @@ class SearchRelevanceServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath("{$this->root}/resources/views/components", 'lunar-search-relevance');
 
+        ModelManifest::addDirectory(__DIR__.'/Models');
+
         $this->registerRateLimiting();
         $this->registerPipelines();
         $this->registerListeners();
@@ -125,7 +128,7 @@ class SearchRelevanceServiceProvider extends ServiceProvider
 
     protected function registerListeners(): void
     {
-        CartLine::observe(AttributeCartLine::class);
+        CartLine::observe(CartLineObserver::class);
         Event::listen(OrderPlaced::class, AttributeOrderLines::class);
         Event::listen([OrderCancelled::class, OrderRefunded::class], ForgetPurchases::class);
     }

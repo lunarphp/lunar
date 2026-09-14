@@ -5,9 +5,9 @@ use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
-use Lunar\SearchRelevance\Events\Attribution;
 use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
+use Lunar\SearchRelevance\Support\Attribution;
 use Lunar\Tests\SearchRelevance\Support\Fixtures;
 use Lunar\Tests\SearchRelevance\TestCase;
 

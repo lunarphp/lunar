@@ -6,7 +6,7 @@ use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\ConnectionResolverInterface;
 use Lunar\SearchRelevance\Contracts\Signal;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 
 /** Learned per-query product scores from the nightly aggregation, current version only. */
 class QueryAffinitySignal implements Signal

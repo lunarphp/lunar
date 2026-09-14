@@ -3,7 +3,7 @@
 use Illuminate\Container\Container;
 use Lunar\Core\Models\Product;
 use Lunar\SearchRelevance\Contracts\Signal;
-use Lunar\SearchRelevance\Data\RankingContext;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
 use Lunar\SearchRelevance\Signals\SignalCombiner;
 
 uses()->group('search-relevance');

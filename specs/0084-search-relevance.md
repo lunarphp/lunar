@@ -158,18 +158,21 @@ packages/search-relevance/
   src/
     SearchRelevanceServiceProvider.php
     Contracts/{QueryNormaliser,Signal,Ranker,ScoreAggregator}.php
-    Data/{RankingContext,Hit,HitCollection}.php
+    DataObjects/{RankingContext,Hit,HitCollection}.php
     Normalisers/DefaultQueryNormaliser.php
     Signals/{SignalCombiner,QueryAffinitySignal}.php
     Rankers/{BucketedRanker,NullRanker}.php
     Pipelines/{PartNumberRetrieval,WidenRequest,RankResults}.php
-    Logging/{SearchLogger,LogSearch (job)}.php
-    Events/{RecordEvent (job),Attribution.php}
+    Logging/SearchLogger.php
+    Jobs/{LogSearch,RecordEvent}.php
+    Support/Attribution.php
     Http/Controllers/SearchEventController.php
-    Listeners/{AttributeCartLine,AttributeOrderLines}.php
-    Scoring/{MySqlScoreAggregator,PostgresScoreAggregator,PhpScoreAggregator}.php
+    Observers/CartLineObserver.php
+    Listeners/{AttributeOrderLines,ForgetPurchases}.php
+    Learning/Overrides.php
+    Scoring/{SqlScoreAggregator,MySqlScoreAggregator,PostgresScoreAggregator,PhpScoreAggregator,Replay,ReplayResult}.php
     Console/{ScoreCommand,ReplayCommand,PruneCommand}.php
-    Models/{SearchQuery,SearchEvent,SearchQueryScore}.php
+    Models/{SearchQuery,SearchEvent,SearchQueryScore,LearningOverride}.php
     Panel/{SearchRelevanceSection.php, Widgets/SearchConversionWidget.php}
     RetrievalVersion.php
 ```
@@ -375,7 +378,7 @@ Endpoint validation: `search_id` exists, `product_id` is in that search's `shown
 #### 2.7 Basket and purchase attribution
 
 - A click stores `attribution.{product_id} => {search_id, position, source, expires}` in the session for `attribution_ttl_minutes`.
-- `AttributeCartLine` is an Eloquent `created` observer on `Lunar\Core\Models\CartLine`. It resolves the line's product (purchasable to product), looks up attribution, and if present writes `meta['search_attribution']` on the line and dispatches a `basket` event.
+- `CartLineObserver` is an Eloquent `created` observer on `Lunar\Core\Models\CartLine`. It resolves the line's product (purchasable to product), looks up attribution, and if present writes `meta['search_attribution']` on the line and dispatches a `basket` event.
 - `AttributeOrderLines` listens to `Lunar\Core\Events\Orders\OrderPlaced`. For every order line whose `meta` carries `search_attribution`, dispatch a `purchase` event. `Lunar\Core\Pipelines\Order\Creation\CreateOrderLines` already copies cart line `meta` to the order line (verified on 2.x), so no order pipeline step is needed.
 
 All writes are queued; nothing touches the request path.
@@ -448,7 +451,7 @@ Learned ranking is a feedback loop, so bots and bad actors can try to feed it. T
 - **Scoring dedupe**: each session contributes at most one event of each type per query and product; a session cannot vote twice by re-running the search.
 - **Trusted sessions**: with `guards.trusted_sessions_only` (default on), only sessions that hold a cart or belong to a known customer count. A bot minting fresh sessions gains nothing; it must interact with the storefront to get a cart, and even then one vote per session.
 - **Crawlers** are neither logged nor ranked (`guards.ignored_user_agents`), so reporting stays honest and the tables stay small. Sessionless headless clients are kept, since they identify the shopper explicitly on the events endpoint.
-- **Refunds and cancellations** remove the purchase events their attributed order lines produced (`ForgetPurchases` on `OrderCancelled` and `OrderRefunded`).
+- **Refunds and cancellations** remove the purchase events their attributed order lines produced (`Listeners\ForgetPurchases` on `OrderCancelled` and `OrderRefunded`).
 - **Staff overrides** in the panel query page, stored in `{prefix}search_learning_overrides`: exclude a product from learning for a query (its score is removed immediately and future events ignored, reversible) and reset learning for a query (discards everything learned and ignores events before the reset). Both go through `Lunar\SearchRelevance\Learning\Overrides`, which both aggregators honour.
 
 Not done on purpose: storing IP addresses for abuse analysis. The per-IP rate limit on the events endpoint covers the crude case without the privacy obligations.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\SearchRelevance\Events;
+namespace Lunar\SearchRelevance\Support;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Session\Session;

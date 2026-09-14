@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\SearchRelevance\Logging;
+namespace Lunar\SearchRelevance\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
