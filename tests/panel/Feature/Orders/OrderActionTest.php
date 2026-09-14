@@ -158,14 +158,28 @@ it('sends a customer notification', function () {
     Notification::assertSentOnDemand(OrderUpdate::class);
 });
 
-it('saves an internal note', function () {
-    $order = Order::factory()->placed()->create();
+it('saves an internal note in meta, leaving the customer notes column alone', function () {
+    $order = Order::factory()->placed()->create(['notes' => 'Leave with the neighbour', 'meta' => ['account_ref' => 'ACME']]);
 
     $this->from(route('panel.orders.show', $order))
         ->put(route('panel.orders.note.update', $order), ['notes' => 'Handle with care'])
         ->assertSessionHas('success');
 
-    expect($order->refresh()->notes)->toBe('Handle with care');
+    $order->refresh();
+
+    expect($order->meta['internal_notes'])->toBe('Handle with care')
+        ->and($order->meta['account_ref'])->toBe('ACME')
+        ->and($order->notes)->toBe('Leave with the neighbour');
+});
+
+it('clears an internal note', function () {
+    $order = Order::factory()->placed()->create(['meta' => ['internal_notes' => 'Old note']]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->put(route('panel.orders.note.update', $order), ['notes' => ''])
+        ->assertSessionHas('success');
+
+    expect($order->refresh()->meta['internal_notes'])->toBeNull();
 });
 
 it('syncs tags, upper-casing values', function () {

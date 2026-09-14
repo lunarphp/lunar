@@ -92,9 +92,18 @@ class OrderActionController
         ), 'panel::orders.flash_notified');
     }
 
+    /**
+     * The staff-only note lives in `meta.internal_notes`, not in `orders.notes`.
+     * That column is the customer's: checkouts (and imported legacy orders) put
+     * the buyer's own order notes there, and a staff note must never overwrite
+     * what the customer asked for.
+     */
     public function note(OrderNoteRequest $request, Order $order): RedirectResponse
     {
-        $order->forceFill(['notes' => $request->input('notes')])->save();
+        $meta = $order->meta?->getArrayCopy() ?? [];
+        $meta['internal_notes'] = $request->filled('notes') ? $request->input('notes') : null;
+
+        $order->forceFill(['meta' => $meta])->save();
 
         return back()->with('success', __('panel::orders.flash_note_saved'));
     }
