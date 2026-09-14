@@ -3,6 +3,7 @@
 namespace Lunar\Search\Engines;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Product;
@@ -25,7 +26,8 @@ abstract class AbstractEngine
 
     protected int $perPage = 50;
 
-    protected int $page = 1;
+    /** Null until page() is called: the page then resolves from the request, as Scout does. */
+    protected ?int $page = null;
 
     /** Extra engine request parameters, merged into the engine request last. */
     protected array $params = [];
@@ -83,7 +85,7 @@ abstract class AbstractEngine
 
     public function getPage(): int
     {
-        return $this->page;
+        return $this->page ?? Paginator::resolveCurrentPage();
     }
 
     public function getPerPage(): int
@@ -182,7 +184,7 @@ abstract class AbstractEngine
      */
     protected function pipeRequest(): SearchRequest
     {
-        $request = new SearchRequest($this, $this->page, $this->perPage);
+        $request = new SearchRequest($this, $this->getPage(), $this->perPage);
 
         return app(Pipeline::class)
             ->send($request)

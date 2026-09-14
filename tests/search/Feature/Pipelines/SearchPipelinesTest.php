@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
@@ -207,4 +208,19 @@ it('tracks page and params on the engine', function () {
         ->and($engine->page(3)->getPage())->toBe(3)
         ->and($engine->perPage(24)->getPerPage())->toBe(24)
         ->and($engine->withParams(['a' => 1])->withParams(['b' => 2, 'a' => 3])->getParams())->toBe(['a' => 3, 'b' => 2]);
+});
+
+it('resolves the page from the request unless page() is called', function () {
+    Config::set('scout.driver', 'database');
+    Config::set('lunar.search.engine_map', [Product::class => 'database']);
+
+    Product::factory()->count(3)->create();
+
+    Paginator::currentPageResolver(fn () => 2);
+
+    $engine = Search::model(Product::class)->perPage(2);
+
+    expect($engine->getPage())->toBe(2)
+        ->and($engine->get()->page)->toBe(2)
+        ->and(Search::model(Product::class)->perPage(2)->page(1)->get()->page)->toBe(1);
 });
