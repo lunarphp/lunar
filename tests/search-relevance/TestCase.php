@@ -9,6 +9,7 @@ use Lunar\Nestedset\NestedSetServiceProvider;
 use Lunar\Search\SearchServiceProvider;
 use Lunar\SearchRelevance\SearchRelevanceServiceProvider;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\SearchRelevance\Support\MigrationState;
 use Lunar\Tests\TestCase as BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
@@ -22,6 +23,8 @@ class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
+        MigrationState::ensureFor(static::class);
+
         parent::setUp();
 
         activity()->disableLogging();
