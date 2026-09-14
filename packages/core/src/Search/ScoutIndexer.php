@@ -54,6 +54,16 @@ class ScoutIndexer implements ScoutIndexerInterface
         ];
     }
 
+    /**
+     * Fields that must match exactly, with typo tolerance disabled by the
+     * engine setup (`lunar:meilisearch:setup` applies these). Part-number
+     * style codes match random tokens under default typo tolerance.
+     */
+    public function getExactMatchFields(): array
+    {
+        return [];
+    }
+
     public function toSearchableArray(Model $model): array
     {
         if (! $model->attribute_data) {

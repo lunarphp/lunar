@@ -69,6 +69,17 @@ class MeilisearchSetup extends Command
             );
             $this->engine->waitForTask($task['taskUid']);
 
+            $indexer = $model->indexer();
+            $exactFields = method_exists($indexer, 'getExactMatchFields') ? $indexer->getExactMatchFields() : [];
+
+            if ($exactFields) {
+                $this->info("Disable typo tolerance on exact-match fields for {$searchable}");
+                $task = $index->updateTypoTolerance([
+                    'disableOnAttributes' => $exactFields,
+                ]);
+                $this->engine->waitForTask($task['taskUid']);
+            }
+
             $this->newLine();
         }
     }

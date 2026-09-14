@@ -64,6 +64,7 @@ test('can return correct searchable data', function () {
 
     expect($data)->toHaveKey('id');
     expect($data['skus'])->toBe([$variant->sku]);
+    expect($data['skus_normalised'])->toBe([strtoupper(preg_replace('/[^A-Za-z0-9]+/', '', $variant->sku))]);
     expect($data['status'])->toEqual((string) $product->status);
     expect($data['product_type'])->toEqual($product->productType->name);
     expect($data['brand'])->toEqual($product->brand?->name);
@@ -76,4 +77,18 @@ test('can return correct searchable data', function () {
     // Dedicated translatable columns are indexed per locale.
     expect($data['name_en'])->toBe('Trainers');
     expect($data['name_dk'])->toBe('Løbesko');
+});
+
+test('normalised skus drop separators and uppercase the code', function () {
+    Language::factory()->create(['code' => 'en', 'default' => true]);
+
+    $product = Product::factory()->create();
+
+    ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'hag-mb-32a/bcu.1']);
+    ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => null]);
+
+    $data = app(ProductIndexer::class)->toSearchableArray($product->fresh());
+
+    expect($data['skus_normalised'])->toBe(['HAGMB32ABCU1'])
+        ->and(app(ProductIndexer::class)->getExactMatchFields())->toBe(['skus', 'skus_normalised']);
 });
