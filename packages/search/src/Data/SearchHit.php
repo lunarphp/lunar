@@ -13,5 +13,7 @@ class SearchHit extends Data
         #[DataCollectionOf(SearchHitHighlight::class)]
         public array $highlights,
         public array $document,
+        /** Engine score under `score` where available; pipeline stages add their own keys. */
+        public array $meta = [],
     ) {}
 }

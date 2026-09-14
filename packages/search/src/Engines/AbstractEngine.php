@@ -3,9 +3,13 @@
 namespace Lunar\Search\Engines;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\Builder\SearchQuery;
+use Lunar\Search\Data\SearchResults;
+use Lunar\Search\Pipelines\SearchRequest;
+use Lunar\Search\Pipelines\SearchResponse;
 
 abstract class AbstractEngine
 {
@@ -20,6 +24,11 @@ abstract class AbstractEngine
     protected array $facets = [];
 
     protected int $perPage = 50;
+
+    protected int $page = 1;
+
+    /** Extra engine request parameters, merged into the engine request last. */
+    protected array $params = [];
 
     protected string $sort = '';
 
@@ -58,6 +67,41 @@ abstract class AbstractEngine
         $this->perPage = $perPage;
 
         return $this;
+    }
+
+    public function page(int $page): static
+    {
+        $this->page = max(1, $page);
+
+        return $this;
+    }
+
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    public function getPerPage(): int
+    {
+        return $this->perPage;
+    }
+
+    /**
+     * Merge engine-specific request parameters, applied after everything the
+     * engine builds itself. A null value removes the parameter from the
+     * request. Used by request-pipeline stages to change retrieval without
+     * engine-specific code living in the engine.
+     */
+    public function withParams(array $params): static
+    {
+        $this->params = [...$this->params, ...$params];
+
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     public function getFacets(): array
@@ -124,7 +168,54 @@ abstract class AbstractEngine
 
     protected function getRawResults(\Closure $builder): LengthAwarePaginator
     {
-        return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage);
+        return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage, page: $this->page);
+    }
+
+    /**
+     * Run the request pipeline. Engines call this at the top of get() so
+     * stages can adjust the request before the engine queries.
+     */
+    protected function pipeRequest(): SearchRequest
+    {
+        $request = new SearchRequest($this, $this->page, $this->perPage);
+
+        return app(Pipeline::class)
+            ->send($request)
+            ->through(config('lunar.search.pipelines.request', []))
+            ->thenReturn();
+    }
+
+    /**
+     * Run the results pipeline. Engines wrap their return value in this so
+     * stages can reorder, annotate or replace the built results.
+     */
+    protected function pipeResults(SearchRequest $request, SearchResults $results): SearchResults
+    {
+        $response = app(Pipeline::class)
+            ->send(new SearchResponse($request, $results))
+            ->through(config('lunar.search.pipelines.results', []))
+            ->thenReturn();
+
+        return $response->results;
+    }
+
+    /**
+     * Apply withParams() overrides to a built request array. Null removes
+     * the key so a stage can drop a parameter the engine would otherwise send.
+     */
+    protected function applyParamOverrides(array $params): array
+    {
+        foreach ($this->params as $key => $value) {
+            if ($value === null) {
+                unset($params[$key]);
+
+                continue;
+            }
+
+            $params[$key] = $value;
+        }
+
+        return $params;
     }
 
     protected function getFacetConfig(?string $field = null): ?array
