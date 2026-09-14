@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { DataTable, PageEmpty, SideCard, http } from '@lunarphp/panel';
+import { DataTable, PageEmpty, http } from '@lunarphp/panel';
 import RelativeBar from './RelativeBar.vue';
+import TableBlock from './TableBlock.vue';
 
 type QueryRow = {
     query: string;
@@ -56,9 +57,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <SideCard :title="t('search-relevance::panel.product_title')" body-class="p-0">
-        <p class="px-4 pt-3 text-[12px] text-ink-500">{{ t('search-relevance::panel.product_description') }}</p>
-
+    <TableBlock :title="t('search-relevance::panel.product_title')" :description="t('search-relevance::panel.product_description')" bordered>
         <PageEmpty v-if="loading">{{ t('search-relevance::panel.product_loading') }}</PageEmpty>
         <PageEmpty v-else-if="failed">{{ t('search-relevance::panel.product_error') }}</PageEmpty>
         <DataTable v-else-if="rows.length" :columns="columns" :rows="rows" row-key="query" :row-to="rowTo">
@@ -67,5 +66,5 @@ onMounted(async () => {
             </template>
         </DataTable>
         <PageEmpty v-else>{{ t('search-relevance::panel.product_empty') }}</PageEmpty>
-    </SideCard>
+    </TableBlock>
 </template>

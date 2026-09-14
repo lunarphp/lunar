@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Breadcrumbs, Button, ConfirmDialog, DataTable, PageEmpty, PageHeader, PageZone, SideCard, Tooltip } from '@lunarphp/panel';
 import RelativeBar from '../components/RelativeBar.vue';
+import TableBlock from '../components/TableBlock.vue';
 
 type LearnedRow = {
     product_id: number;
@@ -107,7 +108,7 @@ const formatDate = (value: string | null): string => {
 
             <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
                 <div class="min-w-0">
-                    <SideCard :title="t('search-relevance::panel.query_learned_title')" body-class="p-0">
+                    <TableBlock :title="t('search-relevance::panel.query_learned_title')" >
                         <DataTable
                             v-if="learned.length"
                             :columns="learnedColumns"
@@ -129,12 +130,10 @@ const formatDate = (value: string | null): string => {
                             <template #cell-last_event_at="{ value }">{{ formatDate(value as string | null) }}</template>
                         </DataTable>
                         <PageEmpty v-else>{{ t('search-relevance::panel.query_learned_empty') }}</PageEmpty>
-                        <div v-if="reset_at" class="px-4 py-2.5 border-t border-line text-[11px] text-ink-500">
-                            {{ t('search-relevance::panel.reset_at', { date: formatDate(reset_at) }) }}
-                        </div>
-                    </SideCard>
+                        <template v-if="reset_at" #footer>{{ t('search-relevance::panel.reset_at', { date: formatDate(reset_at) }) }}</template>
+                    </TableBlock>
 
-                    <SideCard :title="t('search-relevance::panel.excluded_title')" class="mt-5">
+                    <SideCard :title="t('search-relevance::panel.excluded_title')" class="mt-6">
                         <p class="text-[12px] text-ink-500 mb-2">{{ t('search-relevance::panel.excluded_description') }}</p>
                         <ul v-if="excluded.length" class="flex flex-col gap-2">
                             <li v-for="row in excluded" :key="row.product_id" class="flex items-center justify-between gap-3 text-[12.5px] text-ink-900">
@@ -146,13 +145,11 @@ const formatDate = (value: string | null): string => {
                     </SideCard>
                 </div>
 
-                <SideCard :title="t('search-relevance::panel.query_variants_title')" body-class="p-0">
+                <TableBlock :title="t('search-relevance::panel.query_variants_title')">
                     <DataTable v-if="variants.length" :columns="variantColumns" :rows="variants" row-key="raw_query" />
                     <PageEmpty v-else>{{ t('search-relevance::panel.query_variants_empty') }}</PageEmpty>
-                    <div class="px-4 py-2.5 border-t border-line text-[11px] text-ink-500">
-                        {{ t('search-relevance::panel.query_model') }}: <span class="text-ink-700">{{ model_type }}</span>
-                    </div>
-                </SideCard>
+                    <template #footer>{{ t('search-relevance::panel.query_model') }}: <span class="text-ink-700">{{ model_type }}</span></template>
+                </TableBlock>
             </div>
 
             <PageZone region="main" position="after" />

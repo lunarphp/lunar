@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Breadcrumbs, DataTable, KpiCard, PageEmpty, PageHeader, PageZone, SideCard } from '@lunarphp/panel';
+import TableBlock from '../components/TableBlock.vue';
 
 type Kpis = {
     searches: number;
@@ -139,7 +140,7 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
 
             <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
                 <div class="min-w-0">
-                    <SideCard :title="t('search-relevance::panel.top_queries_title')" body-class="p-0">
+                    <TableBlock :title="t('search-relevance::panel.top_queries_title')">
                         <DataTable
                             v-if="top_queries.length"
                             :columns="topColumns"
@@ -150,11 +151,10 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                             <template #cell-conversion_rate="{ value }">{{ percent(value as number) }}</template>
                         </DataTable>
                         <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
-                    </SideCard>
+                    </TableBlock>
 
-                    <div class="grid gap-5 lg:grid-cols-2">
-                        <SideCard :title="t('search-relevance::panel.zero_result_title')" body-class="p-0">
-                            <p class="px-4 pt-3 text-[12px] text-ink-500">{{ t('search-relevance::panel.zero_result_description') }}</p>
+                    <div class="mt-6 grid gap-5 lg:grid-cols-2">
+                        <TableBlock :title="t('search-relevance::panel.zero_result_title')" :description="t('search-relevance::panel.zero_result_description')">
                             <DataTable
                                 v-if="zero_result_queries.length"
                                 :columns="simpleColumns"
@@ -163,10 +163,9 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                                 :row-to="rowTo"
                             />
                             <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
-                        </SideCard>
+                        </TableBlock>
 
-                        <SideCard :title="t('search-relevance::panel.no_click_title')" body-class="p-0">
-                            <p class="px-4 pt-3 text-[12px] text-ink-500">{{ t('search-relevance::panel.no_click_description') }}</p>
+                        <TableBlock :title="t('search-relevance::panel.no_click_title')" :description="t('search-relevance::panel.no_click_description')">
                             <DataTable
                                 v-if="no_click_queries.length"
                                 :columns="simpleColumns"
@@ -175,7 +174,7 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                                 :row-to="rowTo"
                             />
                             <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
-                        </SideCard>
+                        </TableBlock>
                     </div>
                 </div>
 
