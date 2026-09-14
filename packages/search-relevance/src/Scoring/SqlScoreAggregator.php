@@ -28,6 +28,7 @@ abstract class SqlScoreAggregator implements ScoreAggregator
         protected QueryAffinitySignal $affinity,
     ) {}
 
+    /** Age of `e.created_at` in seconds relative to a bound job-start timestamp (`?`), not the database clock, so time zones cannot skew the decay. */
     abstract protected function ageSecondsExpression(): string;
 
     abstract protected function minuteBucketExpression(): string;
@@ -118,6 +119,7 @@ abstract class SqlScoreAggregator implements ScoreAggregator
             (float) ($weights['purchase'] ?? 5),
             (float) ($config['position_eta'] ?? 0.7),
             (float) ($config['max_position_weight'] ?? 5),
+            $start->format('Y-m-d H:i:s'),
             (float) ($config['half_life_days'] ?? 30),
             (int) ($config['min_sessions'] ?? 3),
             (int) ($config['max_products_per_query'] ?? 50),

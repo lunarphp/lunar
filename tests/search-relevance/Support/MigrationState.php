@@ -16,7 +16,9 @@ final class MigrationState
 
     public static function ensureFor(string $testCase): void
     {
-        if (self::$testCase !== null && self::$testCase !== $testCase) {
+        // A different class already migrated this process: ours (first call
+        // here) or another suite's in the cross-db group (never calls here).
+        if (self::$testCase !== $testCase && RefreshDatabaseState::$migrated) {
             RefreshDatabaseState::$migrated = false;
         }
 

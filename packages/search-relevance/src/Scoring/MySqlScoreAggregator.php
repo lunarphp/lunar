@@ -6,7 +6,7 @@ class MySqlScoreAggregator extends SqlScoreAggregator
 {
     protected function ageSecondsExpression(): string
     {
-        return 'TIMESTAMPDIFF(SECOND, e.created_at, NOW())';
+        return 'TIMESTAMPDIFF(SECOND, e.created_at, ?)';
     }
 
     protected function minuteBucketExpression(): string

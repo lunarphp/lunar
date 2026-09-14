@@ -6,7 +6,7 @@ class PostgresScoreAggregator extends SqlScoreAggregator
 {
     protected function ageSecondsExpression(): string
     {
-        return 'EXTRACT(EPOCH FROM now() - e.created_at)';
+        return 'EXTRACT(EPOCH FROM ?::timestamp - e.created_at)';
     }
 
     protected function minuteBucketExpression(): string
