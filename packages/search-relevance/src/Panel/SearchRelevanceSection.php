@@ -84,7 +84,6 @@ class SearchRelevanceSection extends Section
                     ->name('panel.settings.search-relevance.')
                     ->group(function (): void {
                         Route::get('/', [SettingsController::class, 'index'])->name('index');
-                        Route::post('/', [SettingsController::class, 'update'])->name('update');
                     });
             });
         };

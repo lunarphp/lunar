@@ -42,9 +42,6 @@ class SearchRelevanceServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom("{$this->root}/config/search-relevance.php", 'lunar.search_relevance');
 
-        // Holds a per-request memo of the persisted mode; scoped, not singleton.
-        $this->app->scoped(Settings::class);
-
         $this->app->bind(QueryNormaliser::class, fn ($app) => $app->make(config('lunar.search_relevance.normaliser')));
 
         $this->app->bind(SignalCombiner::class, fn ($app) => new SignalCombiner(

@@ -9,7 +9,6 @@ use Lunar\SearchRelevance\Contracts\QueryNormaliser;
 use Lunar\SearchRelevance\Data\RankingContext;
 use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\RetrievalVersion;
-use Lunar\SearchRelevance\Settings;
 
 /**
  * Builds the RankingContext for the results stage and, when ranking applies,
@@ -19,7 +18,6 @@ class WidenRequest
 {
     public function __construct(
         protected QueryNormaliser $normaliser,
-        protected Settings $settings,
         protected SearchLogger $logger,
         protected RetrievalVersion $version,
         protected Repository $config,
@@ -29,7 +27,7 @@ class WidenRequest
     {
         $engine = $request->engine;
         $modelType = $engine->getModelType();
-        $mode = $this->settings->mode();
+        $mode = (string) $this->config->get('lunar.search_relevance.mode', 'shadow');
 
         if ($mode === 'off' || ! in_array($modelType, $this->config->get('lunar.search_relevance.models', []), true)) {
             return $next($request);

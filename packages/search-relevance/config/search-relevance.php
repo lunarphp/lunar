@@ -18,8 +18,8 @@ return [
     |         replay command can prove uplift before switching on.
     | on:     the reranked order is displayed.
     |
-    | The admin panel can override this value; Lunar\SearchRelevance\Settings
-    | resolves the effective mode.
+    | Set in config or LUNAR_SEARCH_RELEVANCE_MODE, like every other store
+    | setting; the admin panel shows the current value but cannot change it.
     |
     */
     'mode' => env('LUNAR_SEARCH_RELEVANCE_MODE', 'shadow'),

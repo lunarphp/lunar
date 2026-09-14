@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
@@ -9,7 +10,6 @@ use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
 use Lunar\SearchRelevance\RetrievalVersion;
-use Lunar\SearchRelevance\Settings;
 use Lunar\Tests\SearchRelevance\PanelTestCase;
 
 uses(PanelTestCase::class);
@@ -85,7 +85,6 @@ it('gates every route behind the permission', function () {
     $this->get(route('panel.search-relevance.query', ['query' => 'red shoes']))->assertForbidden();
     $this->getJson(route('panel.search-relevance.product', $product))->assertForbidden();
     $this->get(route('panel.settings.search-relevance.index'))->assertForbidden();
-    $this->post(route('panel.settings.search-relevance.update'), ['mode' => 'off'])->assertForbidden();
 });
 
 it('allows the routes to permitted staff and admins', function () {
@@ -234,40 +233,27 @@ it('shares the product slot entry on the product edit page', function () {
                 ->contains(fn ($entry) => $entry['component'] === 'search-relevance::ProductSearchPerformance')));
 });
 
-it('renders the settings page', function () {
+it('renders the read-only settings page from config', function () {
+    Config::set('lunar.search_relevance.mode', 'on');
+    SearchQueryScore::factory()->create(['updated_at' => now()->subHour()]);
+
     $this->actingAs(relevanceStaff(admin: true), 'staff')
         ->get(route('panel.settings.search-relevance.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('search-relevance::Settings/Index', false)
-            ->where('mode', app(Settings::class)->mode())
-            ->where('modes', ['off', 'shadow', 'on'])
+            ->where('mode', 'on')
+            ->where('mode_env', 'LUNAR_SEARCH_RELEVANCE_MODE')
             ->where('weights', config('lunar.search_relevance.scoring.weights'))
+            ->where('schedule', config('lunar.search_relevance.scoring.schedule'))
+            ->where('last_run', fn ($value) => $value !== null)
             ->where('versions.0.model', Product::class)
             ->where('versions.0.label', 'Product')
-            ->where('versions.0.version', app(RetrievalVersion::class)->current(Product::class))
-            ->where('urls.update', route('panel.settings.search-relevance.update')));
+            ->where('versions.0.version', app(RetrievalVersion::class)->current(Product::class)));
 });
 
-it('persists the mode from the settings update', function () {
-    $this->actingAs(relevanceStaff(admin: true), 'staff')
-        ->from(route('panel.settings.search-relevance.index'))
-        ->post(route('panel.settings.search-relevance.update'), ['mode' => 'on'])
-        ->assertRedirect(route('panel.settings.search-relevance.index'))
-        ->assertSessionHas('success');
-
-    expect(app()->make(Settings::class)->mode())->toBe('on');
-
-    $this->get(route('panel.settings.search-relevance.index'))
-        ->assertInertia(fn (Assert $page) => $page->where('mode', 'on'));
-});
-
-it('rejects an invalid mode', function () {
-    $this->actingAs(relevanceStaff(admin: true), 'staff')
-        ->from(route('panel.settings.search-relevance.index'))
-        ->post(route('panel.settings.search-relevance.update'), ['mode' => 'loud'])
-        ->assertRedirect(route('panel.settings.search-relevance.index'))
-        ->assertSessionHasErrors('mode');
+it('has no route to change the mode from the panel', function () {
+    expect(app('router')->has('panel.settings.search-relevance.update'))->toBeFalse();
 });
 
 it('contributes the search conversion dashboard widget with deferred data', function () {

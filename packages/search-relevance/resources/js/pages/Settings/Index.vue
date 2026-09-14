@@ -1,50 +1,43 @@
 <script setup lang="ts">
-import { computed, ref, type Component, type VNode } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { computed, type Component, type VNode } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Button, ConfirmDialog, FieldLabel, Select, SettingsShell, StatusBadge } from '@lunarphp/panel';
+import { SettingsShell, StatusBadge } from '@lunarphp/panel';
 
 // SettingsShell supplies the whole chrome, so opt out of the auto-applied PanelLayout.
 defineOptions({
     layout: (_h: unknown, page: Component): VNode => page as unknown as VNode,
 });
 
+// Read-only: mode and weights are configured in code, like the rest of Lunar.
 const props = defineProps<{
     mode: string;
-    modes: string[];
+    mode_env: string;
     weights: Record<string, number>;
+    schedule: string;
+    last_run: string | null;
     versions: { model: string; label: string; version: string }[];
-    urls: { update: string };
 }>();
 
 const { t } = useI18n();
 
-const form = useForm({ mode: props.mode });
-const confirmOpen = ref(false);
+const modeHelp = computed(() => t(`search-relevance::panel.settings_mode_help_${props.mode}`));
 
-const modeHelp = computed(() => t(`search-relevance::panel.settings_mode_help_${form.mode}`));
-
-const modeTone = (mode: string): 'sage' | 'warn' | 'archived' => {
-    if (mode === 'on') {
+const modeTone = computed((): 'sage' | 'warn' | 'archived' => {
+    if (props.mode === 'on') {
         return 'sage';
     }
 
-    return mode === 'shadow' ? 'warn' : 'archived';
-};
+    return props.mode === 'shadow' ? 'warn' : 'archived';
+});
 
-const save = (): void => {
-    form.post(props.urls.update, { preserveScroll: true });
-};
-
-// Switching to `on` changes what shoppers see, so it is confirmed first.
-const submit = (): void => {
-    if (form.mode === 'on' && props.mode !== 'on') {
-        confirmOpen.value = true;
-
-        return;
+const formatDate = (value: string | null): string => {
+    if (!value) {
+        return t('search-relevance::panel.settings_last_run_never');
     }
 
-    save();
+    const date = new Date(value.replace(' ', 'T'));
+
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 };
 </script>
 
@@ -54,26 +47,16 @@ const submit = (): void => {
         :description="t('search-relevance::panel.settings_description')"
     >
         <div data-screen-label="Search relevance settings" class="flex flex-col gap-6">
-            <form class="flex flex-col gap-4" @submit.prevent="submit">
-                <div class="max-w-sm">
-                    <FieldLabel>{{ t('search-relevance::panel.settings_mode') }}</FieldLabel>
-                    <Select v-model="form.mode" :invalid="!!form.errors.mode">
-                        <option v-for="option in modes" :key="option" :value="option">
-                            {{ t(`search-relevance::panel.settings_mode_${option}`) }}
-                        </option>
-                    </Select>
-                    <div class="mt-1 text-[11px]" :class="form.errors.mode ? 'text-danger' : 'text-ink-500'">
-                        {{ form.errors.mode ?? modeHelp }}
-                    </div>
-                </div>
-
+            <div>
+                <h3 class="text-[13px] font-semibold text-ink-900 mb-2">{{ t('search-relevance::panel.settings_mode') }}</h3>
                 <div class="flex items-center gap-3">
-                    <Button type="submit" variant="primary" :disabled="form.processing">{{ t('common.save') }}</Button>
-                    <StatusBadge :tone="modeTone(mode)" size="sm" dot>
+                    <StatusBadge :tone="modeTone" size="sm" dot>
                         {{ t(`search-relevance::panel.settings_mode_${mode}`) }}
                     </StatusBadge>
+                    <span class="text-[12.5px] text-ink-700">{{ modeHelp }}</span>
                 </div>
-            </form>
+                <p class="mt-2 text-[11px] text-ink-500">{{ t('search-relevance::panel.settings_mode_config', { env: mode_env }) }}</p>
+            </div>
 
             <div>
                 <h3 class="text-[13px] font-semibold text-ink-900 mb-2">{{ t('search-relevance::panel.settings_weights') }}</h3>
@@ -82,6 +65,17 @@ const submit = (): void => {
                         <dt class="text-[11px] text-ink-500">{{ t(`search-relevance::panel.settings_weight_${event}`) }}</dt>
                         <dd class="text-[15px] font-semibold text-ink-900 [font-variant-numeric:tabular-nums]">{{ weight }}</dd>
                     </div>
+                </dl>
+            </div>
+
+            <div>
+                <h3 class="text-[13px] font-semibold text-ink-900 mb-2">{{ t('search-relevance::panel.settings_scoring') }}</h3>
+                <dl class="flex flex-col gap-1.5 max-w-xl text-[12.5px]">
+                    <div class="flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2">
+                        <dt class="text-ink-500">{{ t('search-relevance::panel.settings_last_run') }}</dt>
+                        <dd class="text-ink-900 font-medium">{{ formatDate(last_run) }}</dd>
+                    </div>
+                    <div class="px-3 text-[11px] text-ink-500">{{ t('search-relevance::panel.settings_schedule', { time: schedule }) }}</div>
                 </dl>
             </div>
 
@@ -96,12 +90,5 @@ const submit = (): void => {
                 </ul>
             </div>
         </div>
-
-        <ConfirmDialog
-            v-model:open="confirmOpen"
-            :title="t('search-relevance::panel.settings_confirm_on_title')"
-            :description="t('search-relevance::panel.settings_confirm_on_description')"
-            @confirm="save"
-        />
     </SettingsShell>
 </template>

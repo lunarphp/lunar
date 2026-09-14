@@ -157,7 +157,6 @@ packages/search-relevance/
   routes/storefront.php       events endpoint
   src/
     SearchRelevanceServiceProvider.php
-    Settings.php               mode persisted by the panel, falling back to config
     Contracts/{QueryNormaliser,Signal,Ranker,ScoreAggregator}.php
     Data/{RankingContext,Hit,HitCollection}.php
     Normalisers/DefaultQueryNormaliser.php
@@ -225,11 +224,11 @@ Modes:
 - `shadow`: everything is logged, the reranked order is computed and stored alongside the shown order, the engine order is displayed. Default after install, so training data accrues from day one and `replay` can prove uplift before switching on.
 - `on`: reranked order is displayed.
 
-The panel persists a mode override in `{prefix}search_relevance_settings`; `Lunar\SearchRelevance\Settings::mode()` returns the override when present and the config value otherwise. Every code path reads the mode through `Settings`, never `config()` directly.
+The mode is store configuration, set in code or through `LUNAR_SEARCH_RELEVANCE_MODE` like every other Lunar setting. The panel shows the current value but cannot change it: switching a store's search behaviour is a developer decision that belongs in version control and can differ per environment.
 
 #### 2.3 Database
 
-Four tables, prefixed via `Lunar\Core\Database\Migration::$prefix`. All types chosen to work on MySQL 8 and Postgres. No partitioning (a `PruneCommand` replaces it).
+Four tables, prefixed via `Lunar\Core\Database\Migration::$prefix` (the fourth, `search_learning_overrides`, is described in 2.10.1). All types chosen to work on MySQL 8 and Postgres. No partitioning (a `PruneCommand` replaces it).
 
 **`{prefix}search_queries`**
 
@@ -277,8 +276,6 @@ Four tables, prefixed via `Lunar\Core\Database\Migration::$prefix`. All types ch
 | updated_at | timestamp | |
 
 Primary key `(model_type, normalised_query, product_id)`. Index on `(version, normalised_query)`.
-
-**`{prefix}search_relevance_settings`**: `key` string PK, `value` json, timestamps. Holds the panel's mode override.
 
 Keep `normalised_query` at 255 so it can be indexed on MySQL without prefix indexes. Truncate longer queries at log time.
 
@@ -436,7 +433,7 @@ Built as an add-on to `lunarphp/panel`, following `packages/panel-addon-example`
 - **Routes** (all under `can:search:manage-relevance`):
   - `panel.search-relevance.index`: KPIs for a date range (searches, click-through rate, search conversion rate, zero-result rate, mean click position) plus the replay uplift card. Top queries table with counts and conversion, zero-result queries table, queries with no clicks (merchandising opportunities).
   - `panel.search-relevance.query`: one normalised query. Learned products in score order with the explainability breakdown per product: relative score, clicks, baskets, purchases, distinct sessions, last event, and the engine position it typically comes from. Raw query variants that normalise to it.
-  - `panel.settings.search-relevance.index`: mode switch (off/shadow/on) with a confirmation when switching to `on`, and read-only display of the weights and version. Mode persists in `{prefix}search_relevance_settings` through `Settings`.
+  - `panel.settings.search-relevance.index`: read-only status: the configured mode with the env var that sets it, the event weights, the scoring schedule and last run, and the retrieval version per model.
 - **Dashboard widget** `SearchConversionWidget` (`WidgetSpan::Half`): searches and conversion for the dashboard range.
 - **Slot** on `products.edit:content:after` showing "Search performance" for the product (queries it wins, clicks, purchases).
 - **Global search source**: normalised queries, so staff can jump to a query page from the palette.
@@ -462,7 +459,7 @@ Not done on purpose: storing IP addresses for abuse analysis. The per-IP rate li
 
 - Unit: normaliser cases (units, part numbers, punctuation, plurals), signal combination and clamping, bucket ordering including the learned-union insertion point, `RetrievalVersion`.
 - Feature: request and results pipelines widen and slice correctly across the window boundary using the Database engine and a fake for Typesense/Meilisearch; shadow mode displays engine order but logs ranked order; events endpoint rejects unknown search ids, products not shown, and out-of-range positions; cart line and order attribution end to end; scoring on MySQL and Postgres in CI (`cross-db` group), PHP aggregator on SQLite; prune; replay output.
-- Panel: routes gated by permission; index and query pages render with fixture data; settings update.
+- Panel: routes gated by permission; index and query pages render with fixture data; the settings page renders from config and exposes no update route.
 
 ## Alternatives considered
 
@@ -498,7 +495,7 @@ Every class, config key and command in the docs must be verified against the mon
 
 ## Resolved questions
 
-1. **Where does the panel persist the mode switch?** A `{prefix}search_relevance_settings` key-value table read through `Lunar\SearchRelevance\Settings`. Config remains the fallback and the only option without the panel.
+1. **Where does the panel persist the mode switch?** It does not. Store behaviour is configured in code throughout Lunar, so the mode lives in config and the panel settings page is read-only. An earlier revision persisted a panel override in a settings table; it was removed for that reason.
 2. **Shopper identity for headless storefronts.** The events endpoint accepts an explicit `session_id` for API clients without a cart session cookie; the storefront passes its cart identifier. The Blade component and the default headless payload omit it and let the server resolve it.
 3. **Product-level versus variant-level events.** Product ids only. A nullable `variant_id` can be added later without breaking the tables.
 4. **Meilisearch `showRankingScore`.** Requested by the engine as part of Part 1, so `hit->meta['score']` is populated on Meilisearch too.
