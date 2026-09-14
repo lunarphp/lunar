@@ -99,6 +99,7 @@ it('allows the routes to permitted staff and admins', function () {
 
 it('shows the navigation only to staff with the permission', function () {
     $hasItem = fn ($groups): bool => collect($groups)->firstWhere('key', 'search') !== null
+        && collect($groups)->last()['key'] === 'search'
         && collect(collect($groups)->firstWhere('key', 'search')['items'])->firstWhere('key', 'search-relevance')['icon'] === 'chart';
 
     $this->actingAs(relevanceStaff(permitted: true), 'staff')

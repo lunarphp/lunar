@@ -9,6 +9,7 @@ use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Slots\Slot;
 use Lunar\Panel\Slots\SlotRegistry;
+use Lunar\Panel\Support\Position;
 use Lunar\SearchRelevance\Panel\Http\Controllers\SearchRelevanceController;
 use Lunar\SearchRelevance\Panel\Http\Controllers\SettingsController;
 use Lunar\SearchRelevance\Panel\Search\QuerySearchSource;
@@ -30,7 +31,8 @@ class SearchRelevanceSection extends Section
 
     public function navigation(NavigationRegistry $registry): void
     {
-        $registry->group('search', 'search-relevance::panel.nav_group');
+        // Reporting, not day-to-day operations: sits below the first-party groups.
+        $registry->group('search', 'search-relevance::panel.nav_group', position: Position::last());
         $registry->addItem('search', new NavigationItem(
             key: 'search-relevance',
             label: 'search-relevance::panel.nav_label',

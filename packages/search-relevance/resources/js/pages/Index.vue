@@ -104,7 +104,7 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                         :key="option.value"
                         type="button"
                         :class="[
-                            'h-[26px] px-2.5 rounded-sm text-[12px] font-medium transition-[background-color,color] duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35',
+                            'h-[26px] px-2.5 rounded-sm text-[12px] font-medium transition-[background-color,color,box-shadow] duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35',
                             range === option.value ? 'bg-surface text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-900',
                         ]"
                         :aria-pressed="range === option.value"
@@ -119,7 +119,7 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
 
-            <div class="grid grid-cols-2 xl:grid-cols-5 gap-2.5">
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-2.5">
                 <KpiCard :label="t('search-relevance::panel.kpi_searches')" :value="kpis.searches" icon="search" tone="sage" />
                 <KpiCard :label="t('search-relevance::panel.kpi_click_through_rate')" :value="percent(kpis.click_through_rate)" icon="eye" />
                 <KpiCard :label="t('search-relevance::panel.kpi_conversion_rate')" :value="percent(kpis.conversion_rate)" icon="cart" />
@@ -152,7 +152,7 @@ const upliftTone = computed<'sage' | 'danger' | 'neutral'>(() => {
                         <PageEmpty v-else>{{ t('search-relevance::panel.empty_queries') }}</PageEmpty>
                     </SideCard>
 
-                    <div class="grid gap-5 md:grid-cols-2">
+                    <div class="grid gap-5 lg:grid-cols-2">
                         <SideCard :title="t('search-relevance::panel.zero_result_title')" body-class="p-0">
                             <p class="px-4 pt-3 text-[12px] text-ink-500">{{ t('search-relevance::panel.zero_result_description') }}</p>
                             <DataTable
