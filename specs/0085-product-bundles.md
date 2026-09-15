@@ -153,7 +153,7 @@ packages/bundles/
     Models/{Bundle,BundleGroup,BundleComponent}.php
     Enums/BundlePricing.php
     ValueObjects/{BundleSelection,SelectedComponent}.php
-    Modifiers/BundleSelectionPricing.php          CartLineModifier
+    Pipelines/CartLine/PriceBundleSelection.php    cart_lines pipeline stage
     Validation/CartLine/BundleSelection.php        add_to_cart / update_cart_line validator
     Pipelines/Order/Creation/CreateBundleComponentLines.php
     Listeners/{RepriceOnComponentPriceChange,RepriceOnComponentInvalidation,InvalidateContainingBundles}.php
@@ -278,7 +278,7 @@ Rows are written through the core `Price` model so cache invalidation and search
 
 Because the rows are ordinary price rows, the panel pricing editor shows them and lets the merchant edit them. The bundle card states that prices in `components` mode are derived and overwritten on reprice. A merchant who wants to hand-tune switches to `fixed`.
 
-A configurable bundle in `components` mode whose selection differs from the default is priced at cart time by `Modifiers/BundleSelectionPricing`, a `CartLineModifier` whose `calculating()` sets `$cartLine->unitPrice` and `unitPriceInclTax` from the resolved selection. `CalculateLineSubtotal` already honours a unit price set in `calculating()` and skips `GetUnitPrice` for that line. The modifier mirrors `GetUnitPrice`'s currency, quantity and customer-group handling by calling `Pricing::for($component)` per component, and applies the same `discount_percentage`. Fixed bundles and `fixed`-priced bundles never enter the modifier.
+A configurable bundle in `components` mode whose selection differs from the default is priced at cart time by `Pipelines/CartLine/PriceBundleSelection`, a `lunar.cart.pipelines.cart_lines` stage appended after `GetUnitPrice` that overwrites `$cartLine->unitPrice` and `unitPriceInclTax` from the resolved selection. `CalculateLines` reads the unit price the pipeline leaves on the line, and `CalculateLineSubtotal` keeps a unit price that is already set, so nothing downstream recomputes it. The stage mirrors `GetUnitPrice`'s currency, quantity and customer-group handling by pricing each component through the `PricingManager` contract, and applies the same `discount_percentage`. Fixed bundles and `fixed`-priced bundles never enter the stage. (`CartLineModifier::calculating()` is not used: core never invokes that hook.)
 
 Tax: the parent line is taxed at the bundle variant's tax class, like any variant. A bundle whose components have different tax rates is taxed at one rate. Mixed-supply apportionment is out of scope (see Open questions).
 
@@ -471,7 +471,7 @@ Cache: editing a bundle's components or groups invalidates the bundle's product 
 - [ ] Slice 2 — core: `ResolvesInventory` contract, `VariantInventory`, `ResolveInventory` action, `ProductVariant` delegation, `ActionServiceProvider` binding, tests
 - [ ] Slice 3 — `bundles`: skeleton and monorepo wiring, migrations, models, factories, `ProductVariant::bundle` relation, define/sync/delete actions and verbs, invariants, cache invalidation, headless tests
 - [ ] Slice 4 — `bundles`: `ResolveBundleInventory` decorator, `ResolveBundleSelection`, `BundleSelection` validator, `CreateBundleComponentLines`, end-to-end cart → order → fulfilment → stock tests including mixed physical and digital
-- [ ] Slice 5 — `bundles`: `RepriceBundle`, materialised price rows, listeners, `BundleSelectionPricing` modifier, `lunar:bundles:reprice`, tests
+- [ ] Slice 5 — `bundles`: `RepriceBundle`, materialised price rows, listeners, `PriceBundleSelection` stage, `lunar:bundles:reprice`, tests
 - [ ] Slice 6 — panel (first party): component-line nesting in the order view and refund composer, `Section` exported from `ui.ts`
 - [ ] Slice 7 — `bundles` panel: section extension, routes, `BundleCard` for fixed bundles, variant search endpoint, `IncludedInBundlesCard`, products table badge and filter, 16 locales, panel tests, JS build and CI
 - [ ] Slice 8 — `bundles` panel: configurable groups editor

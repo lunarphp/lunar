@@ -47,6 +47,8 @@ class OrderShowController
             'lines.components',
             'lines.fulfilmentLines',
             'fulfilments.lines.orderLine.purchasable',
+            'fulfilments.lines.orderLine.parent',
+            'fulfilments.lines.orderLine.components',
             'fulfilments.trackings',
             'fulfilments.location',
             'transactions.refundLines.orderLine',
