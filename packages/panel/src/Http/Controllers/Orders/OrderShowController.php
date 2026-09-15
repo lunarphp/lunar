@@ -43,6 +43,8 @@ class OrderShowController
     {
         $order->load([
             'lines.purchasable',
+            'lines.parent',
+            'lines.components',
             'lines.fulfilmentLines',
             'fulfilments.lines.orderLine.purchasable',
             'fulfilments.trackings',
@@ -355,6 +357,15 @@ class OrderShowController
             ])->values()->all(),
             'total' => $money($line->total),
             'notes' => $line->notes,
+            // Component lines (a bundle's parts) carry no money; the parent holds it.
+            'part_of' => $line->parent?->description,
+            'components' => $line->components->map(fn (OrderLine $component) => [
+                'id' => $component->id,
+                'description' => $component->description,
+                'option' => $component->option,
+                'identifier' => $component->identifier,
+                'quantity' => $component->quantity,
+            ])->values()->all(),
         ];
     }
 

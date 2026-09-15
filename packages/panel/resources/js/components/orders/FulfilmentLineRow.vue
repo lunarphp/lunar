@@ -39,13 +39,30 @@ const detailRows = (): { label: string; value: string | null; highlight?: boolea
                     <span v-if="line.option && line.identifier">·</span>
                     <span v-if="line.identifier" class="font-mono">{{ line.identifier }}</span>
                 </div>
+                <div v-if="line.part_of" class="text-[11px] text-ink-500" data-testid="line-part-of">
+                    {{ t('orders.line_part_of', { parent: line.part_of }) }}
+                </div>
             </div>
-            <span class="text-[12.5px] text-ink-700 [font-variant-numeric:tabular-nums] shrink-0">
+            <span v-if="line.part_of" class="text-[12.5px] text-ink-700 [font-variant-numeric:tabular-nums] shrink-0">
+                {{ line.quantity }}
+            </span>
+            <span v-else class="text-[12.5px] text-ink-700 [font-variant-numeric:tabular-nums] shrink-0">
                 {{ line.quantity }} <span class="text-ink-400">@</span> {{ line.unit_price }}
             </span>
         </button>
 
-        <dl v-if="expanded" class="ml-[46px] mb-2 text-[12px] max-w-[320px]" data-testid="line-detail">
+        <ul v-if="line.components?.length" class="ml-[46px] mb-2 text-[12px] text-ink-700 list-none m-0 p-0" data-testid="line-components">
+            <li v-for="component in line.components" :key="component.id" class="flex justify-between py-0.5">
+                <span class="truncate">
+                    {{ component.description }}
+                    <span v-if="component.option" class="text-ink-500">{{ component.option }}</span>
+                    <span v-if="component.identifier" class="font-mono text-ink-500">{{ component.identifier }}</span>
+                </span>
+                <span class="[font-variant-numeric:tabular-nums] shrink-0">x{{ component.quantity }}</span>
+            </li>
+        </ul>
+
+        <dl v-if="expanded && !line.part_of" class="ml-[46px] mb-2 text-[12px] max-w-[320px]" data-testid="line-detail">
             <div
                 v-for="(row, index) in detailRows()"
                 :key="index"

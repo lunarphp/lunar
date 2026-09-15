@@ -22,6 +22,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property int $id
  * @property string $public_id
  * @property int $order_id
+ * @property ?int $parent_line_id
  * @property string $purchasable_type
  * @property int $purchasable_id
  * @property string $type
@@ -100,6 +101,34 @@ class OrderLine extends Base implements HasCurrency
         return $this->belongsTo(Order::class);
     }
 
+    /**
+     * The line this one is a component of. Component lines are the parts of a
+     * composite purchasable (a bundle) recorded so fulfilment and stock see them;
+     * the parent holds the money.
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(OrderLine::class, 'parent_line_id');
+    }
+
+    public function components(): HasMany
+    {
+        return $this->hasMany(OrderLine::class, 'parent_line_id')->orderBy('id');
+    }
+
+    public function isComponent(): bool
+    {
+        return $this->parent_line_id !== null;
+    }
+
+    /**
+     * Limit the query to lines that are not components of another line.
+     */
+    public function scopeTopLevel(Builder $query): Builder
+    {
+        return $query->whereNull('parent_line_id');
+    }
+
     public function fulfilmentLines(): HasMany
     {
         return $this->hasMany(FulfilmentLine::class);
@@ -112,10 +141,15 @@ class OrderLine extends Base implements HasCurrency
 
     /**
      * Quantity still available to refund — the line's quantity minus
-     * whatever refund_lines have already claimed against it.
+     * whatever refund_lines have already claimed against it. Component lines
+     * carry no money, so they are refunded through their parent.
      */
     public function refundableQuantity(): int
     {
+        if ($this->isComponent()) {
+            return 0;
+        }
+
         return max(0, $this->quantity - $this->refunded_quantity);
     }
 

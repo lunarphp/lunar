@@ -261,3 +261,40 @@ test('withoutFulfilment scope excludes a partially allocated line', function () 
     expect(OrderLine::withoutFulfilment()->pluck('id'))
         ->not->toContain($line->id);
 });
+
+test('a component line belongs to its parent and is never refundable', function () {
+    $order = Order::factory()->create();
+    $variant = ProductVariant::factory()->create();
+    $part = ProductVariant::factory()->create();
+
+    $parent = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 2,
+    ]);
+
+    $component = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'parent_line_id' => $parent->id,
+        'purchasable_type' => $part->getMorphClass(),
+        'purchasable_id' => $part->id,
+        'quantity' => 4,
+        'unit_price' => 0,
+        'sub_total' => 0,
+        'total' => 0,
+        'tax_total' => 0,
+    ]);
+
+    expect($component->isComponent())->toBeTrue()
+        ->and($parent->isComponent())->toBeFalse()
+        ->and($component->parent->is($parent))->toBeTrue()
+        ->and($parent->components->pluck('id')->all())->toBe([$component->id])
+        ->and($component->refundableQuantity())->toBe(0)
+        ->and($parent->refundableQuantity())->toBe(2)
+        ->and($order->lines()->topLevel()->pluck('id')->all())->toBe([$parent->id]);
+
+    $parent->delete();
+
+    expect(OrderLine::query()->whereKey($component->id)->exists())->toBeFalse();
+});
