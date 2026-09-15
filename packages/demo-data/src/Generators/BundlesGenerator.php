@@ -28,10 +28,21 @@ class BundlesGenerator implements Generator
 
         $context->reseed();
 
+        // On a re-run the catalogue generator creates nothing, so fall back to
+        // the products already in the store (never a bundle's own product).
         /** @var Collection<int, Product> $products */
-        $products = $context->get('products', collect())
+        $products = collect($context->get('products', collect()))
+            ->whenEmpty(fn () => Product::query()
+                ->whereHas('variants', fn ($query) => $query
+                    ->whereNotIn('sku', [self::KIT_SKU, self::SET_SKU])
+                    ->where('stock_available', '>', 0))
+                ->orderBy('id')
+                ->limit(3)
+                ->get())
             ->filter(fn (Product $product) => $product->variants()->count() > 0)
             ->values();
+
+        $context->set('products', $products);
 
         if ($products->count() < 3) {
             return;
