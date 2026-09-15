@@ -40,5 +40,8 @@
   "require": {
     "php": "^8.4",
     "lunarphp/core": "self.version"
+  },
+  "suggest": {
+    "lunarphp/bundles": "Seeds two demo bundles built from the catalogue products."
   }
 }
