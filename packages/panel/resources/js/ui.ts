@@ -52,6 +52,7 @@ export { default as Slideout } from './components/Slideout.vue';
 export { default as ConfirmDialog } from './components/ConfirmDialog.vue';
 export { default as Tooltip } from './components/Tooltip.vue';
 export { default as SideCard } from './components/SideCard.vue';
+export { default as StickySidebar } from './components/StickySidebar.vue';
 export { default as Section } from './components/Section.vue';
 export { default as Tabs } from './components/Tabs.vue';
 
