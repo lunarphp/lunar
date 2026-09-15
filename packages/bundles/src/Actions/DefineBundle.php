@@ -26,7 +26,7 @@ class DefineBundle implements DefinesBundle
 
         $bundle->fill([
             'pricing' => $pricing,
-            'discount_percentage' => $discountPercentage,
+            'discount_percentage' => $pricing === BundlePricing::Components ? $discountPercentage : null,
         ])->save();
 
         $bundle->setRelation('variant', $variant);

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Bundles\Contracts\Actions\DefinesBundle;
+use Lunar\Bundles\Enums\BundlePricing;
 use Lunar\Bundles\Models\Bundle;
 use Lunar\Bundles\Models\BundleComponent;
 use Lunar\Bundles\Models\BundleGroup;
@@ -105,3 +107,15 @@ test('the core stock validator rejects a bundle beyond its derived stock', funct
 
     app(CartLineStock::class)->using(cart: $cart, purchasable: $variant, quantity: 3, meta: [])->validate();
 })->throws(CartException::class);
+
+test('a required group with no options makes the bundle unsellable', function () {
+    $body = Catalogue::variant($this->currency, 3000, stock: 10);
+
+    $bundle = app(DefinesBundle::class)->execute(ProductVariant::factory()->create(), BundlePricing::Fixed);
+    $bundle->syncComponents([['variant' => $body, 'quantity' => 1]]);
+    $bundle->syncGroups([
+        ['name' => ['en' => 'Extra'], 'min_selections' => 1, 'max_selections' => 1],
+    ]);
+
+    expect($bundle->variant->refresh()->getTotalInventory())->toBe(0);
+});

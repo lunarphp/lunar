@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Prodaj kao paket',
         'confirm_remove_title' => 'Prestati prodavati kao paket?',
         'confirm_remove' => 'Popis komponenti i grupe opcija bit će uklonjeni. Varijanta zadržava svoje cijene i ponovno postaje obična varijanta.',
+        'confirm_components_title' => 'Cijena iz komponenata?',
+        'confirm_components' => 'Vlastite osnovne cijene varijante zamjenjuju se zbrojem njezinih komponenata i ponovno se zapisuju kad god se promijeni cijena komponente. Vratite se na fiksnu cijenu da biste ih ponovno postavili ručno.',
         'pricing' => 'Cijene',
         'pricing_fixed' => 'Fiksna cijena',
         'pricing_components' => 'Zbroj komponenti',

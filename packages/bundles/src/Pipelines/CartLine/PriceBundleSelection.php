@@ -20,6 +20,7 @@ use Lunar\Core\Pricing\PriceCalculatorInterface;
  * Cart-time pricing for a configurable `components` bundle whose selection
  * differs from the default. Runs after `GetUnitPrice` and overwrites the unit
  * price it set; the materialised rows already cover the default selection.
+ * Components are priced per bundle unit, so their quantity breaks never apply.
  */
 class PriceBundleSelection
 {
@@ -65,7 +66,7 @@ class PriceBundleSelection
             /** @var SelectedComponent $component */
             $matched = $this->pricing
                 ->currency($currency)
-                ->qty($cartLine->quantity)
+                ->qty(1)
                 ->customerGroups($customerGroups)
                 ->for($component->variant)
                 ->get()

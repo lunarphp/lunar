@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Értékesítés csomagként',
         'confirm_remove_title' => 'Ne legyen többé csomagként értékesítve?',
         'confirm_remove' => 'Az összetevők listája és az opciócsoportok törlődnek. A változat megtartja az árait, és ismét hagyományos változattá válik.',
+        'confirm_components_title' => 'Ár az összetevőkből?',
+        'confirm_components' => 'A változat saját alapárait az összetevők összege váltja fel, és minden összetevő-árváltozáskor újraíródnak. Váltson vissza rögzített árra, hogy újra kézzel adja meg őket.',
         'pricing' => 'Árazás',
         'pricing_fixed' => 'Fix ár',
         'pricing_components' => 'Összetevők összege',

@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Als bundel verkopen',
         'confirm_remove_title' => 'Niet langer als bundel verkopen?',
         'confirm_remove' => 'De onderdelenlijst en optiegroepen worden verwijderd. De variant behoudt zijn prijzen en wordt weer een gewone variant.',
+        'confirm_components_title' => 'Prijs uit de onderdelen berekenen?',
+        'confirm_components' => 'De eigen basisprijzen van de variant worden vervangen door de som van de onderdelen en opnieuw geschreven zodra de prijs van een onderdeel wijzigt. Schakel terug naar een vaste prijs om ze weer handmatig in te stellen.',
         'pricing' => 'Prijsbepaling',
         'pricing_fixed' => 'Vaste prijs',
         'pricing_components' => 'Som van de onderdelen',

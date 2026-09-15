@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Bán dưới dạng gói',
         'confirm_remove_title' => 'Ngừng bán dưới dạng gói?',
         'confirm_remove' => 'Danh sách thành phần và các nhóm tùy chọn sẽ bị xóa. Biến thể giữ nguyên giá và trở lại thành biến thể thông thường.',
+        'confirm_components_title' => 'Tính giá từ các thành phần?',
+        'confirm_components' => 'Giá cơ bản riêng của biến thể sẽ được thay bằng tổng các thành phần và được ghi lại mỗi khi giá một thành phần thay đổi. Chuyển về giá cố định để đặt lại thủ công.',
         'pricing' => 'Định giá',
         'pricing_fixed' => 'Giá cố định',
         'pricing_components' => 'Tổng các thành phần',

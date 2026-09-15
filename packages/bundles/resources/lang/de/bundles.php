@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Als Bundle verkaufen',
         'confirm_remove_title' => 'Nicht mehr als Bundle verkaufen?',
         'confirm_remove' => 'Die Komponentenliste und die Optionsgruppen werden entfernt. Die Variante behält ihre Preise und wird wieder eine gewöhnliche Variante.',
+        'confirm_components_title' => 'Preis aus den Komponenten bilden?',
+        'confirm_components' => 'Die eigenen Grundpreise der Variante werden durch die Summe ihrer Komponenten ersetzt und bei jeder Preisänderung einer Komponente neu geschrieben. Wechseln Sie zurück zum Festpreis, um sie wieder von Hand zu setzen.',
         'pricing' => 'Preisgestaltung',
         'pricing_fixed' => 'Festpreis',
         'pricing_components' => 'Summe der Komponenten',

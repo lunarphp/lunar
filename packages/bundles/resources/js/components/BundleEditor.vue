@@ -71,11 +71,26 @@ const remove = (): void => {
     void run(() => http.delete<BundleSummary>(summary.value.urls.destroy), t('bundles::bundles.panel.removed'));
 };
 
-// Pricing.
+// Pricing. Switching to component pricing hands the variant's base prices
+// over to the package, which rewrites them on every reprice, so confirm first.
+const confirmingComponents = ref(false);
+
 const onPricing = (value: string | number | null): void => {
-    if (bundle.value && value !== bundle.value.pricing) {
-        void run(() => define(value as 'fixed' | 'components', bundle.value?.discount_percentage ?? null));
+    if (!bundle.value || value === bundle.value.pricing) {
+        return;
     }
+
+    if (value === 'components') {
+        confirmingComponents.value = true;
+
+        return;
+    }
+
+    void run(() => define('fixed', null));
+};
+
+const switchToComponents = (): void => {
+    void run(() => define('components', bundle.value?.discount_percentage ?? null));
 };
 
 const onDiscount = (event: Event): void => {
@@ -265,7 +280,7 @@ const availabilityText = computed(() => {
             <div class="grid gap-3 sm:grid-cols-2">
                 <div>
                     <FieldLabel for="bundle-pricing">{{ t('bundles::bundles.panel.pricing') }}</FieldLabel>
-                    <Select id="bundle-pricing" :model-value="bundle.pricing" @update:model-value="onPricing">
+                    <Select id="bundle-pricing" :key="bundle.pricing + String(confirmingComponents)" :model-value="bundle.pricing" @update:model-value="onPricing">
                         <option value="fixed">{{ t('bundles::bundles.panel.pricing_fixed') }}</option>
                         <option value="components">{{ t('bundles::bundles.panel.pricing_components') }}</option>
                     </Select>
@@ -355,6 +370,13 @@ const availabilityText = computed(() => {
                 />
             </div>
         </template>
+
+        <ConfirmDialog
+            v-model:open="confirmingComponents"
+            :title="t('bundles::bundles.panel.confirm_components_title')"
+            :description="t('bundles::bundles.panel.confirm_components')"
+            @confirm="switchToComponents"
+        />
 
         <ConfirmDialog
             v-model:open="confirmingRemove"

@@ -1,6 +1,6 @@
 # 0085 — Product bundles (`lunarphp/bundles`)
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-15
 - TODO item: Product bundles — sell a set of variants as one product with derived stock and component fulfilment
@@ -359,7 +359,7 @@ Slots, all lazily loading their data through the extension's JSON routes so ordi
 
 | Zone | Component | Purpose |
 |---|---|---|
-| `products.edit:variants:after` | `bundles::BundleCard` | Single-variant product: the full bundle editor inline. Multi-variant product: a summary per variant linking to the variant page. |
+| `products.edit:variants:after` | `bundles::BundleCard` | Single-variant product: the full bundle editor inline. Multi-variant product: a summary per variant linking to the variant page (served by `GET bundles/products/{product}`). |
 | `products.variants.edit:main:after` | `bundles::BundleCard` | The bundle editor for that variant. |
 | `products.edit:sidebar:after` | `bundles::IncludedInBundlesCard` | Bundles that include any of this product's variants, each linking to its product. Hidden when empty. |
 
@@ -379,7 +379,7 @@ PUT    bundles/variants/{variant}/groups          sync
 GET    bundles/products/{product}/included-in     JSON for the sidebar card
 ```
 
-Table extension on `products.index`: a `Bundle` badge column (hidden by default) and a "Bundles only" filter.
+Table extension on `products.index`: a `Bundle` badge column and a "Bundles only" filter. (`TableColumn` has no hidden-by-default option, so the column always shows.)
 
 Order view: covered by the first-party changes in 1.1. The extension adds nothing.
 
@@ -467,12 +467,12 @@ Cache: editing a bundle's components or groups invalidates the bundle's product 
 
 ## Implementation plan
 
-- [ ] Slice 1 — core: `order_lines.parent_line_id`, `OrderLine` relations and `topLevel` scope, creation stages skip component lines, parent-only `refundableQuantity()`, tests
-- [ ] Slice 2 — core: `ResolvesInventory` contract, `VariantInventory`, `ResolveInventory` action, `ProductVariant` delegation, `ActionServiceProvider` binding, tests
-- [ ] Slice 3 — `bundles`: skeleton and monorepo wiring, migrations, models, factories, `ProductVariant::bundle` relation, define/sync/delete actions and verbs, invariants, cache invalidation, headless tests
-- [ ] Slice 4 — `bundles`: `ResolveBundleInventory` decorator, `ResolveBundleSelection`, `BundleSelection` validator, `CreateBundleComponentLines`, end-to-end cart → order → fulfilment → stock tests including mixed physical and digital
-- [ ] Slice 5 — `bundles`: `RepriceBundle`, materialised price rows, listeners, `PriceBundleSelection` stage, `lunar:bundles:reprice`, tests
-- [ ] Slice 6 — panel (first party): component-line nesting in the order view and refund composer, `Section` exported from `ui.ts`
-- [ ] Slice 7 — `bundles` panel: section extension, routes, `BundleCard` for fixed bundles, variant search endpoint, `IncludedInBundlesCard`, products table badge and filter, 16 locales, panel tests, JS build and CI
-- [ ] Slice 8 — `bundles` panel: configurable groups editor
-- [ ] Slice 9 — demo data: two bundles in the catalogue generator; docs PR (`lunarphp/docs`)
+- [x] Slice 1 — core: `order_lines.parent_line_id`, `OrderLine` relations and `topLevel` scope, creation stages skip component lines, parent-only `refundableQuantity()`, tests
+- [x] Slice 2 — core: `ResolvesInventory` contract, `VariantInventory`, `ResolveInventory` action, `ProductVariant` delegation, `ActionServiceProvider` binding, tests
+- [x] Slice 3 — `bundles`: skeleton and monorepo wiring, migrations, models, factories, `ProductVariant::bundle` relation, define/sync/delete actions and verbs, invariants, cache invalidation, headless tests
+- [x] Slice 4 — `bundles`: `ResolveBundleInventory` decorator, `ResolveBundleSelection`, `BundleSelection` validator, `CreateBundleComponentLines`, end-to-end cart → order → fulfilment → stock tests including mixed physical and digital
+- [x] Slice 5 — `bundles`: `RepriceBundle`, materialised price rows, listeners, `PriceBundleSelection` stage, `lunar:bundles:reprice`, tests
+- [x] Slice 6 — panel (first party): component-line nesting in the order view and refund composer, `Section` exported from `ui.ts`
+- [x] Slice 7 — `bundles` panel: section extension, routes, `BundleCard` for fixed bundles, variant search endpoint, `IncludedInBundlesCard`, products table badge and filter, 16 locales, panel tests, JS build and CI
+- [x] Slice 8 — `bundles` panel: configurable groups editor
+- [x] Slice 9 — demo data: two bundles in the catalogue generator; docs PR (`lunarphp/docs`)

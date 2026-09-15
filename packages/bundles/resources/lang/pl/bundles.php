@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Sprzedawaj jako zestaw',
         'confirm_remove_title' => 'Przestać sprzedawać jako zestaw?',
         'confirm_remove' => 'Lista składników i grupy opcji zostaną usunięte. Wariant zachowa swoje ceny i znów będzie zwykłym wariantem.',
+        'confirm_components_title' => 'Wyliczać cenę ze składników?',
+        'confirm_components' => 'Własne ceny bazowe wariantu zostaną zastąpione sumą jego składników i nadpisane przy każdej zmianie ceny składnika. Wróć do ceny stałej, aby znów ustawiać je ręcznie.',
         'pricing' => 'Wycena',
         'pricing_fixed' => 'Cena stała',
         'pricing_components' => 'Suma składników',

@@ -68,6 +68,11 @@ class ResolveBundleInventory implements ResolvesInventory
                     : $this->completeUnits($component, $inventories))
                 ->first();
 
+            // A required group with nothing to choose from cannot be sold at all.
+            if (! $best && $group->min_selections > 0) {
+                return collect();
+            }
+
             if ($best) {
                 $candidates->push($best);
             }

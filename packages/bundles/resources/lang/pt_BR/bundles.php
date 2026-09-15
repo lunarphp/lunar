@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Vender como pacote',
         'confirm_remove_title' => 'Parar de vender como pacote?',
         'confirm_remove' => 'A lista de componentes e os grupos de opções são removidos. A variante mantém seus preços e volta a ser uma variante comum.',
+        'confirm_components_title' => 'Calcular o preço a partir dos componentes?',
+        'confirm_components' => 'Os preços base da própria variante são substituídos pela soma dos componentes e reescritos sempre que o preço de um componente mudar. Volte para preço fixo para defini-los manualmente de novo.',
         'pricing' => 'Precificação',
         'pricing_fixed' => 'Preço fixo',
         'pricing_components' => 'Soma dos componentes',

@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Sell as a bundle',
         'confirm_remove_title' => 'Stop selling as a bundle?',
         'confirm_remove' => 'The component list and option groups are removed. The variant keeps its prices and becomes an ordinary variant.',
+        'confirm_components_title' => 'Price from the components?',
+        'confirm_components' => 'The variant\'s own base prices are replaced by the sum of its components and rewritten whenever a component\'s price changes. Switch back to a fixed price to set them by hand again.',
         'pricing' => 'Pricing',
         'pricing_fixed' => 'Fixed price',
         'pricing_components' => 'Sum of components',

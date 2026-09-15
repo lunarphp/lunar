@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Vendre comme un lot',
         'confirm_remove_title' => 'Ne plus vendre comme un lot ?',
         'confirm_remove' => 'La liste des composants et les groupes d\'options sont supprimés. La variante conserve ses prix et redevient une variante ordinaire.',
+        'confirm_components_title' => 'Calculer le prix a partir des composants ?',
+        'confirm_components' => 'Les prix de base propres a la variante sont remplaces par la somme de ses composants et reecrits a chaque changement de prix d\'un composant. Revenez au prix fixe pour les definir a nouveau a la main.',
         'pricing' => 'Tarification',
         'pricing_fixed' => 'Prix fixe',
         'pricing_components' => 'Somme des composants',

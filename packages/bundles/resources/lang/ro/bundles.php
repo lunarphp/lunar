@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Vinde ca pachet',
         'confirm_remove_title' => 'Nu mai vinzi ca pachet?',
         'confirm_remove' => 'Lista de componente și grupurile de opțiuni sunt eliminate. Varianta își păstrează prețurile și redevine o variantă obișnuită.',
+        'confirm_components_title' => 'Preț calculat din componente?',
+        'confirm_components' => 'Prețurile de bază proprii ale variantei sunt înlocuite cu suma componentelor și rescrise ori de câte ori se schimbă prețul unei componente. Reveniți la preț fix pentru a le seta din nou manual.',
         'pricing' => 'Prețuri',
         'pricing_fixed' => 'Preț fix',
         'pricing_components' => 'Suma componentelor',

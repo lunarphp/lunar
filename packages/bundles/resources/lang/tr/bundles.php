@@ -34,6 +34,8 @@ return [
         'sell_as_bundle' => 'Paket olarak sat',
         'confirm_remove_title' => 'Paket olarak satış durdurulsun mu?',
         'confirm_remove' => 'Bileşen listesi ve seçenek grupları kaldırılır. Varyant fiyatlarını korur ve yeniden sıradan bir varyant olur.',
+        'confirm_components_title' => 'Fiyat bileşenlerden hesaplansın mı?',
+        'confirm_components' => 'Varyantın kendi taban fiyatları bileşenlerinin toplamıyla değiştirilir ve bir bileşenin fiyatı her değiştiğinde yeniden yazılır. Yeniden elle belirlemek için sabit fiyata dönün.',
         'pricing' => 'Fiyatlandırma',
         'pricing_fixed' => 'Sabit fiyat',
         'pricing_components' => 'Bileşenlerin toplamı',
