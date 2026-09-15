@@ -19,6 +19,7 @@ import PageZone from '../../components/PageZone.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
+import StickySidebar from '../../components/StickySidebar.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import Textarea from '../../components/Textarea.vue';
@@ -251,7 +252,7 @@ const timelineEvents = computed(() =>
 
                     <!-- Sidebar -->
                     <aside>
-                        <div class="lg:sticky lg:top-[60px] flex flex-col gap-4">
+                        <StickySidebar class="flex flex-col gap-4">
                             <SideCard :title="t('product-types.side_status')">
                                 <StatusSegmentedControl v-model="details.status" :options="statusOptions" />
                                 <div class="text-[11.5px] text-ink-500 mt-2.5">
@@ -291,7 +292,7 @@ const timelineEvents = computed(() =>
                             </SideCard>
 
                             <PageZone region="sidebar" position="after" :product-type="productType" />
-                        </div>
+                        </StickySidebar>
                     </aside>
                 </div>
             </div>
