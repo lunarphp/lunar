@@ -25,6 +25,7 @@ use Lunar\Bundles\Listeners\RepriceOnComponentPriceChange;
 use Lunar\Bundles\Models\Bundle;
 use Lunar\Bundles\Models\BundleComponent;
 use Lunar\Bundles\Models\BundleGroup;
+use Lunar\Bundles\Panel\BundlesSectionExtension;
 use Lunar\Bundles\Pipelines\CartLine\PriceBundleSelection;
 use Lunar\Bundles\Pipelines\Order\Creation\CreateBundleComponentLines;
 use Lunar\Bundles\Validation\CartLine\BundleSelection;
@@ -34,6 +35,8 @@ use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Panel\Facades\Panel;
+use Lunar\Panel\PanelManager;
 
 class BundlesServiceProvider extends ServiceProvider
 {
@@ -103,6 +106,7 @@ class BundlesServiceProvider extends ServiceProvider
         $this->registerCartHooks();
         $this->registerListeners();
         $this->registerConsole();
+        $this->registerPanel();
     }
 
     /**
@@ -142,6 +146,23 @@ class BundlesServiceProvider extends ServiceProvider
 
         $this->commands([
             RepriceBundlesCommand::class,
+        ]);
+    }
+
+    /** The panel extension only exists when lunarphp/panel is installed and booted. */
+    protected function registerPanel(): void
+    {
+        if (! class_exists(PanelManager::class) || ! $this->app->bound(PanelManager::class)) {
+            return;
+        }
+
+        Panel::extendSection(new BundlesSectionExtension);
+
+        $this->app->make(PanelManager::class)->vite('bundles', [
+            'input' => 'resources/js/addon.ts',
+            'hotFile' => null,
+            'buildDirectory' => 'vendor/lunar-panel/bundles',
+            '__buildSourcePath' => "{$this->root}/build",
         ]);
     }
 }

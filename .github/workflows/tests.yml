@@ -196,6 +196,9 @@ jobs:
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
 
+      - name: Build bundles add-on bundle
+        run: npm run build --workspace @lunarphp/bundles-addon
+
       # Fails when a publishable npm package's content no longer matches the
       # tarball published under its current version — the reminder to bump.
       # Relies on the panel build above for fresh @lunarphp/panel types.

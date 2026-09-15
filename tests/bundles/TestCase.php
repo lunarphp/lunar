@@ -7,6 +7,7 @@ use Lunar\Bundles\BundlesServiceProvider;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\LunarServiceProvider;
 use Lunar\Nestedset\NestedSetServiceProvider;
+use Lunar\Tests\Bundles\Support\MigrationState;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\Stubs\TestUrlGenerator;
 use Lunar\Tests\Core\Stubs\User;
@@ -20,6 +21,8 @@ class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
+        MigrationState::ensureFor(static::class);
+
         parent::setUp();
 
         Config::set('providers.users.model', User::class);
