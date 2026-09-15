@@ -13,6 +13,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
+- Product bundles — `lunarphp/bundles`: sell a set of variants as one product with derived stock and component order lines (spec 0085)
 - Add Boost guidelines to packages
 
 ## Ideas
