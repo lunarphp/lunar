@@ -1,0 +1,48 @@
+{
+  "name": "lunarphp/bundles",
+  "type": "library",
+  "description": "Product bundles for LunarPHP: sell a set of variants as one product with derived stock, component-derived pricing and component order lines.",
+  "keywords": [
+    "lunarphp",
+    "laravel",
+    "ecommerce",
+    "e-commerce",
+    "headless",
+    "store",
+    "shop",
+    "bundles",
+    "kits"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "lunarphp/core": "self.version"
+  },
+  "suggest": {
+    "lunarphp/panel": "Adds the bundle editor to the product pages of the admin panel."
+  },
+  "autoload": {
+    "psr-4": {
+      "Lunar\\Bundles\\": "src/",
+      "Lunar\\Bundles\\Database\\Factories\\": "database/factories"
+    }
+  },
+  "extra": {
+    "lunar": {
+      "name": "Bundles"
+    },
+    "laravel": {
+      "providers": [
+        "Lunar\\Bundles\\BundlesServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

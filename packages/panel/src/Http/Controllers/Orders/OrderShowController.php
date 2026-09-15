@@ -43,8 +43,12 @@ class OrderShowController
     {
         $order->load([
             'lines.purchasable',
+            'lines.parent',
+            'lines.components',
             'lines.fulfilmentLines',
             'fulfilments.lines.orderLine.purchasable',
+            'fulfilments.lines.orderLine.parent',
+            'fulfilments.lines.orderLine.components',
             'fulfilments.trackings',
             'fulfilments.location',
             'transactions.refundLines.orderLine',
@@ -102,9 +106,10 @@ class OrderShowController
             ),
             // Non-shipping lines with no fulfilment allocation — services and
             // other non-fulfillable purchasables. Fulfillable lines always live
-            // in a fulfilment (created at placement, split/merged after).
+            // in a fulfilment (created at placement, split/merged after), and a
+            // component line is shown nested under its parent, never on its own.
             'otherLines' => $order->lines
-                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && $line->fulfilmentLines->isEmpty())
+                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && ! $line->isComponent() && $line->fulfilmentLines->isEmpty())
                 ->values()
                 ->map(fn (OrderLine $line) => $this->line($line, $line->quantity, $money)),
             // Every non-shipping line with quantity still left to refund —
@@ -355,6 +360,15 @@ class OrderShowController
             ])->values()->all(),
             'total' => $money($line->total),
             'notes' => $line->notes,
+            // Component lines (a bundle's parts) carry no money; the parent holds it.
+            'part_of' => $line->parent?->description,
+            'components' => $line->components->map(fn (OrderLine $component) => [
+                'id' => $component->id,
+                'description' => $component->description,
+                'option' => $component->option,
+                'identifier' => $component->identifier,
+                'quantity' => $component->quantity,
+            ])->values()->all(),
         ];
     }
 

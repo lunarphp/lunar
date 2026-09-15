@@ -17,6 +17,7 @@ import PageZone from '../../components/PageZone.vue';
 import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
 import ShippingCard from '../../components/ShippingCard.vue';
 import SideCard from '../../components/SideCard.vue';
+import StickySidebar from '../../components/StickySidebar.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import TaxCard from '../../components/TaxCard.vue';
 import Toggle from '../../components/Toggle.vue';
@@ -264,7 +265,7 @@ const timelineEvents = computed(() =>
 
                     <!-- Sidebar -->
                     <aside>
-                        <div class="lg:sticky lg:top-[60px] flex flex-col gap-4">
+                        <StickySidebar class="flex flex-col gap-4">
                             <SideCard :title="t('products.side_variant_status')">
                                 <div class="flex items-center gap-2.5">
                                     <Toggle :on="enabled" @toggle="toggleEnabled" />
@@ -304,7 +305,7 @@ const timelineEvents = computed(() =>
                             </SideCard>
 
                             <PageZone region="sidebar" position="after" :variant="variant" />
-                        </div>
+                        </StickySidebar>
                     </aside>
                 </div>
             </div>

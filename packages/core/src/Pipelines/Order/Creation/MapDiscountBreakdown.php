@@ -18,7 +18,7 @@ class MapDiscountBreakdown
 
         $cartLinesMappedToOrderLines = [];
 
-        foreach ($order->lines as $orderLine) {
+        foreach ($order->lines->whereNull('parent_line_id') as $orderLine) {
             $cartLine = $cart->lines->first(function ($cartLine) use ($orderLine) {
                 $diff = Arr::diff($cartLine->meta, $orderLine->meta);
 

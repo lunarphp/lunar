@@ -26,7 +26,7 @@ class CreateOrderLines
 
         foreach ($cart->lines as $cartLine) {
             /** @var OrderLine $orderLine */
-            $orderLine = $order->lines->first(function ($line) use ($cartLine) {
+            $orderLine = $order->lines->whereNull('parent_line_id')->first(function ($line) use ($cartLine) {
                 $diff = Arr::diff($line->meta, $cartLine->meta);
 
                 return empty($diff->new) &&
