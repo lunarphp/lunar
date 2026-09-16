@@ -1,0 +1,16 @@
+# Boots the packages without a host app so `vendor/bin/testbench lunar:api:openapi`
+# can generate the OpenAPI documents in CI. Tests do not read this file.
+providers:
+  - Lunar\Core\LunarServiceProvider
+  - Lunar\Api\ApiServiceProvider
+  - Spatie\MediaLibrary\MediaLibraryServiceProvider
+  - Spatie\Activitylog\ActivitylogServiceProvider
+  - Lunar\Nestedset\NestedSetServiceProvider
+  - Spatie\LaravelBlink\BlinkServiceProvider
+  - Spatie\Permission\PermissionServiceProvider
+
+env:
+  - APP_NAME="Lunar"
+  - APP_URL="https://store.example"
+  - APP_KEY="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  - DB_CONNECTION=testing
