@@ -5,10 +5,16 @@ namespace Lunar\Panel\Http\Requests\Settings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Country;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Used by the country update endpoint; countries are seeded, never created from the panel. */
 class CountryRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Country> */
+    protected string $sliceModel = Country::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

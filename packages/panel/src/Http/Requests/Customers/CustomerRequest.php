@@ -4,11 +4,18 @@ namespace Lunar\Panel\Http\Requests\Customers;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the customer store and update endpoints, whose rules are identical. */
 class CustomerRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Customer> */
+    protected string $sliceModel = Customer::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

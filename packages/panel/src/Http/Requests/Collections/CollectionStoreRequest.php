@@ -10,6 +10,7 @@ use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\States\Collection\Archived;
 use Lunar\Core\States\Collection\Draft;
 use Lunar\Core\States\Collection\Published;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * The minimal create payload: a default-locale name plus where the
@@ -18,6 +19,11 @@ use Lunar\Core\States\Collection\Published;
  */
 class CollectionStoreRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Collection> */
+    protected string $sliceModel = Collection::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

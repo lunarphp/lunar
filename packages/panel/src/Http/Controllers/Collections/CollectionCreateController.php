@@ -10,11 +10,12 @@ use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Core\Contracts\Actions\Collections\CreatesRootCollection;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Collections\CollectionStoreRequest;
 
 class CollectionCreateController
 {
-    public function create(Request $request): Response
+    public function create(Request $request, FormSlices $formSlices): Response
     {
         // The list page's per-group and per-row add affordances preselect
         // where the new collection sits.
@@ -23,6 +24,7 @@ class CollectionCreateController
             : null;
 
         return Inertia::render('collections/Create', [
+            'formSliceValues' => $formSlices->values(new Collection) ?: (object) [],
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
             'preselected' => [
                 'group_id' => $parent?->collection_group_id
@@ -45,16 +47,17 @@ class CollectionCreateController
         CollectionStoreRequest $request,
         CreatesRootCollection $createsRootCollection,
         CreatesChildCollection $createsChildCollection,
+        FormSlices $formSlices,
     ): RedirectResponse {
         $parent = $request->parent();
 
-        $collection = $parent
+        $collection = $formSlices->save($request->sliceInput(), fn () => $parent
             ? $createsChildCollection->execute($parent, $request->validated()['name'], $request->collectionAttributes())
             : $createsRootCollection->execute(
                 (int) $request->validated()['collection_group_id'],
                 $request->validated()['name'],
                 $request->collectionAttributes(),
-            );
+            ));
 
         return redirect()
             ->route('panel.collections.edit', $collection)

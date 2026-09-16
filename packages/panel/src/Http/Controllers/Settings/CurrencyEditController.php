@@ -9,6 +9,7 @@ use Lunar\Core\Contracts\Actions\Currencies\DeletesCurrency;
 use Lunar\Core\Contracts\Actions\Currencies\UpdatesCurrency;
 use Lunar\Core\Exceptions\CurrencyActionException;
 use Lunar\Core\Models\Currency;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\CurrencyRequest;
 
 class CurrencyEditController
@@ -35,10 +36,12 @@ class CurrencyEditController
         ]);
     }
 
-    public function update(CurrencyRequest $request, Currency $currency, UpdatesCurrency $updatesCurrency): RedirectResponse
+    public function update(CurrencyRequest $request, Currency $currency, UpdatesCurrency $updatesCurrency, FormSlices $formSlices): RedirectResponse
     {
+        $attributes = $request->currencyAttributes();
+
         try {
-            $updatesCurrency->execute($currency, $attributes = $request->currencyAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesCurrency->execute($currency, $attributes));
         } catch (CurrencyActionException) {
             // Mirrors UpdateCurrency's guards: an explicit default=false on the
             // default currency is the unset case; every other throw is the

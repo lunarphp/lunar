@@ -10,6 +10,7 @@ use Lunar\Core\Contracts\Actions\Attributes\UpdatesAttributeGroup;
 use Lunar\Core\Exceptions\AttributeActionException;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\AttributeGroupRequest;
 
 class AttributeGroupEditController
@@ -45,9 +46,9 @@ class AttributeGroupEditController
         ]);
     }
 
-    public function update(AttributeGroupRequest $request, AttributeGroup $attributeGroup, UpdatesAttributeGroup $updatesAttributeGroup): RedirectResponse
+    public function update(AttributeGroupRequest $request, AttributeGroup $attributeGroup, UpdatesAttributeGroup $updatesAttributeGroup, FormSlices $formSlices): RedirectResponse
     {
-        $updatesAttributeGroup->execute($attributeGroup, $request->attributeGroupAttributes());
+        $formSlices->save($request->sliceInput(), fn () => $updatesAttributeGroup->execute($attributeGroup, $request->attributeGroupAttributes()));
 
         return redirect()->route('panel.settings.attribute-groups.index')->with('success', __('panel::attribute_groups.flash_updated'));
     }

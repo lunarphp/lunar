@@ -8,10 +8,16 @@ use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\States\Brand\Active;
 use Lunar\Core\States\Brand\Draft;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the brand store and update endpoints, whose rules are identical. */
 class BrandRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Brand> */
+    protected string $sliceModel = Brand::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

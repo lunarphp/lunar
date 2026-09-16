@@ -9,6 +9,7 @@ use Lunar\Core\Contracts\Actions\TaxClasses\DeletesTaxClass;
 use Lunar\Core\Contracts\Actions\TaxClasses\UpdatesTaxClass;
 use Lunar\Core\Exceptions\TaxClassActionException;
 use Lunar\Core\Models\TaxClass;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\TaxClassRequest;
 
 class TaxClassEditController
@@ -30,10 +31,10 @@ class TaxClassEditController
         ]);
     }
 
-    public function update(TaxClassRequest $request, TaxClass $taxClass, UpdatesTaxClass $updatesTaxClass): RedirectResponse
+    public function update(TaxClassRequest $request, TaxClass $taxClass, UpdatesTaxClass $updatesTaxClass, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesTaxClass->execute($taxClass, $request->taxClassAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesTaxClass->execute($taxClass, $request->taxClassAttributes()));
         } catch (TaxClassActionException) {
             return back()->with('error', __('panel::tax_classes.default_unset_blocked'));
         }

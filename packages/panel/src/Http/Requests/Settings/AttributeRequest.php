@@ -14,6 +14,7 @@ use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Rules\ValidRuleString;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * Shared by the attribute store and update endpoints. The type is only
@@ -22,6 +23,11 @@ use Lunar\Core\Rules\ValidRuleString;
  */
 class AttributeRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Attribute> */
+    protected string $sliceModel = Attribute::class;
+
     /** Handles are stored snake-slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

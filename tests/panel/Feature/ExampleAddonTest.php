@@ -476,3 +476,29 @@ it('refuses an add-on slice key outside its own namespace', function () {
         'data' => ['example-addon:tier' => 'gold'],
     ])->assertUnprocessable();
 });
+
+it('saves the loyalty tier with a customer created through the plain create form', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $this->get(route('panel.customers.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('slots', fn ($slots) => collect($slots->get('customers.create:main:after'))
+                ->contains(fn ($entry) => $entry['component'] === 'example-addon::LoyaltyCard'))
+            ->where('formSliceValues.addon:example-addon:tier', null));
+
+    $this->post(route('panel.customers.store'), [
+        'first_name' => 'Grace',
+        'last_name' => 'Hopper',
+        'addon:example-addon:tier' => 'silver',
+    ])->assertRedirect();
+
+    expect(Customer::sole()->meta['loyalty_tier'])->toBe('silver');
+
+    // The slice's rules apply once its namespace is posted.
+    $this->post(route('panel.customers.store'), [
+        'first_name' => 'Ada',
+        'last_name' => 'Lovelace',
+        'addon:example-addon:tier' => 'platinum',
+    ])->assertSessionHasErrors('addon:example-addon:tier');
+});

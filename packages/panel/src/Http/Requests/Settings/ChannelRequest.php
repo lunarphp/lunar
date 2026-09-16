@@ -8,10 +8,16 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\States\Channel\ChannelState;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the channel store and update endpoints, whose rules are identical. */
 class ChannelRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Channel> */
+    protected string $sliceModel = Channel::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

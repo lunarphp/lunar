@@ -8,6 +8,8 @@ use Lunar\Core\Models\Country;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\State;
 use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * Shared by the tax zone store and update endpoints. The store endpoint only
@@ -16,6 +18,11 @@ use Lunar\Core\Models\TaxClass;
  */
 class TaxZoneRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<TaxZone> */
+    protected string $sliceModel = TaxZone::class;
+
     public const ZONE_TYPES = ['country', 'state', 'postcode'];
 
     /**
