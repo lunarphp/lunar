@@ -5,6 +5,7 @@ namespace Lunar\Panel\Sections;
 use Closure;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Contracts\DraftSlice;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Search\SearchCommand;
@@ -60,6 +61,32 @@ abstract class Section implements ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return draft slices this section owns: namespaced contributions to a
+     * draftable resource's edit draft, each under a bare namespace of its
+     * own, e.g. [ProductAttributeSlice::class]. Reserved for the panel's own
+     * sections; an add-on uses draftExtensions().
+     *
+     * @return array<int, class-string<DraftSlice>>
+     */
+    public function draftSlices(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return draft slices this section contributes to a resource it does not
+     * own, e.g. [LoyaltyTierSlice::class]. Each lands under `addon:{key}`, so
+     * its fields autosave, restore, conflict-check and commit with the
+     * resource's own without being able to touch them.
+     *
+     * @return array<int, class-string<DraftSlice>>
+     */
+    public function draftExtensions(): array
     {
         return [];
     }

@@ -93,3 +93,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
+| 0086 | Panel draft slices: namespaced contributions to first-party edit drafts | proposed    |
+| 0087 | Product editing through the draft | proposed    |

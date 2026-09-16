@@ -29,12 +29,11 @@ use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\PanelManager;
-use Lunar\Panel\Sections\Catalog\ProductDraftResource;
+use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
 use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
-use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
 
 class ProductEditController
@@ -45,7 +44,6 @@ class ProductEditController
         DraftManager $drafts,
         AttributeSchema $attributeSchema,
         AvailabilitySchema $availabilitySchema,
-        VariantFields $variantFields,
     ): Response {
         $availabilitySchema = $availabilitySchema->withPurchasable();
 
@@ -181,11 +179,6 @@ class ProductEditController
                 'edit_url' => route('panel.products.variants.edit', [$product, $variant]),
             ]),
             'variant' => $soleVariant ? $this->variantPayload($product, $soleVariant) : null,
-            'variantValues' => $soleVariant
-                ? collect($variantFields->values($soleVariant))
-                    ->mapWithKeys(fn (mixed $value, string $key) => [ProductDraftResource::VARIANT_PREFIX.$key => $value])
-                    ->all()
-                : (object) [],
             'variantAttributeGroups' => $soleVariant
                 ? $this->prefixedGroups($attributeSchema->groups($soleVariant))
                 : [],
@@ -227,10 +220,10 @@ class ProductEditController
                 ->get(['id', 'code', 'name', 'default']),
             'mediaGroups' => MediaGroups::for($product, 'panel.products'),
             'productUrls' => $urls,
+            // Attribute, availability and sole-variant values seed the form
+            // through the shared draftSliceValues prop.
             'attributeGroups' => $attributeSchema->groups($product),
-            'attributeValues' => $attributeSchema->values($product) ?: (object) [],
             'availability' => $availabilitySchema->rows(),
-            'availabilityValues' => $availabilitySchema->values($product) ?: (object) [],
             'brandOptions' => Brand::query()->orderBy('name')->get(['id', 'name'])
                 ->map(fn (Brand $brand) => ['value' => $brand->id, 'label' => $brand->name]),
             // Active types plus the product's current one, so a since-drafted
@@ -371,8 +364,8 @@ class ProductEditController
     }
 
     /**
-     * Attribute groups whose field keys carry the simple-shape variant
-     * prefix, so AttributeFields reads and writes the product draft's
+     * Attribute groups whose field keys carry the sole-variant slice's
+     * namespace, so AttributeFields reads and writes the product draft's
      * variant:attribute:{handle} keys untouched.
      *
      * @param  array<int, array<string, mixed>>  $groups
@@ -382,7 +375,7 @@ class ProductEditController
     {
         return array_map(function (array $group): array {
             $group['fields'] = array_map(function (array $field): array {
-                $field['key'] = ProductDraftResource::VARIANT_PREFIX.$field['key'];
+                $field['key'] = SoleVariantSlice::KEY.':'.$field['key'];
 
                 return $field;
             }, $group['fields']);

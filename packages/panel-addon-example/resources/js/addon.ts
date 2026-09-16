@@ -2,6 +2,7 @@ import WidgetsIndexPage from './pages/Widgets/Index.vue';
 import SettingsIndexPage from './pages/Settings/Index.vue';
 import CustomerCountWidgetComponent from './components/CustomerCountWidget.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
+import LoyaltyCardComponent from './components/LoyaltyCard.vue';
 import SeoCardComponent from './components/SeoCard.vue';
 
 // Register eagerly. The panel's app.ts publishes window.LunarPanel and is emitted
@@ -18,5 +19,6 @@ window.LunarPanel.registerPages({
 window.LunarPanel.registerComponents('example-addon', {
     CustomerCountWidget: CustomerCountWidgetComponent,
     InfoBanner: InfoBannerComponent,
+    LoyaltyCard: LoyaltyCardComponent,
     SeoCard: SeoCardComponent,
 });

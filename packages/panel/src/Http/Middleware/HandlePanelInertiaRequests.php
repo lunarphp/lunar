@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Lunar\Panel\Drafts\ComposedDraftResource;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\Gravatar;
 
@@ -54,7 +55,33 @@ class HandlePanelInertiaRequests extends Middleware
             'visitedRecord' => fn () => ($record = $this->currentRecord($request))
                 ? $this->manager->resolveSearchSources()->rowFor($record)
                 : null,
+            // Prefixed current values of every draft slice on the page's
+            // record, so useEditDraft can seed them without each edit
+            // controller knowing which slices apply.
+            'draftSliceValues' => fn () => $this->draftSliceValues($request),
         ]);
+    }
+
+    /**
+     * Slice values for the draft target: the deepest route-bound model, the
+     * same record EditDraftController drafts (a product's variant on the
+     * variant page, not the product). Empty when nothing is bound, no
+     * resource covers it, or it has no slices.
+     *
+     * @return array<string, mixed>|object
+     */
+    protected function draftSliceValues(Request $request): array|object
+    {
+        $record = collect($request->route()?->parameters() ?? [])
+            ->last(fn (mixed $parameter): bool => $parameter instanceof Model);
+
+        $resource = $record ? $this->manager->draftableFor($record) : null;
+
+        if (! $resource instanceof ComposedDraftResource) {
+            return (object) [];
+        }
+
+        return $resource->sliceValues($record) ?: (object) [];
     }
 
     protected function currentPagePrefix(Request $request): string
