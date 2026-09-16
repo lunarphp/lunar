@@ -371,6 +371,120 @@ error, because `SlotRegistry::forPage()` just won't find a match. If your
 slot isn't appearing, this is the first thing to check (see
 [Troubleshooting](#troubleshooting)).
 
+## Adding fields to a first-party form
+
+A slot component can take part in the save of the page it sits on. An add-on
+does that with a **form slice**: a server-side class declaring its fields,
+rules and commit, plus a component that binds to them. The panel places every
+add-on slice under a namespace of its own, `addon:{key}:`, so it can add fields
+to the form but can never read, hide or alter the form's own fields, or another
+add-on's. That is the panel's whole stance on extending first-party forms:
+add-ons add, only the host subtracts.
+
+The form kind decides the plumbing, not the contract. First-party edit pages
+(customers, products, brands, collections, product types, variants) are driven
+by an autosaving **edit draft**, so a slice there also autosaves as staff type,
+restores when they come back, and commits with field-level conflict detection.
+This example targets the customer edit page.
+
+`src/Drafts/LoyaltyTierSlice.php`:
+
+```php
+class LoyaltyTierSlice extends FormSlice
+{
+    public function __construct(protected UpdatesCustomer $updatesCustomer) {}
+
+    public function model(): string { return Customer::class; }
+
+    // Bare key; the panel places the slice under addon:example-addon:
+    public function key(): string { return 'example-addon'; }
+
+    public function fields(Model $record): array { return ['tier']; }
+
+    public function currentValues(Model $record): array
+    {
+        return ['tier' => $record->meta['loyalty_tier'] ?? null];
+    }
+
+    public function rules(Model $record): array
+    {
+        return ['tier' => ['nullable', Rule::in(['bronze', 'silver', 'gold'])]];
+    }
+
+    // Runs after the customer's own commit, inside the same transaction, with
+    // every field present (current values overlaid with the draft).
+    public function commit(Model $record, array $values): void
+    {
+        $meta = $record->meta?->getArrayCopy() ?? [];
+        $meta['loyalty_tier'] = $values['tier'] ?? null;
+
+        $this->updatesCustomer->execute($record, ['meta' => $meta]);
+    }
+
+    public function labels(): array
+    {
+        return ['tier' => 'example-addon::example.loyalty_tier'];
+    }
+}
+```
+
+Register it from the section, and register the slot component that edits it:
+
+```php
+public function formExtensions(): array
+{
+    return [LoyaltyTierSlice::class];
+}
+
+public function slots(SlotRegistry $registry): void
+{
+    $registry->add(new Slot(
+        zone: 'customers.edit:main:after',
+        component: 'example-addon::LoyaltyCard',
+    ));
+}
+```
+
+`resources/js/components/LoyaltyCard.vue` binds to the slice with
+`useFormSlice`, passing the slice's key. The composable finds the page's form
+above it in the component tree (every slot zone on an edit page is inside it)
+and returns a view scoped to the add-on's namespace:
+
+```vue
+<script setup lang="ts">
+import { FieldLabel, Select, useFormSlice } from '@lunarphp/panel';
+
+const slice = useFormSlice<{ tier: string | null }>('example-addon');
+</script>
+
+<template>
+    <FieldLabel>Loyalty tier</FieldLabel>
+    <Select v-model="slice.values.tier" :invalid="!!slice.errors.value.tier">
+        <option :value="null">No tier</option>
+        <option value="gold">Gold</option>
+    </Select>
+    <p v-if="slice.errors.value.tier">{{ slice.errors.value.tier }}</p>
+</template>
+```
+
+`slice.values` is a reactive object holding only this slice's fields.
+`slice.errors` carries commit-time validation errors keyed by bare field name,
+`slice.field('tier')` gives a writable ref for one field, and `slice.isDirty`,
+`slice.saving` and `slice.committing` mirror the page form. Writing to a field
+the slice did not declare throws.
+
+What the add-on gets for free: autosave and restore, the dirty-navigation
+guard, per-field conflict detection (a conflicting tier shows in the page's
+conflict dialog under the label from `labels()`), 422 mapping, and an atomic
+commit with the customer's own fields. If the slice's `commit()` throws, the
+customer's changes roll back too.
+
+Optional: extend `Lunar\Panel\Drafts\DraftSlice` instead and implement
+`discard(Model $record, EditDraft $draft)` when a slice holds state outside the
+draft's JSON columns (staged uploads, for instance). It is called when a draft
+holding the slice's keys is discarded or pruned. A plain `FormSlice` needs no
+such hook and works on drafted and plain forms alike.
+
 ## Registering a table extension
 
 A `TableExtension` bundles one or more `TableColumn`s (plus optional filters
@@ -931,6 +1045,9 @@ pages, not only in an isolated fixture.
   actions injected into the first-party customers table.
 - `src/Actions/ImportPageAction.php` / `AuditPageAction.php` — the listing-
   and record-page header actions.
+- `src/Drafts/LoyaltyTierSlice.php` / `resources/js/components/LoyaltyCard.vue`
+  — the form slice added to the customer form and the slot component that
+  edits it.
 - `resources/js/addon.ts` — the IIFE entry point.
 - `resources/js/pages/Widgets/Index.vue`, `resources/js/components/InfoBanner.vue`
   — the example page and slot component.

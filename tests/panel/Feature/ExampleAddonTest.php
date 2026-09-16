@@ -6,6 +6,7 @@ use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\PanelManager;
 use Lunar\Tests\Panel\Fixtures\ExampleAddonTestCase;
 
@@ -395,4 +396,83 @@ it('hides the add-on search source from staff without its permission', function 
     );
 
     expect($rows)->toBeEmpty();
+});
+
+it('shares the loyalty card slot and its slice values on the customer edit page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create(['meta' => ['loyalty_tier' => 'silver']]);
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('slots', fn ($slots) => collect($slots->get('customers.edit:main:after'))
+                ->contains(fn ($entry) => $entry['component'] === 'example-addon::LoyaltyCard'))
+            ->where('formSliceValues.addon:example-addon:tier', 'silver'));
+});
+
+it('drafts, conflicts and commits the loyalty tier with the customer through the real draft routes', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+    $this->actingAs($staff, 'staff');
+
+    $customer = Customer::factory()->create(['first_name' => 'Ada']);
+
+    // Autosave stores the slice field under its addon-prefixed key, normalised
+    // by the slice ('' for "no tier" becomes null).
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['first_name' => 'Grace', 'addon:example-addon:tier' => 'gold'],
+    ])->assertOk()->assertJsonPath('data.addon:example-addon:tier', 'gold');
+
+    expect(EditDraft::sole()->base_snapshot)->toBe(['first_name' => 'Ada', 'addon:example-addon:tier' => null]);
+
+    // A concurrent change to the tier surfaces as a conflict labelled by the
+    // add-on's own lang key, and nothing commits.
+    $customer->update(['meta' => ['loyalty_tier' => 'silver']]);
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), ['data' => [], 'rebase' => []])
+        ->assertConflict()
+        ->assertJsonPath('conflicts.0.key', 'addon:example-addon:tier')
+        ->assertJsonPath('conflicts.0.label', 'Loyalty tier')
+        ->assertJsonPath('conflicts.0.theirs', 'silver');
+
+    expect($customer->refresh()->first_name)->toBe('Ada');
+
+    // Resolved against the current value, the commit lands both the
+    // customer's own field and the add-on's in one go.
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['addon:example-addon:tier' => 'gold'],
+        'rebase' => ['addon:example-addon:tier' => 'silver'],
+    ])->assertOk();
+
+    $customer->refresh();
+
+    expect($customer->first_name)->toBe('Grace')
+        ->and($customer->meta['loyalty_tier'])->toBe('gold')
+        ->and(EditDraft::count())->toBe(0);
+});
+
+it('validates the loyalty tier under its prefixed key', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['addon:example-addon:tier' => 'platinum'],
+    ])->assertOk();
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), ['data' => [], 'rebase' => []])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrorFor('addon:example-addon:tier');
+});
+
+it('refuses an add-on slice key outside its own namespace', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    // The add-on registered under `addon:example-addon`; the bare namespace
+    // is not a field the customer draft knows.
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['example-addon:tier' => 'gold'],
+    ])->assertUnprocessable();
 });

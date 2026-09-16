@@ -98,6 +98,8 @@ class PanelServiceProvider extends ServiceProvider
 
         $this->registerPermissionGate();
 
+        EditDraft::deleting(fn (EditDraft $draft) => $this->app->make(PanelManager::class)->draftDiscarded($draft));
+
         Panel::section(new DashboardSection);
         Panel::section(new CatalogSection);
         Panel::section(new SalesSection);

@@ -10,6 +10,7 @@ function fakeForm(overrides: Partial<Record<string, unknown>> = {}): EditDraftFo
         errors: ref({}),
         conflicts: ref([]),
         isDirty: computed(() => false),
+        dirtyKeys: computed(() => []),
         saving: ref(false),
         committing: ref(false),
         savedAt: ref<string | null>(null),

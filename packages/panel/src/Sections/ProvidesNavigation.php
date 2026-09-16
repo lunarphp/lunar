@@ -5,6 +5,7 @@ namespace Lunar\Panel\Sections;
 use Closure;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
@@ -38,6 +39,22 @@ interface ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array;
+
+    /**
+     * First-party form slices, each owning a bare namespace on its model,
+     * e.g. [ProductAttributeSlice::class].
+     *
+     * @return array<int, class-string<FormSlice>>
+     */
+    public function formSlices(): array;
+
+    /**
+     * Form slices contributed to another section's forms; placed under the
+     * reserved `addon:{key}` namespace, e.g. [LoyaltyTierSlice::class].
+     *
+     * @return array<int, class-string<FormSlice>>
+     */
+    public function formExtensions(): array;
 
     /**
      * Panel forms for discount types, keyed by the discount type class, e.g.
