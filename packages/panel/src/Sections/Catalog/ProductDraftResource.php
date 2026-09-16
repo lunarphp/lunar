@@ -11,8 +11,8 @@ use Lunar\Panel\Http\Requests\Products\ProductRequest;
 
 /**
  * The product's own columns and relations. Attribute values, availability
- * rows and the simple-shape sole variant ride the same draft as slices (see
- * Slices/), composed onto this resource by the panel.
+ * rows and the simple-shape sole variant ride the same draft as form slices
+ * (see Slices/), composed onto this resource by the panel.
  */
 class ProductDraftResource extends DraftableResource
 {

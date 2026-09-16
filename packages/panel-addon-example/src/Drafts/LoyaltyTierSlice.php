@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomer;
 use Lunar\Core\Models\Customer;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 
 /**
- * Adds a loyalty tier to the customer edit draft. Registered through
- * ExampleSection::draftExtensions(), so the panel places it under
+ * Adds a loyalty tier to the customer form. Registered through
+ * ExampleSection::formExtensions(), so the panel places it under
  * `addon:example-addon:` and the LoyaltyCard component binds to it with
- * useDraftSlice('example-addon'). The value autosaves, restores, conflicts
- * and commits with the customer's own fields; this class only ever sees its
- * bare `tier` field.
+ * useFormSlice('example-addon'). On the customer edit page the value
+ * autosaves, restores, conflicts and commits with the customer's own fields
+ * through the edit draft; this class only ever sees its bare `tier` field.
  *
  * The tier is kept in the customer's meta column so the example stays
  * schema-free. A real add-on would persist to its own table through its
  * own action.
  */
-class LoyaltyTierSlice extends DraftSlice
+class LoyaltyTierSlice extends FormSlice
 {
     public const TIERS = ['bronze', 'silver', 'gold'];
 

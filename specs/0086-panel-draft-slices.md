@@ -33,8 +33,17 @@ checks in every method. Adding another slice (associations, slugs, prices, media
 reusable by the brand, collection, or product-type resources that share the same
 editing components.
 
-Both need the same thing: a contract for a namespaced draft contribution, and one
+Both need the same thing: a contract for a namespaced form contribution, and one
 composer that assembles a resource from its slices.
+
+### The stance on extending first-party forms
+
+An add-on can add fields to any first-party form's save. Its fields live under a
+namespace it owns, are validated and committed with the form's own, and can never
+read, hide or alter the form's first-party fields. Which form (a drafted edit page, a
+create page, a settings form) decides the plumbing, not the contract. This spec
+delivers the drafted edit pages; [[0088-panel-form-slices]] extends the same contract
+to the panel's plain forms.
 
 ## Proposal
 
@@ -58,7 +67,7 @@ Every slice field key is `{namespace}:{field}`:
 - `{namespace}` is the slice's key, `[a-z0-9_-]+`, unique per model. First-party slices
   registered by the panel's own sections use a bare namespace (`attribute`, `channel`,
   `association`, `url`, `price`, `media`). Slices registered through the public
-  `Section::draftExtensions()` hook are namespaced `addon:{key}`, so their full keys are
+  `Section::formExtensions()` hook are namespaced `addon:{key}`, so their full keys are
   `addon:{key}:{field}`. The `addon:` prefix is reserved and cannot be claimed as a bare
   namespace.
 - `{field}` is the slice's own field name, free-form. A slice with one value per row
@@ -75,10 +84,14 @@ namespace, since it runs with the same privileges as the panel's own. The public
 simply does not offer it. That is the same trust model the panel already relies on for
 container bindings and page overrides.
 
-### Server: the `DraftSlice` contract
+### Server: the `FormSlice` and `DraftSlice` contracts
 
-New `Lunar\Panel\Contracts\DraftSlice`, with an abstract `Lunar\Panel\Drafts\DraftSlice`
-supplying `normalize()` and `labels()` no-op defaults as `Drafts\DraftableResource` does:
+New `Lunar\Panel\Contracts\FormSlice`, with an abstract `Lunar\Panel\Forms\FormSlice`
+supplying `normalize()` and `labels()` no-op defaults as `Drafts\DraftableResource` does.
+`Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds the one draft-specific hook,
+`discard()`, with an abstract `Lunar\Panel\Drafts\DraftSlice` defaulting it to a no-op.
+A plain `FormSlice` composes into a draft unchanged; the split exists so the same slice
+class serves a drafted edit page and a plain form without a second contract:
 
 - `model(): class-string<Model>` — the draftable model this contributes to.
 - `key(): string` — the namespace.
@@ -94,25 +107,25 @@ supplying `normalize()` and `labels()` no-op defaults as `Drafts\DraftableResour
   composer prefixes the keys. Rule parameters pass through verbatim, so a rule may
   reference a resource field by its real key (`required_if:brand_id,...`), which is
   read-only by construction. Referencing one of the slice's own fields in a parameter
-  needs the full key; `DraftSlice::field(string $name): string` returns it.
+  needs the full key; `FormSlice::field(string $name): string` returns it.
 - `commit(Model $record, array $values): void` — receives the slice's own values,
   unprefixed, every field present (current values overlaid with the draft), after the
   resource's own commit, inside the same transaction. Persists through core actions.
 - `labels(): array<string, string>` — unprefixed field to lang key for the conflict
   dialog and validation messages.
-- `discard(Model $record, EditDraft $draft): void` — optional hook, default no-op,
-  called when a draft holding this slice's keys is discarded or pruned. Exists for
+- `discard(Model $record, EditDraft $draft): void` — on `DraftSlice` only, default
+  no-op, called when a draft holding this slice's keys is discarded or pruned. Exists for
   slices that hold state outside the JSON columns (staged media uploads in
   [[0087-product-editing-through-the-draft]]).
 
 ### Server: registration and composition
 
 - First-party slices register from the panel's own sections through
-  `Section::draftSlices(): array<int, class-string<DraftSlice>>`. Add-ons register
-  through `Section::draftExtensions()` with the same return type; `PanelManager` places
+  `Section::formSlices(): array<int, class-string<FormSlice>>`. Add-ons register
+  through `Section::formExtensions()` with the same return type; `PanelManager` places
   those under `addon:{key}`. Both hooks follow the optional-hook pattern of
   `draftables()`.
-- `PanelManager::draftSlice(string $class, bool $addon)` resolves the class from the
+- `PanelManager::formSlice(string $class, bool $addon)` resolves the class from the
   container and indexes it by `model()` then namespace. A duplicate namespace on the
   same model throws at boot, naming both classes.
 - Slices are stored separately from draftables so registration order between the
@@ -155,7 +168,7 @@ self-heals, since the client only restores and resends keys the page seeded.
 `useEditDraft` restores a draft only into keys already present in `initial`, and diffs
 only those keys, so the page must know the slice fields and their current values up
 front. Rather than touch every edit controller, `HandlePanelInertiaRequests` shares a
-lazy `draftSliceValues` prop: the prefixed current values of every slice on the current
+lazy `formSliceValues` prop: the prefixed current values of every slice on the current
 record, or an empty object when the page has no record or no slices apply. The record
 is the deepest route-bound model, matching `EditDraftController::draftable()`. The
 middleware's existing `currentRecord()` returns the first bound model, which is the
@@ -167,19 +180,21 @@ surfaces become slices; the shared prop replaces them.
 
 ### Client: `useEditDraft` changes
 
-- Merges `draftSliceValues` into `initial` before building `pristine` and `values`, so
+- Merges `formSliceValues` into `initial` before building `pristine` and `values`, so
   slice keys autosave, restore, diff, and guard like any other. A `slices` option
   (default `true`) opts a form out, for a page that drafts a record other than the
   route's deepest binding.
-- Provides its own `EditDraftForm` under an injection key when created inside a
-  component, so components further down the tree can find the page's form.
+- Provides itself under the `sliceFormKey` injection key when created inside a
+  component, as a `SliceForm` (`values`, `errors`, `dirtyKeys`, `saving`,
+  `committing`), so components further down the tree can find the page's form. A
+  plain page form can provide the same shape ([[0088-panel-form-slices]]).
 
-### Client: `useDraftSlice(namespace)`
+### Client: `useFormSlice(namespace)`
 
-New `resources/js/composables/useDraftSlice.ts`, exported on `ui.ts` and the mirrored
+New `resources/js/composables/useFormSlice.ts`, exported on `ui.ts` and the mirrored
 `@lunarphp/panel` index. First-party cards call it with a bare namespace
-(`useDraftSlice('association')`); an add-on's slot component calls it with its key and
-the composable applies the `addon:` prefix (`useDraftSlice('example-addon')` resolves
+(`useFormSlice('association')`); an add-on's slot component calls it with its key and
+the composable applies the `addon:` prefix (`useFormSlice('example-addon')` resolves
 to `addon:example-addon:`). Callable from any component inside the page's tree, which
 every `PageZone` on an edit page is:
 
@@ -208,7 +223,7 @@ values (a media list, a price tuple) need a readable presentation in the dialog,
 `packages/panel-addon-example` gains a `LoyaltyTierSlice` on `Customer` storing a
 loyalty tier under the customer's `meta` column (via `UpdatesCustomer`, so the example
 stays schema-free), and a `LoyaltyCard.vue` slot component in the
-`customers.edit:main:after` zone that binds to it with `useDraftSlice('example-addon')`.
+`customers.edit:main:after` zone that binds to it with `useFormSlice('example-addon')`.
 The README's extension guide gains a section walking through both, and
 `tests/panel/Feature/ExampleAddonTest.php` exercises the whole path against the real
 customer routes: autosave stores the prefixed key, a concurrent change to the tier
@@ -253,17 +268,18 @@ first-party fields.
   hand-rolled slices migrate to the contract, but it is internal. `EditDraft` moves from
   `MassPrunable` to `Prunable`. The product edit page's `attributeValues`,
   `availabilityValues` and `variantValues` props go away, replaced by the shared
-  `draftSliceValues` prop.
+  `formSliceValues` prop.
 - **Upgrade path**: none required.
 - **Translations**: no new panel copy. A slice's labels come from its own lang group
   (an add-on's via `Section::langNamespaces()`). The example add-on's `en` and `fr`
   groups gain the loyalty-tier label.
 - **Filament / admin impact**: none.
 - **Public contract surface** (treated as contract from first release): the
-  `DraftSlice` contract and abstract, `Section::draftSlices()` and
-  `Section::draftExtensions()`, the `{namespace}:{field}` and `addon:{key}:{field}` key
-  schemes, the `draftSliceValues` shared prop, `useDraftSlice` and its return shape, and
-  the `slices` option on `useEditDraft`. `ComposedDraftResource` is internal.
+  `FormSlice` and `DraftSlice` contracts and abstracts, `Section::formSlices()` and
+  `Section::formExtensions()`, the `{namespace}:{field}` and `addon:{key}:{field}` key
+  schemes, the `formSliceValues` shared prop, `useFormSlice` and its return shape, the
+  `SliceForm` shape and `sliceFormKey`, and the `slices` option on `useEditDraft`.
+  `ComposedDraftResource` is internal.
 
 ## Open questions
 
@@ -271,7 +287,7 @@ first-party fields.
   draft endpoint, and a slot carries its own `permission`. Is a per-slice permission
   worth adding so a staff member who cannot see the component also cannot commit its
   keys? Owner: Glenn. Lean: route gate is enough; add later if an add-on needs it.
-- **Cross-field rules inside a slice.** Prefixed parameters via `DraftSlice::field()`
+- **Cross-field rules inside a slice.** Prefixed parameters via `FormSlice::field()`
   are workable but easy to forget. Should the composer rewrite bare parameters that
   match a slice field name? Owner: Glenn. Lean: no; the helper is explicit.
 - **Example add-on storage.** Writing the loyalty tier into `Customer::$meta` keeps the
@@ -286,6 +302,8 @@ first-party fields.
   rule.
 - [[0087-product-editing-through-the-draft]] — the first-party consumer: associations,
   slugs, prices, and media as slices, and the operations that stay immediate.
+- [[0088-panel-form-slices]] — the same contract on the panel's plain forms: create
+  pages and settings forms.
 - [[0051-panel-edit-drafts]] — the draft layer this composes into.
 - [[0049-inertia-panel]] — the additive extension surface, `Section` hooks, slots and
   zones, `ui.ts` exports, and the rejection of a tabs extension point on the same
@@ -297,24 +315,24 @@ first-party fields.
 
 ## Implementation plan
 
-- [x] Slice 1 — Server composition: `DraftSlice` contract and abstract,
+- [x] Slice 1 — Server composition: `FormSlice` and `DraftSlice` contracts and abstracts,
   `ComposedDraftResource` (prefixing, routing, stale-key pruning, ordered commit,
-  discard fan-out), `Section::draftSlices()` / `draftExtensions()` and
-  `PanelManager::draftSlice()` with lazy composition in `draftableFor()`, namespace and
+  discard fan-out), `Section::formSlices()` / `formExtensions()` and
+  `PanelManager::formSlice()` with lazy composition in `draftableFor()`, namespace and
   field validation at registration, `EditDraft` to `Prunable`; unit tests covering prefix
   round-trips, duplicate-namespace rejection, reserved `addon:` namespace, stale-key
   pruning, rule-key prefixing, commit ordering inside one transaction, and discard
   fan-out on discard and prune.
-- [x] Slice 2 — Page seeding: `draftSliceValues` shared prop resolved from the deepest
+- [x] Slice 2 — Page seeding: `formSliceValues` shared prop resolved from the deepest
   route-bound model; feature test that a product and a variant edit page each seed the
   right record's slice values.
 - [x] Slice 3 — Client: `useEditDraft` merges the shared prop (with the `slices`
-  opt-out) and provides itself; `useDraftSlice` with the scoped proxy, errors, `field()`,
+  opt-out) and provides itself; `useFormSlice` with the scoped proxy, errors, `field()`,
   and dirty/saving passthroughs; `ui.ts` and `@lunarphp/panel` exports; vitest coverage
   for scoping, the `addon:` resolution, restore, and error mapping.
 - [x] Slice 4 — Migrate the product resource's hand-rolled surfaces (attributes,
-  availability, sole variant) onto `DraftSlice` classes registered via
-  `draftSlices()`, and drop the per-page value props they replace. No behaviour change;
+  availability, sole variant) onto `FormSlice` classes registered via
+  `formSlices()`, and drop the per-page value props they replace. No behaviour change;
   existing draft tests must pass unchanged.
 - [x] Slice 5 — Example add-on and guide: `LoyaltyTierSlice`, `LoyaltyCard.vue`,
   README section, `en`/`fr` label, and the end-to-end path in `ExampleAddonTest`

@@ -3,7 +3,7 @@ import { defineComponent, h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { ValidationError } from '../lib/http';
 import { useEditDraft, type EditDraftForm } from './useEditDraft';
-import { bindDraftSlice, useAddonDraftSlice, useDraftSlice, type DraftSlice } from './useDraftSlice';
+import { bindFormSlice, useAddonFormSlice, useFormSlice, type FormSlice } from './useFormSlice';
 
 const { httpMock, pageProps } = vi.hoisted(() => ({
     httpMock: {
@@ -34,7 +34,7 @@ function buildForm(): EditDraftForm<Record<string, unknown>> {
     });
 }
 
-describe('bindDraftSlice', () => {
+describe('bindFormSlice', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         httpMock.patch.mockResolvedValue({ data: {}, updated_at: null });
@@ -48,7 +48,7 @@ describe('bindDraftSlice', () => {
 
     it('scopes reads, writes and enumeration to the namespace', () => {
         const form = buildForm();
-        const slice = bindDraftSlice<{ tier: string; note: string }>(form, 'addon:loyalty');
+        const slice = bindFormSlice<{ tier: string; note: string }>(form, 'addon:loyalty');
 
         expect(slice.values.tier).toBe('bronze');
         expect(Object.keys(slice.values)).toEqual(['tier', 'note']);
@@ -64,7 +64,7 @@ describe('bindDraftSlice', () => {
 
     it('stays clean while only other namespaces change', () => {
         const form = buildForm();
-        const slice = bindDraftSlice(form, 'addon:loyalty');
+        const slice = bindFormSlice(form, 'addon:loyalty');
 
         form.values.first_name = 'Grace';
         form.values['association:up-sell'] = [2];
@@ -74,16 +74,16 @@ describe('bindDraftSlice', () => {
     });
 
     it('refuses a field the namespace does not declare', () => {
-        const slice = bindDraftSlice(buildForm(), 'addon:loyalty');
+        const slice = bindFormSlice(buildForm(), 'addon:loyalty');
 
         expect(() => {
             (slice.values as Record<string, unknown>).points = 10;
-        }).toThrow('Draft slice [addon:loyalty] has no field [points].');
+        }).toThrow('Form slice [addon:loyalty] has no field [points].');
     });
 
     it('exposes a writable ref per field', async () => {
         const form = buildForm();
-        const tier = bindDraftSlice<{ tier: string }>(form, 'addon:loyalty').field('tier');
+        const tier = bindFormSlice<{ tier: string }>(form, 'addon:loyalty').field('tier');
 
         expect(tier.value).toBe('bronze');
 
@@ -96,7 +96,7 @@ describe('bindDraftSlice', () => {
 
     it('maps commit errors back to bare field names', async () => {
         const form = buildForm();
-        const slice = bindDraftSlice(form, 'addon:loyalty');
+        const slice = bindFormSlice(form, 'addon:loyalty');
 
         httpMock.post.mockRejectedValueOnce(
             new ValidationError({ 'addon:loyalty:tier': ['The tier is invalid.'], first_name: ['Required.'] }),
@@ -108,7 +108,7 @@ describe('bindDraftSlice', () => {
     });
 });
 
-describe('useDraftSlice', () => {
+describe('useFormSlice', () => {
     afterEach(() => {
         vi.clearAllMocks();
     });
@@ -126,11 +126,11 @@ describe('useDraftSlice', () => {
     }
 
     it('injects the enclosing page form and prefixes an add-on key', () => {
-        let slice: DraftSlice<{ tier: string }> | undefined;
+        let slice: FormSlice<{ tier: string }> | undefined;
 
         const Child = defineComponent({
             setup() {
-                slice = useAddonDraftSlice<{ tier: string }>('loyalty');
+                slice = useAddonFormSlice<{ tier: string }>('loyalty');
 
                 return () => h('span', slice?.values.tier);
             },
@@ -147,7 +147,7 @@ describe('useDraftSlice', () => {
 
         const Child = defineComponent({
             setup() {
-                keys = Object.keys(useDraftSlice('association').values);
+                keys = Object.keys(useFormSlice('association').values);
 
                 return () => null;
             },
@@ -161,12 +161,12 @@ describe('useDraftSlice', () => {
     it('throws a descriptive error outside a draft-backed page', () => {
         const Orphan = defineComponent({
             setup() {
-                useAddonDraftSlice('loyalty');
+                useAddonFormSlice('loyalty');
 
                 return () => null;
             },
         });
 
-        expect(() => mount(Orphan)).toThrow("useDraftSlice('addon:loyalty') needs a page driven by useEditDraft");
+        expect(() => mount(Orphan)).toThrow("useFormSlice('addon:loyalty') needs a page form");
     });
 });

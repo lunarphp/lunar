@@ -7,7 +7,7 @@ use Lunar\Core\Contracts\Actions\Products\UpdatesProductVariant;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Panel\Drafts\Concerns\NormalizesDraftValues;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\VariantFields;
 
@@ -17,7 +17,7 @@ use Lunar\Panel\Support\VariantFields;
  * single save cluster. Multi-variant products edit variants on their own
  * pages; here every variant field is refused outright.
  */
-class SoleVariantSlice extends DraftSlice
+class SoleVariantSlice extends FormSlice
 {
     use NormalizesDraftValues;
 

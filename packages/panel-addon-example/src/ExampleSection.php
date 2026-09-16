@@ -161,7 +161,7 @@ class ExampleSection extends Section
         ));
 
         // A slot component that takes part in the page's save: LoyaltyCard binds
-        // to the LoyaltyTierSlice below through useDraftSlice('example-addon'),
+        // to the LoyaltyTierSlice below through useFormSlice('example-addon'),
         // so its field autosaves and commits with the customer's own.
         $registry->add(new Slot(
             zone: 'customers.edit:main:after',
@@ -184,12 +184,12 @@ class ExampleSection extends Section
     }
 
     /**
-     * Contribute fields to a first-party edit draft. The panel places each
-     * slice under `addon:{key}` (here `addon:example-addon:`), so it can add
-     * to the customer draft but never reach the customer's own fields or
-     * another add-on's.
+     * Contribute fields to a first-party form. The panel places each slice
+     * under `addon:{key}` (here `addon:example-addon:`), so it can add to the
+     * customer form but never reach the customer's own fields or another
+     * add-on's.
      */
-    public function draftExtensions(): array
+    public function formExtensions(): array
     {
         return [LoyaltyTierSlice::class];
     }

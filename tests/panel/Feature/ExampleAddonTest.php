@@ -408,7 +408,7 @@ it('shares the loyalty card slot and its slice values on the customer edit page'
         ->assertInertia(fn (Assert $page) => $page
             ->where('slots', fn ($slots) => collect($slots->get('customers.edit:main:after'))
                 ->contains(fn ($entry) => $entry['component'] === 'example-addon::LoyaltyCard'))
-            ->where('draftSliceValues.addon:example-addon:tier', 'silver'));
+            ->where('formSliceValues.addon:example-addon:tier', 'silver'));
 });
 
 it('drafts, conflicts and commits the loyalty tier with the customer through the real draft routes', function () {

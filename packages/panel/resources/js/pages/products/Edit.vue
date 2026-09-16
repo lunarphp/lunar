@@ -150,7 +150,7 @@ const draftForm = useEditDraft({
         // Mapped attribute values ride the same draft under attribute:{handle}
         // keys; availability rows under channel:{id} / customer_group:{id};
         // on the simple shape the sole variant's fields under variant:{field}.
-        // All three are draft slices, seeded from the shared draftSliceValues
+        // All three are form slices, seeded from the shared formSliceValues
         // prop by useEditDraft.
     },
     draft: props.draft,

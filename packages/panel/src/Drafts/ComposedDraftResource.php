@@ -5,10 +5,11 @@ namespace Lunar\Panel\Drafts;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Contracts\DraftSlice;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Models\EditDraft;
 
 /**
- * A draftable resource assembled from its own definition plus every draft
+ * A draftable resource assembled from its own definition plus every form
  * slice registered for its model. The only place slice keys are prefixed
  * and unprefixed: slices deal in their own field names, the manager sees
  * one flat `{namespace}:{field}` key space, and neither can reach the
@@ -17,7 +18,7 @@ use Lunar\Panel\Models\EditDraft;
 class ComposedDraftResource implements DraftableResource
 {
     /**
-     * @param  array<string, DraftSlice>  $slices  keyed by namespace, in registration order
+     * @param  array<string, FormSlice>  $slices  keyed by namespace, in registration order
      */
     public function __construct(
         protected DraftableResource $resource,
@@ -30,7 +31,7 @@ class ComposedDraftResource implements DraftableResource
         return $this->resource;
     }
 
-    /** @return array<string, DraftSlice> */
+    /** @return array<string, FormSlice> */
     public function slices(): array
     {
         return $this->slices;
@@ -136,14 +137,19 @@ class ComposedDraftResource implements DraftableResource
     }
 
     /**
-     * Fan a discarded or pruned draft out to the slices whose keys it held.
+     * Fan a discarded or pruned draft out to the draft-aware slices whose
+     * keys it held.
      */
     public function discard(Model $record, EditDraft $draft): void
     {
         $partitioned = $this->partition($draft->data ?? []);
 
         foreach ($partitioned['slices'] as $namespace => $values) {
-            $this->slices[$namespace]->discard($record, $draft);
+            $slice = $this->slices[$namespace];
+
+            if ($slice instanceof DraftSlice) {
+                $slice->discard($record, $draft);
+            }
         }
     }
 

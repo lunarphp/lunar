@@ -11,10 +11,10 @@ use InvalidArgumentException;
 use Lunar\Panel\Actions\PageActionResolver;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
-use Lunar\Panel\Contracts\DraftSlice;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Dashboard\WidgetRegistry;
 use Lunar\Panel\Drafts\ComposedDraftResource;
-use Lunar\Panel\Drafts\DraftSlice as BaseDraftSlice;
+use Lunar\Panel\Forms\FormSlice as BaseFormSlice;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Search\SearchCommand;
@@ -55,8 +55,8 @@ class PanelManager
     /** @var array<class-string<Model>, DraftableResource> */
     protected array $draftables = [];
 
-    /** @var array<class-string<Model>, array<string, DraftSlice>> */
-    protected array $draftSlices = [];
+    /** @var array<class-string<Model>, array<string, FormSlice>> */
+    protected array $formSlices = [];
 
     /** @var array<class-string, class-string<DiscountTypeForm>> */
     protected array $discountTypeForms = [];
@@ -168,12 +168,12 @@ class PanelManager
             $this->draftable($definitionClass);
         }
 
-        foreach ($entity->draftSlices() as $sliceClass) {
-            $this->draftSlice($sliceClass);
+        foreach ($entity->formSlices() as $sliceClass) {
+            $this->formSlice($sliceClass);
         }
 
-        foreach ($entity->draftExtensions() as $sliceClass) {
-            $this->draftSlice($sliceClass, addon: true);
+        foreach ($entity->formExtensions() as $sliceClass) {
+            $this->formSlice($sliceClass, addon: true);
         }
 
         foreach ($entity->discountTypeForms() as $discountType => $formClass) {
@@ -370,28 +370,28 @@ class PanelManager
     }
 
     /**
-     * Register a draft slice, indexed by its model then namespace. Sections
+     * Register a form slice, indexed by its model then namespace. Sections
      * register first-party slices under their bare key; the public
-     * draftExtensions() hook passes $addon so the slice lands under
+     * formExtensions() hook passes $addon so the slice lands under
      * `addon:{key}` and can never claim a first-party namespace.
      *
-     * @param  class-string<DraftSlice>  $sliceClass
+     * @param  class-string<FormSlice>  $sliceClass
      *
      * @throws InvalidArgumentException on a malformed, reserved, or duplicate namespace
      */
-    public function draftSlice(string $sliceClass, bool $addon = false): static
+    public function formSlice(string $sliceClass, bool $addon = false): static
     {
-        /** @var DraftSlice $slice */
+        /** @var FormSlice $slice */
         $slice = app($sliceClass);
 
         $key = $slice->key();
 
         if (! preg_match('/^[a-z0-9_-]+$/', $key)) {
-            throw new InvalidArgumentException("Lunar Panel: draft slice [{$sliceClass}] key [{$key}] must match [a-z0-9_-]+.");
+            throw new InvalidArgumentException("Lunar Panel: form slice [{$sliceClass}] key [{$key}] must match [a-z0-9_-]+.");
         }
 
         if (! $addon && $key === 'addon') {
-            throw new InvalidArgumentException("Lunar Panel: draft slice [{$sliceClass}] cannot claim the reserved [addon] namespace.");
+            throw new InvalidArgumentException("Lunar Panel: form slice [{$sliceClass}] cannot claim the reserved [addon] namespace.");
         }
 
         $namespace = $addon ? "addon:{$key}" : $key;
@@ -399,30 +399,30 @@ class PanelManager
 
         // Re-registering the same class (sections processed twice) is a
         // no-op; only a different class claiming the namespace is an error.
-        if (($existing = $this->draftSlices[$model][$namespace] ?? null) && $existing::class !== $sliceClass) {
+        if (($existing = $this->formSlices[$model][$namespace] ?? null) && $existing::class !== $sliceClass) {
             $existingClass = $existing::class;
 
             throw new InvalidArgumentException(
-                "Lunar Panel: draft slice namespace [{$namespace}] on [{$model}] is claimed by both [{$existingClass}] and [{$sliceClass}]."
+                "Lunar Panel: form slice namespace [{$namespace}] on [{$model}] is claimed by both [{$existingClass}] and [{$sliceClass}]."
             );
         }
 
-        if ($slice instanceof BaseDraftSlice) {
+        if ($slice instanceof BaseFormSlice) {
             $slice->bindNamespace($namespace);
         }
 
-        $this->draftSlices[$model][$namespace] = $slice;
+        $this->formSlices[$model][$namespace] = $slice;
 
         return $this;
     }
 
     /**
      * @param  class-string<Model>  $model
-     * @return array<string, DraftSlice>
+     * @return array<string, FormSlice>
      */
-    public function draftSlicesFor(string $model): array
+    public function formSlicesFor(string $model): array
     {
-        return $this->draftSlices[$model] ?? [];
+        return $this->formSlices[$model] ?? [];
     }
 
     /**
@@ -435,7 +435,7 @@ class PanelManager
     {
         $resource = $this->draftables[$model::class] ?? null;
 
-        if (! $resource || ! ($slices = $this->draftSlicesFor($model::class))) {
+        if (! $resource || ! ($slices = $this->formSlicesFor($model::class))) {
             return $resource;
         }
 

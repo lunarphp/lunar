@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { FieldLabel, Select, useDraftSlice } from '@lunarphp/panel';
+import { FieldLabel, Select, useFormSlice } from '@lunarphp/panel';
 import { useI18n } from 'vue-i18n';
 
-// Binds to the LoyaltyTierSlice registered in ExampleSection::draftExtensions().
+// Binds to the LoyaltyTierSlice registered in ExampleSection::formExtensions().
 // The key given here is the slice's key(); the panel resolves it to the
 // `addon:example-addon:` namespace on the customer page's draft, so `tier`
 // autosaves, restores, conflicts and commits alongside the customer's own
 // fields without this component ever touching them.
 const { t } = useI18n();
 
-const slice = useDraftSlice<{ tier: string | null }>('example-addon');
+const slice = useFormSlice<{ tier: string | null }>('example-addon');
 
 const tiers = ['bronze', 'silver', 'gold'] as const;
 </script>

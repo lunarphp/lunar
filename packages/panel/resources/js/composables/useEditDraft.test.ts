@@ -43,11 +43,11 @@ describe('useEditDraft', () => {
     afterEach(() => {
         vi.clearAllMocks();
         vi.useRealTimers();
-        delete pageProps.draftSliceValues;
+        delete pageProps.formSliceValues;
     });
 
     it('seeds draft slice values from the shared page prop', async () => {
-        pageProps.draftSliceValues = { 'addon:loyalty:tier': 'bronze' };
+        pageProps.formSliceValues = { 'addon:loyalty:tier': 'bronze' };
 
         const form = useEditDraft({
             initial: { first_name: 'Original' },
@@ -69,7 +69,7 @@ describe('useEditDraft', () => {
     });
 
     it('skips slice seeding when the page opts out', () => {
-        pageProps.draftSliceValues = { 'addon:loyalty:tier': 'bronze' };
+        pageProps.formSliceValues = { 'addon:loyalty:tier': 'bronze' };
 
         const form = useEditDraft({
             initial: { first_name: 'Original' },

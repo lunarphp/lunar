@@ -51,7 +51,7 @@ it('serves the simple shape with the sole variant payload', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->where('shape', 'simple')
             ->where('variant.id', $this->variant->id)
-            ->where('draftSliceValues.variant:sku', 'WID-1')
+            ->where('formSliceValues.variant:sku', 'WID-1')
             ->has('variant.stock.levels')
             ->has('currencies')
             ->has('taxClasses')

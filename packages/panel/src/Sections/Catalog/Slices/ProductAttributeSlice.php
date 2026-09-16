@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
 use Lunar\Core\Models\Product;
 use Lunar\Panel\Drafts\Concerns\NormalizesDraftValues;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Support\AttributeSchema;
 
 /**
@@ -14,7 +14,7 @@ use Lunar\Panel\Support\AttributeSchema;
  * apply depends on the product type, so fields() offers the morph-wide
  * superset and rules() narrows it to the record's mapping.
  */
-class ProductAttributeSlice extends DraftSlice
+class ProductAttributeSlice extends FormSlice
 {
     use NormalizesDraftValues;
 

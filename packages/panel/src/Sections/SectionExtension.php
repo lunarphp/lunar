@@ -5,7 +5,7 @@ namespace Lunar\Panel\Sections;
 use Closure;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
-use Lunar\Panel\Contracts\DraftSlice;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Search\SearchCommand;
@@ -58,23 +58,23 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
-     * Return draft slices this extension owns under a bare namespace; see
-     * Section::draftSlices(). Add-ons use draftExtensions().
+     * Return form slices this extension owns under a bare namespace; see
+     * Section::formSlices(). Add-ons use formExtensions().
      *
-     * @return array<int, class-string<DraftSlice>>
+     * @return array<int, class-string<FormSlice>>
      */
-    public function draftSlices(): array
+    public function formSlices(): array
     {
         return [];
     }
 
     /**
-     * Return draft slices this extension contributes under `addon:{key}`;
-     * see Section::draftExtensions().
+     * Return form slices this extension contributes under `addon:{key}`; see
+     * Section::formExtensions().
      *
-     * @return array<int, class-string<DraftSlice>>
+     * @return array<int, class-string<FormSlice>>
      */
-    public function draftExtensions(): array
+    public function formExtensions(): array
     {
         return [];
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
 use Lunar\Core\Models\Product;
 use Lunar\Panel\Drafts\Concerns\NormalizesDraftValues;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Support\AvailabilitySchema;
 
 /**
@@ -15,7 +15,7 @@ use Lunar\Panel\Support\AvailabilitySchema;
  * because each owns its own namespace; both commit through the product
  * update action's pivot maps.
  */
-abstract class AvailabilitySlice extends DraftSlice
+abstract class AvailabilitySlice extends FormSlice
 {
     use NormalizesDraftValues;
 

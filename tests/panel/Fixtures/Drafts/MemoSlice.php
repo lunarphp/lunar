@@ -10,7 +10,7 @@ use Lunar\Panel\Models\EditDraft;
 use RuntimeException;
 
 /**
- * A first-party-style slice on Customer for the draft slice tests: one
+ * A first-party-style draft slice on Customer for the form slice tests: one
  * `memo` field stored under the customer's meta column, with a commit that
  * can be made to fail and a discard hook that records its calls.
  */

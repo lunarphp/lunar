@@ -8,10 +8,10 @@ import {
     ref,
     watch,
     type ComputedRef,
-    type InjectionKey,
     type Ref,
 } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
+import { sliceFormKey } from './sliceForm';
 import { useI18n } from 'vue-i18n';
 import { DraftConflictError, ValidationError, http, type DraftConflict } from '../lib/http';
 
@@ -29,8 +29,8 @@ export interface EditDraftOptions<T extends Record<string, unknown>> {
     };
     debounceMs?: number;
     /**
-     * Seed the form with the page's shared `draftSliceValues` prop (the
-     * prefixed current values of every draft slice on the route's deepest
+     * Seed the form with the page's shared `formSliceValues` prop (the
+     * prefixed current values of every form slice on the route's deepest
      * record). Off for a page that drafts some other record.
      */
     slices?: boolean;
@@ -53,16 +53,10 @@ export interface EditDraftForm<T extends Record<string, unknown>> {
     discard: () => Promise<void>;
 }
 
-/**
- * The page's form, provided by useEditDraft() so components further down the
- * tree (first-party cards, add-on slot components) can bind a draft slice.
- */
-export const editDraftFormKey: InjectionKey<EditDraftForm<Record<string, unknown>>> = Symbol('lunar-panel:edit-draft-form');
-
 // The shared prop is absent outside an Inertia page (unit tests, tooling).
 function sharedSliceValues(): Record<string, unknown> {
     try {
-        return (usePage().props.draftSliceValues as Record<string, unknown> | undefined) ?? {};
+        return (usePage().props.formSliceValues as Record<string, unknown> | undefined) ?? {};
     } catch {
         return {};
     }
@@ -341,8 +335,10 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
         discard,
     };
 
+    // Components further down the tree (first-party cards, add-on slot
+    // components) bind form slices to this form through useFormSlice().
     if (getCurrentInstance()) {
-        provide(editDraftFormKey, form as EditDraftForm<Record<string, unknown>>);
+        provide(sliceFormKey, form);
     }
 
     return form;

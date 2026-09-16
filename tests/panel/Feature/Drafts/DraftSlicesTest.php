@@ -69,7 +69,7 @@ beforeEach(function () {
 
     $this->customer = Customer::factory()->create(['first_name' => 'Ada', 'meta' => ['memo' => 'hello']]);
 
-    app(PanelManager::class)->draftSlice(MemoSlice::class);
+    app(PanelManager::class)->formSlice(MemoSlice::class);
 });
 
 it('composes a resource with its slices under prefixed keys', function () {
@@ -90,27 +90,27 @@ it('returns the plain resource for a model without slices', function () {
 });
 
 it('places extension slices under the reserved addon namespace', function () {
-    $manager = app(PanelManager::class)->draftSlice(RivalMemoSlice::class, addon: true);
+    $manager = app(PanelManager::class)->formSlice(RivalMemoSlice::class, addon: true);
 
-    expect(array_keys($manager->draftSlicesFor(Customer::class)))->toBe(['notes', 'addon:notes']);
+    expect(array_keys($manager->formSlicesFor(Customer::class)))->toBe(['notes', 'addon:notes']);
 });
 
 it('rejects a second class claiming the same namespace', function () {
-    app(PanelManager::class)->draftSlice(RivalMemoSlice::class);
+    app(PanelManager::class)->formSlice(RivalMemoSlice::class);
 })->throws(InvalidArgumentException::class, 'claimed by both');
 
 it('ignores the same class registering twice', function () {
-    $manager = app(PanelManager::class)->draftSlice(MemoSlice::class);
+    $manager = app(PanelManager::class)->formSlice(MemoSlice::class);
 
-    expect($manager->draftSlicesFor(Customer::class))->toHaveCount(1);
+    expect($manager->formSlicesFor(Customer::class))->toHaveCount(1);
 });
 
 it('rejects a first-party slice claiming the addon namespace', function () {
-    app(PanelManager::class)->draftSlice(AddonReservedSlice::class);
+    app(PanelManager::class)->formSlice(AddonReservedSlice::class);
 })->throws(InvalidArgumentException::class, 'reserved [addon] namespace');
 
 it('rejects a malformed namespace', function () {
-    app(PanelManager::class)->draftSlice(BadKeySlice::class);
+    app(PanelManager::class)->formSlice(BadKeySlice::class);
 })->throws(InvalidArgumentException::class, 'must match [a-z0-9_-]+');
 
 it('autosaves a slice field under its prefixed key, normalised by the slice', function () {
@@ -254,21 +254,21 @@ it('seeds edit pages with the slice values of the deepest route-bound record', f
     $this->get(route('panel.products.edit', $product))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where("draftSliceValues.channel:{$channel->id}.enabled", true)
-            ->where('draftSliceValues.variant:sku', 'WID-1'));
+            ->where("formSliceValues.channel:{$channel->id}.enabled", true)
+            ->where('formSliceValues.variant:sku', 'WID-1'));
 
     // The variant page drafts the variant, which has no slices: the product's
     // values must not leak in from the parent binding.
     $this->get(route('panel.products.variants.edit', [$product, $variant]))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where('draftSliceValues', []));
+            ->where('formSliceValues', []));
 
     $this->get(route('panel.customers.edit', $this->customer))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->where('draftSliceValues.notes:memo', 'hello'));
+        ->assertInertia(fn (Assert $page) => $page->where('formSliceValues.notes:memo', 'hello'));
 
     $this->get(route('panel.customers.index'))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->where('draftSliceValues', []));
+        ->assertInertia(fn (Assert $page) => $page->where('formSliceValues', []));
 });

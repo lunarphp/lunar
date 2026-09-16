@@ -1,13 +1,13 @@
 import { computed, inject, type ComputedRef, type Ref, type WritableComputedRef } from 'vue';
-import { editDraftFormKey, type EditDraftForm } from './useEditDraft';
+import { sliceFormKey, type SliceForm } from './sliceForm';
 
 /**
- * A namespaced view onto the page's edit draft. Reads and writes go to the
- * form's `{namespace}:{field}` keys, so the slice's fields autosave, restore,
- * conflict-check and commit with the resource's own; nothing here reaches
- * another namespace or the underlying form.
+ * A namespaced view onto the page's form. Reads and writes go to the form's
+ * `{namespace}:{field}` keys, so the slice's fields validate and commit with
+ * the form's own (and autosave, restore and conflict-check on a drafted
+ * page); nothing here reaches another namespace or the underlying form.
  */
-export interface DraftSlice<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface FormSlice<T extends Record<string, unknown> = Record<string, unknown>> {
     /** Reactive values scoped to the namespace; `v-model="slice.values.tier"` works. */
     values: T;
     /** Commit-time validation errors for this namespace, keyed by bare field. */
@@ -22,12 +22,9 @@ export interface DraftSlice<T extends Record<string, unknown> = Record<string, u
 
 /**
  * Scope a form to one namespace. Exported for the composable's tests; page
- * code goes through useDraftSlice() / useAddonDraftSlice().
+ * code goes through useFormSlice() / useAddonFormSlice().
  */
-export function bindDraftSlice<T extends Record<string, unknown>>(
-    form: EditDraftForm<Record<string, unknown>>,
-    namespace: string,
-): DraftSlice<T> {
+export function bindFormSlice<T extends Record<string, unknown>>(form: SliceForm, namespace: string): FormSlice<T> {
     const prefix = `${namespace}:`;
     const target = form.values;
 
@@ -39,7 +36,7 @@ export function bindDraftSlice<T extends Record<string, unknown>>(
         get: (_, prop) => (known(prop) ? target[`${prefix}${prop}`] : undefined),
         set: (_, prop, value) => {
             if (!known(prop)) {
-                throw new Error(`Draft slice [${namespace}] has no field [${String(prop)}].`);
+                throw new Error(`Form slice [${namespace}] has no field [${String(prop)}].`);
             }
 
             target[`${prefix}${prop}`] = value;
@@ -78,13 +75,11 @@ export function bindDraftSlice<T extends Record<string, unknown>>(
     return { values, errors, field, isDirty, saving: form.saving, committing: form.committing };
 }
 
-function injectForm(namespace: string): EditDraftForm<Record<string, unknown>> {
-    const form = inject(editDraftFormKey, null);
+function injectForm(namespace: string): SliceForm {
+    const form = inject(sliceFormKey, null);
 
     if (!form) {
-        throw new Error(
-            `useDraftSlice('${namespace}') needs a page driven by useEditDraft above it in the component tree.`,
-        );
+        throw new Error(`useFormSlice('${namespace}') needs a page form (useEditDraft) above it in the component tree.`);
     }
 
     return form;
@@ -93,16 +88,16 @@ function injectForm(namespace: string): EditDraftForm<Record<string, unknown>> {
 /**
  * Bind to a first-party slice by its bare namespace, e.g. `association`.
  */
-export function useDraftSlice<T extends Record<string, unknown> = Record<string, unknown>>(namespace: string): DraftSlice<T> {
-    return bindDraftSlice<T>(injectForm(namespace), namespace);
+export function useFormSlice<T extends Record<string, unknown> = Record<string, unknown>>(namespace: string): FormSlice<T> {
+    return bindFormSlice<T>(injectForm(namespace), namespace);
 }
 
 /**
  * Bind to an add-on slice by its key. Slices registered through
- * Section::draftExtensions() live under `addon:{key}`, and this is the form
- * `@lunarphp/panel` exports as useDraftSlice, so an add-on component only
+ * Section::formExtensions() live under `addon:{key}`, and this is the form
+ * `@lunarphp/panel` exports as useFormSlice, so an add-on component only
  * ever names its own key.
  */
-export function useAddonDraftSlice<T extends Record<string, unknown> = Record<string, unknown>>(key: string): DraftSlice<T> {
-    return useDraftSlice<T>(`addon:${key}`);
+export function useAddonFormSlice<T extends Record<string, unknown> = Record<string, unknown>>(key: string): FormSlice<T> {
+    return useFormSlice<T>(`addon:${key}`);
 }

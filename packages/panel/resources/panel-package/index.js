@@ -55,7 +55,7 @@ export const ValuePreviewChip = ui().ValuePreviewChip;
 export const DraftActions = ui().DraftActions;
 export const DraftConflictDialog = ui().DraftConflictDialog;
 export const useEditDraft = (...args) => ui().useEditDraft(...args);
-export const useDraftSlice = (...args) => ui().useDraftSlice(...args);
+export const useFormSlice = (...args) => ui().useFormSlice(...args);
 export const http = {
     get: (...args) => ui().http.get(...args),
     post: (...args) => ui().http.post(...args),

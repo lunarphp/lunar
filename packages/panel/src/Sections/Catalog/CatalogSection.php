@@ -5,7 +5,7 @@ namespace Lunar\Panel\Sections\Catalog;
 use Closure;
 use Illuminate\Support\Facades\Route;
 use Lunar\Panel\Contracts\DraftableResource;
-use Lunar\Panel\Contracts\DraftSlice;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Http\Controllers\Brands\BrandBulkStatusController;
 use Lunar\Panel\Http\Controllers\Brands\BrandCreateController;
 use Lunar\Panel\Http\Controllers\Brands\BrandEditController;
@@ -159,8 +159,8 @@ class CatalogSection extends Section
         ];
     }
 
-    /** @return array<int, class-string<DraftSlice>> */
-    public function draftSlices(): array
+    /** @return array<int, class-string<FormSlice>> */
+    public function formSlices(): array
     {
         return [
             ProductAttributeSlice::class,

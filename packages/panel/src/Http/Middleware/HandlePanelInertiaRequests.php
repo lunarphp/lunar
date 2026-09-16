@@ -55,10 +55,10 @@ class HandlePanelInertiaRequests extends Middleware
             'visitedRecord' => fn () => ($record = $this->currentRecord($request))
                 ? $this->manager->resolveSearchSources()->rowFor($record)
                 : null,
-            // Prefixed current values of every draft slice on the page's
-            // record, so useEditDraft can seed them without each edit
+            // Prefixed current values of every form slice on the page's
+            // record, so the page's form can seed them without each edit
             // controller knowing which slices apply.
-            'draftSliceValues' => fn () => $this->draftSliceValues($request),
+            'formSliceValues' => fn () => $this->formSliceValues($request),
         ]);
     }
 
@@ -70,7 +70,7 @@ class HandlePanelInertiaRequests extends Middleware
      *
      * @return array<string, mixed>|object
      */
-    protected function draftSliceValues(Request $request): array|object
+    protected function formSliceValues(Request $request): array|object
     {
         $record = collect($request->route()?->parameters() ?? [])
             ->last(fn (mixed $parameter): bool => $parameter instanceof Model);

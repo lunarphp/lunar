@@ -221,7 +221,7 @@ class ProductEditController
             'mediaGroups' => MediaGroups::for($product, 'panel.products'),
             'productUrls' => $urls,
             // Attribute, availability and sole-variant values seed the form
-            // through the shared draftSliceValues prop.
+            // through the shared formSliceValues prop.
             'attributeGroups' => $attributeSchema->groups($product),
             'availability' => $availabilitySchema->rows(),
             'brandOptions' => Brand::query()->orderBy('name')->get(['id', 'name'])
