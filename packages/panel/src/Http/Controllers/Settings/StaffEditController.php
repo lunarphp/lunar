@@ -11,6 +11,7 @@ use Lunar\Core\Exceptions\StaffActionException;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Support\Facades\LunarAccessControl;
 use Lunar\Panel\Facades\Panel;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\StaffRequest;
 
 class StaffEditController
@@ -41,10 +42,10 @@ class StaffEditController
         ]);
     }
 
-    public function update(StaffRequest $request, Staff $staff, UpdatesStaff $updatesStaff): RedirectResponse
+    public function update(StaffRequest $request, Staff $staff, UpdatesStaff $updatesStaff, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesStaff->execute($staff, $request->staffAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesStaff->execute($staff, $request->staffAttributes()));
         } catch (StaffActionException) {
             return back()->with('error', __('panel::staff.last_admin_blocked'));
         }

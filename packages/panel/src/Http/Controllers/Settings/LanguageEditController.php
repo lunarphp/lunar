@@ -9,6 +9,7 @@ use Lunar\Core\Contracts\Actions\Languages\DeletesLanguage;
 use Lunar\Core\Contracts\Actions\Languages\UpdatesLanguage;
 use Lunar\Core\Exceptions\LanguageActionException;
 use Lunar\Core\Models\Language;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\LanguageRequest;
 
 class LanguageEditController
@@ -31,10 +32,10 @@ class LanguageEditController
         ]);
     }
 
-    public function update(LanguageRequest $request, Language $language, UpdatesLanguage $updatesLanguage): RedirectResponse
+    public function update(LanguageRequest $request, Language $language, UpdatesLanguage $updatesLanguage, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesLanguage->execute($language, $request->languageAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesLanguage->execute($language, $request->languageAttributes()));
         } catch (LanguageActionException) {
             return back()->with('error', __('panel::languages.default_unset_blocked'));
         }

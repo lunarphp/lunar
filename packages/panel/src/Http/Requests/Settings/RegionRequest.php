@@ -11,10 +11,16 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Region;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the region store and update endpoints, whose rules are identical bar the handle unique scope. */
 class RegionRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Region> */
+    protected string $sliceModel = Region::class;
+
     /** Handles are stored slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

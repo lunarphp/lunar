@@ -479,6 +479,14 @@ conflict dialog under the label from `labels()`), 422 mapping, and an atomic
 commit with the customer's own fields. If the slice's `commit()` throws, the
 customer's changes roll back too.
 
+The same slice and card serve the customer **create** page too, through a second
+slot in `customers.create:main:after`. A create page posts a plain form rather
+than a draft, so the rules differ slightly: a slice's keys join the form only
+when a component binds to it (so a page nobody extends posts exactly what it
+did before), its rules apply only when its keys are present, and its `commit()`
+runs after the store action, inside the same transaction, with the record just
+created. The component does not change between the two pages.
+
 Optional: extend `Lunar\Panel\Drafts\DraftSlice` instead and implement
 `discard(Model $record, EditDraft $draft)` when a slice holds state outside the
 draft's JSON columns (staged uploads, for instance). It is called when a draft

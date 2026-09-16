@@ -9,6 +9,7 @@ use Lunar\Core\Contracts\Actions\Channels\DeletesChannel;
 use Lunar\Core\Contracts\Actions\Channels\UpdatesChannel;
 use Lunar\Core\Exceptions\ChannelActionException;
 use Lunar\Core\Models\Channel;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\ChannelRequest;
 
 class ChannelEditController
@@ -33,10 +34,10 @@ class ChannelEditController
         ]);
     }
 
-    public function update(ChannelRequest $request, Channel $channel, UpdatesChannel $updatesChannel): RedirectResponse
+    public function update(ChannelRequest $request, Channel $channel, UpdatesChannel $updatesChannel, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesChannel->execute($channel, $request->channelAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesChannel->execute($channel, $request->channelAttributes()));
         } catch (ChannelActionException) {
             return back()->with('error', __('panel::channels.default_unset_blocked'));
         }

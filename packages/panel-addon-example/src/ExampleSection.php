@@ -168,6 +168,13 @@ class ExampleSection extends Section
             component: 'example-addon::LoyaltyCard',
         ));
 
+        // The same card and slice on the create page: there the field posts
+        // with the plain form and commits after the customer is created.
+        $registry->add(new Slot(
+            zone: 'customers.create:main:after',
+            component: 'example-addon::LoyaltyCard',
+        ));
+
         // The canonical slot example (spec 0049/0057): the product edit page
         // deliberately ships no SEO section — an add-on injects one into the
         // content-adjacent zone between the content cluster and the variants

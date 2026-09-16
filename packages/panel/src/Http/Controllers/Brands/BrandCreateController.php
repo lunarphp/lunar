@@ -6,13 +6,16 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Brands\CreatesBrand;
+use Lunar\Core\Models\Brand;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Brands\BrandRequest;
 
 class BrandCreateController
 {
-    public function create(): Response
+    public function create(FormSlices $formSlices): Response
     {
         return Inertia::render('brands/Create', [
+            'formSliceValues' => $formSlices->values(new Brand) ?: (object) [],
             'urls' => [
                 'store' => route('panel.brands.store'),
                 'index' => route('panel.brands.index'),
@@ -20,9 +23,9 @@ class BrandCreateController
         ]);
     }
 
-    public function store(BrandRequest $request, CreatesBrand $createsBrand): RedirectResponse
+    public function store(BrandRequest $request, CreatesBrand $createsBrand, FormSlices $formSlices): RedirectResponse
     {
-        $brand = $createsBrand->execute($request->brandAttributes());
+        $brand = $formSlices->save($request->sliceInput(), fn () => $createsBrand->execute($request->brandAttributes()));
 
         return redirect()
             ->route('panel.brands.edit', $brand)

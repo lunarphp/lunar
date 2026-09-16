@@ -63,6 +63,7 @@ export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/
 // composable applies that prefix so a slot component only ever names its own key.
 export { useAddonFormSlice as useFormSlice } from './composables/useFormSlice';
 export type { FormSlice } from './composables/useFormSlice';
+export { usePanelForm } from './composables/usePanelForm';
 export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
 export type { DraftConflict } from './lib/http';
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
+import { usePanelForm } from '../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
@@ -18,7 +19,7 @@ const props = defineProps<{
     urls: { store: string; index: string };
 }>();
 
-const form = useForm<{ name: string; product_type_id: number | ''; status: string }>({
+const form = usePanelForm<{ name: string; product_type_id: number | ''; status: string }>({
     name: '',
     product_type_id: props.typeOptions.length === 1 ? props.typeOptions[0].value : '',
     status: 'draft',

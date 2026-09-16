@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
+import { usePanelForm } from '../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
@@ -32,7 +33,7 @@ const toLocalInput = (date: Date): string => {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-const form = useForm({
+const form = usePanelForm({
     name: '',
     handle: '',
     type: props.types[0]?.class ?? '',

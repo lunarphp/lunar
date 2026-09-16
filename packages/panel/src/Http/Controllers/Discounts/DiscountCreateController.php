@@ -9,14 +9,16 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Discounts\CreatesDiscount;
 use Lunar\Core\Models\Discount;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\Support\DiscountTypeSchema;
 
 class DiscountCreateController
 {
-    public function create(DiscountTypeSchema $typeSchema): Response
+    public function create(DiscountTypeSchema $typeSchema, FormSlices $formSlices): Response
     {
         return Inertia::render('discounts/Create', [
+            'formSliceValues' => $formSlices->values(new Discount) ?: (object) [],
             'types' => $typeSchema->all(),
             'urls' => [
                 'store' => route('panel.discounts.store'),
@@ -30,16 +32,21 @@ class DiscountCreateController
      * where the type's configuration, schedule and availability are set — the
      * same shape as collections.
      */
-    public function store(Request $request, CreatesDiscount $createsDiscount): RedirectResponse
+    public function store(Request $request, CreatesDiscount $createsDiscount, FormSlices $formSlices): RedirectResponse
     {
+        $own = ['name', 'handle', 'type', 'starts_at'];
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'handle' => ['required', 'string', 'max:255', Rule::unique((new Discount)->getTable(), 'handle')],
             'type' => ['required', 'string', Rule::in(DiscountRequest::registeredTypes())],
             'starts_at' => ['required', 'date'],
+            ...$formSlices->rules(Discount::class),
         ]);
 
-        $discount = $createsDiscount->execute($validated);
+        $discount = $formSlices->save($validated, fn () => $createsDiscount->execute(
+            array_intersect_key($validated, array_flip($own)),
+        ));
 
         return redirect()
             ->route('panel.discounts.edit', $discount)

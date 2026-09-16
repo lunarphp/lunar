@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Enums\ProductOptionType;
 use Lunar\Core\Models\ProductOption;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * Shared by the product option store and update endpoints. Name and label
@@ -16,6 +17,11 @@ use Lunar\Core\Models\ProductOption;
  */
 class ProductOptionRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<ProductOption> */
+    protected string $sliceModel = ProductOption::class;
+
     /** Handles are stored slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

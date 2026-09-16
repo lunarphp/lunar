@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
+import { usePanelForm } from '../../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -90,7 +91,7 @@ const lookupRows = ref<Record<string, LookupRow[]>>(
 // Configuration values are type-specific scalars, plus lookup rows and tag lists.
 type ConfigurationValue = string | number | boolean | null | LookupRow[] | string[];
 
-const form = useForm({
+const form = usePanelForm({
     name: props.attribute.name,
     handle: props.attribute.handle,
     attribute_group_id: props.attribute.attribute_group_id,
