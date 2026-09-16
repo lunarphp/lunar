@@ -46,11 +46,11 @@ class CreateShippingLine
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,
                 'notes' => null,
-                // Persist the chosen option's `collect` flag onto the line
-                // snapshot so the `collection` fulfilment method can claim its
+                // Persist the chosen option's `pickup` flag onto the line
+                // snapshot so the `pickup` fulfilment method can claim its
                 // lines without re-resolving the option at order time.
                 'meta' => array_merge($shippingOption->meta ?? [], [
-                    'collect' => $shippingOption->collect,
+                    'pickup' => $shippingOption->pickup,
                 ]),
             ])->save();
         }

@@ -45,7 +45,7 @@ return [
             'label' => 'Loại',
             'options' => [
                 'ship-by' => 'Tiêu chuẩn',
-                'collection' => 'Nhận tại cửa hàng',
+                'pickup' => 'Nhận tại cửa hàng',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Loại',
             'options' => [
                 'ship-by' => 'Tiêu chuẩn',
-                'collection' => 'Nhận tại cửa hàng',
+                'pickup' => 'Nhận tại cửa hàng',
             ],
         ],
     ],

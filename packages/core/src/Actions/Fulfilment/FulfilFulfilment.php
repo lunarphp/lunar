@@ -9,7 +9,7 @@ use Lunar\Core\Models\Fulfilment;
 
 /**
  * Advance a fulfilment to its method's canonical "done" state with no tracking
- * — the generic terminal verb (collection → `Collected`, digital →
+ * — the generic terminal verb (pickup → `PickedUp`, digital →
  * `Provisioned`, a custom flow → its terminal). `ShipFulfilment` is the
  * tracking-bearing specialisation. The transition routes through
  * `TransitionFulfilment`, so the per-method graph is enforced and the

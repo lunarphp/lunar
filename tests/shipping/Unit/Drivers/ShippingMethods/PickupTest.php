@@ -5,19 +5,19 @@ use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Drivers\ShippingMethods\Collection;
+use Lunar\Shipping\Drivers\ShippingMethods\Pickup;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
 
-uses(TestCase::class)->group('shipping', 'shipping-driver', 'shipping-driver-collection');
+uses(TestCase::class)->group('shipping', 'shipping-driver', 'shipping-driver-pickup');
 
 uses(RefreshDatabase::class);
 uses(TestUtils::class);
 
-test('can get free shipping', function () {
+test('can get a zero-priced pickup option', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -31,7 +31,7 @@ test('can get free shipping', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'driver' => 'free-shipping',
+        'driver' => 'pickup',
         'data' => [],
     ]);
 
@@ -42,7 +42,7 @@ test('can get free shipping', function () {
 
     $cart = $this->createCart($currency, 500);
 
-    $driver = new Collection;
+    $driver = new Pickup;
 
     $request = new ShippingOptionRequest(
         cart: $cart,
@@ -54,4 +54,6 @@ test('can get free shipping', function () {
     expect($shippingOption)->toBeInstanceOf(ShippingOption::class);
 
     expect($shippingOption->price->value)->toEqual(0);
+
+    expect($shippingOption->pickup)->toBeTrue();
 });

@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'قيد الانتظار',
         'in-progress' => 'قيد التنفيذ',
-        'ready-for-collection' => 'جاهز للاستلام',
+        'ready-for-pickup' => 'جاهز للاستلام',
         'shipped' => 'تم الشحن',
-        'collected' => 'تم الاستلام',
+        'picked-up' => 'تم الاستلام',
         'provisioned' => 'تم التوفير',
         'cancelled' => 'مُلغى',
         'returned' => 'مُرتجَع',

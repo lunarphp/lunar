@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Na čekanju',
         'in-progress' => 'U tijeku',
-        'ready-for-collection' => 'Spremno za preuzimanje',
+        'ready-for-pickup' => 'Spremno za preuzimanje',
         'shipped' => 'Otpremljeno',
-        'collected' => 'Preuzeto',
+        'picked-up' => 'Preuzeto',
         'provisioned' => 'Stavljeno na raspolaganje',
         'cancelled' => 'Otkazano',
         'returned' => 'Vraćeno',

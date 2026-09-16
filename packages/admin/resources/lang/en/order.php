@@ -313,7 +313,7 @@ return [
             'shipped_at' => 'Shipped at',
             'handed_over' => [
                 'shipping' => 'Shipped at',
-                'collection' => 'Collected at',
+                'pickup' => 'Picked up at',
                 'digital' => 'Provisioned at',
             ],
             'handed_over_default' => 'Fulfilled at',
@@ -357,7 +357,7 @@ return [
                 'label' => 'Mark fulfilled',
                 'modal_heading' => 'Mark fulfilment as fulfilled',
                 'labels' => [
-                    'collection' => 'Mark collected',
+                    'pickup' => 'Mark picked up',
                 ],
                 'notification' => [
                     'success' => 'Fulfilment marked as fulfilled.',
