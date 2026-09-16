@@ -223,3 +223,49 @@ test('will remove lines with same purchasable ids when different', function () {
         'meta' => json_encode(['bar' => 'baz']),
     ]);
 });
+
+test('component lines survive clean up with their parent', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $order = Order::factory()->create([
+        'cart_id' => $cart->id,
+    ]);
+
+    $bundleVariant = ProductVariant::factory()->create();
+    $componentVariant = ProductVariant::factory()->create();
+
+    $cart->lines()->create([
+        'purchasable_type' => $bundleVariant->getMorphClass(),
+        'purchasable_id' => $bundleVariant->id,
+        'quantity' => 1,
+    ]);
+
+    $parent = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_id' => $bundleVariant->id,
+        'purchasable_type' => $bundleVariant->getMorphClass(),
+        'quantity' => 1,
+    ]);
+
+    // Not the image of any cart line, but it belongs to one that is.
+    $component = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'parent_line_id' => $parent->id,
+        'purchasable_id' => $componentVariant->id,
+        'purchasable_type' => $componentVariant->getMorphClass(),
+        'quantity' => 3,
+        'unit_price' => 0,
+        'sub_total' => 0,
+        'total' => 0,
+        'tax_total' => 0,
+    ]);
+
+    app(CleanUpOrderLines::class)->handle($order, fn ($order) => $order);
+
+    assertDatabaseHas((new OrderLine)->getTable(), ['id' => $parent->id]);
+    assertDatabaseHas((new OrderLine)->getTable(), ['id' => $component->id]);
+});
