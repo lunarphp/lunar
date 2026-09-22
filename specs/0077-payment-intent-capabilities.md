@@ -49,8 +49,9 @@ discover it at the point of failure.
 ## Proposal
 
 Four opt-in capability interfaces in `Lunar\Core\Contracts`, plus the two data
-objects and two enums they speak in. Nothing is added to `PaymentType` and
-nothing existing changes, so every current driver keeps working untouched.
+objects and two enums they speak in. Nothing is added to `PaymentType`, and the
+only existing file touched is `PaymentRefund`, which gains one trailing
+optional field, so every current driver keeps working untouched.
 
 Capabilities are discovered with `instanceof`, matching how core already treats
 optional driver features. A driver implements the ones its gateway supports and
@@ -58,15 +59,16 @@ a consumer degrades gracefully for the rest.
 
 ### Why capabilities and not one interface
 
-The four concerns are genuinely independent, and real gateways support
-different subsets:
+The concerns are separable, and real gateways support different subsets. Three
+stand alone; holds are the one genuine dependency, since a hold that cannot be
+voided is not a hold anyone should offer:
 
 | Capability | A driver has it when the gateway can... |
 | --- | --- |
 | `CreatesPaymentIntents` | pre-create a confirmable object for a cart |
 | `SyncsPaymentIntents` | carry an amount that can go stale and be corrected |
 | `SupportsPaymentIntents` | report, void and refund that object by reference |
-| `SupportsPaymentHolds` | authorise now and capture later, at a lower amount |
+| `SupportsPaymentHolds` | authorise now and capture later, at a lower amount (extends `SupportsPaymentIntents`) |
 
 A synchronous redirect gateway has none of them. An offline or on-account
 method has none of them and needs none. Collapsing them into one interface
@@ -108,23 +110,30 @@ interface SupportsPaymentIntents
 
     public function voidIntent(string $reference): void;
 
-    public function refundIntent(string $reference, int $amountMinor, string $idempotencyKey): string;
+    public function refundIntent(string $reference, int $amountMinor, string $idempotencyKey): PaymentRefund;
 }
 ```
 
 The reconciliation surface. `voidIntent()` aborts an in-flight, uncaptured
 intent and MUST throw if the gateway cannot confirm the void: an unknown
 outcome is not a void. `refundIntent()` refunds a captured intent before any
-order or transaction exists, and returns the gateway's refund reference;
-`$idempotencyKey` is derived from the intent reference so a retry can never
-double-refund. A driver without this capability cannot be reconciled, and a
-consumer must treat its in-flight payments as unresolved rather than assume
-they were abandoned.
+order or transaction exists; `$idempotencyKey` is derived from the intent
+reference so a retry can never double-refund. A driver without this capability
+cannot be reconciled, and a consumer must treat its in-flight payments as
+unresolved rather than assume they were abandoned.
+
+`refundIntent()` returns the existing `PaymentRefund` data object rather than a
+bare reference string, so a caller gets `success` and `message` alongside the
+gateway's refund reference. Its `?Transaction $transaction` is always null
+here, which the object already documents as "recorded, but not attributable":
+`transactions.order_id` is non-nullable, and the whole premise of this call is
+that no order was ever placed. See the `PaymentRefund` change under data
+objects.
 
 ### `SupportsPaymentHolds`
 
 ```php
-interface SupportsPaymentHolds
+interface SupportsPaymentHolds extends SupportsPaymentIntents
 {
     public function createHold(Cart $cart): PaymentIntentDescriptor;
 
@@ -143,9 +152,13 @@ client claim; it returns null when the reference is unknown or is not a hold.
 `captureHold()` captures at most the authorised figure, is idempotent per
 reference, and MUST throw when the gateway cannot confirm the capture.
 
-Releasing a hold is `SupportsPaymentIntents::voidIntent()`. There is no
-separate release verb, which is why a hold-capable driver is expected to
-implement both interfaces.
+Releasing a hold is `SupportsPaymentIntents::voidIntent()`, which is why this
+interface extends it rather than adding a release verb of its own. No gateway
+can authorise a hold without also being able to void it, and the extension
+makes that a type guarantee: a consumer that has checked
+`instanceof SupportsPaymentHolds` can void without a second check. Left as
+documentation, the money-back path is exactly where a driver implementing only
+one of the two would fail, and failing there is the worst case there is.
 
 ### Data objects
 
@@ -176,6 +189,23 @@ gateway's own frontend component confirms with, null for gateways with no
 client-side step. `walletLabel` lets a consumer name the wallet a hold came
 from ("authorised with Apple Pay") without knowing any gateway's wallet
 taxonomy.
+
+The existing `PaymentRefund` gains one optional field so it can carry what
+`refundIntent()` needs to report:
+
+```php
+public function __construct(
+    public bool $success = false,
+    public ?string $message = null,
+    public ?Transaction $transaction = null,
+    public ?string $reference = null,   // new
+) {}
+```
+
+A trailing optional parameter, so every existing construction site and every
+third-party driver keeps working unchanged. The field is the gateway's own
+refund reference, which a consumer needs for audit and support even when there
+is no transaction row to attribute the refund to.
 
 ### Enums
 
@@ -244,9 +274,11 @@ second gateway without a code change in checkout itself.
 - **Database migrations:** none in core. Slice 2 adds a `flavour` column to
   the Stripe package's `stripe_payment_intents` baseline migration, folded
   into the existing baseline per the v2 alpha convention.
-- **Breaking changes:** none. All eight files are new, `PaymentType` is
+- **Breaking changes:** none. Eight of the nine files are new, `PaymentType` is
   untouched, and existing drivers keep working without implementing anything.
-  No Rector rule needed in the `upgrade` package.
+  The ninth, `PaymentRefund`, gains a trailing optional constructor parameter,
+  which is non-breaking for callers and for third-party drivers that construct
+  it. No Rector rule needed in the `upgrade` package.
 - **Upgrade path for v1.x consumers:** not applicable. There is no v1
   equivalent to migrate from.
 - **Translation / locale impact:** none. No user-facing strings. A driver's
@@ -256,10 +288,6 @@ second gateway without a code change in checkout itself.
 
 ## Open questions
 
-- **Should `SupportsPaymentIntents::refundIntent()` return a richer object
-  than a `string` reference?** A `PaymentRefund` data object already exists
-  but is shaped around a `Transaction`. Resolution: keep the string for now;
-  revisit if a second driver needs to report more. Owner: Alec Ritson.
 - **Does PayPal get these capabilities in this spec's scope?** PayPal orders
   map onto `CreatesPaymentIntents` and `SupportsPaymentIntents` cleanly, but
   the driver was only just hardened (spec 0071) and holds have a different
@@ -282,7 +310,8 @@ second gateway without a code change in checkout itself.
 - [ ] Slice 1 — the core surface. Eight new files in `packages/core/src`:
       four contracts in `Contracts/`, `PaymentIntentDescriptor` and
       `HoldDescription` in `DataObjects/`, `PaymentIntentStatus` and
-      `HoldAdjustment` in `Enums/`. Additive only, no existing file touched.
+      `HoldAdjustment` in `Enums/`, plus a trailing optional `reference` field
+      on the existing `PaymentRefund`.
 - [ ] Slice 2 — Stripe implements all four. `StripePaymentType` declares the
       capabilities; `StripeManager` gains `createHold()` and flavour-keyed
       intent lookup so a standard intent and a hold can coexist on one cart,
