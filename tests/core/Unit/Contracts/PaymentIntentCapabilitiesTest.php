@@ -52,10 +52,21 @@ it('names a catchable exception on every method that must not guess', function (
 })->with([
     'fetchIntent' => [SupportsPaymentIntents::class, 'fetchIntent'],
     'voidIntent' => [SupportsPaymentIntents::class, 'voidIntent'],
+    'refundIntent' => [SupportsPaymentIntents::class, 'refundIntent'],
     'describeHold' => [SupportsPaymentHolds::class, 'describeHold'],
     'adjustHold' => [SupportsPaymentHolds::class, 'adjustHold'],
     'captureHold' => [SupportsPaymentHolds::class, 'captureHold'],
 ]);
+
+it('gives the reconciliation surface exactly one failure channel', function () {
+    // refundIntent() returns a PaymentRefund, which carries a success flag.
+    // A driver must never use it to report a failed refund: the only consumer
+    // treats any clean return as "the money is on its way" and stops chasing
+    // it. Every method on this contract fails the same way, by throwing.
+    foreach ((new ReflectionClass(SupportsPaymentIntents::class))->getMethods() as $method) {
+        expect($method->getDocComment())->toContain('@throws PaymentIntentException');
+    }
+});
 
 it('gives the intent exception a catchable Lunar base', function () {
     // Consumers catch PaymentIntentException specifically; anything catching
