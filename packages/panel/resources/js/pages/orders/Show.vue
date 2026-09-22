@@ -65,6 +65,7 @@ const props = defineProps<{
         id: number;
         reference: string;
         customer_reference: string | null;
+        payment_method: string | null;
         payment_status: string;
         payment_status_label: string;
         fulfilment_status: string;
@@ -104,7 +105,13 @@ const props = defineProps<{
     carriers: CarrierData[];
     holdReasons: Record<string, string>;
     locations: LocationData[];
-    shippingOption: { name: string; identifier: string | null; price: string | null } | null;
+    shippingOption: {
+        name: string;
+        identifier: string | null;
+        price: string | null;
+        collect: boolean;
+        pickup_point: { handle: string; name: string; lines: string[] } | null;
+    } | null;
     countries: { id: number; name: string }[];
     urls: { index: string; capture: string; refund: string; cancel: string; notify: string; note: string; tags: string };
 }>();
@@ -133,7 +140,8 @@ const FULFILMENT_TONES: Record<string, Tone> = {
     'partially-returned': 'warn',
     returned: 'danger',
 };
-const paymentTone = (key: string): Tone => PAYMENT_TONES[key] ?? 'neutral';
+const paymentTone = (key: string): Tone =>
+    props.order.payment_method === 'on-account' && key === 'pending' ? 'neutral' : (PAYMENT_TONES[key] ?? 'neutral');
 const fulfilmentTone = (key: string): Tone => FULFILMENT_TONES[key] ?? 'neutral';
 
 const TXN_TYPE_LABELS: Record<string, string> = {
@@ -421,7 +429,7 @@ const addressLines = (address: Address): string[] =>
                         </Section>
 
                         <!-- Transactions -->
-                        <Section :title="t('orders.section_transactions')">
+                        <Section v-if="transactions.length || order.payment_method !== 'on-account'" :title="t('orders.section_transactions')">
                             <div v-if="transactions.length" class="overflow-x-auto">
                                 <table class="w-full text-[12.5px] border-collapse">
                                     <thead>
@@ -455,10 +463,10 @@ const addressLines = (address: Address): string[] =>
                         </Section>
 
                         <!-- The delivery method chosen at checkout. -->
-                        <Section v-if="shippingOption" :title="t('orders.section_shipping')">
-                            <div class="flex items-center gap-3">
+                        <Section v-if="shippingOption" :title="shippingOption.collect ? t('orders.section_collection') : t('orders.section_shipping')">
+                            <div class="flex items-start gap-3">
                                 <div class="w-9 h-9 rounded-md bg-surface-2 border border-line grid place-items-center text-ink-700 shrink-0">
-                                    <Icon name="truck" cls="sm" />
+                                    <Icon :name="shippingOption.collect ? 'mapPin' : 'truck'" cls="sm" />
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[12.5px] text-ink-900 font-medium">{{ shippingOption.name }}</div>
@@ -466,6 +474,10 @@ const addressLines = (address: Address): string[] =>
                                         <span v-if="shippingOption.identifier" class="font-mono">{{ shippingOption.identifier }}</span>
                                         <span v-if="shippingOption.identifier && shippingOption.price"> · </span>
                                         <span v-if="shippingOption.price" class="[font-variant-numeric:tabular-nums]">{{ shippingOption.price }}</span>
+                                    </div>
+                                    <div v-if="shippingOption.pickup_point" class="mt-1.5 text-[12px] text-ink-700">
+                                        <div class="font-medium">{{ t('orders.collect_from', { name: shippingOption.pickup_point.name }) }}</div>
+                                        <div v-for="line in shippingOption.pickup_point.lines" :key="line" class="text-ink-500">{{ line }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -491,7 +503,10 @@ const addressLines = (address: Address): string[] =>
                             <dl class="text-[12.5px] space-y-2">
                                 <div class="flex items-center justify-between gap-2">
                                     <dt class="text-ink-500">{{ t('orders.column_payment') }}</dt>
-                                    <dd><StatusBadge :tone="paymentTone(order.payment_status)" size="sm" dot>{{ order.payment_status_label }}</StatusBadge></dd>
+                                    <dd>
+                                        <StatusBadge :tone="paymentTone(order.payment_status)" size="sm" dot>{{ order.payment_status_label }}</StatusBadge>
+                                        <p v-if="order.payment_method === 'on-account'" class="m-0 mt-1 text-[12px] text-ink-500">{{ t('orders.payment_on_account_sub') }}</p>
+                                    </dd>
                                 </div>
                                 <div class="flex items-center justify-between gap-2">
                                     <dt class="text-ink-500">{{ t('orders.column_fulfilment') }}</dt>
@@ -523,7 +538,7 @@ const addressLines = (address: Address): string[] =>
                             </div>
                         </SideCard>
 
-                        <SideCard v-if="shippingAddress" :title="t('orders.side_shipping_address')">
+                        <SideCard v-if="shippingAddress" :title="shippingOption?.collect ? t('orders.side_customer_address') : t('orders.side_shipping_address')">
                             <template #actions>
                                 <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingAddress = shippingAddress">
                                     {{ t('common.edit') }}

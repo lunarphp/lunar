@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_collection' => 'Вземане от място',
+    'collect_from' => 'Вземане от {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -94,6 +96,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'Адрес на клиента',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Notes',
@@ -147,6 +150,9 @@ return [
     'settlement_refund_due' => '{amount} over-settled — refund the difference to the customer.',
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
+
+    'payment_on_account' => 'По сметка',
+    'payment_on_account_sub' => 'Фактурира се по сметка, не е взето плащане при поръчката',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',
