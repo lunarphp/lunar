@@ -8,6 +8,8 @@ use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
+use Lunar\Core\Exceptions\LunarException;
+use Lunar\Core\Exceptions\PaymentIntentException;
 use Lunar\Core\PaymentTypes\OfflinePayment;
 use Lunar\Tests\Core\TestCase;
 
@@ -37,6 +39,29 @@ it('guarantees a hold-capable driver can also void', function () {
     expect($hold->hasMethod('voidIntent'))->toBeTrue()
         ->and($hold->hasMethod('refundIntent'))->toBeTrue()
         ->and($hold->hasMethod('fetchIntent'))->toBeTrue();
+});
+
+// "MUST throw" in prose is not a contract a caller can catch. Each method whose
+// unknown outcome would otherwise be read as a settled one names
+// PaymentIntentException, so a consumer catches that rather than \Throwable and
+// cannot confuse a gateway that went quiet with a bug in its own code.
+it('names a catchable exception on every method that must not guess', function (string $contract, string $method) {
+    $doc = (new ReflectionMethod($contract, $method))->getDocComment();
+
+    expect($doc)->toContain('@throws PaymentIntentException');
+})->with([
+    'fetchIntent' => [SupportsPaymentIntents::class, 'fetchIntent'],
+    'voidIntent' => [SupportsPaymentIntents::class, 'voidIntent'],
+    'describeHold' => [SupportsPaymentHolds::class, 'describeHold'],
+    'adjustHold' => [SupportsPaymentHolds::class, 'adjustHold'],
+    'captureHold' => [SupportsPaymentHolds::class, 'captureHold'],
+]);
+
+it('gives the intent exception a catchable Lunar base', function () {
+    // Consumers catch PaymentIntentException specifically; anything catching
+    // LunarException broadly must keep seeing it too.
+    expect(is_subclass_of(PaymentIntentException::class, LunarException::class))->toBeTrue()
+        ->and(is_subclass_of(PaymentIntentException::class, Throwable::class))->toBeTrue();
 });
 
 it('pins the wire values of the intent statuses', function () {
