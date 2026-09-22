@@ -12,6 +12,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
+- Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
 - Cart totals caching in the database — additive performance optimisation
 - Add Boost guidelines to packages
 
