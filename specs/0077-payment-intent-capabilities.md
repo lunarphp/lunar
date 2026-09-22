@@ -115,12 +115,17 @@ interface SupportsPaymentIntents
 ```
 
 The reconciliation surface. `voidIntent()` aborts an in-flight, uncaptured
-intent and MUST throw if the gateway cannot confirm the void: an unknown
-outcome is not a void. `refundIntent()` refunds a captured intent before any
-order or transaction exists; `$idempotencyKey` is derived from the intent
-reference so a retry can never double-refund. A driver without this capability
-cannot be reconciled, and a consumer must treat its in-flight payments as
-unresolved rather than assume they were abandoned.
+intent. `refundIntent()` refunds a captured intent before any order or
+transaction exists; `$idempotencyKey` is derived from the intent reference so a
+retry can never double-refund. A driver without this capability cannot be
+reconciled, and a consumer must treat its in-flight payments as unresolved
+rather than assume they were abandoned.
+
+`fetchIntent()` never answers "don't know". A reference the gateway does not
+recognise throws, the same as an unreachable gateway: the reference is one the
+application stored itself, so the gateway having lost it is evidence something
+is wrong, not an answer. Returning a nullable status or an `Unknown` case would
+push every caller into guessing, and there is no safe direction to guess in.
 
 `refundIntent()` returns the existing `PaymentRefund` data object rather than a
 bare reference string, so a caller gets `success` and `message` alongside the
@@ -149,8 +154,31 @@ Authorise-only flows. `createHold()` is idempotent per cart like
 `createIntent()`. `describeHold()` always asks the gateway and never trusts a
 client claim; it returns null when the reference is unknown or is not a hold.
 `adjustHold()` reports whether the hold now covers a new total.
-`captureHold()` captures at most the authorised figure, is idempotent per
-reference, and MUST throw when the gateway cannot confirm the capture.
+`captureHold()` captures at most the authorised figure and is idempotent per
+reference.
+
+`describeHold()` returning null where `fetchIntent()` throws is deliberate, not
+an inconsistency. The reference `describeHold()` takes arrives from the client,
+so "the gateway has never heard of this" is a routine answer to an unverified
+claim. The reference `fetchIntent()` takes is one the application stored, so the
+same condition means something has gone wrong.
+
+### Unknown outcomes throw, and name what they throw
+
+Five methods must never let an unknown outcome read as a settled one:
+`fetchIntent()`, `voidIntent()`, `describeHold()`, `adjustHold()` and
+`captureHold()`. A caller that sees `voidIntent()` return cleanly is entitled to
+treat the money as released; one that sees `captureHold()` return cleanly is
+entitled to hand the customer their order.
+
+Saying so in prose is not a contract a caller can catch, so these methods throw
+a named `Lunar\Core\Exceptions\PaymentIntentException` (extending
+`LunarException`) and carry an `@throws` tag. A consumer catches that type
+rather than `\Throwable`, and cannot confuse a gateway that went quiet with a
+bug in its own code. `createIntent()`, `syncIntent()`, `createHold()` and
+`refundIntent()` are deliberately left out: their failures are ordinary error
+paths where the caller has somewhere to go, and `refundIntent()` already reports
+failure through `PaymentRefund::$success`.
 
 Releasing a hold is `SupportsPaymentIntents::voidIntent()`, which is why this
 interface extends it rather than adding a release verb of its own. No gateway
@@ -274,9 +302,9 @@ second gateway without a code change in checkout itself.
 - **Database migrations:** none in core. Slice 2 adds a `flavour` column to
   the Stripe package's `stripe_payment_intents` baseline migration, folded
   into the existing baseline per the v2 alpha convention.
-- **Breaking changes:** none. Eight of the nine files are new, `PaymentType` is
+- **Breaking changes:** none. Nine of the ten files are new, `PaymentType` is
   untouched, and existing drivers keep working without implementing anything.
-  The ninth, `PaymentRefund`, gains a trailing optional constructor parameter,
+  The tenth, `PaymentRefund`, gains a trailing optional constructor parameter,
   which is non-breaking for callers and for third-party drivers that construct
   it. No Rector rule needed in the `upgrade` package.
 - **Upgrade path for v1.x consumers:** not applicable. There is no v1
@@ -307,11 +335,12 @@ second gateway without a code change in checkout itself.
 
 ## Implementation plan
 
-- [ ] Slice 1 — the core surface. Eight new files in `packages/core/src`:
+- [ ] Slice 1 — the core surface. Nine new files in `packages/core/src`:
       four contracts in `Contracts/`, `PaymentIntentDescriptor` and
       `HoldDescription` in `DataObjects/`, `PaymentIntentStatus` and
-      `HoldAdjustment` in `Enums/`, plus a trailing optional `reference` field
-      on the existing `PaymentRefund`.
+      `HoldAdjustment` in `Enums/`, `PaymentIntentException` in `Exceptions/`,
+      plus a trailing optional `reference` field on the existing
+      `PaymentRefund`.
 - [ ] Slice 2 — Stripe implements all four. `StripePaymentType` declares the
       capabilities; `StripeManager` gains `createHold()` and flavour-keyed
       intent lookup so a standard intent and a hold can coexist on one cart,
