@@ -10,6 +10,7 @@ use Lunar\Core\Contracts\Actions\Staff\UpdatesStaff;
 use Lunar\Core\Exceptions\StaffActionException;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Support\Facades\LunarAccessControl;
+use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Requests\Settings\StaffRequest;
 
 class StaffEditController
@@ -30,7 +31,7 @@ class StaffEditController
                 'handle' => $role->handle,
                 'label' => $role->transLabel(),
             ])->values(),
-            'isSelf' => $staff->id === auth('staff')->id(),
+            'isSelf' => $staff->id === auth(Panel::guard())->id(),
             'isLastAdmin' => $staff->admin && ! Staff::query()->where('admin', true)->where('id', '!=', $staff->id)->exists(),
             'urls' => [
                 'update' => route('panel.settings.staff.update', $staff),
@@ -53,7 +54,7 @@ class StaffEditController
 
     public function destroy(Staff $staff, DeletesStaff $deletesStaff): RedirectResponse
     {
-        if ($staff->id === auth('staff')->id()) {
+        if ($staff->id === auth(Panel::guard())->id()) {
             return back()->with('error', __('panel::staff.delete_blocked_self'));
         }
 

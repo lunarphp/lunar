@@ -402,7 +402,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Tables\\Actions\\Collections\\CreateChildCollection' => 'Lunar\\Filament\\Tables\\Actions\\Collections\\CreateChildCollection',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Livewire' => 'Filament\\Schemas\\Components\\Livewire',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Tags' => 'Lunar\\Filament\\Infolists\\Components\\Tags',
-        'Lunar\\Admin\\Support\\Infolists\\Components\\Timeline' => 'Lunar\\Filament\\Infolists\\Components\\Timeline',
         'Lunar\\Admin\\Support\\Infolists\\Components\\Transaction' => 'Lunar\\Filament\\Infolists\\Components\\Transaction',
         'Lunar\\Admin\\Support\\FieldTypes\\BaseFieldType' => 'Lunar\\Filament\\FieldTypes\\BaseFieldType',
         'Lunar\\Admin\\Support\\FieldTypes\\Dropdown' => 'Lunar\\Filament\\FieldTypes\\Dropdown',
@@ -520,6 +519,9 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\DataTransferObjects\\Permission' => 'Lunar\\Core\\Support\\DataTransferObjects\\Permission',
         'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
         'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
+
+        // --- Spec 0075: first staff account creation moves to core ---
+        'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
 
     ];
 

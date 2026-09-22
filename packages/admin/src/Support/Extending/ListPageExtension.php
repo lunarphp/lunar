@@ -18,9 +18,4 @@ abstract class ListPageExtension extends BaseExtension
     {
         return $tabs;
     }
-
-    public function relationManagers(array $managers): array
-    {
-        return $managers;
-    }
 }

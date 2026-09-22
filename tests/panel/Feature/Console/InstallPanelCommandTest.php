@@ -3,6 +3,7 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Core\Models\Staff;
 use Lunar\Panel\PanelServiceProvider;
 use Lunar\Tests\Panel\TestCase;
 
@@ -21,6 +22,10 @@ uses(TestCase::class);
  * that process happened to be running.
  */
 beforeEach(function () {
+    // Most tests here are not about the first-run staff offer; an existing
+    // admin keeps the command from prompting. The offer tests clear it.
+    Staff::factory()->create(['admin' => true]);
+
     $this->publishCalls = collect();
 
     // Replaces the framework's command of the same name in the console registry.
@@ -79,4 +84,56 @@ it('leaves the shared Testbench config directory untouched', function () {
     $this->artisan('lunar:panel:install')->assertSuccessful();
 
     expect(file_exists(config_path('lunar/panel.php')))->toBeFalse();
+});
+
+/**
+ * The first-run staff offer. `lunar:create-admin` is stubbed the same way as
+ * `vendor:publish` — the command's own behaviour is covered in the core suite.
+ */
+it('offers to create the first admin staff account when none exists', function () {
+    Staff::query()->forceDelete();
+
+    $createAdminCalls = 0;
+    Artisan::command('lunar:create-admin', function () use (&$createAdminCalls) {
+        $createAdminCalls++;
+
+        return 0;
+    });
+
+    $this->artisan('lunar:panel:install')
+        ->expectsConfirmation('No admin staff account exists. Create one now?', 'yes')
+        ->assertSuccessful();
+
+    expect($createAdminCalls)->toBe(1);
+});
+
+it('respects declining the admin staff account offer', function () {
+    Staff::query()->forceDelete();
+
+    $createAdminCalls = 0;
+    Artisan::command('lunar:create-admin', function () use (&$createAdminCalls) {
+        $createAdminCalls++;
+
+        return 0;
+    });
+
+    $this->artisan('lunar:panel:install')
+        ->expectsConfirmation('No admin staff account exists. Create one now?', 'no')
+        ->assertSuccessful();
+
+    expect($createAdminCalls)->toBe(0);
+});
+
+it('does not offer when an admin staff account already exists', function () {
+    // beforeEach seeded the admin; an unexpected confirmation would fail here.
+    $this->artisan('lunar:panel:install')->assertSuccessful();
+});
+
+it('never prompts on a non-interactive run', function () {
+    Staff::query()->forceDelete();
+
+    $this->artisan('lunar:panel:install', ['--no-interaction' => true])
+        ->assertSuccessful();
+
+    expect(Staff::whereAdmin(true)->exists())->toBeFalse();
 });

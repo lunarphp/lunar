@@ -156,9 +156,6 @@ return [
                 'success' => 'Note added.',
             ],
         ],
-        'download_pdf' => [
-            'label' => 'Download PDF',
-        ],
     ],
     'products' => [
         'duplicate' => [

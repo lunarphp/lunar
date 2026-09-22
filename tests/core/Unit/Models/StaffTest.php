@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 use Lunar\Core\Models\Staff;
 use Lunar\Tests\Core\TestCase;
+use Spatie\Permission\Guard;
 
 uses(TestCase::class);
 
@@ -30,4 +31,13 @@ test('the withTwoFactor factory state enables two factor', function () {
 
     expect($staff->app_authentication_secret)->toBe('JBSWY3DPEHPK3PXP')
         ->and($staff->app_authentication_recovery_codes)->toHaveCount(8);
+});
+
+test('the Spatie guard follows the configured staff guard', function () {
+    expect(Guard::getNames(new Staff)->all())->toBe(['staff']);
+
+    config(['lunar.staff.guard' => 'backoffice']);
+
+    expect((new Staff)->guardName())->toBe('backoffice')
+        ->and(Guard::getNames(new Staff)->all())->toBe(['backoffice']);
 });

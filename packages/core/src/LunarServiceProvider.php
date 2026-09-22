@@ -24,6 +24,7 @@ use Lunar\Core\Cache\CacheDependencies as CacheDependenciesImpl;
 use Lunar\Core\Cache\CacheInvalidator as CacheInvalidatorImpl;
 use Lunar\Core\Cache\DependencyResolver as DependencyResolverImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
+use Lunar\Core\Console\Commands\CreateAdmin;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
@@ -244,6 +245,7 @@ class LunarServiceProvider extends ServiceProvider
                 InstallLunar::class,
                 AddonsDiscover::class,
                 AddressData::class,
+                CreateAdmin::class,
                 ScoutIndexerCommand::class,
                 SyncNewCustomerOrders::class,
                 PruneCarts::class,
