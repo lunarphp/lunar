@@ -98,7 +98,7 @@ export interface ShippingLineData {
 }
 
 export interface SettlementData {
-    status: 'balanced' | 'outstanding' | 'refund_due';
+    status: 'balanced' | 'outstanding' | 'refund_due' | 'on_account';
     captured: string | null;
     refunded: string | null;
     total: string;
