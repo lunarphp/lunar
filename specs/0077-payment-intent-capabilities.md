@@ -1,6 +1,6 @@
 # 0077 — Pre-order payment intent capabilities
 
-- Status: proposed
+- Status: accepted
 - Author: Alec Ritson
 - Created: 2026-09-22
 - TODO item: Pre-order payment intent capabilities for cart-phase gateway flows
