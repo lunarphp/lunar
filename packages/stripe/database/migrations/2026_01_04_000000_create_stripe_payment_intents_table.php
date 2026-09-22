@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
             $table->string('intent_id')->index();
             $table->string('status')->nullable();
+            $table->string('flavour')->default('standard');
             $table->string('event_id')->index()->nullable();
             $table->timestamp('processing_at')->nullable();
             $table->timestamp('processed_at')->nullable();
