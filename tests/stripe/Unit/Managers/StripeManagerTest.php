@@ -1,15 +1,30 @@
 <?php
 
+use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\Enums\HoldAdjustment;
+use Lunar\Core\Enums\PaymentIntentStatus;
+use Lunar\Core\Exceptions\PaymentIntentException;
 use Lunar\Core\Models\Currency;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
+use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(TestCase::class);
+
+/**
+ * Resolve the Stripe payment driver the way the payment type tests do
+ * (StripePaymentTypeTest.php: `new StripePaymentType`), since the hold
+ * verbs live on the driver, not the manager.
+ */
+function paymentDriver(): StripePaymentType
+{
+    return new StripePaymentType;
+}
 
 it('can create a payment intent', function () {
     $cart = CartBuilder::build();
@@ -21,6 +36,46 @@ it('can create a payment intent', function () {
         'cart_id' => $cart->id,
         'status' => $intent->status,
     ]);
+});
+
+it('replaces a canceled intent instead of reusing it', function () {
+    $cart = CartBuilder::build();
+
+    // The local record still reads active, but Stripe reports the intent
+    // canceled (dashboard cancellation, another surface finishing it).
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'requires_payment_method',
+    ]);
+
+    $intent = Stripe::createIntent($cart->calculate(), []);
+
+    expect($intent->id)->not->toBe('PI_CANCELED')
+        ->and($intent->status)->not->toBe('canceled');
+
+    // The stale record is corrected and the fresh intent recorded.
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'canceled',
+    ]);
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => $intent->id,
+        'cart_id' => $cart->id,
+    ]);
+});
+
+it('hands back a fresh intent from fetchOrCreateIntent when the stored one is dead', function () {
+    $cart = CartBuilder::build();
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_CANCELED',
+        'status' => 'requires_payment_method',
+    ]);
+
+    $intent = Stripe::fetchOrCreateIntent($cart->calculate());
+
+    expect($intent->status)->not->toBe('canceled')
+        ->and($intent->id)->not->toBe('PI_CANCELED');
 });
 
 it('returns legacy payment intent id stored in cart meta', function () {
@@ -57,6 +112,32 @@ it('falls back to active payment intent when no legacy meta', function () {
     ]);
 
     expect(Stripe::getCartIntentId($cart))->toBe('PI_RELATION');
+});
+
+it('keys cart intent reuse by flavour', function () {
+    $cart = CartBuilder::build();
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_STANDARD',
+        'status' => 'requires_payment_method',
+        'flavour' => 'standard',
+    ]);
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_HOLD',
+        'status' => 'requires_capture',
+        'flavour' => 'hold',
+    ]);
+
+    expect(Stripe::getCartIntentId($cart))->toBe('PI_STANDARD')
+        ->and(Stripe::getCartIntentId($cart, 'hold'))->toBe('PI_HOLD');
+});
+
+it('stamps the flavour on freshly minted intents', function () {
+    $cart = CartBuilder::build();
+
+    Stripe::createIntent($cart->calculate(), [], 'hold');
+
+    expect($cart->paymentIntents()->first()->flavour)->toBe('hold');
 });
 
 it('passes through amounts for standard currencies', function (string $code, int $decimals, int $value) {
@@ -182,3 +263,147 @@ it('converts Stripe amounts back to the stored scale', function () {
 
     expect(StripeManager::fromStripeAmount(1999, $currency))->toBe(1999);
 });
+
+it('creates holds as manual capture intents with incremental authorization requested', function () {
+    $cart = CartBuilder::build();
+    $mock = Stripe::fake();
+
+    Stripe::createHold($cart->calculate());
+
+    $create = collect($mock->requests)
+        ->first(fn ($r) => $r['method'] === 'post' && str_ends_with($r['url'], 'payment_intents'));
+
+    expect($create['params']['capture_method'])->toBe('manual')
+        ->and($create['params']['payment_method_options']['card']['request_incremental_authorization'])->toBe('if_available');
+
+    expect($cart->paymentIntents()->first()->flavour)->toBe('hold');
+});
+
+it('adjusts a hold: lower amount is Ok with no gateway call', function () {
+    $mock = Stripe::fake();
+
+    $result = paymentDriver()->adjustHold('PI_HOLD', 1500); // authorised 2000
+
+    expect($result)->toBe(HoldAdjustment::Ok);
+    $calls = collect($mock->requests)
+        ->filter(fn ($r) => str_contains($r['url'], 'increment_authorization'));
+    expect($calls)->toBeEmpty();
+});
+
+it('adjusts a hold upward via incremental authorization when supported', function () {
+    $mock = Stripe::fake();
+
+    $result = paymentDriver()->adjustHold('PI_HOLD', 2600);
+
+    expect($result)->toBe(HoldAdjustment::Ok);
+
+    // Support is reported on the charge, so the lookup must expand it.
+    $retrieve = collect($mock->requests)
+        ->first(fn ($r) => $r['method'] === 'get' && str_contains($r['url'], 'payment_intents/PI_HOLD'));
+    expect($retrieve['params']['expand'] ?? [])->toContain('latest_charge');
+
+    $call = collect($mock->requests)
+        ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/increment_authorization'));
+    expect($call['params']['amount'])->toBe(2600);
+});
+
+it('reports NeedsReauthorization when the rail cannot increment', function () {
+    Stripe::fake();
+
+    expect(paymentDriver()->adjustHold('PI_HOLD_NOINC', 2600))
+        ->toBe(HoldAdjustment::NeedsReauthorization);
+});
+
+it('describes a hold with status, amount and wallet label', function () {
+    Stripe::fake();
+
+    $description = paymentDriver()->describeHold('PI_HOLD');
+
+    expect($description->status)->toBe(PaymentIntentStatus::RequiresCapture)
+        ->and($description->amountMinor)->toBe(2000)
+        ->and($description->walletLabel)->toBe('Apple Pay');
+});
+
+it('captures a hold for the final amount', function () {
+    $mock = Stripe::fake();
+
+    paymentDriver()->captureHold('PI_HOLD', 1800);
+
+    $call = collect($mock->requests)
+        ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/capture'));
+    expect($call['params']['amount_to_capture'])->toBe(1800);
+});
+
+/*
+|--------------------------------------------------------------------------
+| The pre-order reconciliation surface
+|--------------------------------------------------------------------------
+|
+| SupportsPaymentIntents gives these verbs exactly one failure channel: a
+| gateway that cannot establish an outcome throws PaymentIntentException, and
+| never returns a value that reads as settled. The tests below pin both the
+| clean return and the throw, because a driver that reported failure by return
+| would have a caller record an unmade refund as done.
+|
+*/
+
+it('reports an intent status from the gateway', function () {
+    Stripe::fake();
+
+    expect(paymentDriver()->fetchIntent('PI_HOLD'))
+        ->toBe(PaymentIntentStatus::RequiresCapture);
+});
+
+it('throws rather than guess a status for a reference the gateway refuses', function () {
+    Stripe::fake()->alwaysThrow();
+
+    paymentDriver()->fetchIntent('PI_UNKNOWN');
+})->throws(PaymentIntentException::class);
+
+it('voids an in-flight intent', function () {
+    $mock = Stripe::fake();
+
+    paymentDriver()->voidIntent('PI_HOLD');
+
+    $call = collect($mock->requests)
+        ->first(fn ($r) => str_contains($r['url'], 'PI_HOLD/cancel'));
+
+    expect($call)->not->toBeNull();
+});
+
+it('throws when a void cannot be confirmed', function () {
+    Stripe::fake()->alwaysThrow();
+
+    paymentDriver()->voidIntent('PI_HOLD');
+})->throws(PaymentIntentException::class);
+
+it('refunds an intent and carries the gateway reference back', function () {
+    $mock = Stripe::fake();
+
+    $refund = paymentDriver()->refundIntent('PI_CAPTURE', 1500, 'idem-key-1');
+
+    expect($refund)->toBeInstanceOf(PaymentRefund::class)
+        // Always success, never a transaction: no order exists at this point
+        // and transactions.order_id is not nullable.
+        ->and($refund->success)->toBeTrue()
+        ->and($refund->transaction)->toBeNull()
+        ->and($refund->reference)->not->toBeEmpty();
+
+    $call = collect($mock->requests)
+        ->first(fn ($r) => $r['method'] === 'post' && str_contains($r['url'], 'refunds'));
+
+    expect($call['params']['payment_intent'])->toBe('PI_CAPTURE')
+        ->and($call['params']['amount'])->toBe(1500);
+});
+
+it('throws on an unconfirmed refund rather than returning an unsuccessful one', function () {
+    Stripe::fake()->alwaysThrow();
+
+    paymentDriver()->refundIntent('PI_CAPTURE', 1500, 'idem-key-2');
+})->throws(PaymentIntentException::class);
+
+it('throws when a hold capture cannot be confirmed', function () {
+    Stripe::fake()->alwaysThrow();
+
+    paymentDriver()->captureHold('PI_HOLD', 1800);
+})->throws(PaymentIntentException::class);
