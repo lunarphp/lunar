@@ -4,6 +4,7 @@ namespace Lunar\Core\Contracts;
 
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Enums\PaymentIntentStatus;
+use Lunar\Core\Exceptions\PaymentIntentException;
 
 /**
  * Opt-in capability for payment drivers that expose an intent lifecycle.
@@ -22,12 +23,23 @@ interface SupportsPaymentIntents
 {
     /**
      * Report the gateway's current status for the given intent reference.
+     *
+     * The return is never "don't know": a reference the gateway does not
+     * recognise throws, exactly like an unreachable gateway does. Guessing a
+     * status for an unknown reference would have a caller settle or abandon a
+     * payment on no evidence, and there is no safe direction to guess in.
+     *
+     * @throws PaymentIntentException when the gateway cannot report a status,
+     *                                including an unrecognised reference
      */
     public function fetchIntent(string $reference): PaymentIntentStatus;
 
     /**
-     * Abort an in-flight (uncaptured) intent. MUST throw if the gateway cannot
-     * confirm the void — an unknown outcome is not a void.
+     * Abort an in-flight (uncaptured) intent. An unknown outcome is not a
+     * void: a caller that saw this return cleanly is entitled to treat the
+     * money as released.
+     *
+     * @throws PaymentIntentException when the gateway cannot confirm the void
      */
     public function voidIntent(string $reference): void;
 

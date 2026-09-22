@@ -5,6 +5,7 @@ namespace Lunar\Core\Contracts;
 use Lunar\Core\DataObjects\HoldDescription;
 use Lunar\Core\DataObjects\PaymentIntentDescriptor;
 use Lunar\Core\Enums\HoldAdjustment;
+use Lunar\Core\Exceptions\PaymentIntentException;
 use Lunar\Core\Models\Cart;
 
 /**
@@ -31,8 +32,19 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
 
     /**
      * Describe a hold by reference: live status, authorised amount, and the
-     * wallet that authorised it (null when the reference is unknown or is
-     * not a hold). Never trusts a client claim; always asks the gateway.
+     * wallet that authorised it. Never trusts a client claim; always asks the
+     * gateway.
+     *
+     * Null and the exception mean different things, and the difference is
+     * deliberate. The reference here arrives from the client, so "the gateway
+     * has never heard of this" is a routine answer to an unverified claim, and
+     * null says it plainly. A gateway that cannot answer at all throws, the
+     * same as everywhere else on this surface. Note that this is the opposite
+     * of {@see SupportsPaymentIntents::fetchIntent()}, where the reference is
+     * one the application stored itself: there, an unrecognised reference is
+     * evidence something is wrong, not an answer.
+     *
+     * @throws PaymentIntentException when the gateway cannot be asked
      */
     public function describeHold(string $reference): ?HoldDescription;
 
@@ -40,13 +52,20 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
      * Bring an authorised hold to a new payable total. Ok when the hold now
      * covers it (already did, or was incremented); NeedsReauthorization when
      * this hold cannot stretch and the customer must authorise again.
+     *
+     * @throws PaymentIntentException when the gateway cannot confirm either
+     *                                outcome, which is not the same as
+     *                                NeedsReauthorization
      */
     public function adjustHold(string $reference, int $amountMinor): HoldAdjustment;
 
     /**
      * Capture an authorised hold for the final amount (at most the authorised
-     * figure). Idempotent per reference. MUST throw when the gateway cannot
-     * confirm the capture; an unknown outcome is not a capture.
+     * figure). Idempotent per reference. An unknown outcome is not a capture:
+     * a caller that saw this return cleanly is entitled to treat the money as
+     * taken and hand the customer their order.
+     *
+     * @throws PaymentIntentException when the gateway cannot confirm the capture
      */
     public function captureHold(string $reference, int $amountMinor): void;
 }
