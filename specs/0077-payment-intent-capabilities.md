@@ -128,12 +128,13 @@ is wrong, not an answer. Returning a nullable status or an `Unknown` case would
 push every caller into guessing, and there is no safe direction to guess in.
 
 `refundIntent()` returns the existing `PaymentRefund` data object rather than a
-bare reference string, so a caller gets `success` and `message` alongside the
-gateway's refund reference. Its `?Transaction $transaction` is always null
+bare reference string, so a caller gets the gateway's refund reference and any
+`message` it returned alongside. Its `?Transaction $transaction` is always null
 here, which the object already documents as "recorded, but not attributable":
 `transactions.order_id` is non-nullable, and the whole premise of this call is
-that no order was ever placed. See the `PaymentRefund` change under data
-objects.
+that no order was ever placed. Its `success` is always true, because a refund
+that did not happen throws (see below). See the `PaymentRefund` change under
+data objects.
 
 ### `SupportsPaymentHolds`
 
@@ -165,20 +166,33 @@ same condition means something has gone wrong.
 
 ### Unknown outcomes throw, and name what they throw
 
-Five methods must never let an unknown outcome read as a settled one:
-`fetchIntent()`, `voidIntent()`, `describeHold()`, `adjustHold()` and
-`captureHold()`. A caller that sees `voidIntent()` return cleanly is entitled to
-treat the money as released; one that sees `captureHold()` return cleanly is
-entitled to hand the customer their order.
+Every method that inspects, settles or reverses money already at the gateway
+must never let an unknown outcome read as a settled one. A caller that sees
+`voidIntent()` return cleanly is entitled to treat the money as released; one
+that sees `captureHold()` return cleanly is entitled to hand the customer their
+order; one that sees `refundIntent()` return cleanly is entitled to tell the
+customer their money is coming and stop chasing it.
 
-Saying so in prose is not a contract a caller can catch, so these methods throw
-a named `Lunar\Core\Exceptions\PaymentIntentException` (extending
-`LunarException`) and carry an `@throws` tag. A consumer catches that type
-rather than `\Throwable`, and cannot confuse a gateway that went quiet with a
-bug in its own code. `createIntent()`, `syncIntent()`, `createHold()` and
-`refundIntent()` are deliberately left out: their failures are ordinary error
-paths where the caller has somewhere to go, and `refundIntent()` already reports
-failure through `PaymentRefund::$success`.
+Saying so in prose is not a contract a caller can catch, so all of
+`fetchIntent()`, `voidIntent()`, `refundIntent()`, `describeHold()`,
+`adjustHold()` and `captureHold()` throw a named
+`Lunar\Core\Exceptions\PaymentIntentException` (extending `LunarException`) and
+carry an `@throws` tag. A consumer catches that type rather than `\Throwable`,
+and cannot confuse a gateway that went quiet with a bug in its own code.
+
+**One failure channel, not two.** `refundIntent()` returns a `PaymentRefund`,
+which carries a `success` flag, and it would be easy to read that as the way to
+report a failed refund. It is not. A refund the gateway cannot confirm throws;
+a returned `PaymentRefund` always has `success` true and describes a refund that
+happened. Two channels would be worse than either alone: the natural consumer
+treats any clean return as success, so a driver reporting failure by flag would
+have a failed refund recorded as done and nobody chasing the money.
+
+`createIntent()`, `syncIntent()` and `createHold()` are the exceptions, and each
+interface says so. Nothing has moved when they fail: an intent that was never
+created holds no authorisation, and a sync that did not happen leaves the intent
+at its old amount, which the confirmation step catches. A driver may fail those
+however it fails.
 
 Releasing a hold is `SupportsPaymentIntents::voidIntent()`, which is why this
 interface extends it rather than adding a release verb of its own. No gateway
