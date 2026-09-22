@@ -15,6 +15,10 @@ use Lunar\Core\Models\Cart;
  *
  * Implementations MUST be idempotent per cart: re-requesting while an intent
  * is still confirmable returns the existing intent, never a duplicate.
+ *
+ * Unlike {@see SupportsPaymentIntents}, nothing here promises to throw on an
+ * unknown outcome. An intent that was never created has moved no money, so a
+ * driver may fail however it fails and the caller has somewhere to go.
  */
 interface CreatesPaymentIntents
 {

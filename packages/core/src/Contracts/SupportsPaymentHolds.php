@@ -20,6 +20,13 @@ use Lunar\Core\Models\Cart;
  * the extension means a caller that has checked for this capability can void
  * without a second check — the money-back path is the last place that should
  * fail on a missing method.
+ *
+ * `createHold()` is the one method here that does not throw
+ * {@see PaymentIntentException} on an unknown outcome, for the same reason
+ * {@see CreatesPaymentIntents::createIntent()} does not: a hold that was never
+ * created has moved no money, so an ordinary failure is a path the caller
+ * already has somewhere to go from. Everything that inspects, adjusts or
+ * settles an existing hold throws.
  */
 interface SupportsPaymentHolds extends SupportsPaymentIntents
 {

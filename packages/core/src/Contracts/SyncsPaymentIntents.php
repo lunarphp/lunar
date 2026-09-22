@@ -15,6 +15,11 @@ use Lunar\Core\Models\Cart;
  * gateway confirms exactly the amount the customer was shown. A driver
  * without the capability is assumed to derive the amount at confirmation
  * time and needs no correction.
+ *
+ * Unlike {@see SupportsPaymentIntents}, nothing here promises to throw on an
+ * unknown outcome. A sync that did not happen leaves the intent at its old
+ * amount, which the confirmation step catches, so a driver may fail however
+ * it fails.
  */
 interface SyncsPaymentIntents
 {

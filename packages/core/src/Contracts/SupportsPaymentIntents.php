@@ -18,6 +18,13 @@ use Lunar\Core\Exceptions\PaymentIntentException;
  * A driver without the capability cannot be reconciled. A caller must treat
  * its in-flight payments as unresolved rather than assume they were
  * abandoned, because nothing can tell it which happened.
+ *
+ * Every method here throws {@see PaymentIntentException} rather than reporting
+ * failure by return. Each one answers a question about money that has already
+ * moved or is about to, so a clean return is something a caller acts on: it
+ * settles a payment, releases a hold, or tells a customer a refund is coming.
+ * A driver that cannot establish the outcome MUST throw and let the caller
+ * ask again, never return a value that reads as settled.
  */
 interface SupportsPaymentIntents
 {
@@ -48,10 +55,20 @@ interface SupportsPaymentIntents
      * exists. `$idempotencyKey` is derived from the intent reference so sweep
      * retries never double-refund.
      *
-     * The returned {@see PaymentRefund} always carries a null `transaction`:
-     * `transactions.order_id` is not nullable, and the premise of this call is
-     * that no order was placed. Its `reference` carries the gateway's own
-     * refund reference for audit.
+     * Returning describes a refund that happened, and only that. A refund the
+     * gateway cannot confirm throws; it MUST NOT come back as a
+     * {@see PaymentRefund} with `success` false. There is one failure channel
+     * here, as on the rest of this contract, because a caller that sees this
+     * return is entitled to tell the customer their money is on its way and to
+     * stop chasing it.
+     *
+     * The returned object therefore always carries `success` true and a null
+     * `transaction`: `transactions.order_id` is not nullable, and the premise
+     * of this call is that no order was placed. Its `reference` carries the
+     * gateway's own refund reference for audit, and `message` any detail the
+     * gateway returned alongside it.
+     *
+     * @throws PaymentIntentException when the gateway cannot confirm the refund
      */
     public function refundIntent(string $reference, int $amountMinor, string $idempotencyKey): PaymentRefund;
 }
