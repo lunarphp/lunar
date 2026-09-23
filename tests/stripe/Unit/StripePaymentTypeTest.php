@@ -30,7 +30,11 @@ it('can capture an order', function () {
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
         ->and($response->success)->toBeTrue()
         ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
-        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE')
+        // No local StripePaymentIntent row existed before authorize() ran, so
+        // this is the fallback creation path; an automatic-capture intent
+        // must stamp 'standard', not cross-contaminate as a hold.
+        ->and($cart->paymentIntents->first()->flavour)->toEqual('standard');
 
     assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->refresh()->completedOrder->id,
