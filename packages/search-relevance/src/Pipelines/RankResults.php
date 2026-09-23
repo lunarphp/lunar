@@ -58,7 +58,10 @@ class RankResults
         $ranked = $this->rankedWindow($response, $context, $original);
 
         $displayed = $context->mode === 'on' ? $ranked : $original;
-        $count = $displayed->count();
+        // The engine's total, not the window's: a search matching more than
+        // the window keeps its later pages, which the engine serves unwidened.
+        // Learned products unioned into the window add to it.
+        $count = $results->count + max(0, $displayed->count() - $original->count());
         $perPage = max(1, $request->requestedPerPage);
         $page = max(1, $request->requestedPage);
         $offset = ($page - 1) * $perPage;

@@ -338,7 +338,7 @@ Request pipeline order: `PartNumberRetrieval`, then `WidenRequest`. Results pipe
 2. Union learned products the engine did not return: fetch by ids through the engine (`filter` on id, `perPage` = count), insert at the head of the second bucket, cap by `learned_union`.
 3. `Ranker::rank()`.
 4. Cache the ranked window as arrays for `cache_ttl`.
-5. Slice to `requestedPage`/`requestedPerPage`, rebuild `SearchResults` with correct `page`, `perPage`, `totalPages`, `links`. Facets pass through unchanged.
+5. Slice to `requestedPage`/`requestedPerPage`, rebuild `SearchResults` with correct `page`, `perPage`, `totalPages`, `links`. `count` stays the engine's total (plus any learned products unioned in), not the window size, so a search matching more than the window keeps its later pages. Facets pass through unchanged.
 6. In `shadow` mode, display the original order but keep the ranked order for logging.
 7. Set `results->meta`: `search_id`, `ranking_mode`, `ranking_version`. Set each `hit->meta`: `position`, `original_position`, `boost`, `source`.
 8. Dispatch `LogSearch` (queued) with the query, shown order, ranked order, impressions and features.
