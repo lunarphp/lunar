@@ -132,7 +132,7 @@
             ]
         },
         "branch-alias": {
-            "dev-checkout-deps": "2.x-dev"
+            "dev-edw-deps": "2.x-dev"
         }
     },
     "replace": {
