@@ -57,7 +57,8 @@
         "files": [
             "packages/admin/src/helpers.php",
             "packages/core/src/helpers.php",
-            "packages/search/src/helpers.php"
+            "packages/search/src/helpers.php",
+            "packages/search-relevance/src/helpers.php"
         ],
         "psr-4": {
             "Lunar\\Core\\": "packages/core/src",
@@ -74,6 +75,8 @@
             "Lunar\\Panel\\Database\\Factories\\": "packages/panel/database/factories",
             "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Search\\": "packages/search/src/",
+            "Lunar\\SearchRelevance\\": "packages/search-relevance/src/",
+            "Lunar\\SearchRelevance\\Database\\Factories\\": "packages/search-relevance/database/factories",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
             "Lunar\\Stripe\\": "packages/stripe/src/",
@@ -94,6 +97,7 @@
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe",
             "Lunar\\Tests\\Search\\": "tests/search",
+            "Lunar\\Tests\\SearchRelevance\\": "tests/search-relevance",
             "Lunar\\Tests\\Upgrade\\": "tests/upgrade",
             "LunarPanelExample\\": "packages/panel-addon-example/src/"
         }
@@ -103,6 +107,7 @@
             "name": [
                 "Table Rate Shipping",
                 "Search",
+                "Search Relevance",
                 "Meilisearch",
                 "Paypal Payments",
                 "Stripe Payments",
@@ -116,6 +121,7 @@
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\Search\\SearchServiceProvider",
+                "Lunar\\SearchRelevance\\SearchRelevanceServiceProvider",
                 "Lunar\\Filament\\LunarFilamentServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
@@ -139,6 +145,7 @@
         "lunarphp/panel-addon-example": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
+        "lunarphp/search-relevance": "self.version",
         "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version",
         "lunarphp/upgrade": "self.version"

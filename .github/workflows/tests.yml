@@ -24,7 +24,7 @@ jobs:
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.4","8.5"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
-        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, upgrade]
+        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, search-relevance, upgrade]
         include:
           - laravel: 12.*
             testbench: 10.*
@@ -195,6 +195,15 @@ jobs:
       # preset (IIFE output, externalised vue/inertia/panel globals) still works.
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
+
+      - name: Build search relevance panel add-on bundle
+        run: npm run build --workspace @lunarphp/search-relevance-addon
+
+      - name: Test and build the search relevance storefront client
+        run: |
+          npm test --workspace @lunarphp/search-relevance
+          npm run type-check --workspace @lunarphp/search-relevance
+          npm run build --workspace @lunarphp/search-relevance
 
       # Fails when a publishable npm package's content no longer matches the
       # tarball published under its current version — the reminder to bump.
