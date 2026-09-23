@@ -530,9 +530,15 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(TaxManagerImpl::class);
         });
 
-        $this->app->singleton(PaymentManager::class, function ($app) {
-            return $app->make(PaymentManagerImpl::class);
-        });
+        /*
+         * One shared manager under BOTH names. Binding only the contract left
+         * the concrete class unbound, so resolving it built a fresh instance
+         * every time and a driver registered through Payments::extend() (which
+         * resolves the contract) was invisible to anything type-hinting
+         * PaymentManager directly.
+         */
+        $this->app->singleton(PaymentManagerImpl::class);
+        $this->app->alias(PaymentManagerImpl::class, PaymentManager::class);
 
         $this->app->scoped(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
