@@ -236,3 +236,36 @@ test('a resolver whose supportsCountry returns false is skipped and the default 
     expect($zones)->toHaveCount(1);
     expect($zones->first()->id)->toEqual($shippingZone->id);
 })->group('shipping-postcode');
+
+test('the most specific postcode zone wins when an area zone and a district zone both match', function () {
+    $country = Country::factory()->create();
+
+    $area = ShippingZone::factory()->create(['name' => 'Area', 'type' => 'postcodes']);
+    $area->countries()->attach($country);
+    $area->postcodes()->createMany([['postcode' => 'AB'], ['postcode' => 'B']]);
+
+    $district = ShippingZone::factory()->create(['name' => 'District', 'type' => 'postcodes']);
+    $district->countries()->attach($country);
+    $district->postcodes()->createMany([['postcode' => 'AB36'], ['postcode' => 'BT23']]);
+
+    $everywhere = ShippingZone::factory()->create(['name' => 'Everywhere', 'type' => 'countries']);
+    $everywhere->countries()->attach($country);
+
+    $resolve = fn (string $postcode) => (new ShippingZoneResolver)
+        ->country($country)
+        ->postcode(new PostcodeLookup($country, $postcode))
+        ->get()
+        ->pluck('name')
+        ->sort()
+        ->values()
+        ->all();
+
+    // AB36 is in the district zone; the AB area zone is dropped, the country zone stays.
+    expect($resolve('AB36 8UZ'))->toBe(['District', 'Everywhere']);
+
+    // AB10 only reaches the area zone.
+    expect($resolve('AB10 1AA'))->toBe(['Area', 'Everywhere']);
+
+    // BT23 matches the area zone only through its single letter; the district row wins.
+    expect($resolve('BT23 6QH'))->toBe(['District', 'Everywhere']);
+});
