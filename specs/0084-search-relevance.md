@@ -119,17 +119,18 @@ Changes in `packages/search`, shipped with 1.1 to 1.3:
 
 - The `exlude_fields` typo in `TypesenseEngine::buildSearch()` the prototype found was already fixed on `2.x` before this spec landed; nothing further to do.
 - Add `distance_threshold` to the vector query, configurable as `lunar.search.typesense.vector_distance_threshold`, default `0.6`. Without it the `k: 200` vector query pads every result set, and a nonsense query returns 200 products. Meilisearch counterpart when an embedder is configured (`lunar.search.meilisearch.embedder`): `lunar.search.meilisearch.ranking_score_threshold`.
-- Allow request-pipeline stages to override request parameters: `AbstractEngine::withParams(array $params)` merged into the engine request last, for both `TypesenseEngine` and `MeilisearchEngine`. A null value removes the parameter. This is how the relevance package applies part-number retrieval without engine-specific code in the engine itself.
+- Allow request-pipeline stages to override request parameters: `AbstractEngine::withParams(array $params)` merged into the engine request last, for both `TypesenseEngine` and `MeilisearchEngine`. A null value removes the parameter. This is how the relevance package applies part-number retrieval without engine-specific code in the engine itself. `withoutParams(string ...$keys)` removes overrides again.
+- Allow a caller to opt a request out of the pipelines: `withoutPipelines()` skips both, for lookups that are not a shopper's search (autocomplete), and `withoutPipelineStages(string ...$stages)` skips named stages.
 - `lunar:meilisearch:setup` (in `packages/meilisearch`) additionally applies `typoTolerance.disableOnAttributes` for the fields an indexer returns from `getExactMatchFields()` (`ProductIndexer` returns the SKU fields). Today it only sets filterable and sortable attributes.
 - `ProductIndexer` already indexes variant SKUs as `skus`. Add `skus_normalised` (uppercased, separators stripped) so `HAGMB` matches `HAG-MB-32A`. In the Typesense collection schema both are `string[]` with `infix: true`, and both must appear in the host app's `scout.typesense.model-settings.<Product>.search-parameters.query_by`. Both live in host config, so the docs must show the exact entries, and the reindex.
 
-The relevance package then ships a `PartNumberRetrieval` request-pipeline stage: when `QueryNormaliser::isPartNumber()` is true (one token mixing letters and digits, not a bare unit like `20mm`), it restricts retrieval to the SKU fields and removes typo tolerance and semantic search. Part-number queries also skip stemming in the normaliser. The stage maps to each engine through `withParams()`:
+The relevance package then ships a `PartNumberRetrieval` request-pipeline stage: when `QueryNormaliser::isPartNumber()` is true (one token mixing letters and digits, not a bare unit like `20mm`), it restricts retrieval to the fields the model's indexer returns from `getExactMatchFields()` (`ProductIndexer` returns the SKU fields; a store whose shoppers also type supplier part numbers or barcodes returns those too) and removes typo tolerance and semantic search. An indexer that returns no fields turns part-number retrieval off for that model. When the restricted search finds nothing, `PartNumberFallback` reruns it as an ordinary search, so a code the indexer does not hold as exact still finds its product. Part-number queries also skip stemming in the normaliser. The stage maps to each engine through `withParams()`:
 
 | | Typesense | Meilisearch |
 |---|---|---|
-| Restrict to SKU fields | `query_by: skus,skus_normalised` | `attributesToSearchOn: ['skus', 'skus_normalised']` |
-| Partial match | `prefix: true`, `infix: always` | Prefix on the last word is always on. No infix: `MB32A` will not match `HAG-MB-32A`. Document as a known limitation. |
-| No typos | `num_typos: 0` | Index setting `typoTolerance.disableOnAttributes: ['skus', 'skus_normalised']`, applied by `lunar:meilisearch:setup` |
+| Restrict to exact-match fields | `query_by: skus,skus_normalised` (the indexer's fields) | `attributesToSearchOn: ['skus', 'skus_normalised']` (the indexer's fields) |
+| Partial match | `prefix: true`, `infix: always` per field | Prefix on the last word is always on. No infix: `MB32A` will not match `HAG-MB-32A`. Document as a known limitation. |
+| No typos | `num_typos: 0` per field | Index setting `typoTolerance.disableOnAttributes: ['skus', 'skus_normalised']`, applied by `lunar:meilisearch:setup` |
 | Keep every token | `drop_tokens_threshold: 0` | `matchingStrategy: all` |
 | No semantic padding | omit `vector_query` | Not applicable unless an embedder is configured; then `hybrid.semanticRatio: 0` |
 
@@ -313,7 +314,7 @@ interface ScoreAggregator
 }
 ```
 
-`RankingContext`: `modelType`, `normalisedQuery`, `sessionId`, `customerId`, `mode`, `sort`, `filtersHash`, `version`. `shouldRank()` is false when the query is empty or `*`, an explicit sort is set, or mode is `off`.
+`RankingContext`: `modelType`, `normalisedQuery`, `sessionId`, `customerId`, `mode`, `sort`, `filtersHash`, `version`. `shouldRank()` is false when the query is empty or `*`, an explicit sort is set, or mode is `off`. A sort on one of the `relevance_sorts` fields (`relevance`, `_text_match`) is the engine's own order, not an explicit sort: Lunar's storefront sends `relevance:asc` by default, and without this no storefront search would ever be ranked.
 
 `Hit`: `productId`, `originalPosition`, `score` (engine score or 0), `document`, `source`, mutable `boost`. Serialises to array for the cache; never cache the objects themselves (prototype hit `__PHP_Incomplete_Class` across CLI and FPM).
 
@@ -323,9 +324,11 @@ All four contracts are bound in the service provider from config so a host app o
 
 #### 2.5 Pipeline stages
 
-Request pipeline order: `PartNumberRetrieval`, then `WidenRequest`. Results pipeline: `RankResults`. The package registers all three into `lunar.search.pipelines` from its service provider; hosts can reorder or remove them in config.
+Request pipeline order: `PartNumberRetrieval`, then `WidenRequest`. Results pipeline: `PartNumberFallback`, then `RankResults`. The package registers all four into `lunar.search.pipelines` from its service provider; hosts can reorder them in config, and a caller can skip them for one request with `withoutPipelines()` or `withoutPipelineStages()`.
 
-**`PartNumberRetrieval`** (request pipeline). When `QueryNormaliser::isPartNumber()` is true, calls `withParams()` with the engine-specific parameters from the table in 1.4. Part-number searches are still logged, but `WidenRequest` skips ranking for them because per-code queries are too sparse to learn from.
+**`PartNumberRetrieval`** (request pipeline). When mode is not `off`, `QueryNormaliser::isPartNumber()` is true and the indexer declares exact-match fields, calls `withParams()` with the engine-specific parameters from the table in 1.4 and records the keys it overrode in `context`. Part-number searches are still logged, but `WidenRequest` skips ranking for them because per-code queries are too sparse to learn from.
+
+**`PartNumberFallback`** (results pipeline, before `RankResults`). When a part-number search returned no hits, reruns it on a clone of the engine with the overrides removed and `PartNumberRetrieval` skipped. The rerun passes through both pipelines itself, so it is widened, ranked and logged as an ordinary search; the stage then returns without calling the rest of the results pipeline so the empty search is not logged twice.
 
 **`WidenRequest`** (request pipeline). If ranking applies (`models` contains the engine's model, mode is not `off`, `shouldRank()`), records `requestedPage`/`requestedPerPage` in `context`, then sets `page(1)` and `perPage(window)` on the engine when `requestedPage * requestedPerPage <= window`. Beyond the window it leaves the request alone. Also builds and stores the `RankingContext` in `context`.
 

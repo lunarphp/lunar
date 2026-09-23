@@ -27,6 +27,7 @@ use Lunar\SearchRelevance\Listeners\ForgetPurchases;
 use Lunar\SearchRelevance\Logging\SearchLogger;
 use Lunar\SearchRelevance\Observers\CartLineObserver;
 use Lunar\SearchRelevance\Panel\SearchRelevanceSection;
+use Lunar\SearchRelevance\Pipelines\PartNumberFallback;
 use Lunar\SearchRelevance\Pipelines\PartNumberRetrieval;
 use Lunar\SearchRelevance\Pipelines\RankResults;
 use Lunar\SearchRelevance\Pipelines\WidenRequest;
@@ -104,6 +105,12 @@ class SearchRelevanceServiceProvider extends ServiceProvider
 
         if (! in_array(RankResults::class, $results, true)) {
             $results[] = RankResults::class;
+        }
+
+        // The fallback must run before RankResults, or the empty part-number
+        // search is logged before its rerun is.
+        if (! in_array(PartNumberFallback::class, $results, true)) {
+            array_splice($results, (int) array_search(RankResults::class, $results, true), 0, [PartNumberFallback::class]);
         }
 
         config([

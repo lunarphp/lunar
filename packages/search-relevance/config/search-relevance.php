@@ -27,6 +27,12 @@ return [
     // Searchable models whose results are ranked and logged.
     'models' => [Product::class],
 
+    // Sort fields that mean the engine's own relevance order. A search sorted
+    // by one of these is ranked like an unsorted one; any other sort is the
+    // shopper's choice and is left alone. Lunar's storefront sends
+    // `relevance:asc` by default.
+    'relevance_sorts' => ['relevance', '_text_match'],
+
     // Candidate window fetched from the engine and reordered.
     'window' => 250,
 
