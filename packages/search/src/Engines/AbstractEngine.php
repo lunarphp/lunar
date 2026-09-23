@@ -32,6 +32,12 @@ abstract class AbstractEngine
     /** Extra engine request parameters, merged into the engine request last. */
     protected array $params = [];
 
+    /** When true, neither search pipeline runs for this request. */
+    protected bool $withoutPipelines = false;
+
+    /** @var array<int, string> Pipeline stages skipped for this request. */
+    protected array $skippedStages = [];
+
     protected string $sort = '';
 
     protected string $sortRaw = '';
@@ -106,9 +112,41 @@ abstract class AbstractEngine
         return $this;
     }
 
+    /**
+     * Remove withParams() overrides by key, so the engine sends its own value
+     * for them again.
+     */
+    public function withoutParams(string ...$keys): static
+    {
+        foreach ($keys as $key) {
+            unset($this->params[$key]);
+        }
+
+        return $this;
+    }
+
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    /**
+     * Run this request without the request and results pipelines, for a
+     * lookup that is not a shopper's search, such as autocomplete.
+     */
+    public function withoutPipelines(): static
+    {
+        $this->withoutPipelines = true;
+
+        return $this;
+    }
+
+    /** Skip individual pipeline stages for this request. */
+    public function withoutPipelineStages(string ...$stages): static
+    {
+        $this->skippedStages = array_values(array_unique([...$this->skippedStages, ...$stages]));
+
+        return $this;
     }
 
     public function getFacets(): array
@@ -188,7 +226,7 @@ abstract class AbstractEngine
 
         return app(Pipeline::class)
             ->send($request)
-            ->through(config('lunar.search.pipelines.request', []))
+            ->through($this->pipelineStages('request'))
             ->thenReturn();
     }
 
@@ -200,10 +238,27 @@ abstract class AbstractEngine
     {
         $response = app(Pipeline::class)
             ->send(new SearchResponse($request, $results))
-            ->through(config('lunar.search.pipelines.results', []))
+            ->through($this->pipelineStages('results'))
             ->thenReturn();
 
         return $response->results;
+    }
+
+    /**
+     * The configured stages for one pipeline, less any this request skips.
+     *
+     * @return array<int, mixed>
+     */
+    protected function pipelineStages(string $pipeline): array
+    {
+        if ($this->withoutPipelines) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            config("lunar.search.pipelines.{$pipeline}", []),
+            fn (mixed $stage) => ! is_string($stage) || ! in_array($stage, $this->skippedStages, true),
+        ));
     }
 
     /**
