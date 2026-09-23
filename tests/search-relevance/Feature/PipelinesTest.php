@@ -8,7 +8,10 @@ use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
+use Lunar\SearchRelevance\Pipelines\PartNumberFallback;
+use Lunar\SearchRelevance\Pipelines\RankResults;
 use Lunar\Tests\SearchRelevance\Support\Fixtures;
+use Lunar\Tests\SearchRelevance\Support\SupplierCodeIndexer;
 use Lunar\Tests\SearchRelevance\TestCase;
 use Mockery\MockInterface;
 
@@ -342,3 +345,104 @@ it('widens, ranks and unions through a typesense engine', function () {
     expect($logged->shown)->toBe([1, 2, 3, 9, 5, 4])
         ->and($logged->version)->toBe('n1:typesense:keyword');
 });
+
+it('restricts a part-number search to the exact-match fields the indexer declares', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search.indexers', [Product::class => SupplierCodeIndexer::class]);
+
+    $engine = fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1]));
+
+    Search::model(Product::class)->query('FTP25')->get();
+
+    expect($engine->getParams())->toMatchArray([
+        'query_by' => 'skus,skus_normalised,mpns,eans',
+        'infix' => 'always,always,always,always',
+        'num_typos' => '0,0,0,0',
+    ]);
+});
+
+it('searches a part number as usual when the indexer declares no exact-match fields', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search.indexers', [Product::class => SupplierCodeIndexer::class]);
+    app()->bind(SupplierCodeIndexer::class, fn () => new SupplierCodeIndexer([]));
+
+    $engine = fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1, 2]));
+
+    Search::model(Product::class)->query('FTP25')->get();
+
+    expect($engine->getParams())->toBe([])
+        ->and($engine->getPerPage())->toBe(250);
+});
+
+it('leaves part-number searches alone when relevance is off', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search_relevance.mode', 'off');
+
+    $engine = fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1]));
+
+    $results = Search::model(Product::class)->query('HAG-MB-32A')->get();
+
+    expect($engine->getParams())->toBe([])
+        ->and($results->meta)->not->toHaveKey('search_id')
+        ->and(SearchQuery::query()->count())->toBe(0);
+});
+
+it('reruns a part-number search that matches nothing as an ordinary search', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+
+    fakeEngine(TypesenseEngine::class, 'typesense', ['hits' => [], 'facet_counts' => []], typesenseHits([7, 8]));
+
+    $results = Search::model(Product::class)->query('FTP25')->perPage(10)->get();
+
+    expect(ids($results))->toBe([7, 8])
+        ->and(SearchQuery::query()->count())->toBe(1)
+        ->and(SearchQuery::query()->find($results->meta['search_id'])->shown)->toBe([7, 8]);
+});
+
+it('keeps the part-number results when the exact-match fields find something', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+
+    fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([3]), typesenseHits([7, 8]));
+
+    $results = Search::model(Product::class)->query('FTP25')->get();
+
+    expect(ids($results))->toBe([3])
+        ->and(SearchQuery::query()->count())->toBe(1);
+});
+
+it('registers the part-number fallback ahead of the ranking stage', function () {
+    $stages = config('lunar.search.pipelines.results');
+
+    expect(array_search(PartNumberFallback::class, $stages, true))
+        ->toBeLessThan(array_search(RankResults::class, $stages, true));
+});
+
+it('runs a search without either pipeline when asked', function () {
+    Fixtures::products(3);
+
+    $results = Search::model(Product::class)->query('cable')->perPage(2)->withoutPipelines()->get();
+
+    expect($results->hits)->toHaveCount(2)
+        ->and($results->meta)->not->toHaveKey('search_id')
+        ->and(SearchQuery::query()->count())->toBe(0);
+});
+
+it('ranks a search sorted by relevance like an unsorted one', function (string $sort, int $perPage) {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+
+    $engine = fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1, 2, 3]));
+
+    Search::model(Product::class)->query('cable')->sort($sort)->perPage(2)->get();
+
+    expect($engine->getPerPage())->toBe($perPage);
+})->with([
+    'relevance' => ['relevance:asc', 250],
+    'text match' => ['_text_match:desc', 250],
+    'a shopper sort' => ['price:asc', 2],
+]);

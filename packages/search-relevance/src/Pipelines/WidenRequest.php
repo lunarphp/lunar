@@ -52,7 +52,7 @@ class WidenRequest
             sessionId: $this->logger->sessionId(),
             customerId: $this->logger->customerId(),
             mode: $mode,
-            sort: $engine->getSort() ?: null,
+            sort: $this->explicitSort($engine->getSort()),
             filtersHash: md5(json_encode([$engine->getFilters(), $engine->getFacets()])),
             version: $this->version->current($modelType),
         );
@@ -68,5 +68,22 @@ class WidenRequest
         }
 
         return $next($request);
+    }
+
+    /**
+     * The sort a shopper chose, or null when the request is in the engine's
+     * relevance order, whether unsorted or sorted by one of the configured
+     * relevance fields. Lunar's storefront sends `relevance:asc` by default,
+     * and a ranker only reorders relevance-ordered results.
+     */
+    protected function explicitSort(?string $sort): ?string
+    {
+        $field = explode(':', (string) $sort, 2)[0];
+
+        if ($field === '' || in_array($field, $this->config->get('lunar.search_relevance.relevance_sorts', []), true)) {
+            return null;
+        }
+
+        return $sort;
     }
 }
