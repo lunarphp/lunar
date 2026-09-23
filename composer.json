@@ -124,6 +124,9 @@
                 "Lunar\\Panel\\PanelServiceProvider",
                 "Lunar\\Core\\LunarServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-checkout-deps": "2.x-dev"
         }
     },
     "replace": {
