@@ -446,3 +446,15 @@ it('ranks a search sorted by relevance like an unsorted one', function (string $
     'text match' => ['_text_match:desc', 250],
     'a shopper sort' => ['price:asc', 2],
 ]);
+
+it('reports the engine total when a search matches more than the window', function () {
+    Config::set('lunar.search_relevance.window', 10);
+    Fixtures::products(30);
+
+    $results = Search::model(Product::class)->query('cable')->perPage(5)->get();
+
+    expect($results->hits)->toHaveCount(5)
+        ->and($results->count)->toBe(30)
+        ->and($results->totalPages)->toBe(6)
+        ->and(SearchQuery::query()->find($results->meta['search_id'])->result_count)->toBe(30);
+});
