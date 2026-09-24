@@ -17,13 +17,23 @@ use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 class ModelManifest implements ModelManifestContract
 {
     /**
+     * Model classes already discovered, keyed by directory.
+     *
+     * Discovery parses every file in the directory, and register() and
+     * morphMap() both need the core models on every boot. Remembering the
+     * result keeps that to one scan per directory for the life of the
+     * manifest, which is bound as a singleton.
+     *
+     * @var array<string, array<class-string>>
+     */
+    protected array $discovered = [];
+
+    /**
      * Discover the core models and register their route + morph bindings.
      */
     public function register(): void
     {
-        $this->registerModels(
-            Discover::in(__DIR__.'/../Models')->classes()->extending(Base::class)->get()
-        );
+        $this->registerModels($this->discover($this->coreModelsPath()));
     }
 
     /**
@@ -32,9 +42,7 @@ class ModelManifest implements ModelManifestContract
     public function addDirectory(string $dir): void
     {
         try {
-            $this->registerModels(
-                Discover::in($dir)->classes()->extending(Base::class)->get()
-            );
+            $this->registerModels($this->discover($dir));
         } catch (DirectoryNotFoundException $e) {
             Log::error($e->getMessage());
         }
@@ -46,7 +54,7 @@ class ModelManifest implements ModelManifestContract
     public function morphMap(): void
     {
         $morphMap = collect(
-            Discover::in(__DIR__.'/../Models')->classes()->extending(Base::class)->get()
+            $this->discover($this->coreModelsPath())
         )->mapWithKeys(
             fn (string $class) => [$this->getMorphMapKey($class) => $class]
         );
@@ -60,6 +68,31 @@ class ModelManifest implements ModelManifestContract
         $key = Str::snake(class_basename($className));
 
         return "{$prefix}{$key}";
+    }
+
+    /**
+     * The model classes in a directory, scanned at most once.
+     *
+     * @return array<class-string>
+     */
+    protected function discover(string $dir): array
+    {
+        return $this->discovered[$dir] ??= $this->scan($dir);
+    }
+
+    /**
+     * Scan a directory for classes extending the Lunar base model.
+     *
+     * @return array<class-string>
+     */
+    protected function scan(string $dir): array
+    {
+        return Discover::in($dir)->classes()->extending(Base::class)->get();
+    }
+
+    protected function coreModelsPath(): string
+    {
+        return __DIR__.'/../Models';
     }
 
     /**
