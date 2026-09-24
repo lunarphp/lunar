@@ -13,6 +13,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
+- Cached model manifest: build the discovered model list with `php artisan optimize` (spec 0089)
 - Add Boost guidelines to packages
 
 ## Ideas
