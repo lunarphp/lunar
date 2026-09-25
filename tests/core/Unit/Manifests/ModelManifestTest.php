@@ -30,6 +30,22 @@ function countingModelManifest(): ModelManifest
     };
 }
 
+/**
+ * @param  array<string, array<class-string>>  $models
+ */
+function writeModelCache(array $models): void
+{
+    file_put_contents(
+        app()->bootstrapPath('cache/lunar_models.php'),
+        '<?php return '.var_export($models, true).';'.PHP_EOL,
+    );
+}
+
+function coreModelsDirectory(): string
+{
+    return dirname((new ReflectionClass(Product::class))->getFileName());
+}
+
 test('the core models directory is scanned once however many times the manifest asks for it', function (): void {
     $manifest = countingModelManifest();
 
@@ -66,4 +82,52 @@ test('a missing added directory is logged, not thrown', function (): void {
     Log::shouldReceive('error')->once();
 
     $manifest->addDirectory(__DIR__.'/does-not-exist');
+});
+
+describe('the cache file', function (): void {
+    afterEach(function (): void {
+        @unlink(app()->bootstrapPath('cache/lunar_models.php'));
+    });
+
+    test('a cached directory is read from the file, not scanned', function (): void {
+        writeModelCache([coreModelsDirectory() => [Product::class]]);
+
+        $manifest = countingModelManifest();
+        $manifest->register();
+        $manifest->morphMap();
+
+        expect($manifest->scanned)->toBe([])
+            ->and(Relation::getMorphedModel('product'))->toBe(Product::class);
+    });
+
+    test('a directory missing from the file falls back to a scan', function (): void {
+        writeModelCache(['/somewhere/else' => []]);
+
+        $manifest = countingModelManifest();
+        $manifest->register();
+
+        expect($manifest->scanned)->toBe([coreModelsDirectory()]);
+    });
+
+    test('building rescans every known directory and ignores a stale file', function (): void {
+        writeModelCache([coreModelsDirectory() => [Product::class]]);
+
+        $manifest = countingModelManifest();
+        $manifest->register();
+        $models = $manifest->cache();
+
+        expect($manifest->scanned)->toBe([coreModelsDirectory()])
+            ->and($models[coreModelsDirectory()])->toContain(Product::class)
+            ->and(count($models[coreModelsDirectory()]))->toBeGreaterThan(1)
+            ->and(require $manifest->cachePath())->toBe($models);
+    });
+
+    test('clearing removes the file', function (): void {
+        writeModelCache([coreModelsDirectory() => [Product::class]]);
+
+        $manifest = countingModelManifest();
+        $manifest->clearCache();
+
+        expect(file_exists($manifest->cachePath()))->toBeFalse();
+    });
 });

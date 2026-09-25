@@ -13,7 +13,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
-- Cached model manifest: build the discovered model list with `php artisan optimize` (spec 0089)
 - Add Boost guidelines to packages
 
 ## Ideas
@@ -35,6 +34,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Cached model manifest: `php artisan optimize` writes the discovered models to `bootstrap/cache/lunar_models.php`, removing the per-request directory scan (spec 0089)
 - Attribute field-type configuration schema — field types declare their settings once in core; the panel and Filament bridge both render from the descriptors (spec 0054)
 - Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)

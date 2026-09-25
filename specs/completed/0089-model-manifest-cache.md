@@ -1,6 +1,6 @@
 # 0089: Cached model manifest
 
-- Status: draft
+- Status: implemented
 - Author: Alec Ritson
 - Created: 2026-09-24
 - TODO item: Cached model manifest: build the discovered model list with `php artisan optimize`
@@ -45,7 +45,7 @@ The path comes from `$app->bootstrapPath('cache/lunar_models.php')`, the same di
 
 Two console commands in `packages/core`:
 
-- `lunar:models:cache` resolves the model manifest, scans the core models directory plus every directory registered through `addDirectory()` during boot, and writes the file with `var_export`. This uses the same write-to-temp-then-rename approach as Laravel's `config:cache`, so a request never reads a half-written file.
+- `lunar:models:cache` resolves the model manifest, scans the core models directory plus every directory registered through `addDirectory()` during boot, and writes the file with `var_export`. It writes through `Filesystem::replace()` (temp file then rename, as Laravel's `PackageManifest` does), so a request never reads a half-written file.
 - `lunar:models:clear` deletes the file.
 
 `LunarServiceProvider` registers both with Laravel's optimize hook:
@@ -97,4 +97,12 @@ So `php artisan optimize`, which deploy scripts already run for config and route
 ## Implementation plan
 
 - [x] Slice 0: one scan per directory per process (lunarphp/lunar#2754).
-- [ ] Slice 1: `ModelManifest` reads `bootstrap/cache/lunar_models.php`; `lunar:models:cache` / `lunar:models:clear`; `optimizes()` registration; tests for the cached path, the fallback, and the build/clear round trip.
+- [x] Slice 1: `ModelManifest` reads `bootstrap/cache/lunar_models.php`; `lunar:models:cache` / `lunar:models:clear`; `optimizes()` registration; tests for the cached path, the fallback, and the build/clear round trip.
+
+## Decisions taken during implementation
+
+- **Both open questions resolved as proposed.** The file is keyed by absolute path, and a stale file is neither detected nor rescanned at runtime: it has the same contract as `config:cache`.
+- **Paths are normalised with `realpath()`** before lookup and before writing, so `__DIR__.'/../Models'` and the resolved path share one entry.
+- **Building ignores the current file.** `ModelManifest::cache()` rescans every directory the manifest has seen in the building process (core plus each `addDirectory()`), so running `optimize` over a stale file replaces it rather than copying it forward.
+- **The cache methods live on the concrete manifest, not the contract** (`cache()`, `clearCache()`, `cachePath()`), keeping the contract unchanged. If an app binds its own `ModelManifest`, `lunar:models:cache` warns and exits successfully, so `optimize` never fails because of it.
+- **Measured:** over 20 manifest boots (`register()` + `morphMap()`) in the core test app, 26.8 ms live against 0.32 ms from the file.
