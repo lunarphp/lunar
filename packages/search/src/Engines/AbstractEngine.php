@@ -3,9 +3,14 @@
 namespace Lunar\Search\Engines;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\Builder\SearchQuery;
+use Lunar\Search\Data\SearchResults;
+use Lunar\Search\Pipelines\SearchRequest;
+use Lunar\Search\Pipelines\SearchResponse;
 
 abstract class AbstractEngine
 {
@@ -21,9 +26,26 @@ abstract class AbstractEngine
 
     protected int $perPage = 50;
 
+    /** Null until page() is called: the page then resolves from the request, as Scout does. */
+    protected ?int $page = null;
+
+    /** Extra engine request parameters, merged into the engine request last. */
+    protected array $params = [];
+
+    /** When true, neither search pipeline runs for this request. */
+    protected bool $withoutPipelines = false;
+
+    /** @var array<int, string> Pipeline stages skipped for this request. */
+    protected array $skippedStages = [];
+
     protected string $sort = '';
 
     protected string $sortRaw = '';
+
+    public function getModelType(): string
+    {
+        return $this->modelType;
+    }
 
     public function extendQuery(\Closure $callable): self
     {
@@ -56,6 +78,73 @@ abstract class AbstractEngine
     public function perPage(int $perPage): self
     {
         $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function page(int $page): static
+    {
+        $this->page = max(1, $page);
+
+        return $this;
+    }
+
+    public function getPage(): int
+    {
+        return $this->page ?? Paginator::resolveCurrentPage();
+    }
+
+    public function getPerPage(): int
+    {
+        return $this->perPage;
+    }
+
+    /**
+     * Merge engine-specific request parameters, applied after everything the
+     * engine builds itself. A null value removes the parameter from the
+     * request. Used by request-pipeline stages to change retrieval without
+     * engine-specific code living in the engine.
+     */
+    public function withParams(array $params): static
+    {
+        $this->params = [...$this->params, ...$params];
+
+        return $this;
+    }
+
+    /**
+     * Remove withParams() overrides by key, so the engine sends its own value
+     * for them again.
+     */
+    public function withoutParams(string ...$keys): static
+    {
+        foreach ($keys as $key) {
+            unset($this->params[$key]);
+        }
+
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    /**
+     * Run this request without the request and results pipelines, for a
+     * lookup that is not a shopper's search, such as autocomplete.
+     */
+    public function withoutPipelines(): static
+    {
+        $this->withoutPipelines = true;
+
+        return $this;
+    }
+
+    /** Skip individual pipeline stages for this request. */
+    public function withoutPipelineStages(string ...$stages): static
+    {
+        $this->skippedStages = array_values(array_unique([...$this->skippedStages, ...$stages]));
 
         return $this;
     }
@@ -124,7 +213,71 @@ abstract class AbstractEngine
 
     protected function getRawResults(\Closure $builder): LengthAwarePaginator
     {
-        return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage);
+        return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage, page: $this->page);
+    }
+
+    /**
+     * Run the request pipeline. Engines call this at the top of get() so
+     * stages can adjust the request before the engine queries.
+     */
+    protected function pipeRequest(): SearchRequest
+    {
+        $request = new SearchRequest($this, $this->getPage(), $this->perPage);
+
+        return app(Pipeline::class)
+            ->send($request)
+            ->through($this->pipelineStages('request'))
+            ->thenReturn();
+    }
+
+    /**
+     * Run the results pipeline. Engines wrap their return value in this so
+     * stages can reorder, annotate or replace the built results.
+     */
+    protected function pipeResults(SearchRequest $request, SearchResults $results): SearchResults
+    {
+        $response = app(Pipeline::class)
+            ->send(new SearchResponse($request, $results))
+            ->through($this->pipelineStages('results'))
+            ->thenReturn();
+
+        return $response->results;
+    }
+
+    /**
+     * The configured stages for one pipeline, less any this request skips.
+     *
+     * @return array<int, mixed>
+     */
+    protected function pipelineStages(string $pipeline): array
+    {
+        if ($this->withoutPipelines) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            config("lunar.search.pipelines.{$pipeline}", []),
+            fn (mixed $stage) => ! is_string($stage) || ! in_array($stage, $this->skippedStages, true),
+        ));
+    }
+
+    /**
+     * Apply withParams() overrides to a built request array. Null removes
+     * the key so a stage can drop a parameter the engine would otherwise send.
+     */
+    protected function applyParamOverrides(array $params): array
+    {
+        foreach ($this->params as $key => $value) {
+            if ($value === null) {
+                unset($params[$key]);
+
+                continue;
+            }
+
+            $params[$key] = $value;
+        }
+
+        return $params;
     }
 
     protected function getFacetConfig(?string $field = null): ?array

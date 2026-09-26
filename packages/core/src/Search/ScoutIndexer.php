@@ -54,6 +54,19 @@ class ScoutIndexer implements ScoutIndexerInterface
         ];
     }
 
+    /**
+     * Fields that must match exactly, with typo tolerance disabled by the
+     * engine setup (`lunar:meilisearch:setup` applies these). Part-number
+     * style codes match random tokens under default typo tolerance.
+     * search-relevance's part-number retrieval searches these fields alone,
+     * so list every field a shopper types a code into (SKU, supplier part
+     * number, barcode).
+     */
+    public function getExactMatchFields(): array
+    {
+        return [];
+    }
+
     public function toSearchableArray(Model $model): array
     {
         if (! $model->attribute_data) {
