@@ -24,9 +24,9 @@ use Lunar\Core\Facades\DB;
  * 6. Convert `attributes.validation_rules` from the v1 pipe-delimited string
  *    (`min:1|max:10`) to the v2 json list (`["min:1", "max:10"]`) — split on
  *    `|` exactly as Laravel's validator parses string rules.
- * 7. Add `attribute_groups.system`, drop the morph columns and unused
- *    `section` / `default_value`, make `attributes.attribute_group_id`
- *    nullable.
+ * 7. Add `attribute_groups.system`, drop the morph columns (and the v1
+ *    indexes that still sit on them) and unused `section` / `default_value`,
+ *    make `attributes.attribute_group_id` nullable.
  *
  * One-way — `down()` is intentionally absent. Restore from backup to reverse.
  */
@@ -319,6 +319,12 @@ return new class extends Migration
         }
 
         if (Schema::hasColumn($table, 'attributable_type')) {
+            if (Schema::hasIndex($table, ['attributable_type'])) {
+                Schema::table($table, function (Blueprint $table) {
+                    $table->dropIndex(['attributable_type']);
+                });
+            }
+
             Schema::table($table, function (Blueprint $table) {
                 $table->dropColumn('attributable_type');
             });
@@ -393,6 +399,20 @@ return new class extends Migration
         ));
 
         if ($drops !== []) {
+            if (in_array('attribute_type', $drops, true)) {
+                if (Schema::hasIndex($table, ['attribute_type', 'handle'])) {
+                    Schema::table($table, function (Blueprint $blueprint) {
+                        $blueprint->dropUnique(['attribute_type', 'handle']);
+                    });
+                }
+
+                if (Schema::hasIndex($table, ['attribute_type'])) {
+                    Schema::table($table, function (Blueprint $blueprint) {
+                        $blueprint->dropIndex(['attribute_type']);
+                    });
+                }
+            }
+
             Schema::table($table, function (Blueprint $blueprint) use ($drops) {
                 $blueprint->dropColumn($drops);
             });

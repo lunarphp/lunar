@@ -45,7 +45,7 @@ function simulateV1Orders(): void
 {
     Schema::create(ORDERS_UPG_PREFIX.'orders', function (Blueprint $table) {
         $table->id();
-        $table->string('status');
+        $table->string('status')->index();
         $table->unsignedBigInteger('sub_total')->default(0);
         $table->unsignedBigInteger('total')->default(0);
         $table->dateTime('placed_at')->nullable();
