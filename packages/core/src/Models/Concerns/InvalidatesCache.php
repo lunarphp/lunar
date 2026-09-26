@@ -30,12 +30,13 @@ trait InvalidatesCache
     }
 
     /**
-     * The entity's cache key. The seam through which the tag scheme can later
-     * move from the primary key to a stable `public_id`.
+     * The entity's cache key: the stable `public_id`, which external consumers
+     * (webhooks, API responses) can correlate; the primary key for the rare
+     * model without one.
      */
     public function cacheKey(): int|string
     {
-        return $this->getKey();
+        return $this->getAttribute('public_id') ?? $this->getKey();
     }
 
     /**
