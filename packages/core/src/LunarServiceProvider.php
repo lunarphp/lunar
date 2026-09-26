@@ -26,6 +26,8 @@ use Lunar\Core\Cache\DependencyResolver as DependencyResolverImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\CreateAdmin;
 use Lunar\Core\Console\Commands\Import\AddressData;
+use Lunar\Core\Console\Commands\ModelsCache;
+use Lunar\Core\Console\Commands\ModelsClear;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ReconcileStock;
@@ -251,7 +253,15 @@ class LunarServiceProvider extends ServiceProvider
                 PruneCarts::class,
                 ReconcileStock::class,
                 ReleaseExpiredStockReservations::class,
+                ModelsCache::class,
+                ModelsClear::class,
             ]);
+
+            $this->optimizes(
+                optimize: 'lunar:models:cache',
+                clear: 'lunar:models:clear',
+                key: 'lunar-models',
+            );
 
             if (config('lunar.cart.prune_tables.enabled', false)) {
                 $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {

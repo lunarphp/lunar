@@ -34,6 +34,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Cached model manifest: `php artisan optimize` writes the discovered models to `bootstrap/cache/lunar_models.php`, removing the per-request directory scan (spec 0089)
 - Attribute field-type configuration schema — field types declare their settings once in core; the panel and Filament bridge both render from the descriptors (spec 0054)
 - Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
