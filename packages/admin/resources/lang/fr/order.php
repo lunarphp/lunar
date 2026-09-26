@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Expédié le',
             'handed_over' => [
                 'shipping' => 'Expédié le',
-                'collection' => 'Retiré le',
+                'pickup' => 'Retiré le',
                 'digital' => 'Mis à disposition le',
             ],
             'handed_over_default' => 'Traité le',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Marquer comme traité',
                 'modal_heading' => 'Marquer le traitement comme traité',
                 'labels' => [
-                    'collection' => 'Marquer comme retiré',
+                    'pickup' => 'Marquer comme retiré',
                 ],
                 'notification' => [
                     'success' => 'Traitement marqué comme traité.',

@@ -167,12 +167,13 @@ it should match the `Очиж авах` used by mn `fulfilment.php`).
 
 ## Open questions
 
-- Does any v1 order-creation path persist the shipping option's `collect`
-  flag into data the upgrade package carries over? Current understanding is
-  no — `meta['collect']` is stamped by v2's `CreateShippingLine`, and the
-  upgrade backfill (`2026_06_01_000009`) creates only `shipping`/`shipped`
-  fulfilments — but verify against v1 during implementation; if v1 does
-  persist it anywhere, the upgrade migration also rewrites that key.
+- ~~Does any v1 order-creation path persist the shipping option's `collect`
+  flag into data the upgrade package carries over?~~ **Resolved: no.** v1's
+  `CreateShippingLine` writes `'meta' => $shippingOption->meta` verbatim and
+  never stamps the flag (verified against `1.x`); the stamp is introduced by
+  v2's `CreateShippingLine`, and the upgrade backfill (`2026_06_01_000009`)
+  creates only `shipping`/`shipped` fulfilments. No order-line meta rewrite
+  ships in the upgrade migration.
 
 ## References
 

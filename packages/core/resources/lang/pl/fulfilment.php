@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Wysyłka',
-        'collection' => 'Odbiór osobisty',
+        'pickup' => 'Odbiór osobisty',
         'digital' => 'Cyfrowa',
     ],
 

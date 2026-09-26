@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Gönderim',
-        'collection' => 'Teslim alma',
+        'pickup' => 'Teslim alma',
         'digital' => 'Dijital',
     ],
 

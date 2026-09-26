@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'الشحن',
-        'collection' => 'الاستلام',
+        'pickup' => 'الاستلام',
         'digital' => 'رقمي',
     ],
 

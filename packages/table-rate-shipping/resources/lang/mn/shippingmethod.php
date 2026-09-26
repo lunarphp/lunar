@@ -45,7 +45,7 @@ return [
             'label' => 'Төрөл',
             'options' => [
                 'ship-by' => 'Стандарт',
-                'collection' => 'Цуглуулга',
+                'pickup' => 'Очиж авах',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Төрөл',
             'options' => [
                 'ship-by' => 'Стандарт',
-                'collection' => 'Цуглуулга',
+                'pickup' => 'Очиж авах',
             ],
         ],
     ],

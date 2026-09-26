@@ -51,7 +51,7 @@ class ValidateCartForOrderCreation extends BaseValidator
             }
 
             // Is this cart going to be shipped and if so, does it have a shipping address?
-            if (! $shippingOption->collect) {
+            if (! $shippingOption->pickup) {
                 if (! $cart->shippingAddress) {
                     return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
                 }

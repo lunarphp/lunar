@@ -14,7 +14,7 @@ use Lunar\Core\Models\Fulfilment;
  * stamping the handed-over timestamp and recording any tracking references.
  *
  * The tracking-bearing terminal — only valid for methods that carry tracking;
- * collection/digital use `fulfil()` instead, and calling `ship()` on a
+ * pickup/digital use `fulfil()` instead, and calling `ship()` on a
  * non-tracking method throws. The transition is delegated to
  * `TransitionFulfilment` (so it routes through the guarded, per-method
  * `FulfilmentState` graph and the timestamp is stamped by category); an illegal

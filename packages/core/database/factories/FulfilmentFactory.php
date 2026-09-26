@@ -42,16 +42,16 @@ class FulfilmentFactory extends BaseFactory
         ]);
     }
 
-    public function collection(): static
+    public function pickup(): static
     {
-        return $this->state(fn () => ['method' => 'collection']);
+        return $this->state(fn () => ['method' => 'pickup']);
     }
 
-    public function collected(): static
+    public function pickedUp(): static
     {
         return $this->state(fn () => [
-            'method' => 'collection',
-            'state' => 'collected',
+            'method' => 'pickup',
+            'state' => 'picked-up',
             'shipped_at' => now(),
         ]);
     }
