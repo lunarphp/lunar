@@ -1,0 +1,1682 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Admin API",
+        "version": "v1",
+        "description": "The Lunar admin API. Generated from the resource registry; add-on fields and endpoints appear automatically.",
+        "x-lunar-release": "dev",
+        "license": {
+            "name": "MIT",
+            "identifier": "MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://store.example/api/admin/v1",
+            "description": "Lunar"
+        }
+    ],
+    "security": [
+        {
+            "apiKey": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "products",
+            "x-group": "Products",
+            "description": "Every product in the catalogue, whatever its state, with raw attribute data and locale maps."
+        },
+        {
+            "name": "variants",
+            "x-group": "Variants",
+            "description": "A variant of a product with its stock levels and prices."
+        },
+        {
+            "name": "prices",
+            "x-group": "Prices",
+            "description": "A price of a variant for one currency, quantity break and customer group."
+        },
+        {
+            "name": "brands",
+            "x-group": "Brands",
+            "description": "Every brand in the catalogue, whatever its state."
+        },
+        {
+            "name": "api-keys",
+            "x-group": "API keys",
+            "description": "Credentials for the admin API. The token is returned once, when the key is issued; revoked keys stay listed for the audit trail."
+        }
+    ],
+    "paths": {
+        "/openapi.json": {
+            "get": {
+                "operationId": "openapi",
+                "x-hidden": true,
+                "summary": "Retrieve this OpenAPI document",
+                "responses": {
+                    "200": {
+                        "description": "Success."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "operationId": "productsIndex",
+                "tags": [
+                    "products"
+                ],
+                "summary": "List products",
+                "parameters": [
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated related resources to embed, nested with dots up to 3 levels.\n\n- `brand`: The brand, null when the product has none.\n- `variants`: Every variant of the product.\n- `variants.product`: The parent product.\n- `variants.product.brand`: The brand, null when the product has none.\n- `variants.product.variants`: Every variant of the product.\n- `variants.prices`: Every price of the variant.",
+                        "x-lunar-includes": [
+                            "brand",
+                            "variants",
+                            "variants.product",
+                            "variants.product.brand",
+                            "variants.product.variants",
+                            "variants.prices"
+                        ]
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "products": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of products to return: name, description, short_description, status, brand_id, product_type_id, attribute_data, created_at, updated_at, brand, variants."
+                                },
+                                "brands": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of brands to return: name, handle, status, description, short_description, created_at, updated_at."
+                                },
+                                "variants": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of variants to return: sku, gtin, mpn, ean, enabled, unit_quantity, min_quantity, quantity_increment, shippable, selling_policy, tax_ref, stock_on_hand, stock_available, created_at, updated_at, product, prices."
+                                },
+                                "prices": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of prices to return: price, list_price, currency, min_quantity, customer_group_id."
+                                }
+                            }
+                        },
+                        "description": "Sparse fieldsets per resource type, for example `fields[products]=name,slug`. `id` and `type` are always returned."
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "ne": {
+                                                    "type": "string"
+                                                },
+                                                "in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                },
+                                                "not_in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Match by public id. Operators: eq, ne, in, not_in."
+                                },
+                                "status": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "ne": {
+                                                    "type": "string"
+                                                },
+                                                "in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                },
+                                                "not_in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Match by lifecycle state. Operators: eq, ne, in, not_in."
+                                },
+                                "brand": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Products of the brand with this public id. Operators: eq, in."
+                                },
+                                "sku": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                },
+                                                "like": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Products with a variant matching this SKU. Operators: eq, in, like."
+                                },
+                                "updated_at": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "gt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "gte": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "lt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "lte": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Products changed before or after an instant, for incremental sync. Operators: gt, gte, lt, lte."
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "description": "Filters, for example `filter[handle]=acme` or `filter[price][gte]=1000`. `filter[name]=value` is shorthand for the `eq` operator."
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated sort keys; prefix a key with `-` to sort descending.\n\n- `created_at`: By creation time.\n- `updated_at`: By last change.",
+                        "x-lunar-sorts": [
+                            "created_at",
+                            "updated_at"
+                        ]
+                    },
+                    {
+                        "name": "page[number]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        },
+                        "description": "The page to return."
+                    },
+                    {
+                        "name": "page[size]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 15
+                        },
+                        "description": "Items per page."
+                    }
+                ],
+                "x-lunar-requires": [
+                    "catalog:read"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A page of products.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pagination": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "required": [
+                                                "pagination"
+                                            ]
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta",
+                                        "links"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "operationId": "productsShow",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Retrieve a product",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The public id of the product."
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated related resources to embed, nested with dots up to 3 levels.\n\n- `brand`: The brand, null when the product has none.\n- `variants`: Every variant of the product.\n- `variants.product`: The parent product.\n- `variants.product.brand`: The brand, null when the product has none.\n- `variants.product.variants`: Every variant of the product.\n- `variants.prices`: Every price of the variant.",
+                        "x-lunar-includes": [
+                            "brand",
+                            "variants",
+                            "variants.product",
+                            "variants.product.brand",
+                            "variants.product.variants",
+                            "variants.prices"
+                        ]
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "products": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of products to return: name, description, short_description, status, brand_id, product_type_id, attribute_data, created_at, updated_at, brand, variants."
+                                },
+                                "brands": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of brands to return: name, handle, status, description, short_description, created_at, updated_at."
+                                },
+                                "variants": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of variants to return: sku, gtin, mpn, ean, enabled, unit_quantity, min_quantity, quantity_increment, shippable, selling_policy, tax_ref, stock_on_hand, stock_available, created_at, updated_at, product, prices."
+                                },
+                                "prices": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of prices to return: price, list_price, currency, min_quantity, customer_group_id."
+                                }
+                            }
+                        },
+                        "description": "Sparse fieldsets per resource type, for example `fields[products]=name,slug`. `id` and `type` are always returned."
+                    }
+                ],
+                "x-lunar-requires": [
+                    "catalog:read"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The product.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/api-keys": {
+            "get": {
+                "operationId": "apiKeysIndex",
+                "tags": [
+                    "api-keys"
+                ],
+                "summary": "List API keys",
+                "parameters": [
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "api-keys": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of api-keys to return: name, token_prefix, abilities, staff_id, active, last_used_at, expires_at, revoked_at, created_at, updated_at."
+                                }
+                            }
+                        },
+                        "description": "Sparse fieldsets per resource type, for example `fields[products]=name,slug`. `id` and `type` are always returned."
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "ne": {
+                                                    "type": "string"
+                                                },
+                                                "in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                },
+                                                "not_in": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "description": "Comma-separated values."
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Match by public id. Operators: eq, ne, in, not_in."
+                                },
+                                "name": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "eq": {
+                                                    "type": "string"
+                                                },
+                                                "like": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    ],
+                                    "description": "Match by name. Operators: eq, like."
+                                },
+                                "active": {
+                                    "type": "boolean",
+                                    "description": "Only keys that are neither revoked nor expired when true. Operators: eq."
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "description": "Filters, for example `filter[handle]=acme` or `filter[price][gte]=1000`. `filter[name]=value` is shorthand for the `eq` operator."
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated sort keys; prefix a key with `-` to sort descending.\n\n- `name`: Alphabetical by name.\n- `created_at`: By issue time.\n- `last_used_at`: By last use.",
+                        "x-lunar-sorts": [
+                            "name",
+                            "created_at",
+                            "last_used_at"
+                        ]
+                    },
+                    {
+                        "name": "page[number]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        },
+                        "description": "The page to return."
+                    },
+                    {
+                        "name": "page[size]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 15
+                        },
+                        "description": "Items per page."
+                    }
+                ],
+                "x-lunar-requires": [
+                    "settings:manage-api-keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A page of API keys.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ApiKey"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pagination": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "required": [
+                                                "pagination"
+                                            ]
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta",
+                                        "links"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "apiKeysStore",
+                "tags": [
+                    "api-keys"
+                ],
+                "summary": "Issue an API key",
+                "description": "Creates a key with the given abilities. The plaintext token is returned in this response only; store it securely.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "A label for the integration the key belongs to."
+                                    },
+                                    "abilities": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Permission handles to grant, from the staff permission manifest, or * for every permission. At least one."
+                                    },
+                                    "staff_id": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "description": "Public id of the staff member the key acts as. Omit for a service key."
+                                    },
+                                    "expires_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time",
+                                        "description": "When the key stops authenticating. Must be in the future; omit for no expiry."
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "abilities"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "x-lunar-requires": [
+                    "settings:manage-api-keys"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The issued key with its plaintext token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/ApiKey"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "token": {
+                                                            "type": "string",
+                                                            "description": "The plaintext bearer token. Store it now; it is not retrievable later."
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "token"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/api-keys/{id}": {
+            "get": {
+                "operationId": "apiKeysShow",
+                "tags": [
+                    "api-keys"
+                ],
+                "summary": "Retrieve an API key",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The public id of the API key."
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "api-keys": {
+                                    "type": "string",
+                                    "description": "Comma-separated fields of api-keys to return: name, token_prefix, abilities, staff_id, active, last_used_at, expires_at, revoked_at, created_at, updated_at."
+                                }
+                            }
+                        },
+                        "description": "Sparse fieldsets per resource type, for example `fields[products]=name,slug`. `id` and `type` are always returned."
+                    }
+                ],
+                "x-lunar-requires": [
+                    "settings:manage-api-keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The API key.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ApiKey"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "apiKeysDestroy",
+                "tags": [
+                    "api-keys"
+                ],
+                "summary": "Revoke an API key",
+                "description": "Stops the key authenticating. Revoked keys stay listed so the audit trail keeps its actor.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The public id of the resource."
+                    }
+                ],
+                "x-lunar-requires": [
+                    "settings:manage-api-keys"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Done; no content."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UnprocessableEntity"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Product": {
+                "type": "object",
+                "title": "Product",
+                "description": "Every product in the catalogue, whatever its state, with raw attribute data and locale maps.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The public id of the product."
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "products",
+                        "description": "The resource type."
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/TranslationMap",
+                        "description": "The product name, keyed by locale."
+                    },
+                    "description": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TranslationMap"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The long description, keyed by locale."
+                    },
+                    "short_description": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TranslationMap"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The short description, keyed by locale."
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Lifecycle state: draft, published or archived."
+                    },
+                    "brand_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Public id of the brand, or null."
+                    },
+                    "product_type_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Public id of the product type."
+                    },
+                    "attribute_data": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Raw attribute values keyed by handle; translatable attributes are locale maps."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the product was created."
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the product was last updated."
+                    },
+                    "brand": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Brand"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The brand, null when the product has none. Present when included."
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Variant"
+                        },
+                        "description": "Every variant of the product. Present when included."
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "status",
+                    "attribute_data",
+                    "created_at",
+                    "updated_at"
+                ],
+                "x-lunar-type": "products"
+            },
+            "Variant": {
+                "type": "object",
+                "title": "Variant",
+                "description": "A variant of a product with its stock levels and prices.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The public id of the variant."
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "variants",
+                        "description": "The resource type."
+                    },
+                    "sku": {
+                        "type": "string",
+                        "description": "Stock keeping unit."
+                    },
+                    "gtin": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Global Trade Item Number."
+                    },
+                    "mpn": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Manufacturer Part Number."
+                    },
+                    "ean": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "European Article Number."
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether the variant is offered for sale."
+                    },
+                    "unit_quantity": {
+                        "type": "integer",
+                        "description": "Units in one sellable quantity."
+                    },
+                    "min_quantity": {
+                        "type": "integer",
+                        "description": "Smallest quantity that can be added to a cart."
+                    },
+                    "quantity_increment": {
+                        "type": "integer",
+                        "description": "Step between allowed quantities."
+                    },
+                    "shippable": {
+                        "type": "boolean",
+                        "description": "Whether the variant needs shipping."
+                    },
+                    "selling_policy": {
+                        "type": "string",
+                        "enum": [
+                            "always",
+                            "in_stock",
+                            "in_stock_or_on_backorder"
+                        ],
+                        "description": "How the variant sells relative to its stock."
+                    },
+                    "tax_ref": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Reference the tax driver uses to classify the variant."
+                    },
+                    "stock_on_hand": {
+                        "type": "integer",
+                        "description": "Units physically in stock."
+                    },
+                    "stock_available": {
+                        "type": "integer",
+                        "description": "Units available to sell after commitments and reservations."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the variant was created."
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the variant was last updated."
+                    },
+                    "product": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Product"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The parent product. Present when included."
+                    },
+                    "prices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Price"
+                        },
+                        "description": "Every price of the variant. Present when included."
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "sku",
+                    "enabled",
+                    "unit_quantity",
+                    "min_quantity",
+                    "quantity_increment",
+                    "shippable",
+                    "selling_policy",
+                    "stock_on_hand",
+                    "stock_available",
+                    "created_at",
+                    "updated_at"
+                ],
+                "x-lunar-type": "variants"
+            },
+            "Price": {
+                "type": "object",
+                "title": "Price",
+                "description": "A price of a variant for one currency, quantity break and customer group.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The public id of the price."
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "prices",
+                        "description": "The resource type."
+                    },
+                    "price": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Money"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The selling price."
+                    },
+                    "list_price": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Money"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The recommended or was price, when one is set."
+                    },
+                    "currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "ISO 4217 code of the price currency."
+                    },
+                    "min_quantity": {
+                        "type": "integer",
+                        "description": "The quantity from which this price applies."
+                    },
+                    "customer_group_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Public id of the customer group the price is for, or null for every group."
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "min_quantity"
+                ],
+                "x-lunar-type": "prices"
+            },
+            "Brand": {
+                "type": "object",
+                "title": "Brand",
+                "description": "Every brand in the catalogue, whatever its state.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The public id of the brand."
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "brands",
+                        "description": "The resource type."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The brand name."
+                    },
+                    "handle": {
+                        "type": "string",
+                        "description": "The unique handle."
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Lifecycle state, such as active or archived."
+                    },
+                    "description": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TranslationMap"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The long description, keyed by locale."
+                    },
+                    "short_description": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TranslationMap"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "The short description, keyed by locale."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the brand was created."
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the brand was last updated."
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "handle",
+                    "status",
+                    "created_at",
+                    "updated_at"
+                ],
+                "x-lunar-type": "brands"
+            },
+            "ApiKey": {
+                "type": "object",
+                "title": "API key",
+                "description": "Credentials for the admin API. The token is returned once, when the key is issued; revoked keys stay listed for the audit trail.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The public id of the api key."
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "api-keys",
+                        "description": "The resource type."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "A label for the integration the key belongs to."
+                    },
+                    "token_prefix": {
+                        "type": "string",
+                        "description": "The first characters of the token, to identify a key without exposing it."
+                    },
+                    "abilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Permission handles the key was granted, or * for every permission."
+                    },
+                    "staff_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Public id of the staff member the key acts as, or null for a service key."
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "Whether the key is neither revoked nor expired."
+                    },
+                    "last_used_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "When the key last authenticated a request."
+                    },
+                    "expires_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "When the key stops authenticating, or null for no expiry."
+                    },
+                    "revoked_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "When the key was revoked, or null while it is live."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the key was issued."
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the key was last changed."
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "token_prefix",
+                    "abilities",
+                    "active",
+                    "created_at",
+                    "updated_at"
+                ],
+                "x-lunar-type": "api-keys"
+            },
+            "Money": {
+                "type": "object",
+                "title": "Money",
+                "description": "A monetary amount in minor units with its currency, so arithmetic never needs to know the decimal places.",
+                "properties": {
+                    "amount": {
+                        "type": "integer",
+                        "description": "The amount in minor units (pence, cents)."
+                    },
+                    "currency": {
+                        "type": "string",
+                        "description": "ISO 4217 currency code."
+                    },
+                    "decimal_places": {
+                        "type": "integer",
+                        "description": "Minor units per major unit, as a power of ten."
+                    },
+                    "formatted": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The amount formatted for the request locale."
+                    }
+                },
+                "required": [
+                    "amount",
+                    "currency",
+                    "decimal_places",
+                    "formatted"
+                ]
+            },
+            "TranslationMap": {
+                "type": "object",
+                "title": "TranslationMap",
+                "description": "A translatable value: one entry per locale code.",
+                "additionalProperties": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "Error": {
+                "type": "object",
+                "title": "Error",
+                "description": "One JSON:API error object.",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "The HTTP status, as a string."
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "A stable machine-readable code, such as unknown_filter or validation_failed."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "A short human-readable summary."
+                    },
+                    "detail": {
+                        "type": "string",
+                        "description": "What went wrong for this occurrence."
+                    },
+                    "source": {
+                        "type": "object",
+                        "description": "Where the error originated: a query parameter, a JSON pointer into the body, or a header.",
+                        "properties": {
+                            "parameter": {
+                                "type": "string"
+                            },
+                            "pointer": {
+                                "type": "string"
+                            },
+                            "header": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "code",
+                    "title"
+                ]
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "title": "ErrorResponse",
+                "description": "Every error response: one or more error objects.",
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "required": [
+                    "errors"
+                ]
+            },
+            "PaginationMeta": {
+                "title": "PaginationMeta",
+                "description": "Page-number pagination, or cursor pagination when the request used page[cursor].",
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "PagePagination",
+                        "properties": {
+                            "page": {
+                                "type": "integer",
+                                "description": "The current page, from 1."
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "description": "Items per page."
+                            },
+                            "total": {
+                                "type": "integer",
+                                "description": "Total matching items."
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "description": "The last page number."
+                            }
+                        },
+                        "required": [
+                            "page",
+                            "per_page",
+                            "total",
+                            "last_page"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "CursorPagination",
+                        "properties": {
+                            "per_page": {
+                                "type": "integer",
+                                "description": "Items per page."
+                            },
+                            "next_cursor": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "Cursor for the next page, or null on the last."
+                            },
+                            "prev_cursor": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "Cursor for the previous page, or null on the first."
+                            }
+                        },
+                        "required": [
+                            "per_page",
+                            "next_cursor",
+                            "prev_cursor"
+                        ]
+                    }
+                ]
+            },
+            "Links": {
+                "type": "object",
+                "title": "Links",
+                "description": "Navigation links. Only self is present on item responses.",
+                "properties": {
+                    "self": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of this response."
+                    },
+                    "first": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "last": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "next": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "prev": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    }
+                },
+                "required": [
+                    "self"
+                ]
+            }
+        },
+        "responses": {
+            "Unauthorized": {
+                "description": "The credential is missing or invalid.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "The credential lacks the ability this endpoint requires.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "No resource with that id is visible to the request.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "UnprocessableEntity": {
+                "description": "A query parameter, header or body field is invalid. Each error names its source.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "TooManyRequests": {
+                "description": "The rate limit was exceeded. Retry after the Retry-After header.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKey": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "An admin API key issued with `lunar:api:key create` or `POST /api-keys`, or a token of the guard named by `lunar.api.admin.guard`. Abilities gate endpoints and fields; see `x-lunar-requires`."
+            }
+        }
+    }
+}
