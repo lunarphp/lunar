@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Config;
 use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
+use Lunar\SearchRelevance\Support\Attribution;
 use Lunar\Tests\SearchRelevance\Support\Fixtures;
 use Lunar\Tests\SearchRelevance\TestCase;
 
@@ -32,7 +33,7 @@ it('records a click and stores attribution in the session', function () {
         ->and($event->session_id)->toStartWith('session:')
         ->and($event->created_at)->not->toBeNull();
 
-    $attribution = session()->get('lunar_search_relevance.attribution.20');
+    $attribution = app(Attribution::class)->find(20);
 
     expect($attribution)->toMatchArray(['search_id' => $this->search->id, 'position' => 2, 'source' => 'learned', 'session_id' => $event->session_id])
         ->and($attribution['expires'])->toBeGreaterThan(now()->getTimestamp());
@@ -53,7 +54,7 @@ it('answers 204 without recording anything for bad input', function (array $payl
     postJson(route('lunar.search-relevance.events'), $payload)->assertNoContent();
 
     expect(SearchEvent::query()->count())->toBe(0)
-        ->and(session()->get('lunar_search_relevance.attribution'))->toBeNull();
+        ->and(app(Attribution::class)->find(10))->toBeNull();
 })->with([
     'unknown search' => fn () => ['search_id' => '01ARZ3NDEKTSV4RRFFQ69G5FAV', 'product_id' => 10, 'position' => 1],
     'malformed search id' => fn () => ['search_id' => 'nope', 'product_id' => 10, 'position' => 1],
@@ -97,5 +98,5 @@ it('drops events for searches older than the event window', function () {
     $this->postJson(route('lunar.search-relevance.events'), ['search_id' => $search->id, 'product_id' => 7, 'position' => 1])->assertNoContent();
 
     expect(SearchEvent::query()->count())->toBe(0)
-        ->and(session()->has('lunar_search_relevance.attribution.7'))->toBeFalse();
+        ->and(app(Attribution::class)->find(7))->toBeNull();
 });

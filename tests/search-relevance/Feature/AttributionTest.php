@@ -78,8 +78,28 @@ it('records a purchase for every placed order line carrying attribution', functi
     ]);
 });
 
+it('survives another request saving the session over it', function () {
+    app(Attribution::class)->remember($this->variant->product_id, $this->search->id, 1, 'organic', 'cart:7');
+
+    // A request that read the session before the click beacon wrote to it
+    // saves its own copy of the whole payload, without the attribution.
+    session()->flush();
+
+    CartLine::factory()->create(['purchasable_id' => $this->variant->id]);
+
+    expect(SearchEvent::query()->sole()->type)->toBe('basket');
+});
+
+it('keeps each shopper\'s attribution apart', function () {
+    app(Attribution::class)->remember($this->variant->product_id, $this->search->id, 1, 'organic', 'cart:7');
+
+    session()->setId(str_repeat('b', 40));
+
+    expect(app(Attribution::class)->find($this->variant->product_id))->toBeNull();
+});
+
 it('is null-safe without a session', function () {
-    $attribution = new Attribution(app('config'), null);
+    $attribution = new Attribution(app('config'), app('cache.store'), null);
 
     $attribution->remember(1, $this->search->id, 1, 'organic', 'cart:1');
 
