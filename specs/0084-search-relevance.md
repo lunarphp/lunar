@@ -380,7 +380,7 @@ Endpoint validation: `search_id` exists, `product_id` is in that search's `shown
 
 #### 2.7 Basket and purchase attribution
 
-- A click stores `attribution.{product_id} => {search_id, position, source, expires}` in the session for `attribution_ttl_minutes`.
+- A click stores `{search_id, position, source, session_id, expires}` in the default cache under `attribution:{session id}:{product_id}` for `attribution_ttl_minutes`. Not in the session: the click is a beacon racing the navigation or basket add it precedes, and Laravel writes the whole session payload at the end of each request, so the concurrent request would write the attribution away.
 - `CartLineObserver` is an Eloquent `created` observer on `Lunar\Core\Models\CartLine`. It resolves the line's product (purchasable to product), looks up attribution, and if present writes `meta['search_attribution']` on the line and dispatches a `basket` event.
 - `AttributeOrderLines` listens to `Lunar\Core\Events\Orders\OrderPlaced`. For every order line whose `meta` carries `search_attribution`, dispatch a `purchase` event. `Lunar\Core\Pipelines\Order\Creation\CreateOrderLines` already copies cart line `meta` to the order line (verified on 2.x), so no order pipeline step is needed.
 
