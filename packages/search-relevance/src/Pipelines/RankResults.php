@@ -116,7 +116,11 @@ class RankResults
     /** Build (or read from cache) the learned-union plus ranked window. */
     protected function rankedWindow(SearchResponse $response, RankingContext $context, HitCollection $original): HitCollection
     {
+        // The window's size is part of the key: it follows the page size, and
+        // a ranking cached for a wider window would slice into the pages the
+        // engine serves unwidened.
         $key = 'lunar.search_relevance.window:'.md5(implode('|', [
+            (string) ($response->request->context['relevance_window'] ?? ''),
             $context->modelType,
             $context->version,
             $context->mode,
