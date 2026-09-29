@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Support\Attribution;
@@ -99,4 +100,33 @@ it('drops events for searches older than the event window', function () {
 
     expect(SearchEvent::query()->count())->toBe(0)
         ->and(app(Attribution::class)->find(7))->toBeNull();
+});
+
+it('reads the shopper from their session cookie', function () {
+    $sessionId = Str::random(40);
+
+    $this->withCookie(config('session.cookie'), $sessionId)
+        ->post(route('lunar.search-relevance.events'), ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 1])
+        ->assertNoContent();
+
+    expect(SearchEvent::query()->sole()->session_id)->toBe('session:'.$sessionId);
+});
+
+it('does not save the session or send its cookie', function () {
+    $sessionId = Str::random(40);
+    $handler = app('session')->driver()->getHandler();
+
+    // Another request from the same shopper (a guest's first basket add)
+    // saves the session while the beacon is in flight, after the beacon has
+    // read it. The beacon must not write its stale copy back over it.
+    SearchQuery::retrieved(function () use ($handler, $sessionId) {
+        $handler->write($sessionId, serialize(['lunar_cart' => 5]));
+    });
+
+    $response = $this->withCookie(config('session.cookie'), $sessionId)
+        ->post(route('lunar.search-relevance.events'), ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 1]);
+
+    expect(unserialize($handler->read($sessionId)))->toBe(['lunar_cart' => 5]);
+
+    $response->assertNoContent()->assertCookieMissing(config('session.cookie'));
 });
