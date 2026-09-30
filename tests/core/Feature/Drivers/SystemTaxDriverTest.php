@@ -3,7 +3,9 @@
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Drivers\SystemTaxDriver;
+use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Currency;
@@ -243,4 +245,52 @@ test('can get breakdown with correct tax zone', function () {
 
     expect($breakdown->amounts[0]->price->value)->toEqual(100);
     expect($breakdown->amounts[1]->price->value)->toEqual(150);
+});
+
+test('looks the tax zone up once for lines sharing an address', function () {
+    $address = Address::factory()->create(['postcode' => 'SE1 1AA']);
+    $currency = Currency::factory()->create();
+    TaxZone::factory()->state(['default' => true])->create();
+    $variant = ProductVariant::factory()->create();
+
+    DB::enableQueryLog();
+
+    // Through the manager, as the cart pipeline does: one driver per request.
+    foreach (range(1, 3) as $i) {
+        Taxes::driver('system')
+            ->setShippingAddress($address)
+            ->setCurrency($currency)
+            ->setPurchasable($variant)
+            ->getBreakdown(1000);
+    }
+
+    $postcodeLookups = collect(DB::getQueryLog())
+        ->filter(fn (array $query): bool => str_contains($query['query'], 'tax_zone_postcodes'));
+
+    // The exact match and the prefix fallback, once, not once per line.
+    expect($postcodeLookups)->toHaveCount(2);
+});
+
+test('looks the tax zone up again for a different address', function () {
+    $currency = Currency::factory()->create();
+    TaxZone::factory()->state(['default' => true])->create();
+    $zone = TaxZone::factory()->state(['default' => false, 'active' => true])->create();
+    $zone->postcodes()->create(['postcode' => 'BT1 1AA']);
+
+    $taxClass = TaxClass::factory()->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $zone])->create()->id,
+        'percentage' => 10,
+    ]);
+    $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+
+    $breakdown = fn (Address $address): TaxBreakdown => app(SystemTaxDriver::class)
+        ->setShippingAddress($address)
+        ->setCurrency($currency)
+        ->setPurchasable($variant)
+        ->getBreakdown(1000);
+
+    expect($breakdown(Address::factory()->create(['postcode' => 'SE1 1AA']))->amounts)->toHaveCount(0)
+        ->and($breakdown(Address::factory()->create(['postcode' => 'BT1 1AA']))->amounts[0]->price->value)->toEqual(100);
 });
