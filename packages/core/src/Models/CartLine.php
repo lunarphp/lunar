@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Casts\TaxBreakdown as TaxBreakdownCast;
 use Lunar\Core\Database\Factories\CartLineFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Concerns\CachesProperties;
@@ -45,6 +46,7 @@ class CartLine extends Base
         'unitPrice',
         'unitPriceInclTax',
         'subTotal',
+        'subTotalDiscounted',
         'discountTotal',
         'taxAmount',
         'total',
@@ -121,7 +123,34 @@ class CartLine extends Base
     protected $casts = [
         'quantity' => 'integer',
         'meta' => AsArrayObject::class,
+        'tax_breakdown' => TaxBreakdownCast::class,
     ];
+
+    /**
+     * Columns written by the persisted totals snapshot (spec 0076); kept out
+     * of the activity log.
+     *
+     * @return array<int, string>
+     */
+    public static function totalsColumns(): array
+    {
+        return [
+            'unit_price',
+            'unit_price_incl_tax',
+            'sub_total',
+            'sub_total_discounted',
+            'discount_total',
+            'tax_total',
+            'total',
+            'tax_breakdown',
+            'promotion_description',
+        ];
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return static::totalsColumns();
+    }
 
     public function cart(): BelongsTo
     {

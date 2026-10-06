@@ -30,6 +30,35 @@ trait CachesProperties
     }
 
     /**
+     * Array access prefers a declared calculated property over an attribute of
+     * the same name, so `$line['total']` and `->pluck('total')` (which read
+     * models through ArrayAccess) return the PriceValue, as `$line->total`
+     * does, rather than the persisted `total` column.
+     */
+    public function offsetExists($offset): bool
+    {
+        if ($this->isCachableProperty($offset)) {
+            return isset($this->{$offset});
+        }
+
+        return parent::offsetExists($offset);
+    }
+
+    public function offsetGet($offset): mixed
+    {
+        if ($this->isCachableProperty($offset)) {
+            return $this->{$offset};
+        }
+
+        return parent::offsetGet($offset);
+    }
+
+    protected function isCachableProperty(mixed $key): bool
+    {
+        return is_string($key) && in_array($key, $this->cachableProperties, true);
+    }
+
+    /**
      * Returns a unique key for the cache.
      *
      * @return string

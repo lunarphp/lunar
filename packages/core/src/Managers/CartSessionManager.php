@@ -223,10 +223,10 @@ class CartSessionManager implements CartSession
 
             // Prices are resolved from the cart's loaded relations, and the
             // lines carry their own copy of the cart (see lunar.cart.eager_load).
-            // Without dropping these the next calculate() prices in the old
-            // currency.
-            $this->cart->unsetRelation('currency');
-            $this->cart->unsetRelation('lines');
+            // A refresh drops those and the in-memory totals memo, so the next
+            // calculate() prices in the new currency rather than serving the
+            // old one.
+            $this->cart->refresh();
         }
     }
 

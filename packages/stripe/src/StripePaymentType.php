@@ -199,7 +199,9 @@ class StripePaymentType extends AbstractPayment
             $expectedCurrency = $this->order->currency_code;
             $currency = $this->order->currency;
         } else {
-            $calculated = $this->cart->calculate();
+            // A persisted snapshot could be as old as the intent itself, so
+            // compare against a total the pipeline produced just now.
+            $calculated = $this->cart->recalculate();
             $expectedAmount = $calculated->total->value;
             $expectedCurrency = $calculated->currency->code;
             $currency = $calculated->currency;

@@ -147,7 +147,9 @@ class PaypalPaymentType extends AbstractPayment
             $expectedAmount = $this->order->total;
             $currency = $this->order->currency;
         } else {
-            $calculated = $this->cart->calculate();
+            // A persisted snapshot could be as old as the PayPal order itself,
+            // so compare against a total the pipeline produced just now.
+            $calculated = $this->cart->recalculate();
             $expectedAmount = $calculated->total->value;
             $currency = $calculated->currency;
         }
