@@ -2,9 +2,9 @@
 
 namespace Lunar\Panel\Http\Controllers\Customers;
 
+use Carbon\CarbonInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Customers\DeletesCustomer;
@@ -193,13 +193,13 @@ class CustomerEditController
         };
         $start = $start->subMonths($months - $stepMonths);
 
-        $bucketKey = fn (Carbon $date): string => match ($bucket) {
+        $bucketKey = fn (CarbonInterface $date): string => match ($bucket) {
             'month' => $date->format('Y-m'),
             'quarter' => $date->year.'-'.$date->quarter,
             'year' => (string) $date->year,
         };
 
-        $bucketLabel = fn (Carbon $date): string => match ($bucket) {
+        $bucketLabel = fn (CarbonInterface $date): string => match ($bucket) {
             'month' => $date->translatedFormat('M y'),
             'quarter' => 'Q'.$date->quarter.' '.$date->year,
             'year' => (string) $date->year,
@@ -218,7 +218,9 @@ class CustomerEditController
 
         $buckets = [];
 
-        for ($date = $start->copy(); $date->lessThanOrEqualTo(now()); $date->addMonths($stepMonths)) {
+        // Reassigned rather than mutated so this also works when the app opts
+        // into immutable dates (Date::use(CarbonImmutable::class)).
+        for ($date = $start->copy(); $date->lessThanOrEqualTo(now()); $date = $date->addMonths($stepMonths)) {
             $minor = $spendByBucket[$bucketKey($date)] ?? 0;
 
             $buckets[] = [
