@@ -34,7 +34,7 @@ php artisan migrate
 | Entity selectors | `Lunar\Filament\Forms\Components\*Select` | `ProductSelect`, `CollectionSelect`, `CurrencySelect` |
 | Generic form components | `Lunar\Filament\Forms\Components\*` | `Attributes`, `TranslatedText`, `MediaSelect`, `Tags`, `Vimeo`, `YouTube` |
 | Table columns | `Lunar\Filament\Tables\Columns\*` | `TranslatedTextColumn`, `ThumbnailImageColumn` |
-| Infolist entries | `Lunar\Filament\Infolists\Components\*` | `Timeline`, `Tags`, `Transaction` |
+| Infolist entries | `Lunar\Filament\Infolists\Components\*` | `Tags`, `Transaction` |
 | Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, `LocationForm`, `RegionForm`, … (22 models) |
 | Resource tables | `Lunar\Filament\Tables\{Model}\{Model}Table` | `ProductTable`, `OrderTable`, … |
 | Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions, ProductOption values, … |
@@ -248,7 +248,6 @@ ThumbnailImageColumn::make('thumbnail')
 
 ## Infolist entries
 
-- `Lunar\Filament\Infolists\Components\Timeline` — activity-log timeline (Spatie Activitylog backed).
 - `Lunar\Filament\Infolists\Components\Tags` — read-only tag chips.
 - `Lunar\Filament\Infolists\Components\Transaction` — payment-transaction summary card.
 
@@ -314,7 +313,6 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Orders\ReopenOrderAction` | `Core\Actions\Orders\ReopenOrder` | Order header (un-archive a closed order) |
 | `Orders\NotifyCustomerAction` | `Core\Actions\Orders\NotifyCustomer` | Order header (compose + send a customer notification from the order-scoped, sendable entries of the `OrderNotifications` catalogue; hidden when none are sendable) |
 | `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
-| `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
 | `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |
 | `Products\PublishProductsBulkAction` / `UnpublishProductsBulkAction` / `ArchiveProductsBulkAction` | `Core\Actions\Products\UpdateProductStatus` | Product table |
 | `Products\AdjustStockAction` | `Core\Actions\Products\AdjustStock` | Variant row |
@@ -539,7 +537,6 @@ Publish and tweak `config/lunar/filament.php` to change:
 
 - `publish_path` — where stub publication writes files (default: `app/Filament`).
 - `resolver.prefer_published` — runtime preference between published and bridge classes.
-- `register_widgets_on_default_panel` — opt-in auto-registration of the dashboard widgets (off by default for downstream-panel installs).
 - `record_url_resolvers` — closures that map a record + key to a URL inside your panel.
 - `enable_variants` — whether the variants manager shows when editing a product (default: `true`).
 - `pdf_rendering` — `'download'` or `'stream'`, controlling how PDFs are handled when browsing the resource (default: `'download'`).

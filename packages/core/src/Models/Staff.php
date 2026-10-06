@@ -44,8 +44,6 @@ class Staff extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-    protected $guard_name = 'staff';
-
     protected $fillable = [
         'first_name',
         'last_name',
@@ -88,6 +86,15 @@ class Staff extends Authenticatable
     protected static function newFactory(): StaffFactory
     {
         return StaffFactory::new();
+    }
+
+    /**
+     * Spatie permission checks resolve against this guard, so it must follow
+     * the configured staff guard rather than pin the default name.
+     */
+    public function guardName(): string
+    {
+        return config('lunar.staff.guard', 'staff');
     }
 
     /**

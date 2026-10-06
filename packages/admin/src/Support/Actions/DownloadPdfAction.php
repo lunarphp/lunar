@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Filament\Actions\Support;
+namespace Lunar\Admin\Support\Actions;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Closure;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\URL;
 
 /**
  * Generic "render a Blade view as a PDF" action. Subclass it (e.g. as
- * `Lunar\Filament\Actions\Orders\DownloadOrderPdfAction`) to pre-wire the
+ * `Lunar\Admin\Support\Actions\Orders\DownloadOrderPdfAction`) to pre-wire the
  * `pdfView` and filename for a specific resource.
  *
  * Honours `lunar.filament.pdf_rendering` — "stream" emits a temporary signed

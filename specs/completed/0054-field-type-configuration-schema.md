@@ -1,6 +1,6 @@
 # 0054 — Declarative field-type configuration schema
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn (with Claude)
 - Created: 2026-07-20
 - TODO item: Panel settings — attribute field-type configuration

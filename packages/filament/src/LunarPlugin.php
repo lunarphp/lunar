@@ -17,10 +17,6 @@ class LunarPlugin implements Plugin
 {
     protected bool $widgets = false;
 
-    protected bool $globalSearch = false;
-
-    protected bool $actions = false;
-
     protected bool $livewireComponents = false;
 
     /**
@@ -44,14 +40,14 @@ class LunarPlugin implements Plugin
     }
 
     /**
-     * Enable everything the bridge ships.
+     * Enable everything the bridge ships. The class-based actions and
+     * global-search descriptors need no registration — resources and pages
+     * reference them directly.
      */
     public function fullPreset(): static
     {
         return $this
             ->widgets()
-            ->globalSearch()
-            ->actions()
             ->livewireComponents();
     }
 
@@ -73,26 +69,6 @@ class LunarPlugin implements Plugin
         if (is_array($extras)) {
             $this->extraWidgets = array_merge($this->extraWidgets, $extras);
         }
-
-        return $this;
-    }
-
-    /**
-     * Enable Lunar's global-search descriptors. Resources opt-in by extending GlobalSearchDescriptor.
-     */
-    public function globalSearch(bool $enabled = true): static
-    {
-        $this->globalSearch = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * Enable Lunar's first-party actions library. Actions are referenced directly by resources/pages; this flag is a toggle for downstream wiring.
-     */
-    public function actions(bool $enabled = true): static
-    {
-        $this->actions = $enabled;
 
         return $this;
     }
@@ -132,13 +108,7 @@ class LunarPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        // The bridge's class-based actions and global-search descriptors are referenced directly
-        // from resources/pages. Toggles are persisted via config for downstream consumers that
-        // want to gate UI affordances on whether the plugin enabled them.
-        config([
-            'lunar.filament.plugin.global_search' => $this->globalSearch,
-            'lunar.filament.plugin.actions' => $this->actions,
-        ]);
+        //
     }
 
     /**
