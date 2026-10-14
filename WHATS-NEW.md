@@ -87,6 +87,12 @@ produces an immutable `StorefrontContext` DTO (channel, currency, language,
 region, customer, groups), so non-session code (APIs, jobs, tests) works from an
 explicit context instead of reaching into session state.
 
+Guest carts now outlive the session. A long-lived cookie points back to the
+cart (only a hash of its token is stored), so a store can keep a short session
+lifetime without losing carts. Each restore refreshes the cookie's expiry, and
+user-owned, merged and ordered carts are never restored from it. Configure it
+under `lunar.cart_session.remember`.
+
 ## Customer notifications
 
 Order notifications are configured through an `OrderNotifications` manifest

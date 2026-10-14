@@ -60,6 +60,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
+ * @property ?string $remember_token
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -204,6 +205,13 @@ class Cart extends Base
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * @var list<string>
+     */
+    protected $hidden = [
+        'remember_token',
+    ];
 
     /**
      * The attributes that should be cast.
@@ -727,5 +735,12 @@ class Cart extends Base
         $this->save();
 
         return $this->refresh()->recalculate();
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [
+            'remember_token',
+        ];
     }
 }
