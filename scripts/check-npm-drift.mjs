@@ -29,6 +29,13 @@ const PACKAGES = {
     '@lunarphp/panel-vite-plugin': {
         dir: 'packages/panel/resources/package',
     },
+    '@lunarphp/search-relevance': {
+        dir: 'packages/search-relevance/resources/client',
+        // dist is tracked (the Blade component inlines the IIFE build), but
+        // refuse to compare against a stale one.
+        requires: 'packages/search-relevance/resources/client/dist/index.d.ts',
+        hint: 'run `npm run build --workspace @lunarphp/search-relevance` first',
+    },
 };
 
 const npm = (...args) => execFileSync('npm', args, { encoding: 'utf8' }).trim();

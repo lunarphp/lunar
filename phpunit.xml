@@ -29,6 +29,10 @@
             <directory suffix="Test.php">tests/search/Feature</directory>
             <directory suffix="Test.php">tests/search/Unit</directory>
         </testsuite>
+        <testsuite name="search-relevance">
+            <directory suffix="Test.php">tests/search-relevance/Feature</directory>
+            <directory suffix="Test.php">tests/search-relevance/Unit</directory>
+        </testsuite>
         <testsuite name="stripe">
             <directory suffix="Test.php">tests/stripe/Unit</directory>
         </testsuite>
