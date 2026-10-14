@@ -137,5 +137,6 @@ The cookie lifetime should be shorter than `lunar.cart.prune_tables.prune_interv
 
 ## Implementation plan
 
-- [ ] Slice 1 — `remember_token` column, `remember` config block, `EncryptCookies::except()` registration, `CartSessionManager` resolution/issue/clear logic, `Cart::$hidden`. Tests: guest cart restored after the session is flushed; restore re-queues the same token with a fresh expiry and touches the cart; cookie forgotten for a missing, merged, completed or user-owned cart; token cleared on `associate()` and `forget()`; no query or `Set-Cookie` when the cookie already matches; no cookie when remembering is disabled; no cookie for a user-owned cart.
-- [ ] Slice 2 — upgrade package schema step for the new column, and docs (cart session guide covering config, the pruning pairing and the `auto_create` recommendation).
+- [x] Slice 1 — `remember_token` column, `remember` config block, `EncryptCookies::except()` registration, `CartSessionManager` resolution/issue/clear logic, `Cart::$hidden`. Tests: guest cart restored after the session is flushed; restore re-queues the same token with a fresh expiry and touches the cart; cookie forgotten for a missing, merged, completed or user-owned cart; token cleared on `associate()` and `forget()`; no query or `Set-Cookie` when the cookie already matches; no cookie when remembering is disabled; no cookie for a user-owned cart.
+- [x] Slice 2 — upgrade package schema step for the new column (`2026_06_01_000017_add_cart_remember_token`), the `WHATS-NEW.md` entry, and the config docblock covering the pruning pairing and the `auto_create` recommendation.
+- [ ] Slice 3 — cart session guide on the docs site.
