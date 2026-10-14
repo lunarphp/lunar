@@ -61,7 +61,12 @@ if (! function_exists('db_date')) {
         $select = "DATE_FORMAT({$column}, '{$format}')";
 
         if ($driver == 'pgsql') {
-            $format = str_replace('%', '', $format);
+            $format = strtr($format, [
+                '%Y' => 'YYYY',
+                '%m' => 'MM',
+                '%M' => 'FMMonth',
+                '%d' => 'DD',
+            ]);
             $select = "TO_CHAR({$column} :: DATE, '{$format}')";
         }
 
