@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Đang chờ xử lý',
         'in-progress' => 'Đang xử lý',
-        'ready-for-collection' => 'Sẵn sàng để nhận',
+        'ready-for-pickup' => 'Sẵn sàng để nhận',
         'shipped' => 'Đã giao',
-        'collected' => 'Đã nhận',
+        'picked-up' => 'Đã nhận',
         'provisioned' => 'Đã cung cấp',
         'cancelled' => 'Đã hủy',
         'returned' => 'Đã trả',

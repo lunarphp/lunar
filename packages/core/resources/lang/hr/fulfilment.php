@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Dostava',
-        'collection' => 'Preuzimanje',
+        'pickup' => 'Preuzimanje',
         'digital' => 'Digitalno',
     ],
 

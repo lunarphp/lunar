@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'در انتظار',
         'in-progress' => 'در حال انجام',
-        'ready-for-collection' => 'آماده تحویل حضوری',
+        'ready-for-pickup' => 'آماده تحویل حضوری',
         'shipped' => 'ارسال‌شده',
-        'collected' => 'تحویل‌گرفته‌شده',
+        'picked-up' => 'تحویل‌گرفته‌شده',
         'provisioned' => 'تأمین‌شده دیجیتال',
         'cancelled' => 'لغوشده',
         'returned' => 'بازگشت‌داده‌شده',
