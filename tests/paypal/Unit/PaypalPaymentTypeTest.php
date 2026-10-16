@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Transaction;
+use Lunar\Paypal\Managers\PaypalManager;
 use Lunar\Paypal\Models\PaypalOrder;
 use Lunar\Paypal\PaypalPaymentType;
 use Lunar\Tests\Paypal\Unit\TestCase;
@@ -408,4 +410,23 @@ it('returns no checks when paypal sent no processor response', function () {
     ]);
 
     expect((new PaypalPaymentType)->getPaymentChecks($capture)->getChecks())->toBeEmpty();
+});
+
+it('refuses a paypal order that matches a stale persisted total but not the pipeline result', function () {
+    $cart = CartBuilder::build()->calculate();
+
+    // Tamper with the persisted snapshot so the row reads a lower total than
+    // the pipeline produces, while still looking fresh.
+    Cart::query()->whereKey($cart->id)->toBase()->update(['total' => 100]);
+
+    PaypalFake::forCart($cart, ['amount' => PaypalManager::toPaypalAmount(100, $cart->currency)]);
+
+    $response = (new PaypalPaymentType)->cart(Cart::query()->find($cart->id))->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('PayPal order amount does not cover the order total');
+
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/capture'));
 });

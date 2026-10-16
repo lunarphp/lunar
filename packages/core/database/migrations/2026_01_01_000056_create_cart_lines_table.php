@@ -16,6 +16,17 @@ return new class extends Migration
             $table->unsignedInteger('quantity');
             $table->jsonb('meta')->nullable();
             $table->timestamps();
+
+            // Persisted totals snapshot (spec 0076). NULL means "not calculated".
+            $table->unsignedBigInteger('unit_price')->nullable();
+            $table->unsignedBigInteger('unit_price_incl_tax')->nullable();
+            $table->unsignedBigInteger('sub_total')->nullable();
+            $table->unsignedBigInteger('sub_total_discounted')->nullable();
+            $table->unsignedBigInteger('discount_total')->nullable();
+            $table->unsignedBigInteger('tax_total')->nullable();
+            $table->unsignedBigInteger('total')->nullable();
+            $table->jsonb('tax_breakdown')->nullable();
+            $table->string('promotion_description')->nullable();
         });
     }
 

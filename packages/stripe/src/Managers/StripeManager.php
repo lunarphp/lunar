@@ -150,7 +150,7 @@ class StripeManager
             return;
         }
 
-        $cart = $cart->calculate();
+        $cart = $cart->recalculate();
 
         $this->getClient()->paymentIntents->update(
             $intentId,
