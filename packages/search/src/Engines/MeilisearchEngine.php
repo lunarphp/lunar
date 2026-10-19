@@ -208,17 +208,32 @@ class MeilisearchEngine extends AbstractEngine
 
     protected function mapFilter(string $field, mixed $value): string
     {
-        $values = collect($value);
+        $values = collect($value)
+            ->filter(fn ($value) => is_scalar($value))
+            ->map(fn ($value) => $this->quoteFilterValue($value));
 
         if ($values->count() > 1) {
             $values = $values->map(
-                fn ($value) => "{$field} = \"{$value}\""
+                fn (string $value) => "{$field} = {$value}"
             );
 
             return '('.$values->join(' OR ').')';
         }
 
-        return $field.' = "'.$values->first().'"';
+        return $field.' = '.($values->first() ?? '""');
+    }
+
+    /**
+     * Render a filter value as a double-quoted Meilisearch string.
+     *
+     * Values usually come from the request, so an embedded double quote must
+     * not close the string and let the rest of the value append conditions
+     * (`x" OR brand = "y`). Meilisearch escapes both the quote and the
+     * backslash itself with a backslash.
+     */
+    protected function quoteFilterValue(mixed $value): string
+    {
+        return '"'.addcslashes((string) $value, '"\\').'"';
     }
 
     protected function getFieldConfig(): array

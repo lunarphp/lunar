@@ -541,6 +541,65 @@ it('quotes facet filter values for fields the schema does not declare', function
         ->toContain('colour:=`Red`');
 });
 
+it('strips backticks so a string facet value cannot close its literal', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+        ['name' => 'collection_ids', 'type' => 'int64[]'],
+    ]);
+
+    $filters = typesenseTestEngine()
+        ->filter(['collection_ids' => [12]])
+        ->setFacets(['brand' => ['x` || collection_ids:1 || brand:=`y']])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    // One literal, and the host's collection restriction still applies.
+    expect($filters)->toBe('collection_ids:12 && brand:=`x || collection_ids:1 || brand:=y`');
+});
+
+it('strips backticks from facet values for fields the schema does not declare', function () {
+    $filters = typesenseTestEngine()
+        ->setFacets(['colour' => ['Red`', '`Blue']])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)->toBe('colour:[`Red`,`Blue`]');
+});
+
+it('drops numeric facet values that are not plain numbers', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+        ['name' => 'price', 'type' => 'int64'],
+        ['name' => 'stock_level', 'type' => 'int32'],
+    ]);
+
+    // Numeric values are rendered bare, so they must not carry filter syntax.
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'brand' => ['3M'],
+            'price' => ['100', '1 || brand:=`x`', '-2.5', '1e3'],
+            'stock_level' => ['>0'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)->toBe('brand:=`3M` && price:[100,-2.5]');
+});
+
+it('ignores nested arrays in facet values instead of failing', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+        ['name' => 'categories', 'type' => 'string[]'],
+    ]);
+
+    // ?brand[][]=x arrives as a list holding a list.
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'brand' => [['x']],
+            'categories' => [['Cable'], 'Lighting'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)->toBe('categories:=`Lighting`');
+});
+
 it('merges withParams() overrides into the request last and drops null keys', function () {
     $options = ['query_by' => 'name, embedding', 'filter_by' => []];
 
