@@ -85,6 +85,9 @@ it('keeps drafts invisible to other staff', function () {
         'data' => ['first_name' => 'Changed'],
     ])->assertOk();
 
+    // A second staff member signs in with a session of their own; drop the
+    // first one's stored password hash, or the session check ends the request.
+    session()->forget('password_hash_staff');
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $this->get(route('panel.customers.edit', $customer))
