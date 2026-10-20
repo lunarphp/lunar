@@ -23,8 +23,11 @@ class PasswordController
             'remember_token' => Str::random(60),
         ])->save();
 
-        // Ends the staff member's other panel sessions (checked by
-        // AuthenticateSession on their next request) and keeps this one.
+        // The new hash already ends every other panel session (checked by
+        // AuthenticatePanelSession on their next request), and this one keeps
+        // working because the middleware stores the new hash after this
+        // response. This call re-queues this browser's remember cookie with
+        // the token just rotated, so remember-me survives here and only here.
         Auth::guard($manager->guard())->logoutOtherDevices($validated['password']);
 
         return back()->with('success', __('panel::auth.password_updated'));

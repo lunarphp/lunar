@@ -1,7 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Notifications\TwoFactorEmailCode;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -57,7 +60,53 @@ test('changing the password rotates the remember token', function () {
 });
 
 test('the storefront password hash is left alone', function () {
-    $this->actingAs($this->staff, 'staff')
+    $this->withSession(['password_hash_web' => 'storefront-hash'])
+        ->actingAs($this->staff, 'staff')
         ->get(route('panel.dashboard'))
-        ->assertSessionMissing('password_hash_web');
+        ->assertOk()
+        ->assertSessionHas('password_hash_web', 'storefront-hash')
+        ->assertSessionHas('password_hash_staff');
+});
+
+test('changing the password keeps remember-me on this browser with the new token', function () {
+    $recaller = Auth::guard('staff')->getRecallerName();
+    $hash = Auth::guard('staff')->hashPasswordForCookie($this->staff->password);
+
+    $response = $this->actingAs($this->staff, 'staff')
+        ->withCookie($recaller, $this->staff->id.'|old-remember-token|'.$hash)
+        ->put(route('panel.account.password.update'), [
+            'current_password' => 'password',
+            'password' => 'new-secret-password',
+            'password_confirmation' => 'new-secret-password',
+        ])
+        ->assertSessionHas('success')
+        ->assertCookie($recaller);
+
+    $token = $this->staff->fresh()->remember_token;
+
+    expect($token)->not->toBe('old-remember-token')
+        ->and(explode('|', $response->getCookie($recaller)->getValue())[1] ?? null)->toBe($token);
+});
+
+test('a new sign-in does not inherit an earlier staff member\'s stored hash', function () {
+    // The guard's login() writes the signing-in member's hash over any left
+    // in the session, so a stale one never ends the new session.
+    Notification::fake();
+
+    $this->withSession(['password_hash_staff' => 'left-by-someone-else']);
+
+    $this->post(route('panel.login.store'), ['email' => $this->staff->email, 'password' => 'password'])
+        ->assertRedirect(route('panel.two-factor.challenge'));
+
+    $code = null;
+    Notification::assertSentTo($this->staff, TwoFactorEmailCode::class, function (TwoFactorEmailCode $notification) use (&$code) {
+        $code = $notification->code;
+
+        return true;
+    });
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => $code])
+        ->assertRedirect(route('panel.dashboard'));
+
+    $this->get(route('panel.dashboard'))->assertOk();
 });

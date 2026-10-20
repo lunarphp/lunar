@@ -201,9 +201,11 @@ class PanelServiceProvider extends ServiceProvider
         /*
          * AuthenticatePanelSession sits after Authenticate (which makes the
          * panel guard the request default), so a staff password change or
-         * reset ends every other panel session on its next request. It stays
-         * off the bare `lunar.panel` group so routes that reuse that group
-         * without the panel's Authenticate (Horizon, say) are unaffected.
+         * reset ends every other panel session on its next request. It is
+         * not in the bare `lunar.panel` group because the login and two-factor
+         * routes use that group without Authenticate, where the default guard
+         * is still the host's. A host that mounts other routes on the panel
+         * session (Horizon, say) should add it after Authenticate there too.
          */
         Route::middleware([...$middleware, Authenticate::class, AuthenticatePanelSession::class, HandlePanelInertiaRequests::class])
             ->prefix($prefix)
