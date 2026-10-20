@@ -13,9 +13,9 @@ function thumbnailRecord(string $url): Model
     {
         protected $guarded = [];
 
-        public function getThumbnailImage(): string
+        public function getThumbnailImage(): ?string
         {
-            return $this->url;
+            return $this->url !== '' ? $this->url : null;
         }
     };
 }
