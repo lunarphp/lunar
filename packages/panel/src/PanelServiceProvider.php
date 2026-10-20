@@ -19,6 +19,7 @@ use Lunar\Panel\Contracts\DraftManager as DraftManagerContract;
 use Lunar\Panel\Drafts\DraftManager;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Middleware\Authenticate;
+use Lunar\Panel\Http\Middleware\AuthenticatePanelSession;
 use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationItem;
@@ -197,7 +198,14 @@ class PanelServiceProvider extends ServiceProvider
             ->prefix($prefix)
             ->group("{$this->root}/routes/auth.php");
 
-        Route::middleware([...$middleware, Authenticate::class, HandlePanelInertiaRequests::class])
+        /*
+         * AuthenticatePanelSession sits after Authenticate (which makes the
+         * panel guard the request default), so a staff password change or
+         * reset ends every other panel session on its next request. It stays
+         * off the bare `lunar.panel` group so routes that reuse that group
+         * without the panel's Authenticate (Horizon, say) are unaffected.
+         */
+        Route::middleware([...$middleware, Authenticate::class, AuthenticatePanelSession::class, HandlePanelInertiaRequests::class])
             ->prefix($prefix)
             ->group(function () use ($manager): void {
                 $this->loadRoutesFrom("{$this->root}/routes/web.php");
