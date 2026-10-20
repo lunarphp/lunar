@@ -177,7 +177,7 @@ class ProductEditController
                 'stock' => $variant->stock_available,
                 'enabled' => $variant->enabled,
                 'locked' => in_array($variant->id, $orderedVariantIds, true),
-                'thumbnail' => $variant->getThumbnailImage() ?: null,
+                'thumbnail' => $variant->getThumbnailImage(),
                 'edit_url' => route('panel.products.variants.edit', [$product, $variant]),
             ]),
             'variant' => $soleVariant ? $this->variantPayload($product, $soleVariant) : null,
