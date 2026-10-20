@@ -94,3 +94,30 @@ it('can search complete results', function () {
         ->and($results->facets[0]->values[0]->label)
         ->toBe('Nike');
 });
+
+it('escapes double quotes and backslashes so a filter value cannot close its string', function () {
+    $engine = new class extends MeilisearchEngine
+    {
+        public function exposedMapFilter(string $field, mixed $value): string
+        {
+            return $this->mapFilter($field, $value);
+        }
+    };
+
+    expect($engine->exposedMapFilter('brand', ['x" OR brand = "y']))
+        ->toBe('brand = "x\" OR brand = \"y"')
+        ->and($engine->exposedMapFilter('brand', ['a\\', 'b']))
+        ->toBe('(brand = "a\\\\" OR brand = "b")');
+});
+
+it('ignores nested arrays in filter values instead of failing', function () {
+    $engine = new class extends MeilisearchEngine
+    {
+        public function exposedMapFilter(string $field, mixed $value): string
+        {
+            return $this->mapFilter($field, $value);
+        }
+    };
+
+    expect($engine->exposedMapFilter('brand', [['x'], 'Hager']))->toBe('brand = "Hager"');
+});

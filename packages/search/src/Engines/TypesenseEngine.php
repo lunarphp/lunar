@@ -219,9 +219,18 @@ class TypesenseEngine extends AbstractEngine
             foreach ($searchQuery->facetFilters as $field => $values) {
                 $fieldType = $this->getFieldType($field);
 
-                $values = collect($values)->map(
-                    fn ($value) => $this->quoteFilterValue($value, $fieldType)
-                );
+                // Facet values usually arrive straight from the request, so a
+                // nested array or a value the field cannot hold is dropped
+                // rather than rendered into the filter.
+                $values = collect($values)
+                    ->filter(fn ($value) => is_scalar($value))
+                    ->map(fn ($value) => $this->quoteFilterValue($value, $fieldType))
+                    ->filter(fn (?string $value) => $value !== null)
+                    ->values();
+
+                if ($values->isEmpty()) {
+                    continue;
+                }
 
                 if ($values->count() > 1) {
                     $filters->push($field.':['.collect($values)->join(',').']');
@@ -371,8 +380,15 @@ class TypesenseEngine extends AbstractEngine
      *
      * A field the schema does not declare keeps the quoted form it has always
      * had, so a host that configures its collection elsewhere cannot regress.
+     *
+     * Values usually come from the request, so neither form may carry filter
+     * syntax: a backtick inside a string literal would close it and let the
+     * rest of the value append clauses (`x` || collection_ids:1`), and a
+     * numeric field is rendered bare, so anything but a plain number is
+     * refused. Typesense has no escape for a backtick inside a literal, so it
+     * is removed. Null means the value cannot be used on this field.
      */
-    protected function quoteFilterValue(mixed $value, ?string $type): string
+    protected function quoteFilterValue(mixed $value, ?string $type): ?string
     {
         // Booleans have never been quoted — keep the literal strings working
         // for hosts that pass them through from a request.
@@ -383,14 +399,16 @@ class TypesenseEngine extends AbstractEngine
         $baseType = str_replace('[]', '', (string) $type);
 
         if (in_array($baseType, ['int32', 'int64', 'float'], true)) {
-            return (string) $value;
+            $number = trim((string) $value);
+
+            return preg_match('/^-?\d+(\.\d+)?$/', $number) === 1 ? $number : null;
         }
 
         if ($baseType === 'bool') {
             return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
         }
 
-        return '`'.$value.'`';
+        return '`'.str_replace('`', '', (string) $value).'`';
     }
 
     protected function getFieldType(string $field): ?string
