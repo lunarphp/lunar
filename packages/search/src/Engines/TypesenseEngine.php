@@ -217,11 +217,23 @@ class TypesenseEngine extends AbstractEngine
             $facetQuery = $facetQuery->join(',');
 
             foreach ($searchQuery->facetFilters as $field => $values) {
+                // Facet names and values usually come from the request, so
+                // anything that is not a plain field name or a value of the
+                // field's type is dropped rather than written into filter_by.
+                if (! is_string($field) || ! preg_match('/^[A-Za-z0-9_.]+$/', $field)) {
+                    continue;
+                }
+
                 $fieldType = $this->getFieldType($field);
 
-                $values = collect($values)->map(
-                    fn ($value) => $this->quoteFilterValue($value, $fieldType)
-                );
+                $values = collect($values)
+                    ->map(fn ($value) => $this->quoteFilterValue($value, $fieldType))
+                    ->filter(fn (?string $value): bool => $value !== null)
+                    ->values();
+
+                if ($values->isEmpty()) {
+                    continue;
+                }
 
                 if ($values->count() > 1) {
                     $filters->push($field.':['.collect($values)->join(',').']');
@@ -371,9 +383,16 @@ class TypesenseEngine extends AbstractEngine
      *
      * A field the schema does not declare keeps the quoted form it has always
      * had, so a host that configures its collection elsewhere cannot regress.
+     *
+     * Null for a value that cannot be written safely (a non-scalar, or a
+     * non-number on a numeric field); the caller drops it.
      */
-    protected function quoteFilterValue(mixed $value, ?string $type): string
+    protected function quoteFilterValue(mixed $value, ?string $type): ?string
     {
+        if (! is_scalar($value)) {
+            return null;
+        }
+
         // Booleans have never been quoted — keep the literal strings working
         // for hosts that pass them through from a request.
         if (is_bool($value) || $value === 'true' || $value === 'false') {
@@ -382,15 +401,18 @@ class TypesenseEngine extends AbstractEngine
 
         $baseType = str_replace('[]', '', (string) $type);
 
+        // Unquoted, so only an actual number may pass: anything else could
+        // carry its own filter_by clause.
         if (in_array($baseType, ['int32', 'int64', 'float'], true)) {
-            return (string) $value;
+            return is_numeric($value) ? (string) $value : null;
         }
 
         if ($baseType === 'bool') {
             return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
         }
 
-        return '`'.$value.'`';
+        // filter_by has no escape for a backtick inside a quoted literal.
+        return '`'.str_replace('`', '', (string) $value).'`';
     }
 
     protected function getFieldType(string $field): ?string

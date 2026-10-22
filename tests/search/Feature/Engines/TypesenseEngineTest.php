@@ -578,3 +578,62 @@ it('exposes the text match score on each hit', function () {
         ->and($results->hits[1]->meta)->toBe([])
         ->and($results->meta)->toBe([]);
 });
+
+it('drops numeric facet filter values that are not numbers', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'stock_level', 'type' => 'int32'],
+        ['name' => 'collection_ids', 'type' => 'int64[]'],
+    ]);
+
+    // Numeric values go out unquoted, so a request-supplied value could
+    // otherwise append its own clause: `stock_level:=0 || status:=draft`.
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'stock_level' => ['0 || status:=draft'],
+            'collection_ids' => [535, '533) || (status:=draft'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => ['status:=published']])[0]['filter_by'];
+
+    expect($filters)
+        ->toBe('status:=published && collection_ids:=535');
+});
+
+it('strips backticks from string facet filter values', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+    ]);
+
+    // A backtick would close the quoted literal early and let the rest of
+    // the value run as filter syntax.
+    $filters = typesenseTestEngine()
+        ->setFacets(['brand' => ['Acme` || status:=`draft']])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toBe('brand:=`Acme || status:=draft`');
+});
+
+it('drops facet filter values that are not scalars', function () {
+    Config::set('scout.typesense.model-settings.'.Product::class.'.collection-schema.fields', [
+        ['name' => 'brand', 'type' => 'string'],
+    ]);
+
+    $filters = typesenseTestEngine()
+        ->setFacets(['brand' => [['nested'], null, 'Acme']])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toBe('brand:=`Acme`');
+});
+
+it('ignores facet filters on field names that are not plain identifiers', function () {
+    $filters = typesenseTestEngine()
+        ->setFacets([
+            'brand:=x || status' => ['draft'],
+            'collectionTree.lvl0' => ['Boilers'],
+        ])
+        ->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0]['filter_by'];
+
+    expect($filters)
+        ->toBe('collectionTree.lvl0:=`Boilers`');
+});
