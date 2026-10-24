@@ -393,7 +393,7 @@ class PanelManager
      * __buildSourcePath points at the module's compiled build directory on
      * disk so `lunar:panel:link` can symlink it into public/.
      *
-     * @param  array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|string[]  $config
+     * @param  array{input?: string|list<string>, hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|list<string>  $config
      */
     public function vite(string $name, array|string $config): static
     {
