@@ -118,7 +118,7 @@ class SystemTaxDriver implements TaxDriver
      */
     public function getBreakdown($subTotal): TaxBreakdown
     {
-        $taxZone = $this->taxZone ?? $this->getsTaxZone->execute($this->shippingAddress);
+        $taxZone = $this->taxZone ?? $this->addressTaxZone();
         $taxClass = $this->purchasable->getTaxClass();
 
         $taxAmounts = $this->blink->once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
@@ -168,6 +168,25 @@ class SystemTaxDriver implements TaxDriver
         }
 
         return $breakdown;
+    }
+
+    /**
+     * The tax zone for the shipping address, resolved once per request for
+     * each distinct address: every line of a cart is taxed against the same
+     * address, and resolving it costs a postcode lookup or two each time.
+     * Keyed on what GetTaxZone reads, so a changed address resolves again.
+     */
+    protected function addressTaxZone(): ?TaxZone
+    {
+        $address = $this->shippingAddress;
+
+        $key = 'tax_zone_for_'.md5(implode('|', [
+            $address?->postcode,
+            $address?->state,
+            $address?->country_id,
+        ]));
+
+        return $this->blink->once($key, fn (): ?TaxZone => $this->getsTaxZone->execute($address));
     }
 
     protected function defaultTaxZone()
