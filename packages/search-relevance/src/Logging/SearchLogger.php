@@ -47,7 +47,12 @@ class SearchLogger
 
     /**
      * The shopper identifier: `cart:{id}` when session_key is `cart` and a
-     * cart exists, otherwise `session:{id}`.
+     * cart exists, otherwise `session:{hash}`.
+     *
+     * The session id is hashed, never stored as is. It works like a bearer
+     * credential, and this identifier ends up in the search tables, the cache
+     * and the client that sends it back with events. 40 hex characters keep
+     * it inside the 64 the columns and the events endpoint allow.
      */
     public function sessionId(): string
     {
@@ -59,7 +64,9 @@ class SearchLogger
             }
         }
 
-        return 'session:'.($this->session?->getId() ?: 'none');
+        $sessionId = $this->session?->getId();
+
+        return 'session:'.($sessionId ? substr(hash('sha256', $sessionId), 0, 40) : 'none');
     }
 
     public function customerId(): ?int

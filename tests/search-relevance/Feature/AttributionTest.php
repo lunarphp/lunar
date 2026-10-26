@@ -105,3 +105,12 @@ it('is null-safe without a session', function () {
 
     expect($attribution->find(1))->toBeNull();
 });
+
+it('keys attribution by a hash of the session id, never the id itself', function () {
+    $sessionId = app('session.store')->getId();
+
+    app(Attribution::class)->remember($this->variant->product_id, $this->search->id, 1, 'organic', 'cart:7');
+
+    expect(cache()->has(Attribution::KEY.':'.hash('sha256', $sessionId).':'.$this->variant->product_id))->toBeTrue()
+        ->and(cache()->has(Attribution::KEY.':'.$sessionId.':'.$this->variant->product_id))->toBeFalse();
+});

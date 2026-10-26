@@ -19,6 +19,10 @@ use Illuminate\Contracts\Session\Session;
  *
  * The id changes when login regenerates the session, so a click made before
  * signing in is not credited to a basket add after it.
+ *
+ * The id is hashed into the key. It works like a bearer credential, and the
+ * cache is often readable where the session store is not: a database table,
+ * a shared Redis, key listings in monitoring.
  */
 class Attribution
 {
@@ -83,6 +87,6 @@ class Attribution
     {
         $sessionId = $this->session?->getId();
 
-        return $sessionId ? self::KEY.':'.$sessionId.':'.$productId : null;
+        return $sessionId ? self::KEY.':'.hash('sha256', $sessionId).':'.$productId : null;
     }
 }

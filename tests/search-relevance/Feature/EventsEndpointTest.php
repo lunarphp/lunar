@@ -31,6 +31,7 @@ it('records a click and stores attribution in the session', function () {
 
     expect($event)->toMatchArray(['search_id' => $this->search->id, 'product_id' => 20, 'position' => 2, 'type' => 'click', 'source' => 'learned'])
         ->and($event->session_id)->toStartWith('session:')
+        ->and($event->session_id)->not->toContain(app('session.store')->getId())
         ->and($event->created_at)->not->toBeNull();
 
     $attribution = app(Attribution::class)->find(20);
