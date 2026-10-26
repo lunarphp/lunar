@@ -110,7 +110,7 @@ it('reads the shopper from their session cookie', function () {
         ->post(route('lunar.search-relevance.events'), ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 1])
         ->assertNoContent();
 
-    expect(SearchEvent::query()->sole()->session_id)->toBe('session:'.$sessionId);
+    expect(SearchEvent::query()->sole()->session_id)->toBe('session:'.substr(hash('sha256', $sessionId), 0, 40));
 });
 
 it('does not save the session or send its cookie', function () {
