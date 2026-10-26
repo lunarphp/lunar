@@ -4,6 +4,7 @@ namespace Lunar\Stripe;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Stripe\Exception\ApiConnectionException;
 use Stripe\HttpClient\ClientInterface;
 use Stripe\PaymentIntent;
 
@@ -28,6 +29,8 @@ class MockClient implements ClientInterface
 
     private bool $failThenCaptureCalled = false;
 
+    private bool $alwaysThrow = false;
+
     public function __construct()
     {
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
@@ -40,9 +43,25 @@ class MockClient implements ClientInterface
         return $this;
     }
 
+    /**
+     * Make every subsequent call fail the way an unreachable gateway does, so
+     * a test can assert the driver reports an unknown outcome as an exception
+     * rather than as a value that reads as settled.
+     */
+    public function alwaysThrow(): self
+    {
+        $this->alwaysThrow = true;
+
+        return $this;
+    }
+
     public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
     {
         $this->requests[] = ['method' => $method, 'url' => $absUrl, 'params' => $params];
+
+        if ($this->alwaysThrow) {
+            throw new ApiConnectionException('Could not reach Stripe.');
+        }
 
         $id = array_slice(explode('/', $absUrl), -1)[0];
 
@@ -87,6 +106,34 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_intents')) {
+            // PI_HOLD_NOINC must be checked before PI_HOLD: str_contains is
+            // prefix-greedy and PI_HOLD is a substring of PI_HOLD_NOINC.
+            if (str_contains($absUrl, 'PI_HOLD_NOINC')) {
+                $this->rBody = $this->getResponse('payment_intent_hold', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                    'amount' => 2000,
+                    'wallet_type' => 'apple_pay',
+                    'incremental_authorization_status' => 'unavailable',
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
+            if (str_contains($absUrl, 'PI_HOLD')) {
+                $this->rBody = $this->getResponse('payment_intent_hold', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                    'amount' => 2000,
+                    'wallet_type' => 'apple_pay',
+                    'incremental_authorization_status' => 'available',
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
             if (str_contains($absUrl, 'PI_CAPTURE_LINK')) {
                 $this->rBody = $this->getResponse('payment_intent_paid', [
                     'id' => $id,
@@ -130,6 +177,21 @@ class MockClient implements ClientInterface
                     'payment_status' => 'failed',
                     'payment_error' => 'foo',
                     'failure_code' => 1234,
+                    'captured' => false,
+                    ...$this->nextData,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
+            if (str_contains($absUrl, 'PI_CANCELED')) {
+                $this->rBody = $this->getResponse('payment_intent_paid', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_CANCELED,
+                    'capture_method' => 'automatic',
+                    'payment_status' => 'canceled',
+                    'payment_error' => null,
+                    'failure_code' => null,
                     'captured' => false,
                     ...$this->nextData,
                 ]);
@@ -188,8 +250,47 @@ class MockClient implements ClientInterface
             return [$this->rBody, $this->rcode, $this->rheaders];
         }
 
+        if ($method == 'post' && str_contains($absUrl, '/increment_authorization')) {
+            $intentId = array_slice(explode('/', $absUrl), -2)[0];
+            $this->rBody = $this->getResponse('payment_intent_hold', [
+                'id' => $intentId,
+                'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+                'amount' => $params['amount'],
+                'wallet_type' => 'apple_pay',
+                'incremental_authorization_status' => 'available',
+                ...$this->nextData,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
+        if ($method == 'post' && str_contains($absUrl, '/capture')) {
+            $intentId = array_slice(explode('/', $absUrl), -2)[0];
+            $this->rBody = $this->getResponse('payment_intent_paid', [
+                'id' => $intentId,
+                'status' => PaymentIntent::STATUS_SUCCEEDED,
+                'capture_method' => 'manual',
+                'latest_charge_id' => 'CH_CARD',
+                'payment_status' => 'succeeded',
+                'payment_method_id' => 'PM_CARD',
+                'payment_error' => null,
+                'failure_code' => null,
+                'captured' => true,
+                'amount' => $params['amount_to_capture'] ?? 2000,
+                ...$this->nextData,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
         if ($method == 'post' && str_contains($absUrl, 'payment_intents')) {
-            $this->rBody = $this->getResponse('payment_intent_created');
+            // Merge next() overrides over the fixture so a test can mint an
+            // intent under a magic id (e.g. PI_CAPTURE) and have later
+            // retrieves resolve it; the fixture has no {tokens} to template.
+            $this->rBody = json_encode(array_merge(
+                json_decode($this->getResponse('payment_intent_created'), true),
+                $this->nextData,
+            ));
 
             return [$this->rBody, $this->rcode, $this->rheaders];
         }
