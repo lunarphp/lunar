@@ -52,8 +52,12 @@ interface SupportsPaymentIntents
 
     /**
      * Refund a captured intent by reference, before any order or transaction
-     * exists. `$idempotencyKey` is derived from the intent reference so sweep
-     * retries never double-refund.
+     * exists. `$idempotencyKey` identifies the refund attempt, not the intent:
+     * a retry of the same refund reuses its key so a sweep can never refund
+     * twice, and a separate partial refund of the same intent needs a key of
+     * its own (a caller-generated refund id, or the reference plus the
+     * amount). A key derived from the reference alone would make a second
+     * partial refund replay or conflict with the first.
      *
      * Returning describes a refund that happened, and only that. A refund the
      * gateway cannot confirm throws; it MUST NOT come back as a

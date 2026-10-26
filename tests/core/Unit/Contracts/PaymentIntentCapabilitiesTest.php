@@ -10,6 +10,7 @@ use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Exceptions\LunarException;
 use Lunar\Core\Exceptions\PaymentIntentException;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\PaymentTypes\OfflinePayment;
 use Lunar\Tests\Core\TestCase;
 
@@ -39,6 +40,18 @@ it('guarantees a hold-capable driver can also void', function () {
     expect($hold->hasMethod('voidIntent'))->toBeTrue()
         ->and($hold->hasMethod('refundIntent'))->toBeTrue()
         ->and($hold->hasMethod('fetchIntent'))->toBeTrue();
+});
+
+it('binds a described hold to the cart it is described for', function () {
+    // The reference comes from the client. Taking the cart puts the ownership
+    // and currency check in the driver, once, instead of leaving every caller
+    // to remember one the contract never asked for.
+    $parameters = (new ReflectionMethod(SupportsPaymentHolds::class, 'describeHold'))->getParameters();
+
+    expect($parameters)->toHaveCount(2)
+        ->and($parameters[0]->getName())->toBe('cart')
+        ->and((string) $parameters[0]->getType())->toBe(Cart::class)
+        ->and($parameters[1]->getName())->toBe('reference');
 });
 
 // "MUST throw" in prose is not a contract a caller can catch. Each method whose

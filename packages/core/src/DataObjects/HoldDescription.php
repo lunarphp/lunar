@@ -10,6 +10,9 @@ use Lunar\Core\Enums\PaymentIntentStatus;
  * implementing {@see SupportsPaymentHolds}: a caller guards on {@see $status},
  * and renders the authorised amount and the wallet it came from ("authorised
  * with Apple Pay") without knowing any gateway's wallet taxonomy.
+ *
+ * It carries no currency or owner: a driver only describes a hold that
+ * belongs to the cart it was asked about and is in that cart's currency.
  */
 class HoldDescription
 {

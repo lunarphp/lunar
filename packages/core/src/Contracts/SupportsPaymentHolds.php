@@ -42,6 +42,15 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
      * wallet that authorised it. Never trusts a client claim; always asks the
      * gateway.
      *
+     * The hold must belong to the cart. A driver MUST return null when the
+     * reference was not created by {@see createHold()} for this cart, or when
+     * the hold is in a different currency from the cart. The reference comes
+     * from the client, so without this check a caller could be shown someone
+     * else's hold, or one whose larger minor-unit amount is in a cheaper
+     * currency, and treat the cart as authorised. A non-null return is in the
+     * cart's currency and belongs to it, so a caller can compare
+     * `amountMinor` with the cart total and need not check ownership again.
+     *
      * Null and the exception mean different things, and the difference is
      * deliberate. The reference here arrives from the client, so "the gateway
      * has never heard of this" is a routine answer to an unverified claim, and
@@ -49,16 +58,20 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
      * same as everywhere else on this surface. Note that this is the opposite
      * of {@see SupportsPaymentIntents::fetchIntent()}, where the reference is
      * one the application stored itself: there, an unrecognised reference is
-     * evidence something is wrong, not an answer.
+     * evidence something is wrong, not an answer. A hold that belongs to
+     * another cart is the same routine answer, and is null for the same reason.
      *
      * @throws PaymentIntentException when the gateway cannot be asked
      */
-    public function describeHold(string $reference): ?HoldDescription;
+    public function describeHold(Cart $cart, string $reference): ?HoldDescription;
 
     /**
      * Bring an authorised hold to a new payable total. Ok when the hold now
      * covers it (already did, or was incremented); NeedsReauthorization when
      * this hold cannot stretch and the customer must authorise again.
+     *
+     * Only pass a reference {@see describeHold()} has accepted for the cart,
+     * or one the application stored from {@see createHold()}.
      *
      * @throws PaymentIntentException when the gateway cannot confirm either
      *                                outcome, which is not the same as
@@ -71,6 +84,9 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
      * figure). Idempotent per reference. An unknown outcome is not a capture:
      * a caller that saw this return cleanly is entitled to treat the money as
      * taken and hand the customer their order.
+     *
+     * Only pass a reference {@see describeHold()} has accepted for the cart,
+     * or one the application stored from {@see createHold()}.
      *
      * @throws PaymentIntentException when the gateway cannot confirm the capture
      */
