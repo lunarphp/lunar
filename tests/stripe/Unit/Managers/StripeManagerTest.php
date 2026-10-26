@@ -4,13 +4,16 @@ use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Exceptions\PaymentIntentException;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
+use Lunar\Stripe\MockClient;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+use Stripe\PaymentIntent;
 
 use function Pest\Laravel\assertDatabaseHas;
 
@@ -314,14 +317,59 @@ it('reports NeedsReauthorization when the rail cannot increment', function () {
         ->toBe(HoldAdjustment::NeedsReauthorization);
 });
 
-it('describes a hold with status, amount and wallet label', function () {
-    Stripe::fake();
+/**
+ * A cart that owns the PI_HOLD hold, with the mocked intent in its currency.
+ */
+function cartHoldingPiHold(MockClient $mock, string $flavour = 'hold'): Cart
+{
+    $cart = CartBuilder::build();
 
-    $description = paymentDriver()->describeHold('PI_HOLD');
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_HOLD',
+        'status' => PaymentIntent::STATUS_REQUIRES_CAPTURE,
+        'flavour' => $flavour,
+    ]);
+
+    $mock->next(['currency' => strtolower($cart->currency->code)]);
+
+    return $cart;
+}
+
+it('describes a hold with status, amount and wallet label', function () {
+    $cart = cartHoldingPiHold(Stripe::fake());
+
+    $description = paymentDriver()->describeHold($cart, 'PI_HOLD');
 
     expect($description->status)->toBe(PaymentIntentStatus::RequiresCapture)
         ->and($description->amountMinor)->toBe(2000)
         ->and($description->walletLabel)->toBe('Apple Pay');
+});
+
+it('does not describe a hold created for another cart', function () {
+    $mock = Stripe::fake();
+    cartHoldingPiHold($mock);
+    $otherCart = Cart::factory()->create(['currency_id' => Currency::first()->id]);
+
+    expect(paymentDriver()->describeHold($otherCart, 'PI_HOLD'))->toBeNull();
+
+    // Ownership is settled from the driver's own record, so Stripe is never asked.
+    expect(collect($mock->requests)->filter(fn ($r) => str_contains($r['url'], 'PI_HOLD')))->toBeEmpty();
+});
+
+it('does not describe an ordinary intent as a hold', function () {
+    $cart = cartHoldingPiHold(Stripe::fake(), flavour: 'standard');
+
+    expect(paymentDriver()->describeHold($cart, 'PI_HOLD'))->toBeNull();
+});
+
+it('does not describe a hold in a different currency from the cart', function () {
+    // 2000 in a cheaper currency would otherwise pass a plain comparison
+    // against the cart total in minor units.
+    $mock = Stripe::fake();
+    $cart = cartHoldingPiHold($mock);
+    $mock->next(['currency' => 'jpy']);
+
+    expect(paymentDriver()->describeHold($cart, 'PI_HOLD'))->toBeNull();
 });
 
 it('captures a hold for the final amount', function () {

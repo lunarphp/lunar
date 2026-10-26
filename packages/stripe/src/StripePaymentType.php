@@ -154,9 +154,23 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
      * Amounts are returned in Stripe sub-units; convert with
      * {@see StripeManager::fromStripeAmount()} at the call boundary if a
      * Lunar-scale value is needed.
+     *
+     * Ownership is checked against this driver's own record before Stripe is
+     * asked: the reference must be a hold {@see createHold()} minted for this
+     * cart. The intent's currency must also be the cart's, so a caller can
+     * compare the amount with the cart total as it stands.
      */
-    public function describeHold(string $reference): ?HoldDescription
+    public function describeHold(Cart $cart, string $reference): ?HoldDescription
     {
+        $ownsHold = $cart->paymentIntents()
+            ->where('intent_id', $reference)
+            ->where('flavour', 'hold')
+            ->exists();
+
+        if (! $ownsHold) {
+            return null;
+        }
+
         try {
             $intent = $this->stripe->paymentIntents->retrieve($reference, [
                 'expand' => ['payment_method'],
@@ -172,6 +186,10 @@ class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents
         }
 
         if ($intent->capture_method !== 'manual') {
+            return null;
+        }
+
+        if (strtolower((string) $intent->currency) !== strtolower((string) $cart->currency->code)) {
             return null;
         }
 
