@@ -1,6 +1,8 @@
 <?php
 
+use Lunar\Core\Models\Staff as CoreStaff;
 use Lunar\Filament\LunarFilamentServiceProvider;
+use Lunar\Filament\Models\Staff;
 use Lunar\Filament\Support\ComponentExtensions\Registry;
 use Lunar\Filament\Support\Facades\LunarFilament;
 use Lunar\Tests\Filament\TestCase;
@@ -58,4 +60,24 @@ it('boots a LunarFilament facade backed by the registry', function () {
 
     expect(LunarFilament::for('Target'))->toHaveCount(1)
         ->and(LunarFilament::for('Target')[0])->toBe($extension);
+});
+
+it('swaps the default staff model for the filament staff model', function () {
+    expect(config('lunar.staff.model'))->toBe(Staff::class);
+
+    config(['lunar.staff.model' => CoreStaff::class]);
+
+    (new LunarFilamentServiceProvider(app()))->register();
+
+    expect(config('lunar.staff.model'))->toBe(Staff::class);
+});
+
+it('keeps a staff model configured downstream', function () {
+    $customStaff = get_class(new class extends CoreStaff {});
+
+    config(['lunar.staff.model' => $customStaff]);
+
+    (new LunarFilamentServiceProvider(app()))->register();
+
+    expect(config('lunar.staff.model'))->toBe($customStaff);
 });
