@@ -116,8 +116,12 @@ interface SupportsPaymentIntents
 
 The reconciliation surface. `voidIntent()` aborts an in-flight, uncaptured
 intent. `refundIntent()` refunds a captured intent before any order or
-transaction exists; `$idempotencyKey` is derived from the intent reference so a
-retry can never double-refund. A driver without this capability cannot be
+transaction exists. `$idempotencyKey` identifies the refund attempt, not the
+intent: a retry of the same refund reuses its key so it can never refund twice,
+and a second, separate partial refund of the same intent gets a key of its own
+(a caller-generated refund id, or the reference plus the amount). A key derived
+from the reference alone would make the second partial refund replay or
+conflict with the first. A driver without this capability cannot be
 reconciled, and a consumer must treat its in-flight payments as unresolved
 rather than assume they were abandoned.
 
@@ -143,7 +147,7 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
 {
     public function createHold(Cart $cart): PaymentIntentDescriptor;
 
-    public function describeHold(string $reference): ?HoldDescription;
+    public function describeHold(Cart $cart, string $reference): ?HoldDescription;
 
     public function adjustHold(string $reference, int $amountMinor): HoldAdjustment;
 
@@ -153,10 +157,27 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
 
 Authorise-only flows. `createHold()` is idempotent per cart like
 `createIntent()`. `describeHold()` always asks the gateway and never trusts a
-client claim; it returns null when the reference is unknown or is not a hold.
-`adjustHold()` reports whether the hold now covers a new total.
+client claim; it returns null when the reference is unknown, is not a hold, was
+not created by `createHold()` for the given cart, or is in a different currency
+from the cart. `adjustHold()` reports whether the hold now covers a new total.
 `captureHold()` captures at most the authorised figure and is idempotent per
 reference.
+
+**Ownership is the driver's job, not every caller's.** The reference
+`describeHold()` takes arrives from the client, so without the cart a caller
+could be shown a hold that belongs to someone else: another session's, another
+storefront's on the same gateway account, or the customer's own from an
+abandoned cart. A plain amount comparison does not catch it either, because a
+hold in a different currency with a larger minor-unit figure (1000 JPY against a
+999 pence total) passes. Passing the cart in lets the driver check the hold
+against its own record of what it created for that cart, once, rather than
+leaving each consumer to remember a check the contract never asked for.
+`HoldDescription` therefore needs no currency or owner fields: a non-null
+description is already in the cart's currency and belongs to it.
+
+`adjustHold()` and `captureHold()` keep taking the bare reference. A caller only
+passes them a reference that `describeHold()` has accepted for the cart, or one
+the application stored from `createHold()` itself.
 
 `describeHold()` returning null where `fetchIntent()` throws is deliberate, not
 an inconsistency. The reference `describeHold()` takes arrives from the client,
