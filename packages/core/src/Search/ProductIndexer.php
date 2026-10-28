@@ -61,6 +61,20 @@ class ProductIndexer extends ScoutIndexer
 
         $data['skus'] = $model->variants->pluck('sku')->toArray();
 
+        // Uppercased with separators stripped, so a partial code typed without
+        // the printed hyphens (HAGMB) still prefix-matches HAG-MB-32A.
+        $data['skus_normalised'] = $model->variants->pluck('sku')
+            ->filter()
+            ->map(fn (string $sku) => strtoupper(preg_replace('/[^A-Za-z0-9]+/', '', $sku)))
+            ->filter()
+            ->values()
+            ->toArray();
+
         return $data;
+    }
+
+    public function getExactMatchFields(): array
+    {
+        return ['skus', 'skus_normalised'];
     }
 }

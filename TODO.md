@@ -34,6 +34,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Search relevance — request/results pipelines in `search`, and the `search-relevance` add-on: logging, scoring, learned reranking, panel section (spec 0084)
 - Cached model manifest: `php artisan optimize` writes the discovered models to `bootstrap/cache/lunar_models.php`, removing the per-request directory scan (spec 0089)
 - Attribute field-type configuration schema — field types declare their settings once in core; the panel and Filament bridge both render from the descriptors (spec 0054)
 - Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)

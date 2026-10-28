@@ -20,6 +20,7 @@ jobs:
           - "panel-addon-example"
           - "paypal"
           - "search"
+          - "search-relevance"
           - "stripe"
           - "table-rate-shipping"
           - "upgrade"

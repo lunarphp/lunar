@@ -9,20 +9,22 @@ class DatabaseEngine extends AbstractEngine
 {
     public function get(): mixed
     {
+        $request = $this->pipeRequest();
+
         // Scout's builder, not the admin package's get_search_builder() helper —
         // this package must work without lunar/admin installed. Eager-load the
         // relations the indexer touches so mapping hits below doesn't lazy-load
         // per row.
         $results = $this->modelType::search($this->query)
             ->query(fn ($query) => (new $this->modelType)->indexer()->makeAllSearchableUsing($query))
-            ->paginate($this->perPage);
+            ->paginate($this->perPage, 'page', $this->page);
 
         $documents = collect($results->items())->map(fn ($hit) => SearchHit::from([
             'highlights' => collect(),
             'document' => $hit->toSearchableArray(),
         ]));
 
-        return SearchResults::from([
+        return $this->pipeResults($request, SearchResults::from([
             'query' => $this->query,
             'totalPages' => $results->lastPage(),
             'page' => $results->currentPage(),
@@ -31,7 +33,7 @@ class DatabaseEngine extends AbstractEngine
             'hits' => $documents,
             'facets' => collect(),
             'links' => $results->links(),
-        ]);
+        ]));
     }
 
     protected function getFieldConfig(): array

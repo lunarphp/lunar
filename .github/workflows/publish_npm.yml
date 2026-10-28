@@ -1,7 +1,7 @@
 name: publish-npm
 
-# Publishes the add-on-facing npm packages (@lunarphp/panel and
-# @lunarphp/panel-vite-plugin) alongside the Composer monorepo split.
+# Publishes the add-on-facing npm packages (@lunarphp/panel,
+# @lunarphp/panel-vite-plugin and @lunarphp/search-relevance) alongside the Composer monorepo split.
 # Skips any version already on the registry, so tags that don't bump the
 # npm package versions pass without churn.
 #
@@ -33,6 +33,8 @@ jobs:
             directory: packages/panel/resources/panel-package
           - package: "@lunarphp/panel-vite-plugin"
             directory: packages/panel/resources/package
+          - package: "@lunarphp/search-relevance"
+            directory: packages/search-relevance/resources/client
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

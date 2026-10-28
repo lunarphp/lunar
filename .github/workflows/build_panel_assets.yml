@@ -19,6 +19,10 @@ on:
       - "packages/panel/resources/**"
       - "packages/panel/vite.config.ts"
       - "packages/panel/package.json"
+      - "packages/search-relevance/resources/js/**"
+      - "packages/search-relevance/resources/client/src/**"
+      - "packages/search-relevance/vite.config.js"
+      - "packages/search-relevance/package.json"
       - ".github/workflows/build_panel_assets.yml"
 
 permissions:
@@ -58,8 +62,16 @@ jobs:
         run: npx vite build
         working-directory: packages/panel
 
+      # The search relevance add-on ships its compiled bundle the same way;
+      # its build/ directory is tracked, so the split carries it too.
+      - name: Build search relevance add-on bundle
+        run: npm run build --workspace @lunarphp/search-relevance-addon
+
+      - name: Build search relevance storefront client
+        run: npm run build --workspace @lunarphp/search-relevance
+
       - name: Commit built assets
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(panel): rebuild compiled assets"
-          file_pattern: packages/panel/public/build
+          file_pattern: packages/panel/public/build packages/search-relevance/build packages/search-relevance/resources/client/dist

@@ -27,6 +27,9 @@ class SearchResults extends Data
         public ?string $sortField = null,
         #[LiteralTypeScriptType("'asc' | 'desc' | null")]
         public ?string $sortDirection = null,
+        /** Annotations from results-pipeline stages, e.g. a search id. */
+        #[LiteralTypeScriptType("{ search_id?: string; ranking_mode?: 'off' | 'shadow' | 'on'; ranking_version?: string; [key: string]: unknown }")]
+        public array $meta = [],
     ) {}
 
     public function toArray(): array
