@@ -95,3 +95,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0074 | Panel global search (command palette) | implemented |
 | 0089 | Cached model manifest | implemented |
 | 0090 | Remembered guest carts | implemented |
+| 0091 | PricingManager consumes the storefront context | proposed    |

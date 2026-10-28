@@ -14,6 +14,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
+- PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
 - Add Boost guidelines to packages
 
 ## Ideas
