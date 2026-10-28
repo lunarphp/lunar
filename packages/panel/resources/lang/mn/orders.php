@@ -239,6 +239,7 @@ return [
     'line_sub_total' => 'Subtotal',
     'line_discount' => 'Discount',
     'line_total' => 'Total',
+    'line_part_of' => '{parent}-н хэсэг',
 
     'flash_fulfilment_shipped' => 'Fulfilment marked as shipped.',
     'flash_fulfilment_fulfilled' => 'Fulfilment marked as fulfilled.',

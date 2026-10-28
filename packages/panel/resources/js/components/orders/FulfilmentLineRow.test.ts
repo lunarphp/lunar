@@ -33,3 +33,39 @@ describe('FulfilmentLineRow', () => {
         expect(wrapper.find('[data-testid="line-detail"]').exists()).toBe(false);
     });
 });
+
+describe('FulfilmentLineRow component lines', () => {
+    it('shows a component line as part of its parent, quantity only, with no price detail', async () => {
+        const wrapper = mount(FulfilmentLineRow, {
+            props: { line: makeLine({ part_of: 'Camera starter kit', unit_price: '£0.00' }) },
+        });
+
+        const hint = wrapper.find('[data-testid="line-part-of"]');
+        expect(hint.exists()).toBe(true);
+        expect(hint.text()).toContain('orders.line_part_of');
+        expect(wrapper.text()).not.toContain('@');
+
+        await wrapper.find('button').trigger('click');
+        expect(wrapper.find('[data-testid="line-detail"]').exists()).toBe(false);
+    });
+
+    it('nests a parent line\'s components beneath it', () => {
+        const wrapper = mount(FulfilmentLineRow, {
+            props: {
+                line: makeLine({
+                    components: [
+                        { id: 1, description: 'Camera body', option: null, identifier: 'BODY', quantity: 2 },
+                        { id: 2, description: 'Memory card', option: '64GB', identifier: 'SD64', quantity: 6 },
+                    ],
+                }),
+            },
+        });
+
+        const list = wrapper.find('[data-testid="line-components"]');
+        expect(list.exists()).toBe(true);
+        expect(list.text()).toContain('Camera body');
+        expect(list.text()).toContain('x2');
+        expect(list.text()).toContain('64GB');
+        expect(list.text()).toContain('x6');
+    });
+});

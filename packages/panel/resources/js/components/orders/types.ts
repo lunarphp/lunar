@@ -16,6 +16,16 @@ export interface FulfilmentLineData {
     tax: { label: string; amount: string | null }[];
     total: string | null;
     notes: string | null;
+    part_of?: string | null;
+    components?: OrderLineComponentData[];
+}
+
+export interface OrderLineComponentData {
+    id: number;
+    description: string | null;
+    option: string | null;
+    identifier: string | null;
+    quantity: number;
 }
 
 export interface FulfilmentTrackingData {

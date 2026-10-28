@@ -10,3 +10,11 @@ parameters:
         - packages/vendor/*
         - packages/*/vendor/*
     checkOctaneCompatibility: true
+    ignoreErrors:
+        # The bundles add-on attaches relations with Model::resolveRelationUsing(), the v2 seam for
+        # extending models, which Larastan cannot see. Scoped to that add-on and this one check.
+        -
+            identifier: larastan.relationExistence
+            path: packages/bundles/src/*
+            # Older Larastan versions lack this check, so lowest-dependency runs would report the entry unmatched.
+            reportUnmatched: false

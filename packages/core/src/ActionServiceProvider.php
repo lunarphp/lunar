@@ -107,6 +107,7 @@ use Lunar\Core\Actions\Products\RecomputeStockRollup;
 use Lunar\Core\Actions\Products\RecordStockMovement;
 use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
+use Lunar\Core\Actions\Products\ResolveInventory;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
 use Lunar\Core\Actions\Products\UpdateProduct;
 use Lunar\Core\Actions\Products\UpdateProductStatus;
@@ -239,6 +240,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\RecomputesStockRollup::class => RecomputeStockRollup::class,
         Contracts\Products\RecordsStockMovement::class => RecordStockMovement::class,
         Contracts\Products\ReleasesReservation::class => ReleaseReservation::class,
+        Contracts\Products\ResolvesInventory::class => ResolveInventory::class,
         Contracts\Products\ReservesStock::class => ReserveStock::class,
         Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,

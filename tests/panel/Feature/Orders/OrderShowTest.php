@@ -342,3 +342,51 @@ it('forbids staff without the manage-orders permission', function () {
 
     $this->get(route('panel.orders.show', $order))->assertForbidden();
 });
+
+it('nests component lines under their parent and marks them in fulfilments', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+
+    $parent = OrderLine::factory()->for($order)->create([
+        'type' => 'bundle',
+        'description' => 'Camera starter kit',
+        'requires_shipping' => true,
+        'requires_fulfilment' => false,
+        'quantity' => 1,
+        'unit_price' => 30000,
+        'total' => 30000,
+    ]);
+
+    $component = OrderLine::factory()->for($order)->create([
+        'parent_line_id' => $parent->id,
+        'type' => 'physical',
+        'description' => 'Camera body',
+        'identifier' => 'BODY',
+        'quantity' => 1,
+        'unit_price' => 0,
+        'sub_total' => 0,
+        'tax_total' => 0,
+        'total' => 0,
+    ]);
+
+    $fulfilment = Fulfilment::factory()->for($order)->create();
+    FulfilmentLine::factory()->create(['fulfilment_id' => $fulfilment->id, 'order_line_id' => $component->id, 'quantity' => 1]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('fulfilments.0.lines.0.order_line_id', $component->id)
+            ->where('fulfilments.0.lines.0.part_of', 'Camera starter kit')
+            // The parent is the customer-facing, non-fulfillable line with its parts nested.
+            ->has('otherLines', 1)
+            ->where('otherLines.0.id', $parent->id)
+            ->has('otherLines.0.components', 1)
+            ->where('otherLines.0.components.0.description', 'Camera body')
+            ->where('otherLines.0.components.0.quantity', 1)
+            // Component lines carry no money, so only the parent can be refunded.
+            ->has('refundableLines', 1)
+            ->where('refundableLines.0.id', $parent->id)
+        );
+});

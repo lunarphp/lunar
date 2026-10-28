@@ -38,6 +38,15 @@ class OrderLineObserver
     }
 
     /**
+     * Component lines go with their parent; done here rather than left to the
+     * database cascade so model events fire and SQLite test runs match.
+     */
+    public function deleting(OrderLine $orderLine): void
+    {
+        $orderLine->components()->get()->each->delete();
+    }
+
+    /**
      * Ensure the order line references a purchasable model.
      */
     protected function assertPurchasable(OrderLine $orderLine): void

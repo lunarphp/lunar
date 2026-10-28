@@ -37,6 +37,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
 - Cached model manifest: `php artisan optimize` writes the discovered models to `bootstrap/cache/lunar_models.php`, removing the per-request directory scan (spec 0089)

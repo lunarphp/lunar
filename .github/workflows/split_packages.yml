@@ -12,6 +12,7 @@ jobs:
       matrix:
         package:
           - "admin"
+          - "bundles"
           - "core"
           - "demo-data"
           - "filament"

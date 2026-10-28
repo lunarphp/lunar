@@ -32,7 +32,7 @@ public page-building surface to them: `app.ts` publishes the components on
 `@lunarphp/panel` import to that global. **`resources/js/ui.ts` is the source of
 truth for what add-ons can import** — the barrel there lists the whole set (layout,
 DataTable, FilterDropdown, KpiCard, form inputs, overlays, `Button`, `Icon`, …).
-Internal machinery (`NavBody`, `PanelSlot`, `RowActions`, `PageActions`, `Section`, …)
+Internal machinery (`NavBody`, `PanelSlot`, `RowActions`, `PageActions`, …)
 is deliberately not exported. The `PanelLayout` shell is applied to add-on pages
 automatically (the resolver sets it as their persistent layout via the `default`
 entry in the layout registry), so an add-on page only builds its own `PageHeader` +
