@@ -3,9 +3,11 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\DefaultStorefrontContext;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Exceptions\MissingStorefrontContextException;
 use Lunar\Core\Facades\Pricing;
+use Lunar\Core\Facades\Steps;
 use Lunar\Core\Facades\StorefrontSession;
 use Lunar\Core\Managers\PricingManager;
 use Lunar\Core\Models\Cart;
@@ -118,7 +120,7 @@ test('customer() derives the customer groups and names the customer', function (
     $groupPrice = ($this->price)(70, ['customer_group_id' => $group->id]);
     $customer = customerInGroup($group);
 
-    config()->set('lunar.pricing.pipelines', [CapturePricingContextPipeline::class]);
+    Steps::for(StepList::PriceMatching)->append(CapturePricingContextPipeline::class);
 
     $pricing = Pricing::for($this->variant)->customer($customer)->get();
 
@@ -130,7 +132,7 @@ test('the deprecated user() names the customer only when the user has exactly on
     $groupA = CustomerGroup::factory()->create(['default' => false]);
     $groupB = CustomerGroup::factory()->create(['default' => false]);
     ($this->price)(100);
-    config()->set('lunar.pricing.pipelines', [CapturePricingContextPipeline::class]);
+    Steps::for(StepList::PriceMatching)->append(CapturePricingContextPipeline::class);
 
     $single = User::factory()->create();
     $customer = customerInGroup($groupA);
@@ -218,7 +220,7 @@ test('strict mode throws only when no context is supplied and no resolver is reg
 
 test('a pricing pipeline reads region and customer from the storefront path', function () {
     ($this->price)(100);
-    config()->set('lunar.pricing.pipelines', [CapturePricingContextPipeline::class]);
+    Steps::for(StepList::PriceMatching)->append(CapturePricingContextPipeline::class);
 
     $region = Region::factory()->create([
         'default' => false,
@@ -239,7 +241,7 @@ test('a pricing pipeline reads region and customer from the storefront path', fu
 test('a pricing pipeline reads region and customer from the cart path', function () {
     ($this->price)(100);
     TaxClass::factory()->create(['default' => true]);
-    config()->set('lunar.pricing.pipelines', [CapturePricingContextPipeline::class]);
+    Steps::for(StepList::PriceMatching)->append(CapturePricingContextPipeline::class);
 
     Region::factory()->create([
         'default' => true,

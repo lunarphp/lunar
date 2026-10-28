@@ -4,7 +4,9 @@ namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
 use Illuminate\Pipeline\Pipeline;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Modifiers\CartLineModifiers;
 
@@ -12,6 +14,7 @@ class CalculateLines
 {
     public function __construct(
         protected CartLineModifiers $cartLineModifiers,
+        protected StepManifest $steps,
     ) {}
 
     /**
@@ -43,9 +46,8 @@ class CalculateLines
 
             $cartLine = app(Pipeline::class)
                 ->send($line)
-                ->through(
-                    config('lunar.cart.pipelines.cart_lines', [])
-                )->thenReturn(function ($cartLine) {
+                ->through($this->steps->for(StepList::CartLinePricing)->all())
+                ->thenReturn(function ($cartLine) {
                     $cartLine->cacheProperties();
 
                     return $cartLine;

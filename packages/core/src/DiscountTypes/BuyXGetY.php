@@ -5,7 +5,9 @@ namespace Lunar\Core\DiscountTypes;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Collection as LunarCollection;
@@ -335,9 +337,8 @@ class BuyXGetY extends AbstractDiscountType
 
                     $rewardLine = app(Pipeline::class)
                         ->send($rewardLine)
-                        ->through(
-                            config('lunar.cart.pipelines.cart_lines', [])
-                        )->thenReturn(function ($cartLine) {
+                        ->through(app(StepManifest::class)->for(StepList::CartLinePricing)->all())
+                        ->thenReturn(function ($cartLine) {
                             $cartLine->cacheProperties();
 
                             return $cartLine;

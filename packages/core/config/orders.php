@@ -1,12 +1,6 @@
 <?php
 
 use Lunar\Core\Orders\ReferenceGenerator;
-use Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines;
-use Lunar\Core\Pipelines\Order\Creation\CreateOrderAddresses;
-use Lunar\Core\Pipelines\Order\Creation\CreateOrderLines;
-use Lunar\Core\Pipelines\Order\Creation\CreateShippingLine;
-use Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart;
-use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 
 return [
     /*
@@ -53,28 +47,5 @@ return [
     |
     */
     'reference_generator' => ReferenceGenerator::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Order Pipelines
-    |--------------------------------------------------------------------------
-    |
-    | Define which pipelines should be run throughout an order's lifecycle.
-    | The default ones provided should suit most needs, however you are
-    | free to add your own as you see fit.
-    |
-    | Each pipeline class will be run from top to bottom.
-    |
-    */
-    'pipelines' => [
-        'creation' => [
-            FillOrderFromCart::class,
-            CreateOrderLines::class,
-            CreateOrderAddresses::class,
-            CreateShippingLine::class,
-            CleanUpOrderLines::class,
-            MapDiscountBreakdown::class,
-        ],
-    ],
 
 ];

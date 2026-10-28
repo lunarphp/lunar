@@ -5,6 +5,8 @@ namespace Lunar\Core\Actions\Carts;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\App;
 use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
+use Lunar\Core\Contracts\StepManifest;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Jobs\Orders\MarkAsNewCustomer;
@@ -16,6 +18,7 @@ class CreateOrder implements CreatesOrder
 {
     public function __construct(
         protected OrderModifiers $orderModifiers,
+        protected StepManifest $steps,
     ) {}
 
     /**
@@ -52,9 +55,8 @@ class CreateOrder implements CreatesOrder
 
             $order = app(Pipeline::class)
                 ->send($order)
-                ->through(
-                    config('lunar.orders.pipelines.creation', [])
-                )->thenReturn(function ($order) {
+                ->through($this->steps->for(StepList::OrderCreation)->all())
+                ->thenReturn(function ($order) {
                     return $order;
                 });
 
