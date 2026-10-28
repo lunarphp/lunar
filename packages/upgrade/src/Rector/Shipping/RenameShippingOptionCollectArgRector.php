@@ -15,7 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * Renames the `collect:` named argument to `pickup:` on `ShippingOption`
- * construction (spec 0077) — the constructor-promoted `$collect` flag became
+ * construction (spec 0079) — the constructor-promoted `$collect` flag became
  * `$pickup`. The parameter kept its position, so positional construction is
  * unaffected; the property fetch (`$option->collect`) is renamed by
  * `RenamePropertyRector` via `LunarSetList::V1_TO_V2_PROPERTY_RENAMES`.
