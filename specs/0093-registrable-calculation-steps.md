@@ -129,10 +129,11 @@ Modifiers stay. A modifier hooks a fixed, named point (before calculation, after
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none.
 
-## Open questions
+## Decisions
 
-- **A command to show the resolved lists?** For example `php artisan lunar:steps`, so a host can see what runs and in what order once add-ons are installed. Proposed: yes, as a final slice. Owner: Glenn.
-- **Should modifiers become thin registrations underneath?** For example, `CartLineModifiers` dispatched as a step in `CartLinePricing`. Proposed: no. Their hook points sit inside steps (`subtotalled` is mid-`CalculateLines`), so they cannot be expressed as list entries without splitting those steps. Revisit if keeping both mechanisms proves confusing.
+- **No config fallback.** The step lists are removed from config outright. The boot check and `lunar:upgrade` carry published lists across.
+- **`lunar:steps` ships.** The command lists each resolved list in order, so a host can see what runs once add-ons are installed.
+- **Modifiers stay a separate mechanism.** Their hook points sit inside steps (`subtotalled` is mid-`CalculateLines`), so they cannot be list entries without splitting those steps. Revisit if keeping both proves confusing.
 
 ## References
 
@@ -146,5 +147,5 @@ Modifiers stay. A modifier hooks a fixed, named point (before calculation, after
 - [ ] Slice 1 — `StepList`, `StepRegistry`, the `Steps` facade and `UnknownStepException`, seeded with today's defaults. Tests: positioning, idempotent adds, registration order for a shared anchor, a missing anchor throwing.
 - [ ] Slice 2 — Move every caller in the table above onto the registry, remove the lists from the shipped config files, and add the boot check. Existing cart, order, pricing and pruning tests pass unchanged. Tests: each removed key, when defined, throws `RemovedStepConfigException` naming it.
 - [ ] Slice 3 — `lunar:upgrade` reporting for published list keys: safe to delete when they match v1's defaults, otherwise the equivalent `Steps::` calls, `WHATS-NEW.md` entry, and the docs page on registering steps.
-- [ ] Slice 4 — `lunar:steps` command listing the resolved lists, if accepted.
+- [ ] Slice 4 — `lunar:steps` command listing the resolved lists.
 - [ ] Follow-up — Move the product bundles add-on (#2732) onto the registry and off config rewriting.
