@@ -15,6 +15,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart totals caching in the database — additive performance optimisation
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
+- Versioned docs sites — each major version's docs live in the monorepo on its version branch and publish when that version releases (spec 0094)
 - Add Boost guidelines to packages
 
 ## Ideas
