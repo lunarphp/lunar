@@ -94,4 +94,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
 | 0089 | Cached model manifest | implemented |
-| 0090 | Remembered guest carts | accepted    |
+| 0090 | Remembered guest carts | implemented |

@@ -1,6 +1,6 @@
 # 0090 — Remembered guest carts
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-10-14
 - TODO item: Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
@@ -121,11 +121,11 @@ The cookie lifetime should be shorter than `lunar.cart.prune_tables.prune_interv
 - **Translations:** none.
 - **Filament / panel:** none. `remember_token` is hidden and is not shown in the admin.
 
-## Open questions
+## Decisions
 
-- **Default on or off?** This spec proposes on, since v2 is a major release and the safeguards above keep user carts out of reach. Off would be the more conservative choice for upgraders. Owner: Glenn, decide before `accepted`.
-- **Guest addresses on restore.** A restored guest cart keeps any shipping or billing address and email entered at checkout. The exposure is the same as today's session cookie, just for longer, on the same device. Proposal: no special handling, and document it. An option to drop addresses on restore can follow if requested.
-- **Header-based token for headless clients.** The same token could be accepted from a request header, so SPAs and mobile apps that do not use cookies can resume carts too. This is out of scope here. It belongs with the storefront API work (`specs/draft-storefront-api.md`).
+- **On by default.** v2 is a major release, and the safeguards above keep user carts out of reach. Setting `remember.enabled` to `false` restores the session-only behaviour.
+- **Guest addresses on restore.** A restored guest cart keeps any shipping or billing address and email entered at checkout. The exposure is the same as the session cookie's, for longer, on the same device. There is no special handling; the cart session guide documents it. An option to drop addresses on restore can follow if requested.
+- **Header-based token for headless clients.** Accepting the token from a request header, for SPAs and mobile apps that do not use cookies, is out of scope. It belongs with the storefront API work (`specs/draft-storefront-api.md`).
 
 ## References
 
@@ -138,5 +138,5 @@ The cookie lifetime should be shorter than `lunar.cart.prune_tables.prune_interv
 ## Implementation plan
 
 - [x] Slice 1 — `remember_token` column, `remember` config block, `EncryptCookies::except()` registration, `CartSessionManager` resolution/issue/clear logic, `Cart::$hidden`. Tests: guest cart restored after the session is flushed; restore re-queues the same token with a fresh expiry and touches the cart; cookie forgotten for a missing, merged, completed or user-owned cart; token cleared on `associate()` and `forget()`; no query or `Set-Cookie` when the cookie already matches; no cookie when remembering is disabled; no cookie for a user-owned cart.
-- [x] Slice 2 — upgrade package schema step for the new column (`2026_06_01_000017_add_cart_remember_token`), the `WHATS-NEW.md` entry, and the config docblock covering the pruning pairing and the `auto_create` recommendation.
+- [x] Slice 2 — upgrade package schema step for the new column (`2026_06_01_000018_add_cart_remember_token`), the `WHATS-NEW.md` entry, and the config docblock covering the pruning pairing and the `auto_create` recommendation.
 - [ ] Slice 3 — cart session guide on the docs site.
