@@ -117,11 +117,19 @@ class StepListConfigStep implements UpgradeStep
     }
 
     /**
+     * Where the app's published Lunar config files live.
+     */
+    protected function configDirectory(): string
+    {
+        return config_path('lunar');
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     protected function loadPublishedConfig(string $file): ?array
     {
-        $configPath = config_path("lunar/{$file}.php");
+        $configPath = $this->configDirectory()."/{$file}.php";
 
         if (! File::exists($configPath)) {
             return null;

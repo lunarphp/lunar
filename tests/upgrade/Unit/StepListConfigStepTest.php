@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\File;
+use Lunar\Core\Manifests\StepManifest;
 use Lunar\Tests\Upgrade\TestCase;
 use Lunar\Upgrade\Steps\StepContext;
 use Lunar\Upgrade\Steps\StepListConfigStep;
@@ -13,24 +14,40 @@ use Symfony\Component\Console\Output\NullOutput;
 
 uses(TestCase::class);
 
+// A private directory: Testbench's config path is shared by parallel workers, which would load these files.
 beforeEach(function () {
-    File::ensureDirectoryExists(config_path('lunar'));
+    $this->configDirectory = sys_get_temp_dir().'/lunar-step-list-config-'.uniqid();
+
+    File::ensureDirectoryExists($this->configDirectory);
 });
 
 afterEach(function () {
-    File::delete([config_path('lunar/cart.php'), config_path('lunar/orders.php'), config_path('lunar/pricing.php')]);
+    File::deleteDirectory($this->configDirectory);
 });
 
 function publishConfig(string $file, string $contents): void
 {
-    File::put(config_path("lunar/{$file}.php"), "<?php\n\n".$contents);
+    File::put(test()->configDirectory."/{$file}.php", "<?php\n\n".$contents);
 }
 
 function runStepListConfigStep(): StepReport
 {
     $report = new StepReport;
 
-    app(StepListConfigStep::class)->run(new StepContext(
+    $step = new class(app(StepManifest::class), test()->configDirectory) extends StepListConfigStep
+    {
+        public function __construct(StepManifest $manifest, protected string $directory)
+        {
+            parent::__construct($manifest);
+        }
+
+        protected function configDirectory(): string
+        {
+            return $this->directory;
+        }
+    };
+
+    $step->run(new StepContext(
         dryRun: true,
         paths: ['app'],
         output: new OutputStyle(new ArrayInput([]), new NullOutput),
