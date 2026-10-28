@@ -12,7 +12,8 @@ use Symfony\Component\Console\Output\NullOutput;
 
 uses(TestCase::class);
 
-it('reports the storefront default context as a manual action', function () {
+function runRectorStep(): StepReport
+{
     $report = new StepReport;
 
     (new RectorStep)->run(new StepContext(
@@ -22,6 +23,18 @@ it('reports the storefront default context as a manual action', function () {
         report: $report,
     ));
 
-    expect($report->manualActions())->toHaveCount(1)
-        ->and($report->manualActions()[0])->toContain('StorefrontSession::useAsDefaultContext()');
+    return $report;
+}
+
+it('reports the storefront default context as a manual action', function () {
+    $actions = collect(runRectorStep()->manualActions());
+
+    expect($actions->contains(fn (string $action) => str_contains($action, 'StorefrontSession::useAsDefaultContext()')))->toBeTrue();
+});
+
+it('reports the cart and order modifier changes as manual actions', function () {
+    $actions = collect(runRectorStep()->manualActions());
+
+    expect($actions->contains(fn (string $action) => str_contains($action, 'modifiers now run')))->toBeTrue()
+        ->and($actions->contains(fn (string $action) => str_contains($action, 'CalculateLine and CalculateLineSubtotal are removed')))->toBeTrue();
 });
