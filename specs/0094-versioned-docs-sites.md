@@ -1,6 +1,6 @@
 # 0094 — Versioned docs sites published from releases
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - TODO item: Versioned docs sites — each major version's docs live in the monorepo on its version branch and publish when that version releases (spec 0094)
@@ -15,7 +15,7 @@ The documentation is a separate repository, `lunarphp/docs`, built by Mintlify a
 
 **One deploy branch cannot follow version branches.** The monorepo has no trunk: code lives on version branches (`1.x`, `2.x`; `0.1`–`0.8` for v0). A single Mintlify site deploys one directory from one branch, so it cannot take each version's docs from its own branch.
 
-Mintlify has since changed in two ways that make a different arrangement possible: a project can build from a subdirectory ("docs.json is in a subdirectory" in Git Settings), and new projects are created from the dashboard. Mintlify still deploys only branches, not tags or releases, and combining repositories into one site needs an Enterprise plan.
+Mintlify has since changed in two ways that make a different arrangement possible: a project can build from a subdirectory ("docs.json is in a subdirectory" in Git Settings), and new projects are created from the dashboard, with no limit that affects this plan. Mintlify still deploys only branches, not tags or releases, and combining repositories into one site needs an Enterprise plan.
 
 ## Proposal
 
@@ -126,13 +126,14 @@ Mintlify's version switcher works within one site. Each site's navigation instea
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** the v2 panel links to `docs.lunarphp.com/` — `config('lunar.panel.support_url')`, which the navigation reads, and links hard-coded in 13 panel pages. Under this spec that root sends v2 panel users to the stable version, which is v1 until v2 is released. The links point at `docs-v2.lunarphp.com` and read the config value instead of hard-coding it. The 2.x `README.md` documentation link changes to match.
 - **Contributors:** v2 (and later v1) docs contributions move from `lunarphp/docs` to the monorepo.
-- **Manual setup outside the repository:** creating the Mintlify projects (custom domain, deploy branch, subdirectory `docs`, editor and agent off), the Cloudflare records and Redirect Rules, branch protection on the live branches, and the `docs-hotfix` label.
+- **Manual setup outside the repository:** configuring the Mintlify projects (custom domain, deploy branch, subdirectory `docs`, editor and agent off), the Cloudflare records and Redirect Rules, branch protection on the live branches, and the `docs-hotfix` label.
 
-## Open questions
+## Decisions
 
-- **Mintlify billing per project.** Creating projects is self-serve, but whether each project needs its own plan, and how many free projects an organization can have, is unconfirmed. Owner: Glenn, check the dashboard before slice 1.
-- **When v1 moves.** v1 can follow as soon as v2 is proven, or stay in `lunarphp/docs` until v2 is stable. Proposed: move it once the v2 pilot has published at least one release and one hotfix. Owner: Glenn.
-- **Where the shared content goes on the main website.** URLs for the community, Alliance and Flight Plan pages, and redirects from their current `docs.lunarphp.com` paths. Owner: Glenn.
+- **Mintlify projects.** The three projects (v2, v1, v0) are created in the Lunar organization. Creating them was self-serve, with no plan or project limit in the way.
+- **`docs.lunarphp.com` redirects are managed in Cloudflare** by the maintainers, outside the repository. The rules are the ones in the URLs section.
+- **v1 moves after the v2 pilot is proven:** once `docs-v2.lunarphp.com` has published at least one release and one hotfix through the workflows.
+- **Shared content URLs are settled in slice 5,** with the main website. Their old `docs.lunarphp.com` paths redirect to wherever they land.
 
 ## References
 
@@ -146,9 +147,9 @@ Mintlify's version switcher works within one site. Each site's navigation instea
 Ordered so the v2 site is live and proven before anything in `lunarphp/docs` is removed.
 
 - [ ] Slice 1 — v2 content. Move `2.x/` from `lunarphp/docs` into `docs/` on `2.x` with its own `docs.json`, links updated for the dropped prefix, and `docs/**` added to `tests.yml`'s `paths-ignore`. Checked locally with `mint dev`.
-- [ ] Slice 2 — Publishing. `publish-docs.yml` (release reset with the `git cherry` check), `publish-docs-hotfix.yml`, `docs-hotfix-label.yml`, a header comment in each, and the `docs-hotfix` label. Manual: the v2 Mintlify project on `docs-v2.lunarphp.com`, deploying `docs` from `docs-live-2.x`, editor and agent off; branch protection on `docs-live-2.x`. Proven by publishing the next 2.x pre-release.
+- [ ] Slice 2 — Publishing. `publish-docs.yml` (release reset with the `git cherry` check), `publish-docs-hotfix.yml`, `docs-hotfix-label.yml`, a header comment in each, and the `docs-hotfix` label. Manual: the v2 Mintlify project (already created) configured on `docs-v2.lunarphp.com`, deploying `docs` from `docs-live-2.x`, editor and agent off; branch protection on `docs-live-2.x`. Proven by publishing the next 2.x pre-release.
 - [ ] Slice 3 — Documentation. `docs/README.md` (writing docs alongside code, when they publish, the hotfix label and its conflict path, never committing to a live branch, previewing with `mint dev`); a short section in the monorepo `CLAUDE.md` for agents; a docs checkbox and hotfix reminder in the PR template.
 - [ ] Slice 4 — Panel links. The panel's docs links point at `docs-v2.lunarphp.com` and read `config('lunar.panel.support_url')`; the 2.x `README.md` link updated.
-- [ ] Slice 5 — Redirects and shared content. Cloudflare Redirect Rules for `docs.lunarphp.com` as above; `support/` and `logs/` moved to the main website, with redirects from their old paths.
+- [ ] Slice 5 — Redirects and shared content. Cloudflare Redirect Rules for `docs.lunarphp.com` as above (maintainers, in Cloudflare); `support/` and `logs/` moved to the main website, with redirects from their old paths.
 - [ ] Slice 6 — v1. The same as slices 1–2 for `1.x` and `docs-live-1.x`, published by the next 1.x release.
 - [ ] Slice 7 — Archive. `lunarphp/docs` reduced to `0.x/`, its Mintlify project moved to `docs-v0.lunarphp.com`, and its README and `CLAUDE.md` updated to say it is archived and where current docs live.
