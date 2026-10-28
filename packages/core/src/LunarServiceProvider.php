@@ -34,6 +34,7 @@ use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ReconcileStock;
 use Lunar\Core\Console\Commands\ReleaseExpiredStockReservations;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
+use Lunar\Core\Console\Commands\StepsList;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
@@ -59,6 +60,7 @@ use Lunar\Core\Contracts\PaymentManager;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\Contracts\ProvidesTelemetryInsights;
 use Lunar\Core\Contracts\ShippingManifest;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
@@ -100,6 +102,7 @@ use Lunar\Core\Manifests\HoldReasonManifest as HoldReasonManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\OrderNotificationManifest as OrderNotificationManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
+use Lunar\Core\Manifests\StepManifest as StepManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Cart;
@@ -258,6 +261,7 @@ class LunarServiceProvider extends ServiceProvider
                 ReleaseExpiredStockReservations::class,
                 ModelsCache::class,
                 ModelsClear::class,
+                StepsList::class,
             ]);
 
             $this->optimizes(
@@ -430,6 +434,11 @@ class LunarServiceProvider extends ServiceProvider
         // flag, so it is per-request state, not a boot-time registry.
         $this->app->scoped(ShippingManifest::class, function ($app) {
             return $app->make(ShippingManifestImpl::class);
+        });
+
+        // Lists are changed from service providers and only read afterwards.
+        $this->app->singleton(StepManifest::class, function ($app) {
+            return $app->make(StepManifestImpl::class);
         });
 
         $this->app->singleton(CarrierManifest::class, function ($app) {

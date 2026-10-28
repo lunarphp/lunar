@@ -46,6 +46,35 @@ registers query scopes (native scopes win on collision).
 guessing which class is "the real one", and customisation reads like ordinary
 Laravel. A Rector rule in the upgrade package migrates old `modelClass()` calls.
 
+**Modifiers run.** Cart line, cart and order modifiers are how an add-on hooks
+calculation from its own service provider, without editing the host's config.
+In v1 none of them ran during cart calculation or order creation. Now they do:
+`CartModifier::calculating()` runs before the cart pipeline;
+`CartLineModifier::calculating()` before a line is priced, `subtotalled()` once
+its subtotal is set (a change there reaches discounts and tax), and
+`calculated()` once its totals are final; `CartModifier::calculated()` runs
+last. `OrderModifier::creating()` and `created()` run around the order creation
+pipeline, inside its transaction. `calculating()` runs before the line is priced,
+so a unit price set there is overwritten; change prices in `subtotalled()`. If
+your v1 app registered modifiers, review them before deploying, because they
+will now run. `CalculateLine` and `CalculateLineSubtotal` are gone: cart
+calculation never used them, so call `$cart->calculate()` and read the line's
+totals.
+
+**Steps are registered in code.** The cart, cart line, pricing, order creation,
+cart validation and cart pruning step lists are no longer in config. Each is a
+registry, seeded with the same defaults, that a host app or add-on changes from
+a service provider with an explicit position:
+`Steps::for(StepList::CartLinePricing)->after(GetUnitPrice::class, MyStep::class)`.
+`append()`, `prepend()`, `before()`, `remove()` and `replace()` work the same
+way, and `php artisan lunar:steps` lists what runs, in order. Add-ons no longer
+rewrite your config to add a step, and your app keeps picking up steps core adds
+later. If your config still defines `lunar.cart.pipelines`,
+`lunar.cart.validators`, `lunar.cart.prune_tables.pipelines`,
+`lunar.pricing.pipelines` or `lunar.orders.pipelines`, Lunar throws when a list
+is first read; `lunar:upgrade` tells you which keys are safe to delete and
+prints the `Steps` calls for any you customised.
+
 ## Every operation is an action, every action has a verb
 
 Service-layer classes now declare their collaborators via constructor injection

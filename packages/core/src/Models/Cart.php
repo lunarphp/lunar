@@ -27,10 +27,12 @@ use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Database\Factories\CartFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
 use Lunar\Core\Facades\DB;
@@ -39,8 +41,8 @@ use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Pipelines\Cart\Calculate;
-use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
 use Lunar\Core\Validation\CartLine\CartLineStock;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\ValueObjects\Cart\FreeItem;
@@ -441,6 +443,16 @@ class Cart extends Base
     }
 
     /**
+     * The steps in a list, in the order they run.
+     *
+     * @return list<class-string>
+     */
+    protected function steps(StepList $list): array
+    {
+        return app(StepManifest::class)->for($list)->all();
+    }
+
+    /**
      * Calculate the cart totals and cache the result.
      */
     public function calculate(bool $force = false): Cart
@@ -454,14 +466,22 @@ class Cart extends Base
         $this->calculationContext = null;
         $this->calculationContext = $this->context();
 
+        $cartModifiers = app(CartModifiers::class);
+        $cartLineModifiers = app(CartLineModifiers::class);
+
         try {
             $cart = app(Pipeline::class)
-                ->send($this)
-                ->through(
-                    config('lunar.cart.pipelines.cart', [
-                        Calculate::class,
-                    ])
-                )->thenReturn();
+                ->send($cartModifiers->calculating($this))
+                ->through($this->steps(StepList::CartCalculation))
+                ->thenReturn();
+
+            if ($cartLineModifiers->getModifiers()->isNotEmpty()) {
+                foreach ($cart->loadMissing('lines')->lines as $line) {
+                    $cartLineModifiers->calculated($line);
+                }
+            }
+
+            $cart = $cartModifiers->calculated($cart);
         } finally {
             $this->calculationContext = null;
         }
@@ -489,7 +509,7 @@ class Cart extends Base
      */
     public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.add_to_cart', []) as $action) {
+        foreach ($this->steps(StepList::AddToCartValidation) as $action) {
             // Throws a validation exception?
             app($action)->using(
                 cart: $this,
@@ -522,7 +542,7 @@ class Cart extends Base
 
     public function remove(int $cartLineId, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.remove_from_cart', []) as $action) {
+        foreach ($this->steps(StepList::RemoveFromCartValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 cartLineId: $cartLineId,
@@ -539,7 +559,7 @@ class Cart extends Base
      */
     public function updateLine(int $cartLineId, int $quantity, ?array $meta = null, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
+        foreach ($this->steps(StepList::UpdateCartLineValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 cartLineId: $cartLineId,
@@ -613,7 +633,7 @@ class Cart extends Base
 
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.add_address', []) as $action) {
+        foreach ($this->steps(StepList::AddAddressValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 address: $address,
@@ -644,7 +664,7 @@ class Cart extends Base
     {
         $this->loadMissing('shippingAddress');
 
-        foreach (config('lunar.cart.validators.set_shipping_option', []) as $action) {
+        foreach ($this->steps(StepList::SetShippingOptionValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 shippingOption: $option,
@@ -676,9 +696,7 @@ class Cart extends Base
 
         $cart->loadMissing('completedOrder');
 
-        foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class,
-        ]) as $action) {
+        foreach ($this->steps(StepList::OrderCreateValidation) as $action) {
             app($action)->using(
                 cart: $cart,
             )->validate();
@@ -696,9 +714,7 @@ class Cart extends Base
     {
         $passes = true;
 
-        foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class,
-        ]) as $action) {
+        foreach ($this->steps(StepList::OrderCreateValidation) as $action) {
             try {
                 app($action)->using(
                     cart: $this,

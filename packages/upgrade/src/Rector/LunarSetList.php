@@ -27,8 +27,6 @@ final class LunarSetList
         'Lunar\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Actions\\Carts\\AddAddress',
         'Lunar\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable',
         'Lunar\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Actions\\Carts\\AssociateUser',
-        'Lunar\\Actions\\Carts\\CalculateLine' => 'Lunar\\Core\\Actions\\Carts\\CalculateLine',
-        'Lunar\\Actions\\Carts\\CalculateLineSubtotal' => 'Lunar\\Core\\Actions\\Carts\\CalculateLineSubtotal',
         'Lunar\\Actions\\Carts\\CreateOrder' => 'Lunar\\Core\\Actions\\Carts\\CreateOrder',
         'Lunar\\Actions\\Carts\\GenerateFingerprint' => 'Lunar\\Core\\Actions\\Carts\\GenerateFingerprint',
         'Lunar\\Actions\\Carts\\GetExistingCartLine' => 'Lunar\\Core\\Actions\\Carts\\GetExistingCartLine',
@@ -613,6 +611,11 @@ final class LunarSetList
         // `Lunar\Core\Contracts\Actions\…` interface instead.
         'Lunar\\Actions\\AbstractAction',
         'Lunar\\Core\\Actions\\AbstractAction',
+        // Spec 0092 deleted the single-line calculation actions; cart
+        // calculation never used them. Call `$cart->calculate()` and read the
+        // line's totals instead.
+        'Lunar\\Actions\\Carts\\CalculateLine',
+        'Lunar\\Actions\\Carts\\CalculateLineSubtotal',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFooterWidgets',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFormActions',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsForms',
@@ -701,8 +704,6 @@ final class LunarSetList
         'Lunar\\Core\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsAddress',
         'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsOrUpdatesPurchasable',
         'Lunar\\Core\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AssociatesUser',
-        'Lunar\\Core\\Actions\\Carts\\CalculateLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLine',
-        'Lunar\\Core\\Actions\\Carts\\CalculateLineSubtotal' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLineSubtotal',
         'Lunar\\Core\\Actions\\Carts\\CreateOrder' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CreatesOrder',
         'Lunar\\Core\\Actions\\Carts\\GenerateFingerprint' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GeneratesFingerprint',
         'Lunar\\Core\\Actions\\Carts\\GetExistingCartLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GetsExistingCartLine',

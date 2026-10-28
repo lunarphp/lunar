@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\DataObjects\PricingResponse;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
 use Lunar\Core\Managers\PricingManager;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
@@ -389,10 +391,8 @@ test('can pipeline purchasable price', function () {
     expect($pricing->matched->id)->toEqual($price->id);
     expect($pricing->matched->price)->toEqual($price->price);
 
-    config()->set('lunar.pricing.pipelines', [
-        // set price to 200
-        TestPricingPipeline::class,
-    ]);
+    // Sets the price to 200.
+    Steps::for(StepList::PriceMatching)->append(TestPricingPipeline::class);
 
     $pricing = $manager->for($variant)->get();
 

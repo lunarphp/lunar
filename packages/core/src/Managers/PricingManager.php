@@ -9,8 +9,10 @@ use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\PricingManager as PricingManagerContract;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\DataObjects\StorefrontContext;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Exceptions\MissingStorefrontContextException;
 use Lunar\Core\Models\Currency;
@@ -68,6 +70,7 @@ class PricingManager implements PricingManagerContract
     public function __construct(
         protected DefaultStorefrontContext $defaultContext,
         protected ResolvesStorefrontContext $resolveStorefrontContext,
+        protected StepManifest $steps,
     ) {}
 
     /**
@@ -298,9 +301,8 @@ class PricingManager implements PricingManagerContract
 
             $response = app(Pipeline::class)
                 ->send($this)
-                ->through(
-                    config('lunar.pricing.pipelines', [])
-                )->then(fn ($pricingManager) => $pricingManager->pricing);
+                ->through($this->steps->for(StepList::PriceMatching)->all())
+                ->then(fn ($pricingManager) => $pricingManager->pricing);
 
             return $response;
         } finally {
