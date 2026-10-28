@@ -1,0 +1,85 @@
+/*
+ * The panel's design tokens, kept in the npm package so an add-on can pull
+ * them into its own Tailwind build.
+ *
+ * An add-on ships no copy of the panel's stylesheet: its bundle loads after
+ * the panel's, so anything it re-emits wins on document order and quietly
+ * restyles the panel around it. Importing this file with `theme(reference)`
+ * registers the tokens without emitting a single custom property, so the
+ * add-on's build generates `text-ink-400` and friends against the variables
+ * the panel has already put on the page:
+ *
+ *   @import 'tailwindcss/theme.css' theme(reference);
+ *   @import '@lunarphp/panel/theme.css' theme(reference);
+ *   @import 'tailwindcss/utilities.css';
+ *   @source './js';
+ *
+ * Nothing but `@theme` belongs here: Tailwind refuses a referenced import
+ * that contains anything else. An add-on wanting `dark:` variants declares
+ * `@custom-variant dark (&:where(.dark, .dark *));` in its own stylesheet,
+ * which matches the panel's and emits nothing by itself.
+ *
+ * The panel's own app.css imports it plainly, so these are emitted exactly
+ * once, from there.
+ */
+
+@theme {
+  --color-ink-900: oklch(0.18 0.008 260);
+  --color-ink-700: oklch(0.32 0.008 260);
+  --color-ink-500: oklch(0.52 0.008 260);
+  --color-ink-400: oklch(0.62 0.008 260);
+  --color-ink-300: oklch(0.78 0.005 260);
+  --color-line: oklch(0.92 0.004 260);
+  --color-line-strong: oklch(0.86 0.006 260);
+  --color-paper: oklch(0.995 0.002 90);
+  --color-canvas: oklch(0.975 0.003 90);
+  --color-surface: oklch(1 0 0);
+  --color-surface-2: oklch(0.985 0.003 90);
+  --color-surface-3: oklch(0.96 0.004 260);
+  --color-active: oklch(0.95 0.006 260);
+  --color-paper-hover: oklch(0.92 0.005 90);
+  --color-sage: oklch(0.72 0.08 150);
+  --color-sage-ink: oklch(0.42 0.08 150);
+  --color-sage-soft: oklch(0.95 0.04 150);
+  --color-sage-border: oklch(0.86 0.06 150);
+  --color-danger: oklch(0.62 0.18 25);
+  --color-danger-soft: oklch(0.96 0.04 25);
+  --color-danger-border: oklch(0.86 0.08 25);
+  --color-warn: oklch(0.75 0.14 75);
+  --color-warn-ink: oklch(0.45 0.12 75);
+  --color-warn-soft: oklch(0.97 0.04 75);
+  --color-warn-border: oklch(0.88 0.08 75);
+
+  /* Chart palette: slot 1 is the brand hue (the icon blue, stepped into the
+     readable band); slots are assigned in fixed order and never cycled.
+     Values validated per the dataviz checks against both surfaces. */
+  --color-chart-1: oklch(0.60 0.13 228);
+  --color-chart-2: oklch(0.62 0.13 75);
+  --color-chart-3: oklch(0.60 0.11 165);
+  --color-chart-4: oklch(0.55 0.13 300);
+  --color-chart-1-soft: oklch(0.95 0.03 228);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  --shadow-sm: 0 1px 2px rgba(17,24,39,0.04), 0 1px 1px rgba(17,24,39,0.02);
+  --shadow-md: 0 4px 10px -2px rgba(17,24,39,0.06), 0 2px 4px -2px rgba(17,24,39,0.04);
+  --shadow-lg: 0 10px 24px -8px rgba(17,24,39,0.12), 0 4px 8px -4px rgba(17,24,39,0.06);
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
+  --animate-chip-in: chipIn 0.18s ease-out;
+  --animate-autosave-pulse: autosave-pulse 1.4s ease-out infinite;
+  --animate-shake: shake 0.36s cubic-bezier(.36,.07,.19,.97) both;
+  --animate-slide-in-right: slideInRight 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-slide-out-right: slideOutRight 0.18s cubic-bezier(0.32, 0, 0.67, 0);
+  --animate-overlay-in: overlayIn 0.2s ease-out;
+  --animate-overlay-out: overlayOut 0.15s ease-in;
+  --animate-dialog-in: dialogIn 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-dialog-out: dialogOut 0.14s cubic-bezier(0.32, 0, 0.67, 0);
+  --animate-palette-in: paletteIn 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-palette-out: paletteOut 0.13s cubic-bezier(0.32, 0, 0.67, 0);
+}
