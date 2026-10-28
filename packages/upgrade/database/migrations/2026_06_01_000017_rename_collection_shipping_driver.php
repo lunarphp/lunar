@@ -6,7 +6,7 @@ use Lunar\Core\Database\Migration;
 
 /**
  * v1 → v2 upgrade data step: rename the table-rate-shipping `collection`
- * driver to `pickup` (spec 0077).
+ * driver to `pickup` (spec 0079).
  *
  * v1 persisted the driver key on `shipping_methods.driver`; v2 renamed the
  * `Lunar\Shipping\Drivers\ShippingMethods\Collection` driver to `Pickup` and

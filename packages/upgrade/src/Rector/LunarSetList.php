@@ -522,7 +522,7 @@ final class LunarSetList
         // --- Spec 0075: first staff account creation moves to core ---
         'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
 
-        // --- Spec 0077: the collection fulfilment method becomes pickup ---
+        // --- Spec 0079: the collection fulfilment method becomes pickup ---
         'Lunar\\Shipping\\Drivers\\ShippingMethods\\Collection' => 'Lunar\\Shipping\\Drivers\\ShippingMethods\\Pickup',
 
     ];
@@ -687,7 +687,7 @@ final class LunarSetList
      * `V1_TO_V2_METHOD_RENAMES`); the property fetch form
      * (`$type->mappedAttributes`) is covered here.
      *
-     * Spec 0077 renamed `ShippingOption::$collect` to `$pickup`. This covers
+     * Spec 0079 renamed `ShippingOption::$collect` to `$pickup`. This covers
      * the property fetch (`$option->collect`); the `collect:` named argument
      * on construction is rewritten by `RenameShippingOptionCollectArgRector`.
      *
