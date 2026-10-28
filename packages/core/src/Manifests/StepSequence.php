@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Manifests;
 
+use Closure;
 use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\UnknownStepException;
 
@@ -23,10 +24,12 @@ class StepSequence
 
     /**
      * @param  list<class-string>  $seed
+     * @param  Closure(): void  $beforeRead  runs before the list is first resolved
      */
     public function __construct(
         protected StepList $list,
         protected array $seed,
+        protected Closure $beforeRead,
     ) {}
 
     /**
@@ -89,6 +92,10 @@ class StepSequence
      */
     public function all(): array
     {
+        if ($this->resolved === null) {
+            ($this->beforeRead)();
+        }
+
         return $this->resolved ??= $this->resolve();
     }
 

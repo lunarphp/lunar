@@ -142,10 +142,12 @@ test('a step registered after GetUnitPrice runs during cart calculation', functi
         ->and($cart->subTotal->value)->toBe(200);
 });
 
-test('a removed step-list config key fails when a list is first read', function (string $key, string $expected) {
+test('a removed step-list config key fails when a list is read, not when one is registered against', function (string $key, string $expected) {
     config()->set($key, []);
 
-    expect(fn () => Steps::for(StepList::PriceMatching))
+    Steps::for(StepList::PriceMatching)->append(StepA::class);
+
+    expect(fn () => Steps::for(StepList::PriceMatching)->all())
         ->toThrow(RemovedStepConfigException::class, $expected);
 })->with([
     'cart pipelines' => ['lunar.cart.pipelines', 'Steps::for(StepList::CartCalculation), Steps::for(StepList::CartLinePricing)'],

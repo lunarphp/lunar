@@ -52,13 +52,7 @@ class StepManifest implements StepManifestContract
      */
     public function for(StepList $list): StepSequence
     {
-        // Checked on first use rather than at boot, so artisan (and lunar:upgrade) still runs.
-        if (! $this->configChecked) {
-            $this->guardAgainstRemovedConfig();
-            $this->configChecked = true;
-        }
-
-        return $this->sequences[$list->value] ??= new StepSequence($list, $this->defaults($list));
+        return $this->sequences[$list->value] ??= new StepSequence($list, $this->defaults($list), $this->guardAgainstRemovedConfig(...));
     }
 
     /**
@@ -110,12 +104,17 @@ class StepManifest implements StepManifestContract
     }
 
     /**
-     * Fail when a list is still defined in config, since nothing reads it any more.
+     * Fail when a list is still defined in config, since nothing reads it any more. Runs when a
+     * list is first read, not when an add-on registers against one at boot, so artisan still runs.
      *
      * @throws RemovedStepConfigException
      */
     protected function guardAgainstRemovedConfig(): void
     {
+        if ($this->configChecked) {
+            return;
+        }
+
         foreach (self::REMOVED_CONFIG_KEYS as $key) {
             if (config()->has($key)) {
                 throw new RemovedStepConfigException($key, array_values(array_filter(
@@ -124,5 +123,7 @@ class StepManifest implements StepManifestContract
                 )));
             }
         }
+
+        $this->configChecked = true;
     }
 }

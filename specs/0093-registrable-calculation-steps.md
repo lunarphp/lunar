@@ -96,7 +96,7 @@ The step lists are removed from config entirely: `lunar.cart.pipelines`, `lunar.
 
 The other settings in those files stay: `auth_policy`, `eager_load`, the pruning `enabled` flag and interval, the pricing formatter and tax setting, and the order reference format and generator.
 
-A removed key that is still defined would be ignored, so a custom step in it would stop running without an error. To prevent that, `StepManifest` checks for the removed keys the first time any list is read, and throws `RemovedStepConfigException` if one is defined. The message names the key and the `Steps` call that replaces it. The check reads config only, once per process, so it adds no query.
+A removed key that is still defined would be ignored, so a custom step in it would stop running without an error. To prevent that, `StepManifest` checks for the removed keys the first time any list is read (`all()`), not when an add-on registers against a list at boot, and throws `RemovedStepConfigException` if one is defined. The message names the key and the `Steps` call that replaces it. The check reads config only, once per process, so it adds no query.
 
 The check runs on first read rather than at boot so that artisan keeps working with a stale config. A boot check would also stop `php artisan lunar:upgrade`, the command that reports how to fix it. Nothing runs a list before the check, so no step runs from the wrong list.
 
