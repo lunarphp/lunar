@@ -7,7 +7,6 @@ use Closure;
 use Lunar\Bundles\Contracts\Actions\ResolvesBundleSelection;
 use Lunar\Bundles\Enums\BundlePricing;
 use Lunar\Bundles\Models\Bundle;
-use Lunar\Bundles\Support\ResolvesCartCustomerGroups;
 use Lunar\Bundles\ValueObjects\SelectedComponent;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\PriceValue;
@@ -24,8 +23,6 @@ use Lunar\Core\Pricing\PriceCalculatorInterface;
  */
 class PriceBundleSelection
 {
-    use ResolvesCartCustomerGroups;
-
     public function __construct(
         protected ResolvesBundleSelection $resolver,
         protected PricingManager $pricing,
@@ -59,15 +56,14 @@ class PriceBundleSelection
 
         $cart = $cartLine->cart;
         $currency = $cart->currency;
-        $customerGroups = $this->customerGroupsFor($cart);
+        $context = $cart->context();
         $sum = 0;
 
         foreach ($selection as $component) {
             /** @var SelectedComponent $component */
             $matched = $this->pricing
-                ->currency($currency)
+                ->using($context)
                 ->qty(1)
-                ->customerGroups($customerGroups)
                 ->for($component->variant)
                 ->get()
                 ->matched;

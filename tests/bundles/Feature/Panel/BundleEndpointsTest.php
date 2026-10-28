@@ -18,7 +18,7 @@ beforeEach(function () {
     $this->variant = ProductVariant::factory()->create(['sku' => 'KIT-1']);
 });
 
-function actingAsAdmin(): Staff
+function actingAsBundlesAdmin(): Staff
 {
     $staff = Staff::factory()->create(['admin' => true]);
     test()->actingAs($staff, 'staff');
@@ -43,7 +43,7 @@ it('redirects guests and forbids staff without the products permission', functio
 });
 
 it('summarises an ordinary variant as undefined', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $this->getJson(route('panel.bundles.variants.show', $this->variant))
         ->assertOk()
@@ -55,7 +55,7 @@ it('summarises an ordinary variant as undefined', function () {
 });
 
 it('defines, redefines and removes a bundle', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $this->putJson(route('panel.bundles.variants.update', $this->variant), ['pricing' => 'fixed'])
         ->assertOk()
@@ -79,7 +79,7 @@ it('defines, redefines and removes a bundle', function () {
 });
 
 it('validates the definition payload', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $this->putJson(route('panel.bundles.variants.update', $this->variant), ['pricing' => 'magic'])
         ->assertUnprocessable()
@@ -91,7 +91,7 @@ it('validates the definition payload', function () {
 });
 
 it('refuses to define a component variant as a bundle with a translated 422', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $other = Bundle::factory()->create();
     BundleComponent::factory()->create(['bundle_id' => $other->id, 'product_variant_id' => $this->variant->id]);
@@ -102,7 +102,7 @@ it('refuses to define a component variant as a bundle with a translated 422', fu
 });
 
 it('syncs components and reports derived availability and prices', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $body = Catalogue::variant($this->currency, 10000, 10, ['sku' => 'BODY']);
     $bag = Catalogue::variant($this->currency, 2500, 4, ['sku' => 'BAG']);
@@ -136,7 +136,7 @@ it('syncs components and reports derived availability and prices', function () {
 });
 
 it('names the component missing a price in a currency', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $unpriced = ProductVariant::factory()->create(['sku' => 'NOPRICE']);
     Bundle::factory()->componentPriced()->create(['product_variant_id' => $this->variant->id]);
@@ -150,7 +150,7 @@ it('names the component missing a price in a currency', function () {
 });
 
 it('rejects invalid component syncs with a 422', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     Bundle::factory()->create(['product_variant_id' => $this->variant->id]);
     $other = Bundle::factory()->create();
@@ -188,7 +188,7 @@ it('rejects invalid component syncs with a 422', function () {
 });
 
 it('refuses component and group syncs on an undefined variant', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $this->putJson(route('panel.bundles.variants.components', $this->variant), ['components' => []])
         ->assertUnprocessable()
@@ -200,7 +200,7 @@ it('refuses component and group syncs on an undefined variant', function () {
 });
 
 it('syncs groups with their options and defaults', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $bundle = Bundle::factory()->create(['product_variant_id' => $this->variant->id]);
     $body = Catalogue::variant($this->currency, 10000, 10, ['sku' => 'BODY']);
@@ -247,7 +247,7 @@ it('syncs groups with their options and defaults', function () {
 });
 
 it('rejects group limits the bundle cannot satisfy', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     Bundle::factory()->create(['product_variant_id' => $this->variant->id]);
 
@@ -265,7 +265,7 @@ it('rejects group limits the bundle cannot satisfy', function () {
 });
 
 it('searches variants by product name and sku, excluding bundle variants and the bundle itself', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $camera = Product::factory()->create(['name' => collect(['en' => 'Camera body'])]);
     $body = ProductVariant::factory()->create(['product_id' => $camera->id, 'sku' => 'BODY-1']);
@@ -295,7 +295,7 @@ it('searches variants by product name and sku, excluding bundle variants and the
 });
 
 it('summarises every variant of a product for the product page card', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $product = $this->variant->product;
     $sibling = ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'KIT-2']);
@@ -312,7 +312,7 @@ it('summarises every variant of a product for the product page card', function (
 });
 
 it('lists the bundles a product is included in', function () {
-    actingAsAdmin();
+    actingAsBundlesAdmin();
 
     $part = ProductVariant::factory()->create(['sku' => 'PART']);
     $bundle = Bundle::factory()->create(['product_variant_id' => $this->variant->id]);

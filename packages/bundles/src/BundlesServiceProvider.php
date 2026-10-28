@@ -30,11 +30,14 @@ use Lunar\Bundles\Pipelines\CartLine\PriceBundleSelection;
 use Lunar\Bundles\Pipelines\Order\Creation\CreateBundleComponentLines;
 use Lunar\Bundles\Validation\CartLine\BundleSelection;
 use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Events\Catalog\ProductInvalidated;
 use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Facades\Steps;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Pipelines\CartLine\GetUnitPrice;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\PanelManager;
 
@@ -110,25 +113,15 @@ class BundlesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Append the package's validator and stages to the core cart and order
-     * config. Hosts that set those lists explicitly keep control of the order.
+     * Register the package's validator and stages with core's step lists. A host
+     * moves or removes them with the same Steps calls from its own provider.
      */
     protected function registerCartHooks(): void
     {
-        $append = function (string $key, string $class): void {
-            $entries = config($key, []);
-
-            if (! in_array($class, $entries, true)) {
-                $entries[] = $class;
-            }
-
-            config()->set($key, $entries);
-        };
-
-        $append('lunar.cart.validators.add_to_cart', BundleSelection::class);
-        $append('lunar.cart.validators.update_cart_line', BundleSelection::class);
-        $append('lunar.cart.pipelines.cart_lines', PriceBundleSelection::class);
-        $append('lunar.orders.pipelines.creation', CreateBundleComponentLines::class);
+        Steps::for(StepList::AddToCartValidation)->append(BundleSelection::class);
+        Steps::for(StepList::UpdateCartLineValidation)->append(BundleSelection::class);
+        Steps::for(StepList::CartLinePricing)->after(GetUnitPrice::class, PriceBundleSelection::class);
+        Steps::for(StepList::OrderCreation)->append(CreateBundleComponentLines::class);
     }
 
     protected function registerListeners(): void

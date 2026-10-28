@@ -7,9 +7,9 @@ use Closure;
 use Illuminate\Support\Collection;
 use Lunar\Bundles\Contracts\Actions\ResolvesBundleSelection;
 use Lunar\Bundles\Models\Bundle;
-use Lunar\Bundles\Support\ResolvesCartCustomerGroups;
 use Lunar\Bundles\ValueObjects\SelectedComponent;
 use Lunar\Core\Contracts\PricingManager;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
@@ -27,8 +27,6 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  */
 class CreateBundleComponentLines
 {
-    use ResolvesCartCustomerGroups;
-
     public function __construct(
         protected ResolvesBundleSelection $resolver,
         protected PricingManager $pricing,
@@ -79,7 +77,7 @@ class CreateBundleComponentLines
         $bundle->loadMissing(['components.variant.product', 'components.variant.values']);
 
         $currency = $order->currency;
-        $customerGroups = $this->customerGroupsFor($order->cart);
+        $context = $order->cart->context();
         $weights = [];
         $attributes = [];
 
@@ -88,7 +86,7 @@ class CreateBundleComponentLines
             $variant = $component->variant;
             $quantity = $component->quantity * $parent->quantity;
 
-            $weights[$index] = $this->currentUnitPrice($variant, $customerGroups) * $quantity;
+            $weights[$index] = $this->currentUnitPrice($variant, $context) * $quantity;
 
             $attributes[$index] = [
                 'purchasable_type' => $variant->getMorphClass(),
@@ -126,12 +124,12 @@ class CreateBundleComponentLines
     /**
      * @param  Collection<int, CustomerGroup>  $customerGroups
      */
-    protected function currentUnitPrice(ProductVariant $variant, $customerGroups): int
+    protected function currentUnitPrice(ProductVariant $variant, StorefrontContext $context): int
     {
         try {
             return (int) $this->pricing
+                ->using($context)
                 ->qty(1)
-                ->customerGroups($customerGroups)
                 ->for($variant)
                 ->get()
                 ->matched
