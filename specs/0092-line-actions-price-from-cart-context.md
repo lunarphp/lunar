@@ -34,7 +34,7 @@ Since [[0091-pricing-manager-consumes-storefront-context]], `CalculateLineSubtot
 
 So a caller has to work out groups the cart already knows, and two sources of the same fact can disagree: pass a different customer's groups and the line prices for a customer the cart does not belong to. Spec 0091 left the signatures alone because changing two action contracts is a breaking change of its own.
 
-Neither action has a first-party caller. Cart calculation prices lines through the `cart_lines` pipeline (`Pipelines/CartLine/GetUnitPrice`), and nothing in core, the add-on packages or the panel calls `CalculatesLine` or `CalculatesLineSubtotal`; only `tests/core/Unit/Actions/Carts/CalculateLineTest.php` does. They have been standalone since v1 removed `CartLineManager` (#777). They are public seams in `ActionServiceProvider`'s `$actions` map, so consumers may call or rebind them.
+Neither action is used by cart calculation. `$cart->calculate()` prices lines through the `cart_lines` pipeline (`Pipelines/CartLine/GetUnitPrice`). `CalculateLine` calls `CalculatesLineSubtotal`, but nothing in core, the add-on packages or the panel calls `CalculatesLine`; only `tests/core/Unit/Actions/Carts/CalculateLineTest.php` does. They have been standalone since v1 removed `CartLineManager` (#777). They are public seams in `ActionServiceProvider`'s `$actions` map, so consumers may call or rebind them.
 
 ## Proposal
 
@@ -64,7 +64,7 @@ A caller that needs different groups for one calculation, such as a quote priced
 
 - **Keep the parameter, make it nullable and default it to null.** Non-breaking for callers, but keeps two sources for the same fact and still breaks every class that implements the contracts. Rejected.
 - **Replace it with a `?StorefrontContext $context` parameter.** It lets a caller override the whole context per call, but nothing needs that today, and it brings back a second source of pricing state for a line. Revisit if a caller needs it.
-- **Delete both actions.** They have no first-party callers, so this is the smallest core. Rejected for now: they are documented seams that price one line outside a full cart calculation, and removing them is a larger break than narrowing them. Covered by an open question.
+- **Delete both actions.** Cart calculation does not use them, so this is the smallest core. Rejected for now: they are documented seams that price one line outside a full cart calculation, and removing them is a larger break than narrowing them. Covered by an open question.
 - **Do nothing.** The parameter is harmless when callers pass the cart's own groups, but it invites passing the wrong ones, and it misleads anyone reading the contract about where a line's groups come from.
 
 ## Migration impact
@@ -81,7 +81,7 @@ A caller that needs different groups for one calculation, such as a quote priced
 
 ## Open questions
 
-- **Delete the actions instead?** They have no first-party callers. If no consumer use comes up in review, deleting both, with an upgrade note pointing at `$cart->calculate()`, is simpler than narrowing them. Owner: Glenn.
+- **Delete the actions instead?** Cart calculation does not use them. If no consumer use comes up in review, deleting both, with an upgrade note pointing at `$cart->calculate()`, is simpler than narrowing them. Owner: Glenn.
 
 ## References
 
