@@ -168,7 +168,7 @@ class CartSessionManager implements CartSession
         }
 
         if (! $cartId) {
-            return $create ? $this->cart = $this->createNewCart() : null;
+            return $create ? $this->cart = $this->createNewCart($calculate) : null;
         }
 
         $cart = $this->cart?->exists ? $this->cart : Cart::with(
@@ -176,11 +176,11 @@ class CartSessionManager implements CartSession
         )->find($cartId);
 
         if (! $cart) {
-            return $create ? $this->createNewCart() : null;
+            return $create ? $this->createNewCart($calculate) : null;
         }
 
         if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
-            return $this->createNewCart();
+            return $this->createNewCart($calculate);
         }
 
         if ($restored) {
@@ -444,9 +444,12 @@ class CartSessionManager implements CartSession
     }
 
     /**
-     * Create a new cart instance.
+     * Create a new cart instance. Calculated by default: every other cart
+     * handed out by fetchOrCreate() is, and an uncalculated cart has null
+     * Money accessors (subTotal, total), which crashes any consumer that
+     * projects the "current" cart straight after an order completes.
      */
-    protected function createNewCart(): Cart
+    protected function createNewCart(bool $calculate = true): Cart
     {
         $user = $this->authManager->user();
         $customer = optional($user)->latestCustomer();
@@ -466,6 +469,10 @@ class CartSessionManager implements CartSession
             'user_id' => optional($user)->id,
             'customer_id' => optional($customer)->id,
         ]);
+
+        if ($calculate) {
+            $cart->calculate();
+        }
 
         return $this->use($cart);
     }

@@ -224,6 +224,9 @@ class Cart extends Base
         'coupon_code' => CouponString::class,
     ];
 
+    /**
+     * @return HasMany<CartLine, $this>
+     */
     public function lines(): HasMany
     {
         return $this->hasMany(CartLine::class, 'cart_id', 'id')->orderBy('id');
