@@ -97,4 +97,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0090 | Remembered guest carts | implemented |
 | 0091 | PricingManager consumes the storefront context | implemented |
 | 0092 | Run cart and order modifiers | implemented |
-| 0093 | Registrable calculation steps | accepted    |
+| 0093 | Registrable calculation steps | implemented |

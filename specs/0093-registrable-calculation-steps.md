@@ -1,6 +1,6 @@
 # 0093 — Registrable calculation steps
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - TODO item: Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
@@ -64,7 +64,7 @@ enum StepList: string
 
 ### Registering
 
-`Contracts\StepRegistry`, bound as a singleton and exposed through a `Steps` facade:
+`Contracts\StepManifest` (implemented by `Manifests\StepManifest`, following core's other registries such as `CarrierManifest`), bound as a singleton and exposed through a `Steps` facade. `for()` returns the list's `Manifests\StepSequence`:
 
 ```php
 use Lunar\Core\Enums\StepList;
@@ -96,7 +96,9 @@ The step lists are removed from config entirely: `lunar.cart.pipelines`, `lunar.
 
 The other settings in those files stay: `auth_policy`, `eager_load`, the pruning `enabled` flag and interval, the pricing formatter and tax setting, and the order reference format and generator.
 
-A removed key that is still defined would be ignored, so a custom step in it would stop running without an error. To prevent that, `LunarServiceProvider` checks for the removed keys at boot and throws `RemovedStepConfigException` if any is defined. The message names the key and the `Steps` call that replaces it. The check reads config only, so it adds no query.
+A removed key that is still defined would be ignored, so a custom step in it would stop running without an error. To prevent that, `StepManifest` checks for the removed keys the first time any list is read, and throws `RemovedStepConfigException` if one is defined. The message names the key and the `Steps` call that replaces it. The check reads config only, once per process, so it adds no query.
+
+The check runs on first read rather than at boot so that artisan keeps working with a stale config. A boot check would also stop `php artisan lunar:upgrade`, the command that reports how to fix it. Nothing runs a list before the check, so no step runs from the wrong list.
 
 ### Callers
 
@@ -112,26 +114,26 @@ Modifiers stay. A modifier hooks a fixed, named point (before calculation, after
 - **Laravel's tagged services instead of a registry.** Tags give an unordered set, so positioning would need a priority number on each step. Priority numbers collide between add-ons and are invisible at the call site. Rejected in favour of anchors.
 - **Priority numbers on a registry.** The same collision problem. Anchoring to a named step states the actual dependency, for example "after `GetUnitPrice`".
 - **Replace every list with modifiers.** Modifiers need a hook point per insertion slot. Validators and price matching would need several new hooks each, and a new slot would need a core release.
-- **Keep config as a fallback, where a defined list replaces the seed.** Published config would keep working unchanged. Rejected: what runs would depend on whether a key is defined, a host with an old published list would not pick up steps core adds later, and add-on steps would be anchored against a stale list. v2 is a major release, so the break is taken once, with the upgrade step and the boot check to carry it.
-- **Ignore removed keys silently.** Simplest, but a custom pricing or validation step in a published list would stop running without an error. Rejected in favour of the boot check.
+- **Keep config as a fallback, where a defined list replaces the seed.** Published config would keep working unchanged. Rejected: what runs would depend on whether a key is defined, a host with an old published list would not pick up steps core adds later, and add-on steps would be anchored against a stale list. v2 is a major release, so the break is taken once, with the upgrade step and the config check to carry it.
+- **Ignore removed keys silently.** Simplest, but a custom pricing or validation step in a published list would stop running without an error. Rejected in favour of the config check.
 - **Do nothing.** Every add-on reinvents config rewriting, and each new one makes the ordering harder to reason about.
 
 ## Migration impact
 
 - **Database migrations required:** none.
-- **Breaking changes to the public contract surface:** the step-list config keys above are removed. New `Contracts\StepRegistry`, `Facades\Steps`, `Enums\StepList`, `Exceptions\UnknownStepException` and `Exceptions\RemovedStepConfigException`. Code that reads the keys finds them missing. Code that sets them at runtime, as bundles does today, has no effect, since nothing reads them, and must move to the registry.
-- **Behaviour changes:** none for a store that has not published or changed these lists. The seeded lists match today's defaults. A store that still defines a removed key fails at boot until it is removed.
+- **Breaking changes to the public contract surface:** the step-list config keys above are removed. New `Contracts\StepManifest`, `Manifests\StepSequence`, `Facades\Steps`, `Enums\StepList`, `Exceptions\UnknownStepException` and `Exceptions\RemovedStepConfigException`. Code that reads the keys finds them missing. Code that sets them at runtime, as bundles does today, triggers the config check and must move to the registry.
+- **Behaviour changes:** none for a store that has not published or changed these lists. The seeded lists match today's defaults. A store that still defines a removed key fails the first time a list is read, until the key is removed.
 - **Upgrade path for v1.x consumers:** v1 shipped `pipelines` and `validators` in its config, so most apps that published config define the removed keys. `lunar:upgrade` reads the published `cart.php`, `pricing.php` and `orders.php`:
   - A list that matches v1's defaults is reported as safe to delete.
   - A customised list is reported as a manual action, with the equivalent `Steps::` calls (adds, removals and replacements against the seeded list) printed to paste into a service provider.
 
-  A store that skips the upgrade step hits the boot check, whose message gives the same guidance.
+  A store that skips the upgrade step hits the config check, whose message gives the same guidance.
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none.
 
 ## Decisions
 
-- **No config fallback.** The step lists are removed from config outright. The boot check and `lunar:upgrade` carry published lists across.
+- **No config fallback.** The step lists are removed from config outright. The config check and `lunar:upgrade` carry published lists across.
 - **`lunar:steps` ships.** The command lists each resolved list in order, so a host can see what runs once add-ons are installed.
 - **Modifiers stay a separate mechanism.** Their hook points sit inside steps (`subtotalled` is mid-`CalculateLines`), so they cannot be list entries without splitting those steps. Revisit if keeping both proves confusing.
 
@@ -144,8 +146,8 @@ Modifiers stay. A modifier hooks a fixed, named point (before calculation, after
 
 ## Implementation plan
 
-- [ ] Slice 1 — `StepList`, `StepRegistry`, the `Steps` facade and `UnknownStepException`, seeded with today's defaults. Tests: positioning, idempotent adds, registration order for a shared anchor, a missing anchor throwing.
-- [ ] Slice 2 — Move every caller in the table above onto the registry, remove the lists from the shipped config files, and add the boot check. Existing cart, order, pricing and pruning tests pass unchanged. Tests: each removed key, when defined, throws `RemovedStepConfigException` naming it.
-- [ ] Slice 3 — `lunar:upgrade` reporting for published list keys: safe to delete when they match v1's defaults, otherwise the equivalent `Steps::` calls, `WHATS-NEW.md` entry, and the docs page on registering steps.
-- [ ] Slice 4 — `lunar:steps` command listing the resolved lists.
+- [x] Slice 1 — `StepList`, `StepManifest` and `StepSequence`, the `Steps` facade and `UnknownStepException`, seeded with today's defaults. Tests: positioning, idempotent adds, registration order for a shared anchor, a missing anchor throwing.
+- [x] Slice 2 — Move every caller in the table above onto the registry, remove the lists from the shipped config files, and add the config check. Existing cart, order and pruning tests pass unchanged; pricing tests that set the config key register through `Steps` instead. Tests: each removed key, when defined, throws `RemovedStepConfigException` naming it.
+- [x] Slice 3 — `lunar:upgrade` reporting (`StepListConfigStep`) for published list keys: safe to delete when they match v1's defaults, otherwise the equivalent `Steps::` calls, and the `WHATS-NEW.md` entry. The docs page on registering steps is outside this repo and still to write.
+- [x] Slice 4 — `lunar:steps` command listing the resolved lists.
 - [ ] Follow-up — Move the product bundles add-on (#2732) onto the registry and off config rewriting.
