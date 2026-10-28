@@ -56,7 +56,7 @@ class FlatRate implements ShippingRateInterface
 
         $subTotal = $cart->lines->sum('subTotal.value');
 
-        $pricing = Pricing::for($shippingRate)->qty($subTotal)->get();
+        $pricing = Pricing::for($shippingRate)->using($cart->context())->qty($subTotal)->get();
 
         if (! $pricing->matched) {
             return null;

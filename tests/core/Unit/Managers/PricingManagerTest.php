@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\DataObjects\PricingResponse;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
 use Lunar\Core\Managers\PricingManager;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
@@ -18,6 +20,9 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 
 uses(RefreshDatabase::class);
+
+// A context always names a channel, so even a bare call needs a default one.
+beforeEach(fn () => Channel::factory()->create(['default' => true]));
 
 test('can initialise the manager', function () {
     expect(app(PricingManager::class))->toBeInstanceOf(PricingManager::class);
@@ -386,10 +391,8 @@ test('can pipeline purchasable price', function () {
     expect($pricing->matched->id)->toEqual($price->id);
     expect($pricing->matched->price)->toEqual($price->price);
 
-    config()->set('lunar.pricing.pipelines', [
-        // set price to 200
-        TestPricingPipeline::class,
-    ]);
+    // Sets the price to 200.
+    Steps::for(StepList::PriceMatching)->append(TestPricingPipeline::class);
 
     $pricing = $manager->for($variant)->get();
 
@@ -402,7 +405,6 @@ test('can pipeline purchasable price', function () {
 });
 
 test('using a storefront context applies its currency and customer groups', function () {
-    Channel::factory()->create(['default' => true]);
     $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
     $group = CustomerGroup::factory()->create(['default' => true]);
 
@@ -437,7 +439,6 @@ test('using a storefront context applies its currency and customer groups', func
 });
 
 test('a context keeps its customer groups even when an authenticated user has different ones', function () {
-    Channel::factory()->create(['default' => true]);
     $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
     $contextGroup = CustomerGroup::factory()->create(['default' => true]);
     $userGroup = CustomerGroup::factory()->create(['default' => false]);

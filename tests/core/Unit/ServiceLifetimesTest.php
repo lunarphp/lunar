@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CartSession;
+use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\ShippingManifest;
 use Lunar\Core\Contracts\StorefrontSession;
@@ -40,6 +41,7 @@ beforeEach(function (): void {
 dataset('scoped services', [
     'cart session' => [CartSession::class],
     'storefront session' => [StorefrontSession::class],
+    'default storefront context' => [DefaultStorefrontContext::class],
     'discount manager' => [DiscountManager::class],
     'cache invalidator' => [CacheInvalidator::class],
     'attribute cache' => [AttributeCache::class],

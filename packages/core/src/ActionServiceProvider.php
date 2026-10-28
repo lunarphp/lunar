@@ -15,8 +15,6 @@ use Lunar\Core\Actions\Brands\UpdateBrand;
 use Lunar\Core\Actions\Carts\AddAddress;
 use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Core\Actions\Carts\AssociateUser;
-use Lunar\Core\Actions\Carts\CalculateLine;
-use Lunar\Core\Actions\Carts\CalculateLineSubtotal;
 use Lunar\Core\Actions\Carts\CreateOrder;
 use Lunar\Core\Actions\Carts\GenerateFingerprint;
 use Lunar\Core\Actions\Carts\GetExistingCartLine;
@@ -173,8 +171,6 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\AddsAddress::class => AddAddress::class,
         Contracts\Carts\AddsOrUpdatesPurchasable::class => AddOrUpdatePurchasable::class,
         Contracts\Carts\AssociatesUser::class => AssociateUser::class,
-        Contracts\Carts\CalculatesLine::class => CalculateLine::class,
-        Contracts\Carts\CalculatesLineSubtotal::class => CalculateLineSubtotal::class,
         Contracts\Carts\CreatesOrder::class => CreateOrder::class,
         Contracts\Carts\GeneratesFingerprint::class => GenerateFingerprint::class,
         Contracts\Carts\GetsExistingCartLine::class => GetExistingCartLine::class,

@@ -8,6 +8,7 @@ use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\CartSession;
+use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
@@ -29,11 +30,18 @@ class StorefrontSessionManager implements StorefrontSession
 
     protected ?Customer $customer = null;
 
+    /**
+     * Whether the customer groups were chosen, rather than defaulted. Chosen
+     * groups win; otherwise the context derives them from the customer.
+     */
+    protected bool $customerGroupsChosen = false;
+
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
         protected ResolvesStorefrontContext $resolveStorefrontContext,
         protected CartSession $cartSession,
+        protected DefaultStorefrontContext $defaultContext,
     ) {
         $this->customerGroups = new Collection;
 
@@ -50,9 +58,17 @@ class StorefrontSessionManager implements StorefrontSession
             channel: $this->getChannel(),
             currency: $this->getCurrency(),
             customer: $this->getCustomer(),
-            customerGroups: $this->getCustomerGroups(),
+            customerGroups: $this->customerGroupsChosen ? $this->getCustomerGroups() : null,
             region: $this->getRegion(),
         );
+    }
+
+    public function useAsDefaultContext(): static
+    {
+        // Resolved on use, so a later login or currency switch is seen.
+        $this->defaultContext->resolveUsing(fn (): StorefrontContext => $this->context());
+
+        return $this;
     }
 
     public function getRegion(): ?Region
@@ -120,6 +136,7 @@ class StorefrontSessionManager implements StorefrontSession
         );
 
         $this->customerGroups = $customerGroups;
+        $this->customerGroupsChosen = true;
 
         return $this;
     }
@@ -134,6 +151,7 @@ class StorefrontSessionManager implements StorefrontSession
         $this->sessionManager->forget($this->getSessionKey().'_customer_groups');
 
         $this->customerGroups = new Collection;
+        $this->customerGroupsChosen = false;
 
         return $this;
     }
@@ -264,7 +282,8 @@ class StorefrontSessionManager implements StorefrontSession
             return;
         }
 
-        $this->setCustomerGroup(CustomerGroup::getDefault());
+        // Not persisted: a defaulted group must not look chosen on the next request.
+        $this->customerGroups = new Collection(array_filter([CustomerGroup::getDefault()]));
     }
 
     public function initCurrency(): void

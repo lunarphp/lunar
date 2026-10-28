@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
@@ -18,6 +19,9 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 
 uses(RefreshDatabase::class);
+
+// Pricing resolves a storefront context, which always names a channel.
+beforeEach(fn () => Channel::factory()->create(['default' => true]));
 
 test('can create a price', function () {
     $variant = ProductVariant::factory()->create();

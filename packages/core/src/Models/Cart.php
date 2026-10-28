@@ -27,10 +27,12 @@ use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Database\Factories\CartFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
 use Lunar\Core\Facades\DB;
@@ -39,8 +41,8 @@ use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Pipelines\Cart\Calculate;
-use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
 use Lunar\Core\Validation\CartLine\CartLineStock;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\ValueObjects\Cart\FreeItem;
@@ -60,6 +62,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
+ * @property ?string $remember_token
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -73,6 +76,11 @@ class Cart extends Base
     use HasPublicId;
     use LogsActivity;
     use SoftDeletes;
+
+    /**
+     * The context held for the duration of a calculate() call.
+     */
+    protected ?StorefrontContext $calculationContext = null;
 
     /**
      * Array of cachable class properties.
@@ -206,6 +214,13 @@ class Cart extends Base
     protected $guarded = [];
 
     /**
+     * @var list<string>
+     */
+    protected $hidden = [
+        'remember_token',
+    ];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array
@@ -216,6 +231,9 @@ class Cart extends Base
         'coupon_code' => CouponString::class,
     ];
 
+    /**
+     * @return HasMany<CartLine, $this>
+     */
     public function lines(): HasMany
     {
         return $this->hasMany(CartLine::class, 'cart_id', 'id')->orderBy('id');
@@ -242,11 +260,39 @@ class Cart extends Base
      */
     public function context(): StorefrontContext
     {
+        if ($this->calculationContext) {
+            return $this->calculationContext;
+        }
+
+        $this->loadMissing(['channel', 'currency', 'customer', 'region']);
+
         return app(ResolvesStorefrontContext::class)->execute(
             channel: $this->channel,
             currency: $this->currency,
             customer: $this->customer,
+            customerGroups: $this->customer ? null : $this->userCustomerGroups(),
+            region: $this->region,
         );
+    }
+
+    /**
+     * The merged customer groups of the cart's user, for a cart that has a
+     * user but no customer.
+     *
+     * @return Collection<int, CustomerGroup>|null
+     */
+    protected function userCustomerGroups(): ?Collection
+    {
+        if (! $this->user_id || ! $this->user || ! is_lunar_user($this->user)) {
+            return null;
+        }
+
+        return $this->user->loadMissing('customers.customerGroups')
+            ->customers
+            ->pluck('customerGroups')
+            ->flatten()
+            ->unique('id')
+            ->values();
     }
 
     public function user(): BelongsTo
@@ -397,6 +443,16 @@ class Cart extends Base
     }
 
     /**
+     * The steps in a list, in the order they run.
+     *
+     * @return list<class-string>
+     */
+    protected function steps(StepList $list): array
+    {
+        return app(StepManifest::class)->for($list)->all();
+    }
+
+    /**
      * Calculate the cart totals and cache the result.
      */
     public function calculate(bool $force = false): Cart
@@ -406,13 +462,29 @@ class Cart extends Base
             return $this;
         }
 
-        $cart = app(Pipeline::class)
-            ->send($this)
-            ->through(
-                config('lunar.cart.pipelines.cart', [
-                    Calculate::class,
-                ])
-            )->thenReturn();
+        // Resolve the context once for the whole calculation, not once per line.
+        $this->calculationContext = null;
+        $this->calculationContext = $this->context();
+
+        $cartModifiers = app(CartModifiers::class);
+        $cartLineModifiers = app(CartLineModifiers::class);
+
+        try {
+            $cart = app(Pipeline::class)
+                ->send($cartModifiers->calculating($this))
+                ->through($this->steps(StepList::CartCalculation))
+                ->thenReturn();
+
+            if ($cartLineModifiers->getModifiers()->isNotEmpty()) {
+                foreach ($cart->loadMissing('lines')->lines as $line) {
+                    $cartLineModifiers->calculated($line);
+                }
+            }
+
+            $cart = $cartModifiers->calculated($cart);
+        } finally {
+            $this->calculationContext = null;
+        }
 
         return $cart->cacheProperties();
     }
@@ -437,7 +509,7 @@ class Cart extends Base
      */
     public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.add_to_cart', []) as $action) {
+        foreach ($this->steps(StepList::AddToCartValidation) as $action) {
             // Throws a validation exception?
             app($action)->using(
                 cart: $this,
@@ -470,7 +542,7 @@ class Cart extends Base
 
     public function remove(int $cartLineId, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.remove_from_cart', []) as $action) {
+        foreach ($this->steps(StepList::RemoveFromCartValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 cartLineId: $cartLineId,
@@ -487,7 +559,7 @@ class Cart extends Base
      */
     public function updateLine(int $cartLineId, int $quantity, ?array $meta = null, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
+        foreach ($this->steps(StepList::UpdateCartLineValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 cartLineId: $cartLineId,
@@ -561,7 +633,7 @@ class Cart extends Base
 
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
     {
-        foreach (config('lunar.cart.validators.add_address', []) as $action) {
+        foreach ($this->steps(StepList::AddAddressValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 address: $address,
@@ -592,7 +664,7 @@ class Cart extends Base
     {
         $this->loadMissing('shippingAddress');
 
-        foreach (config('lunar.cart.validators.set_shipping_option', []) as $action) {
+        foreach ($this->steps(StepList::SetShippingOptionValidation) as $action) {
             app($action)->using(
                 cart: $this,
                 shippingOption: $option,
@@ -624,9 +696,7 @@ class Cart extends Base
 
         $cart->loadMissing('completedOrder');
 
-        foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class,
-        ]) as $action) {
+        foreach ($this->steps(StepList::OrderCreateValidation) as $action) {
             app($action)->using(
                 cart: $cart,
             )->validate();
@@ -644,9 +714,7 @@ class Cart extends Base
     {
         $passes = true;
 
-        foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class,
-        ]) as $action) {
+        foreach ($this->steps(StepList::OrderCreateValidation) as $action) {
             try {
                 app($action)->using(
                     cart: $this,
@@ -727,5 +795,12 @@ class Cart extends Base
         $this->save();
 
         return $this->refresh()->recalculate();
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [
+            'remember_token',
+        ];
     }
 }

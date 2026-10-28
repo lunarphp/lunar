@@ -6,6 +6,7 @@ use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -17,13 +18,30 @@ use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 class ModelManifest implements ModelManifestContract
 {
     /**
+     * Model classes already discovered, keyed by directory.
+     *
+     * Discovery parses every file in the directory, and register() and
+     * morphMap() both need the core models on every boot. Remembering the
+     * result keeps that to one scan per directory for the life of the
+     * manifest, which is bound as a singleton.
+     *
+     * @var array<string, array<class-string>>
+     */
+    protected array $discovered = [];
+
+    /**
+     * The contents of the cache file, loaded on first use.
+     *
+     * @var array<string, array<class-string>>|null
+     */
+    protected ?array $cached = null;
+
+    /**
      * Discover the core models and register their route + morph bindings.
      */
     public function register(): void
     {
-        $this->registerModels(
-            Discover::in(__DIR__.'/../Models')->classes()->extending(Base::class)->get()
-        );
+        $this->registerModels($this->discover($this->coreModelsPath()));
     }
 
     /**
@@ -32,9 +50,7 @@ class ModelManifest implements ModelManifestContract
     public function addDirectory(string $dir): void
     {
         try {
-            $this->registerModels(
-                Discover::in($dir)->classes()->extending(Base::class)->get()
-            );
+            $this->registerModels($this->discover($dir));
         } catch (DirectoryNotFoundException $e) {
             Log::error($e->getMessage());
         }
@@ -46,7 +62,7 @@ class ModelManifest implements ModelManifestContract
     public function morphMap(): void
     {
         $morphMap = collect(
-            Discover::in(__DIR__.'/../Models')->classes()->extending(Base::class)->get()
+            $this->discover($this->coreModelsPath())
         )->mapWithKeys(
             fn (string $class) => [$this->getMorphMapKey($class) => $class]
         );
@@ -60,6 +76,86 @@ class ModelManifest implements ModelManifestContract
         $key = Str::snake(class_basename($className));
 
         return "{$prefix}{$key}";
+    }
+
+    /**
+     * Rescan every directory this manifest has discovered and write the
+     * result to the cache file, which later processes read instead of
+     * scanning. A stale file is ignored while building.
+     *
+     * @return array<string, array<class-string>>
+     */
+    public function cache(): array
+    {
+        $this->discover($this->coreModelsPath());
+
+        $models = [];
+
+        foreach (array_keys($this->discovered) as $dir) {
+            $models[$dir] = $this->scan($dir);
+        }
+
+        File::replace($this->cachePath(), '<?php return '.var_export($models, true).';'.PHP_EOL);
+
+        return $this->discovered = $this->cached = $models;
+    }
+
+    /**
+     * Delete the cache file, so the next process scans again.
+     */
+    public function clearCache(): void
+    {
+        File::delete($this->cachePath());
+
+        $this->cached = [];
+    }
+
+    public function cachePath(): string
+    {
+        return App::bootstrapPath('cache/lunar_models.php');
+    }
+
+    /**
+     * The model classes in a directory: from the cache file when it lists
+     * the directory, otherwise scanned, and either way at most once.
+     *
+     * @return array<class-string>
+     */
+    protected function discover(string $dir): array
+    {
+        $dir = realpath($dir) ?: $dir;
+
+        return $this->discovered[$dir] ??= $this->cached()[$dir] ?? $this->scan($dir);
+    }
+
+    /**
+     * @return array<string, array<class-string>>
+     */
+    protected function cached(): array
+    {
+        if ($this->cached !== null) {
+            return $this->cached;
+        }
+
+        $path = $this->cachePath();
+        $models = is_file($path) ? require $path : [];
+
+        return $this->cached = is_array($models) ? $models : [];
+    }
+
+    /**
+     * Scan a directory for classes extending the Lunar base model.
+     *
+     * @return array<class-string>
+     */
+    protected function scan(string $dir): array
+    {
+        return Discover::in($dir)->classes()->extending(Base::class)->get();
+    }
+
+    protected function coreModelsPath(): string
+    {
+        return __DIR__.'/../Models';
     }
 
     /**
