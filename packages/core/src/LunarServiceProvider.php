@@ -44,6 +44,7 @@ use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
+use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\DependencyResolver as DependencyResolverContract;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
@@ -84,6 +85,7 @@ use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderRefundedNotifications;
 use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
+use Lunar\Core\Managers\DefaultStorefrontContextManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
 use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
@@ -534,6 +536,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->scoped(StorefrontSession::class, function ($app) {
             return $app->make(StorefrontSessionManager::class);
+        });
+
+        $this->app->scoped(DefaultStorefrontContext::class, function ($app) {
+            return $app->make(DefaultStorefrontContextManager::class);
         });
 
         $this->app->bind(PricingManager::class, function ($app) {

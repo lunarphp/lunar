@@ -141,7 +141,8 @@ test('can set multiple customer group', function (): void {
 
     expect($manager->getCustomerGroups())->toHaveCount(1);
     expect($manager->getCustomerGroups()->first()->id)->toBe($defaultCustomerGroup->id);
-    expect(Session::get($sessionKey))->toBe([$defaultCustomerGroup->handle]);
+    // A defaulted group is not persisted, or it would look chosen on the next request.
+    expect(Session::get($sessionKey))->toBeNull();
 
     $manager->setCustomerGroups($otherCustomerGroups);
 
@@ -165,7 +166,7 @@ test('can set a single customer group', function (): void {
 
     expect($manager->getCustomerGroups())->toHaveCount(1);
     expect($manager->getCustomerGroups()->first()->id)->toBe($defaultCustomerGroup->id);
-    expect(Session::get($sessionKey))->toBe([$defaultCustomerGroup->handle]);
+    expect(Session::get($sessionKey))->toBeNull();
 
     $manager->setCustomerGroup($otherCustomerGroup);
 
@@ -251,6 +252,9 @@ test('can forget all values', function (): void {
 
     /** @var StorefrontSessionManager */
     $manager = app(StorefrontSession::class);
+
+    // Only chosen customer groups are persisted.
+    $manager->setCustomerGroup(CustomerGroup::getDefault());
 
     $sessionKey = $manager->getSessionKey();
 
@@ -370,4 +374,18 @@ test('the session currency defaults from the region', function (): void {
     $manager = app(StorefrontSession::class);
 
     expect($manager->getCurrency()->code)->toBe('EUR');
+});
+
+test('context derives customer groups from the customer when none were chosen', function (): void {
+    /** @var CustomerGroup */
+    $trade = CustomerGroup::factory()->create(['default' => false]);
+
+    $customer = Customer::factory()->create();
+    $customer->customerGroups()->attach($trade);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+    $manager->setCustomer($customer);
+
+    expect($manager->context()->customerGroups->pluck('id')->all())->toBe([$trade->id]);
 });

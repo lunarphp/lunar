@@ -87,6 +87,20 @@ produces an immutable `StorefrontContext` DTO (channel, currency, language,
 region, customer, groups), so non-session code (APIs, jobs, tests) works from an
 explicit context instead of reaching into session state.
 
+Pricing consumes that context as its single source of state. A pricing pipeline
+reads `$pricing->getContext()` for the region, customer and channel, so contract
+pricing or regional price lists can be built as a pipeline class. The manager no
+longer looks up the logged-in user: a bare `$variant->pricing()->get()` returns
+store-default prices unless the request has called
+`StorefrontSession::useAsDefaultContext()` — typically from a middleware on the
+`web` group, so Livewire update requests are covered too. It must be called per
+request; the default is scoped and does not survive into the next one. Nothing
+carries between calls any more, so configure each call rather than setting a
+currency once and calling `get()` in a loop, and use the setters rather than
+writing to `currency` / `customerGroups` directly. Enable
+`Pricing::preventDefaultContext()` outside production to turn a forgotten
+context into an exception instead of a wrong price.
+
 Guest carts now outlive the session. A long-lived cookie points back to the
 cart (only a hash of its token is stored), so a store can keep a short session
 lifetime without losing carts. Each restore refreshes the cookie's expiry, and

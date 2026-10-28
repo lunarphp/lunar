@@ -14,6 +14,9 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
+- PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
+- Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
+- Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Add Boost guidelines to packages
 
 ## Ideas

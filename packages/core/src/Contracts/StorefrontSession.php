@@ -18,6 +18,12 @@ interface StorefrontSession
      */
     public function context(): StorefrontContext;
 
+    /**
+     * Make this session's context the default for the current request, so
+     * operations given no context use it. Call once per request.
+     */
+    public function useAsDefaultContext(): static;
+
     public function getRegion(): ?Region;
 
     public function setRegion(Region $region): static;

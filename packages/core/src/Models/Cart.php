@@ -76,6 +76,11 @@ class Cart extends Base
     use SoftDeletes;
 
     /**
+     * The context held for the duration of a calculate() call.
+     */
+    protected ?StorefrontContext $calculationContext = null;
+
+    /**
      * Array of cachable class properties.
      *
      * @var array
@@ -253,11 +258,39 @@ class Cart extends Base
      */
     public function context(): StorefrontContext
     {
+        if ($this->calculationContext) {
+            return $this->calculationContext;
+        }
+
+        $this->loadMissing(['channel', 'currency', 'customer', 'region']);
+
         return app(ResolvesStorefrontContext::class)->execute(
             channel: $this->channel,
             currency: $this->currency,
             customer: $this->customer,
+            customerGroups: $this->customer ? null : $this->userCustomerGroups(),
+            region: $this->region,
         );
+    }
+
+    /**
+     * The merged customer groups of the cart's user, for a cart that has a
+     * user but no customer.
+     *
+     * @return Collection<int, CustomerGroup>|null
+     */
+    protected function userCustomerGroups(): ?Collection
+    {
+        if (! $this->user_id || ! $this->user || ! is_lunar_user($this->user)) {
+            return null;
+        }
+
+        return $this->user->loadMissing('customers.customerGroups')
+            ->customers
+            ->pluck('customerGroups')
+            ->flatten()
+            ->unique('id')
+            ->values();
     }
 
     public function user(): BelongsTo
@@ -417,13 +450,21 @@ class Cart extends Base
             return $this;
         }
 
-        $cart = app(Pipeline::class)
-            ->send($this)
-            ->through(
-                config('lunar.cart.pipelines.cart', [
-                    Calculate::class,
-                ])
-            )->thenReturn();
+        // Resolve the context once for the whole calculation, not once per line.
+        $this->calculationContext = null;
+        $this->calculationContext = $this->context();
+
+        try {
+            $cart = app(Pipeline::class)
+                ->send($this)
+                ->through(
+                    config('lunar.cart.pipelines.cart', [
+                        Calculate::class,
+                    ])
+                )->thenReturn();
+        } finally {
+            $this->calculationContext = null;
+        }
 
         return $cart->cacheProperties();
     }

@@ -19,6 +19,9 @@ uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 
+// A context always names a channel, so even a bare call needs a default one.
+beforeEach(fn () => Channel::factory()->create(['default' => true]));
+
 test('can initialise the manager', function () {
     expect(app(PricingManager::class))->toBeInstanceOf(PricingManager::class);
 });
@@ -402,7 +405,6 @@ test('can pipeline purchasable price', function () {
 });
 
 test('using a storefront context applies its currency and customer groups', function () {
-    Channel::factory()->create(['default' => true]);
     $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
     $group = CustomerGroup::factory()->create(['default' => true]);
 
@@ -437,7 +439,6 @@ test('using a storefront context applies its currency and customer groups', func
 });
 
 test('a context keeps its customer groups even when an authenticated user has different ones', function () {
-    Channel::factory()->create(['default' => true]);
     $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
     $contextGroup = CustomerGroup::factory()->create(['default' => true]);
     $userGroup = CustomerGroup::factory()->create(['default' => false]);

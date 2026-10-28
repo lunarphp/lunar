@@ -35,11 +35,12 @@ class CalculateLineSubtotal implements CalculatesLineSubtotal
 
         // we check if any cart line modifiers have already specified a unit price in their calculating() method
         if (! $price instanceof PriceValue) {
-            $priceResponse = $this->pricing->currency($cart->currency)
-                ->qty($cartLine->quantity)
-                ->currency($cart->currency)
-                ->customerGroups($customerGroups)
+            $context = $cart->context();
+
+            $priceResponse = $this->pricing
+                ->using($customerGroups->isNotEmpty() ? $context->withCustomerGroups($customerGroups) : $context)
                 ->for($purchasable)
+                ->qty($cartLine->quantity)
                 ->get();
 
             $price = new PriceValue(
