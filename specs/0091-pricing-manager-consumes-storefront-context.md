@@ -250,7 +250,7 @@ Every first-party caller passes the cart's context, so region and customer reach
 - **Naming.** `DefaultStorefrontContext`, `StorefrontSession::useAsDefaultContext()` and `Pricing::preventDefaultContext()` stand. `preventDefaultContext()` follows the `Model::preventLazyLoading()` precedent.
 - **Strict mode ships here.** With nothing registered by default, it is the only thing that turns a missed `useAsDefaultContext()`, or a job pricing against store defaults by accident, into an error instead of a wrong price.
 - **Property hooks for BC reads.** Core requires PHP 8.4, and the Filament bridge already uses property hooks (`Support/ComponentExtensions/Registry.php`), so the get-only `currency`, `customerGroups` and `user` properties use them.
-- **`CalculatesLine` / `CalculatesLineSubtotal` keep the `$customerGroups` parameter.** Removing it breaks two action contracts, so it is a separate change: [[0092-line-actions-price-from-cart-context]].
+- **`CalculatesLine` / `CalculatesLineSubtotal` keep the `$customerGroups` parameter here.** Changing two action contracts is a separate change. [[0092-run-cart-and-order-modifiers]] deletes both actions, since cart calculation does not use them.
 - **Per-calculation cart context.** Memoized on the cart instance for the life of a `calculate()` call.
 
 ## References
