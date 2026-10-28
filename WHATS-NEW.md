@@ -46,6 +46,21 @@ registers query scopes (native scopes win on collision).
 guessing which class is "the real one", and customisation reads like ordinary
 Laravel. A Rector rule in the upgrade package migrates old `modelClass()` calls.
 
+**Modifiers run.** Cart line, cart and order modifiers are how an add-on hooks
+calculation from its own service provider, without editing the host's config.
+In v1 none of them ran during cart calculation or order creation. Now they do:
+`CartModifier::calculating()` runs before the cart pipeline;
+`CartLineModifier::calculating()` before a line is priced, `subtotalled()` once
+its subtotal is set (a change there reaches discounts and tax), and
+`calculated()` once its totals are final; `CartModifier::calculated()` runs
+last. `OrderModifier::creating()` and `created()` run around the order creation
+pipeline, inside its transaction. `calculating()` runs before the line is priced,
+so a unit price set there is overwritten; change prices in `subtotalled()`. If
+your v1 app registered modifiers, review them before deploying, because they
+will now run. `CalculateLine` and `CalculateLineSubtotal` are gone: cart
+calculation never used them, so call `$cart->calculate()` and read the line's
+totals.
+
 ## Every operation is an action, every action has a verb
 
 Service-layer classes now declare their collaborators via constructor injection

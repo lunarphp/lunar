@@ -1,6 +1,6 @@
 # 0092 — Run cart and order modifiers
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - TODO item: Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
@@ -34,6 +34,8 @@ Run all three kinds of modifier, cart ones from the cart calculation and order o
 | `OrderModifier::created($order)` | Once, after the `creation` pipeline and discount consumption, before the transaction commits. | `CreateOrder` |
 
 `CalculateLines` sets `subTotalDiscounted` and `total` from `subTotal` after `subtotalled` returns, not before. A modifier that changes the subtotal therefore changes what discounts and tax are calculated on, which is what `subtotalled` exists for.
+
+`calculating` runs before `GetUnitPrice`, which always sets the unit price, so a unit price set in `calculating` is overwritten. A modifier that changes the price does it in `subtotalled`, or, once [[0093-registrable-calculation-steps]] lands, as a step after `GetUnitPrice`.
 
 Each hook runs through the registered modifiers in registration order, as a pipeline using the hook name as the method, the same way `ShippingManifest` runs `ShippingModifiers`. With no modifiers registered, calculation does no extra work beyond reading an empty collection.
 
@@ -80,7 +82,7 @@ The docs pages that describe modifiers are corrected once this lands, in the doc
 
 ## Implementation plan
 
-- [ ] Slice 1 — Run the line and cart hooks from `CalculateLines` and `Cart::calculate()` at the points above. Tests: each hook fires once per line or cart in the stated order; a `subtotalled` change to the subtotal reaches discounts, tax and the cart total; `calculated` sees final line totals; modifiers run in registration order.
-- [ ] Slice 2 — Run the order hooks from `CreateOrder` at the points above. Tests: `creating` sees the cart before the pipeline and `created` sees the finished order; an exception from a modifier rolls the order back.
-- [ ] Slice 3 — Delete the line actions, their contracts, the `$actions` entries and `CalculateLineTest`, moving its uncovered assertions to cart-level tests.
-- [ ] Slice 4 — Remove the `LunarSetList` renames, add the manual-action note for references to the deleted classes, and add the `WHATS-NEW.md` entry.
+- [x] Slice 1 — Run the line and cart hooks from `CalculateLines` and `Cart::calculate()` at the points above. Tests: each hook fires once per line or cart in the stated order; a `subtotalled` change to the subtotal reaches discounts, tax and the cart total; `calculated` sees final line totals; modifiers run in registration order.
+- [x] Slice 2 — Run the order hooks from `CreateOrder` at the points above. Tests: `creating` sees the cart before the pipeline and `created` sees the finished order; an exception from a modifier rolls the order back.
+- [x] Slice 3 — Delete the line actions, their contracts, the `$actions` entries and `CalculateLineTest`, moving its uncovered assertions to cart-level tests.
+- [x] Slice 4 — Remove the `LunarSetList` renames, add the manual-action note for references to the deleted classes, and add the `WHATS-NEW.md` entry. The docs pages listed above are corrected in the docs repo.
