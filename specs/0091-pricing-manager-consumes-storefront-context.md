@@ -1,6 +1,6 @@
 # 0091 — PricingManager consumes the storefront context
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-18
 - TODO item: PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
@@ -245,13 +245,13 @@ Every first-party caller passes the cart's context, so region and customer reach
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none. The admin and panel pricing screens edit `Price` rows and never resolve prices through the manager.
 
-## Open questions
+## Decisions
 
-- **Naming.** `DefaultStorefrontContext`, `useAsDefaultContext()` and `preventDefaultContext()` are working names. Settle in review.
-- **Strict mode in this spec or the price-list spec?** Proposed here. With nothing registered by default, strict mode is the only thing that turns a missed `useAsDefaultContext()` — or a job pricing against store defaults by accident — into an error instead of a wrong price. Owner: Glenn.
-- **Property hooks for BC reads.** Core requires PHP 8.4 but uses no property hooks yet. If introducing them here is unwelcome, the fallback is to drop the three public properties and add a Rector rule rewriting reads to `getContext()`. Owner: Glenn.
-- **Should `CalculatesLine` / `CalculatesLineSubtotal` lose the `$customerGroups` parameter?** Once they price from the cart's context the parameter is redundant, but removing it breaks two action contracts. Proposed: leave for a follow-up. Settle in review.
-- **Where the per-calculation cart context is memoized.** Resolved in implementation: on the cart instance, for the life of a `calculate()` call.
+- **Naming.** `DefaultStorefrontContext`, `StorefrontSession::useAsDefaultContext()` and `Pricing::preventDefaultContext()` stand. `preventDefaultContext()` follows the `Model::preventLazyLoading()` precedent.
+- **Strict mode ships here.** With nothing registered by default, it is the only thing that turns a missed `useAsDefaultContext()`, or a job pricing against store defaults by accident, into an error instead of a wrong price.
+- **Property hooks for BC reads.** Core requires PHP 8.4, and the Filament bridge already uses property hooks (`Support/ComponentExtensions/Registry.php`), so the get-only `currency`, `customerGroups` and `user` properties use them.
+- **`CalculatesLine` / `CalculatesLineSubtotal` keep the `$customerGroups` parameter.** Removing it breaks two action contracts, so it is a separate change: [[0092-line-actions-price-from-cart-context]].
+- **Per-calculation cart context.** Memoized on the cart instance for the life of a `calculate()` call.
 
 ## References
 

@@ -15,6 +15,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart totals caching in the database — additive performance optimisation
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
+- Line actions price from the cart's context — drop the redundant `$customerGroups` parameter from `CalculatesLine` / `CalculatesLineSubtotal` (spec 0092)
 - Add Boost guidelines to packages
 
 ## Ideas
