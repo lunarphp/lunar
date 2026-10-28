@@ -2,15 +2,19 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Core\Stubs\TestPurchasable;
@@ -72,6 +76,39 @@ test('check unit price casts correctly', function () {
     );
 
     expect($orderLine->decimal('unit_price'))->toEqual(5.07);
+});
+
+test('an order line keeps the pack price and divides it by unit quantity for per-unit display', function () {
+    TaxClass::factory()->create(['default' => true]);
+    CustomerGroup::factory()->create(['default' => true]);
+
+    $currency = Currency::factory()->create(['decimal_places' => 2]);
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+    $variant = ProductVariant::factory()->create(['unit_quantity' => 10]);
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    $order = app(CreatesOrder::class)->execute($cart->calculate());
+
+    $line = $order->lines()->where('purchasable_id', $variant->id)->first();
+
+    expect($line->unit_price)->toBe(1000)
+        ->and($line->unit_quantity)->toBe(10)
+        ->and($line->decimal('unit_price'))->toEqual(10.0)
+        ->and($line->unitDecimal('unit_price'))->toEqual(1.0)
+        ->and($line->unitFormat('unit_price'))->toBe((new PriceValue(100, $currency))->format());
 });
 
 test('only purchasables can be added to an order', function () {
