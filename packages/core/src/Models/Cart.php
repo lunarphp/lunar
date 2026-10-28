@@ -39,6 +39,8 @@ use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
 use Lunar\Core\Pipelines\Cart\Calculate;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\CartLine\CartLineStock;
@@ -454,14 +456,25 @@ class Cart extends Base
         $this->calculationContext = null;
         $this->calculationContext = $this->context();
 
+        $cartModifiers = app(CartModifiers::class);
+        $cartLineModifiers = app(CartLineModifiers::class);
+
         try {
             $cart = app(Pipeline::class)
-                ->send($this)
+                ->send($cartModifiers->calculating($this))
                 ->through(
                     config('lunar.cart.pipelines.cart', [
                         Calculate::class,
                     ])
                 )->thenReturn();
+
+            if ($cartLineModifiers->getModifiers()->isNotEmpty()) {
+                foreach ($cart->loadMissing('lines')->lines as $line) {
+                    $cartLineModifiers->calculated($line);
+                }
+            }
+
+            $cart = $cartModifiers->calculated($cart);
         } finally {
             $this->calculationContext = null;
         }

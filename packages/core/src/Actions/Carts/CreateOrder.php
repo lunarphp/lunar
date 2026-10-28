@@ -10,9 +10,14 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Modifiers\OrderModifiers;
 
 class CreateOrder implements CreatesOrder
 {
+    public function __construct(
+        protected OrderModifiers $orderModifiers,
+    ) {}
+
     /**
      * Execute the action.
      */
@@ -35,10 +40,15 @@ class CreateOrder implements CreatesOrder
                 throw new DisallowMultipleCartOrdersException;
             }
 
+            $cart = $this->orderModifiers->creating($cart);
+
             $order->fill([
                 'cart_id' => $cart->id,
                 'fingerprint' => $cart->fingerprint(),
             ]);
+
+            // The pipeline reads $order->cart; hand it this instance so the creating hook's changes reach it.
+            $order->setRelation('cart', $cart);
 
             $order = app(Pipeline::class)
                 ->send($order)
@@ -68,7 +78,7 @@ class CreateOrder implements CreatesOrder
 
             $order->refresh();
 
-            return $order;
+            return $this->orderModifiers->created($order);
         });
     }
 }
