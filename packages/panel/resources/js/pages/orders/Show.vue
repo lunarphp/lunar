@@ -147,8 +147,7 @@ const txnTypeLabel = (type: string): string => TXN_TYPE_LABELS[type] ?? type;
 const page = usePage();
 const activities = computed(() => (page.props.activities as any[] | undefined) ?? []);
 
-// internal_notes is the staff note's storage, shown in its own card above.
-const metaEntries = computed(() => Object.entries(props.order.meta ?? {}).filter(([key]) => key !== 'internal_notes'));
+const metaEntries = computed(() => Object.entries(props.order.meta ?? {}));
 
 // Which action dialog is open (null = none).
 const dialog = ref<null | 'capture' | 'refund' | 'cancel' | 'notify'>(null);
@@ -578,6 +577,10 @@ const addressLines = (address: Address): string[] =>
                                 </div>
                                 <Button variant="primary" size="sm" class="mt-2" :disabled="tagsForm.processing" @click="saveTags">{{ t('common.save') }}</Button>
                             </div>
+                        </SideCard>
+
+                        <SideCard v-if="order.notes" :title="t('orders.side_customer_notes')">
+                            <p class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.notes }}</p>
                         </SideCard>
 
                         <SideCard :title="t('orders.side_notes')">

@@ -59,6 +59,7 @@ use Spatie\ModelStates\HasStates;
  * @property int $tax_total
  * @property int $total
  * @property ?string $notes
+ * @property ?string $internal_notes
  * @property string $currency_code
  * @property ?string $compare_currency_code
  * @property float $exchange_rate
