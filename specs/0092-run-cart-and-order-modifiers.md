@@ -1,6 +1,6 @@
 # 0092 — Run cart and order modifiers
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - TODO item: Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
@@ -67,9 +67,9 @@ The docs pages that describe modifiers are corrected once this lands, in the doc
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none.
 
-## Open questions
+## Decisions
 
-- **Should `BuyXGetY` run the line hooks?** It sends reward lines through the `cart_lines` pipeline on its own to price them. Proposed: no. Those lines are priced for the discount calculation, not added to the cart's lines, so the hooks would run twice for a line that is also in the cart. Owner: Glenn.
+- **`BuyXGetY` does not run the line hooks.** It sends reward lines through the `cart_lines` pipeline on its own to price them for the discount calculation, not to add them to the cart's lines, so running the hooks there would run them twice for a line that is also in the cart.
 
 ## References
 

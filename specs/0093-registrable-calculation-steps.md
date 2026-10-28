@@ -1,6 +1,6 @@
 # 0093 — Registrable calculation steps
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - TODO item: Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
