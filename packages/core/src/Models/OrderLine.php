@@ -17,6 +17,7 @@ use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Pricing\PriceFormatterInterface;
 
 /**
  * @property int $id
@@ -93,6 +94,43 @@ class OrderLine extends Base implements HasCurrency
         $this->loadMissing('order.currency');
 
         return $this->order?->currency ?? Currency::getDefault();
+    }
+
+    /**
+     * Format the given money column divided by the line's `unit_quantity`. A line
+     * stores the pack price, so `unitFormat('unit_price')` is the per-single-unit price.
+     */
+    public function unitFormat(string $field, ?string $locale = null, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): ?string
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => max(1, (int) $this->unit_quantity),
+        ])->unitFormatted($locale, decimalPlaces: $decimalPlaces, trimTrailingZeros: $trimTrailingZeros);
+    }
+
+    /**
+     * Decimal form of {@see unitFormat()}.
+     */
+    public function unitDecimal(string $field, bool $rounding = true): ?float
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => max(1, (int) $this->unit_quantity),
+        ])->unitDecimal($rounding);
     }
 
     public function order(): BelongsTo
