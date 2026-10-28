@@ -45,4 +45,26 @@ return [
     |
     */
     'delete_on_forget' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Remember guest carts
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, a guest cart is also pointed to by a long-lived cookie, so
+    | it can be restored after the session expires. This lets you keep a short
+    | session lifetime without losing guest carts. The cookie's expiry is
+    | refreshed each time it restores a cart, and the cart is touched, so a
+    | returning guest keeps their cart for as long as they keep visiting.
+    |
+    | Keep the lifetime (in minutes) shorter than `lunar.cart.prune_tables
+    | .prune_interval`, and leave `auto_create` off so crawlers that never add
+    | to cart are not given a cart or a cookie.
+    |
+    */
+    'remember' => [
+        'enabled' => true,
+        'cookie' => 'lunar_cart_remember',
+        'lifetime' => 60 * 24 * 30,
+    ],
 ];

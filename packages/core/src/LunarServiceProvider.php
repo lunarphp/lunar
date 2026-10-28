@@ -5,6 +5,7 @@ namespace Lunar\Core;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
@@ -297,6 +298,9 @@ class LunarServiceProvider extends ServiceProvider
             Logout::class,
             [CartSessionAuthListener::class, 'logout']
         );
+
+        // The remember token is random and only its hash is stored, so encryption adds nothing and would break lookups on routes without EncryptCookies.
+        EncryptCookies::except(config('lunar.cart_session.remember.cookie', 'lunar_cart_remember'));
 
         Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);

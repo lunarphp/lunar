@@ -13,6 +13,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Cart totals caching in the database — additive performance optimisation
+- Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
 - Add Boost guidelines to packages
 
 ## Ideas

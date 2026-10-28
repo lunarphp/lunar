@@ -4,8 +4,11 @@ namespace Lunar\Core\Managers;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Cookie\QueueingFactory;
+use Illuminate\Http\Request;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Facades\ShippingManifest;
@@ -20,10 +23,20 @@ class CartSessionManager implements CartSession
 
     protected ?Currency $currency = null;
 
+    /**
+     * The plaintext remember token this request holds — read from the incoming
+     * cookie, then replaced whenever a new one is queued.
+     */
+    protected ?string $rememberToken = null;
+
+    protected bool $rememberTokenResolved = false;
+
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
         protected ResolvesStorefrontContext $resolveStorefrontContext,
+        protected QueueingFactory $cookies,
+        protected Request $request,
         public ?Cart $cart = null,
     ) {
         //
@@ -73,12 +86,18 @@ class CartSessionManager implements CartSession
     {
         $delete = is_null($delete) ? config('lunar.cart_session.delete_on_forget', true) : $delete;
 
+        $cartId = $this->sessionManager->get(
+            $this->getSessionKey()
+        );
+
+        if ($cartId && $this->rememberEnabled()) {
+            $this->storeRememberToken($cartId, null);
+        }
+
+        $this->forgetRememberCookie();
+
         if ($delete) {
-            Cart::destroy(
-                $this->sessionManager->get(
-                    $this->getSessionKey()
-                )
-            );
+            Cart::destroy($cartId);
         }
 
         $this->cart = null;
@@ -124,6 +143,8 @@ class CartSessionManager implements CartSession
             $cart->id
         );
 
+        $this->remember($cart);
+
         return $this->cart = $cart;
     }
 
@@ -135,6 +156,12 @@ class CartSessionManager implements CartSession
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
         );
+
+        $restored = false;
+
+        if (! $cartId && $cartId = $this->findRememberedCartId()) {
+            $restored = true;
+        }
 
         if (! $cartId && $user = $this->authManager->user()) {
             $cartId = $user->carts()->unmerged()->active()->latest('id')->value('id');
@@ -154,6 +181,11 @@ class CartSessionManager implements CartSession
 
         if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
             return $this->createNewCart($calculate);
+        }
+
+        if ($restored) {
+            $this->refreshRememberCookie();
+            $cart->touch();
         }
 
         $this->cart = $cart;
@@ -191,6 +223,145 @@ class CartSessionManager implements CartSession
     public function getSessionKey(): string
     {
         return config('lunar.cart_session.session_key');
+    }
+
+    protected function rememberEnabled(): bool
+    {
+        return (bool) config('lunar.cart_session.remember.enabled', false);
+    }
+
+    protected function rememberCookieName(): string
+    {
+        return config('lunar.cart_session.remember.cookie', 'lunar_cart_remember');
+    }
+
+    protected function currentRememberToken(): ?string
+    {
+        if (! $this->rememberTokenResolved) {
+            $token = $this->request->cookie($this->rememberCookieName());
+
+            $this->rememberToken = is_string($token) && $token !== '' ? $token : null;
+            $this->rememberTokenResolved = true;
+        }
+
+        return $this->rememberToken;
+    }
+
+    /**
+     * Find the guest cart the remember cookie points to, forgetting the cookie
+     * when it no longer points to a restorable cart.
+     */
+    protected function findRememberedCartId(): ?int
+    {
+        if (! $this->rememberEnabled() || ! $token = $this->currentRememberToken()) {
+            return null;
+        }
+
+        $cartId = Cart::query()
+            ->where('remember_token', hash('sha256', $token))
+            ->whereNull('user_id')
+            ->unmerged()
+            ->active()
+            ->value('id');
+
+        if (! $cartId) {
+            $this->forgetRememberCookie();
+        }
+
+        return $cartId;
+    }
+
+    /**
+     * Point the remember cookie at the given cart, or clear it for a cart that
+     * belongs to a user — those resolve through the user, never a cookie.
+     */
+    protected function remember(Cart $cart): void
+    {
+        if (! $this->rememberEnabled()) {
+            return;
+        }
+
+        if ($cart->user_id) {
+            if ($cart->remember_token) {
+                $this->storeRememberToken($cart, null);
+            }
+
+            $this->forgetRememberCookie();
+
+            return;
+        }
+
+        $token = $this->currentRememberToken();
+
+        if ($token && $cart->remember_token && hash_equals($cart->remember_token, hash('sha256', $token))) {
+            return;
+        }
+
+        $token = Str::random(40);
+
+        $this->storeRememberToken($cart, hash('sha256', $token));
+        $this->queueRememberCookie($token);
+    }
+
+    /**
+     * Write the token hash without touching `updated_at` or firing model events,
+     * so issuing a token does not count as cart activity.
+     */
+    protected function storeRememberToken(Cart|int $cart, ?string $hash): void
+    {
+        Cart::withTrashed()
+            ->whereKey($cart instanceof Cart ? $cart->getKey() : $cart)
+            ->toBase()
+            ->update(['remember_token' => $hash]);
+
+        if ($cart instanceof Cart) {
+            $cart->setAttribute('remember_token', $hash);
+            $cart->syncOriginalAttribute('remember_token');
+        }
+    }
+
+    /**
+     * Re-send the current token with a fresh expiry. The token is not rotated:
+     * parallel requests at the start of a session all carry the old cookie, and
+     * rotating would make the others fail to match and forget it.
+     */
+    protected function refreshRememberCookie(): void
+    {
+        if ($token = $this->currentRememberToken()) {
+            $this->queueRememberCookie($token);
+        }
+    }
+
+    protected function queueRememberCookie(string $token): void
+    {
+        $this->cookies->queue($this->cookies->make(
+            name: $this->rememberCookieName(),
+            value: $token,
+            minutes: (int) config('lunar.cart_session.remember.lifetime', 60 * 24 * 30),
+            path: config('session.path'),
+            domain: config('session.domain'),
+            secure: config('session.secure'),
+            httpOnly: true,
+            sameSite: config('session.same_site'),
+        ));
+
+        $this->rememberToken = $token;
+        $this->rememberTokenResolved = true;
+    }
+
+    protected function forgetRememberCookie(): void
+    {
+        if (! $this->rememberEnabled() || ! $this->currentRememberToken()) {
+            return;
+        }
+
+        $this->cookies->queue($this->cookies->forget(
+            $this->rememberCookieName(),
+            config('session.path'),
+            config('session.domain'),
+        ));
+
+        $this->rememberToken = null;
     }
 
     /**

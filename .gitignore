@@ -4,7 +4,7 @@
 /.nova
 /.phpunit.cache
 /.vscode
-/node_modules
+node_modules
 /vendor
 .phpunit.result.cache
 composer.lock
