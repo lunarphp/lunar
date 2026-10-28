@@ -77,6 +77,7 @@ const props = defineProps<{
         channel: string | null;
         new_customer: boolean;
         notes: string | null;
+        internal_notes: string | null;
         meta: Record<string, unknown> | null;
         placed_at: string | null;
         created_at: string;
@@ -278,7 +279,7 @@ const addressDialogTitle = computed(() =>
 
 // Inline note editing.
 const editingNote = ref(false);
-const noteForm = useForm({ notes: props.order.notes ?? '' });
+const noteForm = useForm({ notes: props.order.internal_notes ?? '' });
 const saveNote = (): void => noteForm.put(props.urls.note, { preserveScroll: true, onSuccess: () => (editingNote.value = false) });
 
 // Inline tag editing.
@@ -578,6 +579,10 @@ const addressLines = (address: Address): string[] =>
                             </div>
                         </SideCard>
 
+                        <SideCard v-if="order.notes" :title="t('orders.side_customer_notes')">
+                            <p class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.notes }}</p>
+                        </SideCard>
+
                         <SideCard :title="t('orders.side_notes')">
                             <template #actions>
                                 <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingNote = !editingNote">
@@ -585,7 +590,7 @@ const addressLines = (address: Address): string[] =>
                                 </button>
                             </template>
                             <template v-if="!editingNote">
-                                <p v-if="order.notes" class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.notes }}</p>
+                                <p v-if="order.internal_notes" class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.internal_notes }}</p>
                                 <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.no_notes') }}</p>
                             </template>
                             <div v-else>

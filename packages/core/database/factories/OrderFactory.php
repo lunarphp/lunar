@@ -29,6 +29,7 @@ class OrderFactory extends BaseFactory
             'tax_total' => $taxTotal,
             'total' => $total,
             'notes' => null,
+            'internal_notes' => null,
             'currency_code' => 'GBP',
             'compare_currency_code' => 'GBP',
             'exchange_rate' => 1,
