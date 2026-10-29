@@ -1,0 +1,155 @@
+name: Upgrade command
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [2.x]
+    paths:
+      - packages/upgrade/**
+      - packages/core/database/migrations/**
+      - .github/workflows/upgrade-command.yml
+  pull_request:
+    branches: [2.x]
+    paths:
+      - packages/upgrade/**
+      - packages/core/database/migrations/**
+      - .github/workflows/upgrade-command.yml
+
+jobs:
+  lunar-upgrade:
+    name: v1.5 to v2 (${{ matrix.database }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - database: sqlite
+            db_connection: sqlite
+            db_database: /tmp/vanilla-lunar/database/database.sqlite
+          - database: mysql
+            db_connection: mysql
+            db_port: "3306"
+            db_database: lunar_upgrade
+            db_username: root
+            db_password: root
+          - database: postgres
+            db_connection: pgsql
+            db_port: "5432"
+            db_database: lunar_upgrade
+            db_username: postgres
+            db_password: postgres
+          - database: mariadb
+            db_connection: mariadb
+            db_port: "3307"
+            db_database: lunar_upgrade
+            db_username: root
+            db_password: root
+    env:
+      APP_DIR: /tmp/vanilla-lunar
+      LUNAR_V1: "1.5.0"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      SCOUT_DRIVER: collection
+      QUEUE_CONNECTION: sync
+      DB_CONNECTION: ${{ matrix.db_connection }}
+      DB_HOST: 127.0.0.1
+      DB_PORT: ${{ matrix.db_port }}
+      DB_DATABASE: ${{ matrix.db_database }}
+      DB_USERNAME: ${{ matrix.db_username }}
+      DB_PASSWORD: ${{ matrix.db_password }}
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lunar_upgrade
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      mariadb:
+        image: mariadb:11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lunar_upgrade
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lunar_upgrade
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          extensions: bcmath, exif, intl, mbstring, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Create Laravel 13 app
+        run: composer create-project laravel/laravel:^13.0 "$APP_DIR" --prefer-dist --no-interaction --no-dev
+
+      - name: Configure app
+        working-directory: /tmp/vanilla-lunar
+        run: |
+          php artisan key:generate --force --no-interaction
+          if [ "${{ matrix.database }}" = "sqlite" ]; then
+            mkdir -p database
+            touch database/database.sqlite
+          fi
+          {
+            echo "APP_ENV=local"
+            echo "APP_DEBUG=true"
+            echo "SCOUT_DRIVER=collection"
+            echo "QUEUE_CONNECTION=sync"
+            echo "DB_CONNECTION=$DB_CONNECTION"
+            echo "DB_HOST=$DB_HOST"
+            echo "DB_PORT=$DB_PORT"
+            echo "DB_DATABASE=$DB_DATABASE"
+            echo "DB_USERNAME=$DB_USERNAME"
+            echo "DB_PASSWORD=$DB_PASSWORD"
+          } >> .env
+
+      - name: Install Lunar v1.5 core
+        working-directory: /tmp/vanilla-lunar
+        run: composer require "lunarphp/core:${LUNAR_V1}" --no-interaction --no-progress
+
+      - name: Migrate v1 schema
+        working-directory: /tmp/vanilla-lunar
+        run: php artisan migrate --force --no-interaction
+
+      - name: Switch app to this v2 checkout
+        working-directory: /tmp/vanilla-lunar
+        run: |
+          composer config minimum-stability dev
+          composer config prefer-stable true
+          composer config repositories.lunar-core "{\"type\":\"path\",\"url\":\"${GITHUB_WORKSPACE}/packages/core\",\"options\":{\"symlink\":true}}"
+          composer config repositories.lunar-upgrade "{\"type\":\"path\",\"url\":\"${GITHUB_WORKSPACE}/packages/upgrade\",\"options\":{\"symlink\":true}}"
+          composer require lunarphp/core:@dev lunarphp/upgrade:@dev --no-interaction --no-progress --with-all-dependencies
+
+      - name: Run lunar:upgrade
+        working-directory: /tmp/vanilla-lunar
+        run: php artisan lunar:upgrade --no-interaction
+
+      - name: Apply remaining migrations
+        working-directory: /tmp/vanilla-lunar
+        run: php artisan migrate --force --no-interaction
