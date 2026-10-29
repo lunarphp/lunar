@@ -27,6 +27,14 @@ return [
          * nearest neighbours of tokens that mean nothing. 0 disables it.
          */
         'vector_distance_threshold' => 0.6,
+
+        /*
+         * Values returned per facet. Typesense returns only the most frequent
+         * values, so a facet with more distinct values than this (a category
+         * hierarchy, say) silently drops the smallest. Typesense's own default
+         * is 10.
+         */
+        'max_facet_values' => 50,
     ],
 
     'meilisearch' => [

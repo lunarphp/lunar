@@ -5,7 +5,6 @@ namespace Lunar\Search\Engines;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\EngineManager;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchFacet;
@@ -13,6 +12,7 @@ use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchHitHighlight;
 use Lunar\Search\Data\SearchResults;
+use RuntimeException;
 use Typesense\Documents;
 use Typesense\Exceptions\ObjectNotFound;
 use Typesense\Exceptions\ServiceUnavailable;
@@ -20,10 +20,9 @@ use Typesense\Exceptions\ServiceUnavailable;
 class TypesenseEngine extends AbstractEngine
 {
     /**
-     * Typesense defaults to 10 values per facet and caps the parameter at
-     * 250; hierarchical category facets need far more than either default.
+     * Overrides lunar.search.typesense.max_facet_values for this search.
      */
-    protected int $maxFacetValues = 50;
+    protected ?int $maxFacetValues = null;
 
     public function maxFacetValues(int $count): self
     {
@@ -54,11 +53,11 @@ class TypesenseEngine extends AbstractEngine
 
                 // A multi-search request resolves with HTTP 200 even when the
                 // collection is missing; the failure surfaces as a per-search
-                // error code in the body (e.g. 404 "Not found."). Treat any
-                // non-200 result as an empty result set rather than letting the
+                // error code in the body (e.g. 404 "Not found."). Report it and
+                // treat it as an empty result set rather than letting the
                 // missing 'hits'/'facet_counts' keys blow up downstream.
                 if (($completeResults['code'] ?? 200) !== 200) {
-                    Log::error('Typesense search failed: '.($completeResults['error'] ?? 'Unknown error'));
+                    report(new RuntimeException('Typesense search failed: '.($completeResults['error'] ?? 'Unknown error')));
 
                     return [
                         'hits' => [],
@@ -86,7 +85,7 @@ class TypesenseEngine extends AbstractEngine
             });
 
         } catch (ConnectException|ServiceUnavailable|ObjectNotFound $e) {
-            Log::error($e->getMessage());
+            report($e);
             $paginator = new LengthAwarePaginator(
                 items: [
                     'hits' => [],
@@ -290,7 +289,7 @@ class TypesenseEngine extends AbstractEngine
                     ->push('embedding')
                     ->unique()
                     ->join(','),
-                'max_facet_values' => $this->maxFacetValues,
+                'max_facet_values' => $this->maxFacetValues ?? (int) config('lunar.search.typesense.max_facet_values', 50),
                 'sort_by' => $this->sortRaw ?: ($this->sortByIsValid() ? $this->sort : '_text_match:desc'),
                 'facet_by' => implode(',', $searchQuery->facets),
             ];

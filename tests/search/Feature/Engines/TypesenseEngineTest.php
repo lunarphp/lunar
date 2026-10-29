@@ -2,12 +2,16 @@
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Exceptions;
+use Laravel\Scout\EngineManager;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
 use Lunar\Tests\Search\TestCase;
 use Mockery\MockInterface;
+use Typesense\Documents;
+use Typesense\Exceptions\ServiceUnavailable;
 
 use function Pest\Laravel\partialMock;
 
@@ -51,6 +55,33 @@ function mockTypesenseRawResults(array $response)
                     currentPage: 1
                 )
             );
+    });
+
+    Search::extend('typesense', fn () => $engine);
+}
+
+/**
+ * Runs the engine's real multi-search callback against a canned Typesense
+ * multi-search response body.
+ */
+function mockTypesenseMultiSearch(array $response)
+{
+    $client = Mockery::mock();
+    $client->shouldReceive('getMultiSearch->perform')->andReturn($response);
+
+    $manager = Mockery::mock(EngineManager::class);
+    $manager->shouldReceive('engine')->with('typesense')->andReturn($client);
+    app()->instance(EngineManager::class, $manager);
+
+    $engine = partialMock(TypesenseEngine::class, function (MockInterface $mock) {
+        $mock->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('getRawResults')
+            ->andReturnUsing(fn (Closure $builder) => new LengthAwarePaginator(
+                items: $builder(Mockery::mock(Documents::class), '', ['query_by' => 'name', 'filter_by' => []]),
+                total: 0,
+                perPage: 50,
+                currentPage: 1,
+            ));
     });
 
     Search::extend('typesense', fn () => $engine);
@@ -331,11 +362,16 @@ it('excludes the embedding field from hit payloads', function () {
         ->not->toHaveKey('exlude_fields');
 });
 
-it('requests max facet values from the builder with a default of 50', function () {
+it('requests max facet values from config, overridable per search', function () {
     $options = ['query_by' => 'name', 'filter_by' => []];
 
     expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['max_facet_values'])
         ->toBe(50);
+
+    Config::set('lunar.search.typesense.max_facet_values', 250);
+
+    expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['max_facet_values'])
+        ->toBe(250);
 
     expect(typesenseTestEngine()->maxFacetValues(200)->exposedBuildSearch($options)[0]['max_facet_values'])
         ->toBe(200);
@@ -636,4 +672,42 @@ it('ignores facet filters on field names that are not plain identifiers', functi
 
     expect($filters)
         ->toBe('collectionTree.lvl0:=`Boilers`');
+});
+
+it('reports a failed search and returns empty results', function () {
+    Exceptions::fake();
+
+    mockTypesenseMultiSearch([
+        'results' => [
+            ['code' => 404, 'error' => 'Could not find a field named `skus_normalised` in the schema.'],
+        ],
+    ]);
+
+    $results = Search::model(Product::class)->get();
+
+    expect($results->hits)->toBeEmpty()
+        ->and($results->facets)->toBeEmpty();
+
+    Exceptions::assertReported(
+        fn (RuntimeException $e) => $e->getMessage() === 'Typesense search failed: Could not find a field named `skus_normalised` in the schema.'
+    );
+});
+
+it('reports an unreachable Typesense and returns empty results', function () {
+    Exceptions::fake();
+
+    $engine = partialMock(TypesenseEngine::class, function (MockInterface $mock) {
+        $mock->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('getRawResults')
+            ->andThrow(new ServiceUnavailable('Service Unavailable'));
+    });
+
+    Search::extend('typesense', fn () => $engine);
+
+    $results = Search::model(Product::class)->get();
+
+    expect($results->hits)->toBeEmpty()
+        ->and($results->count)->toBe(0);
+
+    Exceptions::assertReported(ServiceUnavailable::class);
 });
