@@ -44,11 +44,13 @@ function simulateV1SoftDeletableTables(): void
         $table->id();
         $table->string('status')->default('published');
         $table->softDeletes();
+        $table->index('deleted_at'); // v1.5 add_missing_indexes_to_tables
     });
     Schema::create(SD_UPG_PREFIX.'product_variants', function (Blueprint $table) {
         $table->id();
         $table->boolean('enabled')->default(true);
         $table->softDeletes();
+        $table->index('deleted_at'); // v1.5 add_missing_indexes_to_tables
     });
     Schema::create(SD_UPG_PREFIX.'collections', function (Blueprint $table) {
         $table->id();
