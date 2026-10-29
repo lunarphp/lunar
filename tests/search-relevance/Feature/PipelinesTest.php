@@ -458,3 +458,51 @@ it('reports the engine total when a search matches more than the window', functi
         ->and($results->totalPages)->toBe(6)
         ->and(SearchQuery::query()->find($results->meta['search_id'])->result_count)->toBe(30);
 });
+
+it('trims the window to whole pages of the requested size', function (int $perPage, int $page, int $enginePerPage) {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search_relevance.window', 25);
+
+    $engine = fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1, 2, 3]));
+
+    Search::model(Product::class)->query('cable')->perPage($perPage)->page($page)->get();
+
+    expect($engine->getPerPage())->toBe($enginePerPage);
+})->with([
+    'a size that divides the window' => [5, 5, 25],
+    'the last whole page' => [10, 2, 20],
+    'the page the trim leaves out' => [10, 3, 10],
+    'a page larger than the window' => [30, 1, 30],
+]);
+
+it('shows every product once across the pages when the page size does not divide the window', function () {
+    Config::set('lunar.search_relevance.mode', 'on');
+    Config::set('lunar.search_relevance.window', 25);
+    Config::set('lunar.search_relevance.bucket_size', 30);
+    Config::set('lunar.search_relevance.learned_union.max', 0);
+    $products = Fixtures::products(30);
+    learn($products[21]->id);
+
+    $shown = collect([1, 2, 3])
+        ->flatMap(fn (int $page) => ids(Search::model(Product::class)->query('cable')->perPage(10)->page($page)->get()))
+        ->all();
+
+    expect($shown)->toHaveCount(30)
+        ->and(array_unique($shown))->toHaveCount(30);
+});
+
+it('keeps a separate cached ranking for each window size', function () {
+    Config::set('lunar.search_relevance.mode', 'on');
+    Config::set('lunar.search_relevance.window', 25);
+    Config::set('lunar.search_relevance.bucket_size', 30);
+    Config::set('lunar.search_relevance.learned_union.max', 0);
+    $products = Fixtures::products(30);
+    learn($products[21]->id);
+
+    $wide = Search::model(Product::class)->query('cable')->perPage(5)->get();
+    $trimmed = Search::model(Product::class)->query('cable')->perPage(10)->get();
+
+    expect(ids($wide)[0])->toBe($products[21]->id)
+        ->and(ids($trimmed))->not->toContain($products[21]->id);
+});

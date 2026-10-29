@@ -330,11 +330,11 @@ Request pipeline order: `PartNumberRetrieval`, then `WidenRequest`. Results pipe
 
 **`PartNumberFallback`** (results pipeline, before `RankResults`). When a part-number search returned no hits, reruns it on a clone of the engine with the overrides removed and `PartNumberRetrieval` skipped. The rerun passes through both pipelines itself, so it is widened, ranked and logged as an ordinary search; the stage then returns without calling the rest of the results pipeline so the empty search is not logged twice.
 
-**`WidenRequest`** (request pipeline). If ranking applies (`models` contains the engine's model, mode is not `off`, `shouldRank()`), records `requestedPage`/`requestedPerPage` in `context`, then sets `page(1)` and `perPage(window)` on the engine when `requestedPage * requestedPerPage <= window`. Beyond the window it leaves the request alone. Also builds and stores the `RankingContext` in `context`.
+**`WidenRequest`** (request pipeline). If ranking applies (`models` contains the engine's model, mode is not `off`, `shouldRank()`), records `requestedPage`/`requestedPerPage` in `context`, then sets `page(1)` and `perPage(window)` on the engine when `requestedPage * requestedPerPage <= window`. The window is first trimmed to a whole number of requested pages (`floor(window / perPage) * perPage`), because the first page past it is served by the engine from its own offset: a window ending mid-page would let the ranker lift a product onto an earlier page that the engine then shows again, and push another past the boundary where no page shows it. A page larger than the window is not widened. Beyond the window it leaves the request alone. Also builds and stores the `RankingContext` in `context`.
 
 **`RankResults`** (results pipeline). If `WidenRequest` widened the request:
 
-1. Build `HitCollection` from `results->hits`, read the cached window if present (key: model, version, mode, normalised query, filters hash, customer id).
+1. Build `HitCollection` from `results->hits`, read the cached window if present (key: trimmed window size, model, version, mode, normalised query, filters hash, customer id).
 2. Union learned products the engine did not return: fetch by ids through the engine (`filter` on id, `perPage` = count), insert at the head of the second bucket, cap by `learned_union`.
 3. `Ranker::rank()`.
 4. Cache the ranked window as arrays for `cache_ttl`.

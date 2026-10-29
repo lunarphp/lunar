@@ -59,15 +59,32 @@ class WidenRequest
 
         $request->context['relevance'] = $context;
 
-        $window = (int) $this->config->get('lunar.search_relevance.window', 250);
+        $window = $this->window($request->requestedPerPage);
         $isPartNumber = (bool) ($request->context['relevance_part_number'] ?? false);
 
-        if ($context->shouldRank() && ! $isPartNumber && $request->requestedPage * $request->requestedPerPage <= $window) {
+        if ($context->shouldRank() && ! $isPartNumber && $window > 0 && $request->requestedPage * $request->requestedPerPage <= $window) {
             $request->context['relevance_widened'] = true;
+            $request->context['relevance_window'] = $window;
             $engine->page(1)->perPage($window);
         }
 
         return $next($request);
+    }
+
+    /**
+     * The configured window, trimmed to a whole number of pages. The first
+     * page past the window is served by the engine from its own offset, so a
+     * window that ends mid-page would let the ranker lift a product onto an
+     * earlier page that the engine then shows again, and push one down past
+     * the boundary where no page shows it. Zero when a page is larger than
+     * the window.
+     */
+    protected function window(int $perPage): int
+    {
+        $perPage = max(1, $perPage);
+        $window = (int) $this->config->get('lunar.search_relevance.window', 250);
+
+        return intdiv($window, $perPage) * $perPage;
     }
 
     /**
