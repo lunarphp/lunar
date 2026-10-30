@@ -21,9 +21,18 @@ trait CachesProperties
         $ro = new ReflectionClass($this);
 
         foreach ($this->cachableProperties as $property) {
-            $defaultValue = $ro->getProperty($property)->getDefaultValue();
+            $reflected = $ro->getProperty($property);
 
-            $this->{$property} = $defaultValue;
+            // A typed property with no default (CartLine::$taxBreakdown) can't
+            // take null; unsetting returns it to uninitialised, as on a
+            // freshly retrieved model.
+            if (! $reflected->hasDefaultValue()) {
+                unset($this->{$property});
+
+                continue;
+            }
+
+            $this->{$property} = $reflected->getDefaultValue();
         }
 
         return $this;
