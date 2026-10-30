@@ -193,6 +193,51 @@ it('flags a refund-due settlement when settled money exceeds the total', functio
         );
 });
 
+it('keeps a fully refunded order balanced, not outstanding', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 10000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+            ->where('settlement.variance', null)
+        );
+});
+
+it('keeps a partly refunded order balanced, not outstanding', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 2500]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+            ->where('settlement.refunded', '£25.00')
+        );
+});
+
+it('still flags an under-captured order as outstanding after a refund', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 6000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 1000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'outstanding')
+            ->where('settlement.variance', '£40.00')
+        );
+});
+
 it('keeps the settlement balanced before any capture exists', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
