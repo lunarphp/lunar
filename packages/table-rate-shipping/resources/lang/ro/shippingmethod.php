@@ -45,7 +45,7 @@ return [
             'label' => 'Tip',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Ridicare',
+                'pickup' => 'Ridicare',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Tip',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Ridicare',
+                'pickup' => 'Ridicare',
             ],
         ],
     ],

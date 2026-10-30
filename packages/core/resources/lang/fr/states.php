@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'En attente',
         'in-progress' => 'En cours',
-        'ready-for-collection' => 'Prêt pour le retrait',
+        'ready-for-pickup' => 'Prêt pour le retrait',
         'shipped' => 'Expédié',
-        'collected' => 'Retiré',
+        'picked-up' => 'Retiré',
         'provisioned' => 'Mis à disposition',
         'cancelled' => 'Annulé',
         'returned' => 'Retourné',

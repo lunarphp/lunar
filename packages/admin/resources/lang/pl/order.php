@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Data wysyłki',
             'handed_over' => [
                 'shipping' => 'Data wysyłki',
-                'collection' => 'Data odbioru',
+                'pickup' => 'Data odbioru',
                 'digital' => 'Data udostępnienia',
             ],
             'handed_over_default' => 'Data realizacji',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Oznacz jako zrealizowaną',
                 'modal_heading' => 'Oznacz realizację jako zrealizowaną',
                 'labels' => [
-                    'collection' => 'Oznacz jako odebraną',
+                    'pickup' => 'Oznacz jako odebraną',
                 ],
                 'notification' => [
                     'success' => 'Realizacja oznaczona jako zrealizowana.',

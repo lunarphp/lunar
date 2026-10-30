@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Otpremljeno',
             'handed_over' => [
                 'shipping' => 'Otpremljeno',
-                'collection' => 'Preuzeto',
+                'pickup' => 'Preuzeto',
                 'digital' => 'Stavljeno na raspolaganje',
             ],
             'handed_over_default' => 'Ispunjeno',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Označi ispunjeno',
                 'modal_heading' => 'Označi ispunjenje kao ispunjeno',
                 'labels' => [
-                    'collection' => 'Označi preuzeto',
+                    'pickup' => 'Označi preuzeto',
                 ],
                 'notification' => [
                     'success' => 'Ispunjenje označeno kao ispunjeno.',

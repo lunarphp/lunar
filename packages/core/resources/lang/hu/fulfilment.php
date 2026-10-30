@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Kiszállítás',
-        'collection' => 'Személyes átvétel',
+        'pickup' => 'Személyes átvétel',
         'digital' => 'Digitális',
     ],
 

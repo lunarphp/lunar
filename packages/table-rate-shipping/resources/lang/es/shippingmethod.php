@@ -45,7 +45,7 @@ return [
             'label' => 'Tipo',
             'options' => [
                 'ship-by' => 'Estándar',
-                'collection' => 'Recogida',
+                'pickup' => 'Recogida',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Tipo',
             'options' => [
                 'ship-by' => 'Estándar',
-                'collection' => 'Recogida',
+                'pickup' => 'Recogida',
             ],
         ],
     ],
