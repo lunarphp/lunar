@@ -4,12 +4,13 @@ namespace Lunar\Filament\Tables\Columns;
 
 use Closure;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Database\Eloquent\Model;
 
 class ThumbnailImageColumn extends ImageColumn
 {
     protected Closure $resolveThumbnailUrlUsing;
 
-    public function getImageUrl(?string $state = null): ?string
+    public function getImageUrl(?string $state = null, ?Model $relatedRecord = null): ?string
     {
         if ($this->resolveThumbnailUrlUsing) {
             return $this->evaluate($this->resolveThumbnailUrlUsing);
