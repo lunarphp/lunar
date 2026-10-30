@@ -407,7 +407,10 @@ class OrderShowController
      * balanced — that's the ordinary pre-payment state, not a divergence to
      * flag. A cancelled order's reference is 0, not its total — nothing
      * should be kept, so any money still held is a refund due regardless of
-     * how much of the original total it represents.
+     * how much of the original total it represents. Otherwise a refund
+     * lowers what the customer owes as well as what they have paid, so the
+     * reference is the total less refunds: a full or part refund leaves the
+     * order balanced, not outstanding.
      *
      * @return array{status: string, captured: ?string, refunded: ?string, total: string, variance: ?string, varianceMajor: float}
      */
@@ -415,7 +418,7 @@ class OrderShowController
     {
         $total = (int) $order->total;
         $settled = $captured - $refunded;
-        $reference = $order->isCancelled() ? 0 : $total;
+        $reference = $order->isCancelled() ? 0 : $total - $refunded;
 
         $status = match (true) {
             $settled > $reference => 'refund_due',
