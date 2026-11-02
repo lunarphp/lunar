@@ -28,6 +28,7 @@ import AddTrackingDialog from '../../components/orders/AddTrackingDialog.vue';
 import ChangeLocationDialog from '../../components/orders/ChangeLocationDialog.vue';
 import FulfilmentConfirmDialog, { type PendingFulfilmentAction } from '../../components/orders/FulfilmentConfirmDialog.vue';
 import OrderAddressDialog from '../../components/orders/OrderAddressDialog.vue';
+import OrderAddressDetails from '../../components/orders/OrderAddressDetails.vue';
 import RefundComposerDialog from '../../components/orders/RefundComposerDialog.vue';
 import SettlementBanner from '../../components/orders/SettlementBanner.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
@@ -302,17 +303,6 @@ const formatDate = (value: string): string =>
 const formatDateTime = (value: string): string =>
     new Date(value).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-const addressLines = (address: Address): string[] =>
-    [
-        [address.first_name, address.last_name].filter(Boolean).join(' '),
-        address.company_name,
-        address.line_one,
-        address.line_two,
-        address.line_three,
-        [address.city, address.postcode].filter(Boolean).join(' '),
-        address.state,
-        address.country,
-    ].filter((line): line is string => !!line && line.trim().length > 0);
 </script>
 
 <template>
@@ -529,12 +519,7 @@ const addressLines = (address: Address): string[] =>
                                     {{ t('common.edit') }}
                                 </button>
                             </template>
-                            <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
-                                <div v-for="(line, i) in addressLines(shippingAddress)" :key="i">{{ line }}</div>
-                                <div v-if="shippingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
-                                    <a :href="`tel:${shippingAddress.contact_phone}`" class="text-ink-500 hover:text-ink-900">{{ shippingAddress.contact_phone }}</a>
-                                </div>
-                            </address>
+                            <OrderAddressDetails :address="shippingAddress" show-instructions />
                         </SideCard>
 
                         <SideCard v-if="billingAddress" :title="t('orders.side_billing_address')">
@@ -543,12 +528,7 @@ const addressLines = (address: Address): string[] =>
                                     {{ t('common.edit') }}
                                 </button>
                             </template>
-                            <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
-                                <div v-for="(line, i) in addressLines(billingAddress)" :key="i">{{ line }}</div>
-                                <div v-if="billingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
-                                    <a :href="`tel:${billingAddress.contact_phone}`" class="text-ink-500 hover:text-ink-900">{{ billingAddress.contact_phone }}</a>
-                                </div>
-                            </address>
+                            <OrderAddressDetails :address="billingAddress" />
                         </SideCard>
 
                         <SideCard :title="t('orders.side_tags')">

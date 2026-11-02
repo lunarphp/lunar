@@ -46,6 +46,35 @@ registers query scopes (native scopes win on collision).
 guessing which class is "the real one", and customisation reads like ordinary
 Laravel. A Rector rule in the upgrade package migrates old `modelClass()` calls.
 
+**Modifiers run.** Cart line, cart and order modifiers are how an add-on hooks
+calculation from its own service provider, without editing the host's config.
+In v1 none of them ran during cart calculation or order creation. Now they do:
+`CartModifier::calculating()` runs before the cart pipeline;
+`CartLineModifier::calculating()` before a line is priced, `subtotalled()` once
+its subtotal is set (a change there reaches discounts and tax), and
+`calculated()` once its totals are final; `CartModifier::calculated()` runs
+last. `OrderModifier::creating()` and `created()` run around the order creation
+pipeline, inside its transaction. `calculating()` runs before the line is priced,
+so a unit price set there is overwritten; change prices in `subtotalled()`. If
+your v1 app registered modifiers, review them before deploying, because they
+will now run. `CalculateLine` and `CalculateLineSubtotal` are gone: cart
+calculation never used them, so call `$cart->calculate()` and read the line's
+totals.
+
+**Steps are registered in code.** The cart, cart line, pricing, order creation,
+cart validation and cart pruning step lists are no longer in config. Each is a
+registry, seeded with the same defaults, that a host app or add-on changes from
+a service provider with an explicit position:
+`Steps::for(StepList::CartLinePricing)->after(GetUnitPrice::class, MyStep::class)`.
+`append()`, `prepend()`, `before()`, `remove()` and `replace()` work the same
+way, and `php artisan lunar:steps` lists what runs, in order. Add-ons no longer
+rewrite your config to add a step, and your app keeps picking up steps core adds
+later. If your config still defines `lunar.cart.pipelines`,
+`lunar.cart.validators`, `lunar.cart.prune_tables.pipelines`,
+`lunar.pricing.pipelines` or `lunar.orders.pipelines`, Lunar throws when a list
+is first read; `lunar:upgrade` tells you which keys are safe to delete and
+prints the `Steps` calls for any you customised.
+
 ## Every operation is an action, every action has a verb
 
 Service-layer classes now declare their collaborators via constructor injection
@@ -86,6 +115,26 @@ and is stamped on carts and orders. A single `ResolveStorefrontContext` cascade
 produces an immutable `StorefrontContext` DTO (channel, currency, language,
 region, customer, groups), so non-session code (APIs, jobs, tests) works from an
 explicit context instead of reaching into session state.
+
+Pricing consumes that context as its single source of state. A pricing pipeline
+reads `$pricing->getContext()` for the region, customer and channel, so contract
+pricing or regional price lists can be built as a pipeline class. The manager no
+longer looks up the logged-in user: a bare `$variant->pricing()->get()` returns
+store-default prices unless the request has called
+`StorefrontSession::useAsDefaultContext()` — typically from a middleware on the
+`web` group, so Livewire update requests are covered too. It must be called per
+request; the default is scoped and does not survive into the next one. Nothing
+carries between calls any more, so configure each call rather than setting a
+currency once and calling `get()` in a loop, and use the setters rather than
+writing to `currency` / `customerGroups` directly. Enable
+`Pricing::preventDefaultContext()` outside production to turn a forgotten
+context into an exception instead of a wrong price.
+
+Guest carts now outlive the session. A long-lived cookie points back to the
+cart (only a hash of its token is stored), so a store can keep a short session
+lifetime without losing carts. Each restore refreshes the cookie's expiry, and
+user-owned, merged and ordered carts are never restored from it. Configure it
+under `lunar.cart_session.remember`.
 
 ## Customer notifications
 
