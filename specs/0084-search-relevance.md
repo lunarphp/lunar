@@ -363,6 +363,8 @@ Blade storefronts:
 
 `lunar_search_attrs()` renders `data-lunar-search-id`, `data-lunar-product-id`, `data-lunar-position`, `data-lunar-source`. The script sends `navigator.sendBeacon()` to `POST /lunar/search/events` on click of any element inside a tracked node that navigates.
 
+The endpoint is not in the `web` group. It decrypts cookies and loads the shopper's session read-only (`ReadOnlySession`) to resolve their cart and session id, and never saves the session or sends its cookie. The beacon is in flight alongside the navigation or basket add it accompanies, and a saved session would write a stale copy over theirs (a guest's first basket add could lose its cart). With no session saved there is no CSRF check; the endpoint always answers 204 and is rate limited, so apps no longer need a CSRF exemption for it.
+
 Headless and Inertia storefronts: the same endpoint accepts JSON. `SearchResults->meta['search_id']` and `hit->meta` are in the API payload.
 
 #### 2.6.1 Storefront client (`@lunarphp/search-relevance`)
