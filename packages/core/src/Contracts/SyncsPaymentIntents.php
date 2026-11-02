@@ -27,9 +27,13 @@ interface SyncsPaymentIntents
 {
     /**
      * Bring the cart's live standard intent in line with the cart's current
-     * payable total. A no-op when the cart has no live standard intent. Never
-     * touches a hold: a hold's amount moves through
+     * payable total and currency. A no-op when the cart has no live standard
+     * intent. Never touches a hold: a hold's amount moves through
      * {@see SupportsPaymentHolds::adjustHold()}.
+     *
+     * Never writes a new minor-unit figure onto an intent in another currency.
+     * On a currency change the driver updates the currency where the gateway
+     * allows it, or throws so the caller voids and re-creates the intent.
      *
      * @throws PaymentIntentException when the intent could not be brought in
      *                                line, so the caller keeps confirmation

@@ -56,14 +56,18 @@ interface ReconcilesPaymentIntents
      * intent that is already Voided or {@see PaymentIntentStatus::Failed}
      * returns cleanly.
      *
-     * An object the gateway cannot cancel before payment holds no money, so
-     * the driver marks it voided locally. That mark never hides the gateway's
+     * An object the gateway cannot cancel before payment holds no money while
+     * it is {@see PaymentIntentStatus::RequiresAction}, so the driver may mark
+     * it voided locally. Only then: a
+     * {@see PaymentIntentStatus::RequiresCapture} intent holds money, so it is
+     * cancelled at the gateway or this throws. That mark never hides the gateway's
      * later answer: if money moves on it anyway, {@see fetchIntent()} reports
      * that status instead, and the caller reconciles it as money taken against
      * no order.
      *
-     * @throws PaymentIntentException when the gateway cannot confirm the void,
-     *                                and when the intent is
+     * @throws PaymentIntentException when the gateway cannot confirm the void
+     *                                (including a hold it cannot cancel), and
+     *                                when the intent is
      *                                {@see PaymentIntentStatus::Processing}
      *                                (retry once it settles) or
      *                                {@see PaymentIntentStatus::Captured}

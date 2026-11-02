@@ -10,12 +10,12 @@ use Lunar\Core\Contracts\SupportsPaymentHolds;
  */
 enum HoldAdjustment: string
 {
-    /** The hold now covers the new total (it already did, or was incremented). */
+    /** Coverage is confirmed: the hold already covered the new total, or the gateway confirmed the increment. */
     case Ok = 'ok';
 
     /**
-     * This hold cannot stretch to the new total; the customer must
-     * authorise again (re-open the wallet for a fresh hold).
+     * This hold cannot be confirmed to stretch to the new total; the
+     * customer must authorise again (re-open the wallet for a fresh hold).
      */
     case NeedsReauthorization = 'needs_reauthorization';
 }

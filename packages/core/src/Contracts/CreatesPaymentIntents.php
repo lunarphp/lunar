@@ -27,6 +27,10 @@ use Lunar\Core\Models\Cart;
  * The key is replaced once its intent stops being confirmable (captured,
  * refunded, voided or failed), so the customer can pay again on the same cart.
  *
+ * Never returns an intent in a currency other than the cart's: if the cart's
+ * currency changed, the driver re-prices the intent where the gateway allows
+ * it, or voids it and creates a fresh one.
+ *
  * @experimental The shape may change in a minor release until a second driver
  *               implements these capabilities.
  */

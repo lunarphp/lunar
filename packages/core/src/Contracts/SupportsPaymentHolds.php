@@ -52,6 +52,11 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
      * minor-unit amount is in a cheaper currency. A non-null return is in the
      * cart's currency and belongs to it.
      *
+     * A null means do not proceed, and never pass that reference to
+     * {@see ReconcilesPaymentIntents::voidIntent()}, {@see adjustHold()} or
+     * {@see captureHold()}: they take a bare reference with no ownership
+     * check, so doing so would let a client act on someone else's hold.
+     *
      * Returning null here where {@see ReconcilesPaymentIntents::fetchIntent()}
      * throws is deliberate: this reference is an unverified client claim, and
      * that one is a reference the application stored itself.
@@ -61,9 +66,11 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
     public function describeHold(Cart $cart, string $reference): ?HoldDescription;
 
     /**
-     * Bring an authorised hold to a new payable total. Ok when the hold now
-     * covers it (already did, or was incremented); NeedsReauthorization when
-     * this hold cannot stretch and the customer must authorise again.
+     * Bring an authorised hold to a new payable total. Ok only when coverage
+     * is confirmed (it already covered it, or the gateway confirmed the
+     * increment), because the caller captures straight after.
+     * NeedsReauthorization when the hold cannot be confirmed to stretch,
+     * including a gateway that adjusts asynchronously and has not confirmed.
      *
      * Only pass a reference {@see describeHold()} has accepted for the cart,
      * or one the application stored from {@see createHold()}.
@@ -75,14 +82,17 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
     public function adjustHold(string $reference, int $amountMinor): HoldAdjustment;
 
     /**
-     * Capture an authorised hold for the final amount (at most the authorised
-     * figure). Idempotent per reference. A clean return means the gateway
+     * Capture an authorised hold for the final amount, at most the authorised
+     * figure: an amount above it throws and is never clamped, so a customer is
+     * never undercharged while the order is handed over. Idempotent per
+     * reference. A clean return means the gateway
      * accepted the capture, so the caller may hand the customer their order.
      *
      * Only pass a reference {@see describeHold()} has accepted for the cart,
      * or one the application stored from {@see createHold()}.
      *
-     * @throws PaymentIntentException when the gateway refuses or cannot confirm
+     * @throws PaymentIntentException when the amount exceeds the authorisation,
+     *                                or the gateway refuses or cannot confirm
      *                                the capture
      */
     public function captureHold(string $reference, int $amountMinor): void;
