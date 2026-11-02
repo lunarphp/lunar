@@ -22,6 +22,14 @@ describe('SettlementBanner', () => {
         expect(wrapper.find('[data-testid="settlement-banner"]').exists()).toBe(false);
     });
 
+    it('renders nothing when on account', () => {
+        const wrapper = mount(SettlementBanner, {
+            props: { settlement: settlement({ status: 'on_account', captured: null }), canCapture: true, canRefund: true },
+        });
+
+        expect(wrapper.find('[data-testid="settlement-banner"]').exists()).toBe(false);
+    });
+
     it('shows the outstanding copy with a take-payment action', async () => {
         const wrapper = mount(SettlementBanner, {
             props: {
