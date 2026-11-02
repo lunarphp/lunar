@@ -6,6 +6,8 @@
 /.vscode
 node_modules
 /vendor
+/packages/bundles/build
+/packages/panel/public/build
 .phpunit.result.cache
 composer.lock
 package-lock.json
