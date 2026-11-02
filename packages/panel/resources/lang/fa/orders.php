@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'نشانی مشتری',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'یادداشت‌های داخلی',
+    'side_customer_notes' => 'یادداشت‌های مشتری',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

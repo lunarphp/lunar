@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'Харилцагчийн хаяг',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Дотоод тэмдэглэл',
+    'side_customer_notes' => 'Харилцагчийн тэмдэглэл',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

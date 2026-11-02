@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'Adresa kupca',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Interne bilješke',
+    'side_customer_notes' => 'Bilješke kupca',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

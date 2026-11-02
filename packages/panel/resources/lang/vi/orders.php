@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'Địa chỉ khách hàng',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Ghi chú nội bộ',
+    'side_customer_notes' => 'Ghi chú của khách hàng',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

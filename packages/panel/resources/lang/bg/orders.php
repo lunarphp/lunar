@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'Адрес на клиента',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Вътрешни бележки',
+    'side_customer_notes' => 'Бележки на клиента',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

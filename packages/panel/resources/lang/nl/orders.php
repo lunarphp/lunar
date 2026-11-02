@@ -99,7 +99,8 @@ return [
     'side_customer_address' => 'Klantadres',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Interne notities',
+    'side_customer_notes' => 'Klantnotities',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',
