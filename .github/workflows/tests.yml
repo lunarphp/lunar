@@ -24,7 +24,7 @@ jobs:
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.4","8.5"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
-        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, upgrade]
+        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, bundles, upgrade]
         include:
           - laravel: 12.*
             testbench: 10.*
@@ -158,6 +158,15 @@ jobs:
         with:
           node-version: 22
 
+      # npm 10 (bundled with Node 22) crashes with "Cannot read properties of
+      # null (reading 'edgesOut')" while resolving the panel's dependencies.
+      # vitest's peer range on vite makes npm inspect the latest vite, whose
+      # optional @vitejs/devtools peer leads back to vitest@* — a peer cycle
+      # that npm 10's resolver cannot handle since vitest 5.0.0 was published.
+      # npm 11 resolves it; drop this step once the job runs on Node 24.
+      - name: Upgrade npm
+        run: npm install -g npm@11
+
       # npm install, not ci: the repo gitignores package-lock.json, so ranges
       # resolve fresh each run (consistent with the daily full-matrix sweep).
       # Two installs: the workspace root links the publishable packages and
@@ -186,6 +195,9 @@ jobs:
       # preset (IIFE output, externalised vue/inertia/panel globals) still works.
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
+
+      - name: Build bundles add-on bundle
+        run: npm run build --workspace @lunarphp/bundles-addon
 
       # Fails when a publishable npm package's content no longer matches the
       # tarball published under its current version — the reminder to bump.

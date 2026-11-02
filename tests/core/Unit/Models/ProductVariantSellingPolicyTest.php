@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
+use Lunar\Core\DataObjects\VariantInventory;
 use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
@@ -59,4 +61,22 @@ test('in_stock cannot be fulfilled beyond available stock', function () {
 
     expect($variant->refresh()->canBeFulfilledAtQuantity(6))->toBeFalse();
     expect($variant->refresh()->canBeFulfilledAtQuantity(5))->toBeTrue();
+});
+
+test('inventory answers come from the ResolvesInventory seam', function () {
+    $variant = ProductVariant::factory()->inStock(1)->create([
+        'selling_policy' => SellingPolicy::InStock,
+    ]);
+
+    app()->bind(ResolvesInventory::class, fn () => new class implements ResolvesInventory
+    {
+        public function execute(ProductVariant $variant): VariantInventory
+        {
+            return new VariantInventory(available: 7, unlimited: false);
+        }
+    });
+
+    expect($variant->refresh()->getTotalInventory())->toBe(7)
+        ->and($variant->canBeFulfilledAtQuantity(7))->toBeTrue()
+        ->and($variant->canBeFulfilledAtQuantity(8))->toBeFalse();
 });

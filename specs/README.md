@@ -78,7 +78,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0050 | Panel order-value chart and public charting component | accepted    |
 | 0051 | Panel edit drafts and field-level conflict detection | implemented |
 | 0052 | Panel Brands section and shared catalog editing surfaces | implemented |
-| 0054 | Field-type configuration schema | accepted    |
+| 0054 | Field-type configuration schema | implemented |
 | 0055 | Panel Collections section | implemented |
 | 0056 | Panel Product Types section | implemented |
 | 0057 | Panel Products section | implemented |
@@ -93,3 +93,10 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
+| 0085 | Product bundles (`lunarphp/bundles`) | implemented |
+| 0089 | Cached model manifest | implemented |
+| 0090 | Remembered guest carts | implemented |
+| 0091 | PricingManager consumes the storefront context | implemented |
+| 0092 | Run cart and order modifiers | implemented |
+| 0093 | Registrable calculation steps | implemented |
+| 0094 | Versioned docs sites published from releases | accepted    |
