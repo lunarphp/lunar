@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Currency;
@@ -127,6 +129,31 @@ it('zooms the order chart out to yearly buckets', function () {
                 ->where('orderChart.buckets.9.value', 0)
             )
         );
+});
+
+it('builds the order chart when the app uses immutable dates', function () {
+    Date::use(CarbonImmutable::class);
+
+    try {
+        $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+        Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+        $customer = Customer::factory()->create();
+
+        Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1, 'placed_at' => now()]);
+
+        $this->get(route('panel.customers.edit', $customer))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('customers/Edit')
+                ->loadDeferredProps(fn (Assert $chart) => $chart
+                    ->has('orderChart.buckets', 12)
+                    ->where('orderChart.buckets.11.value', 50)
+                )
+            );
+    } finally {
+        Date::useDefault();
+    }
 });
 
 it('falls back to the default chart range for unknown values', function () {

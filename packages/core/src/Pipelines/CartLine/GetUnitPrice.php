@@ -3,13 +3,16 @@
 namespace Lunar\Core\Pipelines\CartLine;
 
 use Closure;
+use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\CartLine;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class GetUnitPrice
 {
+    public function __construct(
+        protected PricingManager $pricing,
+    ) {}
+
     /**
      * Called just before cart totals are calculated.
      *
@@ -22,22 +25,10 @@ class GetUnitPrice
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 
-        if ($customer = $cart->customer) {
-            $customerGroups = $customer->customerGroups;
-        } else {
-            $cart->user?->loadMissing('customers.customerGroups');
-            $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
-        }
-
-        $currency = Blink::once('currency_'.$cart->currency_id, function () use ($cart) {
-            return $cart->currency;
-        });
-
-        $priceResponse = Pricing::currency($currency)
-            ->qty($cartLine->quantity)
-            ->currency($cart->currency)
-            ->customerGroups($customerGroups)
+        $priceResponse = $this->pricing
+            ->using($cart->context())
             ->for($purchasable)
+            ->qty($cartLine->quantity)
             ->get();
 
         $cartLine->unitPrice = new PriceValue(
