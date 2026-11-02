@@ -90,6 +90,7 @@ return [
     'txn_type_capture' => 'Payment',
     'txn_type_refund' => 'Refund',
     'txn_type_intent' => 'Authorization',
+    'txn_type_failed' => 'Falhou',
 
     'side_status' => 'Status',
     'side_customer' => 'Customer',
