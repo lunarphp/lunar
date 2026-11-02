@@ -9,6 +9,20 @@ use Lunar\Upgrade\Support\StepReport;
 
 class RectorStep implements UpgradeStep
 {
+    /**
+     * Changes no Rector rule can make, because they live in the app's bootstrap.
+     *
+     * @var array<int, string>
+     */
+    protected const MANUAL_ACTIONS = [
+        'Pricing no longer reads the logged-in user: a bare Pricing::for($purchasable)->get() returns store-default prices. '
+            .'To keep pricing for the current visitor, add a middleware to the web group that calls '
+            .'StorefrontSession::useAsDefaultContext() (spec 0091).',
+        'Cart line, cart and order modifiers now run during cart calculation and order creation; in v1 they never ran. '
+            .'Review any modifiers your app registers before deploying (spec 0092).',
+        'CalculateLine and CalculateLineSubtotal are removed. Replace calls with $cart->calculate() and read the line totals (spec 0092).',
+    ];
+
     public function name(): string
     {
         return 'rector';
@@ -46,6 +60,7 @@ class RectorStep implements UpgradeStep
             $this->name(),
             $context->dryRun ? StepReport::STATUS_DRY_RUN : StepReport::STATUS_OK,
             "Would rewrite {$renameCount} class reference(s) across ".count($context->paths).' path(s).',
+            self::MANUAL_ACTIONS,
         );
     }
 }

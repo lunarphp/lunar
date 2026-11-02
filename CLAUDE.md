@@ -50,6 +50,7 @@ When asked to start a new piece of work that isn't already specced, write the sp
 - From inside this package: `vendor/bin/pest --testsuite <name> --parallel` (matches CI). Suites (the CI matrix): `core`, `admin`, `panel`, `filament`, `shipping`, `stripe`, `search`, `upgrade`. (A `demo-data` suite also exists in `phpunit.xml` but is not in the CI matrix.)
 - Full local sweep — loop the suites: `for s in core admin panel filament shipping stripe search upgrade; do vendor/bin/pest --testsuite "$s" --parallel || break; done`.
 - Panel frontend checks run via npm from `packages/panel` (own dependency tree, `npm install` there first): `npm test` (vitest), `npm run type-check`, `npm run build`. The example add-on builds through the npm workspace at this directory's root: `npm run build --workspace @lunarphp/panel-addon-example`. CI runs all four in the `panel-js` job.
+- Compiled assets (`packages/panel/public/build`, `packages/bundles/build`) are gitignored and built by `split_packages.yml` on tags, so they only exist in the split packages. In a local checkout, run `npm run dev` or `npm run build` in `packages/panel` to serve the panel.
 - Cross-database tests run as a group, not a suite: `vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite`.
 - `php artisan test` from the host app runs only the host app's own tests, not these package suites — it is not a substitute for running the suites above.
 - Use factories; do not invent ad-hoc test data when a factory state already covers it.
