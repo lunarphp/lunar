@@ -5,6 +5,8 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
@@ -133,6 +135,41 @@ it('can render order manage page', function () {
         ->assertSee($firstItem->sub_total->formatted)
         ->assertSee($secondItem->total->formatted)
         ->assertSee($this->order->reference);
+});
+
+it('displays shipping and tax breakdown lines in order totals', function () {
+    $currency = Currency::getDefault();
+
+    $shippingPrice = new Price(1234, $currency);
+    $taxPrice = new Price(567, $currency);
+
+    $taxBreakdown = new TaxBreakdown;
+    $taxBreakdown->addAmount(new TaxBreakdownAmount(
+        price: $taxPrice,
+        identifier: 'vat',
+        description: 'Standard VAT',
+        percentage: 20,
+    ));
+
+    $this->order->update([
+        'shipping_breakdown' => new ShippingBreakdown(collect([
+            new ShippingBreakdownItem(
+                name: 'Express Delivery',
+                identifier: 'EXPRESS',
+                price: $shippingPrice,
+            ),
+        ])),
+        'tax_breakdown' => $taxBreakdown,
+    ]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertSuccessful()
+        ->assertSee('Express Delivery')
+        ->assertSee($shippingPrice->formatted)
+        ->assertSee('Standard VAT')
+        ->assertSee($taxPrice->formatted);
 });
 
 it('can download order pdf', function () {

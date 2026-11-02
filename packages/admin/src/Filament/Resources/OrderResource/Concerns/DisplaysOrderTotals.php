@@ -77,9 +77,9 @@ trait DisplaysOrderTotals
     {
         return Group::make()
             ->statePath('shipping_breakdown')
-            ->schema(function ($state) {
+            ->schema(function ($record) {
                 $shipping = [];
-                foreach ($state->items ?? [] as $shippingIndex => $shippingItem) {
+                foreach ($record->shipping_breakdown->items ?? [] as $shippingIndex => $shippingItem) {
                     $shipping[] = TextEntry::make('shipping_'.$shippingIndex)
                         ->label(fn () => $shippingItem->name)
                         ->inlineLabel()
@@ -100,9 +100,9 @@ trait DisplaysOrderTotals
     {
         return Group::make()
             ->statePath('tax_breakdown')
-            ->schema(function ($state) {
+            ->schema(function ($record) {
                 $taxes = [];
-                foreach ($state->amounts ?? [] as $taxIndex => $tax) {
+                foreach ($record->tax_breakdown->amounts ?? [] as $taxIndex => $tax) {
                     $taxes[] = TextEntry::make('tax_'.$taxIndex)
                         ->label(fn () => $tax->description)
                         ->inlineLabel()

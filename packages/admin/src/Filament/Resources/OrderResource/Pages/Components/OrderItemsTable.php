@@ -70,7 +70,7 @@ class OrderItemsTable extends TableComponent
                         Stack::make([
                             TextColumn::make('unit')
                                 ->alignEnd()
-                                ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
+                                ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->unit_price->formatted}"),
                         ]),
                     ])
                         ->extraAttributes(['style' => 'align-items: start;']),
