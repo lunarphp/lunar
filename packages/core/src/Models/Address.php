@@ -30,8 +30,8 @@ use Lunar\Core\Models\Concerns\HasPublicId;
  * @property ?string $delivery_instructions
  * @property ?string $contact_mail
  * @property ?string $contact_phone
- * @property ?Carbon $last_used_at
  * @property array $meta
+ * @property ?Carbon $last_used_at
  * @property bool $shipping_default
  * @property bool $billing_default
  * @property ?Carbon $created_at
@@ -64,6 +64,7 @@ class Address extends Base implements Addressable
      */
     protected $casts = [
         'billing_default' => 'boolean',
+        'last_used_at' => 'datetime',
         'meta' => AsArrayObject::class,
         'shipping_default' => 'boolean',
     ];
