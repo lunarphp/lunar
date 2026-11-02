@@ -119,6 +119,11 @@ Idempotent per cart and per flavour: re-requesting while the cart's standard
 intent is still confirmable returns that intent, never a duplicate. A driver
 without this capability is confirm-only.
 
+It never returns an intent in a currency other than the cart's. If the cart's
+currency has changed since the intent was created, the driver re-prices the
+intent in the new currency where the gateway allows it, or voids it and creates
+a fresh one.
+
 Idempotency has to survive a lost response, not only a repeat request. A create
 call can succeed at the gateway and time out on the way back, which leaves no
 stored reference and, on gateways that authorise at creation, a live
@@ -158,6 +163,12 @@ total, so the gateway confirms exactly the amount the customer was shown. A
 no-op when the cart has no live standard intent. It never touches a hold: a
 hold's amount moves through `adjustHold()`, which can report that it cannot
 stretch.
+
+The currency is part of what it brings in line. The driver compares the cart's
+currency with the intent's, from its driver record, and never writes a new
+minor-unit figure onto an intent in another currency. On a mismatch it updates
+the currency where the gateway allows it; otherwise it throws, and the consumer
+voids the intent and creates a fresh one before letting the customer confirm.
 
 A consumer must not let the customer confirm a standard intent until the most
 recent `syncIntent()` has returned cleanly. If the client confirms directly with
@@ -205,7 +216,8 @@ marks it voided in its driver record, and from then on `fetchIntent()` reports
 
 | Status | `voidIntent()` |
 | --- | --- |
-| `RequiresAction`, `RequiresCapture` | cancels it at the gateway where the gateway can; otherwise marks it voided locally (below) |
+| `RequiresAction` | cancels it at the gateway where the gateway can; otherwise marks it voided locally (below) |
+| `RequiresCapture` | cancels the authorisation at the gateway; throws if it cannot. Never a local mark: money is held. |
 | `Voided`, `Failed` | returns cleanly; nothing is held |
 | `Processing` | throws; the outcome is not yet known and voiding may be refused or race a success. Retry after the intent settles. |
 | `Captured` | throws; the money has moved. The caller refunds instead. |
@@ -214,14 +226,16 @@ That makes a retried void safe: a void that timed out and is retried after the
 first attempt succeeded returns cleanly.
 
 Some objects cannot be cancelled before the customer pays: an unapproved PayPal
-order, an Adyen session, a Mollie payment whose method is not cancellable. None
-of them holds money, so the driver marks the intent voided locally and returns
-cleanly. The object can still be completed (a hosted page left open in another
+order, an Adyen session, a Mollie payment whose method is not cancellable. While
+they are `RequiresAction` none of them holds money, so the driver marks the
+intent voided locally and returns cleanly. A local mark is only ever made in
+`RequiresAction`. The object can still be completed (a hosted page left open in another
 tab), so a local void never hides the gateway's later answer: if the gateway
 reports money moved on a voided intent, `fetchIntent()` reports that status
 (`Captured` or `RequiresCapture`), not `Voided`. The consumer's reconciliation
 sweep treats it as problem case 4, money taken against no order, and refunds or
-voids it.
+voids it. That second void is a gateway cancel, because the intent is no longer
+in `RequiresAction`, so the sweep always resolves it.
 
 **`refundIntent()`** refunds a captured intent before any order or transaction
 exists, and never more than its captured amount less what has been refunded.
@@ -275,7 +289,9 @@ webhooks maintain) and never trusts a client claim; it returns null when the
 reference is unknown, is not a hold, was not created by `createHold()` for the
 given cart, or is in a different currency from the cart. `adjustHold()` reports
 whether the hold now covers a new total. `captureHold()` captures at most the
-authorised figure and is idempotent per reference.
+authorised figure: an amount above it throws `PaymentIntentException`, and is
+never clamped, so a customer is never undercharged while the order is handed
+over. It is idempotent per reference.
 
 Releasing a hold is `ReconcilesPaymentIntents::voidIntent()`, which is why this
 interface extends it rather than adding a release verb of its own. No gateway
@@ -369,19 +385,26 @@ change that affects the total, and does not enable confirmation until the
 latest sync returned cleanly.
 
 **Before placing the order.** The rule differs by flavour, because a hold is
-meant to be captured at or below what it authorised:
+meant to be captured at or below what it authorised. For a hold, the consumer
+captures before it writes the order, so an order is only ever handed over with
+money behind it.
 
-| | Standard intent (`fetchIntent()`) | Hold (`describeHold()`) |
+| | Standard intent (`fetchIntent()`) | Hold (`describeHold()`, then `fetchIntent()` once captured) |
 | --- | --- | --- |
-| Status that allows placement | `Captured` | `RequiresCapture` |
-| Amount rule | `capturedMinor` equals the cart's payable total, in the cart's currency | `amountMinor` is at least the cart's payable total (currency is guaranteed by `describeHold()`) |
-| On an amount failure | refund it and ask the customer to pay again | call `adjustHold()`; ask the customer to authorise again only on `NeedsReauthorization` |
+| Ready to place | `Captured`, with `refundedMinor` zero and `capturedMinor` equal to the cart's payable total in the cart's currency | `RequiresCapture` with `amountMinor` at least the payable total: `captureHold()` at the total, then place |
+| Already captured | as above | `Captured` (a capture that timed out, or a placement that failed after it): place without capturing again if `refundedMinor` is zero and `capturedMinor` equals the payable total; otherwise refund it and ask the customer to pay again |
+| Amount short or wrong | refund it and ask the customer to pay again | `RequiresCapture` below the total: call `adjustHold()`; authorise again only on `NeedsReauthorization` |
+| Refunded, in part or in full | does not place; the customer pays again on a fresh intent | the same |
 | `Processing` | wait and check again; do not void | not applicable |
 | Any other status | do not place; void it if it is still voidable, and ask the customer to pay again | the same |
 
-A null from `describeHold()` fails the check, the same as a wrong status. A
-hold that passes is captured with `captureHold()` at the cart's total, never at
-the authorised figure.
+**A null from `describeHold()` is not a wrong status.** It means the
+client-supplied reference is unknown, is not a hold, or belongs to another cart,
+session or storefront. The consumer does not place the order and never passes
+that reference to `voidIntent()`, `adjustHold()` or `captureHold()`: those take
+a bare reference with no ownership check, so doing so would let a client cancel
+or capture someone else's hold. A consumer only ever passes these methods a
+reference it stored itself or one `describeHold()` accepted for this cart.
 
 The consumer runs this flow only for a driver that implements both
 `CreatesPaymentIntents` and `ReconcilesPaymentIntents`. A driver that can
@@ -503,8 +526,12 @@ Adding a case later breaks every consumer that matches on the enum without a
 default arm, which is the reason the set is settled here rather than grown
 later.
 
-`HoldAdjustment::Ok` means the hold now covers the new total, whether it
-already did or was incremented. `NeedsReauthorization` means this hold cannot
+`HoldAdjustment::Ok` means coverage is confirmed: the hold already covered the
+new total, or the gateway has confirmed the increment. Unlike other clean
+returns it does not mean merely "accepted", because the consumer captures
+straight after it. A driver whose gateway adjusts holds asynchronously (Adyen)
+returns `NeedsReauthorization` unless it can confirm the result before
+returning. `NeedsReauthorization` means this hold cannot be confirmed to
 stretch and the customer must authorise again.
 
 ### Amounts
@@ -528,13 +555,13 @@ test the vocabulary, not to promise drivers.
 | Method | Stripe | PayPal (Orders v2) | Adyen (Checkout) | Mollie |
 | --- | --- | --- | --- | --- |
 | `createIntent` | PaymentIntent; `clientPayload` carries the client secret | Order (intent `CAPTURE`); JS SDK takes the reference, or `redirectUrl` is the approval link | Session; `clientPayload` carries id and session data | Payment; `redirectUrl` is the checkout URL |
-| `syncIntent` | Update amount | Patch the order amount | Not supported: amount fixed per session | Not supported: amount fixed per payment |
+| `syncIntent` | Update amount and currency | Patch the order amount; a currency change re-creates | Not supported: amount fixed per session | Not supported: amount fixed per payment |
 | `fetchIntent` | Retrieve | Get order; driver maps to the capture | Driver record kept by webhooks | Get payment |
 | `voidIntent` | Cancel | Void the authorisation; unapproved order marked voided locally | Cancel an authorised payment (async, webhook); unpaid session marked voided locally | Cancel where the method allows; otherwise marked voided locally |
 | `refundIntent` | Refund by intent; may be pending | Refund the capture; driver maps from the reference | Refund (async, webhook) | Refund; may be pending |
 | `createHold` | Manual capture method | Order (intent `AUTHORIZE`) | Session with manual capture | Payment with manual capture mode (cards) |
 | `describeHold` | Retrieve, check driver record | Get order and authorisation | Driver record kept by webhooks | Get payment, check driver record |
-| `adjustHold` | Incremental authorisation where eligible, else `NeedsReauthorization` | Reauthorise is constrained; `NeedsReauthorization` in practice | Amount update (async, scheme-dependent) | `NeedsReauthorization` |
+| `adjustHold` | Incremental authorisation where eligible, else `NeedsReauthorization` | Reauthorise is constrained; `NeedsReauthorization` in practice | `NeedsReauthorization` unless the driver can confirm the async amount update | `NeedsReauthorization` |
 | `captureHold` | Capture with amount | Capture the authorisation | Capture (async, webhook) | Create capture |
 
 Two things the table settles. The reference has to be opaque, because PayPal
