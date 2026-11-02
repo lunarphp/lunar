@@ -140,11 +140,15 @@ the object up by the cart reference it attached as gateway metadata, and only
 creates when nothing is found. On a gateway where an unconfirmed object holds no
 money (Stripe authorises only at confirmation), a driver may instead derive the
 key from the request itself, so a changed cart or an expired key yields a new
-object and the first is left as a harmless, unconfirmable orphan.
+object and the first is left as a harmless, unconfirmable orphan. A derived key
+still includes a per-cart, per-flavour generation that the driver keeps in its
+record. A key built from the request alone could never rotate: the same cart at
+the same total would replay a voided or captured object.
 
 The key is replaced once its intent stops being confirmable, whatever the
 reason: `Captured` (including captured and then refunded), `Voided` or
-`Failed`. `createIntent()` and `createHold()` never send a key whose intent has
+`Failed`. For a persisted key the driver stores a new one; for a derived key it
+bumps the generation. `createIntent()` and `createHold()` never send a key whose intent has
 reached one of those statuses, so a customer whose payment was voided or
 refunded can pay again on the same cart.
 
@@ -283,7 +287,11 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
 ```
 
 Authorise-only flows. `createHold()` is idempotent per cart and per flavour,
-with the same lost-response rule as `createIntent()`. `describeHold()` always
+with the same lost-response and key-rotation rules as `createIntent()`, and the
+same currency rule: it never returns a hold in a currency other than the
+cart's. An unconfirmed hold can be re-priced where the gateway allows it. An
+authorised hold cannot, so the driver voids it and creates a fresh one; if that
+void throws, `createHold()` throws rather than open a second authorisation. `describeHold()` always
 asks the gateway (or, for a webhook-driven gateway, the driver record its
 webhooks maintain) and never trusts a client claim; it returns null when the
 reference is unknown, is not a hold, was not created by `createHold()` for the
@@ -291,7 +299,11 @@ given cart, or is in a different currency from the cart. `adjustHold()` reports
 whether the hold now covers a new total. `captureHold()` captures at most the
 authorised figure: an amount above it throws `PaymentIntentException`, and is
 never clamped, so a customer is never undercharged while the order is handed
-over. It is idempotent per reference.
+over. It is idempotent per reference and amount: a repeat at the amount
+already captured, or already requested, returns cleanly, and a repeat at a
+different amount throws `PaymentIntentException`. A driver whose gateway
+confirms captures asynchronously records the requested amount before calling
+the gateway, so the check holds while the capture is still pending.
 
 Releasing a hold is `ReconcilesPaymentIntents::voidIntent()`, which is why this
 interface extends it rather than adding a release verb of its own. No gateway
@@ -393,18 +405,33 @@ money behind it.
 | --- | --- | --- |
 | Ready to place | `Captured`, with `refundedMinor` zero and `capturedMinor` equal to the cart's payable total in the cart's currency | `RequiresCapture` with `amountMinor` at least the payable total: `captureHold()` at the total, then place |
 | Already captured | as above | `Captured` (a capture that timed out, or a placement that failed after it): place without capturing again if `refundedMinor` is zero and `capturedMinor` equals the payable total; otherwise refund it and ask the customer to pay again |
-| Amount short or wrong | refund it and ask the customer to pay again | `RequiresCapture` below the total: call `adjustHold()`; authorise again only on `NeedsReauthorization` |
+| Amount short or wrong | refund it and ask the customer to pay again | `RequiresCapture` below the total: call `adjustHold()`; on `NeedsReauthorization`, authorise again (below) |
 | Refunded, in part or in full | does not place; the customer pays again on a fresh intent | the same |
 | `Processing` | wait and check again; do not void | not applicable |
 | Any other status | do not place; void it if it is still voidable, and ask the customer to pay again | the same |
 
-**A null from `describeHold()` is not a wrong status.** It means the
-client-supplied reference is unknown, is not a hold, or belongs to another cart,
-session or storefront. The consumer does not place the order and never passes
-that reference to `voidIntent()`, `adjustHold()` or `captureHold()`: those take
-a bare reference with no ownership check, so doing so would let a client cancel
-or capture someone else's hold. A consumer only ever passes these methods a
-reference it stored itself or one `describeHold()` accepted for this cart.
+**Authorising again.** A short hold is still `RequiresCapture`, so calling
+`createHold()` on its own returns the same hold. The consumer first calls
+`voidIntent()` on the stored reference, which retires the hold and rotates its
+key, and then calls `createHold()`, which creates a new hold at the current
+total. If the void throws, the consumer does not call `createHold()`: it does
+not place the order and retries later, so the customer never carries two live
+authorisations for one cart.
+
+**A null from `describeHold()` is not a wrong status.** For a reference that
+arrived from the client, it means the reference is unknown, is not a hold, or
+belongs to another cart, session or storefront. The consumer does not place the
+order and never passes that reference to `voidIntent()`, `adjustHold()` or
+`captureHold()`: those take a bare reference with no ownership check, so doing
+so would let a client cancel or capture someone else's hold. A consumer only
+ever passes these methods a reference it stored itself or one `describeHold()`
+accepted for this cart.
+
+A reference the consumer stored itself is different: it came from its own
+`createHold()` call for this cart, so a null for it means the hold no longer
+fits the cart (most often, the cart changed currency). The consumer does not
+place the order, voids that stored reference, and calls `createHold()` for a
+hold that fits.
 
 The consumer runs this flow only for a driver that implements both
 `CreatesPaymentIntents` and `ReconcilesPaymentIntents`. A driver that can
