@@ -343,7 +343,6 @@ it('forbids staff without the manage-orders permission', function () {
     $this->get(route('panel.orders.show', $order))->assertForbidden();
 });
 
-<<<<<<< HEAD
 it('exposes the pickup point from the shipping line meta', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
@@ -392,20 +391,11 @@ it('shows an on-account order as on account rather than pending', function () {
     $order = Order::factory()->placed()->create([
         'total' => 10000,
         'meta' => ['payment_method' => 'on-account', 'account_ref' => 'ACC-1234'],
-=======
-it('sends the customer notes and the internal notes separately', function () {
-    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
-
-    $order = Order::factory()->placed()->create([
-        'notes' => 'Leave with the neighbour',
-        'internal_notes' => 'Handle with care',
->>>>>>> origin/2.x
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->component('orders/Show')
-<<<<<<< HEAD
             ->where('order.payment_method', 'on-account')
             ->where('order.payment_status_label', 'On account')
             ->where('settlement.status', 'on_account')
@@ -422,10 +412,22 @@ it('keeps the card rollup for an order paid any other way', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->where('order.payment_method', 'card')
             ->where('settlement.status', 'balanced')
-=======
+        );
+});
+
+it('sends the customer notes and the internal notes separately', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'notes' => 'Leave with the neighbour',
+        'internal_notes' => 'Handle with care',
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
             ->where('order.notes', 'Leave with the neighbour')
             ->where('order.internal_notes', 'Handle with care')
->>>>>>> origin/2.x
         );
 });
 
