@@ -11,55 +11,50 @@ use Lunar\Core\Models\Cart;
 /**
  * Opt-in capability for payment drivers that can authorise a hold now and
  * capture it later: the wallet sheet authorises, a later confirmation
- * captures. Checked via `instanceof`, like {@see CreatesPaymentIntents} —
- * never a required part of {@see PaymentType}.
+ * captures. Checked via `instanceof`, never a required part of
+ * {@see PaymentType}.
  *
- * Releasing a hold is {@see SupportsPaymentIntents::voidIntent()}, which is
+ * Releasing a hold is {@see ReconcilesPaymentIntents::voidIntent()}, which is
  * why this extends that contract rather than adding a release verb of its
- * own. No gateway can authorise a hold without also being able to void it, and
- * the extension means a caller that has checked for this capability can void
- * without a second check — the money-back path is the last place that should
- * fail on a missing method.
+ * own. A caller that has checked for this capability can void without a
+ * second check, so the money-back path never fails on a missing method.
  *
- * `createHold()` is the one method here that does not throw
- * {@see PaymentIntentException} on an unknown outcome, for the same reason
- * {@see CreatesPaymentIntents::createIntent()} does not: a hold that was never
- * created has moved no money, so an ordinary failure is a path the caller
- * already has somewhere to go from. Everything that inspects, adjusts or
- * settles an existing hold throws.
+ * A hold is its own flavour, separate from the cart's standard intent: a cart
+ * can have one live of each. When the customer switches from one to the
+ * other, the caller voids the one it is leaving.
+ *
+ * @experimental The shape may change in a minor release until a second driver
+ *               implements these capabilities.
  */
-interface SupportsPaymentHolds extends SupportsPaymentIntents
+interface SupportsPaymentHolds extends ReconcilesPaymentIntents
 {
     /**
-     * Create (or resume) the cart's authorise-only intent: capture deferred,
-     * amount adjustment requested where the rail offers it. Idempotent per
-     * cart, like {@see CreatesPaymentIntents::createIntent()}.
+     * Create (or resume) the cart's authorise-only intent. Idempotent per cart
+     * and per flavour, with the same persisted-key rule as
+     * {@see CreatesPaymentIntents::createIntent()}.
+     *
+     * @throws PaymentIntentException when the gateway refuses the call, cannot
+     *                                be reached, or returns something the
+     *                                driver cannot interpret
      */
     public function createHold(Cart $cart): PaymentIntentDescriptor;
 
     /**
      * Describe a hold by reference: live status, authorised amount, and the
      * wallet that authorised it. Never trusts a client claim; always asks the
-     * gateway.
+     * gateway, or the driver record a webhook-driven gateway keeps.
      *
      * The hold must belong to the cart. A driver MUST return null when the
-     * reference was not created by {@see createHold()} for this cart, or when
-     * the hold is in a different currency from the cart. The reference comes
-     * from the client, so without this check a caller could be shown someone
-     * else's hold, or one whose larger minor-unit amount is in a cheaper
-     * currency, and treat the cart as authorised. A non-null return is in the
-     * cart's currency and belongs to it, so a caller can compare
-     * `amountMinor` with the cart total and need not check ownership again.
+     * reference is unknown, is not a hold, was not created by
+     * {@see createHold()} for this cart, or is in a different currency from
+     * the cart. The reference comes from the client, so without this check a
+     * caller could be shown someone else's hold, or one whose larger
+     * minor-unit amount is in a cheaper currency. A non-null return is in the
+     * cart's currency and belongs to it.
      *
-     * Null and the exception mean different things, and the difference is
-     * deliberate. The reference here arrives from the client, so "the gateway
-     * has never heard of this" is a routine answer to an unverified claim, and
-     * null says it plainly. A gateway that cannot answer at all throws, the
-     * same as everywhere else on this surface. Note that this is the opposite
-     * of {@see SupportsPaymentIntents::fetchIntent()}, where the reference is
-     * one the application stored itself: there, an unrecognised reference is
-     * evidence something is wrong, not an answer. A hold that belongs to
-     * another cart is the same routine answer, and is null for the same reason.
+     * Returning null here where {@see ReconcilesPaymentIntents::fetchIntent()}
+     * throws is deliberate: this reference is an unverified client claim, and
+     * that one is a reference the application stored itself.
      *
      * @throws PaymentIntentException when the gateway cannot be asked
      */
@@ -81,14 +76,14 @@ interface SupportsPaymentHolds extends SupportsPaymentIntents
 
     /**
      * Capture an authorised hold for the final amount (at most the authorised
-     * figure). Idempotent per reference. An unknown outcome is not a capture:
-     * a caller that saw this return cleanly is entitled to treat the money as
-     * taken and hand the customer their order.
+     * figure). Idempotent per reference. A clean return means the gateway
+     * accepted the capture, so the caller may hand the customer their order.
      *
      * Only pass a reference {@see describeHold()} has accepted for the cart,
      * or one the application stored from {@see createHold()}.
      *
-     * @throws PaymentIntentException when the gateway cannot confirm the capture
+     * @throws PaymentIntentException when the gateway refuses or cannot confirm
+     *                                the capture
      */
     public function captureHold(string $reference, int $amountMinor): void;
 }

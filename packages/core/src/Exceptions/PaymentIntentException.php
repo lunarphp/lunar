@@ -2,17 +2,22 @@
 
 namespace Lunar\Core\Exceptions;
 
+use Lunar\Core\Contracts\CreatesPaymentIntents;
+use Lunar\Core\Contracts\ReconcilesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
-use Lunar\Core\Contracts\SupportsPaymentIntents;
+use Lunar\Core\Contracts\SyncsPaymentIntents;
 
 /**
- * A payment driver could not establish what happened to an intent: the gateway
- * was unreachable, refused the call, or does not recognise the reference.
+ * A payment driver's gateway refused an intent call, could not be reached, or
+ * returned something the driver could not interpret, including a reference it
+ * does not recognise.
  *
- * Thrown by the pre-order intent capabilities ({@see SupportsPaymentIntents},
- * {@see SupportsPaymentHolds}) wherever an unknown outcome must not be read as
- * a settled one. A caller treats it as "still unresolved, ask again later",
- * never as success or failure.
+ * Thrown by every method on the pre-order intent capabilities
+ * ({@see CreatesPaymentIntents}, {@see SyncsPaymentIntents},
+ * {@see ReconcilesPaymentIntents}, {@see SupportsPaymentHolds}). A caller
+ * catches this type rather than \Throwable, so it cannot confuse a gateway
+ * that went quiet with a bug in its own code, and treats it as "not done,
+ * ask again", never as success.
  */
 class PaymentIntentException extends LunarException
 {

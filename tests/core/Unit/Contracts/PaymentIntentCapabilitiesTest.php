@@ -2,9 +2,11 @@
 
 use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Contracts\PaymentType;
+use Lunar\Core\Contracts\ReconcilesPaymentIntents;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
-use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\Contracts\SyncsPaymentIntents;
+use Lunar\Core\DataObjects\PaymentIntentDescriptor;
+use Lunar\Core\DataObjects\PaymentIntentSnapshot;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
@@ -24,7 +26,7 @@ it('keeps the capabilities off the PaymentType contract', function () {
     expect($required)->toHaveKey(PaymentType::class)
         ->and($required)->not->toHaveKey(CreatesPaymentIntents::class)
         ->and($required)->not->toHaveKey(SyncsPaymentIntents::class)
-        ->and($required)->not->toHaveKey(SupportsPaymentIntents::class)
+        ->and($required)->not->toHaveKey(ReconcilesPaymentIntents::class)
         ->and($required)->not->toHaveKey(SupportsPaymentHolds::class);
 });
 
@@ -33,7 +35,7 @@ it('guarantees a hold-capable driver can also void', function () {
     // imply "can void" at the type level. A caller that has checked for
     // SupportsPaymentHolds must never hit an undefined method on the
     // money-back path.
-    expect(is_subclass_of(SupportsPaymentHolds::class, SupportsPaymentIntents::class))->toBeTrue();
+    expect(is_subclass_of(SupportsPaymentHolds::class, ReconcilesPaymentIntents::class))->toBeTrue();
 
     $hold = new ReflectionClass(SupportsPaymentHolds::class);
 
@@ -54,31 +56,39 @@ it('binds a described hold to the cart it is described for', function () {
         ->and($parameters[1]->getName())->toBe('reference');
 });
 
-// "MUST throw" in prose is not a contract a caller can catch. Each method whose
-// unknown outcome would otherwise be read as a settled one names
-// PaymentIntentException, so a consumer catches that rather than \Throwable and
-// cannot confuse a gateway that went quiet with a bug in its own code.
-it('names a catchable exception on every method that must not guess', function (string $contract, string $method) {
-    $doc = (new ReflectionMethod($contract, $method))->getDocComment();
-
-    expect($doc)->toContain('@throws PaymentIntentException');
-})->with([
-    'fetchIntent' => [SupportsPaymentIntents::class, 'fetchIntent'],
-    'voidIntent' => [SupportsPaymentIntents::class, 'voidIntent'],
-    'refundIntent' => [SupportsPaymentIntents::class, 'refundIntent'],
-    'describeHold' => [SupportsPaymentHolds::class, 'describeHold'],
-    'adjustHold' => [SupportsPaymentHolds::class, 'adjustHold'],
-    'captureHold' => [SupportsPaymentHolds::class, 'captureHold'],
-]);
-
-it('gives the reconciliation surface exactly one failure channel', function () {
-    // refundIntent() returns a PaymentRefund, which carries a success flag.
-    // A driver must never use it to report a failed refund: the only consumer
-    // treats any clean return as "the money is on its way" and stops chasing
-    // it. Every method on this contract fails the same way, by throwing.
-    foreach ((new ReflectionClass(SupportsPaymentIntents::class))->getMethods() as $method) {
+// "MUST throw" in prose is not a contract a caller can catch. Every method on
+// the four capabilities names PaymentIntentException, so a consumer catches
+// that rather than \Throwable and cannot confuse a gateway that went quiet with
+// a bug in its own code. Create and sync are not exempt: a failed create may
+// still have made an object, and a failed sync must keep confirmation blocked.
+it('names a catchable exception on every capability method', function (string $contract) {
+    foreach ((new ReflectionClass($contract))->getMethods() as $method) {
         expect($method->getDocComment())->toContain('@throws PaymentIntentException');
     }
+})->with([
+    CreatesPaymentIntents::class,
+    SyncsPaymentIntents::class,
+    ReconcilesPaymentIntents::class,
+    SupportsPaymentHolds::class,
+]);
+
+it('reports the money on an intent so a no-order refund can be sized', function () {
+    // The cart may have changed since the customer confirmed, so a refund is
+    // sized from what the gateway says was captured and already refunded.
+    expect((string) (new ReflectionMethod(ReconcilesPaymentIntents::class, 'fetchIntent'))->getReturnType())
+        ->toBe(PaymentIntentSnapshot::class);
+});
+
+it('hands a redirect or an opaque client payload to the frontend', function () {
+    $hosted = new PaymentIntentDescriptor('tr_123', redirectUrl: 'https://pay.example/tr_123');
+    $inPage = new PaymentIntentDescriptor('pi_123', clientPayload: ['client_secret' => 'pi_123_secret']);
+    $referenceOnly = new PaymentIntentDescriptor('ORDER-123');
+
+    expect($hosted->clientPayload)->toBe([])
+        ->and($inPage->redirectUrl)->toBeNull()
+        ->and($inPage->clientPayload)->toBe(['client_secret' => 'pi_123_secret'])
+        ->and($referenceOnly->redirectUrl)->toBeNull()
+        ->and($referenceOnly->clientPayload)->toBe([]);
 });
 
 it('gives the intent exception a catchable Lunar base', function () {
@@ -92,7 +102,7 @@ it('pins the wire values of the intent statuses', function () {
     // Drivers map their own gateway statuses onto these, and consumers
     // persist them, so the backed values are contract.
     expect(array_map(fn (PaymentIntentStatus $case): string => $case->value, PaymentIntentStatus::cases()))
-        ->toBe(['pending', 'requires_capture', 'captured', 'voided', 'failed']);
+        ->toBe(['requires_action', 'processing', 'requires_capture', 'captured', 'voided', 'failed']);
 });
 
 it('pins the wire values of the hold adjustment outcomes', function () {
@@ -101,14 +111,16 @@ it('pins the wire values of the hold adjustment outcomes', function () {
 });
 
 it('leaves existing PaymentRefund construction untouched', function () {
-    // The new reference field is trailing and optional, so third-party
-    // drivers constructing a PaymentRefund positionally keep working.
+    // The new reference and pending fields are trailing and optional, so
+    // third-party drivers constructing a PaymentRefund positionally keep
+    // working.
     $refund = new PaymentRefund(true, 'Refunded');
 
     expect($refund->success)->toBeTrue()
         ->and($refund->message)->toBe('Refunded')
         ->and($refund->transaction)->toBeNull()
-        ->and($refund->reference)->toBeNull();
+        ->and($refund->reference)->toBeNull()
+        ->and($refund->pending)->toBeFalse();
 });
 
 it('carries a gateway refund reference when there is no transaction to hold it', function () {
@@ -116,4 +128,11 @@ it('carries a gateway refund reference when there is no transaction to hold it',
 
     expect($refund->reference)->toBe('re_gateway_123')
         ->and($refund->transaction)->toBeNull();
+});
+
+it('marks a refund the gateway accepted but has not settled', function () {
+    $refund = new PaymentRefund(success: true, reference: 're_gateway_123', pending: true);
+
+    expect($refund->success)->toBeTrue()
+        ->and($refund->pending)->toBeTrue();
 });
