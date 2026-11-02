@@ -19,6 +19,9 @@ on:
       - "packages/panel/resources/**"
       - "packages/panel/vite.config.ts"
       - "packages/panel/package.json"
+      - "packages/bundles/resources/js/**"
+      - "packages/bundles/vite.config.js"
+      - "packages/bundles/package.json"
       - ".github/workflows/build_panel_assets.yml"
 
 permissions:
@@ -58,8 +61,11 @@ jobs:
         run: npx vite build
         working-directory: packages/panel
 
+      - name: Build bundles add-on bundle
+        run: npm run build --workspace @lunarphp/bundles-addon
+
       - name: Commit built assets
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(panel): rebuild compiled assets"
-          file_pattern: packages/panel/public/build
+          file_pattern: packages/panel/public/build packages/bundles/build

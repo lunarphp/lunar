@@ -3,15 +3,20 @@
 namespace Lunar\Core\Managers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
+use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\PricingManager as PricingManagerContract;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\DataObjects\StorefrontContext;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
+use Lunar\Core\Exceptions\MissingStorefrontContextException;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 
 class PricingManager implements PricingManagerContract
@@ -24,17 +29,7 @@ class PricingManager implements PricingManagerContract
     /**
      * The instance of the purchasable model.
      */
-    public Purchasable $purchasable;
-
-    /**
-     * The instance of the user.
-     */
-    public ?Authenticatable $user = null;
-
-    /**
-     * The instance of the currency.
-     */
-    public ?Currency $currency = null;
+    public ?Purchasable $purchasable = null;
 
     /**
      * The quantity value.
@@ -42,18 +37,50 @@ class PricingManager implements PricingManagerContract
     public int $qty = 1;
 
     /**
-     * The customer groups to check against.
+     * The user given to the deprecated user() method. Never resolved from auth.
      */
-    public ?Collection $customerGroups = null;
+    public private(set) ?Authenticatable $user = null;
 
     /**
-     * Whether the user has been resolved (explicitly or from auth).
+     * Read-only view of the context's currency, kept for existing pipelines.
      */
-    protected bool $userResolved = false;
+    public ?Currency $currency {
+        get => $this->context?->currency;
+    }
+
+    /**
+     * Read-only view of the context's customer groups, kept for existing pipelines.
+     */
+    public ?Collection $customerGroups {
+        get => $this->context?->customerGroups;
+    }
+
+    /**
+     * The single source of pricing state, cleared after every get().
+     */
+    protected ?StorefrontContext $context = null;
+
+    /**
+     * Whether a whole context was supplied through using().
+     */
+    protected bool $contextSupplied = false;
+
+    protected static bool $preventsDefaultContext = false;
 
     public function __construct(
-        protected AuthFactory $auth,
+        protected DefaultStorefrontContext $defaultContext,
+        protected ResolvesStorefrontContext $resolveStorefrontContext,
+        protected StepManifest $steps,
     ) {}
+
+    /**
+     * Make get() throw when no context was supplied and no default resolver
+     * is registered, instead of pricing against store defaults.
+     */
+    public static function preventDefaultContext(bool $value = true): void
+    {
+        static::$preventsDefaultContext = $value;
+    }
 
     /**
      * Set the purchasable property.
@@ -68,39 +95,87 @@ class PricingManager implements PricingManagerContract
     }
 
     /**
-     * Set the user property.
+     * Apply a resolved storefront context.
      *
      * @return self
      */
-    public function user(?Authenticatable $user)
+    public function using(StorefrontContext $context)
     {
-        $this->user = $user;
-        $this->userResolved = true;
+        $this->context = $context;
+        $this->contextSupplied = true;
 
         return $this;
     }
 
     /**
-     * Set the user property to NULL.
+     * Price for the given customer, deriving its customer groups.
+     *
+     * @return self
+     */
+    public function customer(?Customer $customer)
+    {
+        $context = $this->getContext();
+
+        $this->context = $this->resolveStorefrontContext->execute(
+            channel: $context->channel,
+            currency: $context->currency,
+            language: $context->language,
+            customer: $customer,
+            region: $context->region,
+        );
+
+        return $this;
+    }
+
+    /**
+     * @deprecated Pass a context with using(), or a customer with customer().
+     *
+     * @return self
+     */
+    public function user(?Authenticatable $user)
+    {
+        if (! $user || ! is_lunar_user($user)) {
+            return $this->guest();
+        }
+
+        $this->user = $user;
+
+        $customers = $user->loadMissing('customers.customerGroups')->customers;
+
+        // A context names one customer; with several, only their merged groups apply.
+        $this->customer($customers->count() === 1 ? $customers->first() : null);
+
+        $customerGroups = $customers->pluck('customerGroups')->flatten()->unique('id')->values();
+
+        if ($customerGroups->isNotEmpty()) {
+            $this->context = $this->context->withCustomerGroups($customerGroups);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @deprecated Use customer(null).
      *
      * @return self
      */
     public function guest()
     {
         $this->user = null;
-        $this->userResolved = true;
 
-        return $this;
+        return $this->customer(null);
     }
 
     /**
-     * Set the currency property.
+     * Set the currency.
      *
      * @return self
      */
     public function currency(?Currency $currency)
     {
-        $this->currency = $currency;
+        if ($currency) {
+            $this->context = $this->getContext()->withCurrency($currency);
+        }
 
         return $this;
     }
@@ -118,13 +193,20 @@ class PricingManager implements PricingManagerContract
     }
 
     /**
-     * Set the customer groups.
+     * Set the customer groups. An empty value falls back to the groups of
+     * the context's customer, or the default group.
      *
      * @return self
      */
     public function customerGroups(?Collection $customerGroups)
     {
-        $this->customerGroups = $customerGroups;
+        $customerGroups = $customerGroups?->filter()->values();
+
+        if (! $customerGroups?->count()) {
+            return $this->customer($this->getContext()->customer);
+        }
+
+        $this->context = $this->getContext()->withCustomerGroups($customerGroups);
 
         return $this;
     }
@@ -136,26 +218,22 @@ class PricingManager implements PricingManagerContract
      */
     public function customerGroup(?CustomerGroup $customerGroup)
     {
-        $this->customerGroups(
-            collect([$customerGroup])
-        );
-
-        return $this;
+        return $this->customerGroups(collect([$customerGroup]));
     }
 
-    /**
-     * Apply a resolved storefront context. Its currency and customer groups
-     * are authoritative, so auth-derived groups do not override them.
-     *
-     * @return self
-     */
-    public function using(StorefrontContext $context)
+    public function getContext(): StorefrontContext
     {
-        $this->currency = $context->currency;
-        $this->customerGroups = $context->customerGroups;
-        $this->userResolved = true;
+        return $this->context ??= $this->defaultContext->get();
+    }
 
-        return $this;
+    public function getPurchasable(): Purchasable
+    {
+        return $this->purchasable ?? throw new \ErrorException('No purchasable set.');
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->qty;
     }
 
     /**
@@ -165,118 +243,82 @@ class PricingManager implements PricingManagerContract
      */
     public function get()
     {
-        if (! $this->purchasable) {
-            throw new \ErrorException('No purchasable set.');
-        }
+        try {
+            $this->getPurchasable();
 
-        $this->resolveUser();
-
-        if (! $this->currency) {
-            $this->currency = Currency::getDefault();
-        }
-
-        if (! $this->customerGroups || ! $this->customerGroups->count()) {
-            $this->customerGroups = collect([
-                CustomerGroup::getDefault(),
-            ]);
-        }
-
-        // Do we have a user?
-        if ($this->user && $this->user->customers->count()) {
-            $customers = $this->user->customers;
-            $customerGroups = $customers->pluck('customerGroups')->flatten();
-
-            if ($customerGroups->count()) {
-                $this->customerGroups = $customerGroups;
+            if (static::$preventsDefaultContext && ! $this->contextSupplied && ! $this->defaultContext->hasResolver()) {
+                throw new MissingStorefrontContextException;
             }
-        }
 
-        $currencyPrices = $this->purchasable->getPrices()->filter(function ($price) {
-            return $price->currency_id == $this->currency->id;
-        });
+            $this->getContext();
 
-        if (! $currencyPrices->count()) {
-            throw new MissingCurrencyPriceException;
-        }
+            $currencyPrices = $this->purchasable->getPrices()->filter(function ($price) {
+                return $price->currency_id == $this->context->currency->id;
+            });
 
-        $prices = $currencyPrices->filter(function ($price) {
-            // Only fetch prices which have no customer group (available to all) or belong to the customer groups
-            // that we are trying to check against.
-            return ! $price->customer_group_id ||
-                $this->customerGroups->pluck('id')->contains($price->customer_group_id);
-        })->sortBy('price');
+            if (! $currencyPrices->count()) {
+                throw new MissingCurrencyPriceException;
+            }
 
-        // Get our base price
-        $basePrice = $prices->first(fn ($price) => $price->min_quantity == 1 && ! $price->customer_group_id);
+            $prices = $currencyPrices->filter(function ($price) {
+                // Only fetch prices which have no customer group (available to all) or belong to the customer groups
+                // that we are trying to check against.
+                return ! $price->customer_group_id ||
+                    $this->context->customerGroups->pluck('id')->contains($price->customer_group_id);
+            })->sortBy('price');
 
-        // To start, we'll set the matched price to the base price.
-        $matched = $basePrice;
+            // Get our base price
+            $basePrice = $prices->first(fn ($price) => $price->min_quantity == 1 && ! $price->customer_group_id);
 
-        // If we have customer group prices, we should find the cheapest one and send that back.
-        $potentialGroupPrice = $prices->filter(function ($price) {
-            return (bool) $price->customer_group_id && ($price->min_quantity == 1);
-        })->sortBy('price');
+            // To start, we'll set the matched price to the base price.
+            $matched = $basePrice;
 
-        $matched = $potentialGroupPrice->first() ?: $matched;
+            // If we have customer group prices, we should find the cheapest one and send that back.
+            $potentialGroupPrice = $prices->filter(function ($price) {
+                return (bool) $price->customer_group_id && ($price->min_quantity == 1);
+            })->sortBy('price');
 
-        // Get all price breaks that match for the given quantity. These take priority over the other steps
-        // as we could be bulk purchasing.
-        $priceBreaks = $prices->filter(function ($price) {
-            return $price->min_quantity > 1 && $this->qty >= $price->min_quantity;
-        })->sortBy('price');
+            $matched = $potentialGroupPrice->first() ?: $matched;
 
-        $matched = $priceBreaks->first() ?: $matched;
+            // Get all price breaks that match for the given quantity. These take priority over the other steps
+            // as we could be bulk purchasing.
+            $priceBreaks = $prices->filter(function ($price) {
+                return $price->min_quantity > 1 && $this->qty >= $price->min_quantity;
+            })->sortBy('price');
 
-        if (! $matched) {
-            throw new \ErrorException('No price set.');
-        }
+            $matched = $priceBreaks->first() ?: $matched;
 
-        $this->pricing = new PricingResponse(
-            matched: $matched,
-            base: $prices->first(fn ($price) => $price->min_quantity == 1),
-            priceBreaks: $prices->filter(fn ($price) => $price->min_quantity > 1),
-            customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
-        );
+            if (! $matched) {
+                throw new \ErrorException('No price set.');
+            }
 
-        $response = app(Pipeline::class)
-            ->send($this)
-            ->through(
-                config('lunar.pricing.pipelines', [])
-            )->then(fn ($pricingManager) => $pricingManager->pricing);
+            $this->pricing = new PricingResponse(
+                matched: $matched,
+                base: $prices->first(fn ($price) => $price->min_quantity == 1),
+                priceBreaks: $prices->filter(fn ($price) => $price->min_quantity > 1),
+                customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
+            );
 
-        $this->reset();
+            $response = app(Pipeline::class)
+                ->send($this)
+                ->through($this->steps->for(StepList::PriceMatching)->all())
+                ->then(fn ($pricingManager) => $pricingManager->pricing);
 
-        return $response;
-    }
-
-    /**
-     * Resolve the user from auth on first use, unless one has been set
-     * explicitly via user()/guest(). Reads on demand rather than at
-     * construction so a manager built before login still sees the user.
-     */
-    private function resolveUser(): void
-    {
-        if ($this->userResolved) {
-            return;
-        }
-
-        $this->userResolved = true;
-
-        $user = $this->auth->guard()->user();
-
-        if ($user && is_lunar_user($user)) {
-            $this->user = $user;
+            return $response;
+        } finally {
+            $this->reset();
         }
     }
 
     /**
-     * Reset the manager into a base instance.
-     *
-     * @return void
+     * Clear all per-call state, so nothing carries into the next get().
      */
-    private function reset()
+    private function reset(): void
     {
+        $this->purchasable = null;
         $this->qty = 1;
-        $this->customerGroups = null;
+        $this->user = null;
+        $this->context = null;
+        $this->contextSupplied = false;
     }
 }
