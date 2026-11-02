@@ -122,11 +122,26 @@ without this capability is confirm-only.
 Idempotency has to survive a lost response, not only a repeat request. A create
 call can succeed at the gateway and time out on the way back, which leaves no
 stored reference and, on gateways that authorise at creation, a live
-authorisation. So a driver persists an idempotency key in its driver record
-before the first create call for that cart and flavour, and sends it with every
-attempt. A retry after a timeout then recovers the object the first attempt
-made. The key is replaced once the intent it created is voided or failed, so a
-fresh intent can be created afterwards.
+authorisation. So before the first create call for a cart and flavour, a driver
+persists an idempotency key in its driver record together with the parameters
+it is about to send, and every retry replays those frozen parameters with that
+key. A retry after a timeout then recovers the object the first attempt made,
+even if the cart has changed since; the driver syncs it to the current total
+afterwards, or voids and re-creates it where the gateway cannot sync.
+
+A gateway keeps an idempotency key only for a limited time (Stripe about 24
+hours). A retry past that window must not trust the key: the driver first looks
+the object up by the cart reference it attached as gateway metadata, and only
+creates when nothing is found. On a gateway where an unconfirmed object holds no
+money (Stripe authorises only at confirmation), a driver may instead derive the
+key from the request itself, so a changed cart or an expired key yields a new
+object and the first is left as a harmless, unconfirmable orphan.
+
+The key is replaced once its intent stops being confirmable, whatever the
+reason: `Captured` (including captured and then refunded), `Voided` or
+`Failed`. `createIntent()` and `createHold()` never send a key whose intent has
+reached one of those statuses, so a customer whose payment was voided or
+refunded can pay again on the same cart.
 
 ### `SyncsPaymentIntents`
 
@@ -183,20 +198,30 @@ case would push every caller into guessing, and there is no safe direction to
 guess in. A gateway with no lookup API (Adyen reports outcomes by webhook)
 answers from the driver record its webhook handler maintains.
 
-**`voidIntent()`** aborts an intent that has not been captured, releasing any
-authorisation it holds. Its behaviour by current status:
+**`voidIntent()`** aborts an intent that has not been captured. A clean return
+means nothing is held and the intent is dead to the application: the driver
+marks it voided in its driver record, and from then on `fetchIntent()` reports
+`Voided` for it. Its behaviour by current status:
 
 | Status | `voidIntent()` |
 | --- | --- |
-| `RequiresAction`, `RequiresCapture` | voids it |
+| `RequiresAction`, `RequiresCapture` | cancels it at the gateway where the gateway can; otherwise marks it voided locally (below) |
 | `Voided`, `Failed` | returns cleanly; nothing is held |
 | `Processing` | throws; the outcome is not yet known and voiding may be refused or race a success. Retry after the intent settles. |
 | `Captured` | throws; the money has moved. The caller refunds instead. |
 
 That makes a retried void safe: a void that timed out and is retried after the
-first attempt succeeded returns cleanly. A gateway with no cancel call for an
-object that holds no money (an unapproved PayPal order, which simply expires)
-returns cleanly too.
+first attempt succeeded returns cleanly.
+
+Some objects cannot be cancelled before the customer pays: an unapproved PayPal
+order, an Adyen session, a Mollie payment whose method is not cancellable. None
+of them holds money, so the driver marks the intent voided locally and returns
+cleanly. The object can still be completed (a hosted page left open in another
+tab), so a local void never hides the gateway's later answer: if the gateway
+reports money moved on a voided intent, `fetchIntent()` reports that status
+(`Captured` or `RequiresCapture`), not `Voided`. The consumer's reconciliation
+sweep treats it as problem case 4, money taken against no order, and refunds or
+voids it.
 
 **`refundIntent()`** refunds a captured intent before any order or transaction
 exists, and never more than its captured amount less what has been refunded.
@@ -333,23 +358,36 @@ either alone: the natural consumer treats any clean return as success, so a
 driver reporting failure by flag would have a failed refund recorded as done
 and nobody chasing the money.
 
-### Confirming the amount
+### Confirming the payment before placing the order
 
 Two checks keep the charged amount equal to the amount the customer was shown,
 and both belong to the consumer (`lunarphp/checkout`, or a storefront's own
-payment step):
+payment step).
 
-1. **Before confirmation:** the consumer calls `syncIntent()` after every cart
-   change that affects the total, and does not enable confirmation until the
-   latest sync returned cleanly.
-2. **Before placing the order:** the consumer calls `fetchIntent()` (or
-   `describeHold()` for a hold) and compares the amount and currency with the
-   cart's payable total. On a mismatch it does not place the order; it voids or
-   refunds the intent and asks the customer to pay again.
+**Before confirmation.** The consumer calls `syncIntent()` after every cart
+change that affects the total, and does not enable confirmation until the
+latest sync returned cleanly.
 
-The second check is the driver bar's "verify the authorized amount and currency
-against the order/cart total" requirement, moved to where the cart-phase flow
-can perform it.
+**Before placing the order.** The rule differs by flavour, because a hold is
+meant to be captured at or below what it authorised:
+
+| | Standard intent (`fetchIntent()`) | Hold (`describeHold()`) |
+| --- | --- | --- |
+| Status that allows placement | `Captured` | `RequiresCapture` |
+| Amount rule | `capturedMinor` equals the cart's payable total, in the cart's currency | `amountMinor` is at least the cart's payable total (currency is guaranteed by `describeHold()`) |
+| On an amount failure | refund it and ask the customer to pay again | call `adjustHold()`; ask the customer to authorise again only on `NeedsReauthorization` |
+| `Processing` | wait and check again; do not void | not applicable |
+| Any other status | do not place; void it if it is still voidable, and ask the customer to pay again | the same |
+
+A null from `describeHold()` fails the check, the same as a wrong status. A
+hold that passes is captured with `captureHold()` at the cart's total, never at
+the authorised figure.
+
+The consumer runs this flow only for a driver that implements both
+`CreatesPaymentIntents` and `ReconcilesPaymentIntents`. A driver that can
+create intents but not report them falls back to order-time payment through
+`PaymentType::authorize()`, where the driver bar already requires the driver to
+verify the authorised amount and currency.
 
 ### Data objects
 
@@ -452,8 +490,8 @@ mirror of any one gateway's status list. A driver maps its own statuses onto
 these:
 
 - `RequiresAction`: waiting on the customer (no payment method yet, a 3-D
-  Secure challenge, an unapproved PayPal order). Nothing is moving; voiding is
-  safe.
+  Secure challenge, an unapproved PayPal order). Nothing is held; voiding is
+  safe, by cancellation or by a local mark (see `voidIntent()`).
 - `Processing`: the customer has acted and the gateway has not decided. The
   payment may still succeed, so it is neither abandoned nor voidable.
 - `RequiresCapture`: authorised and held, waiting for `captureHold()`.
@@ -492,7 +530,7 @@ test the vocabulary, not to promise drivers.
 | `createIntent` | PaymentIntent; `clientPayload` carries the client secret | Order (intent `CAPTURE`); JS SDK takes the reference, or `redirectUrl` is the approval link | Session; `clientPayload` carries id and session data | Payment; `redirectUrl` is the checkout URL |
 | `syncIntent` | Update amount | Patch the order amount | Not supported: amount fixed per session | Not supported: amount fixed per payment |
 | `fetchIntent` | Retrieve | Get order; driver maps to the capture | Driver record kept by webhooks | Get payment |
-| `voidIntent` | Cancel | Void the authorisation; unapproved order returns cleanly | Cancel (async, webhook) | Cancel where cancellable; expired returns cleanly |
+| `voidIntent` | Cancel | Void the authorisation; unapproved order marked voided locally | Cancel an authorised payment (async, webhook); unpaid session marked voided locally | Cancel where the method allows; otherwise marked voided locally |
 | `refundIntent` | Refund by intent; may be pending | Refund the capture; driver maps from the reference | Refund (async, webhook) | Refund; may be pending |
 | `createHold` | Manual capture method | Order (intent `AUTHORIZE`) | Session with manual capture | Payment with manual capture mode (cards) |
 | `describeHold` | Retrieve, check driver record | Get order and authorisation | Driver record kept by webhooks | Get payment, check driver record |
