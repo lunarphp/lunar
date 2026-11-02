@@ -90,13 +90,15 @@ return [
     'txn_type_capture' => 'Payment',
     'txn_type_refund' => 'Refund',
     'txn_type_intent' => 'Authorization',
+    'txn_type_failed' => 'فشلت',
 
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'ملاحظات داخلية',
+    'side_customer_notes' => 'ملاحظات العميل',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',
