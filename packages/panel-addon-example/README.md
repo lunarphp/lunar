@@ -845,6 +845,70 @@ shipped as `dist/runtime.d.ts` in the `@lunarphp/panel` package and referenced
 from its main types — importing anything from `@lunarphp/panel` types
 `window.LunarPanel` in your editor for free.
 
+## Styling an add-on with Tailwind
+
+An add-on that only uses classes the panel's own build already emits needs no
+stylesheet. Anything else (an arbitrary value like `text-[11px]`, an opacity
+modifier like `bg-danger/5`, a utility no panel page uses) needs the add-on to
+compile its own CSS.
+
+Do not `@import 'tailwindcss'` for that. The add-on's sheet loads after the
+panel's, so a full import re-emits preflight, the theme variables and every
+utility the panel already ships, and restyles the panel around the add-on.
+Build a utilities-only sheet against the panel's theme instead:
+
+```css
+@import 'tailwindcss/theme.css' theme(reference);
+@import '@lunarphp/panel/theme.css' theme(reference);
+@import 'tailwindcss/utilities.css' source(none);
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source './js';
+```
+
+- `theme(reference)` registers the tokens so `text-ink-400` can be generated,
+  without emitting a single custom property. The rules resolve against the
+  variables the panel has already put on the page, in both colour schemes.
+- `source(none)` turns off automatic source detection, so only `./js` is
+  scanned. Without it Tailwind scans the whole package (PHP, tests, docs) and
+  emits classes the add-on never uses.
+- The `@custom-variant` line is only needed for `dark:` variants. It matches
+  the panel's and emits nothing by itself.
+
+Add `@tailwindcss/vite` to the Vite config and `tailwindcss` to
+`devDependencies`, at the same version the panel builds with. A different
+Tailwind version can emit a different rule body for the same class, and the
+add-on's copy wins because it loads last. `@lunarphp/panel` declares
+`tailwindcss` as an optional peer dependency so npm warns about a mismatched
+major.
+
+An IIFE build cannot code split, so Vite writes the CSS as a separate
+`style.css` manifest entry rather than attaching it to the script. Pass it to
+`PanelManager::vite()` as a second input:
+
+```php
+$this->app->make(PanelManager::class)->vite('example-addon', [
+    'input' => ['resources/js/addon.ts', 'style.css'],
+    // ...
+]);
+```
+
+### Which tokens an add-on can use
+
+- **Panel tokens** (everything in `@lunarphp/panel/theme.css`: the `ink`,
+  `line`, `surface`, `sage`, `danger` colours, radii, shadows, animations)
+  are always defined on the page.
+- **Arbitrary values** always work, because they carry their own value.
+- **Tailwind's default theme** (`bg-red-500`, `text-6xl`, …) is only defined
+  when a panel page happens to use it. Tailwind emits a default theme variable
+  only when the panel's own sources reference it, so an add-on class built on
+  one the panel doesn't use compiles but resolves to an undefined variable and
+  does nothing. Stick to panel tokens, or use an arbitrary value.
+
+Token names in `theme.css` are a public contract. Renaming or removing one is
+a breaking change for add-ons and is called out in the changelog.
+
 ## Installing into a host app
 
 1. `composer require lunarphp/panel-addon-example` to install it as-is, or

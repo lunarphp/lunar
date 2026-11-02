@@ -11,7 +11,7 @@
  *
  *   @import 'tailwindcss/theme.css' theme(reference);
  *   @import '@lunarphp/panel/theme.css' theme(reference);
- *   @import 'tailwindcss/utilities.css';
+ *   @import 'tailwindcss/utilities.css' source(none);
  *   @source './js';
  *
  * Nothing but `@theme` belongs here: Tailwind refuses a referenced import
@@ -20,10 +20,15 @@
  * which matches the panel's and emits nothing by itself.
  *
  * The panel's own app.css imports it plainly, so these are emitted exactly
- * once, from there.
+ * once, from there. `static` emits every token even when no panel page uses
+ * it, so an add-on can rely on all of them being on the page.
+ *
+ * Token names here are a public contract for add-ons: renaming or removing
+ * one is a breaking change. See the panel-addon-example README for the full
+ * add-on styling guide.
  */
 
-@theme {
+@theme static {
   --color-ink-900: oklch(0.18 0.008 260);
   --color-ink-700: oklch(0.32 0.008 260);
   --color-ink-500: oklch(0.52 0.008 260);
