@@ -14,6 +14,7 @@ use Lunar\Core\Models\Region;
 
 /**
  * @method static StorefrontContext context()
+ * @method static StorefrontSessionManager useAsDefaultContext()
  * @method static Region|null getRegion()
  * @method static StorefrontSessionManager setRegion(Region $region)
  * @method static void forget()

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Contracts\TracksStock;
@@ -260,8 +261,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
 
     public function canBeFulfilledAtQuantity(int $quantity): bool
     {
-        return $this->selling_policy === SellingPolicy::Always
-            || $quantity <= $this->getTotalInventory();
+        return app(ResolvesInventory::class)->execute($this)->allows($quantity);
     }
 
     public function scopeEnabled(Builder $query): Builder
@@ -291,11 +291,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
 
     public function getTotalInventory(): int
     {
-        return match ($this->selling_policy) {
-            SellingPolicy::Always => $this->stock_available,
-            SellingPolicy::InStock => $this->stock_available,
-            SellingPolicy::InStockOrOnBackorder => $this->stock_available + $this->backorder,
-        };
+        return app(ResolvesInventory::class)->execute($this)->available;
     }
 
     public function getThumbnailImage(): string

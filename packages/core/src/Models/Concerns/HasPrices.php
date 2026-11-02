@@ -3,9 +3,9 @@
 namespace Lunar\Core\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Facades\Pricing;
-use Lunar\Core\Managers\PricingManager;
 use Lunar\Core\Models\Price;
 
 trait HasPrices
@@ -36,8 +36,7 @@ trait HasPrices
 
     /**
      * Return a PricingManager for this model, optionally primed with a
-     * storefront context (currency and customer groups) for browse-time
-     * price display away from a cart.
+     * storefront context for browse-time price display away from a cart.
      */
     public function pricing(?StorefrontContext $context = null): PricingManager
     {
