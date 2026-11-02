@@ -96,7 +96,8 @@ return [
     'side_shipping_address' => 'Shipping address',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Notatki wewnętrzne',
+    'side_customer_notes' => 'Notatki klienta',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

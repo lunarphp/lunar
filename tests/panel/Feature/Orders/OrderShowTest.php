@@ -343,6 +343,22 @@ it('forbids staff without the manage-orders permission', function () {
     $this->get(route('panel.orders.show', $order))->assertForbidden();
 });
 
+it('sends the customer notes and the internal notes separately', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'notes' => 'Leave with the neighbour',
+        'internal_notes' => 'Handle with care',
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('order.notes', 'Leave with the neighbour')
+            ->where('order.internal_notes', 'Handle with care')
+        );
+});
+
 it('nests component lines under their parent and marks them in fulfilments', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
