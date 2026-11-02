@@ -27,6 +27,15 @@ class AsAttributeData implements Castable
 
                 $data = json_decode($attributes[$key], true);
 
+                // A json column accepts any JSON value, and rows reach here from
+                // imports, from other Lunar versions and from writes that failed.
+                // Anything that is not an attribute set is read as an empty one,
+                // rather than left to fail on the foreach below - one such row
+                // would otherwise throw for every listing that returns it.
+                if (! is_array($data)) {
+                    return new Collection;
+                }
+
                 $returnData = new Collection;
 
                 foreach ($data as $key => $item) {
