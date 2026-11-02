@@ -8,6 +8,7 @@ use Lunar\Upgrade\Steps\ComposerRequireRewriteStep;
 use Lunar\Upgrade\Steps\DataMigrationStep;
 use Lunar\Upgrade\Steps\LedgerRewriteStep;
 use Lunar\Upgrade\Steps\RectorStep;
+use Lunar\Upgrade\Steps\StepListConfigStep;
 use Lunar\Upgrade\Steps\StepRegistry;
 use Lunar\Upgrade\Steps\UpgradeStep;
 
@@ -18,11 +19,12 @@ it('resolves every step in declared order', function () {
 
     $steps = $registry->all();
 
-    expect($steps)->toHaveCount(4)
+    expect($steps)->toHaveCount(5)
         ->and($steps[0])->toBeInstanceOf(ComposerRequireRewriteStep::class)
         ->and($steps[1])->toBeInstanceOf(RectorStep::class)
-        ->and($steps[2])->toBeInstanceOf(DataMigrationStep::class)
-        ->and($steps[3])->toBeInstanceOf(LedgerRewriteStep::class);
+        ->and($steps[2])->toBeInstanceOf(StepListConfigStep::class)
+        ->and($steps[3])->toBeInstanceOf(DataMigrationStep::class)
+        ->and($steps[4])->toBeInstanceOf(LedgerRewriteStep::class);
 });
 
 it('filters by only and skip', function () {
@@ -36,7 +38,7 @@ it('filters by only and skip', function () {
     $steps = $registry->resolve(skip: ['rector']);
 
     expect(array_map(fn (UpgradeStep $s) => $s->name(), $steps))
-        ->toBe(['composer-require-rewrite', 'data-migrations', 'ledger-rewrite']);
+        ->toBe(['composer-require-rewrite', 'step-list-config', 'data-migrations', 'ledger-rewrite']);
 });
 
 it('aborts on an unknown step name', function () {
