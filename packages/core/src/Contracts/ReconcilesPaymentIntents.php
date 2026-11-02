@@ -49,10 +49,18 @@ interface ReconcilesPaymentIntents
     public function fetchIntent(string $reference): PaymentIntentSnapshot;
 
     /**
-     * Abort an intent that has not been captured, releasing any authorisation
-     * it holds. Safe to retry: an intent that is already
-     * {@see PaymentIntentStatus::Voided} or {@see PaymentIntentStatus::Failed}
-     * holds nothing, so voiding it returns cleanly.
+     * Abort an intent that has not been captured. A clean return means
+     * nothing is held and the intent is dead to the application: the driver
+     * marks it voided, and {@see fetchIntent()} reports
+     * {@see PaymentIntentStatus::Voided} from then on. Safe to retry: an
+     * intent that is already Voided or {@see PaymentIntentStatus::Failed}
+     * returns cleanly.
+     *
+     * An object the gateway cannot cancel before payment holds no money, so
+     * the driver marks it voided locally. That mark never hides the gateway's
+     * later answer: if money moves on it anyway, {@see fetchIntent()} reports
+     * that status instead, and the caller reconciles it as money taken against
+     * no order.
      *
      * @throws PaymentIntentException when the gateway cannot confirm the void,
      *                                and when the intent is

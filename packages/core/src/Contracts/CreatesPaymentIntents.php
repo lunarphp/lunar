@@ -16,9 +16,16 @@ use Lunar\Core\Models\Cart;
  * Implementations MUST be idempotent per cart and per flavour: re-requesting
  * while the cart's standard intent is still confirmable returns it, never a
  * duplicate. That has to survive a lost response, not only a repeat request,
- * so a driver persists an idempotency key for the cart before the first create
- * call and sends it with every attempt. A retry after a timeout then recovers
- * the intent the first attempt made instead of orphaning it.
+ * so a driver persists an idempotency key and the parameters it is about to
+ * send before the first create call, and replays them on every retry. A retry
+ * after a timeout then recovers the intent the first attempt made instead of
+ * orphaning it, even if the cart has changed since. Past the gateway's key
+ * retention the driver looks the intent up by cart metadata before creating.
+ * A driver whose gateway holds no money on an unconfirmed intent may instead
+ * derive the key from the request itself.
+ *
+ * The key is replaced once its intent stops being confirmable (captured,
+ * refunded, voided or failed), so the customer can pay again on the same cart.
  *
  * @experimental The shape may change in a minor release until a second driver
  *               implements these capabilities.
