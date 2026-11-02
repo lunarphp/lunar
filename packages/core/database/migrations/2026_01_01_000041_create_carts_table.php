@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
             $table->string('coupon_code')->index()->nullable();
+            $table->string('remember_token', 64)->nullable()->unique();
             $table->dateTime('completed_at')->nullable()->index();
             $table->jsonb('meta')->nullable();
             $table->timestamps();
