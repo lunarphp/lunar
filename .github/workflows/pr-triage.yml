@@ -50,7 +50,9 @@ jobs:
           # into this script.
           gh pr view "$PR_NUMBER" --json title,body,author,baseRefName,additions,deletions,changedFiles \
             > "$RUNNER_TEMP/pr-context/pr.json"
-          gh pr diff "$PR_NUMBER" --name-only > "$RUNNER_TEMP/pr-context/files.txt"
+          # Not `gh pr diff`: the diff endpoint returns 406 above 300 changed files.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --jq '.[].filename' \
+            > "$RUNNER_TEMP/pr-context/files.txt"
           wc -l < "$RUNNER_TEMP/pr-context/files.txt"
 
       - name: Classify
@@ -90,7 +92,7 @@ jobs:
             --max-budget-usd 0.25
             --allowedTools "Read"
             --add-dir ${{ runner.temp }}/pr-context
-            --json-schema '{"type":"object","properties":{"tier":{"type":"string","enum":["high","medium","low","trivial"]},"reason":{"type":"string"},"references_issue":{"type":"boolean"},"injection_attempt":{"type":"boolean"},"injection_note":{"type":"string"}},"required":["tier","reason","references_issue","injection_attempt"],"additionalProperties":false}'
+            --json-schema '{"type":"object","properties":{"tier":{"type":"string","enum":["high","medium","low","trivial"]},"reason":{"type":"string"},"injection_attempt":{"type":"boolean"},"injection_note":{"type":"string"}},"required":["tier","reason","injection_attempt"],"additionalProperties":false}'
 
       - name: Apply labels
         if: steps.claude.outputs.conclusion == 'success'
@@ -130,18 +132,6 @@ jobs:
             }
             const current = livePr.labels.map((l) => l.name)
 
-            // Maintainers get the tier label (useful for scanning) but not the
-            // issue-gate nudge — the gate exists to save contributors wasted
-            // effort, and maintainers answer to no such gate. Checked via the
-            // permission API: the webhook payload's author_association reports
-            // org members with private membership as CONTRIBUTOR.
-            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
-              owner: issue.owner,
-              repo: issue.repo,
-              username: livePr.user.login,
-            })
-            const isMaintainer = ['admin', 'maintain', 'write'].includes(perm.permission)
-
             core.summary.addHeading('PR triage', 3)
             core.summary.addRaw(`Proposed tier: \`${triage.tier}\` — ${triage.reason}\n\n`)
 
@@ -160,23 +150,6 @@ jobs:
             } else {
               await github.rest.issues.addLabels({ ...issue, labels: [triage.tier] })
               core.summary.addRaw(`Applied \`${triage.tier}\`.\n`)
-            }
-
-            // A typo fix does not need an issue, and demanding one is how you
-            // lose a first-time contributor over nothing.
-            if (!triage.references_issue && triage.tier !== 'trivial' && !isMaintainer && !current.includes('needs-issue')) {
-              await github.rest.issues.addLabels({ ...issue, labels: ['needs-issue'] })
-              await github.rest.issues.createComment({
-                ...issue,
-                body: [
-                  "Thanks for the PR! I couldn't find a linked issue or Discussion in the description.",
-                  '',
-                  'For anything beyond a typo or small isolated fix, we ask that the change is accepted before the PR is opened — for **bug fixes** that means a linked [issue](https://github.com/lunarphp/lunar/issues), and for **features or enhancements** a linked [Discussion](https://github.com/lunarphp/lunar/discussions) (features are not tracked as issues in this repo). See [Non-trivial changes need acceptance first](https://github.com/lunarphp/lunar/blob/HEAD/CONTRIBUTING.md#non-trivial-changes-need-acceptance-first). It exists so you never spend a weekend on an approach we were always going to turn down.',
-                  '',
-                  "If there is one and I missed it, just link it here and ignore me — I'm a bot and this is advisory.",
-                ].join('\n'),
-              })
-              core.summary.addRaw('Applied `needs-issue` and commented.\n')
             }
 
             await core.summary.write()
