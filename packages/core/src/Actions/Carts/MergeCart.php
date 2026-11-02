@@ -24,7 +24,12 @@ class MergeCart
             $source->lines->map(function ($line) use ($target) {
                 return [
                     'target' => $target->lines->first(function ($targetLine) use ($line) {
-                        return $targetLine->purchasable_id == $line->purchasable_id &&
+                        // The type is half of what identifies a purchasable:
+                        // ids of different purchasable types are independent
+                        // sequences and collide as a matter of course. This is
+                        // the same comparison GetExistingCartLine makes.
+                        return $targetLine->purchasable_type == $line->purchasable_type &&
+                        $targetLine->purchasable_id == $line->purchasable_id &&
                         json_encode($targetLine->meta) == json_encode($line->meta);
                     }),
                     'source' => $line,
