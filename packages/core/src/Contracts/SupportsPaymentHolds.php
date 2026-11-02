@@ -30,12 +30,23 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
 {
     /**
      * Create (or resume) the cart's authorise-only intent. Idempotent per cart
-     * and per flavour, with the same persisted-key rule as
+     * and per flavour, with the same key and rotation rules as
      * {@see CreatesPaymentIntents::createIntent()}.
+     *
+     * Never returns a hold in a currency other than the cart's. An unconfirmed
+     * hold is re-priced where the gateway allows it; an authorised one is
+     * voided and replaced, and if that void fails this throws rather than open
+     * a second authorisation.
+     *
+     * A short hold is still live, so this returns it unchanged. To authorise
+     * again after {@see adjustHold()} reports NeedsReauthorization, the caller
+     * voids the stored reference first and only then calls this; if the void
+     * throws, it does not call this.
      *
      * @throws PaymentIntentException when the gateway refuses the call, cannot
      *                                be reached, or returns something the
-     *                                driver cannot interpret
+     *                                driver cannot interpret, or when a hold
+     *                                in the wrong currency cannot be voided
      */
     public function createHold(Cart $cart): PaymentIntentDescriptor;
 
@@ -52,10 +63,13 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
      * minor-unit amount is in a cheaper currency. A non-null return is in the
      * cart's currency and belongs to it.
      *
-     * A null means do not proceed, and never pass that reference to
-     * {@see ReconcilesPaymentIntents::voidIntent()}, {@see adjustHold()} or
-     * {@see captureHold()}: they take a bare reference with no ownership
-     * check, so doing so would let a client act on someone else's hold.
+     * A null means do not proceed. For a reference that came from the client,
+     * never pass it to {@see ReconcilesPaymentIntents::voidIntent()},
+     * {@see adjustHold()} or {@see captureHold()}: they take a bare reference
+     * with no ownership check, so doing so would let a client act on someone
+     * else's hold. For a reference the application stored from its own
+     * {@see createHold()} call, a null means the hold no longer fits the cart
+     * (usually a currency change): void it, then call {@see createHold()}.
      *
      * Returning null here where {@see ReconcilesPaymentIntents::fetchIntent()}
      * throws is deliberate: this reference is an unverified client claim, and
@@ -84,16 +98,22 @@ interface SupportsPaymentHolds extends ReconcilesPaymentIntents
     /**
      * Capture an authorised hold for the final amount, at most the authorised
      * figure: an amount above it throws and is never clamped, so a customer is
-     * never undercharged while the order is handed over. Idempotent per
-     * reference. A clean return means the gateway
+     * never undercharged while the order is handed over.
+     *
+     * Idempotent per reference and amount: a repeat at the amount already
+     * captured or requested returns cleanly, and a repeat at a different
+     * amount throws. A driver whose gateway confirms captures asynchronously
+     * records the requested amount before calling the gateway, so the check
+     * holds while the capture is pending. A clean return means the gateway
      * accepted the capture, so the caller may hand the customer their order.
      *
      * Only pass a reference {@see describeHold()} has accepted for the cart,
      * or one the application stored from {@see createHold()}.
      *
      * @throws PaymentIntentException when the amount exceeds the authorisation,
-     *                                or the gateway refuses or cannot confirm
-     *                                the capture
+     *                                differs from an earlier capture of this
+     *                                reference, or the gateway refuses or
+     *                                cannot confirm the capture
      */
     public function captureHold(string $reference, int $amountMinor): void;
 }

@@ -22,10 +22,13 @@ use Lunar\Core\Models\Cart;
  * orphaning it, even if the cart has changed since. Past the gateway's key
  * retention the driver looks the intent up by cart metadata before creating.
  * A driver whose gateway holds no money on an unconfirmed intent may instead
- * derive the key from the request itself.
+ * derive the key from the request itself, but the derived key still includes
+ * a per-cart, per-flavour generation kept in the driver record: a key built
+ * from the request alone could never rotate.
  *
- * The key is replaced once its intent stops being confirmable (captured,
- * refunded, voided or failed), so the customer can pay again on the same cart.
+ * The key is replaced (or its generation bumped) once its intent stops being
+ * confirmable (captured, refunded, voided or failed), so the customer can pay
+ * again on the same cart.
  *
  * Never returns an intent in a currency other than the cart's: if the cart's
  * currency changed, the driver re-prices the intent where the gateway allows
