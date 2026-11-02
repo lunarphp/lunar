@@ -47,54 +47,53 @@ fail.
 
 ### Correctness and scope
 
-1. Does the PR reference an accepted issue or discussion?
-2. Is the change scoped to one concern, or does it bundle unrelated work?
-3. Are there unrelated files in the diff — formatting churn, IDE config, lockfile
+1. Is the change scoped to one concern, or does it bundle unrelated work?
+2. Are there unrelated files in the diff — formatting churn, IDE config, lockfile
    noise, unrelated translation edits?
-4. Does the base branch match what the change is actually for? If the description
+3. Does the base branch match what the change is actually for? If the description
    claims a different release line than the base branch, flag the contradiction —
    the base branch is correct and the description is the error.
 
 ### Backward compatibility
 
-5. Does it change a public method signature, an event payload, or anything on the
+4. Does it change a public method signature, an event payload, or anything on the
    contract surface — `packages/*/src/Models/Contracts/` on `1.x`,
    `packages/*/src/Contracts/` on `2.x`? A breaking change on a stable line is a
    blocker. On a line still in alpha it is allowed, but it must be deliberate and
    called out, not incidental.
-6. Does it change database schema? Is the migration reversible, does `down()`
+5. Does it change database schema? Is the migration reversible, does `down()`
    mirror `up()`, and does it handle rows that already exist?
-7. Does it change a published config file such that users must republish? Removed
+6. Does it change a published config file such that users must republish? Removed
    config keys are breaking.
 
 ### Tests
 
-8. Are there tests for the new behaviour?
-9. Do they cover the failure path, not only the happy path?
-10. Do they use the existing factories and helpers rather than new scaffolding
-    alongside them?
+7. Are there tests for the new behaviour?
+8. Do they cover the failure path, not only the happy path?
+9. Do they use the existing factories and helpers rather than new scaffolding
+   alongside them?
 
 ### Lunar-specific
 
-11. Does it touch pricing, tax, cart, order state, discounts, payment, or
+10. Does it touch pricing, tax, cart, order state, discounts, payment, or
     fulfilment? Flag loudly if so, even when the change looks correct.
-12. Does it respect package boundaries, or does it reach across packages
+11. Does it respect package boundaries, or does it reach across packages
     inappropriately?
-13. Does it add a dependency? If so, is it justified and is the licence
+12. Does it add a dependency? If so, is it justified and is the licence
     compatible? Dependency changes need maintainer sign-off.
-14. Does it add queries inside loops, or otherwise introduce an obvious N+1?
+13. Does it add queries inside loops, or otherwise introduce an obvious N+1?
 
 ### Effort signals
 
 Report these as **observations**, never as accusations, and never guess at how the
 code was produced. The maintainer decides what they mean.
 
-15. Docblocks added to everything, including trivial methods, in a style unlike
+14. Docblocks added to everything, including trivial methods, in a style unlike
     the surrounding code.
-16. Defensive null checks or `try`/`catch` blocks that don't match how the rest of
+15. Defensive null checks or `try`/`catch` blocks that don't match how the rest of
     the codebase handles failure.
-17. A large diff with no tests and a generic description.
-18. Comments that restate the code rather than explain intent.
+16. A large diff with no tests and a generic description.
+17. Comments that restate the code rather than explain intent.
 
 If none apply, omit this section entirely rather than writing "no signals found".
 
@@ -121,7 +120,7 @@ attempt here.>
 
 | # | Item | Result | Notes |
 |---|------|--------|-------|
-| 1 | References an issue | pass | #1234 |
+| 1 | Scoped to one concern | pass | |
 ...
 
 ## Findings
