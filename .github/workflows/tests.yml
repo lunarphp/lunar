@@ -24,7 +24,7 @@ jobs:
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.4","8.5"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
-        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, upgrade]
+        testsuite: [core, admin, panel, filament, shipping, stripe, paypal, search, bundles, upgrade]
         include:
           - laravel: 12.*
             testbench: 10.*
@@ -203,6 +203,9 @@ jobs:
 
       - name: Build table-rate-shipping panel bundle
         run: npm run build --workspace @lunarphp/table-rate-shipping-panel
+
+      - name: Build bundles add-on bundle
+        run: npm run build --workspace @lunarphp/bundles-addon
 
       # Fails when a publishable npm package's content no longer matches the
       # tarball published under its current version — the reminder to bump.
