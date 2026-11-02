@@ -50,7 +50,9 @@ jobs:
           # into this script.
           gh pr view "$PR_NUMBER" --json title,body,author,baseRefName,additions,deletions,changedFiles \
             > "$RUNNER_TEMP/pr-context/pr.json"
-          gh pr diff "$PR_NUMBER" --name-only > "$RUNNER_TEMP/pr-context/files.txt"
+          # Not `gh pr diff`: the diff endpoint returns 406 above 300 changed files.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --jq '.[].filename' \
+            > "$RUNNER_TEMP/pr-context/files.txt"
           wc -l < "$RUNNER_TEMP/pr-context/files.txt"
 
       - name: Classify
