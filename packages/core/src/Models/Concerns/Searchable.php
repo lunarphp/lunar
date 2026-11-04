@@ -3,7 +3,10 @@
 namespace Lunar\Core\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Scout\EngineManager;
+use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Searchable as ScoutSearchable;
 use Lunar\Core\Search\ScoutIndexer;
 
@@ -70,6 +73,19 @@ trait Searchable
         return $this->indexer()->makeAllSearchableUsing($query);
     }
 
+    /**
+     * Eager-load what the indexer reads before Scout builds documents from
+     * loaded models, as the collection engine does when it filters a search.
+     * The relations load onto copies so the caller's models never carry the
+     * indexer's partial selects.
+     */
+    public function makeSearchableUsing(BaseCollection $models)
+    {
+        $relations = $this->makeAllSearchableUsing($this->newQuery())->getEagerLoads();
+
+        return EloquentCollection::make($models->map(fn ($model) => clone $model))->loadMissing($relations);
+    }
+
     public function indexer()
     {
         $config = config('lunar.search.indexers', []);
@@ -82,6 +98,10 @@ trait Searchable
      */
     public function toSearchableArray()
     {
+        if ($this->searchableUsing() instanceof DatabaseEngine) {
+            return array_fill_keys($this->indexer()->getDatabaseSearchColumns($this), null);
+        }
+
         return $this->indexer()->toSearchableArray(
             $this,
             config('scout.driver')

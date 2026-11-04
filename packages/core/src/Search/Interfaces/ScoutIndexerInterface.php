@@ -21,5 +21,14 @@ interface ScoutIndexerInterface
 
     public function getFilterableFields(): array;
 
+    /**
+     * The columns Scout's database engine matches a text query against. That
+     * engine reads the keys of toSearchableArray() as column names, so Lunar
+     * returns these instead of the indexed document when it is the engine.
+     *
+     * @return list<string>
+     */
+    public function getDatabaseSearchColumns(Model $model): array;
+
     public function toSearchableArray(Model $model): array;
 }

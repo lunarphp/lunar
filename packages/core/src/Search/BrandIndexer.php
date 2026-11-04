@@ -29,6 +29,11 @@ class BrandIndexer extends ScoutIndexer
         return $query;
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return ['name', ...$this->translatedColumns(['description', 'short_description'])];
+    }
+
     public function toSearchableArray(Model $model): array
     {
         return array_merge([

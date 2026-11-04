@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Language;
 use Lunar\Core\Search\Interfaces\ScoutIndexerInterface;
 
 class ScoutIndexer implements ScoutIndexerInterface
@@ -54,6 +55,11 @@ class ScoutIndexer implements ScoutIndexerInterface
         ];
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return array_keys($this->toSearchableArray($model));
+    }
+
     public function toSearchableArray(Model $model): array
     {
         if (! $model->attribute_data) {
@@ -65,6 +71,24 @@ class ScoutIndexer implements ScoutIndexerInterface
         return array_merge([
             'id' => (string) $model->id,
         ], $data);
+    }
+
+    /**
+     * One JSON path column per language for each translatable column
+     * (`name->en`, `name->fr`, ...), so a LIKE match reads the translated
+     * text on every database driver.
+     *
+     * @param  list<string>  $columns
+     * @return list<string>
+     */
+    protected function translatedColumns(array $columns): array
+    {
+        $codes = Language::query()->pluck('code');
+
+        return collect($columns)
+            ->flatMap(fn (string $column) => $codes->map(fn (string $code) => "{$column}->{$code}"))
+            ->values()
+            ->all();
     }
 
     /**

@@ -36,11 +36,13 @@ class ProductIndexer extends ScoutIndexer
         ]);
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return $this->translatedColumns(['name', 'description', 'short_description']);
+    }
+
     public function toSearchableArray(Model $model): array
     {
-        // Scout's database engine calls this on an empty model prototype to
-        // derive the searchable columns, so every relation and date here must
-        // be null-safe.
         // Do this here so other additions to the data appear under the attributes,
         // more of a vanity thing than anything else.
         $data = array_merge([

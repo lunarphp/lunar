@@ -19,6 +19,11 @@ class SearchManager extends Manager implements SearchManagerContract
         return $this->buildProvider(DatabaseEngine::class);
     }
 
+    public function createCollectionDriver()
+    {
+        return $this->buildProvider(DatabaseEngine::class);
+    }
+
     public function createMeilisearchDriver()
     {
         return $this->buildProvider(MeilisearchEngine::class);

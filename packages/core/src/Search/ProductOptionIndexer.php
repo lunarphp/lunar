@@ -29,6 +29,11 @@ class ProductOptionIndexer extends ScoutIndexer
         ]);
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return $this->translatedColumns(['name', 'label']);
+    }
+
     public function toSearchableArray(Model $model): array
     {
         $data['id'] = (string) $model->id;

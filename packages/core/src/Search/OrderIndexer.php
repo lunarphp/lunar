@@ -67,6 +67,11 @@ class OrderIndexer extends ScoutIndexer
         ]);
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return ['reference', 'customer_reference'];
+    }
+
     public function toSearchableArray(Model $model): array
     {
         $data = [

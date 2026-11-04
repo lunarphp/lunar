@@ -36,6 +36,11 @@ class CustomerIndexer extends ScoutIndexer
         ]);
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return ['first_name', 'last_name', 'company_name', 'tax_identifier', 'account_ref'];
+    }
+
     public function toSearchableArray(Model $model): array
     {
         $metaFields = (array) $model->meta;

@@ -29,6 +29,11 @@ class CollectionIndexer extends ScoutIndexer
         return $query;
     }
 
+    public function getDatabaseSearchColumns(Model $model): array
+    {
+        return $this->translatedColumns(['name', 'description', 'short_description']);
+    }
+
     public function toSearchableArray(Model $model): array
     {
         return array_merge([

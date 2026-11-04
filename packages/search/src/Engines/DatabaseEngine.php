@@ -19,7 +19,7 @@ class DatabaseEngine extends AbstractEngine
 
         $documents = collect($results->items())->map(fn ($hit) => SearchHit::from([
             'highlights' => collect(),
-            'document' => $hit->toSearchableArray(),
+            'document' => $hit->indexer()->toSearchableArray($hit),
         ]));
 
         return SearchResults::from([
