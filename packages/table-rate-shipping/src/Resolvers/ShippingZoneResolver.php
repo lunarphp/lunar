@@ -112,6 +112,46 @@ class ShippingZoneResolver
             }
         });
 
-        return $query->get();
+        $zones = $query->get();
+
+        return $this->postcodeLookup ? $this->preferMostSpecificPostcodeZones($zones) : $zones;
+    }
+
+    /**
+     * Postcode zones overlap by design: an area zone ("AB") and a district
+     * zone ("AB36") both match an AB36 postcode. The zone matched by the most
+     * specific part of the postcode wins and the rest are dropped, so a
+     * district can be priced, or excluded, differently from its area.
+     * Country and state zones are untouched.
+     *
+     * @param  Collection<int, ShippingZone>  $zones
+     * @return Collection<int, ShippingZone>
+     */
+    protected function preferMostSpecificPostcodeZones(Collection $zones): Collection
+    {
+        $parts = $this->postcodeLookup->getParts()->values();
+
+        $ranks = $zones
+            ->where('type', 'postcodes')
+            ->mapWithKeys(function (ShippingZone $zone) use ($parts) {
+                $rank = $zone->postcodes()
+                    ->whereIn('postcode', $parts)
+                    ->pluck('postcode')
+                    ->map(fn (string $postcode): int|false => $parts->search($postcode))
+                    ->filter(fn (int|false $index): bool => $index !== false)
+                    ->min();
+
+                return [$zone->id => $rank ?? PHP_INT_MAX];
+            });
+
+        if ($ranks->isEmpty()) {
+            return $zones;
+        }
+
+        $best = $ranks->min();
+
+        return $zones
+            ->reject(fn (ShippingZone $zone): bool => $zone->type === 'postcodes' && $ranks[$zone->id] !== $best)
+            ->values();
     }
 }
