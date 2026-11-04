@@ -555,3 +555,35 @@ it('does not hand another cart the placed order for a reused reference', functio
     expect($response->success)->toBeFalse()
         ->and($response->orderId)->toBeNull();
 });
+
+it('places a standard intent at requires_capture without capturing under the manual policy', function () {
+    config(['lunar.stripe.policy' => 'manual']);
+    $cart = CartBuilder::build();
+    $draft = $cart->createOrder();
+    $mock = StripeFake::forCart($cart, ['status' => 'requires_capture']);
+
+    $response = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($response->success)->toBeTrue()
+        ->and($response->orderId)->toBe($draft->id)
+        ->and($draft->refresh()->placed_at)->not->toBeNull()
+        ->and(collect($mock->requests)->filter(fn ($r) => str_contains($r['url'], '/capture')))->toBeEmpty();
+});
+
+it('records the charge and the refund on the draft when placement refunds instead', function () {
+    $cart = CartBuilder::build();
+    $cart->paymentIntents()->create(['intent_id' => 'PI_CAPTURE', 'status' => 'succeeded', 'flavour' => 'standard']);
+    $draft = $cart->createOrder();
+    StripeFake::forCart($cart);
+
+    $refund = (new StripePaymentType)->refundIntent($cart, 'PI_CAPTURE', $cart->total, 'key');
+
+    $transactions = $draft->transactions()->get();
+    $capture = $transactions->firstWhere('type', 'capture');
+    $refunded = $transactions->firstWhere('type', 'refund');
+
+    expect($draft->refresh()->placed_at)->toBeNull()
+        ->and($capture)->not->toBeNull()
+        ->and($refunded->reference)->toBe($refund->reference)
+        ->and($refunded->parent_transaction_id)->toBe($capture->id);
+});

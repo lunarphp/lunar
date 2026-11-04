@@ -22,6 +22,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
+use Lunar\Stripe\Actions\StoreCharges;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
@@ -32,6 +33,7 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
+use Stripe\Refund;
 use Stripe\StripeClient;
 
 class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds, SyncsPaymentIntents
@@ -216,11 +218,43 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             );
         }
 
+        $this->recordRefundOnDraft($cart, $charge, $refund);
+
         return new PaymentRefund(
             success: true,
             reference: $refund->id,
             pending: $refund->status !== 'succeeded',
         );
+    }
+
+    /**
+     * Money refunded instead of placed still lands on an order: the charge and
+     * the refund are written on the cart's draft, which stays unplaced.
+     */
+    private function recordRefundOnDraft(Cart $cart, ?Charge $charge, Refund $refund): void
+    {
+        $order = $cart->draftOrder()->first();
+
+        if (! $order) {
+            return;
+        }
+
+        if ($charge) {
+            app(StoreCharges::class)->store($order, collect([$charge]));
+        }
+
+        $capture = $charge ? $order->transactions()->where('reference', $charge->id)->first() : null;
+
+        $order->transactions()->updateOrCreate(['reference' => $refund->id], [
+            'parent_transaction_id' => $capture?->id,
+            'success' => true,
+            'type' => 'refund',
+            'driver' => 'stripe',
+            'amount' => StripeManager::fromStripeAmount($refund->amount, $order->currency),
+            'status' => $refund->status,
+            'card_type' => $capture?->card_type,
+            'last_four' => $capture?->last_four,
+        ]);
     }
 
     /**
@@ -592,6 +626,12 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             $this->order,
             $this->paymentIntent
         );
+
+        // Under the manual policy the merchant captures from the admin later,
+        // so an authorised standard intent places the order without capturing.
+        if (! $order->placed_at && $this->policy === 'manual' && $this->paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE) {
+            $order->update(['placed_at' => now()]);
+        }
 
         $response = new PaymentAuthorize(
             success: (bool) $order->placed_at,
