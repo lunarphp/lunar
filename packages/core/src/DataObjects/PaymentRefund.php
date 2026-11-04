@@ -9,8 +9,8 @@ class PaymentRefund
 {
     /**
      * @param  ?Transaction  $transaction  The refund transaction the driver created, when it creates one. Nullable — not every driver records the money movement as a transaction row (e.g. the offline driver); callers that need to attribute a refund to line-level bookkeeping should treat a null transaction as "recorded, but not attributable".
-     * @param  ?string  $reference  The gateway's own reference for the refund, when it returns one. Carries the audit trail where there is no transaction row to hold it — notably {@see ReconcilesPaymentIntents::refundIntent()}, which refunds before any order exists.
-     * @param  bool  $pending  True when the gateway accepted the refund but has not settled it yet. A caller keeps such a refund open rather than marking it settled.
+     * @param  ?string  $reference  The gateway's own reference for the refund, for audit where there is no transaction row, as with {@see ReconcilesPaymentIntents::refundIntent()}.
+     * @param  bool  $pending  True when the gateway accepted the refund but has not settled it.
      */
     public function __construct(
         public bool $success = false,

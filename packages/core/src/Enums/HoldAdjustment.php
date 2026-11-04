@@ -5,17 +5,14 @@ namespace Lunar\Core\Enums;
 use Lunar\Core\Contracts\SupportsPaymentHolds;
 
 /**
- * Outcome of bringing an authorised hold to a new payable total
+ * Outcome of bringing an authorised hold to a new amount
  * ({@see SupportsPaymentHolds::adjustHold()}).
  */
 enum HoldAdjustment: string
 {
-    /** Coverage is confirmed: the hold already covered the new total, or the gateway confirmed the increment. */
+    /** Coverage is confirmed. */
     case Ok = 'ok';
 
-    /**
-     * This hold cannot be confirmed to stretch to the new total; the
-     * customer must authorise again (re-open the wallet for a fresh hold).
-     */
+    /** The customer must authorise again: void the hold, then create another. */
     case NeedsReauthorization = 'needs_reauthorization';
 }

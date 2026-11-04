@@ -8,11 +8,13 @@ use Lunar\Core\Contracts\SyncsPaymentIntents;
 use Lunar\Core\DataObjects\PaymentIntentDescriptor;
 use Lunar\Core\DataObjects\PaymentIntentSnapshot;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Enums\HoldAdjustment;
 use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Exceptions\LunarException;
 use Lunar\Core\Exceptions\PaymentIntentException;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\PaymentTypes\OfflinePayment;
 use Lunar\Tests\Core\TestCase;
 
@@ -30,30 +32,30 @@ it('keeps the capabilities off the PaymentType contract', function () {
         ->and($required)->not->toHaveKey(SupportsPaymentHolds::class);
 });
 
-it('guarantees a hold-capable driver can also void', function () {
-    // Releasing a hold is voidIntent(), so the extension makes "has holds"
-    // imply "can void" at the type level. A caller that has checked for
-    // SupportsPaymentHolds must never hit an undefined method on the
-    // money-back path.
-    expect(is_subclass_of(SupportsPaymentHolds::class, ReconcilesPaymentIntents::class))->toBeTrue();
-
-    $hold = new ReflectionClass(SupportsPaymentHolds::class);
-
-    expect($hold->hasMethod('voidIntent'))->toBeTrue()
-        ->and($hold->hasMethod('refundIntent'))->toBeTrue()
-        ->and($hold->hasMethod('fetchIntent'))->toBeTrue();
+it('makes every intent-creating capability reconcilable', function () {
+    // An intent that cannot be reported or voided cannot be reconciled, and a
+    // sync without a create has nothing to sync. The chain makes those
+    // combinations unrepresentable rather than leaving a fallback rule.
+    expect(is_subclass_of(SyncsPaymentIntents::class, CreatesPaymentIntents::class))->toBeTrue()
+        ->and(is_subclass_of(CreatesPaymentIntents::class, ReconcilesPaymentIntents::class))->toBeTrue()
+        ->and(is_subclass_of(SupportsPaymentHolds::class, ReconcilesPaymentIntents::class))->toBeTrue();
 });
 
-it('binds a described hold to the cart it is described for', function () {
-    // The reference comes from the client. Taking the cart puts the ownership
-    // and currency check in the driver, once, instead of leaving every caller
-    // to remember one the contract never asked for.
-    $parameters = (new ReflectionMethod(SupportsPaymentHolds::class, 'describeHold'))->getParameters();
+it('checks ownership against the cart on every method that takes a reference', function () {
+    // References often come from the client. Taking the cart puts the
+    // ownership check in the driver, on every method, so no caller can skip it.
+    $methods = collect([ReconcilesPaymentIntents::class, SupportsPaymentHolds::class])
+        ->flatMap(fn (string $contract) => (new ReflectionClass($contract))->getMethods())
+        ->filter(fn (ReflectionMethod $method) => collect($method->getParameters())->contains(fn ($p) => $p->getName() === 'reference'));
 
-    expect($parameters)->toHaveCount(2)
-        ->and($parameters[0]->getName())->toBe('cart')
-        ->and((string) $parameters[0]->getType())->toBe(Cart::class)
-        ->and($parameters[1]->getName())->toBe('reference');
+    expect($methods)->not->toBeEmpty();
+
+    foreach ($methods as $method) {
+        $parameters = $method->getParameters();
+
+        expect((string) $parameters[0]->getType())->toBe(Cart::class, $method->getName())
+            ->and($parameters[1]->getName())->toBe('reference', $method->getName());
+    }
 });
 
 // "MUST throw" in prose is not a contract a caller can catch. Every method on
@@ -76,9 +78,22 @@ it('reports the money on an intent so a no-order refund can be sized', function 
     // The cart may have changed since the customer confirmed, so a refund is
     // sized from what the gateway says was captured and already refunded.
     expect((string) (new ReflectionMethod(ReconcilesPaymentIntents::class, 'fetchIntent'))->getReturnType())
-        ->toBe(PaymentIntentSnapshot::class);
+        ->toBe('?'.PaymentIntentSnapshot::class);
 });
 
+it('reports intent money as PriceValues in the intent currency', function () {
+    // PriceValue carries its currency, so a comparison with a cart total in
+    // another currency throws instead of passing on a bare integer.
+    $currency = Currency::factory()->make(['code' => 'GBP']);
+    $price = fn (int $value) => new PriceValue($value, $currency);
+
+    $snapshot = new PaymentIntentSnapshot(
+        PaymentIntentStatus::Captured, $price(2000), $price(2000), $price(500), walletLabel: 'Apple Pay',
+    );
+
+    expect($snapshot->captured->subtract($snapshot->refunded)->value)->toBe(1500)
+        ->and($snapshot->walletLabel)->toBe('Apple Pay');
+});
 it('hands a redirect or an opaque client payload to the frontend', function () {
     $hosted = new PaymentIntentDescriptor('tr_123', redirectUrl: 'https://pay.example/tr_123');
     $inPage = new PaymentIntentDescriptor('pi_123', clientPayload: ['client_secret' => 'pi_123_secret']);

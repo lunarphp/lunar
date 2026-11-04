@@ -3,14 +3,9 @@
 namespace Lunar\Core\DataObjects;
 
 /**
- * Gateway-neutral handle to a created intent.
- *
- * `reference` is what the backend reconciles by. `redirectUrl` is set when the
- * customer completes payment on a page the gateway hosts. `clientPayload` is
- * whatever the driver's own frontend component needs to confirm in-page (a
- * client secret, a session id and data); it is opaque to core and to the
- * caller, which passes it to that component unread. A flow whose only input
- * is the reference leaves both empty.
+ * A created intent. `redirectUrl` is set when the customer pays on a
+ * gateway-hosted page; `clientPayload` is what the driver's frontend needs to
+ * confirm in-page, passed on unread.
  *
  * @experimental The shape may change in a minor release until a second driver
  *               implements the payment intent capabilities.

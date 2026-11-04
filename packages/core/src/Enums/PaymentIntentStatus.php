@@ -2,24 +2,19 @@
 
 namespace Lunar\Core\Enums;
 
-use Lunar\Core\Contracts\ReconcilesPaymentIntents;
-
 /**
- * Gateway-neutral status of an intent, as reported by a driver implementing
- * {@see ReconcilesPaymentIntents}. These are the outcomes a caller branches
- * on, not a mirror of any one gateway's status list; a driver maps its own
- * statuses onto them. Refund state is not a status: it lives in the
- * snapshot's amounts.
+ * Gateway-neutral status of an intent. What each operation does in each status
+ * is the lifecycle table in spec 0077.
  *
  * @experimental The shape may change in a minor release until a second driver
  *               implements the payment intent capabilities.
  */
 enum PaymentIntentStatus: string
 {
-    /** Waiting on the customer (no payment method yet, a challenge, an unapproved order). Nothing is moving, so voiding is safe. */
+    /** Waiting on the customer, including after a retryable decline. */
     case RequiresAction = 'requires_action';
 
-    /** The customer has acted and the gateway has not decided. It may still succeed, so it is neither abandoned nor voidable. */
+    /** The customer has acted and the gateway has not decided. */
     case Processing = 'processing';
 
     /** Authorised and held, waiting for a capture. */
@@ -31,6 +26,6 @@ enum PaymentIntentStatus: string
     /** Cancelled before capture; nothing is held. */
     case Voided = 'voided';
 
-    /** Declined or expired; nothing is held. */
+    /** Terminal: declined for good or expired. */
     case Failed = 'failed';
 }
