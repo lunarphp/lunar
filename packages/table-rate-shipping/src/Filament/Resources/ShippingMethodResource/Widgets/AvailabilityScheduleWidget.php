@@ -44,13 +44,13 @@ class AvailabilityScheduleWidget extends Widget implements HasActions, HasForms
     public function form(Schema $schema): Schema
     {
         $days = [
-            1 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.monday'),
-            2 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.tuesday'),
-            3 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.wednesday'),
-            4 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.thursday'),
-            5 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.friday'),
-            6 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.saturday'),
-            7 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.sunday'),
+            1 => __('shipping::shippingmethod.form.schedule.days.monday'),
+            2 => __('shipping::shippingmethod.form.schedule.days.tuesday'),
+            3 => __('shipping::shippingmethod.form.schedule.days.wednesday'),
+            4 => __('shipping::shippingmethod.form.schedule.days.thursday'),
+            5 => __('shipping::shippingmethod.form.schedule.days.friday'),
+            6 => __('shipping::shippingmethod.form.schedule.days.saturday'),
+            7 => __('shipping::shippingmethod.form.schedule.days.sunday'),
         ];
 
         $rows = collect($days)->map(fn ($label, $day) => Group::make([
@@ -59,17 +59,17 @@ class AvailabilityScheduleWidget extends Widget implements HasActions, HasForms
                 ->live()
                 ->columnSpan(1),
             TimePicker::make('from')
-                ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
+                ->label(__('shipping::shippingmethod.form.schedule.from.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
                 ->columnSpan(1),
             TimePicker::make('to')
-                ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
+                ->label(__('shipping::shippingmethod.form.schedule.to.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
                 ->rules(fn (Get $get): array => filled($get('from')) ? ['after:'.$get('from')] : [])
                 ->validationMessages([
-                    'after' => __('lunarpanel.shipping::shippingmethod.form.schedule.to.validation.after'),
+                    'after' => __('shipping::shippingmethod.form.schedule.to.validation.after'),
                 ])
                 ->columnSpan(1),
         ])->statePath((string) $day)->columns(3)
@@ -77,7 +77,7 @@ class AvailabilityScheduleWidget extends Widget implements HasActions, HasForms
 
         return $schema
             ->components([
-                Section::make(__('lunarpanel.shipping::shippingmethod.form.schedule.label'))
+                Section::make(__('shipping::shippingmethod.form.schedule.label'))
                     ->schema($rows)
                     ->statePath('schedule'),
             ])

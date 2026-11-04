@@ -2,10 +2,16 @@
 
 namespace Lunar\Filament\Support\ComponentExtensions;
 
+use Lunar\Core\Contracts\DiscountType;
+use Lunar\Filament\Contracts\DiscountFormType;
+
 class Registry
 {
     /** @var array<class-string, array<int, object>> */
     protected array $extensions = [];
+
+    /** @var array<class-string<DiscountType>, class-string<DiscountFormType>> */
+    protected array $discountForms = [];
 
     /**
      * Register one or more extension instances against bridge target classes.
@@ -68,5 +74,44 @@ class Registry
         }
 
         return $args[0] ?? null;
+    }
+
+    /**
+     * Map a discount type to a separate DiscountFormType class, for types that
+     * cannot implement the contract themselves without taking on a Filament
+     * dependency (a package whose admin surface is optional, for instance).
+     *
+     * @param  class-string<DiscountType>  $discountType
+     * @param  class-string<DiscountFormType>  $formClass
+     */
+    public function discountForm(string $discountType, string $formClass): static
+    {
+        $this->discountForms[$discountType] = $formClass;
+
+        return $this;
+    }
+
+    /**
+     * @return array<class-string<DiscountType>, class-string<DiscountFormType>>
+     */
+    public function discountForms(): array
+    {
+        return $this->discountForms;
+    }
+
+    /**
+     * The Filament form for a discount type: the type itself when it implements
+     * the contract, otherwise the class mapped through discountForm(), or null
+     * when the type contributes no form.
+     */
+    public function discountFormFor(DiscountType $discountType): ?DiscountFormType
+    {
+        if ($discountType instanceof DiscountFormType) {
+            return $discountType;
+        }
+
+        $formClass = $this->discountForms[$discountType::class] ?? null;
+
+        return $formClass ? app($formClass) : null;
     }
 }

@@ -2,26 +2,44 @@
 
 return [
     'shipping_discount' => [
-        'name' => 'Shipping Price',
+        'name' => 'Цена на доставката',
         'form' => [
             'methods' => [
-                'label' => 'Shipping Methods',
-                'add_label' => 'Add Rule',
+                'label' => 'Методи за доставка',
+                'add_label' => 'Добави правило',
             ],
             'shipping_method_id' => [
-                'label' => 'Shipping Method',
-                'placeholder' => 'Any shipping method',
+                'label' => 'Метод за доставка',
+                'placeholder' => 'Всеки метод за доставка',
             ],
             'type' => [
-                'label' => 'Discount Type',
+                'label' => 'Тип отстъпка',
                 'options' => [
-                    'fixed' => 'Fixed Price',
-                    'percentage' => 'Percentage Off',
+                    'fixed' => 'Фиксирана цена',
+                    'percentage' => 'Процентна отстъпка',
                 ],
             ],
             'percentage' => [
-                'label' => 'Percentage Off (%)',
+                'label' => 'Процентна отстъпка (%)',
             ],
         ],
+        'panel' => [
+            'rules' => 'Правила',
+            'rules_description' => 'Всяко правило се прилага за един метод за доставка или за всички методи, когато не е избран нито един. Конкретният метод има предимство пред общото правило.',
+            'add_rule' => 'Добави правило',
+            'remove_rule' => 'Премахни правило',
+            'no_rules' => 'Все още няма правила. Добавете правило, за да промените цената на доставката.',
+            'method' => 'Метод за доставка',
+            'method_any' => 'Всеки метод за доставка',
+            'type' => 'Ефект',
+            'type_fixed' => 'Задай цената на доставката',
+            'type_percentage' => 'Приложи процентна отстъпка',
+            'percentage' => 'Процентна отстъпка (%)',
+            'prices' => 'Цената на доставката става',
+            'prices_hint' => 'Клиентът плаща тази сума за доставка. Оставете валутата празна, за да запазите цената ѝ непроменена; въведете 0 за безплатна доставка.',
+        ],
+        'summary_free' => 'Безплатна доставка',
+        'summary_percentage' => ':percentage% отстъпка от доставката',
+        'summary_from' => 'Доставка от :amount',
     ],
 ];
