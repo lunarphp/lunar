@@ -1,0 +1,70 @@
+/*
+ * GENERATED from theme.css by scripts/generate-addon-theme.mjs. Do not edit;
+ * run `npm run build:addon-theme` in packages/panel instead.
+ *
+ * The panel's design tokens for an add-on's own Tailwind build. Each token
+ * aliases the variable the panel already defines on the page, so add-on
+ * classes follow the panel's light and dark values:
+ *
+ *   @import 'tailwindcss/theme.css' theme(reference) prefix(acme);
+ *   @import '@lunarphp/panel/addon-theme.css' theme(reference inline);
+ *   @import 'tailwindcss/utilities.css' layer(utilities) source(none);
+ *   @custom-variant dark (&:where(.dark, .dark *));
+ *   @source './js';
+ *
+ * Use a prefix unique to the add-on and put it on every class, e.g.
+ * `acme:hidden acme:md:flex`. See the panel-addon-example README.
+ */
+
+@theme {
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-700: var(--color-ink-700);
+  --color-ink-500: var(--color-ink-500);
+  --color-ink-400: var(--color-ink-400);
+  --color-ink-300: var(--color-ink-300);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-paper: var(--color-paper);
+  --color-canvas: var(--color-canvas);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+  --color-active: var(--color-active);
+  --color-paper-hover: var(--color-paper-hover);
+  --color-sage: var(--color-sage);
+  --color-sage-ink: var(--color-sage-ink);
+  --color-sage-soft: var(--color-sage-soft);
+  --color-sage-border: var(--color-sage-border);
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-danger-border: var(--color-danger-border);
+  --color-warn: var(--color-warn);
+  --color-warn-ink: var(--color-warn-ink);
+  --color-warn-soft: var(--color-warn-soft);
+  --color-warn-border: var(--color-warn-border);
+  --color-chart-1: var(--color-chart-1);
+  --color-chart-2: var(--color-chart-2);
+  --color-chart-3: var(--color-chart-3);
+  --color-chart-4: var(--color-chart-4);
+  --color-chart-1-soft: var(--color-chart-1-soft);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --animate-chip-in: var(--animate-chip-in);
+  --animate-autosave-pulse: var(--animate-autosave-pulse);
+  --animate-shake: var(--animate-shake);
+  --animate-slide-in-right: var(--animate-slide-in-right);
+  --animate-slide-out-right: var(--animate-slide-out-right);
+  --animate-overlay-in: var(--animate-overlay-in);
+  --animate-overlay-out: var(--animate-overlay-out);
+  --animate-dialog-in: var(--animate-dialog-in);
+  --animate-dialog-out: var(--animate-dialog-out);
+  --animate-palette-in: var(--animate-palette-in);
+  --animate-palette-out: var(--animate-palette-out);
+}
