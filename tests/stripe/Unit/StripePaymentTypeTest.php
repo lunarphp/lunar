@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
@@ -30,7 +31,11 @@ it('can capture an order', function () {
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
         ->and($response->success)->toBeTrue()
         ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
-        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE')
+        // No local StripePaymentIntent row existed before authorize() ran, so
+        // this is the fallback creation path; an automatic-capture intent
+        // must stamp 'standard', not cross-contaminate as a hold.
+        ->and($cart->paymentIntents->first()->flavour)->toEqual('standard');
 
     assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->refresh()->completedOrder->id,
@@ -177,7 +182,7 @@ it('can handle multiple payment events', function () {
         ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
 });
 
-it('will fail if intent is in final status', function () {
+it('returns the placed order when the same intent is authorised again', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
 
@@ -198,11 +203,13 @@ it('will fail if intent is in final status', function () {
         'payment_intent' => 'PI_CAPTURE',
     ])->authorize();
 
+    // Idempotent: the consumer and the webhook can both place the same
+    // intent, and the second gets the placed order back, not a failure.
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
-        ->and($response->success)->toBeFalse()
-        ->and($response->message)->toEqual('Payment intent already processed')
+        ->and($response->success)->toBeTrue()
+        ->and($response->orderId)->toBe($order->id)
         ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
-        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+        ->and($cart->paymentIntents()->count())->toBe(1);
 });
 
 it('will fail if cart already has an order', function () {
@@ -510,4 +517,41 @@ it('converts capture and refund amounts to stripe scale and stores refunds in lu
     $refund = $order->transactions()->where('type', 'refund')->first();
 
     expect($refund->amount)->toBe(500);
+});
+
+it('places from the gateway-neutral reference key', function () {
+    $cart = CartBuilder::build();
+    StripeFake::forCart($cart);
+
+    $response = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder)->not->toBeNull();
+});
+
+it('places a hold captured for less than it authorised', function () {
+    // Stripe keeps `amount` at the authorisation after a partial capture, so
+    // placement compares what was captured.
+    $cart = CartBuilder::build();
+    $cart->calculate();
+    $total = StripeManager::toStripeAmount($cart->total->value, $cart->currency);
+
+    StripeFake::forCart($cart, ['amount' => $total + 500, 'amount_received' => $total]);
+
+    $response = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($response->success)->toBeTrue();
+});
+
+it('does not hand another cart the placed order for a reused reference', function () {
+    $cart = CartBuilder::build();
+    StripeFake::forCart($cart);
+    (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    $otherCart = Cart::factory()->create(['currency_id' => $cart->currency_id]);
+
+    $response = (new StripePaymentType)->cart($otherCart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->orderId)->toBeNull();
 });
