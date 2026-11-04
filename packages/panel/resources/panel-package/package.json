@@ -17,12 +17,12 @@
             "types": "./dist/ui.d.ts",
             "default": "./index.js"
         },
-        "./theme.css": "./theme.css"
+        "./addon-theme.css": "./addon-theme.css"
     },
     "files": [
         "dist",
         "index.js",
-        "theme.css"
+        "addon-theme.css"
     ],
     "scripts": {
         "prepublishOnly": "npm --prefix ../.. run build:types"

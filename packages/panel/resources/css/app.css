@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 @import 'flag-icons/css/flag-icons.min.css';
 
-/* Shipped from the npm package so add-on builds can reference the same tokens. */
-@import '../panel-package/theme.css';
+/* Every token is emitted (static) because add-on builds alias them; see theme.css. */
+@import './theme.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

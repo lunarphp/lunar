@@ -97,7 +97,9 @@ class ExampleAddonServiceProvider extends ServiceProvider
         Panel::section(new ExampleSection);
 
         $this->app->make(PanelManager::class)->vite('example-addon', [
-            'input' => 'resources/js/addon.ts',
+            // The IIFE build writes the add-on's CSS as its own `style.css`
+            // manifest entry, so it is a second entry point beside the script.
+            'input' => ['resources/js/addon.ts', 'style.css'],
             'hotFile' => null,
             'buildDirectory' => 'vendor/lunar-panel/example-addon',
             // Lets `php artisan lunar:panel:link` symlink this package's
@@ -747,9 +749,11 @@ panel language from the user menu (persisted per staff member as
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
-        "@lunarphp/panel": "^0.1.0",
+        "@lunarphp/panel": "^0.2.0",
         "@lunarphp/panel-vite-plugin": "^0.1.0",
+        "@tailwindcss/vite": "^4.0.6",
         "@vitejs/plugin-vue": "^5.2.0",
+        "tailwindcss": "^4.0.6",
         "vite": "^6.0.0",
         "vue": "^3.5.13"
     }
@@ -767,6 +771,7 @@ source without changing the version specifiers above.)
 
 ```js
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import lunarPanelPlugin from '@lunarphp/panel-vite-plugin';
 
@@ -775,10 +780,14 @@ import lunarPanelPlugin from '@lunarphp/panel-vite-plugin';
 export default defineConfig({
     plugins: [
         vue(),
+        tailwindcss(),
         lunarPanelPlugin({ name: 'LunarPanelExampleAddon' }),
     ],
     build: {
         outDir: 'build',
+        // Writes the add-on's CSS to its own style.css instead of injecting
+        // it from the script, so it loads as a stylesheet after the panel's.
+        cssCodeSplit: false,
         rollupOptions: {
             input: 'resources/js/addon.ts',
         },
@@ -847,45 +856,64 @@ from its main types — importing anything from `@lunarphp/panel` types
 
 ## Styling an add-on with Tailwind
 
-An add-on that only uses classes the panel's own build already emits needs no
-stylesheet. Anything else (an arbitrary value like `text-[11px]`, an opacity
-modifier like `bg-danger/5`, a utility no panel page uses) needs the add-on to
-compile its own CSS.
-
-Do not `@import 'tailwindcss'` for that. The add-on's sheet loads after the
-panel's, so a full import re-emits preflight, the theme variables and every
-utility the panel already ships, and restyles the panel around the add-on.
-Build a utilities-only sheet against the panel's theme instead:
+An add-on that needs a class the panel's own build doesn't emit (an arbitrary
+value like `text-[11px]`, an opacity modifier like `bg-danger/5`, a utility no
+panel page uses) compiles its own utilities-only stylesheet. This example does,
+in `resources/css/addon.css`:
 
 ```css
-@import 'tailwindcss/theme.css' theme(reference);
-@import '@lunarphp/panel/theme.css' theme(reference);
-@import 'tailwindcss/utilities.css' source(none);
+@import 'tailwindcss/theme.css' theme(reference) prefix(example);
+@import '@lunarphp/panel/addon-theme.css' theme(reference inline);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@source './js';
+@source '../js';
 ```
 
-- `theme(reference)` registers the tokens so `text-ink-400` can be generated,
-  without emitting a single custom property. The rules resolve against the
-  variables the panel has already put on the page, in both colour schemes.
-- `source(none)` turns off automatic source detection, so only `./js` is
-  scanned. Without it Tailwind scans the whole package (PHP, tests, docs) and
-  emits classes the add-on never uses.
-- The `@custom-variant` line is only needed for `dark:` variants. It matches
-  the panel's and emits nothing by itself.
+**Prefix every class.** The add-on's sheet loads after the panel's, in the
+same `utilities` layer. An unprefixed copy of a class the panel also uses
+would sort after the panel's variants and undo them: an add-on emitting
+`.hidden` keeps a panel element with `hidden sm:flex` hidden at every width.
+With `prefix(example)` the add-on only emits classes written as
+`example:hidden`, `example:sm:flex`, `example:text-[11px]`, which no panel
+markup carries. Unprefixed classes in the add-on's source emit nothing.
 
-Add `@tailwindcss/vite` to the Vite config and `tailwindcss` to
-`devDependencies`, at the same version the panel builds with. A different
-Tailwind version can emit a different rule body for the same class, and the
-add-on's copy wins because it loads last. `@lunarphp/panel` declares
-`tailwindcss` as an optional peer dependency so npm warns about a mismatched
-major.
+- Choose a prefix unique to your add-on (lowercase letters only, such as your
+  vendor or package name). Two add-ons sharing a prefix can undo each other's
+  variants the same way.
+- Prefix every class on an element, not some of them. In `example:p-4 md:p-6`
+  the add-on's `example:p-4` comes after the panel's `md:p-6` and wins at every
+  width.
+- Variants go after the prefix: `example:dark:bg-surface`,
+  `example:hover:text-ink-900`.
 
-An IIFE build cannot code split, so Vite writes the CSS as a separate
-`style.css` manifest entry rather than attaching it to the script. Pass it to
-`PanelManager::vite()` as a second input:
+The Widgets page's "Add-on styles stay scoped" card puts a panel `hidden sm:flex`
+element beside an `example:hidden` one, so you can check this in a browser.
+
+**Tokens.** `@lunarphp/panel/addon-theme.css` aliases each panel token to the
+variable the panel already defines on the page, and `theme(reference inline)`
+compiles `example:text-ink-900` to `color: var(--color-ink-900)`. The add-on
+emits no variables of its own and follows the panel's `.dark` overrides. Every
+panel token (`ink`, `line`, `surface`, `sage`, `danger`, `warn`, chart colours,
+radii, shadows, animations) is always on the page. Tailwind's default theme
+(`example:bg-red-500`, `example:text-6xl`) works too: it compiles to the
+literal value.
+
+Token names in `addon-theme.css` are a public contract. Renaming or removing
+one is a breaking change and is called out in the changelog.
+
+**Build setup.** Import the stylesheet from the entry script
+(`import '../css/addon.css';` in `resources/js/addon.ts`), then:
+
+- add `tailwindcss` and `@tailwindcss/vite` to `devDependencies`, at the
+  version the panel builds with. `@lunarphp/panel` declares `tailwindcss` as
+  an optional peer dependency so npm warns about a mismatch.
+- add the `tailwindcss()` plugin and `cssCodeSplit: false` to `vite.config.js`
+  (see this package's). Without `cssCodeSplit: false` the IIFE build injects
+  the CSS from the script instead of writing `build/assets/style-*.css`.
+- pass the stylesheet's manifest entry, `style.css`, to `PanelManager::vite()`
+  as a second input:
 
 ```php
 $this->app->make(PanelManager::class)->vite('example-addon', [
@@ -893,21 +921,6 @@ $this->app->make(PanelManager::class)->vite('example-addon', [
     // ...
 ]);
 ```
-
-### Which tokens an add-on can use
-
-- **Panel tokens** (everything in `@lunarphp/panel/theme.css`: the `ink`,
-  `line`, `surface`, `sage`, `danger` colours, radii, shadows, animations)
-  are always defined on the page.
-- **Arbitrary values** always work, because they carry their own value.
-- **Tailwind's default theme** (`bg-red-500`, `text-6xl`, …) is only defined
-  when a panel page happens to use it. Tailwind emits a default theme variable
-  only when the panel's own sources reference it, so an add-on class built on
-  one the panel doesn't use compiles but resolves to an undefined variable and
-  does nothing. Stick to panel tokens, or use an arbitrary value.
-
-Token names in `theme.css` are a public contract. Renaming or removing one is
-a breaking change for add-ons and is called out in the changelog.
 
 ## Installing into a host app
 
@@ -996,6 +1009,7 @@ pages, not only in an isolated fixture.
 - `src/Actions/ImportPageAction.php` / `AuditPageAction.php` — the listing-
   and record-page header actions.
 - `resources/js/addon.ts` — the IIFE entry point.
+- `resources/css/addon.css`: the add-on's prefixed Tailwind stylesheet.
 - `resources/js/pages/Widgets/Index.vue`, `resources/js/components/InfoBanner.vue`
   — the example page and slot component.
 - `resources/js/pages/Settings/Index.vue` — the example settings screen.

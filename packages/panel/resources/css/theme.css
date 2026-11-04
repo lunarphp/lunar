@@ -1,31 +1,14 @@
 /*
- * The panel's design tokens, kept in the npm package so an add-on can pull
- * them into its own Tailwind build.
+ * The panel's design tokens, imported by app.css.
  *
- * An add-on ships no copy of the panel's stylesheet: its bundle loads after
- * the panel's, so anything it re-emits wins on document order and quietly
- * restyles the panel around it. Importing this file with `theme(reference)`
- * registers the tokens without emitting a single custom property, so the
- * add-on's build generates `text-ink-400` and friends against the variables
- * the panel has already put on the page:
+ * `static` emits every token even when no panel page uses it, because add-on
+ * builds don't get their own copies: scripts/generate-addon-theme.mjs turns
+ * this file into the published @lunarphp/panel/addon-theme.css, which aliases
+ * each token to the variable defined here. Run `npm run build:addon-theme`
+ * after changing it; the addon-theme test fails until you do.
  *
- *   @import 'tailwindcss/theme.css' theme(reference);
- *   @import '@lunarphp/panel/theme.css' theme(reference);
- *   @import 'tailwindcss/utilities.css' source(none);
- *   @source './js';
- *
- * Nothing but `@theme` belongs here: Tailwind refuses a referenced import
- * that contains anything else. An add-on wanting `dark:` variants declares
- * `@custom-variant dark (&:where(.dark, .dark *));` in its own stylesheet,
- * which matches the panel's and emits nothing by itself.
- *
- * The panel's own app.css imports it plainly, so these are emitted exactly
- * once, from there. `static` emits every token even when no panel page uses
- * it, so an add-on can rely on all of them being on the page.
- *
- * Token names here are a public contract for add-ons: renaming or removing
- * one is a breaking change. See the panel-addon-example README for the full
- * add-on styling guide.
+ * Token names are a public contract for add-ons: renaming or removing one is
+ * a breaking change.
  */
 
 @theme static {
