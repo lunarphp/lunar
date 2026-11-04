@@ -152,6 +152,11 @@ voids the hold, then calls `createHold()`.
 
 ## Placement
 
+The order exists before money is taken. The consumer creates the cart's draft
+order (`$cart->createOrder()`) before the customer confirms a standard intent,
+and before it calls `captureHold()`. Placement records the payment on that
+draft and places it.
+
 Placement is `authorize()`, given the stored reference:
 
 ```php
@@ -159,8 +164,10 @@ Payments::driver('stripe')->cart($cart)->withData(['reference' => $reference])->
 ```
 
 For a driver with these capabilities, `authorize()` applies the table's
-Placement column, writes the order and its `Transaction` from the intent
-without moving money for a `Captured` one, and stores the order on its record.
+Placement column, writes the `Transaction` on the cart's draft order without
+moving money for a `Captured` one, places the order, and stores it on its
+record. It creates the order only when no draft exists, as a fallback for
+consumers that predate this rule.
 It is idempotent: a repeat call for a placed order returns that order
 successfully, so the consumer and the driver's webhook can both reach it.
 
