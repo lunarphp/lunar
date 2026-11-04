@@ -140,7 +140,7 @@ authorisation); where that is not possible it returns `NeedsReauthorization`.
 | `RequiresAction` | return it, re-priced if the cart's currency changed | update | cancel, giving `Voided` | throw | throw | throw | do not place |
 | `Processing` | return it | throw | throw | throw | throw | throw | wait |
 | `RequiresCapture` | return the hold; if the cart's currency changed, void it and create another | not applicable | cancel, giving `Voided` | `Ok` if covered or the increment is confirmed, else `NeedsReauthorization` | capture up to the authorised amount, giving `Captured` | throw | capture, then place |
-| `Captured` | create another | no-op | throw | throw | no-op at the captured amount, else throw | up to captured less refunded | place if captured equals the cart total and nothing is refunded, else refund |
+| `Captured` | create another | no-op | throw | throw | no-op at the captured amount, else throw | up to captured less refunded | place if captured equals the draft order's total and nothing is refunded, else refund |
 | `Voided` | create another | no-op | no-op | throw | throw | throw | do not place |
 | `Failed` | create another | no-op | no-op | throw | throw | throw | do not place |
 
@@ -168,6 +168,12 @@ Placement column, writes the `Transaction` on the cart's draft order without
 moving money for a `Captured` one, places the order, and stores it on its
 record. It creates the order only when no draft exists, as a fallback for
 consumers that predate this rule.
+Where the driver leaves capture to the merchant (Stripe's
+`lunar.stripe.policy = manual`), a standard intent at `RequiresCapture` is
+placed without capturing, and the merchant captures it from the admin later.
+When the Placement column says refund, the consumer calls `refundIntent()`,
+which writes the charge and the refund as transactions on the draft. The draft
+stays unplaced.
 It is idempotent: a repeat call for a placed order returns that order
 successfully, so the consumer and the driver's webhook can both reach it.
 
@@ -251,6 +257,9 @@ declare what it can do. Rejected.
 - **Upgrade path for v1.x consumers:** not applicable.
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none. Placement writes the usual `Transaction`.
+- **Discount usage:** `CreateOrder` counts a discount's use when it creates
+  the draft, so an attempt abandoned after Pay keeps the use. A retry reuses
+  the draft and does not count it again. Counting at placement is a follow-up.
 
 ## Out of scope
 
