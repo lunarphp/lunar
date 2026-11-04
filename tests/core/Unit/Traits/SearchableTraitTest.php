@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Laravel\Scout\EngineManager;
 use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Engines\NullEngine;
 use Lunar\Core\Models\Collection;
@@ -38,4 +40,31 @@ test('can get correct indexer', function () {
     ]);
 
     expect(get_class($product->indexer()))->toBe(ScoutIndexer::class);
+});
+
+test('indexing a model costs no more queries than building its document', function () {
+    app()->instance(EngineManager::class, (new EngineManager(app()))->extend('documents', fn () => new class extends NullEngine
+    {
+        public function update($models)
+        {
+            $models->each->toSearchableArray();
+        }
+    }));
+    Config::set('scout.driver', 'documents');
+
+    $id = Product::factory()->create()->id;
+
+    $countQueries = function (Closure $callback) {
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        $callback();
+        DB::disableQueryLog();
+
+        return count(DB::getQueryLog());
+    };
+
+    $buildingTheDocument = $countQueries(fn () => Product::find($id)->toSearchableArray());
+    $indexing = $countQueries(fn () => Product::find($id)->searchable());
+
+    expect($indexing)->toBe($buildingTheDocument);
 });

@@ -5,7 +5,9 @@ namespace Lunar\Core\Models\Concerns;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection as BaseCollection;
+use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\EngineManager;
+use Laravel\Scout\Engines\CollectionEngine;
 use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Searchable as ScoutSearchable;
 use Lunar\Core\Search\ScoutIndexer;
@@ -74,16 +76,34 @@ trait Searchable
     }
 
     /**
-     * Eager-load what the indexer reads before Scout builds documents from
-     * loaded models, as the collection engine does when it filters a search.
-     * The relations load onto copies so the caller's models never carry the
+     * Only the collection engine builds documents from the models returned
+     * here, when it filters a search. Other engines receive the caller's
+     * models, so loading relations here would only load them twice. The
+     * relations load onto copies so the caller's models never carry the
      * indexer's partial selects.
      */
     public function makeSearchableUsing(BaseCollection $models)
     {
+        if (! $this->searchableUsing() instanceof CollectionEngine) {
+            return $models;
+        }
+
         $relations = $this->makeAllSearchableUsing($this->newQuery())->getEagerLoads();
 
         return EloquentCollection::make($models->map(fn ($model) => clone $model))->loadMissing($relations);
+    }
+
+    /**
+     * Scout's database engine ORs a text match across the search columns
+     * inside one nested where. With no columns the nested where is empty,
+     * Laravel drops it, and every row would match.
+     */
+    public function newScoutQuery(ScoutBuilder $builder): Builder
+    {
+        return $this->newQuery()->when(
+            filled($builder->query) && $this->indexer()->getDatabaseSearchColumns($this) === [],
+            fn (Builder $query) => $query->whereRaw('1 = 0'),
+        );
     }
 
     public function indexer()

@@ -65,19 +65,34 @@ it('matches products by a text query', function () {
         ->toBe('Blue Shirt');
 });
 
+it('matches products by a text query in a second language', function () {
+    Language::factory()->create(['code' => 'fr']);
+
+    Product::factory()->create(['name' => ['en' => 'Blue Shirt', 'fr' => 'Chemise bleue']]);
+    Product::factory()->create(['name' => ['en' => 'Red Hat', 'fr' => 'Chapeau rouge']]);
+
+    $results = Search::model(Product::class)->query('Chemise')->get();
+
+    expect($results->count)
+        ->toBe(1)
+        ->and($results->hits[0]->document['name_fr'])
+        ->toBe('Chemise bleue');
+});
+
 it('matches products by a text query with the collection driver', function () {
     Config::set('scout.driver', 'collection');
     Config::set('lunar.search.engine_map', []);
 
     Product::factory()->create(['name' => ['en' => 'Blue Shirt']]);
+    Product::factory()->create(['name' => ['en' => 'Green Shirt']]);
     Product::factory()->create(['name' => ['en' => 'Red Hat']]);
 
     $results = Search::model(Product::class)->query('Shirt')->get();
 
     expect($results->count)
-        ->toBe(1)
-        ->and($results->hits[0]->document['name_en'])
-        ->toBe('Blue Shirt');
+        ->toBe(2)
+        ->and(collect($results->hits)->map(fn ($hit) => $hit->document['name_en'])->sort()->values()->all())
+        ->toBe(['Blue Shirt', 'Green Shirt']);
 });
 
 it('matches searchable models by a text query through scout', function (Closure $create, string $query) {
@@ -93,3 +108,14 @@ it('matches searchable models by a text query through scout', function (Closure 
     'order' => [fn () => tap(Order::factory()->create(['reference' => 'REF-SHIRT']), fn () => Order::factory()->create(['reference' => 'REF-HAT'])), 'SHIRT'],
     'product option' => [fn () => tap(ProductOption::factory()->create(['name' => ['en' => 'Colour']]), fn () => ProductOption::factory()->create(['name' => ['en' => 'Size']])), 'Colour'],
 ]);
+
+it('matches nothing when there are no columns to search', function () {
+    Config::set('lunar.search.engine_map', []);
+
+    Product::factory()->create(['name' => ['en' => 'Blue Shirt']]);
+
+    Language::query()->delete();
+
+    expect(Product::search('Shirt')->get())->toBeEmpty()
+        ->and(Product::search('')->get())->toHaveCount(1);
+});

@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Panel\Fixtures;
 
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\ScoutServiceProvider;
 use Lunar\Tests\Panel\TestCase;
 
@@ -13,16 +12,6 @@ use Lunar\Tests\Panel\TestCase;
  */
 class ScoutSearchTestCase extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Scout's collection driver builds each candidate's searchable array
-        // at query time, and the indexers read relations to do it; a real
-        // engine does that work at index time instead.
-        Model::preventLazyLoading(false);
-    }
-
     protected function getPackageProviders($app): array
     {
         return [

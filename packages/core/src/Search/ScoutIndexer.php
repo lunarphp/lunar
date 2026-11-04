@@ -55,6 +55,12 @@ class ScoutIndexer implements ScoutIndexerInterface
         ];
     }
 
+    /**
+     * Scout's database engine passes an empty model here, so this default
+     * builds the document from nothing. An indexer whose toSearchableArray()
+     * reads relations or dates must either keep those reads null-safe or
+     * override this method with its real columns.
+     */
     public function getDatabaseSearchColumns(Model $model): array
     {
         return array_keys($this->toSearchableArray($model));
