@@ -6,6 +6,7 @@ namespace Lunar\Upgrade\Steps;
 
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Support\Facades\Schema;
 use Lunar\Upgrade\Support\StepReport;
 
 /**
@@ -19,7 +20,8 @@ use Lunar\Upgrade\Support\StepReport;
  * the app's own files do not, and deleting their rows would make `migrate`
  * re-run them), and a baseline row is only inserted when its file is present
  * (marking-run a migration from an uninstalled sub-package would silently
- * skip it if that package is installed later).
+ * skip it if that package is installed later). Staff is extra: the create
+ * file now lives in core, so we also require the table to exist.
  */
 class LedgerRewriteStep implements UpgradeStep
 {
@@ -72,7 +74,8 @@ class LedgerRewriteStep implements UpgradeStep
 
         $toInsert = array_values(array_filter(
             array_diff($config['v2_baseline'], $existing),
-            fn (string $migration): bool => isset($known[$migration]),
+            fn (string $migration): bool => isset($known[$migration])
+                && $this->baselineSchemaPresent($migration, $context->connection),
         ));
 
         if ($context->dryRun) {
@@ -104,6 +107,23 @@ class LedgerRewriteStep implements UpgradeStep
             $this->name(),
             StepReport::STATUS_OK,
             'Removed '.count($toRemove).' v1 row(s); inserted '.count($toInsert).' v2 baseline row(s).',
+        );
+    }
+
+    /**
+     * Staff lived in the v1 admin package. v2 folded `create_staff` into core,
+     * so the migration file is always present even when the table was never
+     * created (core-only / headless v1). Marking it run would skip the create
+     * and leave later core staff migrations altering a missing table.
+     */
+    protected function baselineSchemaPresent(string $migration, ?string $connection): bool
+    {
+        if ($migration !== '2026_01_01_900000_create_staff_table') {
+            return true;
+        }
+
+        return Schema::connection($connection)->hasTable(
+            config('lunar.database.table_prefix').'staff',
         );
     }
 
