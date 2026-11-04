@@ -77,3 +77,15 @@ test('can return correct searchable data', function () {
     expect($data['name_en'])->toBe('Trainers');
     expect($data['name_dk'])->toBe('Løbesko');
 });
+
+test('leaves variants without a sku out of skus', function () {
+    Language::factory()->create(['code' => 'en', 'default' => true]);
+
+    $product = Product::factory()->create();
+    $withSku = ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'ABC-1']);
+    ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => null]);
+
+    $data = app(ProductIndexer::class)->toSearchableArray($product->refresh());
+
+    expect($data['skus'])->toBe([$withSku->sku]);
+});
