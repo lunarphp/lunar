@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Event;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
@@ -635,4 +636,24 @@ it('places a hold after captureHold() has captured it', function () {
     expect($statusAfterCapture)->toBe('succeeded')
         ->and($response->success)->toBeTrue()
         ->and($response->orderId)->toBe($draft->id);
+});
+
+it('refuses to place another cart\'s captured hold', function () {
+    $owner = CartBuilder::build();
+    $owner->paymentIntents()->create(['intent_id' => 'PI_HOLD', 'status' => 'requires_capture', 'flavour' => 'hold']);
+    $ownerDraft = $owner->createOrder();
+    StripeFake::forCart($owner);
+    (new StripePaymentType)->captureHold($owner, 'PI_HOLD', $owner->total);
+
+    $other = Cart::factory()->create(['currency_id' => $owner->currency_id]);
+    $otherDraft = Order::factory()->create(['cart_id' => $other->id, 'placed_at' => null]);
+
+    $stolen = (new StripePaymentType)->cart($other)->withData(['reference' => 'PI_HOLD'])->authorize();
+    $placed = (new StripePaymentType)->cart($owner)->withData(['reference' => 'PI_HOLD'])->authorize();
+
+    expect($stolen->success)->toBeFalse()
+        ->and($stolen->message)->toBe('Payment intent belongs to another cart')
+        ->and($otherDraft->refresh()->placed_at)->toBeNull()
+        ->and($placed->success)->toBeTrue()
+        ->and($placed->orderId)->toBe($ownerDraft->id);
 });

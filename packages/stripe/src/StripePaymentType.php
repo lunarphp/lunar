@@ -503,13 +503,26 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
 
         $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
 
-        // Idempotent: the consumer and the webhook can both place the same
-        // intent, and whichever arrives second gets the order already placed.
-        // Only for the intent's own cart; any other cart falls through to the
-        // "already processed" failure below.
         $cartId = $this->cart?->id ?: $this->order?->cart_id;
 
-        if ($paymentIntentModel && $paymentIntentModel->cart_id === $cartId && $paymentIntentModel->order?->isPlaced()) {
+        // An intent is placed only against the cart it was created for, the
+        // same ownership rule the capability methods follow. A merged cart's
+        // intent stays on the source cart, whose total no longer matches.
+        if ($paymentIntentModel && (int) $paymentIntentModel->cart_id !== (int) $cartId) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Payment intent belongs to another cart',
+                paymentType: 'stripe'
+            );
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
+        }
+
+        // Idempotent: the consumer and the webhook can both place the same
+        // intent, and whichever arrives second gets the order already placed.
+
+        if ($paymentIntentModel?->order?->isPlaced()) {
             return new PaymentAuthorize(
                 success: true,
                 orderId: $paymentIntentModel->order_id,
