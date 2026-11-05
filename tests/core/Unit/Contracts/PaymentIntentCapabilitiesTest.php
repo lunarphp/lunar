@@ -138,7 +138,7 @@ it('leaves existing PaymentRefund construction untouched', function () {
         ->and($refund->pending)->toBeFalse();
 });
 
-it('carries a gateway refund reference when there is no transaction to hold it', function () {
+it('carries the gateway\'s refund reference', function () {
     $refund = new PaymentRefund(success: true, reference: 're_gateway_123');
 
     expect($refund->reference)->toBe('re_gateway_123')

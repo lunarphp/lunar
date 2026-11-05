@@ -31,7 +31,9 @@ interface ReconcilesPaymentIntents
     public function voidIntent(Cart $cart, string $reference): void;
 
     /**
-     * `$idempotencyKey` identifies this refund attempt; reuse it on retry.
+     * Returns only when the gateway accepted the refund. Failure throws, never
+     * `success: false`. `$idempotencyKey` identifies this refund attempt;
+     * reuse it on retry.
      *
      * @throws PaymentIntentException
      */
