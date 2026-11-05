@@ -9,7 +9,7 @@ use Lunar\Core\Exceptions\PaymentIntentException;
 use Lunar\Core\Models\Cart;
 
 /**
- * Report, void and refund an intent before any order exists. Each method's
+ * Report, void and refund an intent before its order is placed. Each method's
  * behaviour per status is the lifecycle table in spec 0077. A driver acts only
  * on references it created for the given cart.
  *
