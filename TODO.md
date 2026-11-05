@@ -11,7 +11,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
-- Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec rename-collection-fulfilment-to-pickup)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
@@ -39,6 +38,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 - Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec cart-totals-caching)
 - Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
+- Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec rename-collection-fulfilment-to-pickup)
 - Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
