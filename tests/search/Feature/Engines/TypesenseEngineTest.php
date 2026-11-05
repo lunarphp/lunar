@@ -4,12 +4,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Exceptions;
 use Laravel\Scout\EngineManager;
+use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
 use Lunar\Tests\Search\TestCase;
 use Mockery\MockInterface;
+use Typesense\Collection as TypesenseCollection;
 use Typesense\Documents;
 use Typesense\Exceptions\ServiceUnavailable;
 
@@ -666,4 +668,18 @@ it('ignores facet filters on field names that are not plain identifiers', functi
 
     expect($filters)
         ->toBe('collectionTree.lvl0:=`Boilers`');
+});
+
+it('resolves the collections index when scout has no prefix', function () {
+    Config::set('scout.prefix', '');
+    Config::set('scout.typesense.client-settings', [
+        'api_key' => 'xyz',
+        'nodes' => [['host' => 'localhost', 'port' => 8108, 'protocol' => 'http']],
+    ]);
+
+    $index = (new Collection)->searchableAs();
+
+    expect($index)->toBe('collections')
+        ->and(app(EngineManager::class)->engine('typesense')->getCollections()->{$index})
+        ->toBeInstanceOf(TypesenseCollection::class);
 });

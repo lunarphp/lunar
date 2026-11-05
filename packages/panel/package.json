@@ -7,7 +7,8 @@
         "build:types": "rm -rf resources/panel-package/dist && vue-tsc -p tsconfig.build-types.json && node scripts/copy-runtime-types.mjs",
         "type-check": "vue-tsc -p tsconfig.json",
         "dev": "vite",
-        "test": "vitest run"
+        "test": "vitest run",
+        "build:addon-theme": "node scripts/generate-addon-theme.mjs"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^3.0.0",

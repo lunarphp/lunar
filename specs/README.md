@@ -93,6 +93,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
+| 0077 | Pre-order payment intent capabilities | proposed    |
 | 0085 | Product bundles (`lunarphp/bundles`) | implemented |
 | 0089 | Cached model manifest | implemented |
 | 0090 | Remembered guest carts | implemented |
