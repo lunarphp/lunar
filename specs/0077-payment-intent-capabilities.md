@@ -1,6 +1,6 @@
 # 0077 — Pre-order payment intent capabilities
 
-- Status: proposed
+- Status: implemented
 - Author: Alec Ritson
 - Created: 2026-09-22
 - TODO item: Pre-order payment intent capabilities for cart-phase gateway flows
@@ -64,7 +64,7 @@ implements it.
 | `ReconcilesPaymentIntents` | | report, void and refund an intent |
 | `CreatesPaymentIntents` | `ReconcilesPaymentIntents` | pre-create an intent for a cart |
 | `SyncsPaymentIntents` | `CreatesPaymentIntents` | change the intent's amount as the cart changes |
-| `SupportsPaymentHolds` | `ReconcilesPaymentIntents` | authorise now and capture later, confirming cancel and capture synchronously |
+| `SupportsPaymentHolds` | `ReconcilesPaymentIntents` | authorise or approve now and capture later, confirming cancel and capture synchronously. An approval may not reserve funds |
 
 Capabilities are discovered with `instanceof`. A driver with none of them keeps
 the existing `authorize()` flow.
@@ -145,7 +145,7 @@ authorisation); where that is not possible it returns `NeedsReauthorization`.
 | `Failed` | create another | no-op | no-op | throw | throw | throw | do not place |
 
 `Failed` is terminal: a retryable decline is `RequiresAction`. A gateway with
-nothing to cancel for an unpaid intent (an unapproved PayPal order) marks it
+nothing to cancel for an unpaid intent (a PayPal order before capture) marks it
 `Voided` in its record; if the customer pays anyway, `fetchIntent()` reports
 `Captured` and the consumer refunds it. On `NeedsReauthorization` the consumer
 voids the hold, then calls `createHold()`.
@@ -229,14 +229,15 @@ wallet that authorised the intent ("Apple Pay").
 ## Gateway mapping
 
 A check that the vocabulary is not Stripe's. Only Stripe is implemented here.
+PayPal's column follows `[[0095-paypal-payment-intent-capabilities]]`.
 
 | | Stripe | PayPal (Orders v2) | Adyen (Checkout) | Mollie |
 | --- | --- | --- | --- | --- |
 | Create | PaymentIntent | Order | Session | Payment |
 | Sync | Update amount | Patch the order | Not offered | Not offered |
-| Void | Cancel | Unapproved order: local mark | Unpaid session: local mark | Cancel, or local mark |
+| Void | Cancel | Order: local mark. Authorization: void | Unpaid session: local mark | Cancel, or local mark |
 | Refund | Refund, may be pending | Refund the capture | Refund, pending until webhook | Refund, may be pending |
-| Holds | Manual capture | Order with intent `AUTHORIZE` | Not offered: asynchronous | Not offered: asynchronous captures |
+| Holds | Manual capture | Approved order, captured at confirm | Not offered: asynchronous | Not offered: asynchronous captures |
 
 ## Alternatives considered
 
@@ -264,7 +265,8 @@ declare what it can do. Rejected.
 ## Out of scope
 
 A reconciliation sweep for money taken against no order, a core event for late
-gateway failures, and drivers beyond Stripe. Each is a follow-up spec.
+gateway failures, and drivers beyond Stripe. Each is a follow-up spec; PayPal
+is `[[0095-paypal-payment-intent-capabilities]]`.
 
 ## Open questions
 
@@ -280,8 +282,8 @@ gateway failures, and drivers beyond Stripe. Each is a follow-up spec.
 
 ## Implementation plan
 
-- [ ] Slice 1: the four contracts, `PaymentIntentDescriptor`,
+- [x] Slice 1: the four contracts, `PaymentIntentDescriptor`,
       `PaymentIntentSnapshot`, both enums, `PaymentIntentException`, and the
       two `PaymentRefund` fields.
-- [ ] Slice 2: Stripe implements all four, with a test per table cell it
+- [x] Slice 2: Stripe implements all four, with a test per table cell it
       reaches, and `authorize()` accepts `reference` and is idempotent.
