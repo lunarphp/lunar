@@ -165,6 +165,7 @@ class Attributes extends Group
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
                     $groupComponents[] = Section::make($group['model']->name)
+	                    ->meta('handle', $group['model']->handle ?? null)
                         ->schema($sectionFields);
                 }
 
