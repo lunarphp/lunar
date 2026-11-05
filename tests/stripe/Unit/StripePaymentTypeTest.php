@@ -585,5 +585,6 @@ it('records the charge and the refund on the draft when placement refunds instea
     expect($draft->refresh()->placed_at)->toBeNull()
         ->and($capture)->not->toBeNull()
         ->and($refunded->reference)->toBe($refund->reference)
+        ->and($refund->transaction?->id)->toBe($refunded->id)
         ->and($refunded->parent_transaction_id)->toBe($capture->id);
 });

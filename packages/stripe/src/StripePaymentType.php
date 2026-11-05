@@ -218,10 +218,9 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             );
         }
 
-        $this->recordRefundOnDraft($cart, $charge, $refund);
-
         return new PaymentRefund(
             success: true,
+            transaction: $this->recordRefundOnDraft($cart, $charge, $refund),
             reference: $refund->id,
             pending: $refund->status !== 'succeeded',
         );
@@ -231,12 +230,12 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
      * Money refunded instead of placed still lands on an order: the charge and
      * the refund are written on the cart's draft, which stays unplaced.
      */
-    private function recordRefundOnDraft(Cart $cart, ?Charge $charge, Refund $refund): void
+    private function recordRefundOnDraft(Cart $cart, ?Charge $charge, Refund $refund): ?Transaction
     {
         $order = $cart->draftOrder()->first();
 
         if (! $order) {
-            return;
+            return null;
         }
 
         if ($charge) {
@@ -245,7 +244,7 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
 
         $capture = $charge ? $order->transactions()->where('reference', $charge->id)->first() : null;
 
-        $order->transactions()->updateOrCreate(['reference' => $refund->id], [
+        return $order->transactions()->updateOrCreate(['reference' => $refund->id], [
             'parent_transaction_id' => $capture?->id,
             'success' => true,
             'type' => 'refund',
