@@ -30,6 +30,7 @@ use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
+use Stripe\Exception\CardException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
@@ -278,9 +279,9 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
 
         try {
             $this->stripe->paymentIntents->incrementAuthorization($reference, ['amount' => $stripeAmount]);
-        } catch (InvalidRequestException) {
-            // The rail advertised support but refused this increment (over
-            // the issuer's limit, authorisation aged out).
+        } catch (CardException|InvalidRequestException) {
+            // The issuer declined the increment (the hold stays capturable at
+            // its original amount), or the rail refused it outright.
             return HoldAdjustment::NeedsReauthorization;
         } catch (ApiErrorException $e) {
             throw new PaymentIntentException(
@@ -516,7 +517,10 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             );
         }
 
-        if ($paymentIntentModel && ! $paymentIntentModel->isActive()) {
+        // A hold captured by captureHold() is succeeded but not yet placed, so
+        // only a cancelled intent, or one already processed, is refused.
+        if ($paymentIntentModel && ($paymentIntentModel->status === PaymentIntent::STATUS_CANCELED
+            || ($paymentIntentModel->status === PaymentIntent::STATUS_SUCCEEDED && $paymentIntentModel->processed_at))) {
             $failure = new PaymentAuthorize(
                 success: false,
                 message: 'Payment intent already processed',
@@ -579,7 +583,10 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             ]);
         }
 
+        // A row minted by createIntent() has no order yet; tie it to the draft
+        // being placed so a repeat call finds the placed order.
         $paymentIntentModel->update([
+            'order_id' => $paymentIntentModel->order_id ?: $this->order?->id,
             'processing_at' => now(),
         ]);
 
@@ -679,7 +686,12 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             ? (int) $this->paymentIntent->amount_received
             : (int) $this->paymentIntent->amount;
 
-        $amountMatches = StripeManager::toStripeAmount($expectedAmount, $currency) === $intentAmount;
+        $charge = $this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED
+            ? $this->latestCharge($this->paymentIntent)
+            : null;
+
+        $amountMatches = StripeManager::toStripeAmount($expectedAmount, $currency) === $intentAmount
+            && ! $charge?->amount_refunded;
         $currencyMatches = strtolower((string) $expectedCurrency) === strtolower((string) $this->paymentIntent->currency);
 
         if ($amountMatches && $currencyMatches) {

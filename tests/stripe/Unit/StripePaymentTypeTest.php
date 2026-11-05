@@ -588,3 +588,51 @@ it('records the charge and the refund on the draft when placement refunds instea
         ->and($refund->transaction?->id)->toBe($refunded->id)
         ->and($refunded->parent_transaction_id)->toBe($capture->id);
 });
+
+it('places an intent from createIntent() against the draft, and returns that order on a repeat', function (string $policy, string $status) {
+    config(['lunar.stripe.policy' => $policy]);
+    $cart = CartBuilder::build();
+    StripeFake::forCart($cart, ['id' => 'PI_CAPTURE', 'status' => $status]);
+    (new StripePaymentType)->createIntent($cart->calculate());
+    $draft = $cart->createOrder();
+
+    $first = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+    $second = (new StripePaymentType)->cart($cart->refresh())->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($first->message)->toBeEmpty()
+        ->and($first->success)->toBeTrue()
+        ->and($first->orderId)->toBe($draft->id)
+        ->and($second->success)->toBeTrue()
+        ->and($second->orderId)->toBe($draft->id);
+})->with([
+    'automatic policy' => ['automatic', 'succeeded'],
+    'manual policy' => ['manual', 'requires_capture'],
+]);
+
+it('does not place an intent that has been partly refunded', function () {
+    $cart = CartBuilder::build();
+    StripeFake::forCart($cart, ['amount_refunded' => 100]);
+
+    $response = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_CAPTURE'])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toBe('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull();
+});
+
+it('places a hold after captureHold() has captured it', function () {
+    // captureHold() records the row as succeeded; placement must still run.
+    $cart = CartBuilder::build();
+    $cart->paymentIntents()->create(['intent_id' => 'PI_HOLD', 'status' => 'requires_capture', 'flavour' => 'hold']);
+    $draft = $cart->createOrder();
+    StripeFake::forCart($cart);
+
+    (new StripePaymentType)->captureHold($cart, 'PI_HOLD', $cart->total);
+    $statusAfterCapture = $cart->paymentIntents()->first()->status;
+
+    $response = (new StripePaymentType)->cart($cart)->withData(['reference' => 'PI_HOLD'])->authorize();
+
+    expect($statusAfterCapture)->toBe('succeeded')
+        ->and($response->success)->toBeTrue()
+        ->and($response->orderId)->toBe($draft->id);
+});

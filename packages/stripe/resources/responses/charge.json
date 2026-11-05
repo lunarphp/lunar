@@ -3,7 +3,7 @@
   "object": "charge",
   "amount": 1099,
   "amount_captured": 1099,
-  "amount_refunded": 0,
+  "amount_refunded": {amount_refunded},
   "application": null,
   "application_fee": null,
   "application_fee_amount": null,

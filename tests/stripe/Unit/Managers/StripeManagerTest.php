@@ -311,6 +311,16 @@ it('recovers the first intent when a create is retried after a lost response', f
         ->toBe($idempotencyKey($timedOut));
 });
 
+it('keys a create by the cart\'s public id, not its row id', function () {
+    $cart = CartBuilder::build();
+    $mock = Stripe::fake();
+
+    paymentDriver()->createIntent($cart->calculate());
+
+    expect(collect($mock->requests[0]['headers'])->first(fn ($header) => str_starts_with($header, 'Idempotency-Key: ')))
+        ->toStartWith("Idempotency-Key: lunar-cart-{$cart->public_id}-");
+});
+
 it('throws when a sync cannot bring the intent in line', function () {
     $cart = CartBuilder::build();
     $cart->paymentIntents()->create(['intent_id' => 'PI_STANDARD', 'status' => 'requires_payment_method']);
@@ -641,6 +651,14 @@ it('asks for a new authorisation when the rail cannot raise the hold', function 
         ->toBe(HoldAdjustment::NeedsReauthorization);
 });
 
+it('asks for a new authorisation when the issuer declines the increase', function () {
+    $cart = cartOwning('PI_HOLD');
+    Stripe::fake()->next(['currency' => 'gbp', 'increment_declined' => true]);
+
+    expect(paymentDriver()->adjustHold($cart, 'PI_HOLD', gbp($cart, 2600)))
+        ->toBe(HoldAdjustment::NeedsReauthorization);
+});
+
 it('refuses to adjust a hold that is not awaiting capture', function () {
     $cart = cartOwning('PI_HOLD');
     Stripe::fake()->next(['currency' => 'gbp', 'status' => 'succeeded']);
@@ -717,5 +735,5 @@ it('authorises again after a short hold is voided, under a new key', function ()
     $create = collect($mock->requests)->last(fn ($r) => $r['method'] === 'post' && str_ends_with($r['url'], '/payment_intents'));
     $key = collect($create['headers'])->first(fn ($header) => str_starts_with($header, 'Idempotency-Key: '));
 
-    expect($key)->toContain("lunar-cart-{$cart->id}-hold-1-");
+    expect($key)->toContain("lunar-cart-{$cart->public_id}-hold-1-");
 });

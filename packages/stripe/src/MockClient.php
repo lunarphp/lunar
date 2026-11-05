@@ -5,6 +5,7 @@ namespace Lunar\Stripe;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Stripe\Exception\ApiConnectionException;
+use Stripe\Exception\CardException;
 use Stripe\HttpClient\ClientInterface;
 use Stripe\PaymentIntent;
 
@@ -253,6 +254,10 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'post' && str_contains($absUrl, '/increment_authorization')) {
+            if ($this->nextData['increment_declined'] ?? false) {
+                throw CardException::factory('Your card was declined.', 402, null, null, null, 'card_declined');
+            }
+
             $intentId = array_slice(explode('/', $absUrl), -2)[0];
             $this->rBody = $this->getResponse('payment_intent_hold', [
                 'id' => $intentId,
@@ -337,6 +342,8 @@ class MockClient implements ClientInterface
     protected function getResponse($filename, $replace = [])
     {
         $response = File::get(__DIR__.'/../resources/responses/'.$filename.'.json');
+
+        $replace += ['amount_refunded' => 0];
 
         // Fully captured unless a test says otherwise.
         if (array_key_exists('amount', $replace) && ! array_key_exists('amount_received', $replace)) {

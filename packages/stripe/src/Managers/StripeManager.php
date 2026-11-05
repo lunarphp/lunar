@@ -144,7 +144,7 @@ class StripeManager
             $amount,
             $cart->currency->code,
             $opts,
-            "lunar-cart-{$cart->id}-{$flavour}-{$generation}-".sha1(json_encode([$amount, $cart->currency->code, $opts])),
+            "lunar-cart-{$cart->public_id}-{$flavour}-{$generation}-".sha1(json_encode([$amount, $cart->currency->code, $opts])),
         );
 
         $cart->paymentIntents()->create([
