@@ -6,6 +6,8 @@
         "packages/panel/resources/package",
         "packages/panel/resources/panel-package",
         "packages/panel-addon-example",
+        "packages/search-relevance",
+        "packages/search-relevance/resources/client",
         "packages/bundles"
     ],
     "scripts": {

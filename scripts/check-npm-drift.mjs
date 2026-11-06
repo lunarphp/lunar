@@ -29,6 +29,13 @@ const PACKAGES = {
     '@lunarphp/panel-vite-plugin': {
         dir: 'packages/panel/resources/package',
     },
+    '@lunarphp/search-relevance': {
+        dir: 'packages/search-relevance/resources/client',
+        // dist is gitignored and built at split time, so it is only as fresh
+        // as the last build; refuse to compare without it.
+        requires: 'packages/search-relevance/resources/client/dist/index.d.ts',
+        hint: 'run `npm run build --workspace @lunarphp/search-relevance` first',
+    },
 };
 
 const npm = (...args) => execFileSync('npm', args, { encoding: 'utf8' }).trim();

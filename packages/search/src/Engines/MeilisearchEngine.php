@@ -8,6 +8,7 @@ use Lunar\Search\Data\SearchFacet;
 use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchResults;
+use Meilisearch\Contracts\HybridSearchOptions;
 use Meilisearch\Contracts\SearchQuery;
 use Meilisearch\Endpoints\Indexes;
 
@@ -15,6 +16,8 @@ class MeilisearchEngine extends AbstractEngine
 {
     public function get(): SearchResults
     {
+        $request = $this->pipeRequest();
+
         $paginator = $this->getRawResults(function (Indexes $indexes, string $query, array $options) {
             $engine = app(EngineManager::class)->engine('meilisearch');
 
@@ -48,7 +51,7 @@ class MeilisearchEngine extends AbstractEngine
 
         [$sortField, $sortDirection] = $this->getSortParts();
 
-        return SearchResults::from([
+        return $this->pipeResults($request, SearchResults::from([
             'query' => $results['query'],
             'totalPages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
@@ -56,17 +59,23 @@ class MeilisearchEngine extends AbstractEngine
             'perPage' => $paginator->perPage(),
             'sortField' => $sortField,
             'sortDirection' => $sortDirection,
-            'hits' => collect($results['hits'])->map(fn ($hit) => SearchHit::from([
-                'highlights' => collect(),
-                'document' => $hit,
-            ])),
+            'hits' => collect($results['hits'])->map(function ($hit) {
+                $score = $hit['_rankingScore'] ?? null;
+                unset($hit['_rankingScore']);
+
+                return SearchHit::from([
+                    'highlights' => collect(),
+                    'document' => $hit,
+                    'meta' => $score === null ? [] : ['score' => (float) $score],
+                ]);
+            }),
             'facets' => $this->mapFacets($results),
             'links' => (clone $paginator)->setCollection(
                 collect($results['hits'])
             )->appends([
                 'facets' => $this->facets,
             ])->links(),
-        ]);
+        ]));
     }
 
     protected function buildSearch(array $options, Indexes $indexes): array
@@ -105,10 +114,66 @@ class MeilisearchEngine extends AbstractEngine
             }
 
             $msQuery->setFilter($filters->toArray());
+            $msQuery->setShowRankingScore(true);
+
+            $this->applyHybrid($msQuery, $searchQuery->query);
+            $this->applyParams($msQuery);
+
             $requests[] = $msQuery;
         }
 
         return $requests;
+    }
+
+    /**
+     * Hybrid retrieval when an embedder is configured. Only applies alongside
+     * a search term; browse mode has nothing to embed.
+     */
+    protected function applyHybrid(SearchQuery $msQuery, string $query): void
+    {
+        $embedder = config('lunar.search.meilisearch.embedder');
+
+        if (! $embedder || $query === '') {
+            return;
+        }
+
+        $msQuery->setHybrid(
+            (new HybridSearchOptions)
+                ->setEmbedder($embedder)
+                ->setSemanticRatio((float) config('lunar.search.meilisearch.semantic_ratio', 0.5))
+        );
+
+        if ($threshold = config('lunar.search.meilisearch.ranking_score_threshold')) {
+            $msQuery->setRankingScoreThreshold((float) $threshold);
+        }
+    }
+
+    /**
+     * Map withParams() overrides onto the query object. Keys are Meilisearch
+     * request parameter names (`attributesToSearchOn`, `matchingStrategy`,
+     * `rankingScoreThreshold`, `hybrid`, ...) and resolve to the matching
+     * setter. `hybrid` accepts an array with `embedder` and `semanticRatio`;
+     * null removes the hybrid options.
+     */
+    protected function applyParams(SearchQuery $msQuery): void
+    {
+        foreach ($this->getParams() as $key => $value) {
+            if ($key === 'hybrid') {
+                $msQuery->setHybrid(
+                    (new HybridSearchOptions)
+                        ->setEmbedder($value['embedder'] ?? config('lunar.search.meilisearch.embedder', ''))
+                        ->setSemanticRatio((float) ($value['semanticRatio'] ?? 0))
+                );
+
+                continue;
+            }
+
+            $setter = 'set'.ucfirst($key);
+
+            if (method_exists($msQuery, $setter)) {
+                $msQuery->{$setter}($value);
+            }
+        }
     }
 
     public function mapFacets(array $results): Collection

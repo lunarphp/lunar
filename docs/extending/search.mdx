@@ -89,8 +89,9 @@ Lunar's own models are mapped to dedicated indexers that extend `ScoutIndexer` t
 - Any searchable custom attributes
 - `thumbnail` (the small variant's URL, if a thumbnail is set)
 - `skus`, an array of the product's variant SKUs
+- `skus_normalised`, the same SKUs uppercased with every non-alphanumeric character stripped, so a code typed without its printed hyphens (`HAGMB`) still prefix-matches `HAG-MB-32A`
 
-Its sortable fields are `created_at`, `updated_at`, `skus`, and `status`; its filterable fields are `__soft_deleted`, `skus`, and `status`.
+Its sortable fields are `created_at`, `updated_at`, `skus`, and `status`; its filterable fields are `__soft_deleted`, `skus`, and `status`. It also returns `['skus', 'skus_normalised']` from `getExactMatchFields()`: fields that must match exactly or by prefix, never through typo tolerance. `ScoutIndexer::getExactMatchFields()` returns `[]` by default; the `lunar:meilisearch:setup` command disables typo tolerance on whatever a custom indexer returns from it (see the [Search add-on](/addons/search#meilisearch)).
 
 Lunar ships similar dedicated indexers for `BrandIndexer`, `CollectionIndexer`, `CustomerIndexer`, `OrderIndexer`, and `ProductOptionIndexer`. See the [Search reference](/reference/search) for what each one indexes.
 
@@ -235,6 +236,178 @@ Once registered, map the desired model to the new driver name in `engine_map`:
     Lunar\Core\Models\Product::class => 'custom',
 ],
 ```
+
+## Search relevance
+
+The [Search Relevance](/addons/search-relevance) add-on (`lunarphp/search-relevance`) reorders search results from what shoppers click, add to cart, and buy. It exposes four contracts in `Lunar\SearchRelevance\Contracts`, each bound in its service provider from config, so a host application or a client package can replace any of them by rebinding the interface.
+
+| Contract | Default | Role |
+|---|---|---|
+| `QueryNormaliser` | `Lunar\SearchRelevance\Normalisers\DefaultQueryNormaliser` | Folds raw queries into the key scores are stored under, and classifies part numbers |
+| `Signal` | `Lunar\SearchRelevance\Signals\QueryAffinitySignal` | Scores product ids 0..1 for a query; several can be combined by weight |
+| `Ranker` | `Lunar\SearchRelevance\Rankers\BucketedRanker` | Reorders the candidate window from the combined signal scores |
+| `ScoreAggregator` | Chosen per database connection (MySQL, Postgres, or PHP for the rest) | Turns logged events into `search_query_scores` rows |
+
+### Custom query normaliser
+
+The normaliser decides which raw queries count as the same query. The default lowercases, replaces punctuation other than `.`, `-`, and `/` with spaces, joins a number to a following unit (`20 mm` becomes `20mm`), collapses whitespace, and folds simple English plurals (`cable ties` and `cable tie` pool their data). A part number is returned as-is, never stemmed. A store whose customers use their own vocabulary can fold synonyms into a canonical form so that both spellings learn from each other:
+
+```php
+namespace App\Search;
+
+use Lunar\SearchRelevance\Contracts\QueryNormaliser;
+use Lunar\SearchRelevance\Normalisers\DefaultQueryNormaliser;
+
+class StoreQueryNormaliser implements QueryNormaliser
+{
+    protected array $synonyms = [
+        'hoody' => 'hoodie',
+        'trainers' => 'sneakers',
+        'jumper' => 'sweater',
+    ];
+
+    public function __construct(protected DefaultQueryNormaliser $default) {}
+
+    public function normalise(string $query): string
+    {
+        $normalised = $this->default->normalise($query);
+
+        return implode(' ', array_map(
+            fn (string $token) => $this->synonyms[$token] ?? $token,
+            explode(' ', $normalised),
+        ));
+    }
+
+    public function isPartNumber(string $query): bool
+    {
+        return $this->default->isPartNumber($query);
+    }
+}
+```
+
+Point the config at it and bump the version:
+
+```php
+// config/lunar/search-relevance.php
+return [
+    'normaliser' => App\Search\StoreQueryNormaliser::class,
+    'normaliser_version' => 2,
+];
+```
+
+<Warning>
+The same normaliser must be used when a search is logged and when it is ranked. Scores are stored under the normalised query, so a search normalised one way at log time and another way at search time never finds its scores. Every time the normalisation rules change, including the first time a custom normaliser is installed, bump `normaliser_version`. The version is part of `Lunar\SearchRelevance\RetrievalVersion::current()`, so the scoring job relearns under the new rules and stops applying scores learned under the old ones.
+</Warning>
+
+### Custom signal
+
+A signal scores each product id in the candidate window between 0 and 1 for the current query. Signals are listed in `lunar.search_relevance.signals` with a weight, combined by `Lunar\SearchRelevance\Signals\SignalCombiner`, and clamped to 0..1. This example nudges in-stock products up, so learned popularity does not promote something the shopper cannot buy:
+
+```php
+namespace App\Search;
+
+use Lunar\Core\Models\ProductVariant;
+use Lunar\SearchRelevance\Contracts\Signal;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
+
+class StockLevelSignal implements Signal
+{
+    /** @return array<int, float> */
+    public function scores(RankingContext $context, array $productIds): array
+    {
+        $stock = ProductVariant::query()
+            ->whereIn('product_id', $productIds)
+            ->groupBy('product_id')
+            ->selectRaw('product_id, sum(stock_on_hand) as stock')
+            ->pluck('stock', 'product_id');
+
+        return collect($productIds)
+            ->mapWithKeys(fn (int $id) => [$id => ($stock[$id] ?? 0) > 0 ? 1.0 : 0.0])
+            ->all();
+    }
+}
+```
+
+Register it alongside the default signal. Weights are relative; here learned affinity still dominates:
+
+```php
+// config/lunar/search-relevance.php
+return [
+    'signals' => [
+        Lunar\SearchRelevance\Signals\QueryAffinitySignal::class => 1.0,
+        App\Search\StockLevelSignal::class => 0.25,
+    ],
+];
+```
+
+`RankingContext` carries `modelType`, `normalisedQuery`, `sessionId`, `customerId`, `mode`, `sort`, `filtersHash`, and `version`, so a signal can be customer-aware or query-aware without extra lookups.
+
+### Swapping the ranker
+
+The default `BucketedRanker` reorders hits by combined score within buckets of `bucket_size` engine positions, so a weak keyword match never overtakes a strong one. `Lunar\SearchRelevance\Rankers\NullRanker` returns the window untouched, useful for measuring logging overhead without ranking. A ranker receives the `RankingContext` and a `Lunar\SearchRelevance\DataObjects\HitCollection` (an `Illuminate\Support\Collection` of `Lunar\SearchRelevance\DataObjects\Hit` objects with `productId`, `originalPosition`, `score`, `document`, `source`, and a mutable `boost`) and returns the collection in display order:
+
+```php
+namespace App\Search;
+
+use Lunar\SearchRelevance\Contracts\Ranker;
+use Lunar\SearchRelevance\DataObjects\HitCollection;
+use Lunar\SearchRelevance\DataObjects\RankingContext;
+use Lunar\SearchRelevance\Signals\SignalCombiner;
+
+class TopThreeOnlyRanker implements Ranker
+{
+    public function __construct(protected SignalCombiner $signals) {}
+
+    public function rank(RankingContext $context, HitCollection $hits): HitCollection
+    {
+        $scores = $this->signals->combine($context, $hits->productIds());
+
+        // Promote at most three learned products to the top; keep engine order for the rest.
+        $promoted = $hits
+            ->filter(fn ($hit) => ($scores[$hit->productId] ?? 0) >= 0.5)
+            ->sortByDesc(fn ($hit) => $scores[$hit->productId])
+            ->take(3);
+
+        return new HitCollection([
+            ...$promoted->values(),
+            ...$hits->reject(fn ($hit) => $promoted->contains($hit))->values(),
+        ]);
+    }
+}
+```
+
+```php
+// config/lunar/search-relevance.php
+return [
+    'ranker' => App\Search\TopThreeOnlyRanker::class,
+];
+```
+
+### Binding in a service provider
+
+The config keys above are the simplest route. The add-on resolves each contract from the container, so a service provider can also rebind an interface directly, which is how a client package ships its own implementation without touching the host config:
+
+```php
+namespace App\Providers;
+
+use App\Search\StockLevelSignal;
+use App\Search\StoreQueryNormaliser;
+use App\Search\TopThreeOnlyRanker;
+use Illuminate\Support\ServiceProvider;
+use Lunar\SearchRelevance\Contracts\QueryNormaliser;
+use Lunar\SearchRelevance\Contracts\Ranker;
+
+class SearchServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(QueryNormaliser::class, StoreQueryNormaliser::class);
+        $this->app->bind(Ranker::class, TopThreeOnlyRanker::class);
+    }
+}
+```
+
+Signals are always read from the `signals` config array, because each carries a weight.
 
 <Info>
 The storefront search package (namespace `Lunar\Search\...`) is a separate package from the indexing pieces described on this page. It provides the storefront-facing query layer: faceted filtering, sorting, and instant search, built on top of the Scout search results that Lunar's core indexers produce. Indexers control *what* gets indexed; `Lunar\Search\...` controls how the storefront *queries* it. See the [Search reference](/reference/search) for details.

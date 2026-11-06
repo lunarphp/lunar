@@ -7,6 +7,8 @@
 node_modules
 /vendor
 /packages/bundles/build
+/packages/search-relevance/build
+/packages/search-relevance/resources/client/dist
 /packages/panel/public/build
 .phpunit.result.cache
 composer.lock

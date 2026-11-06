@@ -1,0 +1,379 @@
+---
+title: "Search Relevance"
+sidebarTitle: "Search Relevance"
+description: "Learned ranking for Lunar search: log what shoppers click, add to cart, and buy, score it nightly, and reorder results without leaving the search engine."
+---
+
+The Search Relevance add-on (`lunarphp/search-relevance`) makes Lunar search improve with traffic. It logs every search and the clicks, cart additions, and purchases that follow, scores each query and product pair on a schedule, and reorders the results the engine returns so products shoppers actually want rise for the queries they type. It also fixes part-number search on Typesense and Meilisearch, and ships an admin panel section for reading the data.
+
+The add-on is built on the request and results [pipelines](/addons/search#pipelines) of the `lunarphp/search` add-on, which must be installed first.
+
+## What it does, and does not do
+
+The add-on works on the ordered list of product ids the engine returns. It does not replace retrieval:
+
+- **The engine still decides which products match.** Keyword matching, typo tolerance, hybrid (vector) search, facets, and filters stay with Typesense, Meilisearch, or the database driver. The add-on only reorders what the engine found, plus a small set of learned products it fetches by id (see [Scoring](#scoring)).
+- **Reordering is bucketed.** The ranker only moves products within a bucket of `bucket_size` hits (10 by default), so a weak keyword match can never leap above a strong one. Learned scores refine the engine order rather than overriding it.
+- **It learns per query, not per product.** A product that is popular for `running shoes` gets no boost for `socks`. Global popularity is deliberately not a signal.
+- **It never ranks sorted or empty queries.** An explicit `sort()` is respected as-is, and browse queries (empty or `*`) pass through untouched.
+
+## Supported engines
+
+| Engine | Ranking | Part-number retrieval | Notes |
+|---|---|---|---|
+| Typesense | Yes | Yes, prefix and infix | Full support, including hybrid search (see [Search: Typesense](/addons/search#typesense) for the vector distance threshold). |
+| Meilisearch | Yes | Yes, prefix only | No infix matching: `MB32A` will not match `HAG-MB-32A`. Stores whose customers search for fragments from inside a code need Typesense. Meilisearch also pads a page with partial matches after the full matches (see [Meilisearch page padding](#meilisearch-page-padding)). |
+| Custom engines | Opt in | Opt in | A custom `Lunar\Search\Engines\AbstractEngine` subclass gets ranking once its `get()` calls `pipeRequest()` and `pipeResults()`; see [Pipelines](/addons/search#pipelines). |
+
+## Installation
+
+Require the package:
+
+```bash
+composer require lunarphp/search-relevance
+```
+
+The service provider, `Lunar\SearchRelevance\SearchRelevanceServiceProvider`, is auto-discovered. It appends its three pipeline stages to `lunar.search.pipelines`, registers the storefront events route, the cart and order listeners, the Artisan commands, and the schedule.
+
+Run the migrations:
+
+```bash
+php artisan migrate
+```
+
+This creates four tables, prefixed like every other Lunar table: `search_queries`, `search_events`, `search_query_scores`, and `search_learning_overrides`. It also seeds the `search:manage-relevance` permission used by the panel section.
+
+Make sure a queue worker and the scheduler are running. Logging, event recording, and attribution are dispatched as queued jobs, and scoring runs from the scheduler:
+
+```bash
+php artisan queue:work
+php artisan schedule:work
+```
+
+<Info>
+The add-on works with the `sync` queue driver, but then every search writes its log row on the request path. See [Scheduling and queues](#scheduling-and-queues).
+</Info>
+
+If the [admin panel](/admin/introduction) (`lunarphp/panel`) is installed, publish or link the add-on's compiled assets so its pages load:
+
+```bash
+# Production: copies every registered add-on build, including this one
+php artisan vendor:publish --tag=panel-all-assets --force
+
+# Local development: symlinks the build instead
+php artisan lunar:panel:link
+```
+
+The panel section is documented under [Admin Panel: Search Relevance](/admin/search-relevance). Without the panel, everything else (logging, scoring, ranking, part-number retrieval) still works.
+
+Optionally publish the config:
+
+```bash
+php artisan vendor:publish --tag=lunar.search-relevance.config
+```
+
+This writes `config/lunar/search-relevance.php`, merged under the `lunar.search_relevance` key.
+
+## Part-number search
+
+Shoppers who type a partial product code expect the whole family of that code, and nothing else. Under default engine settings a five-character prefix like `HAGMB` returns a few family members and then pads the page with unrelated products, because typo tolerance, token dropping, and semantic search all fill in for a "word" that means nothing.
+
+The add-on classifies each query before it reaches the engine. A query is a **part number** when it is a single token that mixes letters and digits, with hyphens, dots, and slashes allowed, and is not a bare unit such as `20mm`. Letter-only codes (`HAG-MB`) are treated as text on purpose: widening the rule would send ordinary words like `cable-gland` down the SKU-only path.
+
+For a part number, the `Lunar\SearchRelevance\Pipelines\PartNumberRetrieval` request stage restricts retrieval to the SKU fields and switches off everything that pads:
+
+| | Typesense | Meilisearch |
+|---|---|---|
+| Restrict to SKU fields | `query_by: skus,skus_normalised` (and `query_by_weights` dropped) | `attributesToSearchOn: ['skus', 'skus_normalised']` |
+| Partial match | `prefix: true`, `infix: always,always` | Prefix on the last word is always on; no infix |
+| No typos | `num_typos: 0,0` | Index setting `typoTolerance.disableOnAttributes`, applied by `lunar:meilisearch:setup` |
+| Keep every token | `drop_tokens_threshold: 0` | `matchingStrategy: all` |
+| No semantic padding | `vector_query` omitted | `hybrid.semanticRatio: 0`, when an embedder is configured |
+
+Part-number searches are still logged and tracked, but they are not ranked: per-code queries are too sparse to learn from, and the engine order is already the right one. The normaliser also skips stemming for them.
+
+The stage applies these parameters through `AbstractEngine::withParams()`, so nothing engine-specific lives in the engine itself.
+
+The retrieval side of this depends on the `skus` and `skus_normalised` fields that core indexes and on engine settings that belong to `lunarphp/search`: the Typesense schema and `query_by` entries, and the Meilisearch typo-tolerance step. See [Search: Product code search](/addons/search#product-code-search) for that setup; the add-on only decides when to use it.
+
+## Modes
+
+The `mode` config key (or the `LUNAR_SEARCH_RELEVANCE_MODE` environment variable) controls how much the add-on does:
+
+| Mode | Logged | Ranked order computed | Ranked order displayed |
+|---|---|---|---|
+| `off` | No | No | No |
+| `shadow` | Yes | Yes, stored beside the shown order | No, the engine order is shown |
+| `on` | Yes | Yes | Yes |
+
+`shadow` is the default after install. Nothing changes for shoppers, but training data accrues from day one, and the [replay command](#replay) can prove the uplift before the switch to `on`. This is the recommended rollout:
+
+1. Install in `shadow`. Add the storefront tracking (below) so clicks are recorded.
+2. Let the scoring job run for a few weeks. Check the panel's overview or `lunar:search-relevance:replay` for the share of searches where the ranked order placed the purchased product higher.
+3. Switch to `on` when the replay shows a consistent improvement.
+
+The mode is store configuration, set in code or through the `LUNAR_SEARCH_RELEVANCE_MODE` environment variable like every other Lunar setting, so it is versioned and can differ per environment (`shadow` on staging, `on` in production). The admin panel shows the current mode but cannot change it. Before switching a store to `on`, run the [replay command](#replay) or read the uplift card in the panel to confirm the learned order performs better.
+
+## Storefront tracking
+
+Ranking learns from what shoppers do with the results. A search is logged automatically; clicks need a small addition to the results page.
+
+### Blade storefronts
+
+Two lines. Once per results page, render the tracking component, which outputs the beacon script and CSRF wiring:
+
+```blade
+<x-lunar-search-relevance::tracking :results="$results" />
+```
+
+On each rendered result, spread the tracking attributes onto the element that wraps the product link:
+
+```blade
+@foreach ($results->hits as $hit)
+    <div {{ lunar_search_attrs($results, $hit) }}>
+        <a href="{{ route('products.show', $hit->document['id']) }}">
+            {{ $hit->document['name_en'] ?? '' }}
+        </a>
+    </div>
+@endforeach
+```
+
+`lunar_search_attrs()` renders `data-lunar-search-id`, `data-lunar-product-id`, `data-lunar-position`, and `data-lunar-source`. It returns an empty string when the search was not logged (for example, in `off` mode), so the markup is safe to leave in place. The component renders nothing in that case either.
+
+The script is the `@lunarphp/search-relevance` client's self-contained build, inlined into the page. It listens for clicks anywhere inside a tracked element and posts the four attributes plus the CSRF token to the events endpoint with `navigator.sendBeacon()` (falling back to a `keepalive` fetch), so a navigation that starts immediately still delivers the event.
+
+### Headless and Inertia storefronts
+
+The same data is available in the results payload. `SearchResults->meta` carries `search_id`, `ranking_mode`, and `ranking_version`, and each hit's `meta` carries `position`, `original_position`, `source`, and (when the search was ranked) `boost`. Both `meta` fields are typed, so a storefront generating types with Spatie's TypeScript transformer (see the [Search add-on](/addons/search#typescript-integration)) gets `results.meta.search_id` and `hit.meta.position` in the `Lunar.Search` namespace.
+
+Install the storefront client, which is the same code the Blade component inlines:
+
+```bash
+npm install @lunarphp/search-relevance
+```
+
+In a Vue or Inertia storefront, the `useSearchTracking` composable takes the results (a ref, a getter, or a plain object) and returns `track(hit)` to send a click and `attrs(hit)` for the `data-lunar-*` attributes:
+
+```vue
+<script setup lang="ts">
+import { useSearchTracking } from '@lunarphp/search-relevance/vue';
+
+const props = defineProps<{ results: Lunar.Search.SearchResults }>();
+
+const { track, attrs } = useSearchTracking(() => props.results);
+</script>
+
+<template>
+    <Link
+        v-for="hit in results.hits"
+        :key="hit.document.id"
+        v-bind="attrs(hit)"
+        :href="`/products/${hit.document.id}`"
+        @click="track(hit)"
+    >
+        {{ hit.document.name_en }}
+    </Link>
+</template>
+```
+
+Both calls are safe when the search was not logged (for example, in `off` mode): `track()` does nothing and `attrs()` returns an empty object. The `v-lunar-search-hit` directive does both at once for storefronts that prefer it: `v-lunar-search-hit="{ results, hit }"`.
+
+The composable accepts options as its second argument: `endpoint` (defaults to `/lunar/search/events`), `token` (the CSRF token; read from `<meta name="csrf-token">` when omitted), and `sessionId`, sent as `session_id` for clients that carry no cart session cookie.
+
+Any other framework uses the framework-agnostic entry. `attachSearchTracking()` adds delegated click tracking to elements that carry the `data-lunar-*` attributes (rendered with `trackingAttributes(results, hit)`), and `trackHit()` or `sendSearchEvent()` send an event directly:
+
+```js
+import { attachSearchTracking, trackHit } from '@lunarphp/search-relevance';
+
+const detach = attachSearchTracking();
+
+// or, without markup:
+trackHit(results, hit);
+```
+
+Every sender uses `navigator.sendBeacon()` with a `keepalive` fetch fallback, so a click that starts a navigation still delivers the event.
+
+Without the client, post to the events endpoint, `POST /lunar/search/events` (route name `lunar.search-relevance.events`), when a shopper clicks a result:
+
+```js
+fetch('/lunar/search/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+    body: JSON.stringify({ search_id: results.meta.search_id, product_id: hit.document.id, position: hit.meta.position, source: hit.meta.source }),
+});
+```
+
+The route runs under the `web` middleware group, so a browser client sends the CSRF token and its session cookie as it would for any other form. The endpoint accepts JSON or form data:
+
+| Field | Required | Description |
+|---|---|---|
+| `search_id` | Yes | `results.meta.search_id`, a 26-character ULID |
+| `product_id` | Yes | The product id, as indexed under `document.id` |
+| `position` | Yes | The 1-based position the product was displayed at (`hit.meta.position`) |
+| `source` | No | `organic`, `learned`, or `explore` (`hit.meta.source`); defaults to `organic` |
+| `session_id` | No | An explicit shopper identifier for API clients that carry no cart session cookie. Omit it from a browser and the server resolves the shopper from the cart session. |
+
+The endpoint always answers with an empty `204`, whether or not the event was accepted, so a bot learns nothing about which searches or products exist. It is rate limited per shopper and per IP (`guards.events_rate_limit`, whichever trips first). The queued `RecordEvent` job then checks that `search_id` exists, that the search is no older than `guards.event_window_minutes`, that `product_id` was in that search's shown list (the first `impressions_logged` results), and that `position` is within it, and silently drops anything else. Each search records at most one event of each type per product, so replaying a click adds nothing.
+
+## Attribution
+
+A click is the start of a chain the add-on follows through to a purchase:
+
+1. The click stores `attribution.{product_id}` in the shopper's session (`search_id`, `position`, `source`, and an expiry) for `attribution_ttl_minutes` (30 by default).
+2. When a `Lunar\Core\Models\CartLine` is created, `Lunar\SearchRelevance\Observers\CartLineObserver` (an Eloquent `created` observer) resolves the line's product from its purchasable (product variants only), looks up the attribution, and if one is present writes it to `meta['search_attribution']` on the line and records a `basket` event.
+3. When `Lunar\Core\Events\Orders\OrderPlaced` fires, `Lunar\SearchRelevance\Listeners\AttributeOrderLines` records a `purchase` event for every order line whose `meta` carries `search_attribution`. Order creation already copies cart line `meta` to the order line, so no pipeline change is needed.
+
+A cart or order line attributed to a search carries this in `meta`:
+
+```php
+$line->meta['search_attribution'];
+// [
+//     'search_id' => '01J9X4M2K7Q8R1S3T5V7W9Y0Z2',
+//     'position' => 3,
+//     'source' => 'organic',
+//     'session_id' => 'cart:1842',
+// ]
+```
+
+Shopper identity is the Lunar cart session identifier when `session_key` is `cart` (the default), stored as `cart:{id}`. It survives login, and it is what cart and order lines already relate to. Set `session_key` to `session` to use the Laravel session id (`session:{id}`) instead; that is also the fallback when no cart exists yet.
+
+Every event is written by the queued `Lunar\SearchRelevance\Jobs\RecordEvent` job, which re-validates the search id, the product, and the position before inserting, so nothing runs on the request path beyond the session write.
+
+## Scoring
+
+Scoring turns raw events into a score per query and product, stored in `search_query_scores`. It runs daily as `lunar:search-relevance:score`, and can be run by hand:
+
+```bash
+php artisan lunar:search-relevance:score
+# [n1:typesense:hybrid] wrote 3412 query/product rows.
+```
+
+The command runs the aggregation once per distinct retrieval version across the ranked `models`.
+
+In plain language, for each normalised query and product:
+
+- **Every event counts by type.** A click is worth 1, a cart addition 3, a purchase 5 (`scoring.weights`).
+- **Events at low positions count more.** A click on the product at position 8 says more than a click at position 1, because position 1 gets clicked whatever it is. An event at position `p` is multiplied by `p ^ position_eta`, capped at `max_position_weight`. Without this correction the ranking learns position bias, cementing whatever the engine showed first. Events from the `explore` source skip the correction.
+- **Recent events count more.** Each event's weight halves every `half_life_days` (30 by default), so a product that used to convert but no longer does fades out.
+- **Sparse data is ignored.** Only events within `window_days` are considered, and a query and product pair needs events from at least `min_sessions` distinct shoppers before it gets a score. Sessions searching faster than `guards.max_searches_per_minute` are excluded as bots.
+- **One vote per shopper.** Each session contributes at most one event of each type per query and product, however many times it repeats the search. With `guards.trusted_sessions_only` (the default), only sessions that hold a cart or belong to a known customer count at all.
+- **Staff overrides win.** Products excluded from learning for a query, and events before a query's learning was reset, are ignored. See [Abuse and manipulation](#abuse-and-manipulation).
+- **Scores are relative.** Within a query, each product's score is divided by the best score for that query, giving a `relative` value from 0 to 1. At most `max_products_per_query` products are kept per query.
+
+At search time, `Lunar\SearchRelevance\Signals\QueryAffinitySignal` looks up the `relative` score for each product in the window, `Lunar\SearchRelevance\Signals\SignalCombiner::combine()` sums every configured signal by weight and clamps to 0..1, and `Lunar\SearchRelevance\Rankers\BucketedRanker` sorts within each bucket of `bucket_size` engine positions by that combined score (ties keep the engine order). Learned products the engine did not return (up to `learned_union.max`, each with `relative` of at least `learned_union.min_relative`) are fetched by id through the same engine and inserted at the head of the second bucket, marked `source: learned`, so they can win a first-page slot without displacing the strongest keyword matches. The ranked window is cached for `cache_ttl` seconds, keyed by model, version, mode, normalised query, filters, and customer.
+
+| Key | Default | Description |
+|---|---|---|
+| `scoring.weights.click` | `1` | Weight of a click event |
+| `scoring.weights.basket` | `3` | Weight of a cart addition |
+| `scoring.weights.purchase` | `5` | Weight of a purchase |
+| `scoring.position_eta` | `0.7` | Exponent of the position correction; `0` disables it |
+| `scoring.max_position_weight` | `5` | Cap on the position multiplier |
+| `scoring.half_life_days` | `30` | Days for an event's weight to halve |
+| `scoring.window_days` | `180` | Events older than this are ignored |
+| `scoring.min_sessions` | `3` | Distinct shoppers needed before a pair is scored |
+| `scoring.max_products_per_query` | `50` | Products kept per query |
+| `scoring.schedule` | `'02:00'` | Daily run time |
+
+The aggregation is a single SQL query on MySQL 8 and Postgres (`Lunar\SearchRelevance\Scoring\MySqlScoreAggregator`, `PostgresScoreAggregator`), chosen from the Lunar database connection's driver. Other drivers, including SQLite, use `PhpScoreAggregator`, which does the same in chunked PHP. The `Lunar\SearchRelevance\Contracts\ScoreAggregator` binding can be swapped like any other; see [Extending search](/extending/search#search-relevance).
+
+## Abuse and manipulation
+
+Learned ranking is a feedback loop, so bots and bad actors can try to feed it. The add-on limits the damage in layers:
+
+- **Structural.** The ranker only reorders within buckets of `bucket_size` hits, and learned products the engine did not return are inserted at the head of the second bucket. Nothing can be pushed into the first bucket unless the engine already put it there, whatever the event volume.
+- **Event validation.** An event needs a real search id, a product from that search's shown list, a position inside it, and must arrive within `guards.event_window_minutes` of the search. Repeats of an event already recorded for the search, product, and type are dropped, and the endpoint is rate limited per shopper and per IP.
+- **Scoring.** Each session contributes one event of each type per query and product. With `guards.trusted_sessions_only`, only sessions that hold a cart or belong to a known customer count, so a bot minting fresh sessions gains nothing. Sessions searching faster than `guards.max_searches_per_minute` are excluded.
+- **Crawlers.** Searches from user agents matching `guards.ignored_user_agents` are neither logged nor ranked, so reporting stays honest and the tables stay small. Headless API clients without a session are still logged; they identify the shopper explicitly on the events endpoint.
+- **Refunds and cancellations.** `Lunar\SearchRelevance\Listeners\ForgetPurchases` removes the purchase events an order's attributed lines produced when `Lunar\Core\Events\Orders\OrderCancelled` or `OrderRefunded` fires.
+- **Staff overrides.** From the admin panel's query page, staff can exclude a product from learning for a query (its learned score is removed immediately and future events ignored; reversible) or reset learning for a query (everything learned is discarded and only events after the reset count). Both are stored in the `search_learning_overrides` table and applied through `Lunar\SearchRelevance\Learning\Overrides`, which any code can call:
+
+```php
+use Lunar\Core\Models\Product;
+use Lunar\SearchRelevance\Learning\Overrides;
+
+$overrides = app(Overrides::class);
+
+$overrides->exclude(Product::class, 'cable gland', productId: 42);
+$overrides->include(Product::class, 'cable gland', productId: 42);
+$overrides->reset(Product::class, 'cable gland');
+```
+
+The add-on does not store IP addresses for abuse analysis. The per-IP rate limit on the events endpoint covers the crude case without the privacy obligations.
+
+## Versioning
+
+Every logged search and every score carries a retrieval version, `Lunar\SearchRelevance\RetrievalVersion::current($modelType)`, in the form `n{normaliser_version}:{driver}:{hybrid|keyword}`, for example `n1:typesense:hybrid`. The driver comes from `lunar.search.engine_map` for the model (falling back to `scout.driver`); `hybrid` means the Typesense collection schema declares an `embedding` field, or `lunar.search.meilisearch.embedder` is set. `QueryAffinitySignal` only reads scores whose version matches the current one.
+
+This matters because scores are keyed by the **normalised** query. If the normaliser changes (a new synonym, a change to how plurals are folded), `running shoe` and `running shoes` may no longer normalise to the same string, and scores learned under the old rules would apply to the wrong queries. Stale scores measurably make results worse, so a version change relearns from scratch: the scoring job writes rows for the new version, ignores events logged under the old one, and deletes rows for old versions.
+
+Bump `normaliser_version` whenever the normalisation rules change, including when swapping in a custom `QueryNormaliser`. Changing the Scout driver, or turning hybrid search on or off, bumps the version automatically.
+
+## Scheduling and queues
+
+The service provider registers two scheduled commands:
+
+| Command | Schedule |
+|---|---|
+| `lunar:search-relevance:score` | Daily at `scoring.schedule` (`02:00` by default), without overlapping |
+| `lunar:search-relevance:prune` | Weekly; deletes queries and events older than `retention_days` (400 by default) and prints how many of each it removed |
+
+Both need the Laravel scheduler running (`php artisan schedule:work` locally, or the `schedule:run` cron entry in production).
+
+Logging a search, recording an event, and attributing a cart or order line are queued jobs on the default queue. With the `sync` driver they run inline: correct, but every search then performs an insert on the request path, and every tracked click does a validation query. For anything beyond a development environment, run a queue worker.
+
+The ranked window is cached on the default cache store as plain arrays, so any cache driver works.
+
+## Replay
+
+Replay is the proof that ranking helps, computed from real traffic before any shopper sees a reordered result:
+
+```bash
+php artisan lunar:search-relevance:replay --days=30
+```
+
+For every logged search in the period that led to a purchase, and whose ranked order differed from the shown order, it compares the purchased product's position in the shown order against its position in the ranked order the add-on computed:
+
+```
++---------------------------+-------+
+| Metric                    | Value |
++---------------------------+-------+
+| Searches with a purchase  | 1284  |
+| MRR (shown order)         | 0.339 |
+| MRR (reranked order)      | 0.426 |
+| Improved                  | 38.2% |
+| Worsened                  | 6.1%  |
++---------------------------+-------+
+```
+
+Mean reciprocal rank (MRR) averages `1 / position` of the purchased product, so it rewards putting the right product first. "Improved" and "Worsened" are the shares of those searches where the reranked order placed the purchased product higher or lower than the shown order. `--days` defaults to 30. The same figures drive the **Uplift** card on the panel's overview page, computed over the page's date range.
+
+## Configuration reference
+
+The full config, merged under `lunar.search_relevance`:
+
+| Key | Default | Description |
+|---|---|---|
+| `mode` | `env('LUNAR_SEARCH_RELEVANCE_MODE', 'shadow')` | `off`, `shadow`, or `on`; see [Modes](#modes). |
+| `models` | `[Lunar\Core\Models\Product::class]` | Searchable models whose results are logged and ranked |
+| `window` | `250` | Candidate window fetched from the engine and reordered. Requests beyond the window (`page * perPage > window`) pass through unranked but are still logged. |
+| `bucket_size` | `10` | Hits are reordered only within buckets of this size |
+| `cache_ttl` | `300` | Seconds the ranked window is cached |
+| `learned_union.max` | `5` | Most learned products inserted that the engine did not return |
+| `learned_union.min_relative` | `0.1` | Minimum relative score for a learned product to be inserted |
+| `impressions_logged` | `50` | How many shown product ids a logged search records; clicks beyond this cannot be validated |
+| `attribution_ttl_minutes` | `30` | How long after a click a cart addition or purchase is attributed to it |
+| `session_key` | `'cart'` | `cart` (the Lunar cart session id) or `session` (the Laravel session id) |
+| `normaliser` | `Lunar\SearchRelevance\Normalisers\DefaultQueryNormaliser::class` | The `QueryNormaliser` implementation |
+| `normaliser_version` | `1` | Bump when normalisation rules change; see [Versioning](#versioning) |
+| `ranker` | `Lunar\SearchRelevance\Rankers\BucketedRanker::class` | The `Ranker` implementation |
+| `signals` | `[QueryAffinitySignal::class => 1.0]` | Signal class to weight; combined scores are clamped to 0..1 |
+| `scoring.*` | | See [Scoring](#scoring) |
+| `retention_days` | `400` | Raw queries and events older than this are pruned weekly |
+| `guards.events_rate_limit` | `'60,1'` | Events endpoint rate limit as `attempts,minutes`, per shopper and per IP |
+| `guards.max_searches_per_minute` | `30` | Sessions searching faster than this are ignored by scoring |
+| `guards.event_window_minutes` | `120` | Events are only accepted this long after the search they belong to |
+| `guards.trusted_sessions_only` | `true` | Only sessions holding a cart or belonging to a known customer count towards learning |
+| `guards.ignored_user_agents` | bot, crawl, spider, ... | Searches from user agents containing any of these substrings are neither logged nor ranked |
+
+The three pipeline stages (`Lunar\SearchRelevance\Pipelines\PartNumberRetrieval`, `WidenRequest`, and `RankResults`) are appended to `lunar.search.pipelines.request` and `lunar.search.pipelines.results` by the service provider unless they are already listed. A host that sets those keys explicitly in `config/lunar/search.php` controls their order, and can leave one out; `PartNumberRetrieval` and `WidenRequest` must run in that order, and `WidenRequest` must run before any stage that changes the page.

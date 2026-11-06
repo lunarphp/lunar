@@ -37,6 +37,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Search relevance — request/results pipelines in `search`, and the `search-relevance` add-on: logging, scoring, learned reranking, panel section (spec 0084)
 - Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
 - Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)

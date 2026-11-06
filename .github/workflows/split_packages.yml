@@ -35,6 +35,12 @@ jobs:
       - name: Build bundles add-on bundle
         run: npm run build --workspace @lunarphp/bundles-addon
 
+      - name: Build search relevance add-on bundle
+        run: npm run build --workspace @lunarphp/search-relevance-addon
+
+      - name: Build search relevance storefront client
+        run: npm run build --workspace @lunarphp/search-relevance
+
       - uses: actions/upload-artifact@v4
         with:
           name: compiled-assets
@@ -42,6 +48,8 @@ jobs:
           path: |
             packages/panel/public/build
             packages/bundles/build
+            packages/search-relevance/build
+            packages/search-relevance/resources/client/dist
 
   split-monorepo:
     needs: build-assets
@@ -60,6 +68,7 @@ jobs:
           - "panel-addon-example"
           - "paypal"
           - "search"
+          - "search-relevance"
           - "stripe"
           - "table-rate-shipping"
           - "upgrade"
@@ -67,7 +76,8 @@ jobs:
       - uses: actions/checkout@v6
 
       # Gitignored only at the repo root, which the split doesn't carry, so the
-      # action's `git add .` commits these into lunarphp/panel and lunarphp/bundles.
+      # action's `git add .` commits these into lunarphp/panel, lunarphp/bundles and
+      # lunarphp/search-relevance.
       - uses: actions/download-artifact@v4
         with:
           name: compiled-assets
