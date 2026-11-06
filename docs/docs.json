@@ -180,7 +180,8 @@
           {
             "group": "Add-on sections",
             "pages": [
-              "admin/bundles"
+              "admin/bundles",
+              "admin/search-relevance"
             ]
           },
           {
@@ -220,6 +221,7 @@
             "pages": [
               "addons/table-rate-shipping",
               "addons/search",
+              "addons/search-relevance",
               "addons/bundles"
             ]
           },

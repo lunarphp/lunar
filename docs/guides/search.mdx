@@ -428,6 +428,26 @@ After changing which attributes are searchable, reimport the search index with `
 
 See the [Search reference](/reference/search#product-indexer) for the complete list of fields the default product indexer sends to the search engine.
 
+## Make Search Learn
+
+Out of the box, results appear in the order the engine chooses, and nothing improves with traffic. The [Search Relevance](/addons/search-relevance) add-on logs each search, follows clicks through to cart additions and purchases, and reorders results for each query from what shoppers actually chose. Install it, leave it in its default `shadow` mode while it collects data, and add two lines to the results page so clicks are recorded:
+
+```blade
+{{-- once per results page --}}
+<x-lunar-search-relevance::tracking :results="$results" />
+
+{{-- on each result --}}
+<div {{ lunar_search_attrs($results, $hit) }}>
+    <a href="{{ route('products.show', $hit->document['id']) }}">...</a>
+</div>
+```
+
+`lunar_search_attrs()` renders the `data-lunar-*` attributes the tracking script reads, and outputs nothing when the search was not logged, so the markup is safe before the add-on is switched on. Headless storefronts post the same data to the add-on's events endpoint; see [Storefront tracking](/addons/search-relevance#storefront-tracking).
+
+<Tip>
+With hybrid (semantic) search a distance threshold stops nonsense queries from returning every product, which means some queries return nothing. Render a clear zero-results state (a message, popular collections, a link back to the catalog) rather than loosening the threshold so the engine pads the page. Padded results are unrelated products, and every click on one teaches the ranking the wrong thing.
+</Tip>
+
 ## Routes
 
 ```php
