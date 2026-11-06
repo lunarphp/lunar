@@ -41,7 +41,7 @@ An add-on page renders inside the real panel chrome — nav sidebar, mobile draw
 
 ### Using the standard page scaffolding
 
-The panel exposes a page-building set at runtime through `@lunarphp/panel` — layout and chrome (`PageHeader`, `PageZone`, `Breadcrumbs`, `SettingsShell`), data (`DataTable`, `Pagination`, `PageEmpty`, `StatusBadge`), filters and stats (`FilterDropdown`, `KpiCard`), form inputs (`TextInput`, `Select`, `Checkbox`, and so on), overlays (`Dialog`, `Slideout`, `ConfirmDialog`, `Tooltip`, `Tabs`), cards (`Section` for a main-column card, `SideCard` for the sidebar), and `Button`/`Icon`. The add-on's Vite plugin externalizes the `@lunarphp/panel` import to the panel's own components (`window.LunarPanelUI`) exactly the way it externalizes `vue`, so nothing is duplicated. From `resources/js/pages/Widgets/Index.vue`:
+The panel exposes a page-building set at runtime through `@lunarphp/panel` — layout and chrome (`PageHeader`, `PageZone`, `Breadcrumbs`, `SettingsShell`), data (`DataTable`, `Pagination`, `PageEmpty`, `StatusBadge`), filters and stats (`FilterDropdown`, `KpiCard`), form inputs (`TextInput`, `Select`, `Checkbox`, and so on), overlays (`Dialog`, `Slideout`, `ConfirmDialog`, `Tooltip`, `Tabs`), cards (`Section` for a main-column card, `SideCard` for the sidebar), `StickySidebar` (a sidebar column that scrolls with the page and pins when its end is in view), and `Button`/`Icon`. The add-on's Vite plugin externalizes the `@lunarphp/panel` import to the panel's own components (`window.LunarPanelUI`) exactly the way it externalizes `vue`, so nothing is duplicated. From `resources/js/pages/Widgets/Index.vue`:
 
 ```vue
 <script setup lang="ts">
