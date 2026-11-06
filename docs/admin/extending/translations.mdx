@@ -1,0 +1,88 @@
+---
+title: "Translating an Add-on"
+sidebarTitle: "Translations"
+description: "How an add-on's strings join the panel's translations endpoint and its Vue pages."
+---
+
+An [add-on](/admin/extending/addons)'s strings live in ordinary Laravel lang groups — no separate JS message files to maintain. The panel serves them to its Vue frontend through the same translations endpoint that serves its own strings.
+
+## Lang files
+
+Lay out translations exactly as any Laravel package would, under the add-on's own `resources/lang/{locale}/{group}.php`:
+
+```php
+// resources/lang/en/example.php
+return [
+    'nav_group' => 'Example Add-on',
+    'nav_label' => 'Example Add-on',
+    'title' => 'Example Add-on',
+    'widget_label' => 'Customer counts',
+    'widget_total' => 'Total customers',
+    'widget_recent' => 'New in range',
+    // ...
+];
+```
+
+Register the namespace in the add-on's service provider, as any Laravel package does:
+
+```php
+public function boot(): void
+{
+    $this->loadTranslationsFrom(dirname(__DIR__).'/resources/lang', 'example-addon');
+
+    // ...
+}
+```
+
+## `langNamespaces()`
+
+Registering the translator namespace makes it available to Laravel's own `__()` calls, but the panel's Vue frontend cannot read PHP lang files directly. Opt the namespace into the panel's translations endpoint from the add-on's `Section` (or `SectionExtension`):
+
+```php
+public function langNamespaces(): array
+{
+    return ['example-addon'];
+}
+```
+
+The panel's translations endpoint then serves every lang group under that namespace as `{namespace}::{group}` message keys — cached and versioned together with the panel's own strings. Code that is not a `Section` can call `Lunar\Panel\PanelManager` (via the `Panel` facade)'s `translations('example-addon')` directly for the same effect.
+
+## Using the keys
+
+The same keys work on both the server and the client, through each side's own resolver:
+
+- **Server-side** (navigation labels, flash messages) — plain Laravel lang-key resolution through `__()`:
+
+  ```php
+  $registry->addItem('example-addon-group', new NavigationItem(
+      key: 'example-addon',
+      label: 'example-addon::example.nav_label',
+      // ...
+  ));
+  ```
+
+  Passing the lang key string directly (rather than calling `__()` inline) is the established pattern for navigation labels — the registry resolves it through `__()` when the navigation tree is shared to the frontend.
+
+- **Client-side** — Vue pages import `useI18n` from `vue-i18n` (externalised to the panel's own shared instance by `@lunarphp/panel-vite-plugin`, so the add-on never bundles a second i18n runtime) and call `t()` with the namespaced key:
+
+  ```vue
+  <script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
+  </script>
+
+  <template>
+      <h1>{{ t('example-addon::example.title') }}</h1>
+  </template>
+  ```
+
+## Locales
+
+The panel ships translations for 16 locales: `ar`, `bg`, `de`, `en`, `es`, `fa`, `fr`, `hr`, `hu`, `mn`, `nl`, `pl`, `pt_BR`, `ro`, `tr`, `vi`. An add-on is not required to match that set — ship whichever locales are supported. A locale the add-on lacks falls back to the app's fallback locale for that namespace only, so a partially translated add-on never blanks out the rest of the panel's own locale switcher for a staff member using an unsupported language.
+
+Staff pick their panel language from the user menu; the choice persists as `staff.preferred_locale` and applies to the translations an add-on's own strings resolve into, same as the panel's.
+
+## The runtime escape hatch
+
+`window.LunarPanel.registerTranslations(locale, namespace, messages)` pushes vue-i18n messages for a namespace directly at runtime, merging over whatever the translations endpoint served. Prefer `langNamespaces()` (PHP lang files) for anything that should version and cache alongside the rest of the panel's translations — this call exists for messages that only ever exist client-side and have no PHP-side lang file to back them.

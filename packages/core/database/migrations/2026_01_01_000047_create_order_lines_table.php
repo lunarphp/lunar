@@ -12,6 +12,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->ulid('public_id')->unique();
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
+            $table->foreignId('parent_line_id')->nullable()->index()->constrained($this->prefix.'order_lines')->cascadeOnDelete()->comment('Set on a component line that belongs to another line (a bundle part); never priced');
             $table->nullableMorphs('purchasable');
             $table->string('type')->index();
             $table->boolean('requires_shipping')->default(false)->index()->comment('Needs physical delivery; stamped from the purchasable isShippable()');

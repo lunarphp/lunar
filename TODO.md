@@ -9,10 +9,13 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 ## Outstanding
 
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
-- Attribute field-type configuration schema — declarative config surface for field types in the panel settings (spec 0054)
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
+- Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
 - Cart totals caching in the database — additive performance optimisation
+- Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
+- Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
+- Versioned docs — each major version's docs live in the monorepo on its version branch and publish when that version releases (spec 0094)
 - Add Boost guidelines to packages
 
 ## Ideas
@@ -35,6 +38,11 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 ## Done
 
 - Default customer notifications for the order lifecycle — nine branded, overridable defaults, the `placed` listener and gate, `refund-issued` key (spec 0036)
+- Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
+- PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
+- Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
+- Cached model manifest: `php artisan optimize` writes the discovered models to `bootstrap/cache/lunar_models.php`, removing the per-request directory scan (spec 0089)
+- Attribute field-type configuration schema — field types declare their settings once in core; the panel and Filament bridge both render from the descriptors (spec 0054)
 - Filament admin & bridge hardening — standalone bridge, dead hooks and config, locale nav groups, guard and asset id (spec 0076)
 - First staff account creation in core — `lunar:create-admin` moves out of the Filament admin; panel install offers it (spec 0075)
 - Panel global search — Cmd+K palette across orders, customers, products, collections, brands; quick actions; extensible by add-ons (spec 0074)

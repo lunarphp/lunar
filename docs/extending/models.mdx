@@ -1,0 +1,190 @@
+---
+title: "Extending Models"
+sidebarTitle: "Models"
+---
+
+Lunar's Eloquent models are extended using Laravel's native mechanisms, plus two small Lunar-specific seams for the cases natives don't cover.
+
+## Overview
+
+In v1, a Lunar model could be replaced entirely with a consumer's subclass, registered through `ModelManifest`. v2 removes this. Lunar's models keep a single concrete class identity throughout the framework: `Lunar\Core\Models\Product` is always `Lunar\Core\Models\Product`, never a consumer's subclass standing in for it.
+
+<Warning>
+Model class substitution — registering `App\Models\Product extends Lunar\Core\Models\Product` and having Lunar hand back instances of it everywhere — is no longer supported. Keeping two live class identities for one logical model broke native Eloquent mechanisms in subtle ways: event listeners could fire twice, externally registered global scopes were silently dropped, and every relationship, morph lookup, and factory resolution needed special-cased forwarding. Every one of substitution's real use cases is covered by one of the recipes below.
+</Warning>
+
+Every recipe on this page is exercised against real Lunar models in the package's own test suite, so each is guaranteed to work against the current release.
+
+## Add a relationship
+
+Use Laravel's dynamic relationships from a service provider's `boot` method. This works on any Lunar model without needing to replace it.
+
+```php
+use Lunar\Core\Models\Product;
+use App\Models\Supplier;
+
+Product::resolveRelationUsing(
+    'supplier',
+    fn (Product $product) => $product->belongsTo(Supplier::class),
+);
+
+// $product->supplier
+```
+
+See the [Laravel documentation on dynamic relationships](https://laravel.com/docs/eloquent-relationships#dynamic-relationships) for more information.
+
+## Add a method
+
+Use a model macro, registered from a service provider's `boot` method.
+
+```php
+use Lunar\Core\Models\Product;
+
+Product::macro('hasIdentity', function () {
+    return $this->exists;
+});
+
+// $product->hasIdentity()
+```
+
+<Warning>
+Use a real closure, not an arrow function. `Macroable` rebinds the macro to the model instance via `bindTo`, which arrow functions ignore.
+</Warning>
+
+## Add a column
+
+Add the column with a migration; nothing else is needed. Lunar's models are unguarded, so a new column is immediately a readable and writable attribute.
+
+```php
+Schema::table((new Product)->getTable(), function (Blueprint $table) {
+    $table->string('external_ref')->nullable();
+});
+
+// $product->external_ref
+```
+
+## Cast an added column
+
+Register the cast from a service provider's `boot` method with `addCasts()`, backed by `Lunar\Core\Models\Concerns\HasExtendableCasts`, a trait every Lunar model uses. It accepts the same values as a model's own `casts()` method, including a custom cast class — the way to attach an accessor/mutator pair to an added column.
+
+```php
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Lunar\Core\Models\Product;
+
+Product::addCasts([
+    'external_ref' => 'string',
+    'metadata' => AsArrayObject::class,
+]);
+
+// $product->metadata is an ArrayObject
+```
+
+`addCasts()` merges into whatever casts the model already declares, so it never has to be aware of Lunar's own casts. It only makes sense for columns the consumer has added; Lunar's own columns are already cast correctly.
+
+## Constrain every query
+
+Use a global scope, registered from a service provider's `boot` method.
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Core\Models\Product;
+
+Product::addGlobalScope('inStock', fn (Builder $query) => $query->where('stock', '>', 0));
+```
+
+## Add an optional query scope
+
+Global scopes are always on. For a scope that should only apply when called — the equivalent of a local scope method, but registered from outside the model class — use `addLocalScope()`, a method every Lunar model gets from `Models\Base`.
+
+```php
+use Lunar\Core\Models\Builders\Builder;
+use Lunar\Core\Models\Product;
+
+Product::addLocalScope('featured', fn (Builder $query) => $query->where('is_featured', true));
+
+Product::addLocalScope('priorityOver', fn (Builder $query, int $min) => $query->where('priority', '>', $min));
+```
+
+Once registered, a scope is indistinguishable from a native one — callable on the query builder or as a static entry point, and chainable with everything else:
+
+```php
+Product::query()->featured()->get();
+Product::featured()->paginate();
+Product::priorityOver(5)->get();
+
+Product::query()->featured()->channel($channel)->orderBy('name')->get();
+```
+
+A scope registered against `Product` is callable only on `Product` queries; calling it on `Order::query()` throws `BadMethodCallException`, the same as a mistyped native scope. If a registered name collides with one of Lunar's own local scopes, macros, or query builder methods, the native one always wins — a registered scope can never shadow a built-in.
+
+<Info>
+This works even for `Lunar\Core\Models\Collection`, which uses its own nested-set query builder rather than Lunar's default `Lunar\Core\Models\Builders\Builder`. Both compose the same underlying resolution logic, so `Collection::addLocalScope()` behaves identically to any other model.
+</Info>
+
+### Type safety for registered scopes
+
+A registered scope is resolved at runtime, so there's nothing static for an IDE or PHPStan to read — the same limitation that already applies to macros and dynamic relationships. Declare the signature once in a stub file the application owns and excludes from autoload:
+
+```php
+// ide/lunar-scopes.php
+namespace Lunar\Core\Models;
+
+use Lunar\Core\Models\Builders\Builder;
+
+/**
+ * @method static Builder featured()
+ * @method static Builder priorityOver(int $min)
+ */
+class Product {}
+```
+
+PhpStorm and PHPStan merge the docblock onto the real `Product` class, so `Product::featured()->priorityOver(5)->get()` completes and type-checks. For PhpStorm, `barryvdh/laravel-ide-helper` writes a similar guarded, never-executed redeclaration into `_ide_helper_models.php`; since its generator cannot see runtime-registered closures, add the `@method` lines to that file's `Product` block by hand. For PHPStan or Psalm, point `stubFiles` at a stub declaring the same lines.
+
+## React to lifecycle events
+
+Use a model observer or an event listener, exactly as with any other Eloquent model.
+
+```php
+use Lunar\Core\Models\Product;
+
+Product::observe(ProductObserver::class);
+
+// or:
+Event::listen('eloquent.saved: '.Product::class, function (Product $product) {
+    // ...
+});
+```
+
+## Override behavior
+
+Model verb methods — `$order->cancel()`, `$cart->createOrder()` — are thin delegations to an action contract resolved from the container. To change what happens, bind a different implementation of the contract in a service provider; the verb picks it up automatically. See [Extending Orders](/extending/orders) and [Extending Carts](/extending/carts) for the contracts available on each model.
+
+```php
+use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
+
+$this->app->bind(CancelsOrder::class, MyCancelsOrder::class);
+```
+
+This is not a model concern: swapping behavior always goes through the container, never through subclassing a model.
+
+## Serialization
+
+For array or JSON output, use `append()` or `makeVisible()` per instance, or wrap the model in an [API Resource](https://laravel.com/docs/eloquent-resources) in the consuming application's own layer.
+
+## What replaced model class substitution
+
+| v1 use case | v2 replacement |
+| --- | --- |
+| Subclass to add a relationship | `Model::resolveRelationUsing()` |
+| Subclass to add a method | Model macro |
+| Subclass to add a cast or accessor/mutator | `Model::addCasts()` |
+| Subclass to add a query scope | `Model::addLocalScope()` |
+| Subclass to override behavior | Bind the action contract in the container |
+| Subclass to react to model events | `Model::observe()` or `Event::listen()` |
+| Subclass only to expose an added column | No longer needed — an added column is already a readable and writable attribute |
+
+The `Lunar\Core\Models\Contracts\*` interfaces that v1 used to resolve a model to its (possibly substituted) class no longer exist, since there is nothing left to resolve — a Lunar model is always the Lunar class. Route model binding, relationship loading, and the morph map all resolve directly to `Lunar\Core\Models\*` classes.
+
+<Warning>
+Rather than modifying fields on Lunar's core models, create separate Eloquent models in the consuming application and relate them to Lunar's models. This keeps custom data separate and avoids conflicts during upgrades.
+</Warning>

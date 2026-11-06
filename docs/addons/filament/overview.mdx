@@ -1,0 +1,43 @@
+---
+title: "Overview"
+description: "Lunar's Filament admin packages: the turnkey lunarphp/admin panel and the lunarphp/filament bridge library."
+---
+
+Lunar's recommended admin panel for v2 is the Inertia and Vue panel, [`lunarphp/panel`](/admin/introduction). Alongside it, Lunar ships two first-party Filament packages for projects that are invested in the Filament ecosystem — an existing store with Filament customizations from v1, or an application whose back office is already a Filament panel:
+
+| Package | What it is |
+| --- | --- |
+| `lunarphp/admin` | A turnkey admin panel built on Filament v5: navigation, branding, authentication, a dashboard, and resources for the full Lunar surface. This is the v1 admin panel, rebuilt for v2. |
+| `lunarphp/filament` | Not a panel — a bridge library of reusable Filament v5 building blocks (entity selectors, form schemas, tables, actions, widgets, global search) that plug into **any** Filament v5 panel. `lunarphp/admin` is itself built on top of it. |
+
+Both coexist with `lunarphp/panel` in the same application; nothing about the Filament packages changes when the Inertia panel is installed, and vice versa.
+
+<Warning>
+The package and class names are easy to confuse. `lunarphp/admin`'s service provider is `Lunar\Admin\LunarPanelProvider` and its facade is `LunarPanel` — despite the "panel" naming, these belong to the **Filament** admin. The Inertia panel (`lunarphp/panel`) uses `Lunar\Panel\PanelServiceProvider`. The two are otherwise unrelated packages.
+</Warning>
+
+## How the packages fit together
+
+`lunarphp/admin` is a thin shell over the bridge: it registers a preconfigured Filament panel (path, guard, branding, navigation) and pulls in every bridge resource, schema, and widget via `Lunar\Filament\LunarPlugin`. All of the form and table definitions, relation managers, actions, and global-search descriptors live in `lunarphp/filament`.
+
+That split means there are two ways to run a Filament-based Lunar admin:
+
+- **Turnkey** — install `lunarphp/admin` and get a complete panel at `/admin` with one `LunarPanel::register()` call.
+- **Bring your own panel** — install only `lunarphp/filament` and compose Lunar's building blocks into an existing Filament v5 panel, picking exactly the pieces the project needs.
+
+## Which one to use
+
+<Info>
+For a new v2 project, start with the Inertia panel — see its [installation guide](/admin/installation). Reach for `lunarphp/admin` when upgrading a v1 store that has Filament-based customizations, and for `lunarphp/filament` when building a bespoke Filament panel that needs Lunar's components.
+</Info>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/addons/filament/installation">
+    Install the turnkey panel, or plug the bridge into an existing Filament panel.
+  </Card>
+  <Card title="Extending" icon="puzzle-piece" href="/addons/filament/extending">
+    Extension hooks, custom resources, publishable schemas, and the bridge component library.
+  </Card>
+</CardGroup>

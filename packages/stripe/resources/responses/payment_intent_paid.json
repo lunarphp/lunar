@@ -3,7 +3,7 @@
   "object": "payment_intent",
   "amount": "{amount}",
   "amount_capturable": "{amount}",
-  "amount_received": "{amount}",
+  "amount_received": "{amount_received}",
   "application": null,
   "application_fee_amount": null,
   "automatic_payment_methods": null,
