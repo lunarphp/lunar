@@ -1,0 +1,100 @@
+---
+title: "Extending the Admin Panel"
+description: "The concepts behind extending Lunar's admin panel: sections, hooks, and the registries a service provider can call directly."
+---
+
+Every screen, navigation item, table, and dashboard widget in Lunar's admin panel is exposed to extension through a `Section` — a small class of hook methods that a service provider registers before the panel processes it at boot.
+
+## Sections
+
+A `Section` (`Lunar\Panel\Sections\Section`) is an area of the panel: it owns a key, contributes navigation, and can register routes, table extensions, page actions, slots, dashboard widgets, and more. Every first-party area of the panel — Sales, Catalog, Settings' sub-sections — is a `Section`, and an add-on registers its own the same way.
+
+A `SectionExtension` (`Lunar\Panel\Sections\SectionExtension`) grafts onto a section owned by someone else instead of standing alone. It supports the same hooks as `Section`, minus `key()`/`label()`, plus one required method:
+
+```php
+use Lunar\Panel\Sections\SectionExtension;
+
+class SalesExtension extends SectionExtension
+{
+    public function extends(): string
+    {
+        return 'sales';
+    }
+
+    // ...any of the Section hooks
+}
+```
+
+Use a `Section` when the add-on stands alone (its own navigation group, its own pages). Use a `SectionExtension` when it's conceptually part of an existing area — extra navigation under Sales, say. An `extends()` key that matches no registered section logs a warning and the extension is skipped, so load order between add-ons never throws.
+
+### Registering a section
+
+Register both kinds through the `Lunar\Panel\Facades\Panel` facade:
+
+```php
+use Lunar\Panel\Facades\Panel;
+
+Panel::section(new MySection);          // an area the add-on owns
+Panel::extendSection(new MyExtension);  // grafted onto someone else's section
+```
+
+<Warning>
+Register sections and extensions inside a service provider's `boot()` method. Sections are processed once during the application's own boot, and a registration arriving after that point is silently ignored — `Lunar\Panel\PanelManager` logs a warning naming the late class, but nothing throws.
+</Warning>
+
+## The hook table
+
+Every `Section` and `SectionExtension` implements the same set of hooks, each returning an empty default so overriding one is opt-in.
+
+| Hook | What it registers |
+|:-----|:-------------------|
+| `key()` | The section's stable identifier (required on `Section`; a `SectionExtension` names its target section with `extends()` instead). |
+| `label()` | The section's display label; defaults to `ucfirst($this->key())`. |
+| `navigation(NavigationRegistry $registry)` | Sidebar groups and items — label, icon, route, permission handle, priority or `Position`. |
+| `settingsNavigation(NavigationRegistry $registry)` | Items in the Settings sidebar, using the same registry shape. |
+| `routes(): ?Closure` | Routes, run inside the panel's own route group so the configured prefix, guard, and middleware apply automatically. Gate individual routes with `can:` middleware. |
+| `slots(SlotRegistry $registry)` | Injects a Vue component into a named zone on a page owned by another section. |
+| `tableExtensions(): array` | Extra `TableColumn`s, `TableFilter`s, `TableAction`s, and `TableBulkAction`s for a table id, e.g. `['customers.index' => MyTableExtension::class]`. |
+| `pageActions(): array` | `PageAction` classes for a page's header ellipsis, keyed by page id. |
+| `draftables(): array` | `DraftableResource` definitions describing which fields an edit form drafts and how a draft commits. |
+| `draftSlices(): array` | `DraftSlice` classes the panel's own sections register under a bare namespace on a draftable model. |
+| `draftExtensions(): array` | `DraftSlice` classes an add-on contributes to a first-party edit draft, placed under the reserved `addon:{key}` namespace. |
+| `discountTypeForms(): array` | Panel forms for discount types this section owns, keyed by the discount type class. |
+| `searchSources(): array` | Sources the global search palette can find records in. |
+| `searchCommands(): array` | Static verbs the global search palette offers alongside record results. |
+| `widgets(): array` | Dashboard `Widget` classes. |
+| `vite(): array\|string\|null` | The compiled JS module config for this section's own bundle. |
+| `langNamespaces(): array` | Laravel translator namespaces whose lang groups the panel's translations endpoint serves to the frontend. |
+
+`Section::draftables()`, `draftSlices()`, `draftExtensions()`, `discountTypeForms()`, `searchSources()`, `searchCommands()`, and `widgets()` are also available on `SectionExtension`.
+
+## Non-section escape hatches
+
+Everything a `Section` hook does is a thin wrapper around a method on `Lunar\Panel\PanelManager`, fronted by the `Panel` facade. Code that doesn't fit the shape of an area — a single table extension registered from a package's own bootstrapping, say — can call these directly instead of writing a `Section`:
+
+| Method | Purpose |
+|:-------|:--------|
+| `Panel::extendTable($tableId, $extensionClass)` | Add a `TableExtension` to a table id without a `Section`. |
+| `Panel::addPageAction($pageId, $actionClass)` | Add a `PageAction` to a page's header. |
+| `Panel::registerRoutes($callback)` | Register routes directly, run inside the panel's route group. |
+| `Panel::slots()` | Get the `SlotRegistry` to add a `Slot` directly. |
+| `Panel::navigation()` / `Panel::settingsNavigation()` | Get the `NavigationRegistry` directly. |
+| `Panel::translations(...$namespaces)` | Opt lang namespaces into the frontend translations endpoint. |
+| `Panel::vite($name, $config)` | Register a compiled JS module. |
+| `Panel::widget($widgetClass)` | Add a dashboard widget. |
+
+Sections are the organized way of calling these; reach for the escape hatch only when a full `Section` class would be pure ceremony.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Building an add-on" href="/admin/extending/addons">
+    Scaffold a distributable Composer + npm package, from the service provider through compiling and shipping the JS bundle.
+  </Card>
+  <Card title="Pages and navigation" href="/admin/extending/pages">
+    Register routes, build an Inertia page with the standard scaffolding, and add navigation and settings-navigation entries.
+  </Card>
+  <Card title="Ordering with Position" href="/admin/extending/ordering">
+    Anchor navigation items, table columns, and actions relative to each other with `Lunar\Panel\Support\Position`.
+  </Card>
+</CardGroup>

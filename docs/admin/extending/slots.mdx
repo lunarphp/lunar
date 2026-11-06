@@ -1,0 +1,171 @@
+---
+title: "Slots"
+sidebarTitle: "Slots"
+description: "How to inject a Vue component into a named zone on a panel page owned by another part of the panel."
+---
+
+A slot renders an add-on's own Vue component inside a first-party (or another add-on's) panel page, at a spot that page has deliberately exposed — without the target page knowing the add-on exists.
+
+## Why slots exist
+
+The panel's product edit page ships with no SEO section by design: it is the reference example of what a slot is for. Rather than the panel guessing at every field a store might want on that page, the page exposes named zones at its meaningful seams, and an SEO add-on (or any other) injects a card into one of them. The [worked example](#worked-example-an-seo-card) below is that add-on, drawn from `lunarphp/panel-addon-example`.
+
+## The zone-naming convention
+
+A zone name has the shape `{page}:{region}[:position]`:
+
+- `{page}` — the panel route name for the target page, **with the `panel.` prefix stripped**. `Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests` derives the current page's id the same way, from `$request->route()->getName()`, so a zone only matches if this segment is exactly right.
+- `{region}` — a named slot inside that page's Vue template, declared by a `<PageZone region="..." />`.
+- `[:position]` — an optional qualifier the page template defines, almost always `before` or `after`.
+
+<Warning>
+Zone prefixes come from the target page's actual **route name**, not from what the page conceptually does. The Customers edit page is routed as `panel.customers.edit` — there is no separate `panel.customers.show` — so the correct zone prefix is `customers.edit`. A slot registered against a prefix that matches no page's route simply never renders: `Lunar\Panel\Slots\SlotRegistry::forPage()` finds no match, and nothing logs or throws. If a slot isn't appearing, check this first.
+</Warning>
+
+## Registering a slot
+
+Add a slot from a `Section`'s (or `SectionExtension`'s) `slots()` hook:
+
+```php
+use Lunar\Panel\Slots\Slot;
+use Lunar\Panel\Slots\SlotRegistry;
+
+public function slots(SlotRegistry $registry): void
+{
+    $registry->add(new Slot(
+        zone: 'customers.edit:main:after',
+        component: 'example-addon::InfoBanner',
+        props: ['message' => 'This banner was injected by the example add-on via a slot.'],
+    ));
+}
+```
+
+`Lunar\Panel\Slots\Slot` takes:
+
+| Parameter | Purpose |
+|:----------|:--------|
+| `zone` | The target zone name, e.g. `customers.edit:main:after`. |
+| `component` | The namespaced Vue component name (`{key}::ComponentName`), resolved the same way as a page or a dashboard widget component. |
+| `props` | Static props merged onto the component, e.g. `['message' => '...']`. Defaults to `[]`. |
+| `permission` | A manifest permission handle. A staff member lacking it never receives the slot in `slots` at all — not merely hidden client-side. Defaults to `null` (always visible). |
+| `priority` | An integer controlling order among multiple slots in the *same* zone; lower renders first. Defaults to `50`. |
+
+<Info>
+Slot ordering is a plain ascending `priority` integer, not the `before`/`after` anchor-capable `Lunar\Panel\Support\Position` primitive used by navigation, table columns, and actions (see [Ordering with Position](/admin/extending/ordering)). Two slots in the same zone with equal priority keep registration order.
+</Info>
+
+Outside a `Section`, call `Panel::slots()->add(new Slot(...))` directly via the `Lunar\Panel\Facades\Panel` facade.
+
+## How the record prop flows
+
+Where a page's zone sits next to a record, the page passes that record down as a prop on its `<PageZone>` tag, for example the product edit page:
+
+```vue
+<PageZone region="content" position="after" :product="product" />
+```
+
+`Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests` shares the resolved slots for the current page as the `slots` Inertia prop; `PageZone.vue` computes the zone name from the page id and forwards any extra attributes (`:product="product"` becomes an `$attrs` entry) to `PanelSlot.vue`, which binds them onto the resolved component **after** the slot's own static `props`:
+
+```
+v-bind="{ ...resolved.entry.props, ...attrs }"
+```
+
+So a slot component receives its registered `props` plus whatever record the page zone carries — the page's record prop wins if a key collides with a static one, though in practice they use different names. A component only reads the props it needs; it doesn't have to declare `product` if it doesn't use it.
+
+## Registering the component
+
+Register the Vue component at the **top level** of the add-on's compiled bundle, namespaced under the add-on's own key, never inside `window.LunarPanel.booting()` (whose callbacks run after the panel's first render — too late for a component a slot needs on first load):
+
+```ts
+window.LunarPanel.registerComponents('example-addon', {
+    InfoBanner: InfoBannerComponent,
+});
+```
+
+See [Building an Add-on](/admin/extending/addons) for the full bundle setup.
+
+## Worked example: an SEO card
+
+`src/ExampleSection.php` in `lunarphp/panel-addon-example` registers three slots: a plain banner on the Customers edit page, a loyalty card on the same page that takes part in the customer's save through a [draft slice](/admin/extending/draft-slices), and the canonical SEO card on the product edit page:
+
+```php
+public function slots(SlotRegistry $registry): void
+{
+    // Demonstrates the slot mechanism on the Customer edit page. The zone prefix must
+    // match the page's route name with the "panel." prefix stripped — our route is
+    // named panel.customers.edit (there's no separate "show" route), so the zone is
+    // "customers.edit", not the spec's illustrative "customers.show".
+    $registry->add(new Slot(
+        zone: 'customers.edit:main:after',
+        component: 'example-addon::InfoBanner',
+        props: ['message' => 'This banner was injected by the example add-on via a slot.'],
+    ));
+
+    // A slot component that takes part in the page's save: LoyaltyCard binds
+    // to the LoyaltyTierSlice registered in draftExtensions() through
+    // useDraftSlice('example-addon'), so its field autosaves and commits
+    // with the customer's own.
+    $registry->add(new Slot(
+        zone: 'customers.edit:main:after',
+        component: 'example-addon::LoyaltyCard',
+    ));
+
+    // The product edit page deliberately ships no SEO section: an add-on
+    // injects one into the content-adjacent zone between the content cluster
+    // and the variants block. The zone passes the page's product to the component.
+    $registry->add(new Slot(
+        zone: 'products.edit:content:after',
+        component: 'example-addon::SeoCard',
+    ));
+}
+```
+
+`resources/js/components/SeoCard.vue` reads the `product` prop the zone passes down:
+
+```vue
+<script setup lang="ts">
+const props = defineProps<{
+    product?: { id: number; display_name?: string };
+}>();
+</script>
+```
+
+The example card keeps its state local to stay a pure slot demonstration. A real SEO add-on would join the product's edit draft with a [draft slice](/admin/extending/draft-slices), as the loyalty card does on the customer page, so its fields save with the product.
+
+## Known first-party zones
+
+Every zone a first-party page currently exposes, found by searching for `<PageZone` under `packages/panel/resources/js/pages/`. Where a page has no bound record (a listing or create page), its zones receive no extra props; where it does, the props passed are listed.
+
+| Page (zone prefix) | Zones | Record props |
+|:--------------------|:------|:--------------|
+| `dashboard` | `main:before`, `main:after` | — |
+| `customers.index` | `main:before`, `main:after` | — |
+| `customers.create` | `main:before`, `main:after` | — |
+| `customers.edit` | `main:before`, `main:after` | `customer` (on `main:after`) |
+| `products.index` | `main:before`, `main:after` | — |
+| `products.create` | `main:before`, `main:after` | — |
+| `products.edit` | `main:before`, `content:after`, `variants:after`, `main:after`, `sidebar:before`, `sidebar:after` | `product` |
+| `products.variants.edit` | `main:before`, `main:after`, `sidebar:after` | `variant` |
+| `brands.index` | `main:before`, `main:after` | — |
+| `brands.create` | `main:before`, `main:after` | — |
+| `brands.edit` | `main:before`, `main:after`, `sidebar:after` | `brand` |
+| `product-types.index` | `main:before`, `main:after` | — |
+| `product-types.create` | `main:before`, `main:after` | — |
+| `product-types.edit` | `main:before`, `main:after`, `sidebar:after` | `product-type` |
+| `collections.index` | `main:before`, `main:after` | — |
+| `collections.create` | `main:before`, `main:after` | — |
+| `collections.edit` | `main:before`, `main:after`, `sidebar:after` | `collection` |
+| `discounts.index` | `main:before`, `main:after` | — |
+| `discounts.create` | `main:before`, `main:after` | — |
+| `discounts.edit` | `main:before`, `main:after`, `sidebar:before`, `sidebar:after` | `discount` |
+| `orders.index` | `main:before`, `main:after` | — |
+| `orders.show` | `main:before`, `main:after`, `sidebar:before`, `sidebar:after` | `order`, `shipping-option` |
+
+The product edit page's `content:after` zone (between the Basics/Media/Attributes cluster and the variants block) is the one the SEO card walkthrough above targets — it is the intended home for a content-adjacent card like SEO. New zones are added to first-party pages over time; re-run the same search against a current checkout of `packages/panel/resources/js/pages/` to confirm a zone still exists before relying on it.
+
+## See also
+
+- [Extending Tables](/admin/extending/tables) — the equivalent mechanism for adding columns, filters, and actions to a table instead of injecting a component into a page.
+- [Page Actions](/admin/extending/page-actions) — adding a header action rather than body content.
+- [Draft Slices](/admin/extending/draft-slices) — letting a slot component's fields autosave and commit with the page's record.
+- [Ordering with Position](/admin/extending/ordering) — the shared placement primitive used elsewhere in the panel (not slots, which use a plain `priority` integer).

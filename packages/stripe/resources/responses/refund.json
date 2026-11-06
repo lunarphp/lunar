@@ -5,5 +5,5 @@
   "currency": "usd",
   "payment_intent": "{payment_intent}",
   "reason": null,
-  "status": "succeeded"
+  "status": "{refund_status}"
 }

@@ -224,7 +224,8 @@ it('registers the example add-on vite module', function () {
     $vites = app(PanelManager::class)->registeredVites();
 
     expect($vites)->toHaveKey('example-addon')
-        ->and($vites['example-addon']['buildDirectory'])->toBe('vendor/lunar-panel/example-addon');
+        ->and($vites['example-addon']['buildDirectory'])->toBe('vendor/lunar-panel/example-addon')
+        ->and($vites['example-addon']['input'])->toBe(['resources/js/addon.ts', 'style.css']);
 });
 
 it('symlinks the example add-on build directory via lunar:panel:link', function () {

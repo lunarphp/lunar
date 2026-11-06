@@ -1,0 +1,122 @@
+---
+title: "Page Actions"
+sidebarTitle: "Page Actions"
+description: "How to add an action to a panel page's header, on a listing or a record page."
+---
+
+Where a `TableAction` targets a row, a `Lunar\Panel\Actions\PageAction` targets a page's header — "Import" above a listing, "Audit log" on a record page.
+
+## Registering a page action
+
+Register `PageAction` classes from a `Section`'s `pageActions()` hook, keyed by page id — the same route-name-derived ids a [slot](/admin/extending/slots) zone uses:
+
+```php
+public function pageActions(): array
+{
+    return [
+        'customers.index' => [ImportPageAction::class],
+        'customers.edit' => [AuditPageAction::class],
+    ];
+}
+```
+
+Outside a `Section`, call `Panel::addPageAction($pageId, ActionClass::class)` directly.
+
+## Listing pages vs. record pages
+
+`Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests` resolves the current page's actions automatically on every request, with no controller-side wiring: it derives the page id from the route name, finds the first Eloquent model bound to the current route (if any), and passes it as `$context` to each action:
+
+```php
+public function url(mixed $context = null): ?string
+{
+    return $context ? route('panel.example-addon.audit', $context) : null;
+}
+```
+
+A listing page (`customers.index`) has no bound model, so its actions resolve with `$context === null`. A record page (`customers.edit`) passes the route-bound record — the customer — as `$context`. The same `PageAction` class shape covers both cases; only what `url()` (and `visible()`, if overridden) does with `$context` differs.
+
+## The `PageAction` contract
+
+| Method | Purpose |
+|:-------|:--------|
+| `key()` | Required. The action's stable identifier. |
+| `label()` | Required. |
+| `icon()` | Optional icon name from the panel's built-in set. Defaults to `null`. |
+| `url(mixed $context = null)` | The action's target URL, given the resolved context. Defaults to `null` (no link). |
+| `method()` | The HTTP method the frontend dispatches with. Defaults to `'get'`. |
+| `primary()` | `true` renders the action as an always-visible header button; `false` (default) collapses it into the header's "more actions" ellipsis. |
+| `confirmationMessage()` | Optional confirm-dialog text before dispatch. |
+| `permission()` | A manifest permission handle; a staff member lacking it never receives the action. |
+| `position()` | A `Lunar\Panel\Support\Position`; defaults to `Position::last()`. See [Ordering with Position](/admin/extending/ordering). |
+
+## Every content page has a header home for it
+
+A `PageAction` needs no cooperation from the page it targets. Every content page renders its header through the shared `<PageHeader>` (or `<SettingsShell>` for settings pages), and both always carry the page-action ellipsis — enforced by `tests/panel/Unit/PageScaffoldTest.php` for every content page in the panel. Registering a page action is therefore enough on its own; there's no equivalent of a slot's zone-name mismatch to get wrong.
+
+## Worked examples
+
+`ImportPageAction` — a listing-page action with a static URL, ignoring `$context`:
+
+```php
+use Lunar\Panel\Actions\PageAction;
+
+class ImportPageAction extends PageAction
+{
+    public function key(): string
+    {
+        return 'example-import';
+    }
+
+    public function label(): string
+    {
+        return 'Import (Example)';
+    }
+
+    public function icon(): ?string
+    {
+        return 'download';
+    }
+
+    public function url(mixed $context = null): ?string
+    {
+        return route('panel.example-addon.import');
+    }
+}
+```
+
+`AuditPageAction` — a record-page action, building its URL from `$context`:
+
+```php
+use Lunar\Panel\Actions\PageAction;
+
+class AuditPageAction extends PageAction
+{
+    public function key(): string
+    {
+        return 'example-audit';
+    }
+
+    public function label(): string
+    {
+        return 'Audit log (Example)';
+    }
+
+    public function icon(): ?string
+    {
+        return 'fileText';
+    }
+
+    public function url(mixed $context = null): ?string
+    {
+        return $context ? route('panel.example-addon.audit', $context) : null;
+    }
+}
+```
+
+Both are registered together in [Registering a page action](#registering-a-page-action) above, from `lunarphp/panel-addon-example`'s `src/ExampleSection.php`.
+
+## See also
+
+- [Extending Tables](/admin/extending/tables) — `TableAction`, the row-scoped equivalent of a page action.
+- [Slots](/admin/extending/slots) — injecting body content rather than a header action.
+- [Ordering with Position](/admin/extending/ordering).

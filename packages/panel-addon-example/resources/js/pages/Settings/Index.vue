@@ -38,7 +38,7 @@ const submit = (): void => {
         :description="t('example-addon::example.settings_description')"
     >
         <div data-screen-label="Example Add-on Settings">
-            <form class="flex flex-col gap-4" @submit.prevent="submit">
+            <form class="example:flex example:flex-col example:gap-4" @submit.prevent="submit">
                 <div>
                     <FieldLabel>{{ t('example-addon::example.settings_webhook_url') }}</FieldLabel>
                     <TextInput
@@ -47,12 +47,12 @@ const submit = (): void => {
                         :invalid="!!form.errors.webhook_url"
                         placeholder="https://example.com/webhooks"
                     />
-                    <div v-if="form.errors.webhook_url" class="mt-1 text-[11px] text-danger">{{ form.errors.webhook_url }}</div>
+                    <div v-if="form.errors.webhook_url" class="example:mt-1 example:text-[11px] example:text-danger">{{ form.errors.webhook_url }}</div>
                 </div>
 
-                <label class="flex items-center gap-3 cursor-pointer">
+                <label class="example:flex example:items-center example:gap-3 example:cursor-pointer">
                     <Toggle :on="form.ping_enabled" @toggle="form.ping_enabled = !form.ping_enabled" />
-                    <span class="text-[12.5px] text-ink-900 font-medium">{{ t('example-addon::example.settings_ping_enabled') }}</span>
+                    <span class="example:text-[12.5px] example:text-ink-900 example:font-medium">{{ t('example-addon::example.settings_ping_enabled') }}</span>
                 </label>
 
                 <div>

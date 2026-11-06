@@ -227,6 +227,12 @@ the package, before publishing) is only required if you're developing the
 panel or an add-on for it locally; `php artisan lunar:panel:link` symlinks
 add-on builds during development.
 
+An add-on can compile its own prefixed Tailwind utilities against the panel's
+design tokens by importing `@lunarphp/panel/addon-theme.css`. The token names in
+that file are a public contract: renaming or removing one is a breaking change
+and will be listed here. The add-on styling guide lives in the
+`panel-addon-example` README.
+
 ## Foundations & external addressing
 
 - **`\Lunar\Core` namespace** — the core package moved to `Lunar\Core\…`.

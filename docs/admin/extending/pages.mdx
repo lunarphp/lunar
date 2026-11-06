@@ -1,0 +1,184 @@
+---
+title: "Pages and Navigation"
+sidebarTitle: "Pages"
+description: "Registering routes and Inertia pages for the admin panel, and adding them to the sidebar and Settings navigation."
+---
+
+A `Section`'s `routes()` and `navigation()` hooks are two halves of the same feature: `routes()` registers the server side of a page, and `navigation()` puts an entry in the sidebar that points at it. Everything here is drawn from `lunarphp/panel-addon-example`, which registers a full example of both — see [Building an Add-on](/admin/extending/addons) for how the surrounding package is scaffolded and compiled.
+
+## Registering routes
+
+`routes()` on a `Section` or `SectionExtension` returns a `Closure` rather than eagerly registering routes, because `PanelManager` only runs it inside the panel's own route group — so it automatically picks up the panel's URL prefix, guard, and middleware. From `src/ExampleSection.php`:
+
+```php
+use Closure;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+public function routes(): ?Closure
+{
+    return function (): void {
+        Route::middleware('can:'.self::PERMISSION)->group(function (): void {
+            Route::get('example-addon', fn () => Inertia::render('example-addon::Widgets/Index', [
+                'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
+            ]))->name('panel.example-addon.index');
+        });
+    };
+}
+```
+
+The panel's own `Authenticate` middleware only proves the visitor is signed-in staff — it does not gate individual routes. Gate a route with `can:` middleware and declare the **same** permission handle on the navigation item pointing at it, so what a user sees and what they can reach stay in lockstep. An add-on that extends an existing area (as here, extending Customers) reuses that area's permission handle; an add-on with its own domain seeds and uses its own handle.
+
+## Building the Inertia page
+
+### Naming and registering the component
+
+The Inertia component name passed to `Inertia::render()` is namespaced to match the key the add-on's JS registers the page under: `example-addon::Widgets/Index` corresponds to a `WidgetsIndexPage` registered as `'example-addon::Widgets/Index'` via `window.LunarPanel.registerPages()`. See [Building an Add-on](/admin/extending/addons#the-add-on-entry-point) for the registration call.
+
+### The automatic layout
+
+An add-on page renders inside the real panel chrome — nav sidebar, mobile drawer, collapse toggle — without importing or wrapping anything. The panel wraps every add-on page in its `PanelLayout` (the persistent layout) automatically, applied through the same layout registry `window.LunarPanel.registerLayout()` uses: `PanelLayout` is that registry's `default` entry, and a page that declares no layout of its own gets it for free.
+
+### Using the standard page scaffolding
+
+The panel exposes a page-building set at runtime through `@lunarphp/panel` — layout and chrome (`PageHeader`, `PageZone`, `Breadcrumbs`, `SettingsShell`), data (`DataTable`, `Pagination`, `PageEmpty`, `StatusBadge`), filters and stats (`FilterDropdown`, `KpiCard`), form inputs (`TextInput`, `Select`, `Checkbox`, and so on), overlays (`Dialog`, `Slideout`, `ConfirmDialog`, `Tooltip`, `Tabs`), cards (`Section` for a main-column card, `SideCard` for the sidebar), and `Button`/`Icon`. The add-on's Vite plugin externalizes the `@lunarphp/panel` import to the panel's own components (`window.LunarPanelUI`) exactly the way it externalizes `vue`, so nothing is duplicated. From `resources/js/pages/Widgets/Index.vue`:
+
+```vue
+<script setup lang="ts">
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { PageHeader, PageZone, Button } from '@lunarphp/panel';
+
+defineProps<{ message?: string }>();
+
+// Shared props the panel middleware provides to every page, add-on pages included.
+const panelName = computed(() => (usePage().props.panel as { name?: string } | undefined)?.name ?? 'Lunar');
+</script>
+
+<template>
+    <div data-screen-label="Example Add-on" class="contents">
+        <!-- `icon` renders the standard header tile (names come from the panel's
+             built-in set, matching the nav item); use the #icon slot instead for
+             custom markup like an avatar. -->
+        <PageHeader title="Example Add-on" description="…" icon="tag">
+            <template #actions>
+                <Button variant="primary" icon="plus">Example action</Button>
+            </template>
+        </PageHeader>
+
+        <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+            <PageZone region="main" position="before" />
+            <p class="text-[13px] text-ink-700">{{ message }} — {{ panelName }}</p>
+            <Link href="/panel/customers">Customers</Link>
+            <PageZone region="main" position="after" />
+        </div>
+    </div>
+</template>
+```
+
+`PageHeader` carries the shared page-action ellipsis, so header actions an add-on (or the host) registers for this page appear automatically without the page opting in. `PageZone` declares slot zones on the page — so other add-ons can inject into it, the same mechanism this package uses against the first-party Customers page. `usePage()` and `<Link>` work because `@inertiajs/vue3` is externalized to the panel's own Inertia instance (`window.InertiaVue3`); the add-on never bundles a second copy, which would read uninitialized state.
+
+`DataTable` is the same component every first-party listing page uses, and renders a page's own rows the same way `Widgets/Index.vue` does:
+
+```vue
+<script setup lang="ts">
+const columns = [
+    { key: 'name', label: 'Widget', width: 'minmax(0,1.4fr)' },
+    { key: 'status', label: 'Status' },
+];
+
+const rowActions = [
+    { key: 'ping', label: 'Ping', icon: 'refresh', method: 'get', primary: false },
+];
+</script>
+
+<template>
+    <DataTable :columns="columns" :rows="widgets ?? []" :row-actions="rowActions" empty-text="No widgets yet">
+        <template #cell-status="{ value }">
+            <StatusBadge :tone="value === 'active' ? 'sage' : 'archived'" size="sm">{{ value }}</StatusBadge>
+        </template>
+    </DataTable>
+</template>
+```
+
+A named `#cell-{key}` slot overrides how that column renders each cell; columns without a slot render their raw row value as text. Each row shares its column values plus an `_actions` map of per-row URLs — an action only renders on rows whose `_actions` map resolved a URL for its key. This is the add-on's own table; to add columns or actions to a table owned by another section instead, use a `TableExtension` (see [Extending the Admin Panel](/admin/extending/overview#the-hook-table)).
+
+### Adding a settings screen
+
+The panel's Settings section extends the same way as the main sidebar: `settingsNavigation()` mirrors `navigation()` but drives the Settings sidebar, and its routes live under a `settings/...` prefix. From `src/ExampleSection.php`:
+
+```php
+public function settingsNavigation(NavigationRegistry $registry): void
+{
+    $registry->group('example-addon', 'example-addon::example.settings_group');
+    $registry->addItem('example-addon', new NavigationItem(
+        key: 'example-addon-settings',
+        label: 'example-addon::example.settings_label',
+        route: 'panel.settings.example-addon.index',
+        permission: self::PERMISSION,
+    ));
+}
+```
+
+An add-on can create its own group (as here) or add items to a first-party one (e.g. `general`). The item appears in the Settings sidebar for any staff member holding the permission; the `settings` entry route redirects to the first settings page the user can see, so an add-on item is reachable even if it's the only one.
+
+The page itself renders inside `<SettingsShell>`, which scaffolds the whole screen the way first-party settings pages get it: the Settings sidebar, a `Settings > {title}` breadcrumb trail, the standard page header (`title`, optional `description`, `#actions` buttons, and the shared page-action ellipsis), flash message display, and a centered content column (`wide` for the full listing width top-level pages use). From `resources/js/pages/Settings/Index.vue`:
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@inertiajs/vue3';
+import { SettingsShell, TextInput, Toggle, FieldLabel, Button } from '@lunarphp/panel';
+
+// SettingsShell replaces the auto-applied PanelLayout chrome wholesale, so
+// opt out with a no-op persistent layout — the resolver leaves an add-on
+// page with its own layout alone.
+defineOptions({
+    layout: (_h: unknown, page: unknown) => page,
+});
+
+const props = defineProps<{
+    settings: { webhook_url: string | null; ping_enabled: boolean };
+    urls: { update: string };
+}>();
+
+const form = useForm({
+    webhook_url: props.settings.webhook_url ?? '',
+    ping_enabled: props.settings.ping_enabled,
+});
+</script>
+
+<template>
+    <SettingsShell title="Widget pings" description="What this screen configures.">
+        <form @submit.prevent="form.post(props.urls.update, { preserveScroll: true })">
+            <!-- TextInput / Toggle / Button fields, as on any panel form -->
+        </form>
+    </SettingsShell>
+</template>
+```
+
+<Warning>
+`SettingsShell` is the page's *entire* chrome, so the page must opt out of the `PanelLayout` the panel would otherwise auto-apply — the `defineOptions({ layout: ... })` no-op above. Skipping this renders the page with a doubled sidebar: the main nav wrapped around the settings shell's own.
+</Warning>
+
+## Navigation and settings navigation
+
+`navigation(NavigationRegistry $registry)` and `settingsNavigation(NavigationRegistry $registry)` share the same registry API:
+
+- `$registry->group($key, $label, $priority = 50, $position = null)` — creates a sidebar group if it doesn't already exist. Add items to a group created by another section (e.g. a first-party `general` group) simply by using its key.
+- `$registry->addItem($groupKey, new NavigationItem(...))` — adds an item to a group, creating the group with a default label if it doesn't exist yet.
+- `$registry->addTopLevelItem(new NavigationItem(...))` — adds an item outside any group.
+- `$registry->addChildItem($parentItemKey, new NavigationItem(...))` — nests an item under another item, wherever that item currently lives.
+
+`NavigationItem` takes:
+
+| Parameter | Purpose |
+|:----------|:--------|
+| `key` | Stable identity, used as the anchor target for `Position::before()`/`after()`. |
+| `label` | A lang key (`example-addon::example.nav_label`) or plain string; resolved through `__()` when the tree is shared to the frontend. |
+| `icon` | A name from the panel's built-in icon set — add-ons cannot register their own SVGs. |
+| `route` | A named route; the item's URL is resolved from it. |
+| `permission` | A manifest permission handle; the item (and any children) is hidden from staff who lack it. |
+| `priority` | Coarse ordering, default `50`; lower sorts first. Ignored if `position` is given. |
+| `position` | An explicit `Position` for anchored placement — see [Ordering with Position](/admin/extending/ordering). |
+
+Labels, icons, and permission handles work identically in `settingsNavigation()`. Keep the permission handle on a navigation item and the `can:` middleware on the route it points at in sync — the panel does not derive one from the other.
