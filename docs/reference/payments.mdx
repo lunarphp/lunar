@@ -1,0 +1,231 @@
+---
+title: "Payments"
+description: "How Lunar authorizes, captures, and refunds payments through a driver-based payment system."
+---
+
+Lunar takes payments through a driver-based system: a common `Payments` facade and `PaymentType` contract sit in front of whichever provider is configured, so a storefront authorizes, captures, and refunds the same way regardless of which driver is behind it.
+
+## Overview
+
+Every payment provider, including the one Lunar ships by default, is a driver: a class implementing `Lunar\Core\Contracts\PaymentType` and registered with the payment manager. Lunar ships an `OfflinePayment` driver out of the box for cash-in-hand or manual payment scenarios. Anything else, card payments included, is added as a driver.
+
+- `lunarphp/stripe` and `lunarphp/paypal` are Lunar's first-party drivers. See [Stripe](/addons/payments/stripe) and [PayPal](/addons/payments/paypal) for installation and configuration.
+- Any other provider is added as a third-party driver registered through `Payments::extend()`.
+
+<Tip>
+This page covers configuring and using the payment system as a consumer. To build a custom driver, see [Extending Payments](/extending/payments).
+</Tip>
+
+## Configuration
+
+Payment configuration lives in `config/lunar/payments.php`. It defines the default payment type and a list of available types, each mapped to a driver.
+
+```php
+<?php
+
+return [
+
+    'default' => env('PAYMENTS_TYPE', 'cash-in-hand'),
+
+    'types' => [
+        'cash-in-hand' => [
+            'driver' => 'offline',
+        ],
+    ],
+
+];
+```
+
+| Key | Description |
+|:-|:-|
+| `default` | The payment type used when none is specified to `Payments::driver()` |
+| `types` | A map of payment type keys to their configuration |
+
+Each type entry requires a `driver` key naming the registered driver to resolve. Any other keys added to a type are opaque to Lunar itself: they are passed straight through to the driver's `setConfig()` method, so a driver can read whatever configuration it needs from its own type entry.
+
+```php
+'types' => [
+    'card' => [
+        'driver' => 'stripe',
+    ],
+],
+```
+
+Adding a new type does not register a driver: the driver named under `driver` must already be registered, either by a first-party add-on's service provider or by a custom `Payments::extend()` call. See [Registering a driver](/extending/payments#registering-a-driver).
+
+## Taking a payment
+
+### Resolving a driver
+
+Pass a payment type to the `Payments` facade to resolve the driver registered for it.
+
+```php
+use Lunar\Core\Facades\Payments;
+
+$driver = Payments::driver('card');
+```
+
+Omitting the type resolves the configured default.
+
+```php
+$driver = Payments::driver();
+```
+
+### Setting the cart or order
+
+Before authorizing, tell the driver what it is being paid against. Use `cart()` when paying from checkout; the driver creates the order if one does not already exist.
+
+```php
+use Lunar\Core\Models\Cart;
+
+$driver->cart($cart);
+```
+
+Use `order()` instead when paying against an order that already exists, for example capturing a deferred payment or taking payment on an order created outside of checkout. Setting a cart clears any previously set order and vice versa, so only one is active on the driver at a time.
+
+```php
+use Lunar\Core\Models\Order;
+
+$driver->order($order);
+```
+
+### Passing additional data
+
+Providers that need data from the frontend, such as a payment intent ID or a token, receive it through `withData()`.
+
+```php
+$driver->withData([
+    'payment_token' => $token,
+]);
+```
+
+What a driver does with `withData()` is driver-specific. The `OfflinePayment` driver, for example, merges a `meta` key onto the order's own `meta` column when it authorizes.
+
+```php
+$driver->withData([
+    'meta' => ['gift_message' => 'Happy birthday'],
+]);
+```
+
+### Authorizing
+
+Call `authorize()` once the driver has a cart or order and any required data. All setter methods return `self`, so the call is typically chained.
+
+```php
+use Lunar\Core\Facades\Payments;
+
+$response = Payments::driver('card')
+    ->cart($cart)
+    ->withData(['payment_token' => $token])
+    ->authorize();
+
+$response?->success;     // bool
+$response?->message;     // ?string
+$response?->orderId;     // ?int
+$response?->paymentType; // ?string
+```
+
+`authorize()` returns `Lunar\Core\DataObjects\PaymentAuthorize`, or `null` when the driver could not do anything with the request.
+
+| Property | Type | Description |
+|:-|:-|:-|
+| `success` | `bool` | Whether the authorization succeeded |
+| `message` | `?string` | An optional message from the provider |
+| `orderId` | `?int` | The ID of the order created or authorized against |
+| `paymentType` | `?string` | The driver's identifier for the payment type used |
+
+A driver dispatches `Lunar\Core\Events\PaymentAttemptEvent` with the `PaymentAuthorize` response when it attempts an authorization; listen for it to log attempts or trigger post-payment processing.
+
+```php
+use Lunar\Core\Events\PaymentAttemptEvent;
+
+class LogPaymentAttempt
+{
+    public function handle(PaymentAttemptEvent $event): void
+    {
+        $event->paymentAuthorize->success;
+    }
+}
+```
+
+### Allowing partial payments
+
+`allowPartialPayment()` toggles whether the driver accepts less than the full cart or order total, for a deposit or part-payment. It defaults to `false`. First-party drivers read this from their own config (for example `lunar.stripe.allow_partial_payment`) rather than expecting it to be set per call, but it can be called directly on the driver too.
+
+```php
+$driver->allowPartialPayment()->authorize();
+```
+
+## Intent and capture
+
+Some providers authorize a payment immediately and charge the card in the same step; others authorize an intent that is captured, in full or in part, at a later time (for example once stock is confirmed, or an order ships). Whether `authorize()` captures immediately or only creates an intent depends on the driver and, for Stripe, its `policy` configuration (`automatic` or `manual`; see [Stripe](/addons/payments/stripe)).
+
+Either way, the outcome is recorded on the order's `Lunar\Core\Models\Transaction` ledger: an intent-only authorization creates a transaction of type `intent`, and capturing it creates a related `capture` transaction. Once an intent exists, capture it with `Order::capture()`:
+
+```php
+$capture = $order->capture(
+    transactionId: $intentTransaction->id,
+    amount: 49.99, // major units
+);
+
+$capture->success; // bool
+$capture->message; // string
+```
+
+See the [Transactions](/reference/orders#transactions) and [Capturing a payment](/reference/orders#capturing-a-payment) sections of the Orders reference for the full `Transaction` model, its fields, and the capture guard rules (a capture can never exceed its intent).
+
+## Refunds
+
+Refunds target a specific `capture` transaction and can cover order lines, shipping, and a manual adjustment in a single request, through `Order::refund()`:
+
+```php
+use Lunar\Core\DataObjects\RefundRequest;
+
+$refund = $order->refund(new RefundRequest(
+    transactionId: $captureTransaction->id,
+    lines: [
+        ['order_line_id' => $line->id, 'quantity' => 1],
+    ],
+    shipping: 0,
+    adjustment: 0,
+    notes: 'Damaged on arrival',
+));
+
+$refund->success;     // bool
+$refund->message;     // ?string
+$refund->transaction; // ?Lunar\Core\Models\Transaction
+```
+
+`Order::refund()` validates the requested amount against the order's available-to-refund balance and each line's remaining refundable quantity, then calls the underlying transaction's driver to perform the refund. `Lunar\Core\DataObjects\PaymentRefund` is what a driver's `refund()` method returns:
+
+| Property | Type | Description |
+|:-|:-|:-|
+| `success` | `bool` | Whether the refund succeeded |
+| `message` | `?string` | An optional message from the provider |
+| `transaction` | `?Lunar\Core\Models\Transaction` | The refund transaction the driver created, when it records one |
+
+Line-item refund allocations, the `RefundLine` model, and the full validation rules are covered in the [Refunds](/reference/orders#refunds) section of the Orders reference — this is the same `Order::refund()` call described there, from the payment side of the operation.
+
+A refund can also be issued directly against a `Transaction` without going through `Order::refund()`'s line-allocation and balance checks:
+
+```php
+$captureTransaction->refund(1000, 'Customer requested');
+```
+
+## Payment checks
+
+Some providers return verification checks alongside a payment, such as 3D Secure, AVS, postal code, or CVC results. A transaction exposes these through `paymentChecks()`, which resolves the transaction's driver and asks it for its checks.
+
+```php
+foreach ($transaction->paymentChecks() as $check) {
+    $check->successful; // bool
+    $check->label;      // string
+    $check->message;    // string
+}
+```
+
+`paymentChecks()` returns `Lunar\Core\DataObjects\PaymentChecks`, an iterable collection of `Lunar\Core\DataObjects\PaymentCheck` objects. Checking is opt-in per driver: it is not part of the `PaymentType` contract, so a driver that performs no verification returns an empty collection. See [Payment checks](/extending/payments#the-paymenttype-contract) in the extending guide for how a driver populates it.
+
+## Building a custom driver
+
+To support a provider Lunar does not ship, implement `Lunar\Core\Contracts\PaymentType` (typically by extending `Lunar\Core\PaymentTypes\AbstractPayment`) and register it with `Payments::extend()`. See [Extending Payments](/extending/payments) for the full contract, amount and currency verification, and how transactions should be recorded.

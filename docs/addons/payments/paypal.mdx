@@ -1,0 +1,413 @@
+---
+title: "PayPal"
+description: "Accept payments with PayPal, one of Lunar's two first-party payment drivers."
+---
+
+`lunarphp/paypal` integrates Lunar with PayPal's Orders v2 and Payments v2 REST APIs. It creates and captures PayPal orders, records the money against Lunar's transaction ledger, and handles refunds, webhooks, and payment checks. The package is server-side only — it does not ship a storefront integration, because the client-side half is a handful of calls to PayPal's JS SDK and every storefront wants it wired differently (Blade, Inertia, Livewire, a headless SPA, a native app).
+
+## Installation
+
+### Require the Composer package
+
+```sh
+composer require lunarphp/paypal
+```
+
+The service provider registers automatically.
+
+### Publish the configuration
+
+```sh
+php artisan vendor:publish --tag=lunar.paypal.config
+```
+
+This publishes `config/lunar/paypal.php`.
+
+### Run migrations
+
+The addon adds a `paypal_orders` table.
+
+```sh
+php artisan migrate
+```
+
+### Enable the driver
+
+Register `paypal` as a driver for a payment type in `config/lunar/payments.php`.
+
+```php
+return [
+    // ...
+    'types' => [
+        'paypal' => [
+            'driver' => 'paypal',
+        ],
+    ],
+];
+```
+
+### Add PayPal credentials
+
+Set the following in `.env`:
+
+```sh
+PAYPAL_ENV=sandbox
+PAYPAL_CLIENT_ID=...
+PAYPAL_SECRET=...
+```
+
+<Tip>
+REST API credentials can be created in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/applications/sandbox).
+</Tip>
+
+## Configuration
+
+The following options are available in `config/lunar/paypal.php`.
+
+| Key | Env | Default | Description |
+| --- | --- | ------- | ----------- |
+| `env` | `PAYPAL_ENV` | `sandbox` | `sandbox` or `live` |
+| `client_id` | `PAYPAL_CLIENT_ID` | `null` | REST app client ID |
+| `secret` | `PAYPAL_SECRET` | `null` | REST app secret |
+| `webhook_id` | `PAYPAL_WEBHOOK_ID` | `null` | Required for webhooks; without it, inbound notifications are rejected |
+| `webhook_path` | — | `paypal/webhook` | The URI path the driver listens on |
+| `policy` | — | `automatic` | `automatic` captures payment immediately; `manual` authorizes now and captures later |
+| `allow_partial_payment` | — | `false` | When enabled, the PayPal order does not need to cover the order total. An over-payment always places the order regardless of this setting |
+| `order_rate_limit` | — | `10,1` | Throttle on the create-order endpoint, as `attempts,minutes`. Each call costs a PayPal API request |
+| `success_route` | — | `checkout.success` | The named route PayPal returns an approving customer to |
+| `cancel_route` | — | `checkout.cancel` | The named route PayPal returns a cancelling customer to |
+
+<Info>
+Credentials fall back to the equivalent `services.paypal.*` keys if `lunar.paypal.*` is unset. That fallback is deprecated and will be removed in a future release.
+</Info>
+
+## The checkout flow
+
+Four steps. The storefront owns steps 2 and 4.
+
+```
+1. POST /api/paypal/order    -> the driver creates a PayPal order
+2. PayPal JS SDK              -> the storefront renders the buttons
+3. Customer approves at PayPal
+4. A checkout controller      -> calls authorize(), which captures and places the order
+```
+
+### 1. Create the PayPal order
+
+The package registers one storefront route:
+
+```
+POST /api/paypal/order      (name: post.paypal.order)
+```
+
+`Lunar\Paypal\Http\Controllers\GetPaypalOrderController` builds a PayPal order for the current session cart (`Lunar\Core\Contracts\CartSession::current()`) and returns only what the client needs:
+
+```json
+{
+  "id": "5O190127TN364715T",
+  "status": "CREATED",
+  "approve_url": "https://www.sandbox.paypal.com/checkoutnow?token=5O190127TN364715T"
+}
+```
+
+It returns `422` when there is no cart to pay for, and `502` when PayPal declines to create the order. The route is throttled per `order_rate_limit`, since each call costs a PayPal API request.
+
+The amount is taken from the calculated cart total, in the cart's currency. For a different payload — multiple purchase units, a custom `reference_id`, a line-item breakdown — bind a custom implementation of `Lunar\Paypal\Contracts\PaypalInterface`, or call `Paypal::buildInitialOrder()` from a dedicated controller instead of using this route.
+
+### 2. Render the PayPal buttons
+
+Load the SDK with the client ID and currency, and point `createOrder` at the route above:
+
+```html
+<div id="paypal-button-container"></div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=CLIENT_ID&currency=GBP"></script>
+<script>
+paypal.Buttons({
+    createOrder: () => fetch('/api/paypal/order', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(order => order.id),
+
+    // PayPal has taken the approval; hand the id back to the checkout controller.
+    onApprove: (data) => fetch('/checkout/paypal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ paypal_order_id: data.orderID }),
+        })
+        .then(response => response.json())
+        .then(result => window.location = result.redirect),
+}).render('#paypal-button-container');
+</script>
+```
+
+`/checkout/paypal` is a storefront route — the package does not provide it, since what happens after payment (which page to land on, what to email, how to handle failure) is storefront-specific.
+
+### 3. Customer approves
+
+Handled entirely by PayPal. The customer may never return to the storefront; step 4 covers that case through webhooks.
+
+### 4. Authorize
+
+In a checkout controller, hand the approved PayPal order ID to the driver.
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+
+public function store(Request $request)
+{
+    $request->validate([
+        'paypal_order_id' => ['required', 'string'],
+    ]);
+
+    $payment = Payments::driver('paypal')
+        ->cart(CartSession::current())
+        ->withData([
+            'paypal_order_id' => $request->paypal_order_id,
+        ])
+        ->authorize();
+
+    if (! $payment->success) {
+        return response()->json(['message' => $payment->message], 422);
+    }
+
+    CartSession::forget();
+
+    return response()->json([
+        'redirect' => route('checkout.success', $payment->orderId),
+    ]);
+}
+```
+
+`authorize()` verifies the amount, captures the money, creates the order, and places it, in that order. It returns a `Lunar\Core\DataObjects\PaymentAuthorize` carrying `success`, `message`, and `orderId`.
+
+<Info>
+The `message` on a failure is a diagnostic, not shopper-facing copy — the storefront decides what wording to show for each failure case.
+</Info>
+
+## Amount verification
+
+Before capturing anything, `authorize()` checks the PayPal order against the expected total — the order's total when authorizing against a placed/draft order, or the calculated cart's total otherwise.
+
+| PayPal covers | Result |
+| --- | --- |
+| Less than the total | Fails. No money is captured. Set `allow_partial_payment` to permit it (deposits, part payments) |
+| A different currency | Fails. No money is captured |
+| Exactly the total | Captures and places the order |
+| More than the total | Captures and places the order. The excess shows in the order's settlement state for an admin to refund |
+
+Over-payment is deliberately allowed through: the money has already left the customer's account, and refusing would strand a captured payment with no order attached to it. To change the policy, override the `protected assertOrderMatchesTotal()` method on a subclass of `Lunar\Paypal\PaypalPaymentType`.
+
+The comparison is done at **PayPal's precision** for the currency, not Lunar's minor unit — `Lunar\Paypal\Managers\PaypalManager` rescales both sides through `Currency::decimal_places` before comparing, using integer string arithmetic rather than a float multiply. PayPal treats most currencies as two-decimal and a handful (`HUF`, `JPY`, `TWD`) as zero-decimal; comparing at Lunar's raw minor-unit total would reject a total that legitimately rounds down at PayPal's precision.
+
+```php
+use Lunar\Core\Models\Currency;
+use Lunar\Paypal\Managers\PaypalManager;
+
+PaypalManager::toPaypalAmount(1999, $currency);   // "19.99"
+PaypalManager::fromPaypalAmount('19.99', $currency); // 1999
+```
+
+## Capture policies
+
+**`automatic`** (default) captures at authorize time. One `capture` transaction is created, the order places, and the payment status is `paid`.
+
+**`manual`** authorizes only. The driver requests an `AUTHORIZE` intent from PayPal, and the held funds are recorded as an `intent` transaction — the order still places, with payment status `authorized`. Capture later, in full or in part:
+
+```php
+$intent = $order->intents()->first();
+
+$intent->capture();          // whole authorization
+$intent->capture(5_00);      // part of it, in minor units
+```
+
+PayPal authorizations typically expire after 29 days — capture within that window or the hold is lost.
+
+## Capture and refund
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::driver('paypal')->capture($transaction, $amount);
+```
+
+`$amount` is optional and in the order currency's minor unit; when omitted (or `0`), the transaction's full amount is captured. This calls `/v2/payments/authorizations/{id}/capture`, carrying a `PayPal-Request-Id` idempotency header derived from the transaction reference and amount so a retried capture cannot charge twice.
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::driver('paypal')->refund($transaction, $amount, $notes);
+```
+
+`$amount` is required and in the order currency's minor unit. This calls `/v2/payments/captures/{id}/refund`, also with an idempotency header, and populates `Lunar\Core\DataObjects\PaymentRefund::$transaction` with the refund row it created.
+
+Both are available as verbs on the transaction and the order:
+
+```php
+$transaction->capture($amount);
+$transaction->refund($amount, $notes);
+```
+
+<Info>
+For a refund that also allocates against specific order lines — rather than a flat amount against a transaction — use `Lunar\Core\Models\Order::refund()` with a `Lunar\Core\DataObjects\RefundRequest`. It resolves the capture transaction, computes the amount from the requested lines, shipping, and adjustment, and dispatches to the driver's `refund()` under the hood.
+</Info>
+
+Refunds raised directly from the PayPal dashboard are not driven through Lunar; they arrive by webhook instead (see below) and are recorded automatically, skipping any row the driver already wrote for the same PayPal refund ID.
+
+## Payment checks
+
+PayPal returns AVS and CVV results on each capture, read from `processor_response`. The driver stores them and exposes them through the standard seam.
+
+```php
+$transaction->paymentChecks();
+```
+
+## Webhooks
+
+Without webhooks, the driver only learns what happens while the customer is on the storefront. Anything asynchronous — a capture that settles later, a customer who approves and closes the tab, a refund issued from the PayPal dashboard, a dispute — never reaches Lunar otherwise, and the order's payment status drifts from reality.
+
+Create a webhook in the PayPal dashboard pointing at:
+
+```
+https://your-store.test/paypal/webhook
+```
+
+The path is configurable via `webhook_path`. Subscribe it to:
+
+- `CHECKOUT.ORDER.APPROVED`
+- `PAYMENT.CAPTURE.COMPLETED`
+- `PAYMENT.CAPTURE.DENIED`
+- `PAYMENT.CAPTURE.PENDING`
+- `PAYMENT.CAPTURE.REFUNDED`
+- `CUSTOMER.DISPUTE.CREATED`
+
+Then set the ID it returns as `PAYPAL_WEBHOOK_ID`. Every inbound request is verified against PayPal's `/v1/notifications/verify-webhook-signature` endpoint using the configured webhook ID — **without a webhook ID, notifications are rejected rather than trusted.** Event types outside the list above are acknowledged with a `200` and otherwise ignored.
+
+`CHECKOUT.ORDER.APPROVED` and `PAYMENT.CAPTURE.COMPLETED` carry an approved or captured PayPal order through to a placed Lunar order, covering a customer who never returns to the storefront to trigger `authorize()` themselves. `PAYMENT.CAPTURE.REFUNDED` records a refund transaction for refunds issued outside Lunar.
+
+To act on events directly, listen for `Lunar\Paypal\Events\PaypalWebhookReceived` — it fires for every verified webhook the driver accepts, including ones it does not otherwise act on:
+
+```php
+use Lunar\Paypal\Events\PaypalWebhookReceived;
+
+Event::listen(function (PaypalWebhookReceived $event) {
+    if ($event->eventType === 'CUSTOMER.DISPUTE.CREATED') {
+        // dispute handling
+    }
+});
+```
+
+## Facade methods
+
+`Lunar\Paypal\Facades\Paypal` provides direct access to the PayPal client, bound to `Lunar\Paypal\Contracts\PaypalInterface`.
+
+### Get a PayPal order
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::getOrder($orderId);
+```
+
+### Capture an approved order
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::capture($orderId, $requestId);
+```
+
+### Authorize an approved order
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::authorizeOrder($orderId, $requestId);
+```
+
+### Capture a previously authorized payment
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$capture = Paypal::captureAuthorization($authorizationId, $amount, $currencyCode, $requestId);
+```
+
+### Refund a capture
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$refund = Paypal::refund($transactionId, $amount, $currencyCode, $requestId);
+```
+
+`$amount` and `$currencyCode` are PayPal-precision strings — use `PaypalManager::toPaypalAmount()` to build `$amount` from a Lunar minor-unit value.
+
+### Build an order from a cart
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::buildInitialOrder($cart);
+```
+
+Calculates the cart if it has not been calculated yet, and reads `intent` (`CAPTURE` or `AUTHORIZE`) from the configured `policy`.
+
+### Get an access token
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$token = Paypal::getAccessToken();
+```
+
+Fetched from PayPal and cached for its stated lifetime minus a 60-second safety margin, keyed to the configured environment so a sandbox token can never be reused against live.
+
+## Extending
+
+The client is bound to `Lunar\Paypal\Contracts\PaypalInterface` as a `scoped` binding. Swap it in a service provider:
+
+```php
+$this->app->scoped(PaypalInterface::class, MyPaypal::class);
+```
+
+The driver itself is a `Lunar\Core\Contracts\PaymentType`. Subclass `Lunar\Paypal\PaypalPaymentType` and re-register it to change authorization behavior:
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::extend('paypal', fn ($app) => $app->make(MyPaypalPaymentType::class));
+```
+
+## Database
+
+The addon adds a `paypal_orders` table (`Lunar\Paypal\Models\PaypalOrder`), giving the driver a double-processing guard and giving webhooks a way to resolve an inbound PayPal order ID to a cart or order.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | `id` | Primary key |
+| `paypal_order_id` | `string` | The PayPal order ID |
+| `cart_id` | `foreignId` `nullable` | Associated cart |
+| `order_id` | `foreignId` `nullable` | Associated order |
+| `status` | `string` `nullable` | Current PayPal order status |
+| `event_id` | `string` `nullable` | PayPal webhook event ID from the last webhook processed |
+| `processing_at` | `timestamp` `nullable` | |
+| `processed_at` | `timestamp` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+## What this package does not do
+
+- **Render anything.** No Blade components, no Livewire, no JS — see the checkout flow above.
+- **Own checkout routes.** `/api/paypal/order` is the only storefront route it adds.
+- **Decide what the shopper sees.** Failure messages on `PaymentAuthorize` are diagnostics; the copy is the storefront's responsibility.
+- **Support PayPal subscriptions or payouts.** Orders and Payments only.

@@ -1,0 +1,66 @@
+---
+title: "Introduction"
+description: "An overview of Lunar's Inertia and Vue admin panel."
+---
+
+Lunar's admin panel (`lunarphp/panel`) is the first-party interface store administrators use to manage a Lunar store: catalog, orders, customers, discounts, and settings.
+
+## The stack
+
+The panel is built with [Inertia.js](https://inertiajs.com/) v3 and Vue 3, styled with Tailwind CSS v4. It ships compiled, production-ready JavaScript assets, so a host application does not need a Node.js build step to run it — assets are published (or symlinked during local development) into the host's `public/` directory.
+
+Its defining feature is a runtime extension mechanism: add-on packages register pages, navigation items, table columns, filters, actions, dashboard widgets, and injected page content without the host application or the panel itself recompiling any JavaScript. See [Installation](/admin/installation) to get it running, and [Extending the panel](/admin/extending/overview) for the extension API.
+
+<Info>
+Lunar ships three separate panel-related packages. They coexist, and it is easy to confuse them by name.
+
+| Package | What it is | Provider |
+| --- | --- | --- |
+| `lunarphp/panel` | The new admin panel described on this page: Inertia.js + Vue 3, the intended successor going forward. | `Lunar\Panel\PanelServiceProvider` |
+| `lunarphp/admin` | The v1-era admin panel, built on Filament v5. Still fully supported in v2 and coexists with `lunarphp/panel`. | `Lunar\Admin\LunarPanelProvider` (despite the name, this is the Filament panel) |
+| `lunarphp/filament` | Not a panel on its own — a bridge library of reusable Filament v5 components (selectors, actions, widgets, global search) that any Filament panel can install via `LunarPlugin::make()`. Used internally by `lunarphp/admin`. | `Lunar\Filament\LunarFilamentServiceProvider` |
+
+See the [Filament admin add-on docs](/addons/filament/overview) for details on the other two packages.
+</Info>
+
+## A tour of the panel
+
+<CardGroup cols={2}>
+  <Card title="Dashboard" icon="gauge">
+    A customizable widget grid. Staff can reorder, hide, and re-add widgets; each widget declares its own permission and default visibility.
+  </Card>
+  <Card title="Global search" icon="magnifying-glass">
+    A command palette (opened with Cmd+K) that searches across records. It can be backed by Laravel Scout for typo-tolerant matching.
+  </Card>
+  <Card title="Catalog" icon="boxes-stacked">
+    Products with variants, options, media, and prices, alongside collections, brands, and product types.
+  </Card>
+  <Card title="Sales" icon="cart-shopping">
+    Orders in a fulfilment-centric view with a refund composer, plus customers and discounts.
+  </Card>
+  <Card title="Settings" icon="gear">
+    Activity log, attributes, channels, countries, currencies, customer groups, languages, locations, product options, regions, roles, staff, tags, and tax.
+  </Card>
+  <Card title="Edit drafts" icon="pen-to-square">
+    Staff edits are saved as drafts with conflict detection against concurrent changes, rather than writing straight to the live record.
+  </Card>
+</CardGroup>
+
+Other panel-wide features include dark mode and 16 UI locales.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/admin/installation">
+    Require the package, run the installer, and create a staff account.
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/admin/configuration">
+    The full `lunar.panel` config reference.
+  </Card>
+  <Card title="Access control" icon="shield-halved" href="/admin/access-control">
+    The staff guard, mandatory two-factor authentication, and permissions.
+  </Card>
+  <Card title="Extending the panel" icon="puzzle-piece" href="/admin/extending/overview">
+    Register pages, navigation, table columns, and more from an add-on package.
+  </Card>
+</CardGroup>

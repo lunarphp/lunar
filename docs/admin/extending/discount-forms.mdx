@@ -1,0 +1,117 @@
+---
+title: "Discount Type Forms"
+sidebarTitle: "Discount Forms"
+description: "How to register a panel form for a custom discount type."
+---
+
+Registering a custom discount type is a core concern, covered in [Extending Discounts](/extending/discounts). This page covers only the panel-specific step: giving that type an edit form in the Discounts section, instead of the panel's raw JSON fallback.
+
+## The `DiscountTypeForm` contract
+
+```php
+namespace Lunar\Panel\Contracts;
+
+use Lunar\Core\Models\Currency;
+
+interface DiscountTypeForm
+{
+    /** Vue component id, resolved through the panel's component registry. */
+    public function component(): string;
+
+    /** @return array<int, string> */
+    public function targetBuckets(): array;
+
+    /** @param array<string, mixed> $data @return array<string, mixed> */
+    public function toForm(array $data): array;
+
+    /** @param array<string, mixed> $data @return array<string, mixed> */
+    public function toStorage(array $data): array;
+
+    /** @return array<string, mixed> */
+    public function rules(): array;
+
+    public function summary(array $data, ?Currency $currency): ?string;
+}
+```
+
+- `component()` — the Vue component id that renders the type's configuration fields, resolved the same way a widget or slot component is.
+- `targetBuckets()` — which of the four targeting buckets (`limitation`, `exclusion`, `condition`, `reward`) this type reads, driving which "Applies to" blocks the edit page shows. A type that discounts the whole cart or an entire shipping method rather than individual lines returns an empty array — `ShippingDiscount`, for example, targets nothing.
+- `toForm(array $data)` — decodes the discount's stored `data` payload for editing (minor currency units to decimals, and so on).
+- `toStorage(array $data)` — the inverse: encodes the edited form values back into the shape stored in `data`.
+- `rules()` — validation rules for the type's own `data.*` fields, keyed without the `data.` prefix.
+- `summary(array $data, ?Currency $currency)` — a one-line description of the discount's effect for the discounts list (`"15% off"`, `"Buy 2, get 1"`). Return `null` when the type cannot summarise itself from `data` alone; the list falls back to the type's own name.
+
+Scale money through `Currency::decimal_places` (via `PriceCalculator`), never a hardcoded factor — the same rule that applies to every price-handling code path in Lunar.
+
+## Registering a form
+
+Map the discount type class to its form class from the owning `Section`:
+
+```php
+public function discountTypeForms(): array
+{
+    return [
+        MyCustomDiscountType::class => MyCustomDiscountTypeForm::class,
+    ];
+}
+```
+
+A first-party reference implementation, `PercentageOffForm`, shows the shape for a type with no money scaling to do:
+
+```php
+namespace Lunar\Panel\Support\DiscountTypeForms;
+
+use Lunar\Core\Models\Currency;
+use Lunar\Panel\Contracts\DiscountTypeForm;
+
+class PercentageOffForm implements DiscountTypeForm
+{
+    public function component(): string
+    {
+        return 'PercentageOffForm';
+    }
+
+    public function targetBuckets(): array
+    {
+        return ['limitation', 'exclusion'];
+    }
+
+    public function toForm(array $data): array
+    {
+        return ['percentage' => (float) ($data['percentage'] ?? 0)];
+    }
+
+    public function toStorage(array $data): array
+    {
+        return ['percentage' => (float) ($data['percentage'] ?? 0)];
+    }
+
+    public function rules(): array
+    {
+        return ['percentage' => ['required', 'numeric', 'min:0', 'max:100']];
+    }
+
+    public function summary(array $data, ?Currency $currency): ?string
+    {
+        $percentage = (float) ($data['percentage'] ?? 0);
+
+        if (! $percentage) {
+            return null;
+        }
+
+        return __('panel::discounts.summary_percentage_off', [
+            'percentage' => rtrim(rtrim(number_format($percentage, 2, '.', ''), '0'), '.'),
+        ]);
+    }
+}
+```
+
+## The JSON-editor fallback
+
+A discount type with no registered form is not hidden — it falls back to `Lunar\Panel\Support\DiscountTypeForms\RawDataForm`, a plain JSON editor over the type's stored `data`, with every target bucket shown. This is what keeps a panel-unaware type (one written only against the Filament admin's `LunarPanelDiscountInterface`, for example) editable in the panel instead of disappearing from it. `RawDataForm::summary()` always returns `null`, since the panel has no idea what an arbitrary payload means.
+
+<Info>
+A discount type can implement both the Filament `Lunar\Admin\Base\LunarPanelDiscountInterface` and the panel's `DiscountTypeForm` to serve both admins from one class. Neither is required by the other.
+</Info>
+
+For registering the discount type itself — `Discounts::addType()`, `AbstractDiscountType`, and `apply()` — see [Extending Discounts](/extending/discounts).

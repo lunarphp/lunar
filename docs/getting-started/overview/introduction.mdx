@@ -1,0 +1,87 @@
+---
+title: "Introduction"
+description: "Start building e-commerce with Laravel"
+---
+
+Lunar is a headless e-commerce package for [Laravel](https://laravel.com/) that provides everything needed to build a fully featured online store.
+
+<Warning>
+Lunar 2.x is in alpha. Namespaces, contracts, and package boundaries described on this page are still subject to change before a stable release. Do not use it in production yet.
+</Warning>
+
+## Why Lunar?
+
+Unlike hosted platforms such as Shopify or WooCommerce, Lunar gives developers complete ownership of the codebase, the data, and the storefront. It handles the complex e-commerce logic — products, carts, orders, payments, discounts, taxation, and more — while leaving full creative control over the customer-facing experience.
+
+Because Lunar is a Laravel package (not a standalone application), it integrates directly into any Laravel project. There is no separate system to maintain, no external API to call, and no vendor lock-in.
+
+## What's new in v2
+
+Lunar v2 is a ground-up modernization of the headless commerce core.
+
+- **Every operation is an action.** Service-layer classes declare their collaborators through constructor injection and bind to interfaces in `Contracts/`, so an implementation is swapped by binding its interface rather than editing a config string. Each operation is an action class with a single `execute()` method, surfaced as a verb on the model it operates on, such as `$cart->createOrder()` or `$fulfilment->ship($tracking)`.
+- **Fulfilment as a first-class concept.** Order status is no longer a hand-set string. `payment_status` and `fulfilment_status` are derived state machines rolled up from an order's transactions and fulfilments. Fulfilment is modelled as per-parcel `Fulfilment` records with their own lifecycle, pluggable fulfilment methods (shipping, collection, digital), and a shipping-carrier registry with tracking.
+- **Per-location inventory.** `StockLevel`, `StockMovement`, and `StockReservation` sit on top of `Location`, with global rollups denormalized onto `ProductVariant`. All physical stock movement flows through `$variant->adjustStock(...)`.
+- **Storefront context and regions.** `Region` is a first-class market that belongs to a channel and carries currency, language, tax zone, served countries, and a price-display preference. A `ResolveStorefrontContext` cascade produces an immutable `StorefrontContext` DTO so non-session code such as APIs, jobs, and tests can work from an explicit context instead of reaching into session state.
+- **A dedicated pricing engine.** Prices are stored as plain integers, and a `PriceValue` object plus a `PriceCalculator` centralize currency-aware arithmetic (rounding, tax, distribution) so money math is consistent everywhere.
+- **Simpler extension points.** Model subclassing and model-class substitution have been removed. Lunar models are extended using native Laravel seams instead — `resolveRelationUsing()`, macros, `addGlobalScope()`, `observe()` — plus two Lunar-specific seams, `Model::addCasts()` and `Model::addLocalScope()`.
+- **A new admin panel, built on Inertia + Vue.** Alongside the existing Filament-based admin, a first-party `lunarphp/panel` package ships a Vue 3 + Inertia.js v3 admin panel with its own design system and a runtime extension mechanism for add-on packages. The two panels coexist during the transition.
+- **The Filament admin, rebuilt.** The Filament admin panel now runs on Filament v5 with the schemas refactor, and the Filament integration is extracted into a `lunarphp/filament` bridge package that plugs into any Filament v5 panel.
+- **Mandatory two-factor authentication.** Every staff login requires a second factor — an authenticator app (TOTP) when one is configured, or an emailed code as a fallback. There is no password-only login path.
+- **The core namespace moved to `Lunar\Core\…`.**
+
+<Info>
+For the full tour of what changed and why, see the [what's new in Lunar v2](https://github.com/lunarphp/lunar/blob/2.x/WHATS-NEW.md) notes in the monorepo.
+</Info>
+
+## Tech stack
+
+Lunar v2 is made up of several Composer packages, installed as needed:
+
+- **`lunarphp/core`** — the e-commerce engine: models, actions, pricing, search, and all core functionality, namespaced under `Lunar\Core\…`.
+- **`lunarphp/filament`** — a bridge package that plugs Lunar's resources, actions, and widgets into any Filament v5 panel.
+- **`lunarphp/admin`** — the first-party Filament admin panel, built on `lunarphp/filament`.
+- **`lunarphp/panel`** — the first-party Inertia + Vue admin panel, an alternative to the Filament admin.
+- **`lunarphp/stripe`** and **`lunarphp/paypal`** — first-party payment drivers.
+- **`lunarphp/search`** — Scout-based search, with database, Meilisearch, and Typesense engines.
+- **`lunarphp/table-rate-shipping`** — a table-rate shipping method.
+- **`lunarphp/upgrade`** — Rector rules and data migrations for moving a v1 store to v2.
+- **`lunarphp/demo-data`** — seeds a coherent, reproducible demo store for trying Lunar out.
+
+## Getting started
+
+<Card
+  title="Install Lunar"
+  icon="rocket"
+  href="/getting-started/setup/installation"
+  horizontal
+>
+  Add Lunar to a Laravel application with Composer.
+</Card>
+
+<Card
+  title="Upgrading from v1"
+  icon="arrow-up-right-dots"
+  href="/getting-started/overview/upgrade-guide"
+  horizontal
+>
+  Move an existing Lunar v1 store to v2.
+</Card>
+
+<Card
+  title="Admin Panel"
+  icon="table-columns"
+  href="/admin/introduction"
+  horizontal
+>
+  Explore the admin panel for managing products, orders, and customers.
+</Card>
+
+<Card
+  title="Storefront Guides"
+  icon="book"
+  href="/guides/catalog-menu"
+  horizontal
+>
+  Step-by-step guides for building catalog, cart, and checkout flows.
+</Card>
