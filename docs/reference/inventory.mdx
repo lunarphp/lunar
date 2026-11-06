@@ -1,0 +1,388 @@
+---
+title: "Inventory"
+---
+
+Inventory tracks how much of a product variant is available to sell, per location, with an audit trail of every physical movement.
+
+## Overview
+
+Stock is modeled across four pieces: a `Location` (a warehouse or store), a `StockLevel` (a variant's balance at one location), an append-only `StockMovement` ledger behind the physical count, and a `StockReservation` for stock held during checkout. A denormalized rollup cached on `Lunar\Core\Models\ProductVariant` answers "how many can I sell" with a single indexed read, without summing across locations on every request.
+
+### The stock quantities
+
+| Quantity | Meaning | Scope |
+|:-|:-|:-|
+| `on_hand` | Physically present units | Per location, and summed on the variant rollup |
+| `incoming` | Expected in on a purchase order | Per location, and summed on the variant rollup. A manual field; populating it is left to a purchasing add-on |
+| `committed` | Allocated to open orders, not yet dispatched | Global on the variant rollup first; allocated to a location once a fulfilment is created there |
+| `reserved` | Held for an in-flight checkout, not yet an order | Global only, on the variant rollup — a cart has no location |
+| `unavailable` | Held back — damaged, or otherwise not sellable | Per location, and summed on the variant rollup |
+| `available` | Computed: `on_hand − committed − unavailable` at a location; `on_hand − committed − reserved − unavailable` on the rollup | Not stored at location level; cached and indexed on the rollup |
+
+`committed` and `reserved` are tracked globally first because neither has a location at the moment it is created: a commitment exists once an order is placed, before any fulfilment picks a location; a reservation exists mid-checkout, before an order exists at all. The *sellable* figure a storefront should check is always the variant's global rollup, not a single location's `available`.
+
+## Locations
+
+A location is a physical place — a warehouse or store — that fulfilments are assigned to and inventory is tracked against.
+
+```php
+Lunar\Core\Models\Location
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `name` | `string` | Display name |
+| `handle` | `string` | Unique slug, automatically slugified on save |
+| `default` | `boolean` | Whether this is the default location |
+| `meta` | `jsonb` `nullable` | Custom metadata |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `fulfilments` | `HasMany` | `Lunar\Core\Models\Fulfilment` | Fulfilments assigned to this location |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `default($default = true)` | Filter to the default location |
+
+## Stock levels
+
+A stock level is a variant's stock balance at a single location.
+
+```php
+Lunar\Core\Models\StockLevel
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `product_variant_id` | `foreignId` | The variant this level belongs to |
+| `location_id` | `foreignId` | The location this level belongs to |
+| `on_hand` | `integer` | Ledger-derived running balance |
+| `incoming` | `integer` | |
+| `committed` | `integer` | The allocated subset of the variant's global commitment at this location |
+| `unavailable` | `integer` | |
+| `meta` | `jsonb` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+A `(product_variant_id, location_id)` pair is unique — a variant has at most one level per location. There is no `reserved` column: reservations are global-only, since a cart never picks a location.
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `variant` | `BelongsTo` | `Lunar\Core\Models\ProductVariant` | The variant this level tracks |
+| `location` | `BelongsTo` | `Lunar\Core\Models\Location` | The location this level tracks |
+| `movements` | `HasMany` | `Lunar\Core\Models\StockMovement` | Movements for this level's variant, scoped to its location |
+
+### Accessors
+
+```php
+$stockLevel->available; // on_hand - committed - unavailable
+```
+
+`available` is computed, not stored. It is the allocatable-physical figure at this location; the *sellable* figure for a variant is always the global rollup, described below.
+
+## Stock movements
+
+A stock movement is an immutable, append-only entry in a variant's `on_hand` ledger — the only bucket that is ledgered, since `committed`, `reserved`, and `unavailable` are maintained counters reconstructable from order lines, reservation rows, and hold actions.
+
+```php
+Lunar\Core\Models\StockMovement
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `product_variant_id` | `foreignId` | Denormalized for cheap per-variant history |
+| `location_id` | `foreignId` | |
+| `quantity` | `integer` | Signed delta applied to `on_hand` |
+| `type` | `string` | A `Lunar\Core\Enums\StockMovementType` value, indexed |
+| `source_type` / `source_id` | `nullableMorphs` | The originating record, e.g. a `Fulfilment` or a refund `Transaction` |
+| `note` | `string` `nullable` | |
+| `causer_type` / `causer_id` | `nullableMorphs` | Who triggered the movement |
+| `created_at` | `timestamp` | The movement instant. There is no `updated_at` — the ledger is append-only |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `variant` | `BelongsTo` | `Lunar\Core\Models\ProductVariant` | The variant this movement belongs to |
+| `location` | `BelongsTo` | `Lunar\Core\Models\Location` | The location this movement occurred at |
+| `source` | `MorphTo` | | The record that caused this movement |
+| `causer` | `MorphTo` | | The actor that triggered this movement |
+
+### `StockMovementType`
+
+```php
+Lunar\Core\Enums\StockMovementType
+```
+
+| Case | Value | Meaning |
+|:-|:-|:-|
+| `OpeningBalance` | `opening_balance` | The starting balance a level is seeded with |
+| `Received` | `received` | Stock arriving into a location (goods-in) |
+| `Shipped` | `shipped` | Stock leaving a location on a fulfilment |
+| `Returned` | `returned` | Stock coming back into a location (return or refund-restock) |
+| `Adjustment` | `adjustment` | A manual or corrective change that fits none of the above |
+
+Reversals (un-ship, undo-return) are recorded as new signed movements of the same type rather than deletions, so the ledger stays append-only.
+
+## Stock reservations
+
+A stock reservation is a time-boxable hold a checkout places against a variant before an order exists, so two concurrent checkouts cannot both claim the last unit.
+
+```php
+Lunar\Core\Models\StockReservation
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `product_variant_id` | `foreignId` | Global — there is no `location_id`, since a cart picks no location |
+| `quantity` | `integer` | |
+| `reference_type` / `reference_id` | `nullableMorphs` | The holder, e.g. a `Cart` |
+| `expires_at` | `timestamp` `nullable` | `null` means no auto-expiry; must be released or committed explicitly |
+| `released_at` | `timestamp` `nullable` | |
+| `committed_at` | `timestamp` `nullable` | Set when the reservation converts to a commitment at order placement |
+| `note` | `string` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `variant` | `BelongsTo` | `Lunar\Core\Models\ProductVariant` | The variant this reservation holds stock against |
+| `reference` | `MorphTo` | | The holder of the reservation |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `active()` | Not released, not committed, and not expired |
+
+### Accessors
+
+```php
+$reservation->is_active; // bool — not released, not committed, and (no expiry, or not yet expired)
+```
+
+### Releasing and committing
+
+```php
+$reservation->release();   // returns the quantity to availability; a no-op if already released or committed
+$reservation->commit();    // converts the reservation to a commitment at order placement
+```
+
+Both methods are idempotent, delegating to `Lunar\Core\Contracts\Actions\Products\ReleasesReservation` and `Lunar\Core\Contracts\Actions\Products\CommitsReservation`.
+
+## The rollup on ProductVariant
+
+`Lunar\Core\Models\ProductVariant` caches a global rollup, maintained whenever a variant's stock levels, global commitment, or active reservations change:
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `stock_on_hand` | `integer` | Sum of the variant's stock levels' `on_hand` |
+| `stock_incoming` | `integer` | Sum of the variant's stock levels' `incoming` |
+| `stock_committed` | `integer` | Total commitments, allocated and unallocated |
+| `stock_reserved` | `integer` | Sum of active reservations |
+| `stock_unavailable` | `integer` | Sum of the variant's stock levels' `unavailable` |
+| `stock_available` | `integer` | `stock_on_hand − stock_committed − stock_reserved − stock_unavailable`, indexed |
+
+`stock_committed` and `stock_reserved` are not pure sums of location rows: `stock_committed` includes commitments not yet allocated to any location, and `stock_reserved` has no location at all. `stock_available` may go negative — an oversell is allowed by design and surfaced as a warning, mirroring the fact that a placed order cannot be un-sold.
+
+```php
+$variant->stockLevels;      // HasMany Lunar\Core\Models\StockLevel
+$variant->stockMovements;   // HasMany Lunar\Core\Models\StockMovement
+```
+
+These relations come from the `Lunar\Core\Models\Concerns\HasStock` trait, `ProductVariant`'s default implementation of the `Lunar\Core\Contracts\TracksStock` capability (below).
+
+## Recording a movement
+
+Every change to `on_hand` goes through one action, so the ledger can never be bypassed. It locks the `(variant, location)` stock level (creating it at zero if absent), appends the movement, updates `on_hand`, and refreshes the variant rollup, all in one transaction.
+
+```php
+use Lunar\Core\Enums\StockMovementType;
+use Lunar\Core\Models\Location;
+
+$variant->adjustStock(
+    location: Location::getDefault(),
+    quantity: 10,
+    type: StockMovementType::Received,
+    note: 'Delivery #4471',
+);
+```
+
+`adjustStock()` delegates to `Lunar\Core\Contracts\Actions\Products\RecordsStockMovement`. A manual admin adjustment goes through `Lunar\Core\Contracts\Actions\Products\AdjustsStock` instead, which records an `Adjustment` movement and defaults to the default location when none is given.
+
+## Reserving stock
+
+```php
+$reservation = $variant->reserveStock(
+    quantity: 1,
+    expiresAt: now()->addMinutes(15),
+    reference: $cart,
+);
+
+$reservation->release();
+// or, at order placement:
+$reservation->commit();
+```
+
+`reserveStock()` delegates to `Lunar\Core\Contracts\Actions\Products\ReservesStock` and returns a `Lunar\Core\Models\StockReservation`. Committing a reservation frees the reserved quantity without writing `stock_committed` directly — that figure is always derived from the order book, described next.
+
+## Committed stock and the order lifecycle
+
+Commitment is not tracked by incrementing and decrementing a counter on each event. Instead, `Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment` recomputes a variant's global `stock_committed` and each location's `StockLevel.committed` from the order book directly: it gathers every order line for the variant that requires fulfilment on a placed, non-cancelled order, subtracts the quantity already fulfilled or returned, and allocates the outstanding remainder to whichever location holds the outstanding fulfilment (a location's `committed` is the allocated subset; the global figure also includes commitments not yet allocated to any fulfilment). This is the single canonical predicate, shared by the lifecycle hooks that fire on order placement, fulfilment creation, shipping, returns, and cancellation, and by the reconcile command below — so live updates and a full rebuild can never disagree.
+
+```php
+$variant->syncStockCommitment();
+```
+
+This is the built-in `Lunar\Core\Contracts\TracksStock::syncStockCommitment()` implementation, called after order-lifecycle events that change what a variant has committed.
+
+## Sellability
+
+```php
+$variant->getTotalInventory();          // sellable quantity, accounting for the selling policy
+$variant->canBeFulfilledAtQuantity(3);  // bool
+```
+
+Both methods delegate to the [`ResolvesInventory` seam](#the-resolvesinventory-seam) below. The default implementation reads `stock_available`, adding `backorder` when the variant's `Lunar\Core\Enums\SellingPolicy` is `InStockOrOnBackorder`:
+
+| Case | Value | `getTotalInventory()` |
+|:-|:-|:-|
+| `Always` | `always` | `stock_available` (any quantity can be fulfilled regardless) |
+| `InStock` | `in_stock` | `stock_available` |
+| `InStockOrOnBackorder` | `in_stock_or_on_backorder` | `stock_available + backorder` |
+
+`canBeFulfilledAtQuantity()` returns `true` when the policy is `Always`, or when the requested quantity does not exceed `getTotalInventory()`.
+
+<Info>
+The add-to-cart stock check is advisory: with no reservation taken at add-to-cart, stock can still sell out before an order is placed. `reserveStock()` is the supported way for a checkout to hold stock, optionally time-boxed, and close that window for flows that opt in.
+</Info>
+
+## The `ResolvesInventory` seam
+
+`ProductVariant::getTotalInventory()` and `canBeFulfilledAtQuantity()` do not read the rollup columns themselves. They resolve `Lunar\Core\Contracts\Actions\Products\ResolvesInventory` from the container and read its answer, so a package that derives a variant's availability from somewhere other than the variant's own stock (a bundle from its components, an external warehouse feed) can change the answer for every caller at once: the cart's `CartLineStock` validator, a storefront stock badge, and the admin panel all go through the same two methods.
+
+```php
+namespace Lunar\Core\Contracts\Actions\Products;
+
+use Lunar\Core\DataObjects\VariantInventory;
+use Lunar\Core\Models\ProductVariant;
+
+interface ResolvesInventory
+{
+    public function execute(ProductVariant $variant): VariantInventory;
+}
+```
+
+The answer is a `Lunar\Core\DataObjects\VariantInventory`, a small read-only value:
+
+| Property / method | Type | Description |
+|:-|:-|:-|
+| `available` | `int` | Units that can be sold now |
+| `unlimited` | `bool` | Selling continues regardless of `available` (the `Always` selling policy); defaults to `false` |
+| `allows(int $quantity)` | `bool` | `true` when `unlimited`, or when `$quantity` does not exceed `available` |
+
+`getTotalInventory()` returns `available`; `canBeFulfilledAtQuantity($quantity)` returns `allows($quantity)`.
+
+The default binding, `Lunar\Core\Actions\Products\ResolveInventory`, registered in the core `ActionServiceProvider`, applies the selling-policy table above to the variant's rollup columns. To answer differently for some variants and fall through for the rest, decorate the binding rather than replacing it:
+
+```php
+use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
+use Lunar\Core\DataObjects\VariantInventory;
+use Lunar\Core\Models\ProductVariant;
+
+class ResolveWarehouseInventory implements ResolvesInventory
+{
+    public function __construct(
+        protected ResolvesInventory $inner,
+        protected WarehouseFeed $feed,
+    ) {}
+
+    public function execute(ProductVariant $variant): VariantInventory
+    {
+        if (! $variant->warehouse_sku) {
+            return $this->inner->execute($variant);
+        }
+
+        return new VariantInventory(available: $this->feed->availableFor($variant->warehouse_sku));
+    }
+}
+```
+
+```php
+// In a service provider's register():
+$this->app->extend(
+    ResolvesInventory::class,
+    fn (ResolvesInventory $inner, $app) => new ResolveWarehouseInventory($inner, $app->make(WarehouseFeed::class)),
+);
+```
+
+Decorators answer other variants through `$this->inner`, never through `$variant->getTotalInventory()`, which would re-enter the chain. The [Bundles add-on](/addons/bundles#stock) is the reference example: its decorator answers a bundle variant from its components' inventories and falls through for everything else.
+
+The seam covers sellability only. Recording movements, reservations, and commitment stay on the ledger and the order book as described above.
+
+## Custom purchasables: the `TracksStock` capability
+
+Anything sold implements `Lunar\Core\Contracts\Purchasable`, but not everything sold tracks stock — a gift card or a service can answer `canBeFulfilledAtQuantity()` without a `StockLevel` behind it. Stock participation is the separate, opt-in `Lunar\Core\Contracts\TracksStock` capability:
+
+```php
+namespace Lunar\Core\Contracts;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\StockReservation;
+
+interface TracksStock
+{
+    public function syncStockCommitment(): void;
+
+    public function reserveStock(int $quantity, ?\DateTimeInterface $expiresAt = null, ?Model $reference = null, ?string $note = null): StockReservation;
+}
+```
+
+The cart, checkout, and order lifecycle call these two methods polymorphically through `instanceof TracksStock`, skipping any purchasable that does not track stock. `ProductVariant` is the only built-in implementation (via `Lunar\Core\Models\Concerns\HasStock`); a custom stock-tracked purchasable (event seats, a made-to-order assembly, an external warehouse system) implements `TracksStock` with its own storage, since its stock rarely looks like an integer `on_hand` at a location.
+
+## Reconciling and expiring reservations
+
+Two Artisan commands keep the ledger-derived figures and the reservation-derived figures consistent with their sources:
+
+```sh
+php artisan lunar:stock:reconcile
+php artisan lunar:stock:reconcile --variant=1 --variant=2
+```
+
+Rebuilds every location's `on_hand` as the running sum of its movement ledger, recomputes `stock_reserved` from active reservations, and recomputes `stock_committed` from the order book via the same canonical predicate the live hooks use. Pass `--variant` one or more times to limit the run to specific variant IDs.
+
+```sh
+php artisan lunar:stock:release-expired
+```
+
+Releases every reservation whose `expires_at` has passed and that has not already been released or committed, returning its quantity to availability. Lunar schedules this command to run every minute by default.
+
+## What inventory does not cover yet
+
+Location-scoped storefront availability (selling only what a specific location holds) and system-driven allocation routing (assigning a placed order's commitment to a specific location, or splitting it across several) are not implemented. Availability today is always the global sum across every location. A fulfilment allocates to whichever location it is created at; nothing auto-assigns that location. Purchase-order automation for `incoming` is likewise out of scope for core — it is a plain field intended for a purchasing add-on to populate.

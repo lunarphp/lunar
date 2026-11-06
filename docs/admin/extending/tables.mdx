@@ -1,0 +1,234 @@
+---
+title: "Extending Tables"
+sidebarTitle: "Tables"
+description: "How to add columns, filters, and row or bulk actions to a first-party (or another add-on's) data table."
+---
+
+Every listing page in the panel — Customers, Products, Channels, and any add-on's own — renders through the same `DataTable` component: keyword search, toolbar filters, sortable columns, pagination, row-action menus, and bulk actions. A `Lunar\Panel\Tables\TableExtension` registered against a table's id adds to any of these without touching the page that owns the table.
+
+## Finding a table's id
+
+A table id is a plain string, chosen by whichever controller built the table — there is no central registry, so a typo produces no error, just an extension that never appears. The reliable way to find one is to search the panel's controllers for `resolveTable(`, the trait method every table-backed index page calls:
+
+```php
+// Lunar\Panel\Http\Controllers\Customers\CustomerIndexController::index()
+$resolver = $this->resolveTable('customers.index');
+```
+
+The string passed there — `customers.index` — is the table id. It happens to match the page's zone/page-action id (the route name minus `panel.`), but that's a naming convention, not a guarantee; always confirm against the controller.
+
+## Registering a table extension
+
+A `TableExtension` bundles columns, filters, and actions; register it against a table id from a `Section`'s `tableExtensions()` hook:
+
+```php
+public function tableExtensions(): array
+{
+    return ['customers.index' => ExampleTableExtension::class];
+}
+```
+
+```php
+use Lunar\Panel\Tables\TableExtension;
+
+class ExampleTableExtension extends TableExtension
+{
+    public function columns(): array
+    {
+        return [ExampleColumn::class];
+    }
+}
+```
+
+`TableExtension` exposes four hooks, each defaulting to an empty array (or a no-op):
+
+| Hook | Returns |
+|:-----|:--------|
+| `columns()` | `class-string<TableColumn>[]` |
+| `filters()` | `class-string<TableFilter>[]` |
+| `actions()` | `class-string<TableAction>[]` |
+| `bulkActions()` | `class-string<TableBulkAction>[]` |
+| `searchQuery(Builder $query, string $term)` | Extends the page's own keyword search — see [Extending search](#extending-search) below. |
+
+Outside a `Section`, call `Panel::extendTable($tableId, ExampleTableExtension::class)` directly.
+
+Multiple extensions (from different add-ons, or first-party and add-on together) can target the same table id; their columns, filters, and actions all merge into one ordered set.
+
+## Adding a column
+
+A column extends `Lunar\Panel\Tables\TableColumn`:
+
+```php
+use Lunar\Panel\Tables\TableColumn;
+
+class ExampleColumn extends TableColumn
+{
+    public function key(): string
+    {
+        return 'id';
+    }
+
+    public function header(): string
+    {
+        return 'ID (Example Add-on)';
+    }
+}
+```
+
+- `key()` — the column's identifier. This doubles as the record attribute read for the cell's raw value (see below), so it should be a real attribute on the model, unless `component()` renders the cell itself.
+- `header()` — the column heading.
+- `type()` — an optional `Lunar\Panel\Tables\Support\ColumnType` for a generic renderer: `ColumnType::badge()`, `::date(?string $format)`, `::boolean()`, `::currency(?string $code)`, `::image()`. Leave `null` for plain text.
+- `component()` — an optional namespaced Vue component name (registered via `window.LunarPanel.registerComponents()`) for a fully custom cell. It receives `row` and `value` props. Takes precedence over `type()`.
+- `position()` — a `Lunar\Panel\Support\Position`; defaults to `Position::last()`. See [Ordering with Position](/admin/extending/ordering).
+- `permission()` — a manifest permission handle; a staff member lacking it never receives the column.
+- `query(Builder $query)` — a hook to modify the table's Eloquent query before pagination, for a column whose value isn't a plain attribute (a `withCount()`, an `addSelect()` subquery, an eager-loaded relation).
+
+### How a column's value is resolved
+
+`Lunar\Panel\Tables\Resolvers\TableExtensionResolver::applyColumnQueries()` calls every visible column's `query()` against the table's builder before pagination runs. Once the records are loaded, the controller reads each add-on column's raw cell value as `$record->getAttribute($column->key())` — so `key()` must resolve to something the record actually exposes by that point: either a native column, or something the column's own `query()` hook added (a `withCount()` alias, a subquery `addSelect()`, a relation loaded and flattened onto the model). A column with no `query()` override simply reads whatever native attribute matches its `key()`.
+
+### Merging with first-party columns
+
+`TableExtensionResolver::mergeAndOrderColumns()` assigns the page's first-party columns ascending priorities (`10`, `20`, `30`, ...) in their declared order, then merges in every visible add-on column by its own `position()`, resolving the combined set with the shared `Lunar\Panel\Support\OrderResolver`. This is what lets an add-on column anchor `Position::before('company_name')` or similar against a first-party column's key, not just another add-on's.
+
+## Rendering a cell
+
+A column with no `type()` and no `component()` renders its raw value as plain text. `type()` hands the value to a built-in renderer (`DataTableCell.vue`) for a badge, formatted date, boolean icon, currency amount, or image thumbnail. `component()` overrides both for a fully custom cell — the same `registerComponents()` mechanism a [slot](/admin/extending/slots) or dashboard widget component uses, receiving `row` (the whole row payload) and `value` (this column's raw value) as props.
+
+## Filters
+
+A filter extends `Lunar\Panel\Tables\TableFilter`:
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Panel\Tables\TableFilter;
+
+class HasAccountRefFilter extends TableFilter
+{
+    public function key(): string
+    {
+        return 'has_account_ref';
+    }
+
+    public function label(): string
+    {
+        return 'Account ref (Example)';
+    }
+
+    public function options(): array
+    {
+        return [
+            'yes' => 'Has account ref',
+            'no' => 'No account ref',
+        ];
+    }
+
+    public function query(Builder $query, mixed $value): void
+    {
+        $value === 'yes'
+            ? $query->whereNotNull('account_ref')->where('account_ref', '!=', '')
+            : $query->where(fn (Builder $inner) => $inner->whereNull('account_ref')->orWhere('account_ref', ''));
+    }
+}
+```
+
+- `key()` / `query(Builder $query, mixed $value)` are required; `query()` only runs when the filter has a submitted, non-empty value.
+- `label()` defaults to the title-cased key if not overridden.
+- `options()` — `[submitted value => label]`. The generic toolbar dropdown only renders a filter that has options (reserved for a fully custom filter via `component()`, which is otherwise unused here).
+- The panel submits the selection as a nested `filter[{key}]` query parameter and renders the dropdown next to the first-party filters, with an automatic "All" default.
+
+## Row actions
+
+A row action extends `Lunar\Panel\Tables\TableAction` and appears in every row's ellipsis menu:
+
+```php
+use Lunar\Panel\Support\Position;
+use Lunar\Panel\Tables\TableAction;
+
+class PingRowAction extends TableAction
+{
+    public function key(): string
+    {
+        return 'example-ping';
+    }
+
+    public function label(): string
+    {
+        return 'Ping (Example)';
+    }
+
+    public function icon(): ?string
+    {
+        return 'refresh';
+    }
+
+    public function position(): Position
+    {
+        return Position::after('edit');
+    }
+
+    public function method(): string
+    {
+        return 'get';
+    }
+
+    public function url(mixed $record = null): ?string
+    {
+        return $record ? route('panel.example-addon.ping', $record) : null;
+    }
+}
+```
+
+`url($record)` builds the action's per-row URL from the record; returning `null` omits the action from that row entirely — this is how the first-party Delete action hides itself on a protected record. First-party Edit/Delete are ordinary `TableAction`s in the same ordered set, so `Position::after('edit')` anchors right after the built-in Edit entry. `primary(): true` renders the action as an inline button instead of collapsing into the ellipsis — reserved by convention for a page's main verb; add-ons should normally stay in the ellipsis. `confirmationMessage()` adds a confirm dialog before dispatch, and `permission()` hides the action from unauthorized staff.
+
+## Bulk actions
+
+A bulk action extends `Lunar\Panel\Tables\TableBulkAction`. Registering **any** bulk action against a table is what makes its row-selection checkboxes appear at all:
+
+```php
+use Lunar\Panel\Tables\TableBulkAction;
+
+class PingBulkAction extends TableBulkAction
+{
+    public function key(): string
+    {
+        return 'example-bulk-ping';
+    }
+
+    public function label(): string
+    {
+        return 'Ping selected (Example)';
+    }
+
+    public function method(): string
+    {
+        return 'post';
+    }
+
+    public function url(): ?string
+    {
+        return route('panel.example-addon.bulk-ping');
+    }
+}
+```
+
+While rows are checked, the toolbar is replaced by a bulk-action bar; dispatching an action posts the selected row ids (as `ids`) to `url()` — unlike a row action, `url()` here takes no record, since it targets the whole selection at once. `confirmationMessage()`, `permission()`, and `position()` work exactly as they do on row actions.
+
+## Extending search
+
+Override `searchQuery(Builder $query, string $term)` on the `TableExtension` (not on an individual column) to extend the page's own keyword search:
+
+```php
+public function searchQuery(Builder $query, string $term): void
+{
+    $query->orWhere('external_ref', 'like', "%{$term}%");
+}
+```
+
+The hook runs inside the page's own search `where` group (`TableExtensionResolver::applySearchQueries()`), so add `orWhere` clauses — a plain `where` would narrow every other search term instead of extending it.
+
+## See also
+
+- [Slots](/admin/extending/slots) — injecting a Vue component into a page's body instead of extending its table.
+- [Page Actions](/admin/extending/page-actions) — the header-scoped sibling of a row action.
+- [Ordering with Position](/admin/extending/ordering) — anchoring columns and actions relative to first-party or add-on entries.
