@@ -7,6 +7,7 @@ Lunar is a headless PHP/Laravel e-commerce package. This directory is the **pack
 - `packages/` — sub-packages published from this monorepo (`core`, `admin`, `filament`, `panel`, `panel-addon-example`, `search`, `stripe`, `paypal`, `table-rate-shipping`, `meilisearch`, `upgrade`, `demo-data`).
 - `tests/` — Pest tests grouped per sub-package (admin, core, panel, search, stripe, shipping, upgrade); see `phpunit.xml` for the testsuites.
 - `specs/` — design docs for v2 work (see below).
+- `docs/` — the 2.x pages of docs.lunarphp.com (see Documentation below).
 - `TODO.md` — the v2 work tracker.
 - `composer.json` / `monorepo-builder.php` — the monorepo config; sub-packages are split out on release.
 
@@ -64,6 +65,12 @@ PHPStan (via Larastan, level 0) is part of the test pipeline and **must pass bef
 - The `composer test` script chains pint check + pest + phpstan; CI runs the same. Skipping phpstan locally just defers the failure to CI.
 - Fix the underlying type/contract issue. Do not add `@phpstan-ignore`, baseline entries, `assert()`, or inline `@var` to silence errors unless you have a specific reason (and call it out in the PR).
 - When introducing new public surface (selectors, schemas, helpers), add type hints and array-shape PHPDoc so phpstan can verify call sites without baseline noise.
+
+## Documentation
+
+- Docs for a change go in `docs/` in the same PR. They publish at the next 2.x release, not on merge.
+- Page paths and links are written without the `/2.x` prefix; link to other versions with their prefix, and to Support, Flight Plan or v0 pages with the full URL. See `docs/README.md`.
+- Check with `mint broken-links` from `docs/`.
 
 ## Reviewing changes
 
