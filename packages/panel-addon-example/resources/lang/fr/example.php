@@ -18,4 +18,12 @@ return [
     'widget_description' => 'Le total des clients, et combien ont rejoint sur la période sélectionnée.',
     'widget_total' => 'Clients au total',
     'widget_recent' => 'Nouveaux sur la période',
+    'loyalty_title' => 'Fidélité',
+    'loyalty_description' => 'Un champ fourni par l\'add-on d\'exemple. Il s\'enregistre avec le reste du client via le brouillon de modification.',
+    'loyalty_tier' => 'Niveau de fidélité',
+    'loyalty_tier_none' => 'Aucun niveau',
+    'loyalty_tier_bronze' => 'Bronze',
+    'loyalty_tier_silver' => 'Argent',
+    'loyalty_tier_gold' => 'Or',
+    'loyalty_unsaved' => 'Les modifications s\'enregistrent avec le client.',
 ];

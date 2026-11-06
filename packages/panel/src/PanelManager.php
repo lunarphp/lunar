@@ -7,10 +7,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Lunar\Panel\Actions\PageActionResolver;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Dashboard\WidgetRegistry;
+use Lunar\Panel\Drafts\ComposedDraftResource;
+use Lunar\Panel\Forms\FormSlice as BaseFormSlice;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Search\SearchCommand;
@@ -50,6 +54,9 @@ class PanelManager
 
     /** @var array<class-string<Model>, DraftableResource> */
     protected array $draftables = [];
+
+    /** @var array<class-string<Model>, array<string, FormSlice>> */
+    protected array $formSlices = [];
 
     /** @var array<class-string, class-string<DiscountTypeForm>> */
     protected array $discountTypeForms = [];
@@ -159,6 +166,14 @@ class PanelManager
 
         foreach ($entity->draftables() as $definitionClass) {
             $this->draftable($definitionClass);
+        }
+
+        foreach ($entity->formSlices() as $sliceClass) {
+            $this->formSlice($sliceClass);
+        }
+
+        foreach ($entity->formExtensions() as $sliceClass) {
+            $this->formSlice($sliceClass, addon: true);
         }
 
         foreach ($entity->discountTypeForms() as $discountType => $formClass) {
@@ -338,11 +353,14 @@ class PanelManager
         if (isset($this->draftables[$model])) {
             Log::warning("Lunar Panel: draftable resource for [{$model}] is already registered and will be overwritten.");
         } else {
+            // Model deletes rather than a mass delete, so each draft's
+            // discard fan-out runs against the record still in hand.
             $model::deleted(function (Model $record): void {
                 EditDraft::query()
                     ->where('draftable_type', $record->getMorphClass())
                     ->where('draftable_id', $record->getKey())
-                    ->delete();
+                    ->get()
+                    ->each(fn (EditDraft $draft) => $draft->setRelation('draftable', $record)->delete());
             });
         }
 
@@ -351,9 +369,98 @@ class PanelManager
         return $this;
     }
 
+    /**
+     * Register a form slice, indexed by its model then namespace. Sections
+     * register first-party slices under their bare key; the public
+     * formExtensions() hook passes $addon so the slice lands under
+     * `addon:{key}` and can never claim a first-party namespace.
+     *
+     * @param  class-string<FormSlice>  $sliceClass
+     *
+     * @throws InvalidArgumentException on a malformed, reserved, or duplicate namespace
+     */
+    public function formSlice(string $sliceClass, bool $addon = false): static
+    {
+        /** @var FormSlice $slice */
+        $slice = app($sliceClass);
+
+        $key = $slice->key();
+
+        if (! preg_match('/^[a-z0-9_-]+$/', $key)) {
+            throw new InvalidArgumentException("Lunar Panel: form slice [{$sliceClass}] key [{$key}] must match [a-z0-9_-]+.");
+        }
+
+        if (! $addon && $key === 'addon') {
+            throw new InvalidArgumentException("Lunar Panel: form slice [{$sliceClass}] cannot claim the reserved [addon] namespace.");
+        }
+
+        $namespace = $addon ? "addon:{$key}" : $key;
+        $model = $slice->model();
+
+        // Re-registering the same class (sections processed twice) is a
+        // no-op; only a different class claiming the namespace is an error.
+        if (($existing = $this->formSlices[$model][$namespace] ?? null) && $existing::class !== $sliceClass) {
+            $existingClass = $existing::class;
+
+            throw new InvalidArgumentException(
+                "Lunar Panel: form slice namespace [{$namespace}] on [{$model}] is claimed by both [{$existingClass}] and [{$sliceClass}]."
+            );
+        }
+
+        if ($slice instanceof BaseFormSlice) {
+            $slice->bindNamespace($namespace);
+        }
+
+        $this->formSlices[$model][$namespace] = $slice;
+
+        return $this;
+    }
+
+    /**
+     * @param  class-string<Model>  $model
+     * @return array<string, FormSlice>
+     */
+    public function formSlicesFor(string $model): array
+    {
+        return $this->formSlices[$model] ?? [];
+    }
+
+    /**
+     * The record's draftable definition: the registered resource alone, or
+     * composed with the model's slices when it has any. Slices are kept
+     * apart from resources so registration order between the panel's own
+     * sections and add-on sections does not matter.
+     */
     public function draftableFor(Model $model): ?DraftableResource
     {
-        return $this->draftables[$model::class] ?? null;
+        $resource = $this->draftables[$model::class] ?? null;
+
+        if (! $resource || ! ($slices = $this->formSlicesFor($model::class))) {
+            return $resource;
+        }
+
+        return new ComposedDraftResource($resource, $slices, $model);
+    }
+
+    /**
+     * Give a draft being deleted (discarded, pruned, or orphaned by its
+     * record's deletion) to the slices whose keys it holds. Committed drafts
+     * are consumed rather than discarded and delete quietly, so they never
+     * arrive here.
+     */
+    public function draftDiscarded(EditDraft $draft): void
+    {
+        $record = $draft->draftable;
+
+        if (! $record instanceof Model) {
+            return;
+        }
+
+        $resource = $this->draftableFor($record);
+
+        if ($resource instanceof ComposedDraftResource) {
+            $resource->discard($record, $draft);
+        }
     }
 
     /**

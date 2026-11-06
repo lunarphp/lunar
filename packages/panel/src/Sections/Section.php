@@ -5,6 +5,7 @@ namespace Lunar\Panel\Sections;
 use Closure;
 use Lunar\Panel\Contracts\DiscountTypeForm;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Search\SearchCommand;
@@ -60,6 +61,32 @@ abstract class Section implements ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return form slices this section owns: namespaced contributions to a
+     * first-party form's save, each under a bare namespace of its own, e.g.
+     * [ProductAttributeSlice::class]. Reserved for the panel's own sections;
+     * an add-on uses formExtensions().
+     *
+     * @return array<int, class-string<FormSlice>>
+     */
+    public function formSlices(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return form slices this section contributes to a form it does not own,
+     * e.g. [LoyaltyTierSlice::class]. Each lands under `addon:{key}`, so its
+     * fields validate and commit with the form's own (and autosave, restore
+     * and conflict-check on a drafted page) without being able to touch them.
+     *
+     * @return array<int, class-string<FormSlice>>
+     */
+    public function formExtensions(): array
     {
         return [];
     }

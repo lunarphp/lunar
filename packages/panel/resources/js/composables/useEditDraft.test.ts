@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { DraftConflictError, ValidationError } from '../lib/http';
 import { useEditDraft } from './useEditDraft';
 
-const { httpMock, reloadMock, routerOnMock } = vi.hoisted(() => ({
+const { httpMock, reloadMock, routerOnMock, pageProps } = vi.hoisted(() => ({
     httpMock: {
         patch: vi.fn(),
         post: vi.fn(),
@@ -11,6 +11,7 @@ const { httpMock, reloadMock, routerOnMock } = vi.hoisted(() => ({
     },
     reloadMock: vi.fn(),
     routerOnMock: vi.fn((_event: string, _handler: unknown) => () => {}),
+    pageProps: {} as Record<string, unknown>,
 }));
 
 vi.mock('../lib/http', async (importOriginal) => ({
@@ -20,6 +21,7 @@ vi.mock('../lib/http', async (importOriginal) => ({
 
 vi.mock('@inertiajs/vue3', () => ({
     router: { reload: reloadMock, on: routerOnMock },
+    usePage: () => ({ props: pageProps }),
 }));
 
 const urls = { draft: '/customers/1/draft', commit: '/customers/1/draft/commit' };
@@ -41,6 +43,43 @@ describe('useEditDraft', () => {
     afterEach(() => {
         vi.clearAllMocks();
         vi.useRealTimers();
+        delete pageProps.formSliceValues;
+    });
+
+    it('seeds draft slice values from the shared page prop', async () => {
+        pageProps.formSliceValues = { 'addon:loyalty:tier': 'bronze' };
+
+        const form = useEditDraft({
+            initial: { first_name: 'Original' },
+            draft: { data: { 'addon:loyalty:tier': 'gold' }, updated_at: null },
+            urls,
+        });
+
+        const values = form.values as Record<string, unknown>;
+
+        // Restored from the draft because the key was seeded, and diffed
+        // against the seeded pristine value.
+        expect(values['addon:loyalty:tier']).toBe('gold');
+        expect(form.dirtyKeys.value).toEqual(['addon:loyalty:tier']);
+
+        values['addon:loyalty:tier'] = 'bronze';
+        await flushAutosave();
+
+        expect(httpMock.delete).toHaveBeenCalledWith(urls.draft);
+    });
+
+    it('skips slice seeding when the page opts out', () => {
+        pageProps.formSliceValues = { 'addon:loyalty:tier': 'bronze' };
+
+        const form = useEditDraft({
+            initial: { first_name: 'Original' },
+            draft: { data: { 'addon:loyalty:tier': 'gold' }, updated_at: null },
+            urls,
+            slices: false,
+        });
+
+        expect('addon:loyalty:tier' in form.values).toBe(false);
+        expect(form.isDirty.value).toBe(false);
     });
 
     it('overlays a stored draft onto the initial values', () => {

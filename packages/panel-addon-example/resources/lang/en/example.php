@@ -18,4 +18,12 @@ return [
     'widget_description' => 'Total customers, and how many joined in the selected range.',
     'widget_total' => 'Total customers',
     'widget_recent' => 'New in range',
+    'loyalty_title' => 'Loyalty',
+    'loyalty_description' => 'A field contributed by the example add-on. It saves with the rest of the customer through the edit draft.',
+    'loyalty_tier' => 'Loyalty tier',
+    'loyalty_tier_none' => 'No tier',
+    'loyalty_tier_bronze' => 'Bronze',
+    'loyalty_tier_silver' => 'Silver',
+    'loyalty_tier_gold' => 'Gold',
+    'loyalty_unsaved' => 'Changes save with the customer.',
 ];
