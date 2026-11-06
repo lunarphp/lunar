@@ -114,9 +114,9 @@ Changing the default version, for example making v2 the default at beta, is a on
 
 `lunarphp/docs` becomes private once both versions publish through the Action and its open community PRs are resolved. Its README says where the docs are written and that the generated paths are never edited by hand. Mintlify's web editor and its agent commit to `main`, where the next sync overwrites a change to a version folder, so both are turned off.
 
-### Hotfixes
+### No early publishing
 
-A dedicated hotfix mechanism is not part of this spec. A docs fix merges into the version branch like any other docs change and publishes at that version's next release; an urgent one can ship in a patch or pre-release. Editing `1.x/` or `2.x/` in `lunarphp/docs` directly is not a hotfix, because the next sync overwrites it. See Open questions.
+Docs publish with releases and only with releases. There is no hotfix path: a docs fix merges into the version branch like any other change and goes out with that version's next release. When docs need to go out and no code is waiting, a patch or pre-release ships them. That is no different from a patch release today, which tags every split package whether or not it changed. Editing `1.x/` or `2.x/` in `lunarphp/docs` directly does not work, because the next sync overwrites it.
 
 ### Tokens
 
@@ -127,7 +127,9 @@ A dedicated hotfix mechanism is not part of this spec. A docs fix merges into th
 - **A Mintlify project per version, on its own subdomain** (the first version of this spec). Each version branch's `docs/` deploys from a live branch as its own site (`docs-v2.lunarphp.com`, `docs-v1.lunarphp.com`), with `docs.lunarphp.com` turned into Cloudflare redirects and v0 archived as a third project. It solves the same three problems but loses the version switcher and cross-version search, changes every docs URL, moves `support/` and `logs/` to the main website, and repoints the panel's 13 hard-coded docs links. Assembling one site keeps all of that as it is.
 - **Our own sync script.** Copying folders, prefixing links and navigation, and merging `docs.json` is what the multirepo Action does, including image and snippet paths and links inside code blocks that must be left alone. Maintaining that ourselves earns nothing; the one gap (`sourceRef` by destination) is a small upstream change.
 - **A live branch per version in the monorepo** (`docs-live-2.x`), reset at each release and taking docs-only PRs between releases. Corrections could publish on merge, but it adds branches nobody develops on, a ruleset and an App to protect them, and a workflow deciding per PR whether to publish or hold. The release tags already record what was released.
-- **Publish a PR that changes only `docs/` on merge.** Most corrections could go out immediately, but a docs-only PR about unreleased work would publish early unless someone held it. Hotfixes are left to a separate mechanism instead (see Open questions).
+- **Publish a PR that changes only `docs/` on merge.** Most corrections could go out immediately, but a docs-only PR about unreleased work would publish early unless someone held it.
+- **Publish chosen PRs early.** Maintainers list merged PRs whose docs publish ahead of the release, applied on top of the latest release's docs. It works, but it is cherry-picking: a PR whose docs conflict with unreleased changes cannot go out, and a list entry has to be checked when added and dropped when a release contains it or no longer applies. Urgent docs fixes are rare, and releasing more often gets everything else out.
+- **Publish each version branch as it stands.** The simplest option, but it documents features before they are released.
 - **Tag each docs publish in the monorepo.** Tag pushes run the package split and npm publish workflows (`tags: "*"`), and a tag runs the workflow files in its own commit, so narrowing those filters would not protect commits built on earlier releases.
 - **Publish whenever the version branch changes.** Docs would describe merged but unreleased code, immediately for v2, where every spec PR merges into `2.x` long before a release.
 - **Mintlify multi-repository projects.** Enterprise only, and a repository can be added once per project, so it cannot take `docs/` from both `1.x` and `2.x`.
@@ -150,12 +152,12 @@ A dedicated hotfix mechanism is not part of this spec. A docs fix merges into th
 - **v1 and v2 move together.** With one site and unchanged URLs there is no new domain to prove first, and `lunarphp/docs` cannot go private while v1 is still edited there.
 - **The default version is set in `docs.base.json`.** v2 becomes the default from the first beta that commits to a supported upgrade path to stable.
 - **`lunarphp/docs` becomes private** after the switch. Its public source is the monorepo.
+- **Docs publish only with releases.** No early or hotfix publishing; a patch or pre-release ships docs that cannot wait. Releases become more frequent so docs improvements are not held for long.
 
 ## Open questions
 
 - **Upstream `sourceRef` by destination.** If Mintlify declines the change, `sync.yml` stays pinned to a fork of the Action. Owner: Glenn, resolved before slice 2 merges.
 - **Mintlify with a private repository.** The Mintlify GitHub App needs access to the private `lunarphp/docs`; confirmed in the dashboard before slice 5.
-- **Hotfixes.** How a docs fix publishes before the next release, given that each sync overwrites the version folders. One option keeps patches in `lunarphp/docs` that `sync.yml` applies after the Action (run with `mode: none`, then committed), each dropped once a release contains its PR. Owner: Glenn, as a follow-up spec.
 
 ## References
 
