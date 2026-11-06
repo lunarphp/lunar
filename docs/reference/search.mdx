@@ -1,0 +1,263 @@
+---
+title: "Search"
+description: "Configure and manage search indexing with Laravel Scout, including searchable models, indexers, engine mapping, and artisan commands."
+---
+
+Lunar provides search indexing and querying through Laravel Scout with support for multiple search engines.
+
+## Overview
+
+Search in Lunar is built on [Laravel Scout](https://laravel.com/docs/scout), providing a flexible, driver-based search system. Scout's database driver offers basic search out of the box, while more powerful engines like [Meilisearch](https://www.meilisearch.com/) and [Typesense](https://typesense.org/) can be swapped in for advanced features such as faceted filtering and relevance tuning.
+
+All search configuration lives in `config/lunar/search.php`. This file controls which models are indexed, which search engine each model uses, and which indexer class prepares the data for each model.
+
+<Tip>
+For building storefront search with faceted filtering, sorting, and structured results, see the [Storefront Search add-on](/addons/search). It provides a `Search` facade with a consistent API across all search engines.
+</Tip>
+
+## Configuration
+
+### Soft Deletes
+
+By default, Scout sets the `soft_delete` option to `false`. This must be set to `true` in `config/scout.php`, otherwise soft-deleted models will appear in search results.
+
+```php
+// config/scout.php
+'soft_delete' => true,
+```
+
+### Searchable Models
+
+The `models` array in `config/lunar/search.php` defines which models are indexed. Lunar registers the following models by default:
+
+```php
+'models' => [
+    // These models are required by the system, do not change them.
+    Lunar\Models\Brand::class,
+    Lunar\Models\Collection::class,
+    Lunar\Models\Customer::class,
+    Lunar\Models\Order::class,
+    Lunar\Models\Product::class,
+    Lunar\Models\ProductOption::class,
+
+    // Below you can add your own models for indexing...
+    // App\Models\Example::class,
+],
+```
+
+To add custom models to the search index, append them to this array. Custom models must use the `Lunar\Base\Traits\Searchable` trait.
+
+### Engine Mapping
+
+By default, Scout uses the driver defined by the `SCOUT_DRIVER` environment variable for all models. This means if `SCOUT_DRIVER` is set to `meilisearch`, every searchable model gets indexed via Meilisearch.
+
+This may not always be desirable. For example, indexing orders in a paid service like Algolia alongside products would unnecessarily increase record counts and cost. Lunar allows specifying a different driver per model using the `engine_map` configuration:
+
+```php
+'engine_map' => [
+    Lunar\Models\Product::class => 'typesense',
+    Lunar\Models\Order::class => 'meilisearch',
+    Lunar\Models\Collection::class => 'meilisearch',
+],
+```
+
+Any model not listed in the `engine_map` falls back to the default Scout driver.
+
+## Searchable Trait
+
+All searchable Lunar models use the `Lunar\Base\Traits\Searchable` trait. This trait extends Scout's `Searchable` trait and delegates key behavior to an indexer class:
+
+- `searchableAs()` — returns the index name
+- `toSearchableArray()` — returns the data to index
+- `shouldBeSearchable()` — determines whether the model should be indexed
+- `searchableUsing()` — returns the engine based on the `engine_map` configuration
+- `getFilterableAttributes()` — returns filterable fields for the engine
+- `getSortableAttributes()` — returns sortable fields for the engine
+
+The trait resolves the appropriate indexer from the `indexers` config, falling back to the base `Lunar\Search\ScoutIndexer` if no specific indexer is mapped.
+
+## Indexers
+
+Each searchable model is paired with an indexer class that controls what data is sent to the search engine. The `indexers` config maps models to their indexer:
+
+```php
+'indexers' => [
+    Lunar\Models\Brand::class => Lunar\Search\BrandIndexer::class,
+    Lunar\Models\Collection::class => Lunar\Search\CollectionIndexer::class,
+    Lunar\Models\Customer::class => Lunar\Search\CustomerIndexer::class,
+    Lunar\Models\Order::class => Lunar\Search\OrderIndexer::class,
+    Lunar\Models\Product::class => Lunar\Search\ProductIndexer::class,
+    Lunar\Models\ProductOption::class => Lunar\Search\ProductOptionIndexer::class,
+],
+```
+
+### Default Indexer
+
+The base `Lunar\Search\ScoutIndexer` class indexes:
+
+- The model's `id`
+- Any attributes marked as `searchable`
+
+It also handles `TranslatedText` attribute fields, creating locale-suffixed entries (e.g., `name_en`, `name_fr`) in the index.
+
+### Product Indexer
+
+The `Lunar\Search\ProductIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | Product ID |
+| `status` | Product status |
+| `product_type` | Product type name |
+| `brand` | Brand name (if present) |
+| `created_at` | Unix timestamp |
+| `thumbnail` | Thumbnail URL (small variant) |
+| `skus` | Array of variant SKUs |
+| Attribute handles | Values from searchable attributes |
+
+**Sortable fields:** `created_at`, `updated_at`, `skus`, `status`
+
+**Filterable fields:** `__soft_deleted`, `skus`, `status`
+
+### Order Indexer
+
+The `Lunar\Search\OrderIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | Order ID |
+| `channel` | Channel name |
+| `reference` | Order reference |
+| `customer_reference` | Customer reference |
+| `status` | Order status |
+| `placed_at` | Placement timestamp |
+| `created_at` | Unix timestamp |
+| `sub_total` | Sub-total value |
+| `total` | Total value |
+| `currency_code` | Currency code |
+| `charges` | Transaction references |
+| `lines` | Product line descriptions and identifiers |
+| `{type}_first_name`, `{type}_last_name`, etc. | Address fields prefixed by type (shipping/billing) |
+| `tags` | Array of tag values |
+
+**Sortable fields:** `customer_id`, `user_id`, `channel_id`, `created_at`, `updated_at`, `total`
+
+**Filterable fields:** `customer_id`, `user_id`, `status`, `placed_at`, `channel_id`, `tags`, `__soft_deleted`
+
+### Customer Indexer
+
+The `Lunar\Search\CustomerIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | Customer ID |
+| `name` | Full name |
+| `company_name` | Company name |
+| `tax_identifier` | Tax identifier |
+| `account_ref` | Account reference |
+| `created_at` | Unix timestamp |
+| `user_emails` | Array of associated user emails |
+| Meta fields | Any meta key-value pairs |
+| Attribute handles | Values from searchable attributes |
+
+**Sortable fields:** `created_at`, `updated_at`, `name`, `company_name`
+
+**Filterable fields:** `__soft_deleted`, `name`, `company_name`
+
+### Brand Indexer
+
+The `Lunar\Search\BrandIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | Brand ID |
+| `name` | Brand name |
+| `created_at` | Unix timestamp |
+| Attribute handles | Values from searchable attributes |
+
+**Sortable fields:** `created_at`, `updated_at`, `name`
+
+**Filterable fields:** `__soft_deleted`, `name`
+
+### Collection Indexer
+
+The `Lunar\Search\CollectionIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | Collection ID |
+| `created_at` | Unix timestamp |
+| Attribute handles | Values from searchable attributes |
+
+**Sortable fields:** `created_at`, `updated_at`, `name`
+
+**Filterable fields:** `__soft_deleted`, `name`
+
+### ProductOption Indexer
+
+The `Lunar\Search\ProductOptionIndexer` indexes the following fields:
+
+| Field | Source |
+|:---|:---|
+| `id` | ProductOption ID |
+| `name_{locale}` | Option name per locale |
+| `label_{locale}` | Option label per locale |
+| `option_{id}_{locale}` | Option value names per locale |
+
+**Sortable fields:** `created_at`, `updated_at`
+
+**Filterable fields:** `__soft_deleted`
+
+## Indexing Records
+
+To import or refresh search indexes, use the `lunar:search:index` artisan command:
+
+```sh
+php artisan lunar:search:index
+```
+
+This imports all models listed in the `models` configuration.
+
+### Command Options
+
+| Option | Description |
+|:---|:---|
+| `models` | One or more model class names to index (space-separated). Merged with config models by default. |
+| `--ignore` | Only index the models specified in the command, ignoring the config file. |
+| `--refresh` | Delete existing records from the index before reimporting. |
+| `--flush` | Delete records from the index without reimporting. Cannot be combined with `--refresh`. |
+
+```sh
+# Refresh only the product index
+php artisan lunar:search:index "Lunar\Models\Product" --refresh
+
+# Flush the order index
+php artisan lunar:search:index "Lunar\Models\Order" --flush
+
+# Index only specific models, ignoring config
+php artisan lunar:search:index "Lunar\Models\Product" "Lunar\Models\Brand" --ignore
+```
+
+## Meilisearch Setup
+
+When using Meilisearch, run the setup command to configure filterable and sortable attributes on Meilisearch indexes:
+
+```sh
+php artisan lunar:meilisearch:setup
+```
+
+This command reads the filterable and sortable fields from each model's indexer and applies them to the corresponding Meilisearch index.
+
+## Storefront Search Add-on
+
+For storefront search features such as faceted filtering, sorting, pagination, and structured response data, install the [Storefront Search add-on](/addons/search):
+
+```sh
+composer require lunarphp/search
+```
+
+The add-on provides a `Search` facade with support for Meilisearch, Typesense, and database drivers, returning consistent `SearchResults` objects with hits, facets, and pagination.
+
+## Extending Search
+
+To customize what data is indexed for a model, create a custom indexer class. See the [Extending Search](/extending/search) guide for details on creating custom indexers, adding sortable and filterable fields, and mapping searchable attributes.

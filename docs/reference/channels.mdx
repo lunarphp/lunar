@@ -1,0 +1,95 @@
+---
+title: "Channels"
+---
+
+Channels control where products and other models are published across different storefronts.
+
+## Overview
+
+Channels allow products and other models to be published to different storefronts or sales channels. Lunar installs a default `webstore` channel during setup.
+
+```php
+Lunar\Models\Channel
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `name` | `string` | The display name of the channel |
+| `handle` | `string` | URL-friendly identifier, automatically slugified on save |
+| `default` | `boolean` | Whether this is the default channel |
+| `url` | `string` `nullable` | An optional URL associated with the channel |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+| `deleted_at` | `timestamp` `nullable` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `products` | `MorphToMany` | `Lunar\Models\Product` | Products assigned to this channel |
+| `collections` | `MorphToMany` | `Lunar\Models\Collection` | Collections assigned to this channel |
+| `discounts` | `MorphToMany` | `Lunar\Models\Discount` | Discounts assigned to this channel |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `default($default = true)` | Filter to the default channel |
+
+## Assigning channels to models
+
+Models can be assigned to different channels and optionally scheduled for availability within a date range.
+
+To add this functionality to a model, use the `HasChannels` trait:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Traits\HasChannels;
+
+class Product extends Model
+{
+    use HasChannels;
+}
+```
+
+When using this trait, the `scheduleChannel` method becomes available:
+
+```php
+use Lunar\Models\Channel;
+
+$channel = Channel::first();
+
+// Schedule the product to be enabled in 14 days and disabled after 24 days.
+$product->scheduleChannel($channel, now()->addDays(14), now()->addDays(24));
+
+// Enable the product on the channel immediately.
+$product->scheduleChannel($channel);
+
+// The method also accepts a collection of channels.
+$product->scheduleChannel(Channel::get());
+```
+
+There is also a `channel` scope available to models using this trait:
+
+```php
+use Lunar\Models\Product;
+
+// Limit to a single channel
+Product::channel($channel)->get();
+
+// Limit to multiple channels
+Product::channel([$channelA, $channelB])->get();
+
+// Limit to a channel available the next day
+Product::channel($channelA, now()->addDay())->get();
+
+// Limit to a channel within a date range
+Product::channel($channelA, now()->addDay(), now()->addDays(2))->get();
+```

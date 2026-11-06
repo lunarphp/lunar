@@ -1,0 +1,371 @@
+---
+title: "Order History"
+description: "Build an order history page with Lunar, covering customer authentication, order listing, pagination, and order detail views."
+---
+
+## Overview
+
+The order history page allows authenticated customers to view their past orders, check order statuses, and review the details of individual orders. This guide walks through resolving the current customer, querying their orders, displaying a paginated order list, and building an order detail page.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## Resolving the Current Customer
+
+Lunar separates the concept of a `Customer` from Laravel's `User` model. An authenticated user can be linked to one or more customers through the `LunarUser` trait. The `StorefrontSession` facade provides the current customer for the session.
+
+```php
+use Lunar\Facades\StorefrontSession;
+
+$customer = StorefrontSession::getCustomer();
+```
+
+If no customer is associated with the current session, `getCustomer()` returns `null`. Protect account pages with middleware that checks for an authenticated user and a valid customer:
+
+```php
+use Lunar\Facades\StorefrontSession;
+
+class AccountController extends Controller
+{
+    public function orders()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        // ...
+    }
+}
+```
+
+<Info>
+The `StorefrontSession` automatically resolves the customer from the authenticated user when the `LunarUser` trait is applied to the `User` model. See the [Storefront Session reference](/storefront-utils/storefront-session) for details on how customer resolution works.
+</Info>
+
+## Listing Orders
+
+Query the customer's orders using the `orders` relationship. Only orders with a `placed_at` value should be shown, as draft orders (where `placed_at` is `null`) have not been completed.
+
+```php
+use Lunar\Facades\StorefrontSession;
+
+class AccountController extends Controller
+{
+    public function orders()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $orders = $customer->orders()
+            ->whereNotNull('placed_at')
+            ->orderBy('placed_at', 'desc')
+            ->paginate(10);
+
+        return view('account.orders', compact('orders'));
+    }
+}
+```
+
+### Displaying the Order List
+
+Each order has its financial totals cast to `Lunar\DataTypes\Price` objects, so `formatted()` can be called directly.
+
+```blade
+<h1>Order History</h1>
+
+@if($orders->isEmpty())
+    <p>No orders have been placed yet.</p>
+@else
+    <table>
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($orders as $order)
+                <tr>
+                    <td>{{ $order->reference }}</td>
+                    <td>{{ $order->placed_at->format('M d, Y') }}</td>
+                    <td>{{ $order->status }}</td>
+                    <td>{{ $order->total->formatted() }}</td>
+                    <td>
+                        <a href="{{ route('account.orders.show', $order) }}">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{ $orders->links() }}
+@endif
+```
+
+### Order Financial Properties
+
+After retrieval, each `Lunar\Models\Order` has the following price properties:
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `sub_total` | `Lunar\DataTypes\Price` | Subtotal before discounts and tax |
+| `discount_total` | `Lunar\DataTypes\Price` | Total discounts applied |
+| `shipping_total` | `Lunar\DataTypes\Price` | Shipping cost including tax |
+| `tax_total` | `Lunar\DataTypes\Price` | Total tax amount |
+| `total` | `Lunar\DataTypes\Price` | Final order total |
+
+All values are `Lunar\DataTypes\Price` objects with access to `value` (integer in minor units), `decimal()` (float), and `formatted()` (currency string).
+
+## Order Detail Page
+
+The order detail page shows the full breakdown of a specific order, including line items, addresses, and totals.
+
+```php
+use Lunar\Facades\StorefrontSession;
+use Lunar\Models\Order;
+
+class AccountController extends Controller
+{
+    public function showOrder(Order $order)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $order->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        if ($order->isDraft()) {
+            abort(404);
+        }
+
+        $order->load([
+            'productLines.purchasable.product',
+            'shippingAddress.country',
+            'billingAddress.country',
+            'shippingLines',
+        ]);
+
+        return view('account.orders.show', compact('order'));
+    }
+}
+```
+
+<Warning>
+Always verify that the order belongs to the current customer. Without this check, a customer could view another customer's order by guessing the URL.
+</Warning>
+
+### Displaying Order Lines
+
+Order lines hold a snapshot of each purchased item. The `description` field contains the product name at the time of purchase, and `option` holds any variant options.
+
+```blade
+<h1>Order {{ $order->reference }}</h1>
+<p>Placed on {{ $order->placed_at->format('M d, Y \a\t g:i A') }}</p>
+<p>Status: {{ $order->status }}</p>
+
+<h2>Items</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($order->productLines as $line)
+            <tr>
+                <td>
+                    <p>{{ $line->description }}</p>
+                    @if($line->option)
+                        <p>{{ $line->option }}</p>
+                    @endif
+                    <p>{{ $line->identifier }}</p>
+                </td>
+                <td>{{ $line->unit_price->formatted() }}</td>
+                <td>{{ $line->quantity }}</td>
+                <td>{{ $line->total->formatted() }}</td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+```
+
+### Displaying Addresses
+
+Each order stores a billing address and (for shippable orders) a shipping address. These are snapshots taken at the time of order creation and are separate from the customer's saved addresses.
+
+```blade
+<div>
+    <h2>Shipping Address</h2>
+    @if($order->shippingAddress)
+        <p>{{ $order->shippingAddress->first_name }} {{ $order->shippingAddress->last_name }}</p>
+        @if($order->shippingAddress->company_name)
+            <p>{{ $order->shippingAddress->company_name }}</p>
+        @endif
+        <p>{{ $order->shippingAddress->line_one }}</p>
+        @if($order->shippingAddress->line_two)
+            <p>{{ $order->shippingAddress->line_two }}</p>
+        @endif
+        <p>{{ $order->shippingAddress->city }}, {{ $order->shippingAddress->state }} {{ $order->shippingAddress->postcode }}</p>
+        <p>{{ $order->shippingAddress->country?->name }}</p>
+    @endif
+</div>
+
+<div>
+    <h2>Billing Address</h2>
+    @if($order->billingAddress)
+        <p>{{ $order->billingAddress->first_name }} {{ $order->billingAddress->last_name }}</p>
+        @if($order->billingAddress->company_name)
+            <p>{{ $order->billingAddress->company_name }}</p>
+        @endif
+        <p>{{ $order->billingAddress->line_one }}</p>
+        @if($order->billingAddress->line_two)
+            <p>{{ $order->billingAddress->line_two }}</p>
+        @endif
+        <p>{{ $order->billingAddress->city }}, {{ $order->billingAddress->state }} {{ $order->billingAddress->postcode }}</p>
+        <p>{{ $order->billingAddress->country?->name }}</p>
+    @endif
+</div>
+```
+
+### Displaying Order Totals
+
+```blade
+<h2>Order Summary</h2>
+<dl>
+    <dt>Subtotal</dt>
+    <dd>{{ $order->sub_total->formatted() }}</dd>
+
+    @if($order->discount_total->value > 0)
+        <dt>Discount</dt>
+        <dd>-{{ $order->discount_total->formatted() }}</dd>
+    @endif
+
+    @if($order->shippingLines->isNotEmpty())
+        <dt>Shipping</dt>
+        <dd>{{ $order->shipping_total->formatted() }}</dd>
+    @endif
+
+    <dt>Tax</dt>
+    <dd>{{ $order->tax_total->formatted() }}</dd>
+
+    <dt>Total</dt>
+    <dd>{{ $order->total->formatted() }}</dd>
+</dl>
+```
+
+### Tax Breakdown
+
+To display a detailed tax breakdown:
+
+```blade
+@foreach($order->tax_breakdown->amounts as $tax)
+    <p>{{ $tax->description }} ({{ $tax->percentage }}%): {{ $tax->price->formatted() }}</p>
+@endforeach
+```
+
+## Eager Loading for Performance
+
+When displaying an order list, eager load the relationships needed for the list view to avoid N+1 queries:
+
+```php
+$orders = $customer->orders()
+    ->whereNotNull('placed_at')
+    ->orderBy('placed_at', 'desc')
+    ->with('currency')
+    ->paginate(10);
+```
+
+For the detail page, load everything needed in a single query:
+
+```php
+$order->load([
+    'productLines.purchasable.product',
+    'shippingAddress.country',
+    'billingAddress.country',
+    'shippingLines',
+]);
+```
+
+## Routes
+
+```php
+use App\Http\Controllers\AccountController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/account/orders', [AccountController::class, 'orders'])->name('account.orders');
+    Route::get('/account/orders/{order}', [AccountController::class, 'showOrder'])->name('account.orders.show');
+});
+```
+
+## Putting It All Together
+
+Here is a complete controller for the order history pages:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Lunar\Facades\StorefrontSession;
+use Lunar\Models\Order;
+
+class AccountController extends Controller
+{
+    public function orders()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $orders = $customer->orders()
+            ->whereNotNull('placed_at')
+            ->orderBy('placed_at', 'desc')
+            ->paginate(10);
+
+        return view('account.orders', compact('orders'));
+    }
+
+    public function showOrder(Order $order)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $order->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        if ($order->isDraft()) {
+            abort(404);
+        }
+
+        $order->load([
+            'productLines.purchasable.product',
+            'shippingAddress.country',
+            'billingAddress.country',
+            'shippingLines',
+        ]);
+
+        return view('account.orders.show', compact('order'));
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Orders reference](/reference/orders) for the full list of order fields, relationships, and status configuration.
+- Review the [Customers reference](/reference/customers) for customer model details and the user-customer relationship.
+- Review the [Storefront Session reference](/storefront-utils/storefront-session) for how customer resolution works.
+- Review the [Customer Addresses guide](/guides/customer-addresses) for building an address management page.

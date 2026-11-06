@@ -1,0 +1,211 @@
+---
+title: "Payments"
+description: "Lunar's driver-based payment system for handling payment authorization, capture, and refunds."
+---
+
+Lunar uses a driver-based payment system for handling authorization, capture, and refunds.
+
+## Overview
+
+Lunar uses a driver-based approach for payments. This means any payment provider can be supported, either through first-party add-ons, community packages, or a custom driver built for the specific needs of a storefront.
+
+By default, Lunar ships with an `OfflinePayment` driver suitable for cash-in-hand or manual payment scenarios. For online payments, a driver for the desired payment provider should be installed or created.
+
+<Tip>
+To learn how to build a custom payment driver, see the [Extending Payments](/extending/payments) guide.
+</Tip>
+
+## Configuration
+
+Payment configuration is located in `config/lunar/payments.php`. This file defines the default payment type and a list of available payment types, each mapped to a driver.
+
+```php
+<?php
+
+return [
+    'default' => env('PAYMENTS_TYPE', 'cash-in-hand'),
+
+    'types' => [
+        'cash-in-hand' => [
+            'driver' => 'offline',
+            'authorized' => 'payment-offline',
+        ],
+        'card' => [
+            'driver' => 'stripe',
+            'authorized' => 'payment-received',
+        ],
+    ],
+];
+```
+
+Each type entry supports the following keys:
+
+| Key | Description |
+|:-|:-|
+| `driver` | The registered payment driver to use for this type |
+| `authorized` | The order status to set when payment is authorized |
+
+Any additional keys defined on a type are passed to the driver via the `setConfig` method automatically.
+
+## Usage
+
+### Getting a payment driver
+
+To retrieve a payment driver instance, pass the desired payment type to the `Payments` facade. This returns an instance of the driver registered for that type.
+
+```php
+use Lunar\Facades\Payments;
+
+$driver = Payments::driver('card');
+```
+
+If no type is specified, the default type from the configuration is used.
+
+```php
+$driver = Payments::driver();
+```
+
+### Setting the cart
+
+Before authorizing a payment, set the cart on the driver.
+
+```php
+use Lunar\Models\Cart;
+
+$driver->cart($cart);
+```
+
+### Passing additional data
+
+Some payment providers require additional data such as payment tokens or intent IDs. Pass this data using the `withData` method.
+
+```php
+$driver->withData([
+    'payment_token' => $token,
+]);
+```
+
+### Setting an order
+
+In some cases, it may be necessary to set an existing order on the driver rather than a cart. The `order` method handles this.
+
+```php
+use Lunar\Models\Order;
+
+$driver->order($order);
+```
+
+### Authorizing a payment
+
+Once the driver is configured, call the `authorize` method to process the payment. This returns a `PaymentAuthorize` response.
+
+```php
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+
+$response = $driver->authorize();
+
+$response->success;     // bool
+$response->message;     // ?string
+$response->orderId;     // ?int
+$response->paymentType; // ?string
+```
+
+### Method chaining
+
+All setter methods on the driver return `self`, allowing for a fluent API.
+
+```php
+use Lunar\Facades\Payments;
+
+$response = Payments::driver('card')
+    ->cart($cart)
+    ->withData(['payment_token' => $token])
+    ->authorize();
+```
+
+## Response types
+
+Payment drivers return one of three data transfer objects depending on the operation.
+
+### PaymentAuthorize
+
+```php
+Lunar\Base\DataTransferObjects\PaymentAuthorize
+```
+
+Returned by the `authorize` method.
+
+| Property | Type | Description |
+|:-|:-|:-|
+| `success` | `bool` | Whether the authorization was successful |
+| `message` | `?string` | An optional message from the provider |
+| `orderId` | `?int` | The ID of the created or associated order |
+| `paymentType` | `?string` | The payment type identifier |
+
+### PaymentCapture
+
+```php
+Lunar\Base\DataTransferObjects\PaymentCapture
+```
+
+Returned by the `capture` method when capturing a previously authorized payment.
+
+| Property | Type | Description |
+|:-|:-|:-|
+| `success` | `bool` | Whether the capture was successful |
+| `message` | `string` | A message from the provider |
+
+### PaymentRefund
+
+```php
+Lunar\Base\DataTransferObjects\PaymentRefund
+```
+
+Returned by the `refund` method when refunding a captured payment.
+
+| Property | Type | Description |
+|:-|:-|:-|
+| `success` | `bool` | Whether the refund was successful |
+| `message` | `?string` | An optional message from the provider |
+
+## Events
+
+### PaymentAttemptEvent
+
+The `Lunar\Events\PaymentAttemptEvent` is dispatched whenever a payment authorization is attempted. This event receives the `PaymentAuthorize` response object.
+
+```php
+use Lunar\Events\PaymentAttemptEvent;
+
+PaymentAttemptEvent::dispatch($paymentAuthorize);
+```
+
+This event can be used to log payment attempts, trigger notifications, or perform post-payment processing via a listener.
+
+## Payment checks
+
+Some payment providers return verification checks related to 3D Secure, address verification, or other fraud prevention measures. These checks are accessible on a `Lunar\Models\Transaction` model via the `paymentChecks` method.
+
+```php
+foreach ($transaction->paymentChecks() as $check) {
+    $check->successful; // bool
+    $check->label;      // string
+    $check->message;    // string
+}
+```
+
+<Info>
+For details on the Transaction model, order creation, and order management, see the [Orders](/reference/orders) reference.
+</Info>
+
+## Available drivers
+
+### First party
+
+| Driver | Package |
+|:-|:-|
+| Stripe | [lunarphp/stripe](https://github.com/lunarphp/stripe) |
+
+### Community
+
+Community-built payment drivers can be found in the [Add-ons](/addons/payments/stripe) section. To list a custom driver, reach out on the [Lunar Discord](https://lunarphp.com/discord).

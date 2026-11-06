@@ -1,0 +1,123 @@
+---
+title: "Local Development"
+description: "Setting up the Lunar monorepo locally for development and contribution."
+---
+
+This guide walks through setting up the Lunar monorepo inside a Laravel application for local development and contribution.
+
+## Prerequisites
+
+- PHP 8.2 or higher
+- A working [Laravel](https://laravel.com/docs/installation) application
+- [Composer](https://getcomposer.org/)
+- [Git](https://git-scm.com/)
+
+## Setting Up the Monorepo
+
+### 1. Create a packages directory
+
+In the root of the Laravel application, create a `packages` directory to hold the monorepo source code.
+
+```bash
+mkdir packages
+```
+
+Add `packages` to the `.gitignore` file so it is not committed to the application's repository.
+
+```
+/packages
+```
+
+### 2. Clone the repository
+
+Fork the [lunarphp/lunar](https://github.com/lunarphp/lunar) repository on GitHub, then clone the fork into the `packages` directory.
+
+```bash
+cd packages
+git clone https://github.com/YOUR-USERNAME/lunar.git
+```
+
+This places the monorepo at `packages/lunar/`.
+
+### 3. Configure Composer
+
+Back in the Laravel application's `composer.json`, add a path repository and require the monorepo package.
+
+```json
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/*",
+            "symlink": true
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "lunarphp/lunarmono": "*"
+    }
+}
+```
+
+The `lunarphp/lunarmono` package is the monorepo root and includes all Lunar packages: core, admin panel, payment drivers, and add-ons.
+
+<Info>
+The `symlink` option ensures that changes made in the `packages/lunar` directory are immediately reflected in the application without needing to run `composer update` after every edit.
+</Info>
+
+### 4. Install dependencies
+
+Run Composer from the Laravel application's root directory to install the local packages.
+
+```bash
+composer update
+```
+
+Once complete, follow the standard [installation](/getting-started/setup/installation) steps to run migrations and publish assets.
+
+## Running Tests
+
+Lunar uses [Pest](https://pestphp.com/) for testing. Tests can be run from the monorepo root at `packages/lunar/`.
+
+```bash
+cd packages/lunar
+vendor/bin/pest
+```
+
+To run tests for a specific package, use the `--filter` flag or point to a specific test directory.
+
+```bash
+vendor/bin/pest tests/core
+vendor/bin/pest tests/admin
+```
+
+All existing tests must continue to pass before submitting a pull request.
+
+## Code Style
+
+Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) for enforcement. Run Pint from the monorepo root before committing changes.
+
+```bash
+vendor/bin/pint
+```
+
+## Monorepo Structure
+
+The monorepo contains the following packages under `packages/`:
+
+| Directory | Composer Package | Description |
+| --- | --- | --- |
+| `core` | `lunarphp/core` | Core e-commerce functionality |
+| `admin` | `lunarphp/lunar` | Admin panel built with Filament |
+| `stripe` | `lunarphp/stripe` | Stripe payment driver |
+| `paypal` | `lunarphp/paypal` | PayPal payment driver |
+| `opayo` | `lunarphp/opayo` | Opayo payment driver |
+| `search` | `lunarphp/search` | Search with Typesense and Meilisearch support |
+| `meilisearch` | `lunarphp/meilisearch` | Meilisearch addon |
+| `table-rate-shipping` | `lunarphp/table-rate-shipping` | Table rate shipping addon |
+
+Tests for each package are located in the top-level `tests/` directory, organized by package name.
+
+## Next Steps
+
+With local development set up, see the [Contributing](/getting-started/overview/contributing) guide for information on coding standards, submitting pull requests, and reporting bugs.

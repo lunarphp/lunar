@@ -1,0 +1,614 @@
+---
+title: "Customer Addresses"
+description: "Build a customer address management page with Lunar, covering address listing, creation, editing, deletion, and default address selection."
+---
+
+## Overview
+
+The customer addresses page allows authenticated customers to manage their saved addresses. These addresses can be selected during checkout to speed up the purchasing process. This guide walks through listing, creating, editing, and deleting addresses, as well as setting default shipping and billing addresses.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## How Addresses Work
+
+Each `Lunar\Models\Address` belongs to a `Lunar\Models\Customer`. A customer can have any number of saved addresses, and each address can be flagged as the default for shipping, billing, or both. During checkout, saved addresses can be used to pre-fill the address forms.
+
+Addresses stored on a customer are separate from order addresses. When an order is created, the cart's addresses are copied to the order as `Lunar\Models\OrderAddress` records, creating an immutable snapshot.
+
+## Resolving the Current Customer
+
+Like all account pages, the addresses page requires an authenticated user with a linked customer. Use the `StorefrontSession` facade to resolve the current customer.
+
+```php
+use Lunar\Facades\StorefrontSession;
+
+$customer = StorefrontSession::getCustomer();
+```
+
+<Info>
+The `StorefrontSession` automatically resolves the customer from the authenticated user when the `LunarUser` trait is applied to the `User` model. See the [Storefront Session reference](/storefront-utils/storefront-session) for details on how customer resolution works.
+</Info>
+
+## Listing Addresses
+
+Query the customer's addresses using the `addresses` relationship. Eager load the `country` relationship to display the country name.
+
+```php
+use Lunar\Facades\StorefrontSession;
+
+class AddressController extends Controller
+{
+    public function index()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $addresses = $customer->addresses()
+            ->with('country')
+            ->orderBy('shipping_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('account.addresses.index', compact('addresses'));
+    }
+}
+```
+
+### Displaying the Address List
+
+```blade
+<h1>Your Addresses</h1>
+
+<a href="{{ route('account.addresses.create') }}">Add New Address</a>
+
+@if($addresses->isEmpty())
+    <p>No saved addresses.</p>
+@else
+    @foreach($addresses as $address)
+        <div>
+            <p>
+                {{ $address->first_name }} {{ $address->last_name }}
+                @if($address->shipping_default)
+                    <span>Default Shipping</span>
+                @endif
+                @if($address->billing_default)
+                    <span>Default Billing</span>
+                @endif
+            </p>
+            @if($address->company_name)
+                <p>{{ $address->company_name }}</p>
+            @endif
+            <p>{{ $address->line_one }}</p>
+            @if($address->line_two)
+                <p>{{ $address->line_two }}</p>
+            @endif
+            <p>{{ $address->city }}, {{ $address->state }} {{ $address->postcode }}</p>
+            <p>{{ $address->country?->name }}</p>
+
+            <div>
+                <a href="{{ route('account.addresses.edit', $address) }}">Edit</a>
+                <form method="POST" action="{{ route('account.addresses.destroy', $address) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    @endforeach
+@endif
+```
+
+## Creating an Address
+
+### The Create Form
+
+```php
+use Lunar\Models\Country;
+
+class AddressController extends Controller
+{
+    public function create()
+    {
+        $countries = Country::orderBy('name')->get();
+
+        return view('account.addresses.create', compact('countries'));
+    }
+}
+```
+
+```blade
+<h1>Add Address</h1>
+
+<form method="POST" action="{{ route('account.addresses.store') }}">
+    @csrf
+
+    <div>
+        <label for="first_name">First Name</label>
+        <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" required>
+    </div>
+
+    <div>
+        <label for="last_name">Last Name</label>
+        <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" required>
+    </div>
+
+    <div>
+        <label for="company_name">Company (optional)</label>
+        <input type="text" name="company_name" id="company_name" value="{{ old('company_name') }}">
+    </div>
+
+    <div>
+        <label for="line_one">Address Line 1</label>
+        <input type="text" name="line_one" id="line_one" value="{{ old('line_one') }}" required>
+    </div>
+
+    <div>
+        <label for="line_two">Address Line 2 (optional)</label>
+        <input type="text" name="line_two" id="line_two" value="{{ old('line_two') }}">
+    </div>
+
+    <div>
+        <label for="city">City</label>
+        <input type="text" name="city" id="city" value="{{ old('city') }}" required>
+    </div>
+
+    <div>
+        <label for="state">State / Province (optional)</label>
+        <input type="text" name="state" id="state" value="{{ old('state') }}">
+    </div>
+
+    <div>
+        <label for="postcode">ZIP / Postal Code</label>
+        <input type="text" name="postcode" id="postcode" value="{{ old('postcode') }}" required>
+    </div>
+
+    <div>
+        <label for="country_id">Country</label>
+        <select name="country_id" id="country_id" required>
+            <option value="">Select a country</option>
+            @foreach($countries as $country)
+                <option value="{{ $country->id }}" @selected(old('country_id') == $country->id)>
+                    {{ $country->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
+        <label for="contact_phone">Phone (optional)</label>
+        <input type="tel" name="contact_phone" id="contact_phone" value="{{ old('contact_phone') }}">
+    </div>
+
+    <div>
+        <label for="contact_email">Email (optional)</label>
+        <input type="email" name="contact_email" id="contact_email" value="{{ old('contact_email') }}">
+    </div>
+
+    <div>
+        <label>
+            <input type="checkbox" name="shipping_default" value="1" @checked(old('shipping_default'))>
+            Set as default shipping address
+        </label>
+    </div>
+
+    <div>
+        <label>
+            <input type="checkbox" name="billing_default" value="1" @checked(old('billing_default'))>
+            Set as default billing address
+        </label>
+    </div>
+
+    <button type="submit">Save Address</button>
+</form>
+```
+
+### Storing the Address
+
+When setting a new default address, clear the default flag from all other addresses first to ensure only one address is the default at a time.
+
+```php
+use Illuminate\Http\Request;
+use Lunar\Facades\StorefrontSession;
+
+class AddressController extends Controller
+{
+    public function store(Request $request)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'line_one' => 'required|string|max:255',
+            'line_two' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'postcode' => 'required|string|max:255',
+            'country_id' => 'required|exists:lunar_countries,id',
+            'contact_phone' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'shipping_default' => 'nullable|boolean',
+            'billing_default' => 'nullable|boolean',
+        ]);
+
+        if ($request->boolean('shipping_default')) {
+            $customer->addresses()->update(['shipping_default' => false]);
+        }
+
+        if ($request->boolean('billing_default')) {
+            $customer->addresses()->update(['billing_default' => false]);
+        }
+
+        $customer->addresses()->create([
+            ...$validated,
+            'shipping_default' => $request->boolean('shipping_default'),
+            'billing_default' => $request->boolean('billing_default'),
+        ]);
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address added.');
+    }
+}
+```
+
+## Editing an Address
+
+### The Edit Form
+
+```php
+use Lunar\Models\Address;
+use Lunar\Models\Country;
+use Lunar\Facades\StorefrontSession;
+
+class AddressController extends Controller
+{
+    public function edit(Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $countries = Country::orderBy('name')->get();
+
+        return view('account.addresses.edit', compact('address', 'countries'));
+    }
+}
+```
+
+The edit form is identical in structure to the create form, with fields pre-populated from the existing address:
+
+```blade
+<input type="text" name="first_name" value="{{ old('first_name', $address->first_name) }}" required>
+```
+
+### Updating the Address
+
+```php
+use Illuminate\Http\Request;
+use Lunar\Models\Address;
+use Lunar\Facades\StorefrontSession;
+
+class AddressController extends Controller
+{
+    public function update(Request $request, Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'line_one' => 'required|string|max:255',
+            'line_two' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'postcode' => 'required|string|max:255',
+            'country_id' => 'required|exists:lunar_countries,id',
+            'contact_phone' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'shipping_default' => 'nullable|boolean',
+            'billing_default' => 'nullable|boolean',
+        ]);
+
+        if ($request->boolean('shipping_default')) {
+            $customer->addresses()->where('id', '!=', $address->id)
+                ->update(['shipping_default' => false]);
+        }
+
+        if ($request->boolean('billing_default')) {
+            $customer->addresses()->where('id', '!=', $address->id)
+                ->update(['billing_default' => false]);
+        }
+
+        $address->update([
+            ...$validated,
+            'shipping_default' => $request->boolean('shipping_default'),
+            'billing_default' => $request->boolean('billing_default'),
+        ]);
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address updated.');
+    }
+}
+```
+
+<Warning>
+Always verify that the address belongs to the current customer before allowing edits or deletions. Without this check, a customer could modify another customer's address by manipulating the URL.
+</Warning>
+
+## Deleting an Address
+
+```php
+use Lunar\Models\Address;
+use Lunar\Facades\StorefrontSession;
+
+class AddressController extends Controller
+{
+    public function destroy(Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $address->delete();
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address deleted.');
+    }
+}
+```
+
+## Using Saved Addresses at Checkout
+
+Saved addresses can be loaded during checkout to let customers select from their existing addresses instead of entering a new one.
+
+```php
+use Lunar\Facades\CartSession;
+use Lunar\Facades\StorefrontSession;
+
+$customer = StorefrontSession::getCustomer();
+
+$addresses = $customer?->addresses()
+    ->with('country')
+    ->get();
+```
+
+When a customer selects a saved address, pass it to the cart. The `Address` model implements the `Addressable` interface, so it can be passed directly to `setBillingAddress()` and `setShippingAddress()`:
+
+```php
+use Lunar\Facades\CartSession;
+use Lunar\Models\Address;
+
+$cart = CartSession::current();
+
+$address = Address::find($request->address_id);
+
+$cart->setBillingAddress($address);
+$cart->setShippingAddress($address);
+```
+
+<Tip>
+When using a saved address at checkout, Lunar copies the address data to the cart. Changes to the saved address after checkout do not affect existing orders.
+</Tip>
+
+## Address Fields Reference
+
+The `Lunar\Models\Address` model has the following fields:
+
+| Field | Type | Description |
+|:---|:---|:---|
+| `id` | `bigIncrements` | Primary key |
+| `customer_id` | `foreignId` `nullable` | The owning customer |
+| `country_id` | `foreignId` `nullable` | Reference to `lunar_countries` |
+| `title` | `string` `nullable` | Label for the address (e.g., "Home", "Work") |
+| `first_name` | `string` | |
+| `last_name` | `string` | |
+| `company_name` | `string` `nullable` | |
+| `tax_identifier` | `string` `nullable` | VAT or tax ID |
+| `line_one` | `string` | |
+| `line_two` | `string` `nullable` | |
+| `line_three` | `string` `nullable` | |
+| `city` | `string` | |
+| `state` | `string` `nullable` | |
+| `postcode` | `string` `nullable` | |
+| `delivery_instructions` | `string` `nullable` | |
+| `contact_email` | `string` `nullable` | |
+| `contact_phone` | `string` `nullable` | |
+| `meta` | `json` `nullable` | Flexible metadata |
+| `shipping_default` | `boolean` | Default shipping address |
+| `billing_default` | `boolean` | Default billing address |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+## Routes
+
+```php
+use App\Http\Controllers\AddressController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/account/addresses', [AddressController::class, 'index'])->name('account.addresses');
+    Route::get('/account/addresses/create', [AddressController::class, 'create'])->name('account.addresses.create');
+    Route::post('/account/addresses', [AddressController::class, 'store'])->name('account.addresses.store');
+    Route::get('/account/addresses/{address}/edit', [AddressController::class, 'edit'])->name('account.addresses.edit');
+    Route::put('/account/addresses/{address}', [AddressController::class, 'update'])->name('account.addresses.update');
+    Route::delete('/account/addresses/{address}', [AddressController::class, 'destroy'])->name('account.addresses.destroy');
+});
+```
+
+## Putting It All Together
+
+Here is a complete controller for address management:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Facades\StorefrontSession;
+use Lunar\Models\Address;
+use Lunar\Models\Country;
+
+class AddressController extends Controller
+{
+    public function index()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $addresses = $customer->addresses()
+            ->with('country')
+            ->orderBy('shipping_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('account.addresses.index', compact('addresses'));
+    }
+
+    public function create()
+    {
+        $countries = Country::orderBy('name')->get();
+
+        return view('account.addresses.create', compact('countries'));
+    }
+
+    public function store(Request $request)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'line_one' => 'required|string|max:255',
+            'line_two' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'postcode' => 'required|string|max:255',
+            'country_id' => 'required|exists:lunar_countries,id',
+            'contact_phone' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'shipping_default' => 'nullable|boolean',
+            'billing_default' => 'nullable|boolean',
+        ]);
+
+        if ($request->boolean('shipping_default')) {
+            $customer->addresses()->update(['shipping_default' => false]);
+        }
+
+        if ($request->boolean('billing_default')) {
+            $customer->addresses()->update(['billing_default' => false]);
+        }
+
+        $customer->addresses()->create([
+            ...$validated,
+            'shipping_default' => $request->boolean('shipping_default'),
+            'billing_default' => $request->boolean('billing_default'),
+        ]);
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address added.');
+    }
+
+    public function edit(Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $countries = Country::orderBy('name')->get();
+
+        return view('account.addresses.edit', compact('address', 'countries'));
+    }
+
+    public function update(Request $request, Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'line_one' => 'required|string|max:255',
+            'line_two' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'postcode' => 'required|string|max:255',
+            'country_id' => 'required|exists:lunar_countries,id',
+            'contact_phone' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'shipping_default' => 'nullable|boolean',
+            'billing_default' => 'nullable|boolean',
+        ]);
+
+        if ($request->boolean('shipping_default')) {
+            $customer->addresses()->where('id', '!=', $address->id)
+                ->update(['shipping_default' => false]);
+        }
+
+        if ($request->boolean('billing_default')) {
+            $customer->addresses()->where('id', '!=', $address->id)
+                ->update(['billing_default' => false]);
+        }
+
+        $address->update([
+            ...$validated,
+            'shipping_default' => $request->boolean('shipping_default'),
+            'billing_default' => $request->boolean('billing_default'),
+        ]);
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address updated.');
+    }
+
+    public function destroy(Address $address)
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer || $address->customer_id !== $customer->id) {
+            abort(404);
+        }
+
+        $address->delete();
+
+        return redirect()->route('account.addresses')
+            ->with('message', 'Address deleted.');
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Addresses reference](/reference/addresses) for the full list of address fields and the Country model.
+- Review the [Customers reference](/reference/customers) for customer model details and the user-customer relationship.
+- Review the [Checkout guide](/guides/checkout) for how addresses are used during the checkout flow.
+- Review the [Order History guide](/guides/order-history) for building an order history page.

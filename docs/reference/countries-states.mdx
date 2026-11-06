@@ -1,0 +1,100 @@
+---
+title: "Countries & States"
+---
+
+Lunar ships with a full dataset of countries and states used for addresses, shipping, and tax calculations.
+
+## Overview
+
+Lunar ships with a full dataset of countries and states that can be imported into your database. These are used across the system for [Addresses](/reference/addresses), shipping zone configuration, tax calculations, and more.
+
+## Countries
+
+```php
+Lunar\Models\Country
+```
+
+|Field|Description|
+|:-|:-|
+|`id`||
+|`name`|Full country name e.g. United States|
+|`iso3`|ISO 3166-1 alpha-3 code e.g. USA|
+|`iso2`|ISO 3166-1 alpha-2 code e.g. US|
+|`phonecode`|International dialling code e.g. 1|
+|`capital`|Capital city|
+|`currency`|Currency code e.g. USD|
+|`native`|Native name of the country|
+|`emoji`|Country flag emoji|
+|`emoji_u`|Country flag unicode|
+|`created_at`||
+|`updated_at`||
+
+### Retrieving countries
+
+```php
+use Lunar\Models\Country;
+
+// Find a country by ISO code
+$country = Country::where('iso2', 'US')->first();
+
+// Get all countries
+$countries = Country::all();
+
+// Get a country with its states
+$country = Country::with('states')->where('iso2', 'GB')->first();
+```
+
+### Relationships
+
+|Relationship|Type|
+|:-|:-|
+|`states`|`HasMany`|
+
+## States
+
+States (also known as provinces or regions) belong to a country. They are useful for tax calculations and shipping zone configuration.
+
+```php
+Lunar\Models\State
+```
+
+|Field|Description|
+|:-|:-|
+|`id`||
+|`country_id`|The related country|
+|`name`|Full state name e.g. California|
+|`code`|State code e.g. CA|
+|`created_at`||
+|`updated_at`||
+
+### Retrieving states
+
+```php
+use Lunar\Models\State;
+
+// Get all states for a country
+$states = $country->states;
+
+// Find a state by code within a country
+$state = State::where('country_id', $country->id)
+    ->where('code', 'CA')
+    ->first();
+```
+
+### Relationships
+
+|Relationship|Type|
+|:-|:-|
+|`country`|`BelongsTo`|
+
+## Importing Data
+
+Country and state data is provided by the [countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database). Use the following Artisan command to import the data into your database.
+
+```sh
+php artisan lunar:import:address-data
+```
+
+<Info>
+This command should be run after installing Lunar and after any updates that may include new country or state data.
+</Info>

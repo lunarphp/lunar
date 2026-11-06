@@ -4,6 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - "**/*.md"
+      - "docs/**"
   push:
     branches: [1.x]
   schedule:

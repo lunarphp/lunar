@@ -1,0 +1,292 @@
+---
+title: "Pricing"
+description: "Format and display prices with currency-aware formatting, decimal conversion, and unit pricing support."
+---
+
+Lunar provides currency-aware price formatting and display for storefront use.
+
+## Overview
+
+When displaying prices on a storefront, it is important to show the correct format relative to the currency the customer is purchasing in.
+
+Every storefront is different. Lunar provides a default price formatter that suits most use cases, while also making it straightforward to swap in a custom implementation for stores with specific formatting requirements.
+
+## The Price model
+
+```php
+Lunar\Models\Price
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `customer_group_id` | `foreignId` `nullable` | Associated customer group for tiered pricing |
+| `currency_id` | `foreignId` | Associated currency |
+| `priceable_type` | `string` | Morph type for the parent model |
+| `priceable_id` | `unsignedBigInteger` | Morph ID for the parent model |
+| `price` | `unsignedBigInteger` | Price value stored in the smallest currency unit (e.g. cents) |
+| `compare_price` | `unsignedBigInteger` `nullable` | Comparison/original price for displaying discounts |
+| `min_quantity` | `integer` | Minimum quantity required for this price tier (default: 1) |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+Both the `price` and `compare_price` fields are automatically cast to `Lunar\DataTypes\Price` objects when accessed.
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `priceable` | `MorphTo` | Various | The model this price belongs to (e.g. `ProductVariant`) |
+| `currency` | `BelongsTo` | `Lunar\Models\Currency` | The currency for this price |
+| `customerGroup` | `BelongsTo` | `Lunar\Models\CustomerGroup` | Optional customer group for group-specific pricing |
+
+### Tax helper methods
+
+The `Lunar\Models\Price` model provides methods for retrieving prices with or without tax applied, based on the `lunar.pricing.stored_inclusive_of_tax` configuration value.
+
+```php
+use Lunar\Models\Price;
+
+$price = Price::find(1);
+
+$price->priceExTax();         // Lunar\DataTypes\Price
+$price->priceIncTax();        // Lunar\DataTypes\Price
+$price->comparePriceIncTax(); // Lunar\DataTypes\Price
+```
+
+#### Overriding the tax zone <Badge color="green" icon="sparkles" size="sm">Added in 1.5</Badge>
+
+Each method accepts an optional `Lunar\Models\TaxZone` to override the zone used when computing the tax rate. When no zone is passed, the store's default tax zone is used.
+
+```php
+use Lunar\Models\Price;
+use Lunar\Models\TaxZone;
+
+$price = Price::find(1);
+$zone = TaxZone::where('name', 'EU')->first();
+
+$price->priceIncTax($zone);
+$price->priceExTax($zone);
+$price->comparePriceIncTax($zone);
+```
+
+This is useful when displaying product prices for a known visitor region before the cart is built. Once items are in the cart, the cart's own `tax_zone_id` (see [Setting the Tax Zone](/reference/carts#setting-the-tax-zone)) drives tax-inclusive line totals.
+
+## The Price data type
+
+The `Lunar\DataTypes\Price` class is used throughout Lunar whenever a price value needs formatting. It is not limited to the `Lunar\Models\Price` model. The following models also have attributes that return `Lunar\DataTypes\Price` instances:
+
+### `Lunar\Models\Order`
+
+- `sub_total`
+- `discount_total`
+- `shipping_total`
+- `tax_total`
+- `total`
+
+### `Lunar\Models\OrderLine`
+
+- `unit_price`
+- `sub_total`
+- `discount_total`
+- `tax_total`
+- `total`
+
+### `Lunar\Models\Transaction`
+
+- `amount`
+
+## Price formatting
+
+The class responsible for price formatting is configured in the `config/lunar/pricing.php` file:
+
+```php
+return [
+    // ...
+    'formatter' => \Lunar\Pricing\DefaultPriceFormatter::class,
+];
+```
+
+### DefaultPriceFormatter
+
+The `Lunar\Pricing\DefaultPriceFormatter` ships with Lunar and handles most use cases for formatting a price.
+
+To demonstrate, start by creating a standard price model:
+
+```php
+use Lunar\Models\Price;
+
+$priceModel = Price::create([
+    // ...
+    'price' => 1000, // Stored as an integer in the smallest currency unit
+    'min_quantity' => 1,
+]);
+
+// Lunar\DataTypes\Price
+$priceDataType = $priceModel->price;
+```
+
+#### Raw value
+
+Return the raw integer value as stored in the database:
+
+```php
+$priceDataType->value; // 1000
+```
+
+#### Decimal value
+
+Return the decimal representation of the price. The decimal value accounts for the number of decimal places configured on the currency. For example, if the currency has 2 decimal places:
+
+```php
+$priceDataType->decimal(rounding: true); // 10.00
+$priceDataType->unitDecimal(rounding: true); // 10.00
+```
+
+These two values are identical in this example. The `unitDecimal` method factors in the `unit_quantity` of the purchasable model. Consider the following:
+
+```php
+use Lunar\Models\ProductVariant;
+
+$productVariant = ProductVariant::create([
+    // ...
+    'unit_quantity' => 10,
+]);
+```
+
+By setting `unit_quantity` to 10, Lunar is told that 10 individual units make up this product at this price point. This is useful for items where a single unit would cost less than the smallest currency denomination (e.g. 0.001 EUR).
+
+```php
+$priceModel = $productVariant->prices()->create([
+    'price' => 10, // 0.10 EUR
+    'currency_id' => $currency->id,
+]);
+
+// Lunar\DataTypes\Price
+$priceDataType = $priceModel->price;
+```
+
+Now the difference becomes clear:
+
+```php
+$priceDataType->decimal(rounding: true);     // 0.10
+$priceDataType->unitDecimal(rounding: true); // 0.01
+```
+
+The `unitDecimal` method divides by the unit quantity, giving the per-unit cost of `0.01`.
+
+#### Formatted currency string
+
+The formatted price uses the native PHP [NumberFormatter](https://www.php.net/manual/en/class.numberformatter.php). A locale and formatting style can be specified:
+
+```php
+$priceDataType->formatted('fr');                                     // 10,00 £GB
+$priceDataType->formatted('en-gb', \NumberFormatter::SPELLOUT);      // ten point zero zero
+$priceDataType->unitFormatted('en-gb');                              // £10.00
+```
+
+### Full method reference
+
+```php
+$priceDataType->decimal(
+    rounding: false
+);
+
+$priceDataType->unitDecimal(
+    rounding: false
+);
+
+$priceDataType->formatted(
+    locale: null,
+    formatterStyle: NumberFormatter::CURRENCY,
+    decimalPlaces: null,
+    trimTrailingZeros: true
+);
+
+$priceDataType->unitFormatted(
+    locale: null,
+    formatterStyle: NumberFormatter::CURRENCY,
+    decimalPlaces: null,
+    trimTrailingZeros: true
+);
+```
+
+## Creating a custom formatter
+
+A custom formatter must implement `Lunar\Pricing\PriceFormatterInterface` and accept `$value`, `$currency`, and `$unitQty` as constructor parameters.
+
+```php
+<?php
+
+namespace App\Pricing;
+
+use Illuminate\Support\Facades\App;
+use Lunar\Models\Contracts\Currency;
+use Lunar\Pricing\PriceFormatterInterface;
+use NumberFormatter;
+
+class CustomPriceFormatter implements PriceFormatterInterface
+{
+    public function __construct(
+        public int $value,
+        public ?Currency $currency = null,
+        public int $unitQty = 1
+    ) {
+        if (! $this->currency) {
+            $this->currency = \Lunar\Models\Currency::getDefault();
+        }
+    }
+
+    public function decimal(): float
+    {
+        // ...
+    }
+
+    public function unitDecimal(): float
+    {
+        // ...
+    }
+
+    public function formatted(): mixed
+    {
+        // ...
+    }
+
+    public function unitFormatted(): mixed
+    {
+        // ...
+    }
+}
+```
+
+The methods can accept any number of arguments beyond those defined in the interface. The formatter is not bound to the same parameter signatures as `DefaultPriceFormatter`.
+
+Once implemented, register the custom formatter in `config/lunar/pricing.php`:
+
+```php
+return [
+    // ...
+    'formatter' => \App\Pricing\CustomPriceFormatter::class,
+];
+```
+
+## Model casting
+
+For custom models that need price formatting, Lunar provides a cast class. The only requirement is that the column stores an `integer` value.
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Casts\Price;
+
+class MyModel extends Model
+{
+    protected $casts = [
+        // ...
+        'price' => Price::class,
+    ];
+}
+```
+
+<Info>
+The `Lunar\Base\Casts\Price` cast resolves the currency from the model's `currency` relationship. If no currency relationship exists, it falls back to the default currency.
+</Info>

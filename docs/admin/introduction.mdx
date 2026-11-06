@@ -1,0 +1,35 @@
+---
+title: "Admin Panel"
+description: "An overview of Lunar's admin panel and how to register it."
+---
+
+Lunar's admin panel is built on [Filament](https://filamentphp.com/), providing a feature-rich interface for managing an e-commerce store. The panel is designed to be extended and customized to suit any project.
+
+## Features
+
+The admin panel allows store administrators to manage:
+
+- **Products** including variants, pricing, images, and associations
+- **Collections** organized into collection groups
+- **Orders** with full order lifecycle management
+- **Customers** and customer groups
+- **Discounts** with flexible conditions and rewards
+- **Settings** for channels, languages, currencies, taxes, tags, and more
+
+## Registration
+
+If the core installation instructions or a starter kit were used, this registration is likely already in place. The `LunarPanel` facade must be registered in a service provider:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+}
+```
+
+The panel is accessible at `/lunar` by default. This path and other panel options can be customized through the [panel configuration](/admin/extending/panel).

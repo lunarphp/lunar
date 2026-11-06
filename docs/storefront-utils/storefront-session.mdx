@@ -1,0 +1,174 @@
+---
+title: "Storefront Session"
+---
+
+The StorefrontSession facade manages session-bound resources like the active channel, currency, and customer.
+
+## Overview
+
+The `StorefrontSession` facade helps manage session-bound resources that a storefront typically needs, such as the active channel, currency, customer, and customer groups.
+
+```php
+use Lunar\Facades\StorefrontSession;
+```
+
+When the facade is first resolved, it automatically calls `initChannel()`, `initCustomerGroups()`, `initCurrency()`, and `initCustomer()` to restore any previously set values from the session or fall back to defaults.
+
+## Channels
+
+### Initialize the Channel
+
+This will set the channel based on what has been previously stored in the session, otherwise it will use the default channel.
+
+```php
+StorefrontSession::initChannel();
+```
+
+<Info>
+    This is automatically called when the facade is resolved.
+</Info>
+
+### Set the Channel
+
+```php
+use Lunar\Models\Channel;
+
+$channel = Channel::where('handle', 'webstore')->first();
+
+StorefrontSession::setChannel($channel);
+```
+
+The `setChannel` method accepts a `Channel` model instance. The channel's handle is stored in the session so it can be restored on subsequent requests.
+
+### Get the Channel
+
+Returns the currently active `Channel` model.
+
+```php
+StorefrontSession::getChannel();
+```
+
+## Customer Groups
+
+### Initialize the Customer Groups
+
+This will set the customer groups based on what has been previously stored in the session, otherwise it will use the default customer group.
+
+```php
+StorefrontSession::initCustomerGroups();
+```
+
+<Info>
+    This is automatically called when the facade is resolved.
+</Info>
+
+### Set the Customer Groups
+
+```php
+use Lunar\Models\CustomerGroup;
+
+$retail = CustomerGroup::where('handle', 'retail')->first();
+$wholesale = CustomerGroup::where('handle', 'wholesale')->first();
+
+// Set multiple customer groups
+StorefrontSession::setCustomerGroups(collect([$retail, $wholesale]));
+
+// Set a single customer group (calls setCustomerGroups under the hood)
+StorefrontSession::setCustomerGroup($retail);
+```
+
+### Get the Customer Groups
+
+Returns a `Collection` of `CustomerGroup` models.
+
+```php
+StorefrontSession::getCustomerGroups();
+```
+
+### Reset the Customer Groups
+
+Clears the customer groups from the session and resets the collection to empty.
+
+```php
+StorefrontSession::resetCustomerGroups();
+```
+
+## Customer
+
+### Initialize the Customer
+
+This will set the customer based on what has been previously stored in the session, otherwise it will retrieve the latest customer associated with the authenticated user.
+
+```php
+StorefrontSession::initCustomer();
+```
+
+<Info>
+    This is automatically called when the facade is resolved.
+</Info>
+
+### Set the Customer
+
+```php
+use Lunar\Models\Customer;
+
+$customer = Customer::find($customerId);
+
+StorefrontSession::setCustomer($customer);
+```
+
+<Warning>
+    If a user is authenticated and the given customer does not belong to that user, a `Lunar\Exceptions\CustomerNotBelongsToUserException` will be thrown.
+</Warning>
+
+### Get the Customer
+
+Returns the currently active `Customer` model, or `null` if no customer has been set.
+
+```php
+StorefrontSession::getCustomer();
+```
+
+## Currencies
+
+### Initialize the Currency
+
+This will set the currency based on what has been previously stored in the session, otherwise it will use the default currency.
+
+```php
+StorefrontSession::initCurrency();
+```
+
+<Info>
+    This is automatically called when the facade is resolved.
+</Info>
+
+### Set the Currency
+
+```php
+use Lunar\Models\Currency;
+
+$currency = Currency::where('code', 'USD')->first();
+
+StorefrontSession::setCurrency($currency);
+```
+
+The `setCurrency` method accepts a `Currency` model instance. The currency code is stored in the session so it can be restored on subsequent requests.
+
+### Get the Currency
+
+Returns the currently active `Currency` model.
+
+```php
+StorefrontSession::getCurrency();
+```
+
+## Clearing the Session
+
+To remove all storefront session data (channel, currency, customer, and customer groups), call the `forget` method.
+
+```php
+StorefrontSession::forget();
+```
+
+This clears the stored values from the session but does not delete any database records.
