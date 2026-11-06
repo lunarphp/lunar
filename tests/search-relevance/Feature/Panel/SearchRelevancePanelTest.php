@@ -92,6 +92,10 @@ it('allows the routes to permitted staff and admins', function () {
         ->get(route('panel.search-relevance.index'))
         ->assertOk();
 
+    // A second staff member signs in with a session of their own; drop the
+    // first one's stored password hash, or the session check ends the request.
+    session()->forget('password_hash_staff');
+
     $this->actingAs(relevanceStaff(admin: true), 'staff')
         ->get(route('panel.search-relevance.index'))
         ->assertOk();
@@ -108,6 +112,8 @@ it('shows the navigation only to staff with the permission', function () {
             ->where('navigation.groups', fn ($groups) => $hasItem($groups))
             ->where('settingsNavigation.groups', fn ($groups) => collect(collect($groups)->firstWhere('key', 'store')['items'])
                 ->firstWhere('key', 'search-relevance')['url'] === route('panel.settings.search-relevance.index')));
+
+    session()->forget('password_hash_staff');
 
     $this->actingAs(relevanceStaff(), 'staff')
         ->get('/panel')
@@ -310,6 +316,8 @@ it('finds normalised queries through the global search', function () {
         ->and($row['label'])->toBe('red shoes')
         ->and($row['hint'])->toBe('3 searches')
         ->and($row['url'])->toBe(route('panel.search-relevance.query', ['query' => 'red shoes']));
+
+    session()->forget('password_hash_staff');
 
     $hidden = collect(
         $this->actingAs(relevanceStaff(), 'staff')->getJson('/panel/search?q=shoes')->assertOk()->json('data')
