@@ -1,0 +1,38 @@
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install the Mintlify CLI
+        run: npm install -g mint
+
+      - name: Validate
+        run: mint validate
+
+      - name: Check links
+        run: mint broken-links
+
+      # Publishing prefixes every root-relative link with this version, so links to
+      # shared pages and to other versions must be full URLs (see docs/README.md).
+      - name: Check links publishing would break
+        run: |
+          if grep -rnE "(\]\(\s*<?|href=\{?\s*[\"'\`]|src=\{?\s*[\"'\`]|^\s{0,3}\[[^]]+\]:\s*<?)/(support|logs|0\.x|1\.x|2\.x)([/#?)\"'\`>]|$)" --include='*.md' --include='*.mdx' .; then
+            echo "::error::Link to Support, Flight Plan and other versions with a full https://docs.lunarphp.com/... URL."
+            exit 1
+          fi
