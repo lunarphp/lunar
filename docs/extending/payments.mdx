@@ -137,7 +137,7 @@ class CustomPayment extends AbstractPayment
             $expectedAmount = $this->order->total->value;
             $currency = $this->order->currency;
         } else {
-            $calculated = $this->cart->calculate();
+            $calculated = $this->cart->recalculate();
             $expectedAmount = $calculated->total->value;
             $currency = $calculated->currency;
         }
@@ -166,6 +166,8 @@ class CustomPayment extends AbstractPayment
 ```
 
 `authorize()` should call this check as soon as the provider's response is available, and return the failure immediately if it does not pass.
+
+The cart branch calls `recalculate()`, not `calculate()`. `calculate()` may serve a persisted totals snapshot up to `lunar.cart.totals.ttl` seconds old, so a price or discount change since the payment intent was created could go unnoticed. The guard exists to catch exactly that, so it must compare against a total a calculation has just produced. See [Persisted totals](/reference/carts#persisted-totals).
 
 ## Scaling amounts
 
