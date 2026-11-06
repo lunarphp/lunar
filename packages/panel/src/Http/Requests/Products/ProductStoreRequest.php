@@ -4,10 +4,12 @@ namespace Lunar\Panel\Http\Requests\Products;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
 use Lunar\Core\States\Product\Draft;
 use Lunar\Core\States\Product\Published;
 use Lunar\Core\States\ProductType\Active;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * The minimal create flow: name, product type and status. Everything else is
@@ -16,6 +18,11 @@ use Lunar\Core\States\ProductType\Active;
  */
 class ProductStoreRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Product> */
+    protected string $sliceModel = Product::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

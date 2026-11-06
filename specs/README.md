@@ -97,6 +97,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0085 | Product bundles (`lunarphp/bundles`) | implemented |
 | 0086 | Panel draft slices: namespaced contributions to first-party edit drafts | proposed    |
 | 0087 | Product editing through the draft | proposed    |
+| 0088 | Panel form slices on plain forms | proposed    |
 | 0089 | Cached model manifest | implemented |
 | 0090 | Remembered guest carts | implemented |
 | 0091 | PricingManager consumes the storefront context | implemented |

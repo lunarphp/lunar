@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
+import { usePanelForm } from '../../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../../components/ActivityTimeline.vue';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
@@ -100,7 +101,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 const buildValues = (): OptionValue[] => props.values.map((value) => ({ ...value }));
 
-const form = useForm({
+const form = usePanelForm({
     name: { ...props.productOption.name },
     label: { ...props.productOption.label },
     handle: props.productOption.handle ?? '',

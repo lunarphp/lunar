@@ -15,6 +15,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Region;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\RegionRequest;
 
 class RegionEditController
@@ -48,10 +49,10 @@ class RegionEditController
         ]);
     }
 
-    public function update(RegionRequest $request, Region $region, UpdatesRegion $updatesRegion): RedirectResponse
+    public function update(RegionRequest $request, Region $region, UpdatesRegion $updatesRegion, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesRegion->execute($region, $request->regionAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesRegion->execute($region, $request->regionAttributes()));
         } catch (RegionActionException) {
             return back()->with('error', __('panel::regions.default_unset_blocked'));
         }

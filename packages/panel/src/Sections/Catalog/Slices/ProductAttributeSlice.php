@@ -45,6 +45,12 @@ class ProductAttributeSlice extends FormSlice
 
     public function currentValues(Model $record): array
     {
+        /** @var Product $record */
+        // A product being created has no type yet, so no mapping to read.
+        if (! $record->exists) {
+            return [];
+        }
+
         $tokens = $this->stripPrefix($this->attributeSchema->tokens($record), AttributeSchema::PREFIX);
 
         return collect($this->stripPrefix($this->attributeSchema->values($record), AttributeSchema::PREFIX))
@@ -59,6 +65,11 @@ class ProductAttributeSlice extends FormSlice
 
     public function rules(Model $record): array
     {
+        /** @var Product $record */
+        if (! $record->exists) {
+            return [];
+        }
+
         return $this->stripPrefix($this->attributeSchema->rules($record), AttributeSchema::PREFIX);
     }
 

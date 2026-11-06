@@ -12,10 +12,16 @@ use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\States\ProductType\Active;
 use Lunar\Core\States\ProductType\Draft;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the product type store and update endpoints, whose rules are identical. */
 class ProductTypeRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<ProductType> */
+    protected string $sliceModel = ProductType::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

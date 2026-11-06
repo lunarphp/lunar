@@ -14,6 +14,7 @@ use Lunar\Core\Models\State;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRate;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\TaxZoneRequest;
 
 class TaxZoneEditController
@@ -67,10 +68,10 @@ class TaxZoneEditController
         ]);
     }
 
-    public function update(TaxZoneRequest $request, TaxZone $taxZone, UpdatesTaxZone $updatesTaxZone): RedirectResponse
+    public function update(TaxZoneRequest $request, TaxZone $taxZone, UpdatesTaxZone $updatesTaxZone, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesTaxZone->execute($taxZone, $request->taxZoneAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesTaxZone->execute($taxZone, $request->taxZoneAttributes()));
         } catch (TaxZoneActionException) {
             return back()->with('error', __('panel::tax_zones.default_unset_blocked'));
         }

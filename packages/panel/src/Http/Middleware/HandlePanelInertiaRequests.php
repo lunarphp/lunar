@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Lunar\Panel\Drafts\ComposedDraftResource;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\Gravatar;
 
@@ -14,7 +14,10 @@ class HandlePanelInertiaRequests extends Middleware
 {
     protected $rootView = 'panel::app';
 
-    public function __construct(protected PanelManager $manager) {}
+    public function __construct(
+        protected PanelManager $manager,
+        protected FormSlices $formSlices,
+    ) {}
 
     /** @return array<string, mixed> */
     public function share(Request $request): array
@@ -63,10 +66,11 @@ class HandlePanelInertiaRequests extends Middleware
     }
 
     /**
-     * Slice values for the draft target: the deepest route-bound model, the
-     * same record EditDraftController drafts (a product's variant on the
-     * variant page, not the product). Empty when nothing is bound, no
-     * resource covers it, or it has no slices.
+     * Slice values for the page's form target: the deepest route-bound
+     * model, the same record EditDraftController drafts (a product's variant
+     * on the variant page, not the product). Empty when nothing is bound or
+     * the model has no slices; create pages, which bind nothing, pass their
+     * own for a fresh instance.
      *
      * @return array<string, mixed>|object
      */
@@ -75,13 +79,7 @@ class HandlePanelInertiaRequests extends Middleware
         $record = collect($request->route()?->parameters() ?? [])
             ->last(fn (mixed $parameter): bool => $parameter instanceof Model);
 
-        $resource = $record ? $this->manager->draftableFor($record) : null;
-
-        if (! $resource instanceof ComposedDraftResource) {
-            return (object) [];
-        }
-
-        return $resource->sliceValues($record) ?: (object) [];
+        return $record ? ($this->formSlices->values($record) ?: (object) []) : (object) [];
     }
 
     protected function currentPagePrefix(Request $request): string

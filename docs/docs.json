@@ -195,7 +195,7 @@
               "admin/extending/widgets",
               "admin/extending/search",
               "admin/extending/edit-drafts",
-              "admin/extending/draft-slices",
+              "admin/extending/form-slices",
               "admin/extending/discount-forms",
               "admin/extending/ordering",
               "admin/extending/translations",

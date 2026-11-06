@@ -10,6 +10,7 @@ use Lunar\Core\Contracts\Actions\Attributes\UpdatesAttribute;
 use Lunar\Core\Exceptions\AttributeActionException;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Controllers\Concerns\ProvidesAttributeReferenceData;
 use Lunar\Panel\Http\Requests\Settings\AttributeRequest;
 
@@ -47,9 +48,9 @@ class AttributeEditController
         ]);
     }
 
-    public function update(AttributeRequest $request, Attribute $attribute, UpdatesAttribute $updatesAttribute): RedirectResponse
+    public function update(AttributeRequest $request, Attribute $attribute, UpdatesAttribute $updatesAttribute, FormSlices $formSlices): RedirectResponse
     {
-        $updatesAttribute->execute($attribute, $request->attributeAttributes());
+        $formSlices->save($request->sliceInput(), fn () => $updatesAttribute->execute($attribute, $request->attributeAttributes()));
 
         return redirect()->route('panel.settings.attributes.index')->with('success', __('panel::attributes_settings.flash_updated'));
     }

@@ -11,6 +11,7 @@ import {
     type Ref,
 } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
+import { clone, encode } from './formValues';
 import { sliceFormKey } from './sliceForm';
 import { useI18n } from 'vue-i18n';
 import { DraftConflictError, ValidationError, http, type DraftConflict } from '../lib/http';
@@ -62,38 +63,11 @@ function sharedSliceValues(): Record<string, unknown> {
     }
 }
 
-// JSON round-trip rather than structuredClone: draft values are JSON-shaped
-// by construction, and this also unwraps Vue reactive proxies safely.
-function clone<T>(value: T): T {
-    return value === undefined ? value : (JSON.parse(JSON.stringify(value)) as T);
-}
-
 // The server stores empty nullable text fields as null; string-bound inputs
 // need '' back, or overlaying a draft would fake dirtiness against a
 // ''-shaped pristine value.
 function coerceToShape(value: unknown, reference: unknown): unknown {
     return value === null && typeof reference === 'string' ? '' : value;
-}
-
-// Mirrors the server's comparison: object keys sort, list order matters.
-function normalize(value: unknown): unknown {
-    if (Array.isArray(value)) {
-        return value.map(normalize);
-    }
-
-    if (value && typeof value === 'object') {
-        return Object.fromEntries(
-            Object.entries(value as Record<string, unknown>)
-                .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-                .map(([key, entry]) => [key, normalize(entry)]),
-        );
-    }
-
-    return value;
-}
-
-function encode(value: unknown): string {
-    return JSON.stringify(normalize(value)) ?? 'undefined';
 }
 
 /**
