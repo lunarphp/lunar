@@ -50,6 +50,8 @@ A version's latest release is its highest stable tag by semantic version (`1.5.0
 
 Docs merged into a version branch, alongside code or on their own, publish at that version's next release. Between releases, the published docs are exactly the docs at the last release.
 
+Only `1.x` and `2.x` are sources. Maintenance branches such as `1.4` (Filament v3, fixes only) carry no `docs/` and publish nothing; their releases have no `docs/docs.json` and sort below the version's latest release anyway, so they never replace its docs. v1 docs fixes go to `1.x`. v0 is no longer supported, so `0.x/` stays in `lunarphp/docs` and is edited there by hand.
+
 ### Publishing a release
 
 `.github/workflows/publish-docs.yml` in the monorepo runs on `release: published` and sends a `docs-published` `repository_dispatch` to `lunarphp/docs`. That is its only job; the docs repository works out what to publish. A release event runs the workflow file in the tagged commit, so a release cut from a commit that predates the workflow sends no dispatch, and the daily scheduled sync publishes it instead.
@@ -101,7 +103,7 @@ Each run replaces `1.x/` and `2.x/` with the `docs/` folder at each version's re
 }
 ```
 
-The `sourceRef` names a destination (`2.x`) rather than the repository, because both sources are `lunarphp/lunar` and a repository reference is ambiguous. The Action matches `sourceRef` by repository only today; [mintlify/multirepo-action#<number>](https://github.com/mintlify/multirepo-action) adds matching by destination. Until it is released, `sync.yml` pins the Action to that PR's commit.
+The `sourceRef` names a destination (`2.x`) rather than the repository, because both sources are `lunarphp/lunar` and a repository reference is ambiguous. The Action matches `sourceRef` by repository only today; [mintlify/multirepo-action#12](https://github.com/mintlify/multirepo-action/pull/12) adds matching by destination. Until it is released, `sync.yml` pins the Action to that PR's commit (`86f8682`) and moves to `@v1` once it ships.
 
 Changing the default version, for example making v2 the default at beta, is a one-line edit to `docs.base.json`.
 
@@ -156,7 +158,7 @@ Docs publish with releases and only with releases. There is no hotfix path: a do
 
 ## Open questions
 
-- **Upstream `sourceRef` by destination.** If Mintlify declines the change, `sync.yml` stays pinned to a fork of the Action. Owner: Glenn, resolved before slice 2 merges.
+- **Upstream `sourceRef` by destination.** If Mintlify declines [#12](https://github.com/mintlify/multirepo-action/pull/12), `sync.yml` stays pinned to a fork of the Action. Owner: Glenn, resolved before slice 2 merges.
 - **Mintlify with a private repository.** The Mintlify GitHub App needs access to the private `lunarphp/docs`; confirmed in the dashboard before slice 5.
 
 ## References
@@ -173,4 +175,4 @@ Ordered so nothing in `lunarphp/docs` is removed until both versions publish thr
 - [ ] Slice 2 — Assembly. In `lunarphp/docs`: `docs.base.json`, `.github/mintlify-multirepo.yml` with each version's starting ref, and `sync.yml` (release resolution, the Action pinned to the `sourceRef` change). Proven by a sync whose version folders and navigation match today's site, checked with `mint broken-links`.
 - [ ] Slice 3 — Release trigger. `publish-docs.yml` on `2.x` and `1.x`, and the dispatch token. Proven by the next 2.x pre-release publishing through it.
 - [ ] Slice 4 — Documentation. `docs/README.md` on each version branch (writing docs alongside code, prefix-free links, docs publishing at the next release, previewing with `mint dev`); a short section in the monorepo `CLAUDE.md` for agents; a docs checkbox in the PR template.
-- [ ] Slice 5 — Switch. Mintlify web editor and agent off; the community PRs in `lunarphp/docs` merged or moved to the monorepo; the `next` branch retired; `lunarphp/docs` README updated and the repository made private.
+- [ ] Slice 5 — Switch. Mintlify web editor and agent off; the community PRs in `lunarphp/docs` merged or moved to the monorepo; the `next` branch retired (default branch set to `main`, `next` merged into `main`, every PR targeting `next` retargeted or closed, then `next` deleted); `lunarphp/docs` README updated and the repository made private.
