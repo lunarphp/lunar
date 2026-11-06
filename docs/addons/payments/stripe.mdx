@@ -1,0 +1,551 @@
+---
+title: "Stripe"
+description: "Accept card payments with Stripe, one of Lunar's two first-party payment drivers."
+---
+
+`lunarphp/stripe` integrates Lunar with Stripe's Payment Intents API. It supports automatic and manual capture policies, webhooks, address synchronization, refunds, and payment checks (AVS, postal code, CVC). Stripe is the reference implementation for a first-party Lunar payment driver: every other gateway except PayPal is community-maintained.
+
+## Installation
+
+### Require the Composer package
+
+```sh
+composer require lunarphp/stripe
+```
+
+The service provider registers automatically.
+
+### Publish the configuration
+
+```sh
+php artisan vendor:publish --tag=lunar.stripe.config
+```
+
+This publishes `config/lunar/stripe.php`.
+
+### Publish the views (optional)
+
+The addon ships a Blade/Livewire payment form. To customize it, publish the views.
+
+```sh
+php artisan vendor:publish --tag=lunar.stripe.components
+```
+
+### Run migrations
+
+The addon adds a `stripe_payment_intents` table.
+
+```sh
+php artisan migrate
+```
+
+### Enable the driver
+
+Register `stripe` as a driver for a payment type in `config/lunar/payments.php`.
+
+```php
+return [
+    // ...
+    'types' => [
+        'card' => [
+            // ...
+            'driver' => 'stripe',
+        ],
+    ],
+];
+```
+
+### Add Stripe credentials
+
+The API key and webhook secret are read from `config/services.php`, not `config/lunar/stripe.php`.
+
+```php
+'stripe' => [
+    'key' => env('STRIPE_SECRET'),
+    'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+<Tip>
+Keys can be found in the [Stripe Dashboard](https://dashboard.stripe.com/apikeys).
+</Tip>
+
+## Configuration
+
+The following options are available in `config/lunar/stripe.php`.
+
+| Key | Default | Description |
+| --- | ------- | ----------- |
+| `webhook_path` | `stripe/webhook` | The URI path for the Stripe webhook endpoint |
+| `policy` | `automatic` | `automatic` captures payment immediately; `manual` authorizes and releases the capture later |
+| `sync_addresses` | `true` | When enabled, billing and shipping addresses stored against the PaymentIntent are synced onto the order |
+| `allow_partial_payment` | `false` | When enabled, the PaymentIntent amount does not need to match the order total. Used for deposits or part payments; a mismatch otherwise fails authorization |
+| `actions.store_charges` | `Lunar\Stripe\Actions\StoreCharges::class` | The action responsible for turning a PaymentIntent's charges into order transactions |
+
+## Backend usage
+
+### Create a PaymentIntent
+
+```php
+use Lunar\Core\Models\Cart;
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::createIntent(Cart $cart, array $options = []);
+```
+
+Creates a Stripe PaymentIntent from a cart and stores a `Lunar\Stripe\Models\StripePaymentIntent` row linking it to the cart. If an intent already exists for the cart, the existing one is returned instead.
+
+The following parameters are sent by default, merged with anything passed in `$options`:
+
+```php
+[
+    'amount' => 1099,
+    'currency' => 'GBP',
+    'automatic_payment_methods' => ['enabled' => true],
+    'capture_method' => config('lunar.stripe.policy', 'automatic'),
+]
+```
+
+#### Amount conversion
+
+Lunar stores prices as integers scaled by the currency's configured `decimal_places`, which does not have to match the sub-unit Stripe expects for that currency code. `Lunar\Stripe\Managers\StripeManager::toStripeAmount()` converts the stored value back to the major unit using `decimal_places`, then re-scales it to whatever sub-unit Stripe requires. `StripeManager::fromStripeAmount()` performs the inverse conversion for amounts read back from Stripe, such as a charge or a refund.
+
+The sub-unit is chosen from the currency code, following [Stripe's currency reference](https://docs.stripe.com/currencies):
+
+| Currency codes | Decimal places Stripe expects | Amount sent |
+|:---------------|:---------------|:------------|
+| `HUF`, `TWD`, `UGX` (Stripe [special cases](https://docs.stripe.com/currencies#special-cases)) | 2 | Major amount × 100 |
+| `BIF`, `CLP`, `DJF`, `GNF`, `JPY`, `KMF`, `KRW`, `MGA`, `PYG`, `RWF`, `VND`, `VUV`, `XAF`, `XOF`, `XPF` | 0 | Major amount, unscaled |
+| `BHD`, `JOD`, `KWD`, `OMR`, `TND` | 3 | Major amount × 1000 |
+| All others | 2 | Major amount × 100 |
+
+Conversion is done with integer arithmetic throughout, because float division misrounds at half-unit boundaries.
+
+### Fetch or create a PaymentIntent
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::fetchOrCreateIntent($cart, $createOptions = []);
+```
+
+Fetches the existing PaymentIntent for a cart if one exists, or creates a new one.
+
+### Retrieve the PaymentIntent ID from a cart
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+$intentId = Stripe::getCartIntentId($cart);
+```
+
+This reads from `$cart->meta['payment_intent']` first, falling back to the cart's active `StripePaymentIntent` record.
+
+### Fetch an existing PaymentIntent
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::fetchIntent($paymentIntentId);
+```
+
+### Sync an existing PaymentIntent
+
+If a PaymentIntent has been created and the cart contents change, call `syncIntent` to recalculate the cart and push the new total to Stripe.
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::syncIntent($cart);
+```
+
+### Update an existing PaymentIntent
+
+To update specific properties on the PaymentIntent without recalculating the cart, use `updateIntent`.
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::updateIntent($cart, [
+    'shipping' => [/* ... */],
+]);
+```
+
+A PaymentIntent can also be updated directly by ID.
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::updateIntentById($intentId, [
+    'description' => 'Updated description',
+]);
+```
+
+### Update the shipping address
+
+Syncs the cart's shipping address onto the PaymentIntent without manually specifying every field.
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::updateShippingAddress($cart);
+```
+
+### Cancel a PaymentIntent
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Enums\CancellationReason;
+
+Stripe::cancelIntent($cart, CancellationReason::ABANDONED);
+```
+
+Available cancellation reasons:
+
+| Enum case | Value |
+| --------- | ----- |
+| `CancellationReason::ABANDONED` | `abandoned` |
+| `CancellationReason::DUPLICATE` | `duplicate` |
+| `CancellationReason::REQUESTED_BY_CUSTOMER` | `requested_by_customer` |
+| `CancellationReason::FRAUDULENT` | `fraudulent` |
+
+### Retrieve a payment method
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::getPaymentMethod($paymentMethodId);
+```
+
+## Charges
+
+### Retrieve a specific charge
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::getCharge($chargeId);
+```
+
+### Get all charges for a PaymentIntent
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::getCharges($paymentIntentId);
+```
+
+## Authorizing a payment
+
+`Lunar\Stripe\StripePaymentType::authorize()` is the driver's entry point, resolved through the `Lunar\Core\Facades\Payments` facade.
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+
+$payment = Payments::driver('stripe')
+    ->cart(CartSession::current())
+    ->withData([
+        'payment_intent' => $paymentIntentId,
+    ])
+    ->authorize();
+
+if (! $payment->success) {
+    // $payment->message carries a diagnostic, not shopper-facing copy.
+}
+```
+
+`authorize()`:
+
+1. Rejects the attempt if a `StripePaymentIntent` record already exists for the intent and is no longer active (canceled or succeeded), or if the order is already placed.
+2. Retrieves the intent from Stripe and verifies its amount and currency match the order or cart total (see below).
+3. Captures the intent immediately when its status is `requires_capture` and the `policy` is `automatic`.
+4. Creates the order from the cart if one does not already exist.
+5. Stores the intent's charges as transactions and places the order once the intent has succeeded.
+
+Returns a `Lunar\Core\DataObjects\PaymentAuthorize` with `success`, `message`, `orderId`, and `paymentType`.
+
+### Amount and currency verification
+
+Before capturing anything, `authorize()` checks the retrieved PaymentIntent against the expected total — the order's total when authorizing against a placed/draft order, or the calculated cart's total otherwise. The intent's amount is compared at Stripe's sub-unit scale via `StripeManager::toStripeAmount()`, and the currency is compared case-insensitively.
+
+A mismatch on either amount or currency fails the authorization before anything is captured, unless `allow_partial_payment` is enabled. This guard exists specifically so a client-supplied PaymentIntent ID cannot be used to place a more expensive order against a cheaper payment.
+
+### Orphaned intents
+
+If order creation fails after Stripe has already reported the PaymentIntent as `succeeded` (for example, the cart cannot create a second order), the driver dispatches `Lunar\Stripe\Events\OrphanedPaymentIntentDetected` with the intent ID, cart ID, and failure reason, so the captured payment can be reconciled manually.
+
+```php
+use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
+
+public function handle(OrphanedPaymentIntentDetected $event)
+{
+    $event->paymentIntentId;
+    $event->cartId;
+    $event->reason;
+}
+```
+
+## Capture and refund
+
+Under the `manual` capture policy, a PaymentIntent is authorized but not captured until later.
+
+### Capturing a payment
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::driver('stripe')->capture($transaction, $amount);
+```
+
+`$amount` is optional and in the order currency's minor unit; when omitted, the full authorized amount is captured. Internally this calls Stripe's capture endpoint, re-fetches the intent, and stores its charges as transactions via `Lunar\Stripe\Actions\UpdateOrderFromIntent`.
+
+The same call is available as a verb on the transaction itself:
+
+```php
+$transaction->capture($amount);
+```
+
+### Refunding a payment
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::driver('stripe')->refund($transaction, $amount, $notes);
+```
+
+`$amount` is required and in the order currency's minor unit. The driver creates a Stripe refund against the charge's PaymentIntent and records a `refund` transaction, populating `Lunar\Core\DataObjects\PaymentRefund::$transaction` with the row it created.
+
+Equivalently:
+
+```php
+$transaction->refund($amount, $notes);
+```
+
+<Info>
+For a refund that also allocates against specific order lines — rather than a flat amount against a transaction — use `Lunar\Core\Models\Order::refund()` with a `Lunar\Core\DataObjects\RefundRequest`. It resolves the capture transaction, computes the amount from the requested lines, shipping, and adjustment, and dispatches to the driver's `refund()` under the hood, so the amount-matching guard above still applies to what Stripe actually receives.
+</Info>
+
+## Payment checks
+
+The driver surfaces the AVS line 1, AVS postal code, and CVC check results Stripe returns on a charge.
+
+```php
+$transaction->paymentChecks();
+```
+
+## Webhooks
+
+Register a webhook endpoint in the Stripe Dashboard. Follow the [Stripe webhook guide](https://stripe.com/docs/webhooks/quickstart) to set this up.
+
+```
+https://your-store.test/stripe/webhook
+```
+
+The path is configurable via `webhook_path`.
+
+### Supported events
+
+`StripeWebhookMiddleware` only lets the following event types through to the controller; every other event returns a `200` without further processing:
+
+- `payment_intent.succeeded`
+- `payment_intent.payment_failed`
+
+### Webhook signing secret
+
+```php
+'stripe' => [
+    // ...
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+### How a webhook is processed
+
+The controller extracts the PaymentIntent ID and, if present, an order ID from the event's metadata, then dispatches `Lunar\Stripe\Jobs\ProcessStripeWebhook` on a five-second delay (so it lands after a same-request `authorize()` call would have already processed the intent). The job re-authorizes against the order if one is known, or against the cart otherwise. If neither can be found, it dispatches `Lunar\Stripe\Events\Webhook\CartMissingForIntent`.
+
+### Extending event parameter resolution
+
+The PaymentIntent ID and order ID extraction can be customized by overriding the `ProcessesEventParameters` binding.
+
+```php
+use Lunar\Stripe\Concerns\ProcessesEventParameters;
+use Lunar\Stripe\DataTransferObjects\EventParameters;
+
+// In a service provider's boot method
+$this->app->bind(ProcessesEventParameters::class, function () {
+    return new class implements ProcessesEventParameters
+    {
+        public function handle(\Stripe\Event $event): EventParameters
+        {
+            return new EventParameters(
+                paymentIntentId: $event->data->object->id,
+                orderId: null, // null creates a new order
+            );
+        }
+    };
+});
+```
+
+### CartMissingForIntent
+
+Dispatched when a webhook is received for a PaymentIntent, but no matching cart or order can be found. It broadcasts on a private `stripe-webhooks` channel.
+
+```php
+use Lunar\Stripe\Events\Webhook\CartMissingForIntent;
+
+public function handle(CartMissingForIntent $event)
+{
+    $event->paymentIntentId;
+}
+```
+
+### Manual order processing
+
+If webhooks are disabled, or an order needs to be processed manually, authorize directly.
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+
+$cart = CartSession::current();
+
+// With a draft order
+$draftOrder = $cart->createOrder();
+Payments::driver('stripe')->order($draftOrder)->withData([
+    'payment_intent' => $draftOrder->meta['payment_intent'],
+])->authorize();
+
+// Using just the cart
+Payments::driver('stripe')->cart($cart)->withData([
+    'payment_intent' => $cart->meta['payment_intent'],
+])->authorize();
+```
+
+## Livewire component
+
+The addon includes a Livewire payment form component that handles PaymentIntent creation and Stripe Elements rendering.
+
+```blade
+<livewire:stripe.payment
+    :cart="$cart"
+    :returnUrl="route('checkout.complete')"
+/>
+```
+
+Include the Stripe.js script in the page layout with the Blade directive.
+
+```blade
+@stripeScripts
+```
+
+## Storefront example
+
+### API route for PaymentIntents
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Stripe\Facades\Stripe;
+
+Route::post('api/payment-intent', function () {
+    $cart = CartSession::current();
+
+    $intent = Stripe::fetchOrCreateIntent($cart);
+
+    if ($intent->amount != $cart->total->value) {
+        Stripe::syncIntent($cart);
+    }
+
+    return $intent;
+})->middleware('web');
+```
+
+### Stripe Elements
+
+This example uses Stripe's Payment Element. For more information, see the [Stripe Elements guide](https://stripe.com/docs/payments/elements).
+
+```js
+const stripe = Stripe(import.meta.env.VITE_STRIPE_PK)
+let stripeElements
+
+const buildForm = async () => {
+    const { data } = await axios.post('api/payment-intent')
+
+    stripeElements = stripe.elements({
+        clientSecret: data.client_secret,
+    })
+
+    const paymentElement = stripeElements.create('payment', {
+        layout: 'tabs',
+        fields: {
+            billingDetails: 'never',
+        },
+    })
+
+    paymentElement.mount('#payment-element')
+}
+
+const submit = async () => {
+    const { error } = await stripe.confirmPayment({
+        elements: stripeElements,
+        confirmParams: {
+            return_url: 'https://your-store.test/checkout/complete',
+            payment_method_data: {
+                billing_details: {
+                    name: `${address.first_name} ${address.last_name}`,
+                    email: address.contact_email,
+                    phone: address.contact_phone,
+                    address: {
+                        city: address.city,
+                        country: address.country.iso2,
+                        line1: address.line_one,
+                        line2: address.line_two,
+                        postal_code: address.postcode,
+                        state: address.state,
+                    },
+                },
+            },
+        },
+    })
+}
+```
+
+```html
+<form onsubmit="submit(event)">
+    <div id="payment-element">
+        <!-- Stripe.js injects the Payment Element -->
+    </div>
+</form>
+```
+
+## Database
+
+The addon adds a `stripe_payment_intents` table (`Lunar\Stripe\Models\StripePaymentIntent`) tracking PaymentIntents and their relationship to carts and orders.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | `id` | Primary key |
+| `cart_id` | `foreignId` | Associated cart |
+| `order_id` | `foreignId` `nullable` | Associated order |
+| `intent_id` | `string` | Stripe PaymentIntent ID |
+| `status` | `string` `nullable` | Current PaymentIntent status |
+| `event_id` | `string` `nullable` | Stripe event ID from the last webhook processed |
+| `processing_at` | `timestamp` `nullable` | |
+| `processed_at` | `timestamp` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+## Testing
+
+The addon includes a mock HTTP client for testing without making real Stripe API calls.
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+
+Stripe::fake();
+```
