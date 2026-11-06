@@ -24,7 +24,7 @@ The directory **above this one** (`/Users/glenn/Herd/lunar-v2/`) is a standard L
 Every non-trivial change to Lunar v2 starts as a spec.
 
 - `TODO.md` lists outstanding work, ideas, and what is done.
-- `specs/NNNN-short-slug.md` — one file per TODO item, sequentially numbered. Use `specs/0000-template.md` as the starting point.
+- `specs/short-slug.md` — one file per TODO item, named by its slug, with no number. Use `specs/template.md` as the starting point. Refer to a spec by its slug (`spec cart-totals-caching`); older specs keep their numbers (`spec 0093`).
 - `specs/completed/` — specs whose implementation has shipped; move them there once merged.
 - See `specs/README.md` for the status lifecycle (`draft` → `proposed` → `accepted` → `implemented` / `superseded`).
 - A spec should land (reviewed + merged) before its implementation work begins. Keep specs in present tense, focused on the proposed change.

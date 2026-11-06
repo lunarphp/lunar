@@ -2,7 +2,7 @@
 
 ## Approach
 
-Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `NNNN-short-slug.md`, starting from `specs/0000-template.md`. See `specs/README.md` for the full convention. Item detail lives in the spec — keep entries here to a line.
+Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `short-slug.md`, starting from `specs/template.md`. See `specs/README.md` for the full convention. Item detail lives in the spec — keep entries here to a line.
 
 Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
