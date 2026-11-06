@@ -203,7 +203,7 @@ it('renders the order page when an address has no country', function () {
 });
 
 it('hides the notify customer action while no notifications are registered', function () {
-    OrderNotifications::forget('order-update');
+    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()));
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),

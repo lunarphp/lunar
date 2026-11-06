@@ -1,20 +1,146 @@
 ---
 title: "Notifications"
-description: "Register, send, and route the notifications Lunar sends to customers about their orders."
+description: "The customer emails Lunar sends about an order, how they are triggered, and how to customize or replace them."
 ---
 
 Lunar sends customer-facing order updates through a single registry of Laravel notifications, sendable automatically on a state change or on demand from the admin.
 
 ## Overview
 
-Customer notifications are not a fixed list of hardcoded emails. They are entries in the `OrderNotificationManifest` — a container-bound registry, seeded with one code-level default, that a consuming application extends or replaces. Each entry is a single Laravel `Notification` class that can fire two ways:
+Customer notifications are entries in the `OrderNotificationManifest`, a container-bound registry that ships a set of branded defaults and that a consuming application extends, trims, or replaces. Each entry is a single Laravel `Notification` class that can fire two ways:
 
 - **Automatically**, when the order or one of its fulfilments enters one of the entry's trigger states.
-- **Manually**, composed and sent on demand — either from the admin's "Notify customer" action, or by calling `$order->notifyCustomer()` directly.
+- **Manually**, composed and sent on demand, either from the admin's "Notify customer" action or by calling `$order->notifyCustomer()` directly.
+
+Every default is active on a fresh install. Each one except the order confirmation sits behind the `notify` flag of the operation that fires it, so a quiet ship, cancel, or refund sends nothing, and any default can be switched off with a one-line `forget()` from a service provider.
+
+## Default notifications
+
+Lunar registers the following notifications out of the box. All classes live in the `Lunar\Core\Notifications` namespace.
+
+| Key | Class | Fires on | Manual | Scope |
+|:--|:--|:--|:--|:--|
+| `order-confirmation` | `OrderConfirmation` | `placed` | Yes | Order |
+| `payment-received` | `PaymentReceived` | `paid` (see [trigger rules](#trigger-rules)) | Yes | Order |
+| `order-shipped` | `OrderShipped` | `shipped` | No | Fulfilment |
+| `order-ready-for-collection` | `OrderReadyForCollection` | `ready-for-collection` | No | Fulfilment |
+| `order-provisioned` | `OrderProvisioned` | `provisioned` | No | Fulfilment |
+| `return-received` | `ReturnReceived` | `returned` | No | Fulfilment |
+| `order-cancelled` | `OrderCancellation` | `cancelled` | Yes | Order |
+| `refund-issued` | `RefundIssued` | `refund-issued` | Yes | Order |
+| `partial-fulfilment-update` | `PartialFulfilmentUpdate` | Manual only | Yes | Order |
+| `order-update` | `OrderUpdate` | Manual only | Yes | Order |
+
+What each one contains:
+
+- **Order confirmation**: reference, placed date, a line summary with totals, the billing and shipping addresses, and the current payment state. Renders the optional admin message when resent by hand.
+- **Payment received**: sent when a capture takes an already placed order to `paid`, such as an authorize-then-capture flow or an offline payment marked paid in the admin. Shows the order total.
+- **Order shipped**: the lines in the fulfilment and one row per tracking reference (carrier, tracking number, link).
+- **Ready for collection**: the lines to collect and the name of the fulfilment's location.
+- **Order provisioned**: the lines provisioned. Core records no download link, so none is rendered; a store that has one re-registers the key with its own class.
+- **Return received**: the lines received back. A refund that follows sends its own email.
+- **Order cancelled**: the cancellation, with the cancel reason's label when one was recorded.
+- **Refund issued**: the refund, with the amount read from the latest successful refund transaction on the order.
+- **Partial fulfilment update**: a manual-only "part of your order is still to come" email listing the lines still outstanding (ordered quantity minus the quantity on fulfilments that have gone to the customer), so a delay notice is a pick-and-send rather than free text.
+- **Order update**: a general-purpose update rendering the admin's free-text message.
+
+The fulfilment-scoped defaults are not manually sendable because the "Notify customer" composers are order-scoped. The manifest still answers `sendable(NotificationScope::Fulfilment)`, so an application can build its own resend path for them.
+
+### Trigger rules
+
+- **Only placed orders receive rollup emails.** The payment-status and fulfilment-status listeners return early while `$order->isPlaced()` is false. A card checkout records its capture before `placed_at` is stamped, so the `paid` rollup fires on an unplaced order and is skipped, and the order confirmation that follows carries the payment state. The customer gets one email, not two. A later capture on a placed order sends `payment-received` as intended, and draft orders never email a customer.
+- **The refund event key is `refund-issued`, not `refunded`.** `refunded` and `partially-refunded` are payment-status rollups, which fire without a `notify` flag whenever the ledger changes. The refund operation dispatches its own gated event, resolved through `refund-issued`. Registering a notification `on: ['refunded']` sends it on every rollup to that state, which is rarely what a store wants.
+- **Per-fulfilment states only.** The defaults register against fulfilment states (`shipped`, `returned`, and so on), never the order-level `fulfilled` or `returned` rollups, so a customer is emailed once per parcel rather than once per parcel and again when the order rolls up.
+- **`collected`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing.** Collection is a counter handover, the others are back-office moves, and an order-level cancellation is covered by `order-cancelled`.
+- **The `notify` flag still gates every event-driven send.** `ship(notify: false)`, `cancel(notify: false)`, a `RefundRequest` with `notify: false`, and the matching toggles in the admin all suppress the email.
 
 <Info>
-Lunar ships exactly one notification out of the box: `Lunar\Core\Notifications\OrderUpdate`, a general-purpose "here is an update on your order" email, manual-only, that renders an optional free-text message. Branded, auto-triggered lifecycle notifications (an order confirmation, a "your parcel has shipped" email, a refund receipt) are not shipped by default — register your own against the manifest as described below.
+A payment driver that places the order inside `authorize()` must record its capture transactions before stamping `placed_at`, or the placed-order rule above cannot suppress the duplicate "paid" email at checkout. The first-party Stripe and PayPal drivers do this; see [Extending payments](/extending/payments#recording-transactions).
 </Info>
+
+## Customizing the default emails
+
+There are four layers, from the lightest touch to a full replacement. All of them live in the consuming application.
+
+### The layout
+
+Every default template extends Laravel's own `x-mail::message` component, so the header, footer, colors, and logo come from the application's markdown mail layout. Publish it to change them:
+
+```bash
+php artisan vendor:publish --tag=laravel-mail
+```
+
+This copies Laravel's components to `resources/views/vendor/mail`. The header text is `config('app.name')`, the color theme is `html/themes/default.css`, and the footer is part of `html/message.blade.php`. A store that has already themed its Laravel mail gets branded Lunar emails with no further work, and the application's own emails share the same look.
+
+### The templates
+
+To change what an email shows, publish Lunar's templates:
+
+```bash
+php artisan vendor:publish --tag=lunar.views
+```
+
+This copies them to `resources/views/vendor/lunar/mail`, where Laravel looks before falling back to the package copy. Edit a file there and the shipped one is ignored.
+
+| Template | Notification | View data (all receive `order`, `reference`, `message`) |
+|:--|:--|:--|
+| `orders/confirmation.blade.php` | `OrderConfirmation` | `placedAt`, `lines` (the order's non-shipping `OrderLine` models) |
+| `orders/payment-received.blade.php` | `PaymentReceived` | |
+| `orders/shipped.blade.php` | `OrderShipped` | `fulfilment`, `lines`, `trackings` |
+| `orders/ready-for-collection.blade.php` | `OrderReadyForCollection` | `fulfilment`, `lines`, `location` |
+| `orders/provisioned.blade.php` | `OrderProvisioned` | `fulfilment`, `lines` |
+| `orders/return-received.blade.php` | `ReturnReceived` | `fulfilment`, `lines` |
+| `orders/cancellation.blade.php` | `OrderCancellation` | `reason` |
+| `orders/refund-issued.blade.php` | `RefundIssued` | `amount` (formatted, or `null` when no refund is recorded) |
+| `orders/partial-fulfilment-update.blade.php` | `PartialFulfilmentUpdate` | `lines` |
+
+For the fulfilment-scoped templates and the partial fulfilment update, `lines` is an array of rows shaped `['description' => string, 'option' => ?string, 'quantity' => int]`.
+
+The templates share a set of partials under `mail/partials`, so a change to one applies everywhere it is used:
+
+| Partial | Used for |
+|:--|:--|
+| `order-summary` | The line table with sub total, discount, shipping, tax, and total rows |
+| `fulfilment-lines` | The item and quantity table on every fulfilment-scoped email and the outstanding-lines list |
+| `tracking` | One row per `FulfilmentTracking`, linking the tracking number to its URL |
+| `address` | One `OrderAddress`, one part per line |
+| `greeting` | "Hi Ada," from the billing (or shipping) first name, falling back to "Hello," |
+| `signoff` | "Regards," and the application name |
+
+Templates are markdown mail views. Keep content flush to the left margin (indented lines become code blocks) and use `<x-mail::table>` for tables.
+
+### The copy
+
+To reword an email without touching its structure, publish the language files:
+
+```bash
+php artisan vendor:publish --tag=lunar.translation
+```
+
+Every string the templates render comes from `lang/vendor/lunar/<locale>/notifications.php`. Each notification has a `label` (the admin dropdown entry), a `subject`, and its body copy (`heading`, `intro`, `outro`, plus `tracking` or `outstanding` where a template has an extra paragraph), with the greeting, sign-off, and table headings shared under the `partials` key. Lunar ships these strings in all sixteen of its supported locales.
+
+### Replacing or removing a notification
+
+When a store needs a different structure entirely, or data the default does not carry, re-register the key with its own class from a service provider's `boot()` method:
+
+```php
+use Lunar\Core\Facades\OrderNotifications;
+
+OrderNotifications::register(
+    key: 'order-confirmation',
+    notification: App\Notifications\OrderConfirmation::class,
+    label: 'Order confirmation',
+    on: ['placed'],
+);
+```
+
+The replacement keeps the key's triggers only if it passes them again, so repeat the `on` list (and `scope`, for a fulfilment-scoped entry). Or remove the entry altogether:
+
+```php
+OrderNotifications::forget('payment-received');
+```
+
+A consumer class that should render the admin's free-text message implements `Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage`; see [Sending a notification manually](#sending-a-notification-manually).
 
 ## The notification manifest
 
@@ -45,48 +171,36 @@ use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Enums\NotificationScope;
 
 OrderNotifications::register(
-    key: 'order-confirmation',
-    notification: App\Notifications\OrderConfirmation::class,
-    label: 'Order confirmation',
-    on: ['paid'], // the payment_status $name that auto-fires it
-    manual: true,
-    scope: NotificationScope::Order,
+    key: 'out-for-delivery',
+    notification: App\Notifications\OutForDelivery::class,
+    label: 'Out for delivery',
+    on: ['out-for-delivery'], // a FulfilmentState $name added by a custom fulfilment method
+    manual: false,
+    scope: NotificationScope::Fulfilment,
 );
 ```
 
-- `key` — a unique identifier, used in `$order->notifyCustomer()` calls and admin dropdowns.
-- `notification` — the notification class. It is constructed differently depending on `scope` (see below).
-- `label` — the dropdown label shown in the admin; defaults to the key, translated through `__()`.
-- `on` — the list of state `$name`s (a `payment_status`, `fulfilment_status`, or per-fulfilment `FulfilmentState` name, depending on scope) that fire it automatically. Leave empty for a manual-only notification.
-- `manual` — whether it appears in the admin's send list (and so can be resent by hand even when it also fires automatically).
-- `scope` — a `Lunar\Core\Enums\NotificationScope` case, `Order` or `Fulfilment`, deciding what the notification is constructed with.
-
-Replace a built-in entry by re-registering its key:
-
-```php
-OrderNotifications::register('order-update', App\Notifications\MyOrderUpdate::class);
-```
-
-Or remove it entirely:
-
-```php
-OrderNotifications::forget('order-update');
-```
+- `key`: a unique identifier, used in `$order->notifyCustomer()` calls and admin dropdowns.
+- `notification`: the notification class. It is constructed differently depending on `scope` (see below).
+- `label`: the dropdown label shown in the admin; defaults to the key, translated through `__()`.
+- `on`: the list of keys that fire it automatically. For an order-scoped entry that is a `payment_status` or `fulfilment_status` state `$name`, or one of the event keys `placed`, `cancelled`, and `refund-issued`. For a fulfilment-scoped entry it is a per-fulfilment `FulfilmentState` name. Leave empty for a manual-only notification.
+- `manual`: whether it appears in the admin's send list (and so can be resent by hand even when it also fires automatically).
+- `scope`: a `Lunar\Core\Enums\NotificationScope` case, `Order` or `Fulfilment`, deciding what the notification is constructed with.
 
 <Tip>
-This replaces the 1.x `config('lunar.orders.notifications')` array — there is no notifications key in `config/lunar/orders.php`. Class references belong in the container, not config, so register from a service provider's `boot()` method.
+This replaces the 1.x `config('lunar.orders.notifications')` array; there is no notifications key in `config/lunar/orders.php`. Class references belong in the container, not config, so register from a service provider's `boot()` method.
 </Tip>
 
 ### Scope
 
-`NotificationScope::Order` notifications are constructed as `new $class($order, $message)` and sent through the order. `NotificationScope::Fulfilment` notifications are constructed with the fulfilment (`new $class($fulfilment)`) so they can read tracking and line details, but are still delivered through the order's notification routing (`$fulfilment->order->notify(...)`). Automatic fulfilment-scoped sends use the same manifest — see [Fulfilments](/reference/fulfilments#notifications-on-fulfilment-events).
+`NotificationScope::Order` notifications are constructed as `new $class($order, $message)` and sent through the order. `NotificationScope::Fulfilment` notifications are constructed with the fulfilment (`new $class($fulfilment)`) so they can read tracking and line details, but are still delivered through the order's notification routing (`$fulfilment->order->notify(...)`). Automatic fulfilment-scoped sends use the same manifest; see [Fulfilments](/reference/fulfilments#notifications-on-fulfilment-events).
 
 ## Sending a notification manually
 
 ```php
 $order->notifyCustomer(
-    notification: 'order-update',
-    message: 'Your order has been delayed by a day.',
+    notification: 'order-confirmation',
+    message: 'Resent at your request.',
     recipients: [], // defaults to the order's billing + shipping contact emails
 );
 ```
@@ -102,7 +216,7 @@ public function execute(Order $order, string $notification, ?string $message = n
 - Each recipient is sent the notification directly (bypassing the order's own mail routing, since the recipient is already explicit), and an `email-notification` activity log entry is recorded per recipient.
 - `Lunar\Core\Events\Orders\OrderCustomerNotified` is dispatched once, with the order, the notification key, and the resolved recipients.
 
-A notification that should render the free-text `$message` implements `Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage` (a marker interface documenting the `__construct(Order $order, ?string $message = null)` shape `notifyCustomer()` relies on):
+A notification that should render the free-text `$message` implements `Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage` (a marker interface documenting the `__construct(Order $order, ?string $message = null)` shape `notifyCustomer()` relies on). Every order-scoped default implements it; the fulfilment-scoped defaults do not, since they are constructed with a fulfilment.
 
 ```php
 namespace App\Notifications;
@@ -128,7 +242,10 @@ class OrderConfirmation extends Notification implements AcceptsCustomerMessage
     {
         return (new MailMessage)
             ->subject("Order {$this->order->reference} confirmed")
-            ->line('Thanks for your order.');
+            ->markdown('mail.orders.confirmation', [
+                'order' => $this->order,
+                'message' => $this->message,
+            ]);
     }
 }
 ```
@@ -156,25 +273,30 @@ public function routeNotificationForMail(?object $notification = null): string|a
 
 The routing decision, in order:
 
-1. If the notification implements `Lunar\Core\Contracts\ResolvesOrderMailRoute`, its `mailRouteForOrder(Order $order): string|array|null` wins outright — use this when the recipient is not an order contact at all (an account email, an ops inbox).
-2. Otherwise, if it implements `Lunar\Core\Contracts\RoutesToOrderContact`, its `orderContactType(): 'billing'|'shipping'` picks which contact to use — a per-fulfilment "your parcel has shipped" notification would route to `shipping` this way.
+1. If the notification implements `Lunar\Core\Contracts\ResolvesOrderMailRoute`, its `mailRouteForOrder(Order $order): string|array|null` wins outright. Use this when the recipient is not an order contact at all (an account email, an ops inbox).
+2. Otherwise, if it implements `Lunar\Core\Contracts\RoutesToOrderContact`, its `orderContactType(): 'billing'|'shipping'` picks which contact to use. A per-fulfilment "your parcel has shipped" notification would route to `shipping` this way.
 3. Otherwise the default is the **billing** contact.
 4. Whichever contact is chosen, if it has no `contact_email`, the other contact is used instead.
 
+None of the default notifications implement either contract, so they all route to the billing contact with the shipping contact as the fallback. A subclass can add one:
+
 ```php
 use Lunar\Core\Contracts\RoutesToOrderContact;
+use Lunar\Core\Notifications\OrderShipped;
 
-class FulfilmentShipped extends Notification implements RoutesToOrderContact
+class ShippedToRecipient extends OrderShipped implements RoutesToOrderContact
 {
     public function orderContactType(): string
     {
         return 'shipping';
     }
-
-    // ...
 }
 ```
 
+The defaults send synchronously, like any notification without `ShouldQueue`. To queue one, subclass it, add `Illuminate\Contracts\Queue\ShouldQueue`, and re-register the key.
+
 ## Admin
 
-The order screen's "Notify customer" action populates its notification dropdown from `OrderNotifications::sendable()`, lets staff pick recipients from the order's contacts (or add an extra address), and calls `$order->notifyCustomer()` — so a notification sent from the admin leaves the same activity-log trail as one sent through the API.
+The order screen's "Notify customer" action populates its notification dropdown from `OrderNotifications::sendable()`, lets staff pick recipients from the order's contacts (or add an extra address), and calls `$order->notifyCustomer()`, so a notification sent from the admin leaves the same activity-log trail as one sent through the API. With the defaults registered the dropdown offers the order confirmation, payment received, order cancelled, refund issued, partial fulfilment update, and order update entries.
+
+The ship, collection-ready, provision, return, cancel, and refund controls each show a "notify customer" toggle whenever a notification is registered for the state or event they produce, which with the defaults is always.
