@@ -57,6 +57,8 @@ Every `Section` and `SectionExtension` implements the same set of hooks, each re
 | `tableExtensions(): array` | Extra `TableColumn`s, `TableFilter`s, `TableAction`s, and `TableBulkAction`s for a table id, e.g. `['customers.index' => MyTableExtension::class]`. |
 | `pageActions(): array` | `PageAction` classes for a page's header ellipsis, keyed by page id. |
 | `draftables(): array` | `DraftableResource` definitions describing which fields an edit form drafts and how a draft commits. |
+| `draftSlices(): array` | `DraftSlice` classes the panel's own sections register under a bare namespace on a draftable model. |
+| `draftExtensions(): array` | `DraftSlice` classes an add-on contributes to a first-party edit draft, placed under the reserved `addon:{key}` namespace. |
 | `discountTypeForms(): array` | Panel forms for discount types this section owns, keyed by the discount type class. |
 | `searchSources(): array` | Sources the global search palette can find records in. |
 | `searchCommands(): array` | Static verbs the global search palette offers alongside record results. |
@@ -64,7 +66,7 @@ Every `Section` and `SectionExtension` implements the same set of hooks, each re
 | `vite(): array\|string\|null` | The compiled JS module config for this section's own bundle. |
 | `langNamespaces(): array` | Laravel translator namespaces whose lang groups the panel's translations endpoint serves to the frontend. |
 
-`Section::draftables()`, `discountTypeForms()`, `searchSources()`, `searchCommands()`, and `widgets()` are also available on `SectionExtension`.
+`Section::draftables()`, `draftSlices()`, `draftExtensions()`, `discountTypeForms()`, `searchSources()`, `searchCommands()`, and `widgets()` are also available on `SectionExtension`.
 
 ## Non-section escape hatches
 

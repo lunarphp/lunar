@@ -18,6 +18,10 @@ On a draft-backed edit page (Customers, Discounts, and other first-party record 
 
 Two staff members editing *different* fields on the same record never see a conflict, in either save order. Only the same field, edited by both, triggers resolution.
 
+## Adding to a draft the add-on does not own
+
+Registering a `DraftableResource` is for a record the add-on owns outright. To add fields to a first-party record's existing draft, such as a loyalty tier on the customer edit page, register a [draft slice](/admin/extending/draft-slices) instead. A slice joins the record's draft under a namespace of its own and gets the same autosave, conflict detection, and atomic commit, without being able to touch the record's own fields.
+
 ## Opting a resource in
 
 Drafting is not automatic per model — a `Section` registers a `DraftableResource` definition describing exactly which fields it drafts and how they read and write. Return definitions from `Section::draftables()`:
@@ -201,12 +205,14 @@ const form = useEditDraft({
 `useEditDraft` exposes:
 
 - `values` — reactive form state, the pristine record overlaid with any restored draft.
-- `isDirty`, `saving`, `committing`, `savedAt`, `hasDraft`, `restoredFrom` — status for the autosave indicator and the restored-draft banner.
+- `isDirty`, `dirtyKeys`, `saving`, `committing`, `savedAt`, `hasDraft`, `restoredFrom` — status for the autosave indicator and the restored-draft banner.
 - `errors` — validation errors from a failed commit.
 - `conflicts` — the per-field conflict set from a 409 response.
 - `commit()` — sends the current diff immediately (not waiting out the autosave debounce) and, on success, reloads the page so the server's session flash message shows.
 - `resolve(resolutions, rebase)` — re-commits after the staff member resolves conflicts, pinning each resolved field's `rebase` value to the current database value they were shown (so a further change to the same field between resolving and re-committing conflicts again, rather than being silently overwritten).
 - `discard()` — reverts local values to pristine and deletes the draft.
+
+`initial` is merged with the page's shared `draftSliceValues` prop, so any [draft slices](/admin/extending/draft-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
 
 Autosave watches `values` with a debounce (roughly 750ms by default), sends only the changed fields, and serialises requests so a slower, older response can never clobber a newer one. A diff that empties back out (the user undid their own change) triggers a `DELETE` instead of a `PATCH`.
 

@@ -123,6 +123,7 @@ export default defineConfig({
 ```ts
 import WidgetsIndexPage from './pages/Widgets/Index.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
+import LoyaltyCardComponent from './components/LoyaltyCard.vue';
 
 // Register eagerly. The panel's frontend entry publishes window.LunarPanel and
 // is emitted before any add-on script, so it is always present here.
@@ -132,6 +133,7 @@ window.LunarPanel.registerPages({
 
 window.LunarPanel.registerComponents('example-addon', {
     InfoBanner: InfoBannerComponent,
+    LoyaltyCard: LoyaltyCardComponent,
 });
 ```
 
