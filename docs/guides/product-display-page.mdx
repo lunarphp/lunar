@@ -1,0 +1,513 @@
+---
+title: "Product Display Page"
+description: "Build a product display page (PDP) with Lunar, covering product resolution, variant selection, pricing, images, and add-to-cart functionality."
+---
+
+## Overview
+
+A Product Display Page (PDP) is the page where customers view a single product, select options like size or color, see pricing and images, and add items to their cart. This guide walks through building a PDP using Lunar's models and facades.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## Resolving a Product from a URL
+
+Lunar's `Url` model provides slug-based lookups for products, removing the need to expose database IDs in URLs.
+
+### Define the Route
+
+```php
+use App\Http\Controllers\ProductController;
+
+Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+```
+
+### Resolve the Product
+
+```php
+use Lunar\Facades\StorefrontSession;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+
+class ProductController extends Controller
+{
+    public function show(string $slug)
+    {
+        $url = Url::where('slug', $slug)
+            ->where('element_type', (new Product)->getMorphClass())
+            ->firstOrFail();
+
+        $channel = StorefrontSession::getChannel();
+        $customerGroups = StorefrontSession::getCustomerGroups();
+
+        $product = Product::where('id', $url->element_id)
+            ->where('status', 'published')
+            ->channel($channel)
+            ->customerGroup($customerGroups)
+            ->with([
+                'variants.prices.currency',
+                'variants.values.option',
+                'variants.images',
+                'media',
+                'brand',
+                'productOptions.values',
+            ])
+            ->firstOrFail();
+
+        return view('products.show', compact('product'));
+    }
+}
+```
+
+<Tip>
+Eager loading relationships in a single query avoids N+1 performance issues. The `with()` call above loads everything needed to render the full PDP.
+</Tip>
+
+The `channel()` and `customerGroup()` scopes ensure that a product not published to the current channel or customer group returns a 404 rather than rendering. See the [Storefront Session reference](/storefront-utils/storefront-session) for how to manage these values.
+
+## Displaying Product Information
+
+### Product Name and Description
+
+Product names and descriptions are stored as attribute data. Use the `attr()` method to retrieve translated values.
+
+```php
+$product->attr('name');        // Returns the name for the current locale
+$product->attr('description'); // Returns the description for the current locale
+```
+
+In a Blade template:
+
+```blade
+<h1>{{ $product->attr('name') }}</h1>
+<div>{!! $product->attr('description') !!}</div>
+
+@if($product->brand)
+    <p>{{ $product->brand->name }}</p>
+@endif
+```
+
+### Custom Attributes
+
+Any custom attributes defined on the product type are accessible in the same way. For example, if the product type includes a "Material" attribute:
+
+```php
+$product->attr('material'); // e.g. "Premium Leather"
+```
+
+## Product Images
+
+Lunar uses [Spatie MediaLibrary](https://spatie.be/docs/laravel-medialibrary) for image management. Products store images in the `images` media collection.
+
+```blade
+{{-- Primary / thumbnail image --}}
+<img src="{{ $product->getFirstMediaUrl('images', 'large') }}" alt="{{ $product->attr('name') }}">
+
+{{-- All product images --}}
+<div class="gallery">
+    @foreach($product->getMedia('images') as $image)
+        <img
+            src="{{ $image->getUrl('medium') }}"
+            alt="{{ $image->getCustomProperty('alt', $product->attr('name')) }}"
+        >
+    @endforeach
+</div>
+```
+
+The available conversion sizes (`large`, `medium`, `zoom`, etc.) depend on the media definitions configured in `config/lunar/media.php`. See the [Media reference](/reference/media) for details on customizing conversions.
+
+## Variant Selection
+
+Most products have at least one variant. When a product offers multiple variants (different sizes, colors, etc.), the storefront needs to let customers select the variant they want.
+
+### Understanding the Data Structure
+
+Each variant is associated with one or more `ProductOptionValue` records. For example, a T-shirt might have:
+
+- **Product Options:** Color, Size
+- **Product Option Values:** Blue, Red (for Color); S, M, L (for Size)
+- **Variants:** Blue/S, Blue/M, Blue/L, Red/S, Red/M, Red/L
+
+### Building an Option Selector
+
+```blade
+@foreach($product->productOptions as $option)
+    <div>
+        <label>{{ $option->translate('name') }}</label>
+
+        <select name="options[{{ $option->id }}]">
+            @foreach($option->values as $value)
+                <option value="{{ $value->id }}">
+                    {{ $value->translate('name') }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+@endforeach
+```
+
+### Mapping Option Values to Variants
+
+To determine which variant corresponds to a given set of option selections, build a lookup map and pass it to the frontend.
+
+```php
+$variantOptionMap = $product->variants->map(function ($variant) {
+    return [
+        'id' => $variant->id,
+        'option_value_ids' => $variant->values->pluck('id')->sort()->values()->all(),
+        'sku' => $variant->sku,
+        'stock' => $variant->stock,
+        'purchasable' => $variant->purchasable,
+    ];
+});
+```
+
+Pass this as JSON to JavaScript for client-side variant resolution:
+
+```blade
+<script>
+    const variants = @json($variantOptionMap);
+
+    function findVariant(selectedValueIds) {
+        const sorted = [...selectedValueIds].sort((a, b) => a - b);
+
+        return variants.find(variant => {
+            return JSON.stringify(variant.option_value_ids) === JSON.stringify(sorted);
+        });
+    }
+</script>
+```
+
+### Single-Variant Products
+
+When a product has only one variant, option selectors are unnecessary. Handle this in the template:
+
+```blade
+@if($product->variants->count() > 1)
+    {{-- Show option selectors --}}
+@endif
+
+<input type="hidden" name="variant_id" value="{{ $product->variants->first()->id }}">
+```
+
+## Pricing
+
+Pricing in Lunar is resolved through the `Pricing` facade, which accounts for the current currency, customer group, and quantity.
+
+### Displaying the Price
+
+The `Pricing` facade accepts an optional currency and customer group. Pass these from `StorefrontSession` so the returned price matches the browsing context.
+
+```php
+use Lunar\Facades\Pricing;
+use Lunar\Facades\StorefrontSession;
+
+$variant = $product->variants->first();
+
+$pricing = Pricing::for($variant)
+    ->currency(StorefrontSession::getCurrency())
+    ->customerGroups(StorefrontSession::getCustomerGroups())
+    ->get();
+```
+
+The `get()` method returns a `PricingResponse` with the following properties:
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `matched` | `Lunar\Models\Price` | The best matching price for the given context |
+| `base` | `Lunar\Models\Price` | The base price (min quantity of 1, no customer group) |
+| `priceBreaks` | `Collection` | All available quantity break prices |
+| `customerGroupPrices` | `Collection` | Prices specific to customer groups |
+
+### Formatting Prices in Blade
+
+```blade
+@php
+    $pricing = \Lunar\Facades\Pricing::for($product->variants->first())
+        ->currency(\Lunar\Facades\StorefrontSession::getCurrency())
+        ->customerGroups(\Lunar\Facades\StorefrontSession::getCustomerGroups())
+        ->get();
+    $price = $pricing->matched;
+@endphp
+
+<p class="price">
+    {{ $price->price->formatted() }}
+</p>
+
+@if($price->compare_price?->value)
+    <p class="compare-price">
+        <s>{{ $price->compare_price->formatted() }}</s>
+    </p>
+@endif
+```
+
+### Tax-Inclusive and Tax-Exclusive Prices
+
+If prices are stored inclusive of tax, use the helper methods on the `Price` model to show both:
+
+```blade
+<p>{{ $price->priceIncTax()->formatted() }} inc. tax</p>
+<p>{{ $price->priceExTax()->formatted() }} ex. tax</p>
+```
+
+See the [Pricing reference](/reference/pricing) for more on configuring whether prices are stored inclusive or exclusive of tax.
+
+### Price Breaks
+
+If the product offers quantity-based pricing, display the available tiers:
+
+```blade
+@if($pricing->priceBreaks->count() > 1)
+    <table>
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($pricing->priceBreaks as $break)
+                <tr>
+                    <td>{{ $break->min_quantity }}+</td>
+                    <td>{{ $break->price->formatted() }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endif
+```
+
+## Stock and Availability
+
+Each variant tracks its own inventory. Display stock status to help customers make purchasing decisions.
+
+```blade
+@php
+    $variant = $product->variants->first();
+@endphp
+
+@if($variant->purchasable === 'always')
+    <span class="in-stock">Available</span>
+@elseif($variant->stock > 0)
+    <span class="in-stock">In Stock</span>
+@else
+    <span class="out-of-stock">Out of Stock</span>
+@endif
+```
+
+The `purchasable` field on a variant controls its availability:
+
+| Value | Behavior |
+|:---|:---|
+| `always` | Can always be purchased, even when stock reaches zero (backorders allowed) |
+| `in_stock` | Can only be purchased when `stock` is greater than zero |
+
+Use `canBeFulfilledAtQuantity()` to verify a specific quantity can be fulfilled before adding to cart:
+
+```php
+$variant->canBeFulfilledAtQuantity(3); // Returns true or false
+```
+
+## Adding to Cart
+
+Lunar provides a `CartSession` facade for managing the active cart. Use it to add variants to the cart from the PDP.
+
+### The Add-to-Cart Form
+
+```blade
+<form method="POST" action="{{ route('cart.add') }}">
+    @csrf
+    <input type="hidden" name="variant_id" value="{{ $product->variants->first()->id }}">
+
+    <label for="quantity">Quantity</label>
+    <input type="number" name="quantity" id="quantity" value="1" min="1">
+
+    <button type="submit">Add to Cart</button>
+</form>
+```
+
+### The Controller
+
+```php
+use Lunar\Facades\CartSession;
+use Lunar\Models\ProductVariant;
+
+class CartController extends Controller
+{
+    public function add(Request $request)
+    {
+        $request->validate([
+            'variant_id' => 'required|exists:lunar_product_variants,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $variant = ProductVariant::findOrFail($request->variant_id);
+
+        $cart = CartSession::current();
+
+        $cart->add($variant, $request->quantity);
+
+        return redirect()->back()->with('message', 'Item added to cart.');
+    }
+}
+```
+
+### The Route
+
+```php
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+```
+
+## Related Products
+
+Lunar supports product associations for cross-sells, upsells, and alternate products. Display these on the PDP to encourage additional purchases.
+
+```php
+use Lunar\Models\ProductAssociation;
+
+$crossSells = $product->associations()
+    ->crossSell()
+    ->with('target.variants.prices.currency', 'target.media')
+    ->get()
+    ->pluck('target');
+
+$upSells = $product->associations()
+    ->upSell()
+    ->with('target.variants.prices.currency', 'target.media')
+    ->get()
+    ->pluck('target');
+```
+
+```blade
+@if($crossSells->isNotEmpty())
+    <h2>You might also like</h2>
+    <div class="product-grid">
+        @foreach($crossSells as $related)
+            <a href="{{ route('products.show', $related->defaultUrl?->slug) }}">
+                <img src="{{ $related->getFirstMediaUrl('images', 'medium') }}" alt="{{ $related->attr('name') }}">
+                <p>{{ $related->attr('name') }}</p>
+            </a>
+        @endforeach
+    </div>
+@endif
+```
+
+See the [Products reference](/reference/products#product-associations) for more on association types.
+
+## Variant-Specific Images
+
+When variants have their own images (for example, showing a different image per color), swap the displayed image based on the selected variant.
+
+```php
+$variantImageMap = $product->variants->mapWithKeys(function ($variant) use ($product) {
+    $thumbnail = $variant->getThumbnail();
+
+    return [
+        $variant->id => $thumbnail
+            ? $thumbnail->getUrl('large')
+            : $product->getFirstMediaUrl('images', 'large'),
+    ];
+});
+```
+
+Pass this map to JavaScript alongside the variant option map:
+
+```blade
+<script>
+    const variantImages = @json($variantImageMap);
+
+    function onVariantChange(variantId) {
+        if (variantImages[variantId]) {
+            document.querySelector('.product-image').src = variantImages[variantId];
+        }
+    }
+</script>
+```
+
+## Putting It All Together
+
+Here is a complete controller that prepares all the data a PDP needs:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Facades\Pricing;
+use Lunar\Facades\StorefrontSession;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+
+class ProductController extends Controller
+{
+    public function show(string $slug)
+    {
+        $url = Url::where('slug', $slug)
+            ->where('element_type', (new Product)->getMorphClass())
+            ->firstOrFail();
+
+        $channel = StorefrontSession::getChannel();
+        $customerGroups = StorefrontSession::getCustomerGroups();
+        $currency = StorefrontSession::getCurrency();
+
+        $product = Product::where('id', $url->element_id)
+            ->where('status', 'published')
+            ->channel($channel)
+            ->customerGroup($customerGroups)
+            ->with([
+                'variants.prices.currency',
+                'variants.values.option',
+                'variants.images',
+                'media',
+                'brand',
+                'productOptions.values',
+                'associations.target.variants.prices.currency',
+                'associations.target.media',
+            ])
+            ->firstOrFail();
+
+        $defaultVariant = $product->variants->first();
+
+        $pricing = Pricing::for($defaultVariant)
+            ->currency($currency)
+            ->customerGroups($customerGroups)
+            ->get();
+
+        $variantOptionMap = $product->variants->map(function ($variant) use ($currency, $customerGroups) {
+            $variantPricing = Pricing::for($variant)
+                ->currency($currency)
+                ->customerGroups($customerGroups)
+                ->get();
+
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'option_value_ids' => $variant->values->pluck('id')->sort()->values()->all(),
+                'stock' => $variant->stock,
+                'purchasable' => $variant->purchasable,
+                'price' => $variantPricing->matched->price->formatted(),
+                'image' => $variant->getThumbnailImage(),
+            ];
+        });
+
+        $crossSells = $product->associations
+            ->where('type', 'cross-sell')
+            ->pluck('target');
+
+        return view('products.show', [
+            'product' => $product,
+            'defaultVariant' => $defaultVariant,
+            'pricing' => $pricing,
+            'variantOptionMap' => $variantOptionMap,
+            'crossSells' => $crossSells,
+        ]);
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Products reference](/reference/products) for the full list of model fields, relationships, and scopes.
+- Review the [Pricing reference](/reference/pricing) for custom price formatters and additional formatting options.
+- Review the [Media reference](/reference/media) for image conversion configuration.
+- Review the [Storefront Session reference](/storefront-utils/storefront-session) to manage channel, currency, and customer group context.

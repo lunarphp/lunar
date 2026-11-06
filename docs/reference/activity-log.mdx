@@ -1,0 +1,51 @@
+---
+title: "Activity Log"
+---
+
+Lunar tracks changes on Eloquent models using built-in activity logging.
+
+## Overview
+
+Lunar has activity logging built in to track changes on Eloquent models. This provides an invaluable insight into what updates are happening in a store and who is making them.
+
+## How it works
+
+Lunar uses the [laravel-activitylog](https://spatie.be/docs/laravel-activitylog) package by Spatie under the hood, wrapped in a custom trait at `Lunar\Base\Traits\LogsActivity`. This trait configures the following defaults:
+
+- All attribute changes are logged (except `updated_at`)
+- Only dirty (changed) attributes are recorded
+- Empty logs are not submitted
+- All entries are stored under the `lunar` log name
+
+The following models have activity logging enabled:
+
+AttributeGroup, Brand, Cart, CartAddress, CartLine, Channel, CollectionGroup, Currency, Customer, CustomerGroup, Discount, Order, OrderAddress, OrderLine, Product, ProductOption, ProductType, ProductVariant, Tag, TaxClass, TaxRate, TaxZone, and Transaction.
+
+## Enabling on your own models
+
+To enable logging on custom models, use Lunar's trait rather than Spatie's directly. This ensures consistent configuration across the application.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Traits\LogsActivity;
+
+class MyCustomModel extends Model
+{
+    use LogsActivity;
+}
+```
+
+To exclude specific fields from logging on a model, override the `getDefaultLogExcept` method:
+
+```php
+public static function getDefaultLogExcept(): array
+{
+    return ['internal_notes'];
+}
+```
+
+For more advanced usage, refer to the [Spatie Activity Log documentation](https://spatie.be/docs/laravel-activitylog).

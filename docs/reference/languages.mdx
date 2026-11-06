@@ -1,0 +1,42 @@
+---
+title: "Languages"
+---
+
+Languages enable translated content across Lunar models such as products and collections.
+
+## Overview
+
+Lunar supports multiple languages. By default, a language of "en" (English) is installed, but this can be changed to any language.
+
+Languages allow data in Lunar models to be translated, such as attributes on Products and Collections.
+
+```php
+Lunar\Models\Language
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `code` | `string` | The ISO 2-character language code, e.g. `en` |
+| `name` | `string` | A descriptive name, e.g. `English` |
+| `default` | `boolean` | Whether this is the default language |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `urls` | `HasMany` | `Lunar\Models\Url` | URLs associated with this language |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `default($default = true)` | Filter to the default language |
+
+<Warning>
+There should only ever be one default language. Setting more than one language as default will likely cause unexpected behavior.
+</Warning>

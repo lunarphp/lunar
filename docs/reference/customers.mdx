@@ -1,0 +1,248 @@
+---
+title: "Customers"
+---
+
+Customers represent the buyers in a store, kept separate from the application's User model.
+
+## Overview
+
+Lunar uses a dedicated Customer model to store customer details, rather than the User model. This keeps the application's User models untouched and provides greater flexibility.
+
+## Customers
+
+```php
+Lunar\Models\Customer
+```
+
+|Field|Type|Description|
+|:-|:-|:-|
+|`id`||primary key|
+|`title`|`string` `nullable`|Salutation e.g. Mr, Mrs, Miss|
+|`first_name`|`string`||
+|`last_name`|`string`||
+|`company_name`|`string` `nullable`||
+|`tax_identifier`|`string` `nullable`||
+|`account_ref`|`string` `nullable`||
+|`attribute_data`|`json` `nullable`||
+|`meta`|`json` `nullable`||
+|`created_at`|`timestamp`||
+|`updated_at`|`timestamp`||
+
+### Creating a customer
+
+```php
+Lunar\Models\Customer::create([
+    'title' => 'Mr.',
+    'first_name' => 'Tony',
+    'last_name' => 'Stark',
+    'company_name' => 'Stark Enterprises',
+    'tax_identifier' => 'GB123456789',
+    'meta' => [
+        'account_no' => 'TNYSTRK1234'
+    ],
+]);
+```
+
+### Accessors
+
+The Customer model provides a `full_name` accessor that combines the `title`, `first_name`, and `last_name` fields.
+
+```php
+$customer = Lunar\Models\Customer::create([
+    'title' => 'Mr.',
+    'first_name' => 'Tony',
+    'last_name' => 'Stark',
+]);
+
+$customer->full_name; // "Mr. Tony Stark"
+```
+
+### Relationships
+
+|Relationship|Type|Related Model|Description|
+|:-|:-|:-|:-|
+|`customerGroups`|`BelongsToMany`|`Lunar\Models\CustomerGroup`|Pivot: `customer_customer_group`|
+|`users`|`BelongsToMany`|Configured via `auth.providers.users.model`|Pivot: `customer_user`|
+|`discounts`|`BelongsToMany`|`Lunar\Models\Discount`|Pivot: `customer_discount`|
+|`addresses`|`HasMany`|`Lunar\Models\Address`||
+|`orders`|`HasMany`|`Lunar\Models\Order`||
+|`mappedAttributes`|`MorphToMany`|`Lunar\Models\Attribute`||
+
+## Users
+
+Customers are typically associated with a user so that they can place orders. It is also possible to have multiple users associated with a single customer. This is useful in B2B e-commerce where a customer may have multiple buyers.
+
+### Attaching users to a customer
+
+```php
+$customer = \Lunar\Models\Customer::create([/* ... */]);
+
+$customer->users()->attach($user);
+
+$customer->users()->sync([$userA->id, $userB->id, $userC->id]);
+```
+
+## Attaching a customer to a customer group
+
+```php
+$customer = \Lunar\Models\Customer::create([/* ... */]);
+
+$customer->customerGroups()->attach($customerGroup);
+
+$customer->customerGroups()->sync([$groupA->id, $groupB->id]);
+```
+
+## Customer Groups
+
+Default `retail`
+
+Customer groups allow customers to be organized into logical segments, enabling different criteria to be defined on models based on which group a customer belongs to.
+
+These criteria include:
+
+### Pricing
+
+Different pricing can be specified per customer group. For example, customers in the `trade` customer group may have different prices than those in `retail`.
+
+### Product Availability
+
+Product visibility can be toggled depending on the customer group, meaning only certain products will show depending on the group a customer belongs to. Scheduling availability is also supported, allowing products to be released earlier or later to different groups.
+
+---
+At least one customer group must exist in the store. When Lunar is installed, a default group named `retail` is created.
+
+## Creating a customer group
+
+```php
+$customerGroup = Lunar\Models\CustomerGroup::create([
+    'name' => 'Retail',
+    'handle' => 'retail', // Must be unique
+    'default' => false,
+]);
+```
+
+<Tip>
+Only one default customer group can exist at a time. If a new customer group is created with `default` set to `true`, the existing default will be set to `false`.
+</Tip>
+
+## Scheduling availability
+
+To add customer group availability to custom models, the `HasCustomerGroups` trait can be used.
+
+```php
+// ...
+use Lunar\Base\Traits\HasCustomerGroups;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class MyModel extends Model
+{
+    use HasCustomerGroups;
+
+    public function customerGroups(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            \Lunar\Models\CustomerGroup::class,
+            "{$prefix}customer_group_my_model"
+        )->withTimestamps()->withPivot(['enabled', 'visible', 'starts_at', 'ends_at']);
+    }
+}
+```
+
+This provides access to the following methods:
+
+### Scheduling customer groups
+
+```php
+// Schedule with a specific start and end date.
+$myModel->scheduleCustomerGroup(
+    $customerGroup,
+    starts: now()->addDays(14),
+    ends: now()->addDays(28),
+);
+
+// Schedule the model to be enabled immediately (starts_at defaults to null).
+$myModel->scheduleCustomerGroup($customerGroup);
+
+// The schedule method will accept an array or collection of customer groups.
+$myModel->scheduleCustomerGroup(CustomerGroup::get());
+```
+
+### Unscheduling customer groups
+
+To disable a model for a customer group, it can be unscheduled. This sets `enabled` to `false` and clears the `starts_at` and `ends_at` dates.
+
+```php
+$myModel->unscheduleCustomerGroup($customerGroup);
+
+// Additional pivot data can also be passed.
+$myModel->unscheduleCustomerGroup($customerGroup, pivotData: ['visible' => false]);
+```
+
+### Parameters
+
+|Field|Description|Type|
+|:-|:-|:-|
+|`$models`|A CustomerGroup model, array, or collection of CustomerGroup models.|mixed|
+|`$starts`|The date the customer group will be active from.|`DateTime\|null`|
+|`$ends`|The date the customer group will be active until.|`DateTime\|null`|
+|`$pivotData`|Any additional pivot data on the link table.|`array`|
+
+
+**Pivot Data**
+
+By default the following values are used for `$pivotData`:
+
+- `enabled` - Whether the customer group is enabled. Defaults to `true` when scheduling and `false` when unscheduling.
+- `starts_at` - When scheduling, set to the `$starts` value. When unscheduling, set to `null`.
+- `ends_at` - When scheduling, set to the `$ends` value. When unscheduling, set to `null`.
+
+Any of these values can be overridden, as they are merged internally.
+
+### Querying by customer group
+
+The `HasCustomerGroups` trait adds a `customerGroup` scope to the model. This allows querying based on availability for one or more customer groups.
+
+The scope accepts a `CustomerGroup` model instance, an array, or a collection.
+
+```php
+$results = MyModel::customerGroup($customerGroup)->paginate();
+
+$results = MyModel::customerGroup([
+    $groupA,
+    $groupB,
+])->paginate(50);
+```
+
+The `$startsAt` and `$endsAt` parameters can optionally be passed to filter by scheduling window. Both should be `DateTime` instances.
+
+- If neither is provided, both default to `now()` (with `$endsAt` set one second ahead).
+- The scope returns models where `starts_at` is `null` or before the given start, `ends_at` is `null` or after the given end, and either `enabled` or `visible` is `true`.
+
+```php
+// Filter by a specific date window.
+$results = MyModel::customerGroup($customerGroup, now()->addDay(), now()->addDays(7))->get();
+```
+
+<Tip>
+A model will only be returned if the `enabled` or `visible` column is `true` on the pivot, regardless of whether the start and end dates match.
+</Tip>
+
+### Limit by customer group
+
+Eloquent models that use the `HasCustomerGroups` trait have a useful scope available:
+
+```php
+// Limit products available to a single customer group
+Product::customerGroup($customerGroup)->get();
+
+// Limit products available to multiple customer groups
+Product::customerGroup([$groupA, $groupB])->get();
+
+// Limit to products that are available the next day
+Product::customerGroup($groupA, now()->addDay())->get();
+
+// Limit to products that are available within a date range.
+Product::customerGroup($groupA, now()->addDay(), now()->addDays(2))->get();
+```

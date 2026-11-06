@@ -1,0 +1,531 @@
+---
+title: "Orders"
+---
+
+Orders represent completed or in-progress purchases, created when a cart is converted at checkout.
+
+## Overview
+
+Orders represent completed or in-progress purchases in a store. Orders are linked to carts, and although there is generally only one order per cart, the system supports multiple orders per cart if needed.
+
+<Info>
+All monetary values (such as `sub_total`, `total`, `tax_total`) are cast to `Lunar\DataTypes\Price` objects, providing access to `value`, `formatted()`, and `decimal` properties.
+</Info>
+
+```php
+Lunar\Models\Order
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `id` | Primary key |
+| customer_id | `foreignId` `nullable` | |
+| user_id | `foreignId` `nullable` | The authenticated user who placed the order |
+| channel_id | `foreignId` | The channel the order was placed through |
+| new_customer | `boolean` | Whether the customer is a first-time buyer |
+| cart_id | `foreignId` `nullable` | The cart used to create the order |
+| status | `string` | The order status |
+| reference | `string` `nullable` | The generated order reference |
+| customer_reference | `string` `nullable` | A reference provided by the customer |
+| sub_total | `unsignedBigInteger` | The subtotal minus any discounts, excluding tax |
+| discount_total | `unsignedBigInteger` | The discount amount, excluding tax |
+| discount_breakdown | `json` `nullable` | Breakdown of applied discounts |
+| shipping_breakdown | `json` `nullable` | Breakdown of shipping charges |
+| shipping_total | `unsignedBigInteger` | The shipping total including tax |
+| tax_breakdown | `json` | Breakdown of applied taxes |
+| tax_total | `unsignedBigInteger` | The total amount of tax applied |
+| total | `unsignedBigInteger` | The grand total including tax |
+| notes | `text` `nullable` | Additional order notes |
+| currency_code | `string` | The currency code the order was placed in |
+| compare_currency_code | `string` `nullable` | The default currency code at the time of the order |
+| exchange_rate | `decimal` | The exchange rate between `currency_code` and `compare_currency_code` |
+| placed_at | `dateTime` `nullable` | The datetime the order was considered placed |
+| fingerprint | `string` `nullable` | A hash used to detect cart changes |
+| meta | `json` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `channel` | BelongsTo | `Lunar\Models\Channel` | |
+| `cart` | BelongsTo | `Lunar\Models\Cart` | |
+| `currency` | BelongsTo | `Lunar\Models\Currency` | Matched on `currency_code` |
+| `customer` | BelongsTo | `Lunar\Models\Customer` | |
+| `user` | BelongsTo | User | The authenticatable model from auth config |
+| `lines` | HasMany | `Lunar\Models\OrderLine` | |
+| `physicalLines` | HasMany | `Lunar\Models\OrderLine` | Lines where type is `physical` |
+| `digitalLines` | HasMany | `Lunar\Models\OrderLine` | Lines where type is `digital` |
+| `shippingLines` | HasMany | `Lunar\Models\OrderLine` | Lines where type is `shipping` |
+| `productLines` | HasMany | `Lunar\Models\OrderLine` | All lines excluding shipping |
+| `addresses` | HasMany | `Lunar\Models\OrderAddress` | |
+| `shippingAddress` | HasOne | `Lunar\Models\OrderAddress` | Address where type is `shipping` |
+| `billingAddress` | HasOne | `Lunar\Models\OrderAddress` | Address where type is `billing` |
+| `transactions` | HasMany | `Lunar\Models\Transaction` | |
+| `captures` | HasMany | `Lunar\Models\Transaction` | Transactions where type is `capture` |
+| `intents` | HasMany | `Lunar\Models\Transaction` | Transactions where type is `intent` |
+| `refunds` | HasMany | `Lunar\Models\Transaction` | Transactions where type is `refund` |
+
+## Creating an Order
+
+An order can be created directly or, the recommended approach, via a `Lunar\Models\Cart` model.
+
+```php
+use Lunar\Models\Order;
+use Lunar\Models\Cart;
+
+$order = Order::create([/** .. */]);
+
+// Recommended approach
+$order = Cart::first()->createOrder(
+    allowMultipleOrders: false,
+    orderIdToUpdate: null,
+);
+```
+
+- `allowMultipleOrders` - Carts generally only have one draft order associated. Pass `true` to allow multiple orders per cart.
+- `orderIdToUpdate` - Optionally pass the ID of an existing draft order to update instead of creating a new one. The order must have a null `placed_at` value and belong to the cart.
+
+The underlying class for creating an order is `Lunar\Actions\Carts\CreateOrder`. This can be overridden in `config/lunar/cart.php`:
+
+```php
+return [
+    //  ...
+    'actions' => [
+        // ...
+        'order_create' => CustomCreateOrder::class,
+    ]
+];
+```
+
+At minimum, a custom class should extend `Lunar\Actions\AbstractAction`:
+
+```php
+use Lunar\Actions\AbstractAction;
+use Lunar\Models\Cart;
+
+final class CreateOrder extends AbstractAction
+{
+    public function execute(
+        Cart $cart,
+        bool $allowMultipleOrders = false,
+        ?int $orderIdToUpdate = null
+    ): self {
+        // ...
+        return $this;
+    }
+}
+```
+
+### Validating a Cart Before Creation
+
+To check whether a cart is ready to create an order:
+
+```php
+$cart->canCreateOrder();
+```
+
+This uses the `Lunar\Validation\Cart\ValidateCartForOrderCreation` class, which throws validation exceptions with helpful messages if the cart is not ready.
+
+A custom validation class can be specified in `config/lunar/cart.php`:
+
+```php
+return [
+    // ...
+    'validators' => [
+        'order_create' => [
+            MyCustomValidator::class,
+        ],
+    ]
+];
+```
+
+A custom validator should extend `Lunar\Validation\BaseValidator`:
+
+```php
+use Lunar\Validation\BaseValidator;
+
+class MyCustomValidator extends BaseValidator
+{
+    public function validate(): bool
+    {
+        $cart = $this->parameters['cart'];
+
+        if ($somethingWentWrong) {
+            return $this->fail('cart', 'There was an issue');
+        }
+
+        return $this->pass();
+    }
+}
+```
+
+## Order Reference Generation
+
+By default, Lunar generates an order reference when creating an order from a cart. The format is:
+
+```
+{prefix?}{0..0}{orderId}
+```
+
+`{0..0}` indicates the order ID is padded to 8 digits (not including the prefix). The prefix is optional and defined in `config/lunar/orders.php`.
+
+### Custom Generators
+
+To use a custom reference generator, update `config/lunar/orders.php`:
+
+```php
+return [
+    'reference_generator' => App\Generators\MyCustomGenerator::class,
+];
+```
+
+To disable reference generation entirely (not recommended), set the value to `null`.
+
+A custom generator must implement `Lunar\Base\OrderReferenceGeneratorInterface`:
+
+```php
+namespace App\Generators;
+
+use Lunar\Base\OrderReferenceGeneratorInterface;
+use Lunar\Models\Contracts\Order;
+
+class MyCustomGenerator implements OrderReferenceGeneratorInterface
+{
+    public function generate(Order $order): string
+    {
+        // ...
+        return 'my-custom-reference';
+    }
+}
+```
+
+## Modifying Orders
+
+To programmatically change order values or add new behavior, the order system can be extended.
+
+See [Order Modifiers](/extending/orders) for more details.
+
+## Order Status
+
+The `placed_at` field determines whether an order is considered draft or placed. The `Lunar\Models\Order` model provides two helper methods:
+
+```php
+$order->isDraft();
+$order->isPlaced();
+```
+
+## Order Lines
+
+```php
+Lunar\Models\OrderLine
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `id` | Primary key |
+| order_id | `foreignId` | |
+| purchasable_type | `string` `nullable` | Polymorphic type for the purchasable item. Empty on shipping lines |
+| purchasable_id | `unsignedBigInteger` `nullable` | Polymorphic ID for the purchasable item. Empty on shipping lines |
+| type | `string` | The line type, e.g. `physical`, `digital`, `shipping` |
+| description | `string` | A description of the line item |
+| option | `string` `nullable` | Option information if the item is a variant |
+| identifier | `string` | An identifier for the purchasable item, typically a SKU |
+| unit_price | `unsignedBigInteger` | The unit price of the line |
+| unit_quantity | `unsignedSmallInteger` | The unit quantity, typically `1` |
+| quantity | `unsignedInteger` | The quantity purchased |
+| sub_total | `unsignedBigInteger` | The subtotal minus any discounts, excluding tax |
+| discount_total | `unsignedBigInteger` | The discount amount, excluding tax |
+| tax_breakdown | `json` | Breakdown of applied taxes |
+| tax_total | `unsignedBigInteger` | The total amount of tax applied |
+| total | `unsignedBigInteger` | The grand total including tax |
+| notes | `text` `nullable` | Additional line notes |
+| meta | `json` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Models\Order` | |
+| `purchasable` | MorphTo | — | The polymorphic purchasable item. `null` on shipping lines |
+| `currency` | HasOneThrough | `Lunar\Models\Currency` | Resolved through the order |
+
+<Info>
+Shipping lines do not have a purchasable. A shipping option is a data transfer object rather than a model, so from Lunar 1.5 shipping lines are stored with no morph and `$line->purchasable` returns `null`. Everything needed to display the line (`description`, `unit_price`, `total`, `meta`) is snapshotted onto the line itself.
+
+Guard for `null` when iterating `$order->lines`, or use `$order->productLines` to exclude shipping lines:
+
+```php
+foreach ($order->productLines as $line) {
+    $line->purchasable->sku;
+}
+```
+</Info>
+
+### Creating an Order Line
+
+<Tip>
+When using the `createOrder` method on a cart, order lines are created automatically.
+</Tip>
+
+```php
+use Lunar\Models\OrderLine;
+
+OrderLine::create([
+    // ...
+]);
+
+// Or via the relationship
+$order->lines()->create([
+    // ...
+]);
+```
+
+## Order Addresses
+
+An order can have many addresses, typically one for billing and one for shipping.
+
+```php
+Lunar\Models\OrderAddress
+```
+
+<Tip>
+When using the `createOrder` method on a cart, order addresses are created automatically.
+</Tip>
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `id` | Primary key |
+| order_id | `foreignId` | |
+| country_id | `foreignId` `nullable` | |
+| title | `string` `nullable` | |
+| first_name | `string` `nullable` | |
+| last_name | `string` `nullable` | |
+| company_name | `string` `nullable` | |
+| tax_identifier | `string` `nullable` | A tax identification number |
+| line_one | `string` `nullable` | |
+| line_two | `string` `nullable` | |
+| line_three | `string` `nullable` | |
+| city | `string` `nullable` | |
+| state | `string` `nullable` | |
+| postcode | `string` `nullable` | |
+| delivery_instructions | `string` `nullable` | |
+| contact_email | `string` `nullable` | |
+| contact_phone | `string` `nullable` | |
+| type | `string` | The address type: `billing` or `shipping` |
+| shipping_option | `string` `nullable` | A unique identifier for the selected shipping option |
+| meta | `json` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Models\Order` | |
+| `country` | BelongsTo | `Lunar\Models\Country` | |
+
+### Creating an Order Address
+
+```php
+use Lunar\Models\OrderAddress;
+
+OrderAddress::create([
+    'order_id' => 1,
+    'country_id' => 1,
+    'title' => null,
+    'first_name' => 'Jacob',
+    'last_name' => null,
+    'company_name' => null,
+    'line_one' => '123 Foo Street',
+    'line_two' => null,
+    'line_three' => null,
+    'city' => 'London',
+    'state' => null,
+    'postcode' => 'NW1 1WN',
+    'delivery_instructions' => null,
+    'contact_email' => null,
+    'contact_phone' => null,
+    'type' => 'shipping',
+    'shipping_option' => null,
+]);
+
+// Or via the relationship
+$order->addresses()->create([
+    // ...
+]);
+```
+
+The shipping and billing addresses can be accessed directly:
+
+```php
+$order->shippingAddress;
+$order->billingAddress;
+```
+
+## Shipping Options
+
+<Tip>
+A Shipping Tables add-on is planned to simplify shipping configuration in the admin panel.
+</Tip>
+
+To add shipping options, [extend Lunar](/extending/shipping) with custom logic.
+
+Shipping options can be fetched using the `ShippingManifest` facade:
+
+```php
+\Lunar\Facades\ShippingManifest::getOptions(\Lunar\Models\Cart $cart);
+```
+
+This returns a collection of `Lunar\DataTypes\ShippingOption` objects.
+
+### Adding a Shipping Option to the Cart
+
+Once a shipping option has been selected, add it to the cart so totals can be recalculated:
+
+```php
+$cart->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
+```
+
+## Transactions
+
+```php
+Lunar\Models\Transaction
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `id` | Primary key |
+| parent_transaction_id | `foreignId` `nullable` | A reference to a parent transaction |
+| order_id | `foreignId` | |
+| success | `boolean` | Whether the transaction was successful |
+| type | `enum` | The transaction type: `capture`, `intent`, or `refund` |
+| driver | `string` | The payment driver used, e.g. `stripe` |
+| amount | `unsignedBigInteger` | The transaction amount |
+| reference | `string` | The reference returned from the payment provider |
+| status | `string` | The transaction status, e.g. `settled` |
+| notes | `string` `nullable` | Any relevant notes |
+| card_type | `string` `nullable` | The card type, e.g. `visa` |
+| last_four | `string` `nullable` | The last four digits of the card |
+| meta | `json` `nullable` | Custom metadata |
+| captured_at | `dateTime` `nullable` | When the transaction was captured |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Models\Order` | |
+| `currency` | HasOneThrough | `Lunar\Models\Currency` | Resolved through the order |
+
+### Creating a Transaction
+
+<Tip>
+An order having transactions does not mean it has been placed. Lunar determines whether an order is placed based on whether the `placed_at` column has a datetime value, regardless of any transactions.
+</Tip>
+
+Most stores will want to store transactions against orders to track how much has been paid, the payment method used, and how to issue refunds if needed.
+
+```php
+use Lunar\Models\Transaction;
+
+Transaction::create([
+    //...
+]);
+
+// Or via the order
+$order->transactions()->create([
+    //..
+]);
+```
+
+Transactions can be retrieved via relationships:
+
+```php
+$order->transactions; // All transactions
+$order->captures;     // Capture transactions
+$order->intents;      // Intent transactions
+$order->refunds;      // Refund transactions
+```
+
+## Payments
+
+Lunar is payment-provider agnostic. Any payment provider can be integrated with a storefront.
+
+The key factor for an order is whether the `placed_at` column is populated. Everything else about payment handling is left to the store implementation. Lunar provides helper utilities (as described above) to manage the payment lifecycle.
+
+## Order Notifications
+
+Lunar allows specifying which Laravel mailers should be available when updating an order's status. These are configured in `config/lunar/orders.php`:
+
+```php
+'statuses' => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+        'mailers' => [
+            App\Mail\MyMailer::class,
+            App\Mail\MyOtherMailer::class,
+        ],
+        'notifications' => [],
+    ],
+    // ...
+],
+```
+
+When updating an order's status in the admin panel, any configured mailers for the new status are available to select. Email addresses can be chosen, and additional addresses can be added.
+
+Lunar stores a render of the sent email in the activity log, providing a clear history of communications.
+
+<Tip>
+These email notifications are not sent automatically when updating the status programmatically outside of the admin panel.
+</Tip>
+
+<Warning>
+The `notifications` key is present in the default config but is not currently read anywhere in Lunar — defining notifications here has no effect. Only `mailers` are dispatched. If you need to notify someone (staff, customer, a Slack channel, etc.) when an order's status changes outside the admin panel, listen for the update yourself, for example by observing the `Order` model's `updated` event and checking `$order->wasChanged('status')`.
+</Warning>
+
+### Mailer Template
+
+When building a mailer template, the `$order` model is available in the view data. When the status is updated, the order is passed through along with any additional content entered. Since additional content may not always be present, check for its existence first.
+
+Example template:
+
+```blade
+<h1>It's on the way!</h1>
+
+<p>Your order with reference {{ $order->reference }} has been dispatched!</p>
+
+<p>{{ $order->total->formatted() }}</p>
+
+@if($content ?? null)
+    <h2>Additional notes</h2>
+    <p>{{ $content }}</p>
+@endif
+
+@foreach($order->lines as $line)
+    <!--  -->
+@endforeach
+```
+
+## Order Invoice PDF
+
+By default, clicking "Download PDF" in the admin panel when viewing an order generates a basic PDF. The view powering this PDF can be published for customization:
+
+```bash
+php artisan vendor:publish --tag=lunarpanel.pdf
+```
+
+This creates a view at `resources/vendor/lunarpanel/pdf/order.blade.php` that can be freely customized.

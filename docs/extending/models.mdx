@@ -1,0 +1,155 @@
+---
+title: "Extending Models"
+sidebarTitle: "Models"
+---
+
+Lunar's Eloquent models can be extended with custom relationships and, when needed, replaced entirely with custom implementations.
+
+## Overview
+
+Lunar provides a number of Eloquent models and quite often in custom applications additional relationships and functionality are needed.
+
+<Warning>
+Rather than modifying fields on Lunar's core models, it is recommended to create your own Eloquent models and relate them to Lunar's models. This keeps custom data separate and avoids conflicts during upgrades.
+
+Add-on packages must never replace core models, as this would conflict with other packages and the end user's application. Add-ons should use dynamic relationships and their own models exclusively.
+</Warning>
+
+## Dynamic Eloquent Relationships
+
+The recommended way to extend Lunar's models is by using Laravel's dynamic relationships. This allows custom relationships to be added to any Lunar model without needing to replace it.
+
+```php
+use Lunar\Models\Order;
+use App\Models\Ticket;
+
+Order::resolveRelationUsing('ticket', function ($orderModel) {
+    return $orderModel->belongsTo(Ticket::class, 'ticket_id');
+});
+```
+
+This should be registered in the `boot` method of a service provider. See the [Laravel documentation on dynamic relationships](https://laravel.com/docs/eloquent-relationships#dynamic-relationships) for more information.
+
+## Replaceable Models
+
+For cases where dynamic relationships are not sufficient, all Lunar models are replaceable. This means Lunar can be instructed to use a custom model throughout the ecosystem using dependency injection.
+
+<Info>
+Most use cases are better served by dynamic relationships above. Model replacement should only be used when deeper customization is required, such as overriding methods or adding scopes.
+</Info>
+
+### Registration
+Custom models should be registered within the `boot` method of a service provider.
+
+When registering models, the Lunar model's contract should be set as the first argument and the custom model implementation as the second.
+
+
+```php
+/**
+ * Bootstrap any application services.
+ *
+ * @return void
+ */
+public function boot()
+{
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \App\Model\Product::class,
+    );
+}
+```
+
+#### Registering multiple Lunar models.
+
+If multiple models need to be replaced, instead of replacing them one by one, a directory can be specified for Lunar to scan for models.
+This assumes that each model extends its counterpart model, e.g. `App\Models\Product` extends `Lunar\Models\Product`.
+
+```php
+/**
+ * Bootstrap any application services.
+ *
+ * @return void
+ */
+public function boot()
+{
+    \Lunar\Facades\ModelManifest::addDirectory(
+        __DIR__.'/../Models'
+    );
+}
+```
+
+### Route binding
+
+Route binding is supported and simply requires the relevant contract class to be injected.
+
+```php
+Route::get('products/{id}', function (\Lunar\Models\Contracts\Product $product) {
+    $product; // App\Models\Product
+});
+```
+
+### Relationship support
+
+If a model used in a relationship is replaced, the custom model will be returned via relationship methods. For example, assuming a custom `App\Models\ProductVariant` has been registered:
+
+```php
+// In a service provider.
+public function boot()
+{
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\ProductVariant::class,
+        \App\Model\ProductVariant::class,
+    );
+}
+
+// Somewhere else in your code...
+
+$product = \Lunar\Models\Product::first();
+$product->variants->first(); // App\Models\ProductVariant
+```
+
+### Static call forwarding
+
+If a custom model has additional methods, those functions can be called directly from the Lunar model instance.
+
+For example, to provide a new function on a product variant model:
+
+```php
+<?php
+
+namespace App\Models;
+
+class ProductVariant extends \Lunar\Models\ProductVariant
+{
+    public function someCustomMethod()
+    {
+        return 'Hello!';
+    }
+}
+```
+
+```php
+// In a service provider.
+public function boot()
+{
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\ProductVariant::class,
+        \App\Model\ProductVariant::class,
+    );
+}
+```
+
+Somewhere else in the app:
+
+```php
+\Lunar\Models\ProductVariant::someCustomMethod(); // Hello!
+\App\Models\ProductVariant::someCustomMethod(); // Hello!
+```
+
+### Observers
+
+Observers that call `observe` on a Lunar model will still work as intended when the model is replaced. Custom observers can reference the Lunar model and everything will be forwarded to the appropriate class.
+
+```php
+\Lunar\Models\Product::observe(/** .. */);
+```

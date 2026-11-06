@@ -1,0 +1,300 @@
+---
+title: "Collections"
+description: "Group products into flexible, hierarchical collections with scheduling, channel availability, and sorting."
+---
+
+Collections group products together for storefront categories, promotions, and other purposes.
+
+## Overview
+
+Collections provide a flexible way to group products together for any purpose: storefront categories, hero sliders, landing page features, seasonal promotions, or any other grouping a store requires. Products can be added to a collection explicitly or filtered by criteria, and collections can be nested to form a hierarchy.
+
+Each collection belongs to a collection group, allowing different sets of collections to be maintained independently for different parts of a storefront.
+
+## Collection Groups
+
+Collection groups act as top-level containers for collections. A store might have separate groups for a main catalog, seasonal promotions, or landing page features.
+
+```php
+Lunar\Models\CollectionGroup
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `name` | `string` | The group name |
+| `handle` | `string` | Unique slug identifier |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `collections` | HasMany | `Lunar\Models\Collection` | All collections in this group |
+
+### Creating a collection group
+
+```php
+use Lunar\Models\CollectionGroup;
+
+$group = CollectionGroup::create([
+    'name' => 'Main Catalogue',
+    'handle' => 'main-catalogue',
+]);
+```
+
+## Collections
+
+```php
+Lunar\Models\Collection
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `collection_group_id` | `foreignId` | The parent collection group |
+| `_lft` | `unsignedInteger` | Read-only nested set left pointer |
+| `_rgt` | `unsignedInteger` | Read-only nested set right pointer |
+| `parent_id` | `unsignedInteger` `nullable` | Parent collection for tree hierarchy |
+| `type` | `string` | Default: `static` |
+| `attribute_data` | `json` | Translatable attributes (e.g. name, description) |
+| `sort` | `string` | Product sort method, default: `custom` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+| `deleted_at` | `timestamp` `nullable` | Soft deletes |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `group` | BelongsTo | `Lunar\Models\CollectionGroup` | The parent collection group |
+| `products` | BelongsToMany | `Lunar\Models\Product` | Products in this collection; pivot: `position` |
+| `customerGroups` | BelongsToMany | `Lunar\Models\CustomerGroup` | Pivot: `visible`, `enabled`, `starts_at`, `ends_at` |
+| `channels` | MorphToMany | `Lunar\Models\Channel` | Pivot: `enabled`, `starts_at`, `ends_at` |
+| `discounts` | BelongsToMany | `Lunar\Models\Discount` | Pivot: `type` (`limitation` or `assignment`) |
+| `brands` | BelongsToMany | `Lunar\Models\Brand` | |
+| `urls` | MorphMany | `Lunar\Models\Url` | |
+| `children` | HasMany | `Lunar\Models\Collection` | Direct child collections (from NodeTrait) |
+| `ancestors` | AncestorsRelation | `Lunar\Models\Collection` | All parent collections up the tree (from NodeTrait) |
+| `descendants` | DescendantsRelation | `Lunar\Models\Collection` | All children recursively (from NodeTrait) |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `inGroup(int $id)` | Filter by collection group ID |
+| `channel($channel, $startsAt, $endsAt)` | Filter by channel availability with optional scheduling |
+| `customerGroup($group, $startsAt, $endsAt)` | Filter by customer group availability with optional scheduling |
+
+### Creating a collection
+
+```php
+use Lunar\Models\Collection;
+use Lunar\FieldTypes\Text;
+
+$collection = Collection::create([
+    'collection_group_id' => $group->id,
+    'attribute_data' => [
+        'name' => new Text('Clearance'),
+    ],
+]);
+```
+
+<Warning>
+Lunar internally expects a `name` attribute on collection attribute data. It must be present in the attributes, otherwise the admin panel may throw unexpected errors.
+</Warning>
+
+### Nested Collections
+
+Collections form a tree hierarchy using the [lunarphp/nestedset](https://github.com/lunarphp/nestedset) package, a Lunar-maintained fork of `kalnoy/nestedset`. Child collections can be added using the `appendNode` method:
+
+```php
+use Lunar\Models\Collection;
+
+$parent = Collection::create([
+    'collection_group_id' => $group->id,
+    'attribute_data' => [
+        'name' => new \Lunar\FieldTypes\Text('Clothing'),
+    ],
+]);
+
+$child = Collection::create([
+    'collection_group_id' => $group->id,
+    'attribute_data' => [
+        'name' => new \Lunar\FieldTypes\Text('T-Shirts'),
+    ],
+]);
+
+$parent->appendNode($child);
+```
+
+This produces the following hierarchy:
+
+```
+- Clothing
+    - T-Shirts
+```
+
+<Info>
+At least one root (parent) collection must exist before child collections can be created. This is important when using seeders to set up the initial catalog state.
+</Info>
+
+#### Breadcrumbs
+
+The `breadcrumb` accessor returns the translated names of all ancestor collections, which is useful for building breadcrumb navigation:
+
+```php
+$collection->breadcrumb; // Illuminate\Support\Collection of ancestor names
+```
+
+#### Querying the tree
+
+The nested set package provides many methods for working with the tree. Here are some common examples:
+
+```php
+// Get all root collections
+Collection::whereIsRoot()->get();
+
+// Get direct children
+$collection->children;
+
+// Get all descendants (recursive)
+$collection->descendants;
+
+// Get ancestors
+$collection->ancestors;
+
+// Get siblings
+$collection->getSiblings();
+
+// Get depth in tree (requires withDepth() scope)
+Collection::withDepth()->find($collection->id)->depth;
+```
+
+Refer to the [lunarphp/nestedset documentation](https://github.com/lunarphp/nestedset) for the full API.
+
+<Info>
+Lunar 1.5 replaced `kalnoy/nestedset` with `lunarphp/nestedset`. The API is unchanged, but the trait and query builder namespaces moved from `Kalnoy\Nestedset` to `Lunar\Nestedset`. See the [1.5 section of the upgrade guide](/getting-started/overview/upgrade-guide#nested-set-package-replaced).
+</Info>
+
+## Products
+
+Products are associated using a `BelongsToMany` relationship with a `position` pivot column for ordering.
+
+### Adding products
+
+```php
+$collection->products()->sync([
+    $productA->id => ['position' => 1],
+    $productB->id => ['position' => 2],
+]);
+```
+
+### Sorting products
+
+The `sort` field on a collection determines how products are ordered. Lunar ships with the following sort options:
+
+| Sort | Description |
+|:-----|:------------|
+| `min_price:asc` | Sort by base price ascending |
+| `min_price:desc` | Sort by base price descending |
+| `sku:asc` | Sort by SKU ascending |
+| `sku:desc` | Sort by SKU descending |
+| `custom` | Manually specify the order of each product via the `position` pivot |
+
+When a collection is updated, Lunar automatically dispatches the `UpdateProductPositions` job to reorder products based on the current sort setting.
+
+## Channels
+
+Collections use the `HasChannels` trait, enabling channel-based availability with optional scheduling. See [Channels](/reference/channels) for full details.
+
+```php
+use Lunar\Models\Channel;
+
+$channel = Channel::first();
+
+// Enable for a channel immediately
+$collection->scheduleChannel($channel);
+
+// Schedule availability with a start and end date
+$collection->scheduleChannel($channel, now()->addDays(7), now()->addDays(30));
+```
+
+### Querying by channel
+
+```php
+use Lunar\Models\Collection;
+
+Collection::channel($channel)->get();
+
+Collection::channel($channel, now()->addDay(), now()->addDays(7))->get();
+```
+
+## Customer Groups
+
+Collections use the `HasCustomerGroups` trait, enabling customer group visibility with optional scheduling. See [Customers](/reference/customers) for full details.
+
+```php
+use Lunar\Models\CustomerGroup;
+
+$group = CustomerGroup::first();
+
+// Enable for a customer group immediately
+$collection->scheduleCustomerGroup($group);
+
+// Schedule with a date range
+$collection->scheduleCustomerGroup($group, starts: now()->addDays(7), ends: now()->addDays(30));
+
+// Disable for a customer group
+$collection->unscheduleCustomerGroup($group);
+```
+
+### Querying by customer group
+
+```php
+use Lunar\Models\Collection;
+
+Collection::customerGroup($group)->get();
+
+Collection::customerGroup([$groupA, $groupB])->get();
+```
+
+## URLs
+
+Collections use the `HasUrls` trait, which automatically generates URLs when a collection is created.
+
+```php
+// Get the default URL
+$collection->defaultUrl;
+
+// Get all URLs
+$collection->urls;
+```
+
+See [URLs](/reference/urls) for full details on managing URLs.
+
+## Media
+
+Collections use the `HasMedia` trait (via Spatie Media Library), allowing images and other media to be attached.
+
+```php
+$collection->addMedia($pathToFile)->toMediaCollection('images');
+
+// Get the thumbnail URL
+$collection->getThumbnailImage();
+```
+
+## Deletion Behavior
+
+Collections use soft deletes. When a collection is deleted, all related pivot data is automatically detached:
+
+- Products
+- Channels
+- URLs (hard deleted)
+- Customer groups
+- Discounts

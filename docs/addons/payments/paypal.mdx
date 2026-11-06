@@ -1,0 +1,144 @@
+---
+title: "PayPal"
+description: "Accept payments using PayPal with Lunar."
+---
+
+Lunar's PayPal addon integrates with PayPal's REST API to handle checkout payments, including order creation, capture, and refunds.
+
+## Installation
+
+### Require the Composer package
+
+```sh
+composer require lunarphp/paypal
+```
+
+### Enable the driver
+
+Set the driver in `config/lunar/payments.php`.
+
+```php
+<?php
+
+return [
+    // ...
+    'types' => [
+        'card' => [
+            // ...
+            'driver' => 'paypal',
+        ],
+    ],
+];
+```
+
+### Add PayPal credentials
+
+Add the PayPal credentials to `config/services.php`.
+
+```php
+'paypal' => [
+    'env' => env('PAYPAL_ENV', 'sandbox'),
+    'client_id' => env('PAYPAL_CLIENT_ID'),
+    'secret' => env('PAYPAL_SECRET'),
+],
+```
+
+<Tip>
+REST API credentials can be created in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard).
+</Tip>
+
+## Configuration
+
+The following configuration options are available.
+
+| Key | Default | Description |
+| --- | ------- | ----------- |
+| `services.paypal.env` | `sandbox` | The PayPal environment. Set to `sandbox` for testing or any other value (e.g., `live`) for production |
+| `services.paypal.client_id` | `null` | The PayPal OAuth client ID |
+| `services.paypal.secret` | `null` | The PayPal OAuth client secret |
+| `lunar.payments.paypal.success_route` | `checkout.success` | The named route PayPal redirects to after a successful approval |
+
+## Payment Flow
+
+The PayPal checkout flow works as follows:
+
+1. The storefront calls the API endpoint to create a PayPal order from the current cart
+2. The customer is redirected to PayPal to approve the payment
+3. PayPal redirects the customer back to the storefront
+4. The storefront sends an authorization request with the PayPal order ID
+5. The addon captures the payment and creates the Lunar order
+
+## API Route
+
+The addon registers an API route for creating PayPal orders from the current cart session.
+
+```
+POST /api/paypal/order
+```
+
+This endpoint returns a PayPal order object containing the approval URL and order details. The route uses the `web` middleware.
+
+## Backend Usage
+
+### Authorize a payment
+
+After the customer approves the payment on PayPal, authorize and capture it.
+
+```php
+use Lunar\Facades\Payments;
+
+$response = Payments::driver('paypal')->cart($cart)->withData([
+    'paypal_order_id' => $request->get('orderID'),
+    'status' => 'payment-received',
+])->authorize();
+
+if (! $response->success) {
+    // Handle failure
+}
+```
+
+### Refund a payment
+
+```php
+use Lunar\Facades\Payments;
+
+Payments::driver('paypal')->refund($transaction, $amount, $notes);
+```
+
+## Facade Methods
+
+The `Lunar\Paypal\Facades\Paypal` facade provides direct access to the PayPal API.
+
+### Get a PayPal order
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::getOrder($orderId);
+```
+
+### Capture a PayPal order
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$capture = Paypal::capture($orderId);
+```
+
+### Refund a transaction
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+Paypal::refund($transactionId, $amount, $currencyCode);
+```
+
+### Build an order from a cart
+
+Creates a PayPal order from a cart via the PayPal API and returns the response, including the approval URL and order details.
+
+```php
+use Lunar\Paypal\Facades\Paypal;
+
+$order = Paypal::buildInitialOrder($cart);
+```

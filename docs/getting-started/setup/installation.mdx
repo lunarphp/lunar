@@ -1,0 +1,157 @@
+---
+title: "Installation"
+description: "Add Lunar to a Laravel application with Composer."
+---
+
+Lunar integrates into an existing Laravel application as a Composer package. This guide walks through the full setup process.
+
+## Requirements
+
+- PHP >= 8.3 (Lunar 1.5+) — PHP 8.2 is supported on Lunar 1.4 and earlier
+- Laravel 12, 13 (Lunar 1.5+) — Laravel 11 is supported on Lunar 1.4 and earlier
+- Filament 4 (Lunar 1.5+) — Filament 3 is supported on Lunar 1.4 and earlier
+- MySQL 8.0+ / PostgreSQL 9.4+
+- `bcmath` PHP extension
+- `exif` PHP extension
+- `intl` PHP extension
+
+<Info>
+Lunar 1.5 builds the admin panel on Filament v4. Projects that need to stay on Filament v3 should install the 1.4 release line, which is the final Lunar version to support it: `composer require lunarphp/lunar:"^1.4"`. See the [upgrade guide](/getting-started/overview/upgrade-guide#15) for the differences between the two.
+</Info>
+
+## 1. Install the package
+
+```sh
+composer require lunarphp/lunar:"^1.0" -W
+```
+
+## 2. Add the LunarUser trait
+
+Parts of the Lunar core rely on the `User` model having certain e-commerce relationships (carts, orders, customers). Add the bundled trait and interface to any model that represents users in the application.
+
+```php
+use Lunar\Base\Traits\LunarUser;
+use Lunar\Base\LunarUser as LunarUserInterface;
+// ...
+
+class User extends Authenticatable implements LunarUserInterface
+{
+    use LunarUser;
+    // ...
+}
+```
+
+## 3. Register the admin panel
+
+Register the Lunar admin panel in the application's `AppServiceProvider`:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+}
+```
+
+## 4. Run the installer
+
+```sh
+php artisan lunar:install
+```
+
+The installer will guide through a series of prompts and perform the following:
+
+- Publish configuration files
+- Run database migrations
+- Create a default admin user
+- Seed initial data: a default channel, language, currency (USD), customer group, collection group, tax class, tax zone, and product/collection attributes
+- Publish Filament assets
+
+## 5. Access the admin panel
+
+Once the installer completes, the admin panel is available at `https://<yoursite>/lunar`.
+
+## Telemetry
+
+Lunar sends anonymous usage data once per day to help the maintainers understand how Lunar is used. The data does not identify a store in any way.
+
+To opt out, add the following to a service provider's `boot` method:
+
+```php
+\Lunar\Facades\Telemetry::optOut();
+```
+
+## Advanced installation options
+
+### Publish configuration before installing
+
+The installer publishes configuration files automatically, but to customize settings before running `php artisan lunar:install`, publish them manually first:
+
+```sh
+php artisan vendor:publish --tag=lunar
+```
+
+The installer will detect the existing configuration and skip overwriting it.
+
+### Table prefix
+
+Lunar prefixes all of its database tables to avoid conflicts. The default prefix is `lunar_` and can be changed in `config/lunar/database.php`:
+
+```php
+'table_prefix' => 'lunar_',
+```
+
+### User ID field type
+
+Lunar assumes the `User` model primary key is a `BIGINT`. If the application uses `INT` or `UUID` primary keys, update `config/lunar/database.php` before running migrations:
+
+```php
+// Supported values: 'bigint', 'int', 'uuid'
+'users_id_type' => 'bigint',
+```
+
+### Disable bundled migrations
+
+To take full control of Lunar's database migrations, disable the bundled migrations and publish them into the application:
+
+```php
+// config/lunar/database.php
+'disable_migrations' => true,
+```
+
+```sh
+php artisan vendor:publish --tag=lunar.migrations
+```
+
+## What's next?
+
+<Card
+  title="Starter Kits"
+  icon="rocket"
+  href="/getting-started/starter-kits/livewire"
+  horizontal
+>
+  Get a head start with a pre-built Livewire or Inertia storefront.
+</Card>
+
+<Card
+  title="Storefront Guides"
+  icon="store"
+  href="/guides/catalog-menu"
+  horizontal
+>
+  Learn how to build a storefront from scratch with step-by-step guides.
+</Card>
+
+<Card
+  title="System Settings"
+  icon="gear"
+  href="/getting-started/setup/system-settings"
+  horizontal
+>
+  Configure channels, languages, currencies, and more.
+</Card>
