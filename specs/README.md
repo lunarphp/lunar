@@ -96,7 +96,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0075 | First staff account creation without the Filament admin | implemented |
 | 0076 | Filament admin and bridge hardening | implemented |
 | 0077 | Pre-order payment intent capabilities | proposed    |
-| 0079 | Rename the collection fulfilment method to pickup | accepted    |
+| 0079 | Rename the collection fulfilment method to pickup | implemented |
 | 0085 | Product bundles (`lunarphp/bundles`) | implemented |
 | 0089 | Cached model manifest | implemented |
 | 0090 | Remembered guest carts | implemented |

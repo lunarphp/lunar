@@ -2,11 +2,12 @@
 
 namespace Lunar\Shipping\Managers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Manager;
 use Lunar\Core\Models\Cart;
-use Lunar\Shipping\Drivers\ShippingMethods\Collection;
 use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
 use Lunar\Shipping\Drivers\ShippingMethods\FreeShipping;
+use Lunar\Shipping\Drivers\ShippingMethods\Pickup;
 use Lunar\Shipping\Drivers\ShippingMethods\ShipBy;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Resolvers\ShippingOptionResolver;
@@ -30,18 +31,18 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
         return $this->buildProvider(ShipBy::class);
     }
 
-    public function createCollectionDriver()
+    public function createPickupDriver()
     {
-        return $this->buildProvider(Collection::class);
+        return $this->buildProvider(Pickup::class);
     }
 
-    public function getSupportedDrivers(): \Illuminate\Support\Collection
+    public function getSupportedDrivers(): Collection
     {
         return collect([
             'free-shipping' => $this->createDriver('free-shipping'),
             'flat-rate' => $this->createDriver('flat-rate'),
             'ship-by' => $this->createDriver('ship-by'),
-            'collection' => $this->createDriver('collection'),
+            'pickup' => $this->createDriver('pickup'),
         ])->merge(
             collect($this->customCreators)->mapWithKeys(function ($creator, $key) {
                 return [
