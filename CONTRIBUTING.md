@@ -9,6 +9,7 @@ handle contributions so you don't waste effort on work we can't merge.
 - **Bug reports** — a [new issue](https://github.com/lunarphp/lunar/issues/new/choose) using the bug form.
 - **Usage questions and support** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose) or [Discord](https://lunarphp.com/discord). Support questions filed as issues will be redirected.
 - **Feature requests and enhancements** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose), not issues.
+- **Documentation** — a pull request changing `docs/` on the version branch it documents. See [`docs/README.md`](docs/README.md).
 
 ## Before you open a pull request
 

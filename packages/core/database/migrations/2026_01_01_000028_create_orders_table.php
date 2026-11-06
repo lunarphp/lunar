@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tax_total');
             $table->unsignedBigInteger('total');
             $table->text('notes')->nullable();
+            $table->text('internal_notes')->nullable();
             $table->string('currency_code', 3);
             $table->string('compare_currency_code', 3)->nullable();
             $table->decimal('exchange_rate', 10, 4)->default(1);

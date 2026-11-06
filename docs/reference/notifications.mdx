@@ -1,0 +1,180 @@
+---
+title: "Notifications"
+description: "Register, send, and route the notifications Lunar sends to customers about their orders."
+---
+
+Lunar sends customer-facing order updates through a single registry of Laravel notifications, sendable automatically on a state change or on demand from the admin.
+
+## Overview
+
+Customer notifications are not a fixed list of hardcoded emails. They are entries in the `OrderNotificationManifest` — a container-bound registry, seeded with one code-level default, that a consuming application extends or replaces. Each entry is a single Laravel `Notification` class that can fire two ways:
+
+- **Automatically**, when the order or one of its fulfilments enters one of the entry's trigger states.
+- **Manually**, composed and sent on demand — either from the admin's "Notify customer" action, or by calling `$order->notifyCustomer()` directly.
+
+<Info>
+Lunar ships exactly one notification out of the box: `Lunar\Core\Notifications\OrderUpdate`, a general-purpose "here is an update on your order" email, manual-only, that renders an optional free-text message. Branded, auto-triggered lifecycle notifications (an order confirmation, a "your parcel has shipped" email, a refund receipt) are not shipped by default — register your own against the manifest as described below.
+</Info>
+
+## The notification manifest
+
+```php
+interface Lunar\Core\Contracts\OrderNotificationManifest
+{
+    public function register(
+        string $key,
+        string $notification,
+        ?string $label = null,
+        array $on = [],
+        bool $manual = true,
+        NotificationScope $scope = NotificationScope::Order,
+    ): static;
+
+    public function forget(string ...$keys): static;
+    public function get(string $key): ?string;
+    public function label(?string $key): ?string;
+    public function sendable(NotificationScope $scope = NotificationScope::Order): array;
+    public function triggeredBy(string $status, NotificationScope $scope = NotificationScope::Order): array;
+}
+```
+
+Access it through the `OrderNotifications` facade:
+
+```php
+use Lunar\Core\Facades\OrderNotifications;
+use Lunar\Core\Enums\NotificationScope;
+
+OrderNotifications::register(
+    key: 'order-confirmation',
+    notification: App\Notifications\OrderConfirmation::class,
+    label: 'Order confirmation',
+    on: ['paid'], // the payment_status $name that auto-fires it
+    manual: true,
+    scope: NotificationScope::Order,
+);
+```
+
+- `key` — a unique identifier, used in `$order->notifyCustomer()` calls and admin dropdowns.
+- `notification` — the notification class. It is constructed differently depending on `scope` (see below).
+- `label` — the dropdown label shown in the admin; defaults to the key, translated through `__()`.
+- `on` — the list of state `$name`s (a `payment_status`, `fulfilment_status`, or per-fulfilment `FulfilmentState` name, depending on scope) that fire it automatically. Leave empty for a manual-only notification.
+- `manual` — whether it appears in the admin's send list (and so can be resent by hand even when it also fires automatically).
+- `scope` — a `Lunar\Core\Enums\NotificationScope` case, `Order` or `Fulfilment`, deciding what the notification is constructed with.
+
+Replace a built-in entry by re-registering its key:
+
+```php
+OrderNotifications::register('order-update', App\Notifications\MyOrderUpdate::class);
+```
+
+Or remove it entirely:
+
+```php
+OrderNotifications::forget('order-update');
+```
+
+<Tip>
+This replaces the 1.x `config('lunar.orders.notifications')` array — there is no notifications key in `config/lunar/orders.php`. Class references belong in the container, not config, so register from a service provider's `boot()` method.
+</Tip>
+
+### Scope
+
+`NotificationScope::Order` notifications are constructed as `new $class($order, $message)` and sent through the order. `NotificationScope::Fulfilment` notifications are constructed with the fulfilment (`new $class($fulfilment)`) so they can read tracking and line details, but are still delivered through the order's notification routing (`$fulfilment->order->notify(...)`). Automatic fulfilment-scoped sends use the same manifest — see [Fulfilments](/reference/fulfilments#notifications-on-fulfilment-events).
+
+## Sending a notification manually
+
+```php
+$order->notifyCustomer(
+    notification: 'order-update',
+    message: 'Your order has been delayed by a day.',
+    recipients: [], // defaults to the order's billing + shipping contact emails
+);
+```
+
+This delegates to `Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer`:
+
+```php
+public function execute(Order $order, string $notification, ?string $message = null, array $recipients = []): Order;
+```
+
+- `$notification` is a key registered on the manifest. An unknown key throws `Lunar\Core\Exceptions\OrderActionException`.
+- `$recipients`, when empty, resolves to the order's `billingAddress`/`shippingAddress` contact emails (deduplicated, blanks removed). If that resolves to nothing, the action throws.
+- Each recipient is sent the notification directly (bypassing the order's own mail routing, since the recipient is already explicit), and an `email-notification` activity log entry is recorded per recipient.
+- `Lunar\Core\Events\Orders\OrderCustomerNotified` is dispatched once, with the order, the notification key, and the resolved recipients.
+
+A notification that should render the free-text `$message` implements `Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage` (a marker interface documenting the `__construct(Order $order, ?string $message = null)` shape `notifyCustomer()` relies on):
+
+```php
+namespace App\Notifications;
+
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage;
+use Lunar\Core\Models\Order;
+
+class OrderConfirmation extends Notification implements AcceptsCustomerMessage
+{
+    public function __construct(
+        public Order $order,
+        public ?string $message = null,
+    ) {}
+
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject("Order {$this->order->reference} confirmed")
+            ->line('Thanks for your order.');
+    }
+}
+```
+
+## Mail routing defaults
+
+For **automatic** sends (dispatched through `$order->notify(...)` or `$fulfilment->order->notify(...)`, not the explicit-recipient path above), `Order` implements Laravel's `routeNotificationForMail()` so notifications work without extra setup:
+
+```php
+public function routeNotificationForMail(?object $notification = null): string|array|null
+{
+    if ($notification instanceof ResolvesOrderMailRoute
+        && filled($route = $notification->mailRouteForOrder($this))) {
+        return $route;
+    }
+
+    $type = $notification instanceof RoutesToOrderContact
+        ? $notification->orderContactType()
+        : 'billing';
+
+    return $this->contactEmail($type)
+        ?? $this->contactEmail($type === 'billing' ? 'shipping' : 'billing');
+}
+```
+
+The routing decision, in order:
+
+1. If the notification implements `Lunar\Core\Contracts\ResolvesOrderMailRoute`, its `mailRouteForOrder(Order $order): string|array|null` wins outright — use this when the recipient is not an order contact at all (an account email, an ops inbox).
+2. Otherwise, if it implements `Lunar\Core\Contracts\RoutesToOrderContact`, its `orderContactType(): 'billing'|'shipping'` picks which contact to use — a per-fulfilment "your parcel has shipped" notification would route to `shipping` this way.
+3. Otherwise the default is the **billing** contact.
+4. Whichever contact is chosen, if it has no `contact_email`, the other contact is used instead.
+
+```php
+use Lunar\Core\Contracts\RoutesToOrderContact;
+
+class FulfilmentShipped extends Notification implements RoutesToOrderContact
+{
+    public function orderContactType(): string
+    {
+        return 'shipping';
+    }
+
+    // ...
+}
+```
+
+## Admin
+
+The order screen's "Notify customer" action populates its notification dropdown from `OrderNotifications::sendable()`, lets staff pick recipients from the order's contacts (or add an extra address), and calls `$order->notifyCustomer()` — so a notification sent from the admin leaves the same activity-log trail as one sent through the API.

@@ -93,6 +93,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0072 | Panel Discounts section | accepted    |
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
+| 0077 | Pre-order payment intent capabilities | proposed    |
 | 0085 | Product bundles (`lunarphp/bundles`) | implemented |
 | 0086 | Panel draft slices: namespaced contributions to first-party edit drafts | proposed    |
 | 0087 | Product editing through the draft | proposed    |
@@ -101,4 +102,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0091 | PricingManager consumes the storefront context | implemented |
 | 0092 | Run cart and order modifiers | implemented |
 | 0093 | Registrable calculation steps | implemented |
-| 0094 | Versioned docs sites published from releases | accepted    |
+| 0094 | Versioned docs written in the monorepo and published from releases | proposed    |

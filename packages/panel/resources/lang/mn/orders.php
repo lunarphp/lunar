@@ -90,13 +90,15 @@ return [
     'txn_type_capture' => 'Payment',
     'txn_type_refund' => 'Refund',
     'txn_type_intent' => 'Authorization',
+    'txn_type_failed' => 'Амжилтгүй',
 
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Дотоод тэмдэглэл',
+    'side_customer_notes' => 'Харилцагчийн тэмдэглэл',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',

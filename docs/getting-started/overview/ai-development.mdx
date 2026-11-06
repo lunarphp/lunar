@@ -1,0 +1,98 @@
+---
+title: "AI Development"
+description: "Use Lunar documentation with AI tools like Claude, ChatGPT, Cursor, and VS Code"
+---
+
+Lunar's documentation is designed to work seamlessly with AI-powered development tools. Whether using an AI assistant to generate storefront code or querying the docs from an IDE, several built-in features make this possible.
+
+## Laravel Boost Skill
+
+<Warning>
+A Laravel Boost skill for Lunar v2 has not been published yet. The rest of this page (llms.txt, the MCP server, and Markdown export) applies to v2 already.
+</Warning>
+
+## llms.txt
+
+The Lunar documentation site automatically provides an `llms.txt` file at the root of the docs domain. Similar to how `sitemap.xml` helps search engines index a website, `llms.txt` helps large language models discover and understand documentation content.
+
+Two files are available:
+
+| File | URL | Description |
+| --- | --- | --- |
+| `llms.txt` | [docs.lunarphp.com/llms.txt](https://docs.lunarphp.com/llms.txt) | Structured listing of all pages with descriptions |
+| `llms-full.txt` | [docs.lunarphp.com/llms-full.txt](https://docs.lunarphp.com/llms-full.txt) | Full documentation content in a single file |
+
+The `llms.txt` file lists every documentation page along with its description, making it useful for AI tools that need to locate specific topics. The `llms-full.txt` file consolidates all documentation into one file, which is ideal for AI tools that benefit from ingesting the entire knowledge base at once.
+
+<Tip>When pasting documentation context into an AI chat, use `llms-full.txt` to give the model comprehensive knowledge of Lunar's API and features.</Tip>
+
+## MCP Server
+
+Lunar's documentation includes a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. MCP allows AI applications to search and retrieve documentation directly, providing more accurate and up-to-date responses than relying on the model's training data alone.
+
+The MCP server is available at:
+
+```
+https://docs.lunarphp.com/mcp
+```
+
+### Connecting from AI Tools
+
+<Info>The MCP server supports filtering by documentation version using a `version` parameter (e.g., `v2.x`, `v1.x`, or `v0.x`).</Info>
+
+#### Claude Code
+
+```bash
+claude mcp add lunar-docs --transport http https://docs.lunarphp.com/mcp
+```
+
+#### Cursor
+
+Open the Command Palette and select **MCP: Add Server**, then add the following to the MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "lunar-docs": {
+      "url": "https://docs.lunarphp.com/mcp"
+    }
+  }
+}
+```
+
+#### VS Code
+
+Create or update `.vscode/mcp.json` in the project root:
+
+```json
+{
+  "servers": {
+    "lunar-docs": {
+      "type": "http",
+      "url": "https://docs.lunarphp.com/mcp"
+    }
+  }
+}
+```
+
+#### Claude (Web)
+
+Navigate to **Settings > Connectors > Add custom connector**, then enter a name and the MCP server URL.
+
+## Markdown Export
+
+Any documentation page can be viewed as plain Markdown by appending `.md` to its URL. For example:
+
+```
+https://docs.lunarphp.com/2.x/reference/carts.md
+```
+
+This is useful for feeding specific pages into AI tools as context. Markdown is more token-efficient than HTML, resulting in faster processing and better response quality.
+
+## Contextual Menu
+
+Each documentation page includes a contextual menu that provides quick access to AI-related actions:
+
+- **Copy as Markdown** for pasting into any AI tool
+- **Open in Claude**, **ChatGPT**, or **Perplexity** with the current page loaded as context
+- **Install MCP server** directly into Cursor or VS Code

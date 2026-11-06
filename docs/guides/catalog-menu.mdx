@@ -1,0 +1,640 @@
+---
+title: "Catalog Menu"
+description: "Build a catalog navigation menu with Lunar, covering collection groups, hierarchical collections, active state tracking, and caching."
+---
+
+## Overview
+
+A catalog menu is the primary navigation element that allows customers to browse the store by category. It is built from Lunar's collection hierarchy: collection groups organize top-level navigation sections, and collections within each group form nested trees of categories and subcategories.
+
+This guide walks through querying collection groups and their nested collections, rendering a multi-level navigation menu, highlighting the active collection, and caching the result for performance.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## How Collections Are Organized
+
+Lunar organizes collections into a two-level structure:
+
+- **Collection Groups** act as top-level containers (e.g., "Main Menu", "Footer Links", "Seasonal Promotions"). Each group has a unique `handle` for identification.
+- **Collections** within a group form a nested tree using parent-child relationships. A root collection has no parent, and each root can have unlimited levels of children.
+
+<Tree>
+  <Tree.Folder name="Main Menu (CollectionGroup)" defaultOpen>
+    <Tree.Folder name="Clothing" defaultOpen>
+      <Tree.Folder name="Men's" defaultOpen>
+        <Tree.File name="T-Shirts" />
+        <Tree.File name="Jackets" />
+      </Tree.Folder>
+      <Tree.Folder name="Women's" defaultOpen>
+        <Tree.File name="Dresses" />
+        <Tree.File name="Tops" />
+      </Tree.Folder>
+    </Tree.Folder>
+    <Tree.Folder name="Footwear" defaultOpen>
+      <Tree.File name="Sneakers" />
+      <Tree.File name="Boots" />
+    </Tree.Folder>
+    <Tree.File name="Accessories" />
+  </Tree.Folder>
+</Tree>
+
+## Querying the Menu Data
+
+### Fetching a Collection Group
+
+Retrieve a collection group by its handle. The handle is set when creating the group in the admin panel or via code.
+
+```php
+use Lunar\Core\Models\CollectionGroup;
+
+$menuGroup = CollectionGroup::where('handle', 'main-menu')->first();
+```
+
+### Fetching Root Collections
+
+Root collections are those with no parent. Use the nested set's `whereIsRoot()` scope to retrieve them.
+
+```php
+use Lunar\Core\Models\Collection;
+
+$rootCollections = Collection::where('collection_group_id', $menuGroup->id)
+    ->whereIsRoot()
+    ->defaultOrder()
+    ->with(['defaultUrl', 'media'])
+    ->get();
+```
+
+The `defaultOrder()` scope orders collections by their nested set position, which matches the order configured in the admin panel.
+
+### Fetching Children
+
+Each collection's children can be loaded via the `children` relationship. To build a full menu tree, eager load the children (and their children) to avoid N+1 queries.
+
+```php
+$rootCollections = Collection::where('collection_group_id', $menuGroup->id)
+    ->whereIsRoot()
+    ->defaultOrder()
+    ->with([
+        'defaultUrl',
+        'children' => fn ($query) => $query->defaultOrder(),
+        'children.defaultUrl',
+        'children.children' => fn ($query) => $query->defaultOrder(),
+        'children.children.defaultUrl',
+    ])
+    ->get();
+```
+
+This loads three levels of the menu hierarchy. Add additional `children` levels as needed for deeper menus.
+
+<Tip>
+Eager loading children with constrained queries (using the closure syntax) ensures each level is ordered correctly by its nested set position.
+</Tip>
+
+### Using `toTree()` for the Full Tree
+
+For menus that need the entire tree regardless of depth, query every collection in the group and restructure the flat list.
+
+```php
+// Load the entire subtree (all depths) for a collection group
+$allCollections = Collection::where('collection_group_id', $menuGroup->id)
+    ->defaultOrder()
+    ->with('defaultUrl')
+    ->get()
+    ->toTree();
+```
+
+The `toTree()` method on the resulting collection restructures the flat list into a nested tree, with each node's `children` relation populated. For navigation menus it is generally better to eager load a fixed number of levels instead, to keep queries predictable and avoid loading unnecessary data.
+
+## Building a Menu Service
+
+Encapsulate the menu query in a dedicated service class to keep controllers clean and make caching straightforward.
+
+```php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Collection as LaravelCollection;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
+
+class CatalogMenuService
+{
+    public function getMenu(string $handle = 'main-menu', int $depth = 3): LaravelCollection
+    {
+        $group = CollectionGroup::where('handle', $handle)->first();
+
+        if (! $group) {
+            return collect();
+        }
+
+        $query = Collection::where('collection_group_id', $group->id)
+            ->whereIsRoot()
+            ->defaultOrder()
+            ->with($this->buildEagerLoads($depth));
+
+        return $query->get();
+    }
+
+    protected function buildEagerLoads(int $depth): array
+    {
+        $eagerLoads = ['defaultUrl'];
+        $prefix = '';
+
+        for ($i = 1; $i < $depth; $i++) {
+            $prefix .= ($i === 1) ? 'children' : '.children';
+            $eagerLoads[$prefix] = fn ($query) => $query->defaultOrder();
+            $eagerLoads["{$prefix}.defaultUrl"] = fn ($query) => $query;
+        }
+
+        return $eagerLoads;
+    }
+}
+```
+
+Register it in a service provider or resolve it directly:
+
+```php
+use App\Services\CatalogMenuService;
+
+$menu = app(CatalogMenuService::class)->getMenu('main-menu');
+```
+
+## Rendering the Menu
+
+### Sharing Menu Data with All Views
+
+Use a view composer or middleware to make the menu available to every page without passing it from each controller.
+
+```php
+<?php
+
+namespace App\Providers;
+
+use App\Services\CatalogMenuService;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+
+class ViewServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        View::composer('*', function ($view) {
+            $view->with(
+                'catalogMenu',
+                app(CatalogMenuService::class)->getMenu()
+            );
+        });
+    }
+}
+```
+
+<Info>
+When using a view composer with `'*'`, the menu query runs on every request. Pair this with caching (covered below) to avoid repeated database queries.
+</Info>
+
+### Basic Menu Template
+
+A collection's `name` is a real, translatable database column. Use the `translate()` method to read it in the current locale.
+
+```blade
+<nav aria-label="Catalog navigation">
+    <ul>
+        @foreach($catalogMenu as $collection)
+            <li>
+                <a href="{{ route('collections.show', $collection->defaultUrl?->slug) }}">
+                    {{ $collection->translate('name') }}
+                </a>
+
+                @if($collection->children->isNotEmpty())
+                    <ul>
+                        @foreach($collection->children as $child)
+                            <li>
+                                <a href="{{ route('collections.show', $child->defaultUrl?->slug) }}">
+                                    {{ $child->translate('name') }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </li>
+        @endforeach
+    </ul>
+</nav>
+```
+
+### Recursive Menu for Unlimited Depth
+
+For menus with an arbitrary number of levels, use a recursive Blade partial.
+
+Create a partial at `resources/views/partials/menu-item.blade.php`:
+
+```blade
+<li>
+    <a
+        href="{{ route('collections.show', $collection->defaultUrl?->slug) }}"
+        @if(isset($activeCollectionIds) && in_array($collection->id, $activeCollectionIds))
+            aria-current="true"
+        @endif
+    >
+        {{ $collection->translate('name') }}
+    </a>
+
+    @if($collection->children->isNotEmpty())
+        <ul>
+            @foreach($collection->children as $child)
+                @include('partials.menu-item', ['collection' => $child])
+            @endforeach
+        </ul>
+    @endif
+</li>
+```
+
+Then render the top-level menu:
+
+```blade
+<nav aria-label="Catalog navigation">
+    <ul>
+        @foreach($catalogMenu as $collection)
+            @include('partials.menu-item', ['collection' => $collection])
+        @endforeach
+    </ul>
+</nav>
+```
+
+## Active State Tracking
+
+Highlighting the active collection (and its ancestors) helps customers understand where they are in the catalog hierarchy.
+
+### Determining the Active Collection
+
+In the collection controller, pass the current collection and its ancestor IDs to the view:
+
+```php
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Url;
+
+class CollectionController extends Controller
+{
+    public function show(string $slug)
+    {
+        $url = Url::where('slug', $slug)
+            ->where('element_type', (new Collection)->getMorphClass())
+            ->firstOrFail();
+
+        $collection = Collection::where('id', $url->element_id)
+            ->with(['ancestors', 'media'])
+            ->firstOrFail();
+
+        $activeCollectionIds = $collection->ancestors
+            ->pluck('id')
+            ->push($collection->id)
+            ->all();
+
+        return view('collections.show', [
+            'collection' => $collection,
+            'activeCollectionIds' => $activeCollectionIds,
+        ]);
+    }
+}
+```
+
+### Applying Active Styles
+
+Share the active IDs with the layout so the menu partial can use them:
+
+```blade
+{{-- In the layout or menu partial --}}
+<a
+    href="{{ route('collections.show', $collection->defaultUrl?->slug) }}"
+    @class([
+        'menu-link',
+        'active' => isset($activeCollectionIds) && in_array($collection->id, $activeCollectionIds),
+    ])
+>
+    {{ $collection->translate('name') }}
+</a>
+```
+
+This highlights both the current collection and all its parent collections in the menu, giving customers a clear visual trail.
+
+## Caching
+
+The catalog menu changes infrequently compared to how often it is rendered. Caching prevents a database query on every page load.
+
+### Cache the Menu Result
+
+Update the `CatalogMenuService` to cache the menu:
+
+```php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Collection as LaravelCollection;
+use Illuminate\Support\Facades\Cache;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
+
+class CatalogMenuService
+{
+    public function getMenu(string $handle = 'main-menu', int $depth = 3): LaravelCollection
+    {
+        return Cache::remember(
+            "catalog-menu:{$handle}",
+            now()->addHour(),
+            fn () => $this->buildMenu($handle, $depth)
+        );
+    }
+
+    public function clearCache(string $handle = 'main-menu'): void
+    {
+        Cache::forget("catalog-menu:{$handle}");
+    }
+
+    protected function buildMenu(string $handle, int $depth): LaravelCollection
+    {
+        $group = CollectionGroup::where('handle', $handle)->first();
+
+        if (! $group) {
+            return collect();
+        }
+
+        return Collection::where('collection_group_id', $group->id)
+            ->whereIsRoot()
+            ->defaultOrder()
+            ->with($this->buildEagerLoads($depth))
+            ->get();
+    }
+
+    protected function buildEagerLoads(int $depth): array
+    {
+        $eagerLoads = ['defaultUrl'];
+        $prefix = '';
+
+        for ($i = 1; $i < $depth; $i++) {
+            $prefix .= ($i === 1) ? 'children' : '.children';
+            $eagerLoads[$prefix] = fn ($query) => $query->defaultOrder();
+            $eagerLoads["{$prefix}.defaultUrl"] = fn ($query) => $query;
+        }
+
+        return $eagerLoads;
+    }
+}
+```
+
+### Invalidating the Cache
+
+Clear the cache whenever collections are updated. A model observer is a clean way to handle this:
+
+```php
+<?php
+
+namespace App\Observers;
+
+use App\Services\CatalogMenuService;
+use Lunar\Core\Models\Collection;
+
+class CollectionObserver
+{
+    public function __construct(
+        protected CatalogMenuService $menuService,
+    ) {}
+
+    public function saved(Collection $collection): void
+    {
+        $this->menuService->clearCache();
+    }
+
+    public function deleted(Collection $collection): void
+    {
+        $this->menuService->clearCache();
+    }
+}
+```
+
+Register the observer in a service provider:
+
+```php
+use App\Observers\CollectionObserver;
+use Lunar\Core\Models\Collection;
+
+public function boot(): void
+{
+    Collection::observe(CollectionObserver::class);
+}
+```
+
+## Multiple Menus
+
+A store may need more than one navigation menu, for example a main header menu and a footer menu. Use separate collection groups for each.
+
+```php
+// Header menu
+$headerMenu = app(CatalogMenuService::class)->getMenu('main-menu');
+
+// Footer menu
+$footerMenu = app(CatalogMenuService::class)->getMenu('footer-menu');
+```
+
+Share both via a view composer:
+
+```php
+View::composer('*', function ($view) {
+    $menuService = app(CatalogMenuService::class);
+
+    $view->with('headerMenu', $menuService->getMenu('main-menu'));
+    $view->with('footerMenu', $menuService->getMenu('footer-menu'));
+});
+```
+
+Each menu is cached independently under its own key.
+
+## Channel and Customer Group Filtering
+
+Collections support channel scheduling and customer group visibility. To display only collections available to the current browsing context, apply these scopes when building the menu.
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+
+$channel = StorefrontSession::getChannel();
+$customerGroups = StorefrontSession::getCustomerGroups();
+
+$rootCollections = Collection::where('collection_group_id', $group->id)
+    ->whereIsRoot()
+    ->defaultOrder()
+    ->whereVisible()
+    ->channel($channel)
+    ->customerGroup($customerGroups)
+    ->with(['defaultUrl'])
+    ->get();
+```
+
+The `whereVisible()` scope restricts the query to collections in the published state, and `channel()`/`customerGroup()` restrict it to collections scheduled for the current channel and customer group.
+
+<Warning>
+When filtering by channel or customer group, the cache key should include the channel and customer group IDs to prevent one customer group from seeing another group's cached menu.
+</Warning>
+
+```php
+$cacheKey = sprintf(
+    'catalog-menu:%s:%s:%s',
+    $handle,
+    $channel->id,
+    $customerGroups->pluck('id')->sort()->implode('-')
+);
+```
+
+## Putting It All Together
+
+Here is a complete service, view composer, and Blade template for a cached, multi-level catalog menu:
+
+### Service
+
+```php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Collection as LaravelCollection;
+use Illuminate\Support\Facades\Cache;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
+
+class CatalogMenuService
+{
+    public function getMenu(string $handle = 'main-menu', int $depth = 3): LaravelCollection
+    {
+        return Cache::remember(
+            "catalog-menu:{$handle}",
+            now()->addHour(),
+            fn () => $this->buildMenu($handle, $depth)
+        );
+    }
+
+    public function clearCache(string $handle = 'main-menu'): void
+    {
+        Cache::forget("catalog-menu:{$handle}");
+    }
+
+    protected function buildMenu(string $handle, int $depth): LaravelCollection
+    {
+        $group = CollectionGroup::where('handle', $handle)->first();
+
+        if (! $group) {
+            return collect();
+        }
+
+        return Collection::where('collection_group_id', $group->id)
+            ->whereIsRoot()
+            ->defaultOrder()
+            ->with($this->buildEagerLoads($depth))
+            ->get();
+    }
+
+    protected function buildEagerLoads(int $depth): array
+    {
+        $eagerLoads = ['defaultUrl'];
+        $prefix = '';
+
+        for ($i = 1; $i < $depth; $i++) {
+            $prefix .= ($i === 1) ? 'children' : '.children';
+            $eagerLoads[$prefix] = fn ($query) => $query->defaultOrder();
+            $eagerLoads["{$prefix}.defaultUrl"] = fn ($query) => $query;
+        }
+
+        return $eagerLoads;
+    }
+}
+```
+
+### View Composer
+
+```php
+<?php
+
+namespace App\Providers;
+
+use App\Services\CatalogMenuService;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+
+class ViewServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        View::composer('layouts.*', function ($view) {
+            $view->with(
+                'catalogMenu',
+                app(CatalogMenuService::class)->getMenu()
+            );
+        });
+    }
+}
+```
+
+### Blade Template
+
+```blade
+{{-- resources/views/partials/catalog-menu.blade.php --}}
+<nav aria-label="Catalog navigation">
+    <ul>
+        @foreach($catalogMenu as $rootCollection)
+            <li>
+                <a
+                    href="{{ route('collections.show', $rootCollection->defaultUrl?->slug) }}"
+                    @class([
+                        'menu-link',
+                        'active' => isset($activeCollectionIds) && in_array($rootCollection->id, $activeCollectionIds),
+                    ])
+                >
+                    {{ $rootCollection->translate('name') }}
+                </a>
+
+                @if($rootCollection->children->isNotEmpty())
+                    <ul>
+                        @foreach($rootCollection->children as $child)
+                            <li>
+                                <a
+                                    href="{{ route('collections.show', $child->defaultUrl?->slug) }}"
+                                    @class([
+                                        'menu-link',
+                                        'active' => isset($activeCollectionIds) && in_array($child->id, $activeCollectionIds),
+                                    ])
+                                >
+                                    {{ $child->translate('name') }}
+                                </a>
+
+                                @if($child->children->isNotEmpty())
+                                    <ul>
+                                        @foreach($child->children as $grandchild)
+                                            <li>
+                                                <a
+                                                    href="{{ route('collections.show', $grandchild->defaultUrl?->slug) }}"
+                                                    @class([
+                                                        'menu-link',
+                                                        'active' => isset($activeCollectionIds) && in_array($grandchild->id, $activeCollectionIds),
+                                                    ])
+                                                >
+                                                    {{ $grandchild->translate('name') }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </li>
+        @endforeach
+    </ul>
+</nav>
+```
+
+## Next Steps
+
+- Review the [Collections reference](/reference/collections) for the full list of model fields, relationships, and sort options.
+- Review the [Product Listing Page guide](/guides/product-listing-page) for displaying products when a customer clicks a collection in the menu.
+- Review the [URLs reference](/reference/urls) for URL generation and slug management.
+- Review the [Channels reference](/reference/channels) for multi-channel configuration.

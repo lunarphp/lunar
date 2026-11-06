@@ -1,0 +1,79 @@
+---
+title: "Troubleshooting Add-ons"
+sidebarTitle: "Troubleshooting"
+description: "Symptom, cause, and fix for the panel add-on extension mechanism's common gotchas."
+---
+
+Every entry below fails silently — no error, no console warning in most cases — which is what makes each one worth checking explicitly rather than trusting a first guess. The packaging workflow these gotchas relate to is covered in [Building an add-on](/admin/extending/addons).
+
+## A slot never renders
+
+**Cause**: the zone name's page prefix doesn't match the target page's actual route name.
+
+A zone name is `{section}.{page}:{region}[:position]`, where `{section}.{page}` must equal the page's route name with the `panel.` prefix stripped — not a name guessed from what the page conceptually does. The Customers edit page's route is `panel.customers.edit` (there is no separate `panel.customers.show`), so the correct zone prefix is `customers.edit`. Registering against `customers.show` compiles and runs without error; `SlotRegistry::forPage()` simply never finds a match, and the slot never appears.
+
+**Fix**: check the target page's route name (`php artisan route:list --name=panel`) and use that, with `panel.` stripped, as the zone prefix.
+
+## A page component is "not found" client-side
+
+**Cause**: the Inertia component name passed to `Inertia::render()` in the route doesn't exactly match the key used in `window.LunarPanel.registerPages()`, including the namespace prefix.
+
+**Fix**: confirm both sides use the identical string, e.g. `example-addon::Widgets/Index` in both the route's `Inertia::render('example-addon::Widgets/Index', [...])` and the bundle's `registerPages({ 'example-addon::Widgets/Index': WidgetsIndexPage })`.
+
+## A settings page renders with a doubled sidebar
+
+**Cause**: the page uses `<SettingsShell>` (which is the page's entire chrome) but didn't opt out of the panel's auto-applied `PanelLayout`, so both layouts wrap the page.
+
+**Fix**: declare a no-op persistent layout on the page:
+
+```vue
+<script setup lang="ts">
+defineOptions({
+    layout: (_h: unknown, page: unknown) => page,
+});
+</script>
+```
+
+## A table extension column is missing
+
+**Cause**: the table id string passed to `Section::tableExtensions()` (e.g. `'customers.index'`) doesn't match the id the controller passes to `PanelManager::resolveExtensions()`. These are plain strings with no central registry, so a typo produces no error — just a column, filter, or action that never appears.
+
+**Fix**: check the table id against the controller that renders the target page (`grep` for `resolveExtensions(` in the panel source), and confirm it matches character for character.
+
+## `ReferenceError: Vue` / `InertiaVue3` / `LunarPanelUI` is not defined
+
+**Cause**: the add-on's compiled bundle was built against a newer `@lunarphp/panel-vite-plugin` than the panel build currently served by the host app, so a `window` global the add-on's bundle expects (`window.Vue`, `window.InertiaVue3`, `window.LunarPanelUI`) was never published. The add-on's script crashes before it registers anything, which cascades into "Panel page not found" and unregistered-slot warnings elsewhere on the same page — those secondary errors are a symptom, not the cause.
+
+**Fix**: re-publish the panel's own compiled assets in the host app:
+
+```bash
+php artisan vendor:publish --tag=panel-assets --force
+```
+
+During monorepo development, symlink the package's `public/build` directory instead of publishing, so the panel and the add-on stay on the same compiled build without a manual re-publish step each time.
+
+## The add-on's JS never runs at all
+
+**Cause 1**: the compiled bundle isn't actually being served at the `buildDirectory` path passed to `PanelManager::vite()` — check the path was published (`vendor:publish --tag={key}-panel-assets`) or symlinked (`php artisan lunar:panel:link`) into `public/vendor/lunar-panel/{key}`.
+
+**Cause 2**: registration calls run inside `window.LunarPanel.booting()` instead of at the bundle's top level. `booting()` callbacks run *after* the panel has mounted, which is too late — a page or slot component registered there is missing when Inertia resolves and first renders it on a hard page load, and because registration is not reactive, it never recovers afterward.
+
+**Fix**: move `registerPages()`, `registerComponents()`, `registerLayout()`, and `registerTranslations()` calls to the top level of the add-on's entry file (`resources/js/addon.ts`), not inside a `booting()` callback. The panel holds its first render until `DOMContentLoaded`, by which point every add-on script has already run, so top-level registration is always in place in time.
+
+## A `Position::before()` / `Position::after()` anchor doesn't seem to apply
+
+**Cause**: the anchor's target key doesn't exist in the same ordered set (a typo in the key, or the entry it's meant to anchor to was never registered).
+
+**Fix**: this doesn't throw — the entry falls back to priority-based ordering and a warning is logged. Check the application log for the warning to confirm this is what happened, then correct the target key.
+
+## Assets aren't updating during local development
+
+**Cause**: the host app is serving a stale, previously published copy of the add-on's build rather than picking up a fresh `npm run build`.
+
+**Fix**: for local development, symlink the build directory instead of publishing it:
+
+```bash
+php artisan lunar:panel:link
+```
+
+This symlinks every registered module's `__buildSourcePath` into `public/vendor/lunar-panel/{key}`, so a rebuild is picked up immediately without re-publishing. Reserve `vendor:publish --tag={key}-panel-assets` for production deploys.
