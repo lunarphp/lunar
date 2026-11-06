@@ -10,7 +10,7 @@ A cart holds the purchasable items a customer intends to buy, together with the 
 A cart belongs to a channel and a currency, optionally to an authenticated user and a customer, and holds a collection of lines, each pointing at a purchasable item (typically a product variant).
 
 <Info>
-Cart totals (`subTotal`, `total`, `taxTotal`, and so on) are calculated at runtime by a pipeline and are not stored on the `carts` table. They are populated as public properties on the `Lunar\Core\Models\Cart` instance when `calculate()` runs, and are instances of `Lunar\Core\DataObjects\PriceValue`. Once a cart is converted to an order, the resulting totals are persisted on the order.
+Cart totals (`subTotal`, `total`, `taxTotal`, and so on) are calculated by the cart calculation and exposed as public properties on the `Lunar\Core\Models\Cart` instance, each a `Lunar\Core\DataObjects\PriceValue`. After every calculation the result is also written to the `carts` and `cart_lines` rows as a snapshot, which `calculate()` serves on later requests while it is fresh. See [Calculating totals](#calculating-totals). Once a cart is converted to an order, the totals are copied onto the order.
 </Info>
 
 ## Cart model
@@ -39,6 +39,21 @@ Lunar\Core\Models\Cart
 | `customer_id` | `foreignId` `nullable` | |
 | `deleted_at` | `timestamp` `nullable` | |
 | `tax_zone_id` | `foreignId` `nullable` | Overrides the resolved tax zone when set |
+| `sub_total` | `unsignedBigInteger` `nullable` | Persisted totals snapshot, `null` until the cart is first calculated |
+| `sub_total_discounted` | `unsignedBigInteger` `nullable` | |
+| `discount_total` | `unsignedBigInteger` `nullable` | |
+| `shipping_sub_total` | `unsignedBigInteger` `nullable` | |
+| `shipping_tax_total` | `unsignedBigInteger` `nullable` | |
+| `shipping_total` | `unsignedBigInteger` `nullable` | |
+| `tax_total` | `unsignedBigInteger` `nullable` | |
+| `total` | `unsignedBigInteger` `nullable` | Shadowed by the `total` property, read the column through `getAttribute('total')` |
+| `tax_breakdown` | `jsonb` `nullable` | Cast to `Lunar\Core\ValueObjects\Cart\TaxBreakdown` |
+| `shipping_breakdown` | `jsonb` `nullable` | Cast to `Lunar\Core\ValueObjects\Cart\ShippingBreakdown` |
+| `discount_breakdown` | `jsonb` `nullable` | `[{"discount_id": 3, "total": 500, "lines": [{"id": 12, "qty": 2}]}]`, with cart line IDs |
+| `free_items` | `jsonb` `nullable` | Morph references of the free purchasables, `[{"type": "product_variant", "id": 41}]` |
+| `revision` | `unsignedInteger` | Incremented by every change to the cart, its lines, or its addresses (default `0`) |
+| `calculated_revision` | `unsignedInteger` `nullable` | The `revision` the snapshot was calculated at |
+| `calculated_at` | `timestamp` `nullable` | When the snapshot was calculated |
 | `region_id` | `foreignId` `nullable` | |
 
 ### Relationships
@@ -90,6 +105,15 @@ Lunar\Core\Models\CartLine
 | `meta` | `jsonb` `nullable` | |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
+| `unit_price` | `unsignedBigInteger` `nullable` | Persisted totals snapshot, `null` until the line is first calculated |
+| `unit_price_incl_tax` | `unsignedBigInteger` `nullable` | |
+| `sub_total` | `unsignedBigInteger` `nullable` | |
+| `sub_total_discounted` | `unsignedBigInteger` `nullable` | |
+| `discount_total` | `unsignedBigInteger` `nullable` | |
+| `tax_total` | `unsignedBigInteger` `nullable` | The line's `taxAmount` property |
+| `total` | `unsignedBigInteger` `nullable` | Shadowed by the `total` property, read the column through `getAttribute('total')` |
+| `tax_breakdown` | `jsonb` `nullable` | Cast to `Lunar\Core\ValueObjects\Cart\TaxBreakdown` |
+| `promotion_description` | `string` `nullable` | |
 
 ### Relationships
 
@@ -247,7 +271,7 @@ CartSession::setChannel($channel);
 CartSession::setCurrency($currency);
 ```
 
-Setting the currency on an existing cart updates `currency_id` on the cart and drops its loaded `currency` and `lines` relations, so the next `calculate()` prices in the new currency.
+Setting the currency on an existing cart updates `currency_id` on the cart and refreshes it from the database. The update also marks the persisted totals stale, so the next `calculate()` runs the calculation and prices in the new currency.
 
 ### Associating a user
 
@@ -343,12 +367,20 @@ See [Discounts](/reference/discounts) for how discounts are matched and applied.
 ## Calculating totals
 
 ```php
-$cart->calculate();      // calculate once; skips if already calculated
-$cart->recalculate();    // force recalculation
-$cart->isCalculated();   // whether the cart and every line already carry a total
+$cart->calculate();      // in-memory totals, then a fresh persisted snapshot, then the calculation
+$cart->recalculate();    // always run the calculation
+$cart->isCalculated();   // whether the cart and every line already carry a total in memory
 ```
 
-`calculate()` runs the `Lunar\Core\Enums\StepList::CartCalculation` step list, in order:
+`calculate()` delegates to the `Lunar\Core\Contracts\Actions\Carts\CalculatesCart` action, which takes the cheapest route to a set of totals:
+
+1. If the cart and every line already carry a total in memory (`isCalculated()`), return the cart as is.
+2. If the persisted snapshot is fresh and covers every loaded line, hydrate the properties from the row without running the calculation. See [Persisted totals](#persisted-totals).
+3. Otherwise run the calculation, then persist the result.
+
+`recalculate()` skips the first two routes and always runs the calculation. Use it wherever a guaranteed-fresh total matters: checkout, payment amount checks, and any code that reads the cart straight after writing to it outside the verb methods.
+
+The calculation runs the `Lunar\Core\Enums\StepList::CartCalculation` step list, in order:
 
 1. `Lunar\Core\Pipelines\Cart\CalculateLines` — for each line, runs the line modifiers' `calculating()` hook, prices the line through the `StepList::CartLinePricing` steps (`GetUnitPrice` by default), sets its subtotal, runs the line modifiers' `subtotalled()` hook, then derives the line's discounted subtotal and total from the subtotal
 2. `Lunar\Core\Pipelines\Cart\ApplyShipping` — resolves and applies the shipping option
@@ -380,6 +412,51 @@ A `PriceValue` exposes `->value` (the integer minor-unit amount), `->decimal()`,
 <Info>
 Registered modifiers run around these steps. `Lunar\Core\Modifiers\CartModifier::calculating()` runs before the first step. After the last step, each line's `Lunar\Core\Modifiers\CartLineModifier::calculated()` hook runs with final totals, followed by `CartModifier::calculated()`. Custom logic is added as a modifier at these fixed points, or as a step at a precise position in a step list. See [Extending Carts](/extending/carts).
 </Info>
+
+### Persisted totals
+
+After each calculation, Lunar writes the resulting totals to the `carts` row and to each `cart_lines` row, together with the revision the cart was at and the time of the calculation. The next `calculate()` serves those columns instead of running the calculation while the snapshot is fresh, meaning both of the following hold:
+
+- `calculated_revision` equals the cart's current `revision`, so nothing on the cart has changed since the snapshot was written.
+- `calculated_at` is within `lunar.cart.totals.ttl` seconds of now.
+
+```php
+// config/lunar/cart.php
+'totals' => [
+    // Seconds a persisted totals snapshot is served before the calculation
+    // runs again. 0 never serves the snapshot; it is still written.
+    'ttl' => 300,
+],
+```
+
+The TTL bounds staleness from inputs the cart cannot observe: a price edit, a discount reaching its end date, a tax zone change, or a carrier repricing its rates all change the answer without touching the cart. Setting `ttl` to `0` means the snapshot is never served. It is still written, so the columns stay populated for reporting.
+
+```php
+$cart->totalsAreFresh();    // whether calculate() would serve the persisted snapshot
+$cart->invalidateTotals();  // mark the snapshot stale (an atomic SQL increment of revision)
+```
+
+A hydrated cart is indistinguishable from a freshly calculated one for everything a storefront renders: every `PriceValue` property on the cart and its lines, the breakdowns, `discounts`, `freeItems`, and `fingerprint()` all match. The computed properties on `Lunar\Core\Models\CartAddress` (`shippingOption`, `shippingSubTotal`, `shippingTaxTotal`, `shippingTotal`, `taxBreakdown`) are populated only by a calculation. Order creation forces one before it reads them.
+
+<Info>
+The `total` column shares its name with the `total` property on both `Cart` and `CartLine`. The property wins for `$cart->total`, `$line['total']`, and `pluck('total')`, so existing reads keep returning a `PriceValue`. Read the raw column through `getAttribute('total')` or `getRawOriginal('total')`, or query it directly for reporting, for example `Cart::where('total', '>', 10000)`.
+</Info>
+
+### Invalidation
+
+Every change to a cart increments its `revision`, which makes the snapshot stale until the next calculation writes a new one. The increment always happens in SQL (`revision = revision + 1`), so two requests changing the same cart at once cannot lose an update.
+
+| Change | Mechanism |
+|:-------|:----------|
+| A `Cart` attribute outside the snapshot columns changes (`currency_id`, `coupon_code`, `tax_zone_id`, `customer_id`, `user_id`, `meta`, and so on) | `revision` is incremented in the same save |
+| A `CartLine` is created, updated, or deleted | `Lunar\Core\Observers\CartLineObserver` |
+| A `CartAddress` is created, updated, or deleted, including a change of shipping option | `Lunar\Core\Observers\CartAddressObserver` |
+| `$cart->clear()` | An explicit `invalidateTotals()` after the delete |
+
+Every verb method (`add()`, `updateLine()`, `remove()`, `setShippingAddress()`, `setShippingOption()`, `setTaxZone()`, `associate()`, and the rest) writes through one of these paths and then recalculates, so the snapshot is stale for only as long as the verb takes. Code that writes `carts`, `cart_lines`, or `cart_addresses` rows through the query builder bypasses the observers and must call `$cart->invalidateTotals()` itself.
+
+The write is guarded on the revision the cart was loaded at. If another request changed the cart while this one was calculating, the snapshot is skipped, the in-memory totals stay valid for the current request, and the next request recalculates. The snapshot columns are never cleared, so the last calculated figures remain queryable even while stale: a cart holding a stale snapshot is one where `calculated_revision` is `null` or differs from `revision`. None of these writes appear in the activity log; the snapshot columns, `revision`, `calculated_revision`, and `calculated_at` are excluded on both `Cart` and `CartLine`.
+
 
 ## Converting a cart to an order
 

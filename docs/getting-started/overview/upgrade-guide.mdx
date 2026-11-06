@@ -141,6 +141,7 @@ The package ships one data migration per v1 to v2 schema change, run in dependen
 - **`AmountOff` discount type split** — converts stored `AmountOff` discount rows into `PercentageOff` or `FixedAmountOff` based on the discount's `data.fixed_value` flag (see the manual action above).
 - **Product association `sort` column backfill.**
 - **Cart `remember_token` column** — adds the nullable column used to [remember guest carts](/reference/carts#remembering-guest-carts). Existing carts get a token the next time they become a session's cart, so no backfill is needed.
+- **Cart totals columns** — adds the persisted totals snapshot columns (`sub_total`, `total`, `revision`, `calculated_at`, and the rest) to `carts` and `cart_lines`. No backfill: every upgraded cart reads as not yet calculated and is filled in by its next `calculate()`.
 
 ### Order status mapping
 
@@ -238,6 +239,15 @@ public function boot(): void
 ```
 
 Run `php artisan lunar:steps` afterwards to confirm what runs. See [Registering calculation steps](/extending/carts#registering-calculation-steps).
+
+### Cart totals are persisted
+
+v2 writes a cart's totals to the `carts` and `cart_lines` rows after each calculation, and `calculate()` serves them from the row for up to `lunar.cart.totals.ttl` seconds (default 300) while nothing on the cart has changed. Modifiers do not run when the snapshot is served. Two kinds of code need checking:
+
+- Code that needs a guaranteed-fresh total, such as a payment amount check, calls `recalculate()`.
+- Code that writes cart, line or address rows through the query builder calls `$cart->invalidateTotals()` afterwards.
+
+See [Persisted totals](/reference/carts#persisted-totals).
 
 ## Manual checklist
 

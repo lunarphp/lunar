@@ -40,7 +40,7 @@ class CartController extends Controller
 ```
 
 <Info>
-Cart prices are calculated on demand and are not stored on the cart lines. `current()` accepts a `calculate` argument (`true` by default) that runs the calculation pipeline before returning the cart. To force a recalculation after making changes, call `$cart->recalculate()`.
+Cart prices are produced by the cart calculation and, after each run, persisted to the cart and line rows so later requests can be served without running it again. `current()` accepts a `calculate` argument (`true` by default) that calculates the cart before returning it. To force the calculation to run after making changes, call `$cart->recalculate()`. See [Persisted totals](/reference/carts#persisted-totals) for when the stored figures are served.
 </Info>
 
 <Tip>

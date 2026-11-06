@@ -79,7 +79,7 @@ class ProcessPaypalWebhook implements ShouldQueue
         }
 
         if ($cart = $paypalOrder->cart) {
-            $payment->cart($cart->calculate())->authorize();
+            $payment->cart($cart->recalculate())->authorize();
         }
     }
 
