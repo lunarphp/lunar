@@ -367,4 +367,6 @@ HoldReasons::add('address-query', 'Address query');
 
 ## Notifications on fulfilment events
 
-`ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job). See the [Notifications](/reference/notifications) reference for how to register a notification against a fulfilment state.
+`ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job).
+
+Lunar registers a default email for four of these states: `shipped` (`Lunar\Core\Notifications\OrderShipped`, with the fulfilment's lines and tracking), `ready-for-collection` (`OrderReadyForCollection`), `provisioned` (`OrderProvisioned`), and `returned` (`ReturnReceived`). `collected`, `in-progress`, and `pending` send nothing. See the [Notifications](/reference/notifications#default-notifications) reference for what each contains, how to customize the templates, and how to register a notification against a custom fulfilment state.

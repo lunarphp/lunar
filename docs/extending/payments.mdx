@@ -227,6 +227,10 @@ $order->transactions()->create([
 
 If the payment is captured straight away, record it directly with type `capture` instead.
 
+<Warning>
+Record the transaction **before** stamping `placed_at` on the order. Lunar's customer-notification listeners skip payment-status changes on an unplaced order and let the order confirmation carry the payment state, so a checkout that captures immediately sends one email. A driver that places the order first and records the capture second sends the confirmation and a separate "payment received" email for every checkout. See [Notifications](/reference/notifications#trigger-rules).
+</Warning>
+
 ### Capturing
 
 <Tip>
