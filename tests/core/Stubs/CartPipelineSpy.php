@@ -6,7 +6,7 @@ use Closure;
 use Lunar\Core\Models\Cart;
 
 /**
- * Prepended to `lunar.cart.pipelines.cart` to count pipeline runs, so a test
+ * Prepended to the cart calculation steps to count pipeline runs, so a test
  * can assert that a calculate() was served from the persisted snapshot.
  */
 class CartPipelineSpy

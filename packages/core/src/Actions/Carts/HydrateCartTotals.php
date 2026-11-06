@@ -18,7 +18,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**
  * Rebuilds the calculated properties of a cart and its lines from the persisted
- * totals columns (spec 0076), so a hydrated cart is indistinguishable from a
+ * totals columns (spec 0096), so a hydrated cart is indistinguishable from a
  * freshly calculated one for everything the storefront renders.
  */
 class HydrateCartTotals implements HydratesCartTotals

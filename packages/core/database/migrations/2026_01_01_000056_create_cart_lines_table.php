@@ -17,7 +17,7 @@ return new class extends Migration
             $table->jsonb('meta')->nullable();
             $table->timestamps();
 
-            // Persisted totals snapshot (spec 0076). NULL means "not calculated".
+            // Persisted totals snapshot (spec 0096). NULL means "not calculated".
             $table->unsignedBigInteger('unit_price')->nullable();
             $table->unsignedBigInteger('unit_price_incl_tax')->nullable();
             $table->unsignedBigInteger('sub_total')->nullable();

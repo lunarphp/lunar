@@ -127,7 +127,7 @@ class CartLine extends Base
     ];
 
     /**
-     * Columns written by the persisted totals snapshot (spec 0076); kept out
+     * Columns written by the persisted totals snapshot (spec 0096); kept out
      * of the activity log.
      *
      * @return array<int, string>

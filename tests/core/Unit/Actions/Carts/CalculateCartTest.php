@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Facades\Steps;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\CartLine;
@@ -35,10 +36,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     CartPipelineSpy::reset();
 
-    Config::set('lunar.cart.pipelines.cart', [
-        CartPipelineSpy::class,
-        ...config('lunar.cart.pipelines.cart'),
-    ]);
+    Steps::for(StepList::CartCalculation)->prepend(CartPipelineSpy::class);
 });
 
 /**

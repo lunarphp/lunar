@@ -11,7 +11,7 @@ use Lunar\Core\Models\CartLine;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdownLine;
 
 /**
- * Writes a calculated cart's totals to the cart and line rows (spec 0076).
+ * Writes a calculated cart's totals to the cart and line rows (spec 0096).
  *
  * The cart write is a single query-builder UPDATE guarded on the revision the
  * cart was loaded with, which is also the value written to

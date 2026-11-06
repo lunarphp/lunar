@@ -34,7 +34,7 @@ function cartTotalsColumnsMigration(): object
 /**
  * Stand up the v1-shaped `carts` / `cart_lines` tables: no totals columns.
  */
-function simulateV1CartRows(): void
+function simulateV1CartTotalsRows(): void
 {
     Schema::create(CART_TOTALS_UPG_PREFIX.'carts', function (Blueprint $table) {
         $table->id();
@@ -62,7 +62,7 @@ function simulateV1CartRows(): void
 }
 
 test('it adds the totals columns and leaves existing carts uncalculated', function () {
-    simulateV1CartRows();
+    simulateV1CartTotalsRows();
 
     cartTotalsColumnsMigration()->up();
 
@@ -86,7 +86,7 @@ test('it adds the totals columns and leaves existing carts uncalculated', functi
 });
 
 test('it is a no-op when the columns already exist', function () {
-    simulateV1CartRows();
+    simulateV1CartTotalsRows();
 
     cartTotalsColumnsMigration()->up();
 
