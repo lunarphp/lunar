@@ -16,7 +16,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Cart totals caching in the database — additive performance optimisation
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
-- Versioned docs — each major version's docs live in the monorepo on its version branch and publish when that version releases (spec 0094)
 - Add Boost guidelines to packages
 
 ## Ideas
@@ -38,6 +37,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
 - Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)
 - Remembered guest carts — a cart cookie outlives the session so a short session lifetime does not lose the cart (spec 0090)
