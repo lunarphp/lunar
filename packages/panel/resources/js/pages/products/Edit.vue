@@ -28,6 +28,7 @@ import ProductPickerDialog, { type ProductOption } from '../../components/Produc
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
+import StickySidebar from '../../components/StickySidebar.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TagsInput from '../../components/TagsInput.vue';
@@ -688,7 +689,7 @@ const timelineEvents = computed(() =>
 
                     <!-- Sidebar -->
                     <aside>
-                        <div class="lg:sticky lg:top-[60px] flex flex-col gap-4">
+                        <StickySidebar class="flex flex-col gap-4">
                             <PageZone region="sidebar" position="before" :product="product" />
 
                             <SideCard :title="t('products.side_status')">
@@ -744,7 +745,7 @@ const timelineEvents = computed(() =>
                             </SideCard>
 
                             <PageZone region="sidebar" position="after" :product="product" />
-                        </div>
+                        </StickySidebar>
                     </aside>
                 </div>
             </div>

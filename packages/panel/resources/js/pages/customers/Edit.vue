@@ -21,6 +21,7 @@ import PageZone from '../../components/PageZone.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
+import StickySidebar from '../../components/StickySidebar.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import Tabs from '../../components/Tabs.vue';
 import Textarea from '../../components/Textarea.vue';
@@ -795,7 +796,7 @@ const tabDefs = computed(() => [
                     </div>
 
                     <aside>
-                        <div class="lg:sticky lg:top-[60px] flex flex-col gap-0">
+                        <StickySidebar class="flex flex-col gap-0">
                             <SideCard :title="t('customers.at_a_glance')">
                                 <div class="flex flex-col gap-2 text-[12px]">
                                     <div class="flex items-center justify-between gap-2">
@@ -897,7 +898,7 @@ const tabDefs = computed(() => [
                                     <p v-else class="m-0 text-[12px] text-ink-500 italic">{{ t('customers.notes_empty') }}</p>
                                 </template>
                             </SideCard>
-                        </div>
+                        </StickySidebar>
                     </aside>
                 </div>
             </div>
