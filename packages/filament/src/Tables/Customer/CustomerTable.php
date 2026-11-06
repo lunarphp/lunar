@@ -29,9 +29,7 @@ class CustomerTable
                         ->relationship(
                             name: 'customerGroups',
                             titleAttribute: 'name',
-                            modifyQueryUsing: fn (Builder $query) => $query->distinct(
-                                ['id', 'name', 'handle', 'default']
-                            )
+                            modifyQueryUsing: fn (Builder $query) => $query->distinct()
                         )
                         ->multiple()
                         ->searchable()
