@@ -46,6 +46,8 @@ return [
             'options' => [
                 'ship-by' => 'Стандарт',
                 'collection' => 'Цуглуулга',
+                'flat-rate' => 'Тогтмол үнэ',
+                'free-shipping' => 'Үнэгүй хүргэлт',
             ],
         ],
         'stock_available' => [
@@ -74,6 +76,8 @@ return [
             'options' => [
                 'ship-by' => 'Стандарт',
                 'collection' => 'Цуглуулга',
+                'flat-rate' => 'Тогтмол үнэ',
+                'free-shipping' => 'Үнэгүй хүргэлт',
             ],
         ],
     ],

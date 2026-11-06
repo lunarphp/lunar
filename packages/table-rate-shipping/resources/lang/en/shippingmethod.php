@@ -46,6 +46,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Collection',
+                'flat-rate' => 'Flat Rate',
+                'free-shipping' => 'Free Shipping',
             ],
         ],
         'stock_available' => [
@@ -74,6 +76,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Collection',
+                'flat-rate' => 'Flat Rate',
+                'free-shipping' => 'Free Shipping',
             ],
         ],
     ],
