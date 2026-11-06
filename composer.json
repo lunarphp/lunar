@@ -40,7 +40,7 @@
         "spatie/typescript-transformer": "^3.3",
         "stripe/stripe-php": "^16.0",
         "mallardduck/blade-lucide-icons": "^1.26",
-        "typesense/typesense-php": "^4.9"
+        "typesense/typesense-php": "^5.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
@@ -63,6 +63,8 @@
         "psr-4": {
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
+            "Lunar\\Bundles\\": "packages/bundles/src/",
+            "Lunar\\Bundles\\Database\\Factories\\": "packages/bundles/database/factories",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
@@ -88,6 +90,7 @@
         "psr-4": {
             "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
+            "Lunar\\Tests\\Bundles\\": "tests/bundles",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\DemoData\\": "tests/demo-data",
             "Lunar\\Tests\\Filament\\": "tests/filament",
@@ -108,6 +111,7 @@
                 "Table Rate Shipping",
                 "Search",
                 "Search Relevance",
+                "Bundles",
                 "Meilisearch",
                 "Paypal Payments",
                 "Stripe Payments",
@@ -125,6 +129,7 @@
                 "Lunar\\Filament\\LunarFilamentServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\Bundles\\BundlesServiceProvider",
                 "Lunar\\Upgrade\\UpgradeServiceProvider",
                 "Lunar\\DemoData\\DemoDataServiceProvider",
                 "Lunar\\Panel\\PanelServiceProvider",
@@ -135,6 +140,7 @@
     "replace": {
         "lunarphp/core": "self.version",
         "lunarphp/admin": "self.version",
+        "lunarphp/bundles": "self.version",
         "lunarphp/demo-data": "self.version",
         "lunarphp/filament": "self.version",
         "lunarphp/meilisearch": "self.version",

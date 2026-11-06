@@ -31,8 +31,8 @@ const PACKAGES = {
     },
     '@lunarphp/search-relevance': {
         dir: 'packages/search-relevance/resources/client',
-        // dist is tracked (the Blade component inlines the IIFE build), but
-        // refuse to compare against a stale one.
+        // dist is gitignored and built at split time, so it is only as fresh
+        // as the last build; refuse to compare without it.
         requires: 'packages/search-relevance/resources/client/dist/index.d.ts',
         hint: 'run `npm run build --workspace @lunarphp/search-relevance` first',
     },

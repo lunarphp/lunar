@@ -92,3 +92,15 @@ test('normalised skus drop separators and uppercase the code', function () {
     expect($data['skus_normalised'])->toBe(['HAGMB32ABCU1'])
         ->and(app(ProductIndexer::class)->getExactMatchFields())->toBe(['skus', 'skus_normalised']);
 });
+
+test('leaves variants without a sku out of skus', function () {
+    Language::factory()->create(['code' => 'en', 'default' => true]);
+
+    $product = Product::factory()->create();
+    $withSku = ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'ABC-1']);
+    ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => null]);
+
+    $data = app(ProductIndexer::class)->toSearchableArray($product->refresh());
+
+    expect($data['skus'])->toBe([$withSku->sku]);
+});

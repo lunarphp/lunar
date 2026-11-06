@@ -59,7 +59,7 @@ class ProductIndexer extends ScoutIndexer
             $data['thumbnail'] = $thumbnail->getUrl('small');
         }
 
-        $data['skus'] = $model->variants->pluck('sku')->toArray();
+        $data['skus'] = $model->variants->pluck('sku')->filter(fn ($sku) => filled($sku))->values()->toArray();
 
         // Uppercased with separators stripped, so a partial code typed without
         // the printed hyphens (HAGMB) still prefix-matches HAG-MB-32A.

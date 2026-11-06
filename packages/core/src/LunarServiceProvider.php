@@ -5,6 +5,7 @@ namespace Lunar\Core;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
@@ -33,6 +34,7 @@ use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ReconcileStock;
 use Lunar\Core\Console\Commands\ReleaseExpiredStockReservations;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
+use Lunar\Core\Console\Commands\StepsList;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
@@ -43,6 +45,7 @@ use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
+use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\DependencyResolver as DependencyResolverContract;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
@@ -57,6 +60,7 @@ use Lunar\Core\Contracts\PaymentManager;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\Contracts\ProvidesTelemetryInsights;
 use Lunar\Core\Contracts\ShippingManifest;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
@@ -83,6 +87,7 @@ use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderRefundedNotifications;
 use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
+use Lunar\Core\Managers\DefaultStorefrontContextManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
 use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
@@ -97,6 +102,7 @@ use Lunar\Core\Manifests\HoldReasonManifest as HoldReasonManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\OrderNotificationManifest as OrderNotificationManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
+use Lunar\Core\Manifests\StepManifest as StepManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Cart;
@@ -255,6 +261,7 @@ class LunarServiceProvider extends ServiceProvider
                 ReleaseExpiredStockReservations::class,
                 ModelsCache::class,
                 ModelsClear::class,
+                StepsList::class,
             ]);
 
             $this->optimizes(
@@ -297,6 +304,9 @@ class LunarServiceProvider extends ServiceProvider
             Logout::class,
             [CartSessionAuthListener::class, 'logout']
         );
+
+        // The remember token is random and only its hash is stored, so encryption adds nothing and would break lookups on routes without EncryptCookies.
+        EncryptCookies::except(config('lunar.cart_session.remember.cookie', 'lunar_cart_remember'));
 
         Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
@@ -426,6 +436,11 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(ShippingManifestImpl::class);
         });
 
+        // Lists are changed from service providers and only read afterwards.
+        $this->app->singleton(StepManifest::class, function ($app) {
+            return $app->make(StepManifestImpl::class);
+        });
+
         $this->app->singleton(CarrierManifest::class, function ($app) {
             return $app->make(CarrierManifestImpl::class);
         });
@@ -530,6 +545,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->scoped(StorefrontSession::class, function ($app) {
             return $app->make(StorefrontSessionManager::class);
+        });
+
+        $this->app->scoped(DefaultStorefrontContext::class, function ($app) {
+            return $app->make(DefaultStorefrontContextManager::class);
         });
 
         $this->app->bind(PricingManager::class, function ($app) {

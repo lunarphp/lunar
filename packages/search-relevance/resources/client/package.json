@@ -27,6 +27,7 @@
     ],
     "scripts": {
         "build": "vite build && vite build --config vite.iife.config.ts && vue-tsc -p tsconfig.json",
+        "prepublishOnly": "npm run build",
         "test": "vitest run",
         "type-check": "vue-tsc --noEmit"
     },
