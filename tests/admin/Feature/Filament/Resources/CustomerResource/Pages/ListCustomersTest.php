@@ -70,6 +70,7 @@ it('does not use DISTINCT ON when filtering by customer group on PostgreSQL', fu
 
     $group = CustomerGroup::factory()->create();
 
+    // CI runs on SQLite, so compile the queries with the PostgreSQL grammar instead.
     $connection = DB::connection();
     $connection->setQueryGrammar(new PostgresGrammar($connection));
 
