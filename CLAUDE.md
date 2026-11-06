@@ -69,9 +69,9 @@ PHPStan (via Larastan, level 0) is part of the test pipeline and **must pass bef
 ## Documentation
 
 - Docs for a change go in `docs/` in the same PR. They publish at the next 2.x release, not on merge.
-- Page paths and links are written without the `/2.x` prefix; link to other versions with their prefix, and to Support, Flight Plan or v0 pages with the full URL. See `docs/README.md`.
+- Page paths and links are written without the `/2.x` prefix; link to other versions and to Support, Flight Plan or v0 pages with the full URL. See `docs/README.md`.
 - Follow the writing style in `docs/README.md`: third person, American English, full namespaces, and the field, relationship and scope tables for models.
-- Check with `mint broken-links` from `docs/`.
+- Check with `mint validate` and `mint broken-links` from `docs/`; the `Docs` workflow runs both on PRs that change `docs/`.
 
 ## Reviewing changes
 
