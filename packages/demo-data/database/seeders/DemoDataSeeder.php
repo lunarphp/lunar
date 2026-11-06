@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\DemoData\Generators\BundlesGenerator;
 use Lunar\DemoData\Generators\CatalogueGenerator;
 use Lunar\DemoData\Generators\CustomersGenerator;
 use Lunar\DemoData\Generators\FoundationGenerator;
@@ -26,6 +27,7 @@ class DemoDataSeeder extends Seeder
     protected array $generators = [
         FoundationGenerator::class,
         CatalogueGenerator::class,
+        BundlesGenerator::class,
         CustomersGenerator::class,
         OrdersGenerator::class,
     ];
@@ -49,6 +51,7 @@ class DemoDataSeeder extends Seeder
         'collection_customer_group', 'collection_discount',
         'brands', 'brand_discount', 'channelables',
         'stock_levels', 'stock_movements', 'stock_reservations',
+        'bundles', 'bundle_groups', 'bundle_components',
     ];
 
     public function usingContext(DemoContext $context): static

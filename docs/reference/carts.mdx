@@ -1,0 +1,412 @@
+---
+title: "Carts"
+description: "Create carts, manage lines and addresses, calculate totals, and convert a cart into an order."
+---
+
+A cart holds the purchasable items a customer intends to buy, together with the addresses and shipping selection needed to calculate totals and, eventually, create an order.
+
+## Overview
+
+A cart belongs to a channel and a currency, optionally to an authenticated user and a customer, and holds a collection of lines, each pointing at a purchasable item (typically a product variant).
+
+<Info>
+Cart totals (`subTotal`, `total`, `taxTotal`, and so on) are calculated at runtime by a pipeline and are not stored on the `carts` table. They are populated as public properties on the `Lunar\Core\Models\Cart` instance when `calculate()` runs, and are instances of `Lunar\Core\DataObjects\PriceValue`. Once a cart is converted to an order, the resulting totals are persisted on the order.
+</Info>
+
+## Cart model
+
+```php
+Lunar\Core\Models\Cart
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `public_id` | `ulid` | Publicly-exposable identifier |
+| `user_id` | `foreignId` `nullable` | The authenticated user the cart belongs to |
+| `merged_id` | `foreignId` `nullable` | References the cart this cart was merged into |
+| `currency_id` | `foreignId` | |
+| `channel_id` | `foreignId` | |
+| `order_id` | `foreignId` `nullable` | References the order created from this cart |
+| `coupon_code` | `string` `nullable` | |
+| `remember_token` | `string` `nullable` | SHA-256 hash of the guest cart's remember cookie token, hidden from serialization. See [Remembering guest carts](#remembering-guest-carts) |
+| `completed_at` | `dateTime` `nullable` | |
+| `meta` | `jsonb` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+| `customer_id` | `foreignId` `nullable` | |
+| `deleted_at` | `timestamp` `nullable` | |
+| `tax_zone_id` | `foreignId` `nullable` | Overrides the resolved tax zone when set |
+| `region_id` | `foreignId` `nullable` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `lines` | HasMany | `Lunar\Core\Models\CartLine` | Ordered by `id` |
+| `currency` | BelongsTo | `Lunar\Core\Models\Currency` | |
+| `channel` | BelongsTo | `Lunar\Core\Models\Channel` | |
+| `region` | BelongsTo | `Lunar\Core\Models\Region` | |
+| `user` | BelongsTo | The authenticatable model from auth config | |
+| `customer` | BelongsTo | `Lunar\Core\Models\Customer` | |
+| `taxZone` | BelongsTo | `Lunar\Core\Models\TaxZone` | |
+| `addresses` | HasMany | `Lunar\Core\Models\CartAddress` | |
+| `shippingAddress` | HasOne | `Lunar\Core\Models\CartAddress` | Where `type` is `shipping` |
+| `billingAddress` | HasOne | `Lunar\Core\Models\CartAddress` | Where `type` is `billing` |
+| `orders` | HasMany | `Lunar\Core\Models\Order` | |
+| `draftOrder` | HasOne | `Lunar\Core\Models\Order` | The order tied to this cart that has not yet been placed |
+| `completedOrder` | HasOne | `Lunar\Core\Models\Order` | The order tied to this cart that has been placed |
+| `completedOrders` | HasMany | `Lunar\Core\Models\Order` | All placed orders tied to this cart |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `unmerged` | Carts that have not been merged into another cart (`merged_id` is null) |
+| `active` | Carts with no orders, or whose orders have not been placed |
+
+<Info>
+`Lunar\Core\Models\Cart` uses `SoftDeletes`. This is not a lifecycle state on the cart itself — it lets order-tied carts hang around for replay and audit rather than being permanently removed.
+</Info>
+
+## Cart line model
+
+```php
+Lunar\Core\Models\CartLine
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `public_id` | `ulid` | Publicly-exposable identifier |
+| `cart_id` | `foreignId` | |
+| `purchasable_type` | `string` | Morph type of the purchasable item |
+| `purchasable_id` | `unsignedBigInteger` | Morph ID of the purchasable item |
+| `quantity` | `unsignedInteger` | |
+| `meta` | `jsonb` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `cart` | BelongsTo | `Lunar\Core\Models\Cart` | |
+| `purchasable` | MorphTo | Various | The item being purchased, typically `Lunar\Core\Models\ProductVariant` |
+| `taxClass` | HasOneThrough | `Lunar\Core\Models\TaxClass` | Reached through the purchasable |
+| `discounts` | BelongsToMany | `Lunar\Core\Models\Discount` | Discounts applied to this line |
+
+<Info>
+`purchasable_type` / `purchasable_id` on a cart line are always set — every cart line points at a real purchasable. This is unlike an order line, where the same morph is nullable for self-describing lines such as shipping or ad-hoc charges. A cart never produces a purchasable-less line.
+</Info>
+
+<Info>
+Don't confuse the `purchasable` morph relation with `Lunar\Core\Enums\SellingPolicy`, the `always` / `in_stock` / `in_stock_or_on_backorder` mode stored on `ProductVariant::$selling_policy` (renamed from `purchasable` in v2). The two are unrelated: the morph is *what* is in the line, the selling policy is *whether* the underlying variant can currently be sold, and it's what `canBeFulfilledAtQuantity()` checks when a line is added or updated (see [Adding and updating lines](#adding-and-updating-lines)).
+</Info>
+
+## Cart address model
+
+```php
+Lunar\Core\Models\CartAddress
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `public_id` | `ulid` | Publicly-exposable identifier |
+| `cart_id` | `foreignId` | |
+| `country_id` | `foreignId` `nullable` | |
+| `title` | `string` `nullable` | |
+| `first_name` | `string` `nullable` | |
+| `last_name` | `string` `nullable` | |
+| `company_name` | `string` `nullable` | |
+| `line_one` | `string` `nullable` | |
+| `line_two` | `string` `nullable` | |
+| `line_three` | `string` `nullable` | |
+| `city` | `string` `nullable` | |
+| `state` | `string` `nullable` | |
+| `postcode` | `string` `nullable` | |
+| `delivery_instructions` | `string` `nullable` | |
+| `contact_email` | `string` `nullable` | |
+| `contact_phone` | `string` `nullable` | |
+| `type` | `string` | Either `shipping` or `billing` |
+| `shipping_option` | `string` `nullable` | The identifier of the selected shipping option |
+| `meta` | `jsonb` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+| `tax_identifier` | `string` `nullable` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `cart` | BelongsTo | `Lunar\Core\Models\Cart` | |
+| `country` | BelongsTo | `Lunar\Core\Models\Country` | |
+
+A cart holds at most one address per `type` — adding an address of a given type replaces any existing one of that type.
+
+## Retrieving and using carts
+
+`Lunar\Core\Facades\CartSession` manages the cart for the current visitor, backed by `Lunar\Core\Managers\CartSessionManager`. It is bound `scoped` in the container, so under Octane or a queue worker each request or job gets its own instance — see [Session-scoped, not a singleton](#session-scoped-not-a-singleton) below.
+
+```php
+use Lunar\Core\Facades\CartSession;
+
+// Get the current cart, or null if none is in the session.
+$cart = CartSession::current();
+
+// Get the current cart, creating one if none exists.
+$cart = CartSession::manager();
+```
+
+<Info>
+By default `CartSession::current()` does not create a cart. Set `lunar.cart_session.auto_create` to `true` to have it create one automatically, or call `CartSession::manager()`, which always returns a cart.
+</Info>
+
+Configuration lives in `packages/core/config/cart_session.php`:
+
+| Key | Description |
+|:----|:------------|
+| `session_key` | The session key used to store the current cart's ID (default `lunar_cart`) |
+| `auto_create` | Whether `current()` creates a cart automatically when none exists (default `false`) |
+| `allow_multiple_orders_per_cart` | Whether a cart can be reused after it already has a completed order (default `false`) |
+| `delete_on_forget` | Whether the cart is deleted when `CartSession::forget()` is called (default `true`) |
+| `remember.enabled` | Whether guest carts are restored from a long-lived cookie after the session expires (default `true`) |
+| `remember.cookie` | The name of the remember cookie (default `lunar_cart_remember`) |
+| `remember.lifetime` | How long the remember cookie lasts, in minutes (default `43200`, 30 days) |
+
+When no cart ID is in the session, `CartSession` resolves the cart in this order:
+
+1. The [remember cookie](#remembering-guest-carts), for a guest cart.
+2. The authenticated user's latest unmerged, active cart, so a returning logged-in user picks their existing cart back up.
+
+If neither finds a cart, a new one is created (when `auto_create` is enabled or `manager()` is called).
+
+### Remembering guest carts
+
+A guest cart normally lives only as long as the session. To let a store keep a short session lifetime without guests losing their carts, `CartSession` also points a long-lived cookie at the guest cart. When the session has expired, the cookie restores the cart into the new session.
+
+The cookie holds a random 40-character token. Only its SHA-256 hash is stored, in the cart's `remember_token` column, so reading the database does not reveal a working cookie value.
+
+The cookie is managed whenever the session's cart changes:
+
+| Event | Behavior |
+|:------|:---------|
+| A guest cart becomes the session's cart | A token is issued and the cookie is set. If the request's cookie already matches the cart, nothing is written and no cookie is sent. |
+| The cart is restored from the cookie | The same token is sent again with a fresh expiry, and the cart is touched. |
+| The cart is associated with a user (for example on login) | The token is cleared and the cookie is removed. User carts are resolved through the user, never through the cookie. |
+| `CartSession::forget()` is called (for example on logout or after `createOrder()`) | The token is cleared and the cookie is removed. |
+| The cookie no longer matches a restorable cart | The cookie is removed. |
+
+A cart is only restored from the cookie when it has no `user_id`, has not been merged into another cart, and has no placed order. This means that after a user logs out on a shared device, the next visitor cannot pick up that user's cart.
+
+Because the expiry is refreshed on each restore rather than on each request, a guest who returns at least once within `remember.lifetime` keeps their cart, and ordinary requests do not send an extra `Set-Cookie` header. The token is not rotated on restore: parallel requests at the start of a session all carry the same cookie, and rotating it would cause all but one of them to clear it.
+
+The cookie takes its `path`, `domain`, `secure` and `same_site` settings from `config/session.php`, and is always `HttpOnly`. It is excluded from Laravel's `EncryptCookies` middleware, because the value is already a random secret and encrypting it would stop the cart being found on routes that do not run that middleware (for example API routes).
+
+<Tip>
+Keep `remember.lifetime` shorter than `lunar.cart.prune_tables.prune_interval`, and leave `auto_create` set to `false`. With `auto_create` off, crawlers that never add to cart are not given a cart or a cookie.
+</Tip>
+
+To turn the behavior off, set `remember.enabled` to `false`:
+
+```php
+// config/lunar/cart_session.php
+'remember' => [
+    'enabled' => false,
+    'cookie' => 'lunar_cart_remember',
+    'lifetime' => 60 * 24 * 30,
+],
+```
+
+### Creating a cart directly
+
+Carts can also be created directly, bypassing the session, which is useful for APIs or background jobs:
+
+```php
+use Lunar\Core\Models\Cart;
+
+$cart = Cart::create([
+    'currency_id' => $currency->id,
+    'channel_id' => $channel->id,
+]);
+```
+
+### Setting the channel and currency
+
+```php
+use Lunar\Core\Facades\CartSession;
+
+CartSession::setChannel($channel);
+CartSession::setCurrency($currency);
+```
+
+Setting the currency on an existing cart updates `currency_id` on the cart and drops its loaded `currency` and `lines` relations, so the next `calculate()` prices in the new currency.
+
+### Associating a user
+
+```php
+CartSession::associate($cart, $user, policy: 'merge');
+```
+
+`$policy` is either `merge` (the default) or `override`. On `merge`, the user's existing active cart is merged into the given cart via `MergeCart`; matching lines (same purchasable and meta) have their quantities combined, others are copied across. On `override`, the user's existing cart is marked as merged into itself and abandoned in favor of the given cart. This mirrors `lunar.cart.auth_policy`, applied automatically by `CartSessionAuthListener` when a user logs in.
+
+### Forgetting the session cart
+
+```php
+CartSession::forget();
+```
+
+Removes the cart ID from the session and clears the cart's [remember cookie](#remembering-guest-carts). Deletes the cart itself unless `$delete` is passed as `false` or `lunar.cart_session.delete_on_forget` is `false`.
+
+## Adding and updating lines
+
+Cart lines are also managed through verb methods on the `Cart` model itself, which is what `CartSession` delegates to.
+
+```php
+use Lunar\Core\Models\Cart;
+
+/** @var Cart $cart */
+$cart->add($productVariant, quantity: 2, meta: ['gift_wrap' => true]);
+```
+
+`add()` runs the `Lunar\Core\Enums\StepList::AddToCartValidation` validators (quantity, stock, and channel/customer-group availability by default) before adding or incrementing the line, then refreshes and recalculates the cart. If a line for the same purchasable and meta already exists, its quantity is incremented rather than a new line being created.
+
+```php
+// Update a line's quantity (and optionally its meta).
+$cart->updateLine(cartLineId: $line->id, quantity: 3);
+
+// Remove a line.
+$cart->remove($line->id);
+
+// Add or update several lines in a single transaction.
+$cart->addLines([
+    ['purchasable' => $variantA, 'quantity' => 1],
+    ['purchasable' => $variantB, 'quantity' => 2, 'meta' => ['engraving' => 'Happy Birthday']],
+]);
+
+$cart->updateLines(collect([
+    ['id' => $lineA->id, 'quantity' => 5],
+    ['id' => $lineB->id, 'quantity' => 1, 'meta' => ['note' => 'Fragile']],
+]));
+
+// Remove every line.
+$cart->clear();
+```
+
+Stock validation calls `$purchasable->canBeFulfilledAtQuantity($quantity)`, which for a `Lunar\Core\Models\ProductVariant` reads its `Lunar\Core\Enums\SellingPolicy` (`Always`, `InStock`, `InStockOrOnBackorder`) — a variant with policy `Always` is always fulfillable regardless of stock.
+
+## Addresses and tax zone
+
+```php
+$cart->setShippingAddress($address);
+$cart->setBillingAddress($address);
+```
+
+`$address` accepts either an array of address fields or a model implementing `Lunar\Core\Contracts\Addressable`. Setting an address replaces any existing address of the same type on the cart. Setting the shipping address clears any manually-set `tax_zone_id` by default (pass `$clearTaxZone = false` to keep it), so tax resolution falls back to the address-derived zone.
+
+```php
+// Override the zone tax is calculated against, or clear it.
+$cart->setTaxZone($taxZone);
+$cart->setTaxZone(null);
+```
+
+## Shipping
+
+```php
+use Lunar\Core\DataTypes\ShippingOption;
+
+$option = $cart->getEstimatedShipping($params);     // cheapest non-collection option, for display
+$cart->setShippingOption($option);                  // persist the chosen option on the shipping address
+$current = $cart->getShippingOption();               // the option currently applied to the calculated cart
+```
+
+Shipping options are resolved through `Lunar\Core\Facades\ShippingManifest` — see [Extending Shipping](/extending/shipping) for how carriers register options. `CartSession::getShippingOptions()` returns the options available for the session's current cart.
+
+## Discounts
+
+Coupon codes and cart-level discounts are applied during calculation, not through a dedicated verb method — set `coupon_code` on the cart and recalculate:
+
+```php
+$cart->update(['coupon_code' => 'SAVE10']);
+$cart->recalculate();
+```
+
+See [Discounts](/reference/discounts) for how discounts are matched and applied. After calculation, `$cart->discounts`, `$cart->discountTotal`, `$cart->discountBreakdown`, `$cart->promotions`, and `$cart->freeItems` describe what was applied.
+
+## Calculating totals
+
+```php
+$cart->calculate();      // calculate once; skips if already calculated
+$cart->recalculate();    // force recalculation
+$cart->isCalculated();   // whether the cart and every line already carry a total
+```
+
+`calculate()` runs the `Lunar\Core\Enums\StepList::CartCalculation` step list, in order:
+
+1. `Lunar\Core\Pipelines\Cart\CalculateLines` — for each line, runs the line modifiers' `calculating()` hook, prices the line through the `StepList::CartLinePricing` steps (`GetUnitPrice` by default), sets its subtotal, runs the line modifiers' `subtotalled()` hook, then derives the line's discounted subtotal and total from the subtotal
+2. `Lunar\Core\Pipelines\Cart\ApplyShipping` — resolves and applies the shipping option
+3. `Lunar\Core\Pipelines\Cart\CalculateShippingSubTotal`
+4. `Lunar\Core\Pipelines\Cart\ApplyDiscounts` — matches and applies eligible discounts
+5. `Lunar\Core\Pipelines\Cart\CalculateTax`
+6. `Lunar\Core\Pipelines\Cart\Calculate` — sums line totals, discounts, and shipping into the cart-level totals
+
+Each stage populates public properties on the cart (and its lines) as `Lunar\Core\DataObjects\PriceValue` instances:
+
+| Property | Description |
+|:---------|:------------|
+| `subTotal` | Sum of cart line subtotals, before tax, shipping, and cart-level discounts |
+| `subTotalDiscounted` | Subtotal after line-level discounts |
+| `shippingSubTotal` | Shipping cost before tax |
+| `shippingTaxTotal` | Tax on the shipping cost |
+| `shippingTotal` | Shipping cost including tax |
+| `taxTotal` | Sum of all tax across lines and shipping |
+| `discountTotal` | Sum of all line-level and cart-level discounts |
+| `discountBreakdown` | `Collection<Lunar\Core\ValueObjects\Cart\DiscountBreakdown>` |
+| `taxBreakdown` | `Lunar\Core\ValueObjects\Cart\TaxBreakdown` |
+| `shippingBreakdown` | `Lunar\Core\ValueObjects\Cart\ShippingBreakdown` |
+| `promotions` | `Collection<Lunar\Core\ValueObjects\Cart\Promotion>` |
+| `freeItems` | `Collection<Lunar\Core\ValueObjects\Cart\FreeItem>` |
+| `total` | Line totals plus shipping, minus cart-level discounts |
+
+A `PriceValue` exposes `->value` (the integer minor-unit amount), `->decimal()`, and `->format()`, resolved against the cart's currency. It also supports `add()`, `subtract()`, `multiply()`, and `clampToZero()` for combining amounts in custom pipeline stages.
+
+<Info>
+Registered modifiers run around these steps. `Lunar\Core\Modifiers\CartModifier::calculating()` runs before the first step. After the last step, each line's `Lunar\Core\Modifiers\CartLineModifier::calculated()` hook runs with final totals, followed by `CartModifier::calculated()`. Custom logic is added as a modifier at these fixed points, or as a step at a precise position in a step list. See [Extending Carts](/extending/carts).
+</Info>
+
+## Converting a cart to an order
+
+```php
+$order = $cart->createOrder();
+```
+
+`createOrder()` recalculates the cart, runs the `StepList::OrderCreateValidation` validators (`ValidateCartForOrderCreation` by default — quantity, stock, and address/shipping completeness), then delegates to the `CreatesOrder` action contract to create or update the draft order tied to the cart, mark any used discounts as consumed, and return the resulting `Lunar\Core\Models\Order`.
+
+```php
+$cart->canCreateOrder();   // true/false, without throwing
+```
+
+`CartSession::createOrder()` is the session-aware equivalent — it creates the order from the session's current cart and, by default, calls `forget()` afterwards.
+
+A cart's `fingerprint()` produces a hash of its lines, user, currency, and coupon code, used to detect whether a cart has changed since a price or order was last calculated for it.
+
+## Pruning carts
+
+```bash
+php artisan lunar:prune:carts
+```
+
+`Lunar\Core\Console\Commands\PruneCarts` deletes carts (and their lines and addresses) matched by the `StepList::CartPruning` step list. By default this excludes carts with orders and carts merged into another cart, and only targets carts older than `lunar.cart.prune_tables.prune_interval` days (default 90). Pruning is disabled by default (`lunar.cart.prune_tables.enabled`); schedule the command once enabled.
+
+Restoring a cart from the [remember cookie](#remembering-guest-carts) touches the cart's `updated_at`, so a guest cart that is still being restored is not treated as abandoned.
+
+## Session-scoped, not a singleton
+
+`Lunar\Core\Contracts\CartSession` is bound `scoped` in the container, not `singleton` — it memoizes the current cart for the life of one request or job. Under Octane or a queue worker, a `singleton` binding would persist across requests and leak one visitor's cart into the next; `scoped` is discarded when the request or job ends.

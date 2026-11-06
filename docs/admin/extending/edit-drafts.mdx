@@ -1,0 +1,226 @@
+---
+title: "Edit Drafts"
+sidebarTitle: "Edit Drafts"
+description: "How the panel autosaves in-progress edits, and how an add-on opts a resource in."
+---
+
+Panel edit forms autosave in-progress changes as a draft and detect conflicts field by field, rather than saving on submit and risking one staff member's changes silently overwriting another's.
+
+## From a staff member's point of view
+
+On a draft-backed edit page (Customers, Discounts, and other first-party record forms):
+
+- Typing in a field autosaves shortly after the field stops changing — there is no explicit save button for the drafted fields themselves. A small status note near the form shows "Saving draft…" then "Draft saved".
+- Leaving the page with unsaved changes (closing the tab, following a link elsewhere) prompts first; navigating away anyway keeps the edits as a draft rather than discarding them.
+- Returning to the same record later restores the draft automatically, with a banner noting when it was saved and a **Discard** action to drop it and revert to the saved values.
+- Clicking **Save** (or the page's equivalent commit action) commits the draft. If nobody else touched the same fields in the meantime, it saves normally.
+- If another staff member changed one of the same fields since this draft started tracking it, a conflict dialog appears listing only the conflicting fields — not the whole form — with the value the user typed, the current database value, and a choice to keep their own value or take the other one. Fields neither staff member touched in common are never affected.
+
+Two staff members editing *different* fields on the same record never see a conflict, in either save order. Only the same field, edited by both, triggers resolution.
+
+## Opting a resource in
+
+Drafting is not automatic per model — a `Section` registers a `DraftableResource` definition describing exactly which fields it drafts and how they read and write. Return definitions from `Section::draftables()`:
+
+```php
+public function draftables(): array
+{
+    return [CustomerDraftResource::class];
+}
+```
+
+### The `DraftableResource` contract
+
+```php
+namespace Lunar\Panel\Contracts;
+
+interface DraftableResource
+{
+    /** @return class-string<Model> */
+    public function model(): string;
+
+    /** @return array<int, string> */
+    public function fields(): array;
+
+    /** @return array<string, mixed> */
+    public function currentValues(Model $record): array;
+
+    /** @return array<string, mixed> */
+    public function normalize(array $data): array;
+
+    /** @return array<string, mixed> */
+    public function rules(Model $record): array;
+
+    public function commit(Model $record, array $values): void;
+
+    /** @return array<string, string> */
+    public function labels(): array;
+}
+```
+
+Extend the abstract `Lunar\Panel\Drafts\DraftableResource` rather than implementing the interface directly — it supplies sensible defaults for `normalize()` (a no-op passthrough) and `labels()` (an empty map, so the conflict dialog falls back to the raw field key).
+
+- `model()` — the Eloquent model class this definition drafts.
+- `fields()` — the allowed field keys. Autosave and commit reject any key outside this set. A field key is usually a column name, but can be anything the resource defines meaning for — a relation-backed key like `customer_group_ids`, or a whole JSON payload treated as one field.
+- `currentValues(Model $record)` — the record's current value for every field key, normalized the same way `normalize()` shapes incoming draft data. This is the baseline conflict detection compares against.
+- `normalize(array $data)` — shapes incoming draft values into the same form `currentValues()` reports, so equality comparison between "what the draft has" and "what the database has" is meaningful (for example, coercing an empty string to `null` for a nullable text column, or sorting a relation's id array).
+- `rules(Model $record)` — validation rules for a full commit payload, run before conflict detection.
+- `commit(Model $record, array $values)` — applies a validated, conflict-free value set to the record. Always delegate to the core action contracts here; the panel layer never writes model fields directly.
+- `labels()` — field key to lang key, used to label a field in the conflict dialog.
+
+### Worked example
+
+`Lunar\Panel\Sections\Sales\CustomerDraftResource` drafts the customer edit form's scalar columns plus the pivot-backed `customer_group_ids`:
+
+```php
+namespace Lunar\Panel\Sections\Sales;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomer;
+use Lunar\Core\Models\Customer;
+use Lunar\Panel\Drafts\DraftableResource;
+use Lunar\Panel\Http\Requests\Customers\CustomerRequest;
+
+class CustomerDraftResource extends DraftableResource
+{
+    private const NULLABLE_TEXT_FIELDS = ['title', 'company_name', 'tax_identifier', 'account_ref'];
+
+    public function __construct(protected UpdatesCustomer $updatesCustomer) {}
+
+    public function model(): string
+    {
+        return Customer::class;
+    }
+
+    public function fields(): array
+    {
+        return [
+            'title', 'first_name', 'last_name', 'company_name',
+            'tax_identifier', 'account_ref', 'customer_group_ids',
+        ];
+    }
+
+    public function currentValues(Model $record): array
+    {
+        /** @var Customer $record */
+        return [
+            'title' => $record->title,
+            'first_name' => $record->first_name,
+            'last_name' => $record->last_name,
+            'company_name' => $record->company_name,
+            'tax_identifier' => $record->tax_identifier,
+            'account_ref' => $record->account_ref,
+            'customer_group_ids' => $this->sortedIds($record->customerGroups()->allRelatedIds()->all()),
+        ];
+    }
+
+    public function normalize(array $data): array
+    {
+        foreach (self::NULLABLE_TEXT_FIELDS as $field) {
+            if (array_key_exists($field, $data) && $data[$field] === '') {
+                $data[$field] = null;
+            }
+        }
+
+        if (array_key_exists('customer_group_ids', $data)) {
+            $data['customer_group_ids'] = $this->sortedIds((array) $data['customer_group_ids']);
+        }
+
+        return $data;
+    }
+
+    public function rules(Model $record): array
+    {
+        return (new CustomerRequest)->rules();
+    }
+
+    public function commit(Model $record, array $values): void
+    {
+        /** @var Customer $record */
+        $this->updatesCustomer->execute(
+            $record,
+            collect($values)->except('customer_group_ids')->all(),
+            $values['customer_group_ids'] ?? [],
+        );
+    }
+
+    public function labels(): array
+    {
+        return [
+            'title' => 'panel::customers.field_title',
+            'first_name' => 'panel::customers.field_first_name',
+            'last_name' => 'panel::customers.field_last_name',
+            'company_name' => 'panel::customers.field_company_name',
+            'tax_identifier' => 'panel::customers.field_tax_identifier',
+            'account_ref' => 'panel::customers.field_account_ref',
+            'customer_group_ids' => 'panel::customers.customer_groups',
+        ];
+    }
+
+    protected function sortedIds(array $ids): array
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        sort($ids);
+
+        return $ids;
+    }
+}
+```
+
+`commit()` delegates to `UpdatesCustomer`, the core action contract — the draft layer never bypasses it to write columns directly.
+
+### Wiring the routes
+
+A draftable resource needs three routes, registered inside the owning section's route closure next to the record's existing CRUD routes, all handled by the panel's shared `EditDraftController`:
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `PATCH` | `{resource}/{record}/draft` | Merge an autosave diff into the staff member's draft. |
+| `DELETE` | `{resource}/{record}/draft` | Discard the draft. |
+| `POST` | `{resource}/{record}/draft/commit` | Attempt to commit; returns 200 on success, 409 with the conflict set, or 422 on validation failure. |
+
+There is no `GET` route for a draft: the edit page's own Inertia response includes a `draft` prop (`{data, updated_at}`, or `null` when there is none) for the current staff member, resolved as part of the normal page load.
+
+## The JS side
+
+Drafted edit pages use `useEditDraft` in place of Inertia's `useForm`, both exported from `@lunarphp/panel`.
+
+```ts
+import { useEditDraft } from '@lunarphp/panel';
+
+const form = useEditDraft({
+    initial: props.record,
+    draft: props.draft,
+    urls: {
+        draft: props.urls.draft,
+        commit: props.urls.commit,
+    },
+});
+```
+
+`useEditDraft` exposes:
+
+- `values` — reactive form state, the pristine record overlaid with any restored draft.
+- `isDirty`, `saving`, `committing`, `savedAt`, `hasDraft`, `restoredFrom` — status for the autosave indicator and the restored-draft banner.
+- `errors` — validation errors from a failed commit.
+- `conflicts` — the per-field conflict set from a 409 response.
+- `commit()` — sends the current diff immediately (not waiting out the autosave debounce) and, on success, reloads the page so the server's session flash message shows.
+- `resolve(resolutions, rebase)` — re-commits after the staff member resolves conflicts, pinning each resolved field's `rebase` value to the current database value they were shown (so a further change to the same field between resolving and re-committing conflicts again, rather than being silently overwritten).
+- `discard()` — reverts local values to pristine and deletes the draft.
+
+Autosave watches `values` with a debounce (roughly 750ms by default), sends only the changed fields, and serialises requests so a slower, older response can never clobber a newer one. A diff that empties back out (the user undid their own change) triggers a `DELETE` instead of a `PATCH`.
+
+Two ready-made components pair with the composable:
+
+- `DraftActions` — the small "Saving draft… / Draft saved" status plus save/discard controls, driven entirely from the `EditDraftForm` object `useEditDraft` returns.
+- `DraftConflictDialog` — the resolution dialog: one row per conflicting field, the drafted value and the current database value side by side, keep-mine / take-theirs choices, and a `resolve` event carrying the resolutions and rebase payload back to the caller.
+
+Both are exported from `@lunarphp/panel` alongside `useEditDraft`, so an [add-on](/admin/extending/addons)'s own drafted edit page builds on exactly the same pieces as a first-party one.
+
+## Expiry
+
+Drafts left untouched are pruned automatically: `lunar.panel.drafts.ttl_days` (`config/lunar/panel.php`, default `7`) controls how many days of inactivity mark a draft stale enough to discard. This runs as part of the panel's scheduled maintenance, alongside its other prune tasks — no separate command to run.
+
+<Info>
+Drafts are invisible to anyone but their owner until committed. There is no "someone has unsaved changes" indicator on a record's list row, and no locking — a second staff member can open and start editing the same record freely; the conflict dialog only appears if both save the same field.
+</Info>

@@ -6,9 +6,12 @@ use Illuminate\Pipeline\Pipeline;
 use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
 use Lunar\Core\Contracts\Actions\Carts\HydratesCartTotals;
 use Lunar\Core\Contracts\Actions\Carts\PersistsCartTotals;
+use Lunar\Core\Contracts\StepManifest;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
-use Lunar\Core\Pipelines\Cart\Calculate;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
 
 /**
  * Decides how a cart gets its totals (spec 0076): the in-memory memo when it
@@ -20,6 +23,9 @@ class CalculateCart implements CalculatesCart
 {
     public function __construct(
         protected Pipeline $pipeline,
+        protected StepManifest $steps,
+        protected CartModifiers $cartModifiers,
+        protected CartLineModifiers $cartLineModifiers,
         protected HydratesCartTotals $hydratesCartTotals,
         protected PersistsCartTotals $persistsCartTotals,
     ) {}
@@ -37,16 +43,25 @@ class CalculateCart implements CalculatesCart
 
         // Lines the pipeline itself writes (BuyXGetY reward lines) are part of
         // the calculation, not a change to it; the line observer skips
-        // invalidation while this flag is set.
-        $cart->setCalculating(true);
+        // invalidation while this flag is set. It also holds the cart's
+        // context for the whole calculation.
+        $calculating = $cart->setCalculating(true);
 
         try {
             $cart = $this->pipeline
-                ->send($cart)
-                ->through(config('lunar.cart.pipelines.cart', [Calculate::class]))
+                ->send($this->cartModifiers->calculating($cart))
+                ->through($this->steps->for(StepList::CartCalculation)->all())
                 ->thenReturn();
+
+            if ($this->cartLineModifiers->getModifiers()->isNotEmpty()) {
+                foreach ($cart->loadMissing('lines')->lines as $line) {
+                    $this->cartLineModifiers->calculated($line);
+                }
+            }
+
+            $cart = $this->cartModifiers->calculated($cart);
         } finally {
-            $cart->setCalculating(false);
+            $calculating->setCalculating(false);
         }
 
         $cart->lines->each(fn (CartLine $line) => $line->cacheProperties());

@@ -49,7 +49,7 @@ it('cant create order if already has complete and multiple disabled', function (
         'placed_at' => now(),
     ]);
 
-    (new CreateOrder)->execute($cart);
+    app(CreateOrder::class)->execute($cart);
 })->throws(DisallowMultipleCartOrdersException::class);
 
 test('can create order if multiple enabled', function () {
@@ -415,7 +415,7 @@ test('can keep the discount when the draft order is created again', function () 
 
     $cart->calculate();
 
-    $orderA = (new CreateOrder)->execute($cart)->refresh();
+    $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
@@ -427,7 +427,7 @@ test('can keep the discount when the draft order is created again', function () 
     $cart = Cart::find($cart->id);
     $cart->calculate();
 
-    $orderB = (new CreateOrder)->execute($cart)->refresh();
+    $orderB = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);
@@ -502,7 +502,7 @@ test('can not reuse a discount another cart has exhausted', function () {
 
     $cartA = $makeCart();
     $cartA->calculate();
-    $orderA = (new CreateOrder)->execute($cartA)->refresh();
+    $orderA = app(CreateOrder::class)->execute($cartA)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
@@ -512,7 +512,7 @@ test('can not reuse a discount another cart has exhausted', function () {
 
     $cartB = $makeCart();
     $cartB->calculate();
-    $orderB = (new CreateOrder)->execute($cartB)->refresh();
+    $orderB = app(CreateOrder::class)->execute($cartB)->refresh();
 
     expect($orderB->id)->not->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(0);
@@ -585,7 +585,7 @@ test('can still enforce other conditions on a discount the cart consumed', funct
 
     $cart->calculate();
 
-    $orderA = (new CreateOrder)->execute($cart)->refresh();
+    $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
 
@@ -597,7 +597,7 @@ test('can still enforce other conditions on a discount the cart consumed', funct
     $cart->updateLine($line->id, 1);
     $cart->calculate();
 
-    $orderB = (new CreateOrder)->execute($cart)->refresh();
+    $orderB = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->sub_total)->toEqual(1000);
@@ -670,14 +670,14 @@ test('can not consume a discount twice on one cart instance', function () {
     // before the first order exists would still be empty for the second.
     $cart->calculate();
 
-    $orderA = (new CreateOrder)->execute($cart)->refresh();
+    $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
 
     $cart->calculate();
 
-    $orderB = (new CreateOrder)->execute($cart)->refresh();
+    $orderB = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);
@@ -746,7 +746,7 @@ test('keeps its own discount when a cart is priced again after order creation', 
 
     $cart->calculate();
 
-    $orderA = (new CreateOrder)->execute($cart)->refresh();
+    $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
@@ -758,7 +758,7 @@ test('keeps its own discount when a cart is priced again after order creation', 
 
     $cart->recalculate();
 
-    $orderB = (new CreateOrder)->execute($cart)->refresh();
+    $orderB = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);

@@ -1,0 +1,461 @@
+---
+title: "Pricing"
+description: "Store, calculate, and format prices with currency-aware minor-unit integers, a swappable calculator, and a fluent pricing API."
+---
+
+Lunar stores every price as a currency-aware integer and resolves the price a customer sees through a fluent pricing API, a swappable calculator, and a formatter.
+
+## Overview
+
+Money in Lunar is always an integer in the currency's smallest unit (minor units, e.g. cents). Nothing in the storage layer is a float. Three collaborating pieces turn that integer into something usable:
+
+- **`Lunar\Core\Models\Price`**: the priced record for a purchasable, scoped by currency, customer group, and quantity.
+- **`Lunar\Core\Pricing\PriceCalculatorInterface`**: rounding-sensitive arithmetic (percentages, tax, distribution, major/minor conversion).
+- **`Lunar\Core\Pricing\PriceFormatterInterface`**: turns a minor-unit integer into a decimal or a localized currency string.
+
+Models that hold a money column (`Lunar\Core\Models\Price`, `Order`, `OrderLine`, `Transaction`, …) cast that column to a plain `integer` and pick up `format()` and `decimal()` helper methods through the `Lunar\Core\Models\Concerns\FormatsPrices` trait, so the ergonomics of a rich price object are available without allocating one on every attribute read. Values built at runtime that are not backed by a model column (a computed cart line discount, a tax-adjusted display price) use `Lunar\Core\DataObjects\PriceValue`, a small immutable wrapper around the same integer-plus-currency shape.
+
+## The Price model
+
+```php
+Lunar\Core\Models\Price
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `public_id` | `ulid` | Public-facing identifier |
+| `customer_group_id` | `foreignId` `nullable` | Restricts this price to a customer group |
+| `currency_id` | `foreignId` | The currency this price is in |
+| `priceable_type` | `string` | Morph type for the priced model |
+| `priceable_id` | `unsignedBigInteger` | Morph ID for the priced model |
+| `price` | `unsignedBigInteger` | The price, in the currency's minor units |
+| `list_price` | `unsignedBigInteger` `nullable` | The list price (RRP) shown for comparison, in minor units |
+| `min_quantity` | `integer` | The minimum quantity this price applies to (default: `1`) |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+`price` and `list_price` are cast to plain `integer`. `list_price` was named `compare_price` prior to v2.
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `priceable` | Morph to | Various | The model this price belongs to (e.g. `ProductVariant`) |
+| `currency` | Belongs to | `Lunar\Core\Models\Currency` | The currency for this price |
+| `customerGroup` | Belongs to | `Lunar\Core\Models\CustomerGroup` | The customer group this price is restricted to, when set |
+
+### Retrieving prices from a purchasable
+
+Any model that uses `Lunar\Core\Models\Concerns\HasPrices` (products, product variants, and other purchasables) exposes:
+
+```php
+use Lunar\Core\Models\ProductVariant;
+
+$variant = ProductVariant::find(1);
+
+$variant->prices;                            // MorphMany, every Price row
+$variant->basePrices;                        // min_quantity = 1, no customer group
+$variant->priceBreaks;                       // min_quantity > 1, quantity discount tiers
+```
+
+## Currency decimal scaling
+
+`Lunar\Core\Models\Currency` defines how many decimal places its minor unit represents:
+
+```php
+Lunar\Core\Models\Currency
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `decimal_places` | `integer` | Number of decimal places for this currency's minor unit |
+
+The `factor` accessor derives the major-to-minor multiplier from `decimal_places`: `100` for a currency with 2 decimal places, `1000` for one with 3, and so on.
+
+```php
+$currency->decimal_places; // 2
+$currency->factor;         // "100"
+```
+
+A price of `1099` minor units in a currency with `decimal_places = 2` displays as `10.99`.
+
+## Resolving a price: the Pricing facade
+
+`Lunar\Core\Facades\Pricing` exposes a `Lunar\Core\Managers\PricingManager` (bound to the `Lunar\Core\Contracts\PricingManager` contract) that resolves the correct `Price` row for a purchasable given a storefront context and a quantity. The manager holds a `Lunar\Core\DataObjects\StorefrontContext` as its pricing state, and clears all of it (purchasable, quantity, and context) after every `get()`, whether it returns or throws. Nothing carries from one call to the next.
+
+```php
+use Lunar\Core\Facades\Pricing;
+
+$response = Pricing::for($variant)
+    ->using($storefrontContext)
+    ->qty(5)
+    ->get();
+```
+
+| Method | Returns | Description |
+|:-------|:--------|:------------|
+| `for($purchasable)` | `PricingManager` | Set the purchasable to price. Required before `get()`. |
+| `using(StorefrontContext $context)` | `PricingManager` | Price against this context: its currency, customer groups, customer, region, and channel. |
+| `customer(?Customer $customer)` | `PricingManager` | Price for this customer, deriving the context's customer groups from it. `null` prices as a guest. |
+| `currency(?Currency $currency)` | `PricingManager` | Replace the context's currency. |
+| `customerGroups(?Collection $groups)` | `PricingManager` | Replace the context's customer groups. An empty value falls back to the groups of the context's customer, or the default group. |
+| `customerGroup(?CustomerGroup $group)` | `PricingManager` | Shortcut for a single customer group. |
+| `qty(int $qty)` | `PricingManager` | Set the quantity, for resolving quantity price breaks. Defaults to `1`. |
+| `user(?Authenticatable $user)` | `PricingManager` | **Deprecated.** Prices with the merged customer groups of the user's customers. Use `using()` or `customer()`. |
+| `guest()` | `PricingManager` | **Deprecated.** Use `customer(null)`. |
+| `get()` | `PricingResponse` | Resolve and return the matched price. |
+
+`currency()`, `customerGroups()`, `customerGroup()` and `customer()` modify the current context. Called before any context is supplied, they start from the default context described below.
+
+A purchasable also exposes this manager directly:
+
+```php
+$variant->pricing()->qty(5)->get();
+
+// Or primed with a storefront context up front
+$variant->pricing($storefrontContext)->get();
+```
+
+### The default context
+
+When `get()` runs with no context supplied, the manager asks `Lunar\Core\Contracts\DefaultStorefrontContext` for one. Unless the request registered a resolver, that is store defaults: the default region, its channel, currency, and language, the default customer group, and no customer. The manager never reads the auth guard or the session.
+
+A storefront makes bare calls price for the current visitor by calling `Lunar\Core\Facades\StorefrontSession::useAsDefaultContext()` once per request, from a middleware on the `web` group. See [Using the session as the default pricing context](/storefront-utils/storefront-session#using-the-session-as-the-default-pricing-context) for the middleware, and for the Livewire and Octane rules it must follow.
+
+Queued jobs, console commands, and scheduled tasks have no request, so bare calls there price against store defaults. Pass a context explicitly, for example `$variant->pricing($cart->context())->get()`.
+
+### Strict mode
+
+`Pricing::preventDefaultContext()` makes `get()` throw `Lunar\Core\Exceptions\MissingStorefrontContextException` when no context was supplied through `using()` or `pricing($context)` and no default resolver is registered. It is off by default; enable it outside production from a service provider:
+
+```php
+use Lunar\Core\Facades\Pricing;
+
+Pricing::preventDefaultContext(! app()->isProduction());
+```
+
+### Price breakdowns
+
+`get()` returns a `Lunar\Core\DataObjects\PricingResponse`:
+
+```php
+Lunar\Core\DataObjects\PricingResponse
+```
+
+| Property | Type | Description |
+|:---------|:-----|:------------|
+| `matched` | `Price` | The price that applies for the given currency, customer group(s), and quantity |
+| `base` | `Price` | The base price (`min_quantity = 1`) for the currency |
+| `priceBreaks` | `Collection<Price>` | All quantity price breaks (`min_quantity > 1`) available for the currency |
+| `customerGroupPrices` | `Collection<Price>` | All customer-group-restricted prices available for the currency |
+
+Resolution order: a customer-group price at `min_quantity = 1` takes priority over the base price (the cheapest one wins if several of the resolved customer groups have a price), and any price break whose `min_quantity` is at or below the requested `qty` takes priority over both — again, the cheapest qualifying break wins.
+
+### Price matching steps
+
+After matching, `PricingManager::get()` sends the manager through the `Lunar\Core\Enums\StepList::PriceMatching` step list, so a store can add custom pricing logic (such as contract prices, per-region price lists, or promotional overrides) without replacing the manager. The list is empty by default. Register a step from a service provider:
+
+```php
+use App\Pricing\ContractPricing;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
+
+public function boot(): void
+{
+    Steps::for(StepList::PriceMatching)->append(ContractPricing::class);
+}
+```
+
+A step types against the `Lunar\Core\Contracts\PricingManager` contract and reads the call's state through `getContext()`, `getPurchasable()` and `getQuantity()`. To change the result, it replaces the public `pricing` property (a `Lunar\Core\DataObjects\PricingResponse`):
+
+```php
+<?php
+
+namespace App\Pricing;
+
+use Closure;
+use Lunar\Core\Contracts\PricingManager;
+
+class ContractPricing
+{
+    public function handle(PricingManager $pricing, Closure $next): mixed
+    {
+        $customer = $pricing->getContext()->customer;
+        $region = $pricing->getContext()->region;
+        $purchasable = $pricing->getPurchasable();
+
+        // Look up a contract price and replace $pricing->pricing ...
+
+        return $next($pricing);
+    }
+}
+```
+
+`getContext()` is only meaningful inside `get()`, since the context is cleared once the call returns. The manager's `currency`, `customerGroups` and `user` properties remain readable for existing steps but are read-only; use the setters to change them. See [Registering calculation steps](/extending/carts#registering-calculation-steps) for the full `Steps` API.
+
+## Formatting a price
+
+Models that use `FormatsPrices` (`Price`, `Order`, `OrderLine`, `Transaction`, and others) expose `format()` and `decimal()` for any of their integer money columns:
+
+```php
+use Lunar\Core\Models\Price;
+
+$price = Price::find(1);
+
+$price->decimal('price');                 // 10.99
+$price->format('price');                  // "$10.99"
+$price->format('price', locale: 'fr');    // "10,99 $US"
+```
+
+```php
+public function format(string $field, ?string $locale = null, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): ?string;
+public function decimal(string $field, bool $rounding = true): ?float;
+```
+
+The currency used is resolved once per model instance (via `resolveCurrency()`) and memoized, so repeated calls across several columns do not re-query the currency relationship.
+
+### Unit pricing
+
+`Price` additionally supports unit-quantity-aware formatting, for purchasables where several individual units are sold under a single price record (`ProductVariant::$unit_quantity`):
+
+```php
+$price->unitFormat('price');    // per-single-unit formatted value
+$price->unitDecimal('price');   // per-single-unit decimal value
+```
+
+If a variant has `unit_quantity = 10` and a price of `10` minor units, `format('price')` returns the pack price while `unitFormat('price')` returns the per-unit price (`price / unit_quantity`).
+
+`OrderLine` has the same pair, dividing by the line's own `unit_quantity`. An order line stores the pack price, so `unitFormat('unit_price')` gives the price of a single unit:
+
+```php
+use Lunar\Core\Models\OrderLine;
+
+/** @var OrderLine $line */
+$line->format('unit_price');        // pack price
+$line->unitFormat('unit_price');    // per-single-unit formatted value
+$line->unitDecimal('unit_price');   // per-single-unit decimal value
+```
+
+```php
+public function unitFormat(string $field, ?string $locale = null, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): ?string;
+public function unitDecimal(string $field, bool $rounding = true): ?float;
+```
+
+### Tax-aware price accessors
+
+`Price` provides methods for retrieving the price with or without tax applied, based on the `lunar.pricing.stored_inclusive_of_tax` configuration value:
+
+```php
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\TaxZone;
+
+$price = Price::find(1);
+
+$price->priceExTax();      // PriceValue, exclusive of tax
+$price->priceIncTax();     // PriceValue, inclusive of tax
+$price->listPriceIncTax(); // PriceValue, list price inclusive of tax
+```
+
+Each method accepts an optional `Lunar\Core\Models\TaxZone` to override the zone used when computing the tax rate. When no zone is passed, the store's default tax zone is used:
+
+```php
+$zone = TaxZone::where('name', 'EU')->first();
+
+$price->priceIncTax($zone);
+```
+
+## PriceValue
+
+```php
+Lunar\Core\DataObjects\PriceValue
+```
+
+`PriceValue` is a small, immutable, currency-aware wrapper around a minor-unit integer. It is used wherever a price is computed at runtime rather than read from a persisted column: cart line discount amounts, tax breakdown entries, discount breakdowns.
+
+```php
+use Lunar\Core\DataObjects\PriceValue;
+
+$priceValue = new PriceValue(1099, $currency);
+
+$priceValue->value;              // 1099 (readonly)
+$priceValue->decimal();          // 10.99
+$priceValue->format();           // "$10.99"
+```
+
+`PriceValue` implements `Lunar\Core\Contracts\HasCurrency`, so it can be passed anywhere that interface is expected.
+
+### Arithmetic
+
+Every arithmetic method enforces that both operands share the same currency, throwing `Lunar\Core\Exceptions\MismatchedCurrencyException` on a mismatch:
+
+```php
+$total = $subTotal->subtract($discount);   // PriceValue
+$doubled = $unitPrice->multiply(2);        // PriceValue
+$combined = $a->add($b);                   // PriceValue, throws on currency mismatch
+$safe = $possiblyNegative->clampToZero();  // PriceValue, floors at zero
+```
+
+| Method | Description |
+|:-------|:------------|
+| `add(PriceValue $other)` | Returns a new `PriceValue` with the sum. |
+| `subtract(PriceValue $other)` | Returns a new `PriceValue` with the difference. May be negative. |
+| `multiply(int $multiplier)` | Returns a new `PriceValue` scaled by an integer (e.g. line quantity). |
+| `clampToZero()` | Returns `$this`, or a zero `PriceValue`, if the value is negative. |
+| `equals(PriceValue $other)` | Compares value and currency. |
+| `isZero()` | Whether the value is `0`. |
+| `isNegative()` | Whether the value is below `0`. |
+| `PriceValue::sum(iterable $values, Currency $currency)` | Static. Sums an iterable of `PriceValue`, asserting they all share `$currency`. |
+
+`multiply()` deliberately only accepts an `int`: scaling by a rate or percentage is rounding-sensitive and belongs to the price calculator below, not to plain multiplication.
+
+## The price calculator
+
+Rounding-sensitive money math — percentages, tax, proportional distribution, and major/minor conversion — is centralized behind `Lunar\Core\Pricing\PriceCalculatorInterface`, resolved through the `Lunar\Core\Facades\PriceCalculator` facade. Cart pipelines, discount types, and tax drivers all route through it rather than performing inline `round()` arithmetic, so a store can swap in a different rounding strategy (banker's rounding, a different bc-math cutover) in one place.
+
+```php
+use Lunar\Core\Facades\PriceCalculator;
+
+PriceCalculator::percentage(10000, 0.20, $currency);        // 2000 (20% of 10000)
+PriceCalculator::withTax(10000, 0.20, $currency);            // 12000
+PriceCalculator::withoutTax(12000, 0.20, $currency);          // 10000
+PriceCalculator::distribute(1000, [30, 30, 40], $currency);   // [300, 300, 400]
+PriceCalculator::toMinor('10.99', $currency);                 // 1099
+PriceCalculator::toMajor(1099, $currency);                    // 10.99
+```
+
+| Method | Description |
+|:-------|:------------|
+| `percentage(int $value, float $rate, Currency $currency)` | Multiplies a minor-unit value by a decimal rate (`0.20` = 20%), rounding to whole minor units. |
+| `withTax(int $value, float $rate, Currency $currency)` | Adds tax to a tax-exclusive value. |
+| `withoutTax(int $value, float $rate, Currency $currency)` | Strips tax from a tax-inclusive value. `withTax(withoutTax($v, $r), $r) === $v` is a guaranteed round trip. |
+| `distribute(int $total, array $weights, Currency $currency)` | Splits `$total` across weighted parts using largest-remainder allocation, so the parts always sum back to `$total` exactly. Used for fixed-amount discount allocation. |
+| `toMinor(int\|float\|string $major, Currency $currency)` | Converts a major-unit decimal (e.g. `12.99`) to minor units. |
+| `toMajor(int $minor, Currency $currency)` | Converts a minor-unit integer to a major-unit decimal. |
+
+`Lunar\Core\Pricing\DefaultPriceCalculator` is the shipped implementation: half-up rounding throughout, and `bcmul`-based math for currencies whose `decimal_places` is `4` or higher (configurable by subclassing and overriding the `$bcMathThreshold` property).
+
+### Swapping the calculator
+
+`PriceCalculatorInterface` is bound as a container singleton in `LunarServiceProvider`. Bind a different implementation in your own service provider to change the rounding strategy store-wide:
+
+```php
+use Lunar\Core\Pricing\PriceCalculatorInterface;
+
+$this->app->singleton(PriceCalculatorInterface::class, MyPriceCalculator::class);
+```
+
+## Formatting and the price formatter
+
+The class responsible for turning a minor-unit integer into a localized string is configured in `config/lunar/pricing.php`:
+
+```php
+return [
+    // ...
+    'formatter' => \Lunar\Core\Pricing\DefaultPriceFormatter::class,
+];
+```
+
+`Lunar\Core\Pricing\DefaultPriceFormatter` implements `Lunar\Core\Pricing\PriceFormatterInterface` and uses PHP's native [`NumberFormatter`](https://www.php.net/manual/en/class.numberformatter.php):
+
+```php
+public function __construct(
+    public int $value,
+    public ?Currency $currency = null,
+    public int $unitQty = 1
+);
+
+public function decimal(bool $rounding = true): float;
+public function unitDecimal(bool $rounding = true): float;
+public function formatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
+public function unitFormatted(?string $locale = null, int $formatterStyle = NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed;
+```
+
+`format()` and `decimal()` on `FormatsPrices` and `PriceValue` resolve this class through the container on every call, passing `unitQty: 1` — the `unitFormat()` / `unitDecimal()` methods resolve it with the real unit quantity (the priceable's `unit_quantity` on `Price`, the line's own `unit_quantity` on `OrderLine`).
+
+### Creating a custom formatter
+
+A custom formatter implements `Lunar\Core\Pricing\PriceFormatterInterface` and accepts the same three constructor parameters (`value`, `currency`, `unitQty`):
+
+```php
+<?php
+
+namespace App\Pricing;
+
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Pricing\PriceFormatterInterface;
+
+class CustomPriceFormatter implements PriceFormatterInterface
+{
+    public function __construct(
+        public int $value,
+        public ?Currency $currency = null,
+        public int $unitQty = 1
+    ) {
+        $this->currency ??= Currency::getDefault();
+    }
+
+    public function decimal(bool $rounding = true): float
+    {
+        // ...
+    }
+
+    public function unitDecimal(bool $rounding = true): float
+    {
+        // ...
+    }
+
+    public function formatted(?string $locale = null, int $formatterStyle = \NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    {
+        // ...
+    }
+
+    public function unitFormatted(?string $locale = null, int $formatterStyle = \NumberFormatter::CURRENCY, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    {
+        // ...
+    }
+}
+```
+
+Register it in `config/lunar/pricing.php`:
+
+```php
+return [
+    // ...
+    'formatter' => \App\Pricing\CustomPriceFormatter::class,
+];
+```
+
+## Adding price formatting to your own models
+
+There is no longer a reusable Eloquent cast for money columns. Instead, a model implements `Lunar\Core\Contracts\HasCurrency` and uses `Lunar\Core\Models\Concerns\FormatsPrices` directly, the same approach every priced model in core uses:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Contracts\HasCurrency;
+use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Currency;
+
+class MyModel extends Model implements HasCurrency
+{
+    use FormatsPrices;
+
+    protected $casts = [
+        'price' => 'integer',
+    ];
+
+    public function resolveCurrency(): Currency
+    {
+        return $this->currency ?? Currency::getDefault();
+    }
+}
+```
+
+```php
+$myModel->format('price');
+$myModel->decimal('price');
+```
+
+<Info>
+For a computed value that is not a model attribute at all — a total assembled in a service class, a value passed between pipeline steps — construct a `Lunar\Core\DataObjects\PriceValue` directly instead of adding a model.
+</Info>

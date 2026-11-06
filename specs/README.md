@@ -94,4 +94,12 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0073 | Split `AmountOff` into `PercentageOff` and `FixedAmountOff` | implemented |
 | 0074 | Panel global search (command palette) | implemented |
 | 0075 | First staff account creation without the Filament admin | implemented |
-| 0076 | Cart totals caching in the database | implemented |
+| 0077 | Pre-order payment intent capabilities | proposed    |
+| 0085 | Product bundles (`lunarphp/bundles`) | implemented |
+| 0089 | Cached model manifest | implemented |
+| 0090 | Remembered guest carts | implemented |
+| 0091 | PricingManager consumes the storefront context | implemented |
+| 0092 | Run cart and order modifiers | implemented |
+| 0093 | Registrable calculation steps | implemented |
+| 0094 | Versioned docs written in the monorepo and published from releases | implemented |
+| 0096 | Cart totals caching in the database | implemented |
