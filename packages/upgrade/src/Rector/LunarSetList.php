@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lunar\Upgrade\Rector;
 
+use Lunar\Upgrade\Rector\Media\RetypeGetThumbnailImageRector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
 use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
 use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
@@ -532,6 +533,7 @@ final class LunarSetList
         RewriteModelClassCallRector::class,
         RewriteOrderRefundCallRector::class,
         RetypeFormatterStyleParamRector::class,
+        RetypeGetThumbnailImageRector::class,
     ];
 
     /**

@@ -235,7 +235,7 @@ TranslatedTextColumn::make('attribute_data.name')
 
 ### `ThumbnailImageColumn`
 
-Renders a square thumbnail resolved from a closure:
+Resolves the cell state from `resolveThumbnailUrlUsing()`, or from the record's `getThumbnailImage()` when no callback is set. Return an absolute URL, a `data:` URI, or a path on the column disk. A blank value falls through to `defaultImageUrl()`.
 
 ```php
 use Lunar\Filament\Tables\Columns\ThumbnailImageColumn;
