@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Order;
 use Stripe\PaymentIntent;
 
 class StripePaymentIntent extends Base
@@ -20,6 +21,11 @@ class StripePaymentIntent extends Base
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class, 'cart_id');
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
     public function scopeActive(Builder $query): Builder

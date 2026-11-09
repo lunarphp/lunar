@@ -1,0 +1,363 @@
+---
+title: "Payment Integration"
+description: "Take payment in a Lunar storefront: driver selection, the generic PaymentType flow, the first-party Stripe and PayPal drivers, and how an order's payment state settles."
+---
+
+This guide covers how payment fits into a Lunar storefront: selecting a driver, running the generic authorization flow every driver shares, and reading back the resulting order and transaction state.
+
+## Overview
+
+Lunar's payment system has three layers:
+
+1. **Payment Manager** (`Lunar\Core\Facades\Payments`) — routes payment calls to the correct driver based on configuration
+2. **Payment Type** (`Lunar\Core\Contracts\PaymentType`) — handles authorization, capture, and refund logic for a specific provider
+3. **Transactions** (`Lunar\Core\Models\Transaction`) — records of every payment event stored against the order
+
+Every driver, first-party or third-party, implements the same `PaymentType` contract, so storefront code calls the same methods regardless of which provider is behind `Payments::driver()`.
+
+## Configuring Payment Types
+
+Payment types are configured in `config/lunar/payments.php`:
+
+```php
+return [
+    'default' => env('PAYMENTS_TYPE', 'cash-in-hand'),
+
+    'types' => [
+        'cash-in-hand' => [
+            'driver' => 'offline',
+        ],
+
+        'card' => [
+            'driver' => 'stripe',
+        ],
+    ],
+];
+```
+
+Each entry under `types` maps a name (used with `Payments::driver()`) to a `driver`. Any other keys added to a type's array are passed to the driver instance via `setConfig()`, so a driver can read type-specific settings if it needs them; the built-in offline and Stripe/PayPal drivers do not require any.
+
+## Registering a Driver
+
+A driver is made available to the payment manager by calling `Payments::extend()`, typically from a service provider's `boot()` method:
+
+```php
+use Lunar\Core\Facades\Payments;
+
+Payments::extend('stripe', function ($app) {
+    return $app->make(\Lunar\Stripe\StripePaymentType::class);
+});
+```
+
+The first-party Stripe and PayPal packages call `Payments::extend()` from their own service providers, which are auto-discovered by Composer — installing `lunarphp/stripe` or `lunarphp/paypal` is enough to register the driver. This step only needs to be done manually when building a custom or third-party driver.
+
+## The Generic Payment Flow
+
+Every driver is resolved through `Payments::driver()` and implements `Lunar\Core\Contracts\PaymentType`:
+
+```php
+namespace Lunar\Core\Contracts;
+
+interface PaymentType
+{
+    public function cart(Cart $cart): self;
+    public function order(Order $order): self;
+    public function withData(array $data): self;
+    public function setConfig(array $config): self;
+    public function allowPartialPayment(bool $condition = true): self;
+    public function authorize(): ?PaymentAuthorize;
+    public function refund(Transaction $transaction, int $amount, $notes = null): PaymentRefund;
+    public function capture(Transaction $transaction, $amount = 0): PaymentCapture;
+}
+```
+
+A checkout only needs to call `cart()`, `withData()`, and `authorize()` to take a payment:
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+
+$cart = CartSession::current();
+
+$payment = Payments::driver('card')
+    ->cart($cart)
+    ->withData([
+        'payment_token' => $request->payment_token,
+    ])
+    ->authorize();
+
+if ($payment->success) {
+    return redirect()->route('checkout.complete', [
+        'order' => $payment->orderId,
+    ]);
+}
+
+return redirect()->back()->withErrors([
+    'payment' => $payment->message ?? 'Payment could not be processed.',
+]);
+```
+
+`withData()` accepts whatever the driver needs to authorize the payment — a Stripe PaymentIntent ID, a PayPal order ID, or nothing at all for an offline driver. `authorize()` returns a `Lunar\Core\DataObjects\PaymentAuthorize` object:
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `success` | `bool` | Whether the payment was authorized |
+| `message` | `?string` | An error or status message |
+| `orderId` | `?int` | The ID of the placed order |
+| `paymentType` | `?string` | The driver that processed the payment |
+
+<Warning>
+An order is only considered "placed" when its `placed_at` column has a datetime value. Each driver is responsible for setting this once payment succeeds. A draft order (where `placed_at` is `null`) has not been placed, even if an order record already exists.
+</Warning>
+
+If a draft order does not already exist for the cart, most drivers create one as part of `authorize()` — see the [Checkout guide](/guides/checkout) for the alternative of calling `CartSession::createOrder()` explicitly before authorizing.
+
+### Working Against an Existing Order
+
+Once an order exists (for example, after a failed first attempt), call `order()` instead of `cart()`:
+
+```php
+$payment = Payments::driver('card')
+    ->order($order)
+    ->withData(['payment_token' => $request->payment_token])
+    ->authorize();
+```
+
+### Amount and Currency Verification
+
+A first-party driver verifies the payment amount and currency against the cart or order total before placing the order, so a client-manipulated amount cannot silently under-charge a customer. Both first-party drivers expose an `allow_partial_payment` config option for stores that intentionally take deposits or part payments.
+
+## Offline Payments
+
+For manual or offline payments (cash on delivery, bank transfer, purchase orders), use the built-in `offline` driver:
+
+```php
+use Lunar\Core\Facades\Payments;
+
+$payment = Payments::driver('cash-in-hand')
+    ->cart($cart)
+    ->authorize();
+```
+
+The offline driver creates the order (if one does not already exist) and sets `placed_at` immediately. No external API calls are made, and no `withData()` payload is required.
+
+## Stripe and PayPal
+
+Lunar ships two first-party payment drivers, `lunarphp/stripe` and `lunarphp/paypal`. Both implement the full `PaymentType` contract, including `getPaymentChecks()`, verify the authorized amount and currency against the order total, and ship a publishable config file under their own `lunar.stripe` / `lunar.paypal` namespace.
+
+- [Stripe](/addons/payments/stripe) — Payment Intents API, supports automatic and manual capture, webhooks, address sync, and payment checks (AVS, postal code, CVC)
+- [PayPal](/addons/payments/paypal) — Orders v2 / Payments v2 REST API, server-side only (the storefront renders PayPal's own JS buttons)
+
+Both guides cover installation, credentials, the provider-specific authorization flow, and webhooks in full. The rest of this guide covers what is common to every driver: the `PaymentType` contract shown above, and how the order settles afterward.
+
+Every other payment gateway is third-party: a package built against the `PaymentType` contract and registered with `Payments::extend()`, maintained outside the Lunar monorepo.
+
+## Post-Payment Order State
+
+### `placed_at`
+
+An order becomes "placed" the moment its driver sets `placed_at`. Check this with `isPlaced()` / `isDraft()`:
+
+```php
+use Lunar\Core\Models\Order;
+
+if ($order->isDraft()) {
+    // Payment has not yet succeeded for this order.
+}
+```
+
+### `payment_status`
+
+Unlike `placed_at`, `payment_status` is not set directly by a driver. It is a derived rollup, recomputed automatically from the order's transaction ledger whenever a transaction is created or updated, and cast to a `Lunar\Core\States\Order\Payment\PaymentStatus` state:
+
+| State | Meaning |
+|:---|:---|
+| `Pending` | No successful transaction yet |
+| `Authorized` | A successful payment intent exists, but nothing has been captured |
+| `PartiallyPaid` | Some, but not all, of the order total has been captured |
+| `Paid` | The full order total has been captured |
+| `PartiallyRefunded` | The order was paid in full, then partially refunded |
+| `Refunded` | Captured amount has been fully refunded |
+| `Voided` | Transactions exist but none succeeded |
+
+```blade
+<p>Payment status: {{ $order->payment_status->label() }}</p>
+```
+
+## Transactions
+
+Every payment event is recorded as a `Lunar\Core\Models\Transaction` on the order. Transactions provide a complete audit trail.
+
+| Field | Type | Description |
+|:---|:---|:---|
+| `id` | primary key | |
+| `public_id` | `ulid` | |
+| `order_id` | `foreignId` | The associated order |
+| `success` | `boolean` | Whether the transaction succeeded |
+| `driver` | `string` | The payment driver, e.g. `stripe` |
+| `amount` | `integer` | Amount in the currency's minor unit |
+| `reference` | `string` | Provider reference, e.g. a Stripe charge ID |
+| `status` | `string` | Provider-specific status |
+| `notes` | `string` `nullable` | Any additional notes for the transaction |
+| `card_type` | `string` `nullable` | Card brand, e.g. `visa` or `mastercard` |
+| `last_four` | `string` `nullable` | Last four digits of the card |
+| `meta` | `jsonb` `nullable` | Additional provider data |
+| `created_at` | `timestamp` `nullable` | |
+| `updated_at` | `timestamp` `nullable` | |
+| `parent_transaction_id` | `foreignId` `nullable` | The transaction this one follows (e.g. the capture a refund was issued against) |
+| `captured_at` | `dateTime` `nullable` | When the payment was captured |
+| `type` | `enum` | One of `intent`, `capture`, or `refund` |
+
+`Transaction` uses the same `format()` / `decimal()` methods as `Order`, since `amount` is stored as a plain integer:
+
+```blade
+<h2>Payments</h2>
+@foreach($order->transactions as $transaction)
+    <div>
+        <p>
+            {{ ucfirst($transaction->type) }}
+            — {{ $transaction->success ? 'Successful' : 'Failed' }}
+        </p>
+        <p>{{ $transaction->format('amount') }}</p>
+        @if($transaction->card_type)
+            <p>{{ ucfirst($transaction->card_type) }} ending {{ $transaction->last_four }}</p>
+        @endif
+        <p>{{ $transaction->created_at->format('M d, Y H:i') }}</p>
+    </div>
+@endforeach
+```
+
+## Capture and Refund
+
+For manual-capture flows, or refunding an existing order, prefer the verb methods on `Lunar\Core\Models\Order` over calling the payment driver directly — they validate the request (matching transaction type, remaining refundable amount, line quantities) before dispatching to the underlying driver.
+
+### Manual Capture
+
+```php
+use Lunar\Core\Models\Order;
+
+$order = Order::findOrFail($orderId);
+
+$intent = $order->transactions()->where('type', 'intent')->where('success', true)->first();
+
+$result = $order->capture($intent->id, amount: 49.99);
+
+if ($result->success) {
+    // Payment captured
+}
+```
+
+`capture()` takes the transaction ID and a major-unit amount (a decimal, not minor units) — it converts the amount using the order's currency before handing it to the driver.
+
+### Refunds
+
+```php
+use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Models\Order;
+
+$order = Order::findOrFail($orderId);
+
+$capture = $order->transactions()->where('type', 'capture')->where('success', true)->first();
+
+$result = $order->refund(new RefundRequest(
+    transactionId: $capture->id,
+    lines: [
+        ['order_line_id' => $orderLineId, 'quantity' => 1],
+    ],
+    notes: 'Customer return',
+));
+
+if ($result->success) {
+    // Refund processed, transaction record created
+}
+```
+
+`RefundRequest` also accepts `shipping` and `adjustment` (both major-unit amounts) for refunding shipping or an amount not tied to specific lines, and `notify` to control whether the customer receives a refund notification.
+
+Both verb methods ultimately call the payment driver's own `capture()` / `refund()` methods from the `PaymentType` contract, so a custom driver only needs to implement those two methods to support this flow.
+
+## Payment Checks
+
+Drivers can attach provider-specific checks (AVS, CVC, and similar) to a transaction. Read them through the transaction rather than the driver directly:
+
+```php
+$checks = $transaction->paymentChecks();
+
+foreach ($checks as $check) {
+    // $check->successful, $check->label, $check->message
+}
+```
+
+A driver that has nothing to report returns an empty `Lunar\Core\DataObjects\PaymentChecks` collection — `getPaymentChecks()` is part of the `PaymentType` contract, and a driver author should implement it (or explicitly document it as a no-op) rather than omit it.
+
+## Routes
+
+```php
+use App\Http\Controllers\CheckoutController;
+
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+Route::post('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/checkout/complete/{order}', [CheckoutController::class, 'complete'])->name('checkout.complete');
+```
+
+## Putting It All Together
+
+Here is a checkout controller that authorizes a payment against whichever driver the customer selected, then shows the confirmation page:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Order;
+
+class CheckoutController extends Controller
+{
+    public function payment(Request $request)
+    {
+        $cart = CartSession::current();
+
+        $payment = Payments::driver($request->input('payment_type', 'cash-in-hand'))
+            ->cart($cart)
+            ->withData($request->only('payment_token'))
+            ->authorize();
+
+        if (! $payment->success) {
+            return redirect()->route('checkout.show')
+                ->withErrors(['payment' => $payment->message ?? 'Payment could not be processed.']);
+        }
+
+        CartSession::forget();
+
+        return redirect()->route('checkout.complete', [
+            'order' => $payment->orderId,
+        ]);
+    }
+
+    public function complete(Order $order)
+    {
+        if ($order->isDraft()) {
+            abort(404);
+        }
+
+        $order->load([
+            'lines.purchasable.product',
+            'addresses',
+            'transactions',
+        ]);
+
+        return view('checkout.complete', compact('order'));
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Stripe add-on documentation](/addons/payments/stripe) for PaymentIntent creation, the storefront Elements integration, and webhooks.
+- Review the [PayPal add-on documentation](/addons/payments/paypal) for the Orders v2 checkout flow and webhooks.
+- Review the [Payments reference](/reference/payments) for the full payment API and transaction model.
+- Review the [Extending Payments](/extending/payments) guide for building a custom payment driver.
+- Review the [Checkout guide](/guides/checkout) for the complete checkout flow including address collection and shipping.

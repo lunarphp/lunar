@@ -1,0 +1,110 @@
+---
+title: "Regions"
+---
+
+A region is a market: the currency, language, tax behavior, and countries a storefront presents to a group of buyers.
+
+## Overview
+
+A storefront request resolves several independent pieces of market context: which [Channel](/reference/channels) it is trading on, which [Currency](/reference/currencies) prices are shown in, which [Language](/reference/languages) content is translated to, and which [Tax Zone](/reference/taxation) governs pricing before a shipping address is known. A region groups these into a single record, so a merchant trading in more than one market — for example "UK: GBP, English, UK VAT, prices shown inclusive of tax" versus "US: USD, English, US sales tax, prices shown exclusive of tax" — has one object that expresses each combination.
+
+A region belongs to one channel. `Channel` remains the sales-surface axis (an online store, a B2B portal, a POS) that scopes the catalog; `Region` is the market axis. The two are orthogonal: a single "Online Store" channel can operate a UK region, a US region, and an EU region.
+
+```php
+Lunar\Core\Models\Region
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `name` | `string` | Display name, e.g. `United Kingdom` |
+| `handle` | `string` | Stable, unique slug for addressing the region, e.g. `uk`. Automatically slugified on save |
+| `channel_id` | `foreignId` | The sales surface this region operates on |
+| `currency_id` | `foreignId` | The default currency presented in this region |
+| `language_id` | `foreignId` | The default language presented in this region |
+| `tax_zone_id` | `foreignId` `nullable` | The display tax zone used to price the catalog before a shipping address is known |
+| `prices_inc_tax` | `boolean` `nullable` | Whether the storefront shows prices inclusive of tax in this region; `null` falls back to the global default |
+| `default` | `boolean` | Whether this is the default region |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `channel` | `BelongsTo` | `Lunar\Core\Models\Channel` | The sales surface this region operates on |
+| `currency` | `BelongsTo` | `Lunar\Core\Models\Currency` | The region's default currency |
+| `language` | `BelongsTo` | `Lunar\Core\Models\Language` | The region's default language |
+| `taxZone` | `BelongsTo` | `Lunar\Core\Models\TaxZone` | The region's display tax zone |
+| `countries` | `BelongsToMany` | `Lunar\Core\Models\Country` | The countries this region serves, via the `country_region` pivot |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `default($default = true)` | Filter to the default region |
+
+A country maps to at most one region. Lunar seeds a default region from the store's default channel, currency, language, and tax zone, with no countries assigned — it is the catch-all that specific regions fall back to, so a single-market store gets a working region with no configuration required.
+
+## Creating a region
+
+```php
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Region;
+
+$region = Region::create([
+    'name' => 'United Kingdom',
+    'handle' => 'uk',
+    'channel_id' => Channel::getDefault()->id,
+    'currency_id' => Currency::where('code', 'GBP')->first()->id,
+    'language_id' => Language::getDefault()->id,
+    'prices_inc_tax' => true,
+]);
+
+$region->countries()->attach(
+    Country::where('iso2', 'GB')->first()
+);
+```
+
+## Price display
+
+Whether stored prices already include tax is a global, storage-level concern controlled by `config('lunar.pricing.stored_inclusive_of_tax')` — this never varies by region, because changing it per region would corrupt tax arithmetic.
+
+Whether the storefront *shows* tax-inclusive or tax-exclusive prices is a separate, region-aware display preference:
+
+```php
+$region->displaysPricesIncludingTax(); // bool
+```
+
+This returns the region's `prices_inc_tax` flag, falling back to the global storage default when the region does not set one. The tax zone used for that display calculation is the region's `taxZone` relationship.
+
+<Info>
+This display tax zone is used to price the catalog before a shipping address is known. Once a cart has a shipping address, checkout tax resolution is unchanged: `Lunar\Core\Actions\Taxes\GetTaxZone` still resolves postcode → state → country → default. See [Taxation → Zone resolution](/reference/taxation#zone-resolution).
+</Info>
+
+## Regions on carts and orders
+
+`Lunar\Core\Models\Cart` and `Lunar\Core\Models\Order` each carry a nullable `region_id` and expose a `region()` relationship. A cart's `channel_id` and `currency_id` stay denormalized alongside `region_id` — a cart's channel should match its region's channel, and its currency defaults from the region but can still be overridden per cart.
+
+```php
+$cart->region;   // Lunar\Core\Models\Region
+$order->region;  // Lunar\Core\Models\Region
+```
+
+## Storefront resolution
+
+`Lunar\Core\Contracts\StorefrontSession` exposes `getRegion()` and `setRegion()`. Currency and language can still be set explicitly per session or per cart, but now default from the resolved region instead of each model's own `getDefault()`.
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+
+$region = StorefrontSession::getRegion();
+
+StorefrontSession::setRegion($region);
+```

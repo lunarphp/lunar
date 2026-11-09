@@ -90,13 +90,15 @@ return [
     'txn_type_capture' => 'Payment',
     'txn_type_refund' => 'Refund',
     'txn_type_intent' => 'Authorization',
+    'txn_type_failed' => 'Échouée',
 
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'Notes internes',
+    'side_customer_notes' => 'Notes du client',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',
@@ -239,6 +241,7 @@ return [
     'line_sub_total' => 'Subtotal',
     'line_discount' => 'Discount',
     'line_total' => 'Total',
+    'line_part_of' => 'Fait partie de {parent}',
 
     'flash_fulfilment_shipped' => 'Fulfilment marked as shipped.',
     'flash_fulfilment_fulfilled' => 'Fulfilment marked as fulfilled.',

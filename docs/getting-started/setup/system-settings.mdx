@@ -1,0 +1,324 @@
+---
+title: "System Settings"
+description: "Configure regions, channels, languages, currencies, and tax to match regional and business requirements."
+---
+
+After installation, Lunar creates a set of sensible defaults: English as the language, USD as the currency, a single "Webstore" channel, a "Retail" customer group, a default tax zone and tax class, and a default region tying these together. This page explains what each setting does and how to adjust the defaults to match a specific store's requirements.
+
+Most of these settings can be managed programmatically using Eloquent models, or through an admin panel if one is installed. The reference pages linked from each section below cover model fields, relationships, and code examples in detail.
+
+## Configuration files
+
+Lunar's core ships several configuration files. The installer publishes them automatically, but they can also be published manually:
+
+```bash
+php artisan vendor:publish --tag=lunar
+```
+
+The key configuration files are:
+
+| File | Purpose |
+|:-----|:--------|
+| `config/lunar/database.php` | Table prefix, database connection, morph prefix, user ID type, migration control |
+| `config/lunar/cart.php` | Cart auth policy, eager loading, cart pruning |
+| `config/lunar/cart_session.php` | Session key, auto-creation, and cart-on-logout behavior for the storefront cart session |
+| `config/lunar/orders.php` | Order reference format/generator |
+| `config/lunar/payments.php` | Payment type/driver configuration |
+| `config/lunar/pricing.php` | Whether stored prices include tax, and the price formatter |
+| `config/lunar/taxes.php` | Tax driver selection |
+| `config/lunar/media.php` | Media collections, image definitions, and upload limits |
+| `config/lunar/urls.php` | URL requirement and generator for models using `HasUrls` |
+| `config/lunar/products.php` | The enum backing product association types |
+| `config/lunar/search.php` | Models indexed by Scout, per-model search engine mapping, and indexer classes |
+| `config/lunar/shipping.php` | Available measurement units for shipping dimensions |
+| `config/lunar/staff.php` | The staff auth guard, provider, and model |
+| `config/lunar/discounts.php` | Reserved for discount configuration (empty by default) |
+
+## Regions
+
+A region groups the market-presentation settings a storefront needs into a single record: which channel it belongs to, which currency and language it presents by default, which tax zone prices it against before an address is known, and whether prices are displayed inclusive or exclusive of tax.
+
+The installer creates a single default region tying together the default channel, currency, language, and tax zone.
+
+```php
+Lunar\Core\Models\Region
+```
+
+Key concepts:
+
+- **Channel** is the sales surface (online store, wholesale portal, POS). **Region** is the market being served on that surface — a single channel can serve multiple regions (for example, a "UK" and a "US" region on the same webstore channel).
+- **Currency** and **language** default from the region but can still be overridden individually per request.
+- **Tax zone** on a region is a *display* zone, used to price the catalogue before a shipping address is known. Once a cart has a shipping address, tax resolution still works from that address, independent of the region.
+- **Prices inclusive of tax** (`prices_inc_tax`) controls whether the storefront displays prices inclusive or exclusive of tax for that region. It is nullable — when not set, it falls back to the global `lunar.pricing.stored_inclusive_of_tax` config value. This is a display preference only; it does not change how prices are stored.
+
+Exactly one region should be marked as the default.
+
+## Languages
+
+Languages enable translated content across Lunar models such as products and collections. Any model field stored as a translated attribute uses languages to determine which translations are available.
+
+The installer creates a single language: **English** (`en`). This can be changed or supplemented to support any number of languages.
+
+Each language has a `code` (a 2-character ISO 639-1 code like `en`, `fr`, or `de`) and a `name` for display purposes. Exactly one language must be marked as the default, which is used as the fallback when a translation is not available in the requested locale.
+
+<Warning>
+There should only ever be one default language. Setting more than one language as default will cause unexpected behavior.
+</Warning>
+
+Translated fields are stored as JSON with language codes as keys (e.g. `{"en": "Leather boots", "fr": "Bottes en cuir"}`).
+
+For model fields, relationships, and code examples, see the [Languages reference](/reference/languages).
+
+## Currencies
+
+Currencies define the monetary units available for product pricing. Each currency has an exchange rate relative to the default currency.
+
+The installer creates a single currency: **US Dollar** (`USD`) with an exchange rate of `1` and 2 decimal places.
+
+Key concepts:
+
+- **Code** should be a 3-character [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code (e.g. `USD`, `GBP`, `EUR`).
+- **Exchange rate** is relative to the default currency. The default currency should always have an exchange rate of `1.0000`. For example, if USD is the default and 1 USD = 0.79 GBP, the GBP exchange rate would be `0.7900`.
+- **Decimal places** controls formatting precision (e.g. `2` for most currencies, `0` for JPY).
+- **Enabled** controls whether the currency is active. Disabled currencies can be pre-configured without being visible to customers.
+- **Sync prices**, when enabled on a non-default currency, allows Lunar to calculate prices automatically based on the default currency and the exchange rate. This is useful for stores that manage pricing in one currency and want approximate converted prices for others.
+
+<Info>
+Exchange rates do not automatically convert product prices unless price synchronization is enabled. Prices can be set independently per currency.
+</Info>
+
+For model fields, relationships, and code examples, see the [Currencies reference](/reference/currencies).
+
+## Channels
+
+Channels represent different sales outlets or storefronts. They control where products, collections, and discounts are published and when they become available.
+
+The installer creates a single channel: **Webstore** (handle: `webstore`).
+
+Typical channel examples include a main webstore, a mobile app, a wholesale portal, or a marketplace integration. Each channel has a `name`, a URL-friendly `handle` (automatically slugified on save), and an optional `url`.
+
+Products and other models can be scheduled for availability on specific channels, optionally with start and end dates. This makes it possible to launch products on one channel before another, or run time-limited availability windows.
+
+Exactly one channel should be marked as the default.
+
+For model fields, relationships, scheduling examples, and filtering queries, see the [Channels reference](/reference/channels).
+
+## Customer groups
+
+Customer groups segment customers so that different groups can receive different pricing, product visibility, and discount rules. They are commonly used for B2B/B2C scenarios or loyalty tiers.
+
+The installer creates a single customer group: **Retail** (handle: `retail`).
+
+Typical customer group examples include Retail (standard consumers), Wholesale (B2B buyers with volume pricing), VIP (loyalty members), and Trade (industry-specific pricing).
+
+Customer groups can be associated with:
+
+- **Products** and **collections** to control visibility per group
+- **Discounts** to restrict promotions to specific groups
+- **Tax zones** to apply different tax rules per group
+- **Pricing** to define group-specific product prices
+
+Customer groups also support custom [attributes](/reference/attributes), allowing additional data to be stored against each group.
+
+## Tax
+
+Lunar provides a flexible tax system built around three core concepts: **tax classes**, **tax zones**, and **tax rates**. These work together to calculate the correct tax for each order based on the product type and the customer's location.
+
+### Tax classes
+
+Tax classes categorize products by their tax treatment. Different types of products may be taxed at different rates depending on the jurisdiction.
+
+The installer creates a single tax class: **Default Tax Class**. Common additional tax classes include:
+
+| Tax Class | Typical use |
+|:----------|:------------|
+| Standard | Most physical goods |
+| Reduced Rate | Items with a lower tax rate (e.g. children's clothing in some countries) |
+| Zero Rate | Items exempt from tax (e.g. certain food items) |
+| Digital Goods | Digital products, which may have different tax rules |
+
+Each product variant is assigned a tax class. When tax is calculated, the system looks up the rate that applies to that tax class within the relevant tax zone.
+
+### Tax zones
+
+Tax zones define geographic regions where specific tax rates apply. A zone can be scoped by **countries**, **states**, or **postcodes**.
+
+The installer creates a single tax zone: **Default Tax Zone** (type: `country`), with all countries assigned to it.
+
+| Zone type | Description | Typical use |
+|:----------|:------------|:------------|
+| `country` | Matches entire countries | EU VAT, UK VAT |
+| `states` | Matches specific states or provinces | US state tax, Canadian provincial tax |
+| `postcodes` | Matches postcode patterns (supports wildcards) | City-level tax, special economic zones |
+
+<Info>
+Whether prices are displayed inclusive or exclusive of tax is a region setting, not a tax zone setting — see [Regions](#regions) above.
+</Info>
+
+### Tax rates
+
+Each tax zone has one or more tax rates. A tax rate has a name, a priority (for ordering when multiple rates apply), and one or more **tax rate amounts** that define the percentage for each tax class.
+
+For example, a UK tax zone might have a single "VAT" rate with 20% for the standard tax class and 5% for a reduced-rate tax class. A US state zone might have separate "State Tax" and "City Tax" rates with different priorities.
+
+### Tax driver
+
+The tax driver is configured in `config/lunar/taxes.php`. The default `system` driver uses the tax classes, zones, and rates described above. For complex scenarios (e.g. tax across all US states), a custom driver can integrate with external services like [TaxJar](https://www.taxjar.com/).
+
+For model fields, relationships, and code examples, see the [Taxation reference](/reference/taxation).
+
+## Attributes
+
+Attributes store custom, translatable data against models like products, collections, brands, product types, and customer groups. They are organized into **attribute groups** and support translatable values, validation rules, and multiple field types.
+
+<Info>
+The installer does not seed any default attribute groups or attributes. A product's name and description are native translated fields on the model, not attributes — attributes are for additional custom fields.
+</Info>
+
+Available field types (`Lunar\Core\FieldTypes\*`) include `Text`, `TranslatedText`, `Number`, `Toggle`, `Dropdown`, `ListField`, `File`, `YouTube`, and `Vimeo`. Custom field types can also be registered against the field type manifest.
+
+For model fields, code examples, and details on adding attributes to custom models, see the [Attributes reference](/reference/attributes).
+
+## Setting up for a specific region
+
+The examples below show how to adjust the installer defaults for common regional configurations.
+
+### United Kingdom (GBP, tax-inclusive)
+
+```php
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Region;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxZone;
+
+// Update the default currency to GBP
+$currency = Currency::default()->first();
+$currency->update([
+    'code' => 'GBP',
+    'name' => 'British Pound',
+    'exchange_rate' => 1.0000,
+    'decimal_places' => 2,
+]);
+
+// Update the default tax zone for the UK
+$taxZone = TaxZone::default()->first();
+$taxZone->update([
+    'name' => 'United Kingdom',
+    'zone_type' => 'country',
+]);
+
+// Clear existing countries and assign only the UK
+$taxZone->countries()->delete();
+$uk = Country::where('iso3', 'GBR')->first();
+$taxZone->countries()->create(['country_id' => $uk->id]);
+
+// Create the standard VAT rate
+$rate = $taxZone->taxRates()->create([
+    'name' => 'VAT',
+    'priority' => 1,
+]);
+
+$defaultTaxClass = TaxClass::default()->first();
+
+$rate->taxRateAmounts()->create([
+    'tax_class_id' => $defaultTaxClass->id,
+    'percentage' => 20.000,
+]);
+
+// Show prices inclusive of tax for the default region
+Region::default()->first()->update([
+    'prices_inc_tax' => true,
+]);
+```
+
+### Europe (EUR, multiple countries)
+
+```php
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Region;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxZone;
+
+// Update the default currency to EUR
+$currency = Currency::default()->first();
+$currency->update([
+    'code' => 'EUR',
+    'name' => 'Euro',
+    'exchange_rate' => 1.0000,
+    'decimal_places' => 2,
+]);
+
+// Create a tax zone for Germany
+$deTaxZone = TaxZone::create([
+    'name' => 'Germany',
+    'zone_type' => 'country',
+    'active' => true,
+    'default' => true,
+]);
+
+$germany = Country::where('iso3', 'DEU')->first();
+$deTaxZone->countries()->create(['country_id' => $germany->id]);
+
+$rate = $deTaxZone->taxRates()->create([
+    'name' => 'MwSt',
+    'priority' => 1,
+]);
+
+$defaultTaxClass = TaxClass::default()->first();
+
+$rate->taxRateAmounts()->create([
+    'tax_class_id' => $defaultTaxClass->id,
+    'percentage' => 19.000,
+]);
+
+// Point the default region at the new tax zone and show tax-inclusive prices
+Region::default()->first()->update([
+    'tax_zone_id' => $deTaxZone->id,
+    'prices_inc_tax' => true,
+]);
+```
+
+### United States (USD, tax-exclusive, state-level)
+
+```php
+use Lunar\Core\Models\Region;
+use Lunar\Core\Models\State;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxZone;
+
+// Update the default tax zone to be state-scoped
+$taxZone = TaxZone::default()->first();
+$taxZone->update([
+    'name' => 'California',
+    'zone_type' => 'states',
+]);
+
+// Assign California
+$taxZone->countries()->delete();
+$california = State::where('code', 'CA')->first();
+$taxZone->states()->create(['state_id' => $california->id]);
+
+// Create the state tax rate
+$rate = $taxZone->taxRates()->create([
+    'name' => 'CA State Tax',
+    'priority' => 1,
+]);
+
+$defaultTaxClass = TaxClass::default()->first();
+
+$rate->taxRateAmounts()->create([
+    'tax_class_id' => $defaultTaxClass->id,
+    'percentage' => 7.250,
+]);
+
+// Show prices exclusive of tax for the default region
+Region::default()->first()->update([
+    'prices_inc_tax' => false,
+]);
+```
+
+<Info>
+US tax is complex and varies by state, county, and city. For production stores selling across multiple US states, consider integrating with a dedicated tax service.
+</Info>

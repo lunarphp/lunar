@@ -20,7 +20,8 @@ class CleanUpOrderLines
             return $this->signature($line->purchasable_id, $line->purchasable_type, (array) $line->meta, $line->quantity);
         })->toArray();
 
-        $order->productLines->each(function ($orderLine) use ($cartSignatures) {
+        // Component lines are never the image of a cart line; they go with their parent.
+        $order->productLines->whereNull('parent_line_id')->each(function ($orderLine) use ($cartSignatures) {
             $sig = $this->signature(
                 $orderLine->purchasable_id,
                 $orderLine->purchasable_type,
