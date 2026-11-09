@@ -163,6 +163,21 @@ class Order extends Base implements HasCurrency
     }
 
     /**
+     * Whether the customer collects the order rather than having it shipped,
+     * read from the `collect` flag stamped onto the shipping line's meta at
+     * order creation. Uses the loaded `lines` relation when present so
+     * callers that eager load lines don't pay for another query.
+     */
+    public function isCollection(): bool
+    {
+        $line = $this->relationLoaded('lines')
+            ? $this->lines->firstWhere('type', 'shipping')
+            : $this->shippingLines()->first();
+
+        return ($line?->meta['collect'] ?? false) === true;
+    }
+
+    /**
      * The headline lifecycle key for display — cancelled takes precedence over
      * the open/closed archive state. Maps to `lunar::states.order.*`.
      *

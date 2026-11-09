@@ -76,7 +76,7 @@ class Collection implements FulfilmentMethod
      */
     public function claim(Order $order, SupportCollection $unclaimed): SupportCollection
     {
-        if (! $this->orderCollects($order)) {
+        if (! $order->isCollection()) {
             return $unclaimed->take(0);
         }
 
@@ -91,16 +91,5 @@ class Collection implements FulfilmentMethod
     public function usesTracking(): bool
     {
         return false;
-    }
-
-    /**
-     * Whether the order's chosen shipping option is a collection, read from the
-     * `collect` flag stamped onto the shipping line's meta at order creation.
-     */
-    protected function orderCollects(Order $order): bool
-    {
-        $meta = $order->lines()->where('type', 'shipping')->first()?->meta;
-
-        return (bool) ($meta['collect'] ?? false);
     }
 }
