@@ -40,6 +40,14 @@ use Spatie\Activitylog\Models\Activity;
 
 class OrderShowController
 {
+    /**
+     * The `payment_method` handle, stamped into the order meta by whatever
+     * placed the order, for an order invoiced on account. Such an order sits
+     * in `Pending` by design, so the panel reads it as on account rather than
+     * unpaid.
+     */
+    public const ON_ACCOUNT = 'on-account';
+
     public function show(Order $order): Response
     {
         $order->load([
@@ -69,8 +77,8 @@ class OrderShowController
         $captured = (int) $order->transactions->where('type', 'capture')->where('success', true)->sum('amount');
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
-        $paymentMethod = is_string($order->meta['payment_method'] ?? null) ? $order->meta['payment_method'] : null;
-        $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor, $paymentMethod);
+        $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
+        $onAccount = $this->onAccount($order);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -85,9 +93,9 @@ class OrderShowController
                 'id' => $order->id,
                 'reference' => $order->reference ?: '#'.$order->id,
                 'customer_reference' => $order->customer_reference,
-                'payment_method' => $paymentMethod,
+                'on_account' => $onAccount,
                 'payment_status' => $order->payment_status::$name,
-                'payment_status_label' => $paymentMethod === 'on-account' && $order->payment_status instanceof Pending
+                'payment_status_label' => $onAccount
                     ? __('panel::orders.payment_on_account')
                     : $order->payment_status->label(),
                 'fulfilment_status' => $order->fulfilment_status::$name,
@@ -420,20 +428,19 @@ class OrderShowController
      *
      * @return array{status: string, captured: ?string, refunded: ?string, total: string, variance: ?string, varianceMajor: float}
      */
-    protected function settlement(Order $order, int $captured, int $refunded, callable $money, callable $toMajor, ?string $paymentMethod = null): array
+    protected function settlement(Order $order, int $captured, int $refunded, callable $money, callable $toMajor): array
     {
         $total = (int) $order->total;
         $settled = $captured - $refunded;
         $reference = $order->isCancelled() ? 0 : $total - $refunded;
 
         $status = match (true) {
-            $paymentMethod === 'on-account' && $captured === 0 && $refunded === 0 => 'on_account',
             $settled > $reference => 'refund_due',
             $captured > 0 && $settled < $reference => 'outstanding',
             default => 'balanced',
         };
 
-        $varianceMinor = in_array($status, ['balanced', 'on_account'], true) ? 0 : abs($settled - $reference);
+        $varianceMinor = $status === 'balanced' ? 0 : abs($settled - $reference);
 
         return [
             'status' => $status,
@@ -446,26 +453,34 @@ class OrderShowController
     }
 
     /**
+     * Whether the order was invoiced on account and is still awaiting payment
+     * under that arrangement: placed with the on-account payment method and
+     * still `Pending`. Once payment is taken, or the status otherwise moves
+     * on, the order reads like any other.
+     */
+    protected function onAccount(Order $order): bool
+    {
+        return ($order->meta['payment_method'] ?? null) === self::ON_ACCOUNT
+            && $order->payment_status instanceof Pending;
+    }
+
+    /**
      * The delivery method chosen at checkout: the shipping-breakdown snapshot,
      * falling back to the shipping line for orders without a breakdown. The
-     * collect flag and the pickup point always come from the shipping
-     * line's meta, which is where they are stamped at order creation.
+     * collect flag comes from {@see Order::isCollection()}. The pickup point
+     * comes from the shipping line's meta, written there by the checkout, and
+     * is only returned for a collection.
      *
      * @return array{name: string, identifier: ?string, price: ?string, collect: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
      */
     protected function shippingOption(Order $order, callable $money): ?array
     {
         $line = $order->lines->firstWhere('type', 'shipping');
-        $meta = $line?->meta ?? [];
-        $point = $meta['pickup_point'] ?? null;
+        $isCollection = $order->isCollection();
 
         $collect = [
-            'collect' => (bool) ($meta['collect'] ?? false),
-            'pickup_point' => is_array($point) && isset($point['handle']) ? [
-                'handle' => (string) $point['handle'],
-                'name' => (string) ($point['name'] ?? $point['handle']),
-                'lines' => array_values(array_map('strval', $point['lines'] ?? [])),
-            ] : null,
+            'collect' => $isCollection,
+            'pickup_point' => $isCollection ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
         ];
 
         $item = $order->shipping_breakdown?->items?->first();
@@ -488,6 +503,30 @@ class OrderShowController
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
             ...$collect,
+        ];
+    }
+
+    /**
+     * Normalise the pickup point the checkout stored on the shipping line.
+     * The panel does not own that meta, so anything malformed is dropped
+     * rather than trusted.
+     *
+     * @return array{handle: string, name: string, lines: list<string>}|null
+     */
+    protected function pickupPoint(mixed $point): ?array
+    {
+        if (! is_array($point) || ! is_scalar($point['handle'] ?? null)) {
+            return null;
+        }
+
+        $name = $point['name'] ?? null;
+
+        return [
+            'handle' => (string) $point['handle'],
+            'name' => (string) (is_scalar($name) ? $name : $point['handle']),
+            'lines' => is_array($point['lines'] ?? null)
+                ? array_values(array_map('strval', array_filter($point['lines'], 'is_scalar')))
+                : [],
         ];
     }
 

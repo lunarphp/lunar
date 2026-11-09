@@ -14,8 +14,10 @@ use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Tag;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\States\Order\Payment\Paid;
+use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -430,32 +432,124 @@ it('marks a courier line as not collect', function () {
             ->where('shippingOption.pickup_point', null));
 });
 
-it('shows an on-account order as on account rather than pending', function () {
+it('drops the pickup point when the order is not a collection', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Standard Delivery',
+        'identifier' => 'standard',
+        'unit_price' => 500,
+        'total' => 500,
+        'meta' => [
+            'collect' => false,
+            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP']],
+        ],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.collect', false)
+            ->where('shippingOption.pickup_point', null));
+});
+
+it('tolerates a malformed pickup point', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Click & collect',
+        'identifier' => 'collection',
+        'unit_price' => 0,
+        'total' => 0,
+        'meta' => [
+            'collect' => true,
+            'pickup_point' => ['handle' => 'dartford', 'name' => ['nested'], 'lines' => 'DA2 6EP'],
+        ],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.collect', true)
+            ->where('shippingOption.pickup_point.name', 'dartford')
+            ->where('shippingOption.pickup_point.lines', []));
+});
+
+it('drops non-scalar pickup point lines', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Click & collect',
+        'identifier' => 'collection',
+        'unit_price' => 0,
+        'total' => 0,
+        'meta' => [
+            'collect' => true,
+            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP', ['nested'], 42]],
+        ],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.pickup_point.lines', ['DA2 6EP', '42']));
+});
+
+it('shows a pending on-account order as on account', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create([
         'total' => 10000,
-        'meta' => ['payment_method' => 'on-account', 'account_ref' => 'ACC-1234'],
+        'payment_status' => Pending::class,
+        'meta' => ['payment_method' => OrderShowController::ON_ACCOUNT, 'account_ref' => 'ACC-1234'],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->component('orders/Show')
-            ->where('order.payment_method', 'on-account')
+            ->where('order.on_account', true)
             ->where('order.payment_status_label', 'On account')
-            ->where('settlement.status', 'on_account')
+            ->where('settlement.status', 'balanced')
             ->where('settlement.captured', null)
         );
 });
 
-it('keeps the card rollup for an order paid any other way', function () {
+it('reads an on-account order normally once it has been paid', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $order = Order::factory()->placed()->create(['total' => 10000, 'meta' => ['payment_method' => 'card']]);
+    $order = Order::factory()->placed()->create([
+        'total' => 10000,
+        'payment_status' => Paid::class,
+        'meta' => ['payment_method' => OrderShowController::ON_ACCOUNT],
+    ]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('order.payment_method', 'card')
+            ->where('order.on_account', false)
+            ->where('order.payment_status', 'paid')
+            ->where('order.payment_status_label', 'Paid')
+        );
+});
+
+it('does not treat an order paid any other way as on account', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'total' => 10000,
+        'payment_status' => Pending::class,
+        'meta' => ['payment_method' => 'card'],
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('order.on_account', false)
+            ->where('order.payment_status_label', 'Pending')
             ->where('settlement.status', 'balanced')
         );
 });
