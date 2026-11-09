@@ -1,0 +1,145 @@
+---
+title: "Extending Shipping"
+sidebarTitle: "Shipping"
+---
+
+Custom shipping options are added to checkout by registering shipping modifiers against the `ShippingManifest`.
+
+## Overview
+
+When a cart contains an item that needs shipping, the storefront typically needs to display a list of shipping options for the customer to choose from. Lunar does not assume how those options are calculated, whether that is a flat rate, a rate per shipping zone, a live carrier quote, or a mix of all three. Instead, a shipping modifier is registered that inspects the cart and adds one or more `ShippingOption` instances to the `ShippingManifest`.
+
+The manifest is resolved for a cart with:
+
+```php
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+
+$options = ShippingManifest::getOptions($cart);
+```
+
+<Tip>
+For a complete, real-world shipping modifier, see the [Table Rate Shipping add-on](/addons/table-rate-shipping). It resolves shipping zones, rates, and drivers, and is a good reference to work from instead of starting a modifier from scratch.
+</Tip>
+
+## How the manifest works
+
+`Lunar\Core\Manifests\ShippingManifest` implements `Lunar\Core\Contracts\ShippingManifest` and is bound in the container as a scoped instance, resolvable through the `Lunar\Core\Facades\ShippingManifest` facade. It holds a collection of `ShippingOption` instances and exposes:
+
+| Method | Description |
+|:-------|:-------------|
+| `addOption(ShippingOption $option)` | Adds a single option. Options with a duplicate `identifier` are ignored. |
+| `addOptions(Collection $options)` | Adds a collection of options in one call. |
+| `clearOptions()` | Removes all options currently on the manifest. |
+| `getOptionUsing(Closure $closure)` | Registers a closure used to short-circuit `getOption()`, useful for retrieving an option without running the full pipeline. |
+| `getOptions(Cart $cart)` | Runs the shipping modifier pipeline for the given cart and returns the resulting options. |
+| `getOption(Cart $cart, string $identifier)` | Returns a single option by identifier. |
+| `getShippingOption(Cart $cart)` | Returns the option currently selected on the cart's shipping address, or `null` if none is selected. |
+
+Calling `getOptions()` sends the cart through every registered shipping modifier using Laravel's `Illuminate\Pipeline\Pipeline`. Each modifier is expected to inspect the cart, call `addOption()` or `addOptions()` on the manifest as needed, and pass the cart to the next modifier in the pipeline.
+
+<Warning>
+Shipping option `identifier` values must be unique across every registered modifier. `addOption()` silently drops an option whose identifier already exists on the manifest, so pick identifiers that will not collide with another modifier a consumer might install (such as the Table Rate Shipping add-on).
+</Warning>
+
+<Info>
+A modifier is free to trigger a cart recalculation while it runs, which can call back into `getOptions()` for the same cart. The manifest guards against this: while it is already resolving options for a cart, a nested call returns whatever has been resolved so far instead of running the pipeline again. This is internal behavior a modifier does not need to manage, but it explains why a modifier should not assume `getOptions()` always runs the full pipeline from scratch.
+</Info>
+
+## Adding a shipping modifier
+
+A shipping modifier extends `Lunar\Core\Modifiers\ShippingModifier` and implements `handle(Cart $cart, Closure $next)`:
+
+```php
+namespace App\Modifiers;
+
+use Closure;
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Modifiers\ShippingModifier;
+
+class CustomShippingModifier extends ShippingModifier
+{
+    public function handle(Cart $cart, Closure $next)
+    {
+        $taxClass = TaxClass::first();
+
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Basic Delivery',
+                description: 'A basic delivery option',
+                identifier: 'BASDEL',
+                price: new PriceValue(500, $cart->currency),
+                taxClass: $taxClass,
+            )
+        );
+
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Pick up in store',
+                description: 'Pick your order up in store',
+                identifier: 'PICKUP',
+                price: new PriceValue(0, $cart->currency),
+                taxClass: $taxClass,
+                // Reference flag, useful for identifying a collection order later.
+                collect: true,
+            )
+        );
+
+        // Or add several options at once. It remains the modifier's
+        // responsibility to keep identifiers unique.
+        ShippingManifest::addOptions(collect([
+            new ShippingOption(
+                name: 'Standard Delivery',
+                description: 'Arrives in 3-5 working days',
+                identifier: 'STDDEL',
+                price: new PriceValue(500, $cart->currency),
+                taxClass: $taxClass,
+            ),
+            new ShippingOption(
+                name: 'Express Delivery',
+                description: 'Arrives next working day',
+                identifier: 'EXDEL',
+                price: new PriceValue(1000, $cart->currency),
+                taxClass: $taxClass,
+            ),
+        ]));
+
+        return $next($cart);
+    }
+}
+```
+
+`ShippingOption` implements `Lunar\Core\Contracts\Purchasable`, so it participates in cart totals the same way a product or an order line does. Its constructor accepts:
+
+| Property | Type | Description |
+|:---------|:-----|:------------|
+| `name` | `string` | |
+| `description` | `?string` | |
+| `identifier` | `string` | Unique identifier for the option, stored against the cart's shipping address once selected. |
+| `price` | `Lunar\Core\DataObjects\PriceValue` | The price in minor units, scoped to a currency. |
+| `taxClass` | `Lunar\Core\Models\TaxClass` | |
+| `taxReference` | `?string` | |
+| `option` | `?string` | |
+| `collect` | `bool` | Marks the option as an in-store collection, defaults to `false`. |
+| `meta` | `?array` | |
+
+Register the modifier from a service provider's `boot()` method:
+
+```php
+use Lunar\Core\Modifiers\ShippingModifiers;
+
+public function boot(ShippingModifiers $shippingModifiers): void
+{
+    $shippingModifiers->add(
+        \App\Modifiers\CustomShippingModifier::class
+    );
+}
+```
+
+## Carriers and fulfilment methods
+
+Shipping modifiers control what options a customer sees at checkout, before an order exists. Once an order is placed, fulfilling it involves a separate pair of extension points: `Lunar\Core\Contracts\CarrierManifest` (which carrier a shipment ships with, e.g. for generating a label or tracking reference) and `Lunar\Core\Contracts\FulfilmentMethodManifest` (which fulfilment workflow and states an order line moves through). These are registered independently of shipping modifiers and are documented in full at [Fulfilments](/reference/fulfilments).

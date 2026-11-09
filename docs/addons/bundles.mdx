@@ -1,0 +1,475 @@
+---
+title: "Bundles"
+sidebarTitle: "Bundles"
+description: "Sell a set of product variants as one product: derived stock, fixed or component-derived pricing, and component lines on the order so fulfilment works unchanged."
+---
+
+The Bundles add-on (`lunarphp/bundles`) lets a store sell a kit ("Camera starter kit: body + bag + SD card") as a single product at a single price. A bundle is an ordinary product variant that carries a component list. Its stock is derived from the components, its price is either set by the merchant or derived from the components, and when an order is placed the bundle line gains one component line per part, so fulfilment, stock commitment, and returns see the parts without any bundle awareness.
+
+The add-on requires `lunarphp/core`. The [admin panel](/admin/introduction) (`lunarphp/panel`) is optional; with it installed, the add-on adds a bundle editor to the product pages, documented under [Admin Panel: Bundles](/admin/bundles).
+
+## What a bundle is, and is not
+
+**A bundle is a product.** The add-on attaches a component list to a `Lunar\Core\Models\ProductVariant` through its own tables. Nothing about the product changes: media, attributes, URLs, collections, channels, customer groups, search indexing, tax class, discount targeting, and `public_id` all work as they do for any product, and the bundle is listed, merchandised, and found in search like any other product. `$variant->bundle` being non-null is the whole "is this a bundle" test; there is no flag on the variant.
+
+**A bundle is a virtual kit.** The bundle variant never holds stock of its own. Availability is how many complete kits the components can supply, and the warehouse picks the parts, not the kit.
+
+**Bundles do not nest.** A component is never itself a bundle variant, and a bundle never contains its own variant. The actions enforce this with a `Lunar\Bundles\Exceptions\BundleNesting` exception.
+
+**Mix-and-match is a discount, not a bundle.** "Any three t-shirts for 30" is a cart-time promotion over independent lines and belongs to a [discount](/reference/discounts) such as `BuyXGetY`. A bundle is a sellable composite with its own product, price, and derived stock.
+
+Terminology used on this page: the **bundle variant** is the `ProductVariant` that carries the components; a **component** is a (variant, quantity) pair inside it; a **group** is an optional choice set inside a configurable bundle; a **selection** is the customer's resolved list of components for one cart line.
+
+## Installation
+
+Require the package:
+
+```bash
+composer require lunarphp/bundles
+```
+
+The service provider, `Lunar\Bundles\BundlesServiceProvider`, is auto-discovered. It binds the action contracts, decorates the core inventory seam, appends the add-on's cart validator and pipeline stages to the core config, registers the price and product listeners, and registers the Artisan command.
+
+Run the migrations:
+
+```bash
+php artisan migrate
+```
+
+This creates three tables, prefixed like every other Lunar table: `bundles`, `bundle_groups`, and `bundle_components`. The core `order_lines.parent_line_id` column the add-on relies on ships with `lunarphp/core`.
+
+Optionally publish the config:
+
+```bash
+php artisan vendor:publish --tag=lunar.bundles.config
+```
+
+This writes `config/lunar/bundles.php`, merged under the `lunar.bundles` key. It holds a single value:
+
+| Key | Default | Description |
+|---|---|---|
+| `max_components` | `25` | The most components a single bundle may carry, grouped ones included |
+
+If the admin panel is installed, publish or link the add-on's compiled assets so the bundle editor loads on the product pages:
+
+```bash
+# Production: copies every registered add-on build, including this one
+php artisan vendor:publish --tag=panel-all-assets --force
+
+# Only this add-on
+php artisan vendor:publish --tag=bundles-panel-assets --force
+
+# Local development: symlinks the build instead
+php artisan lunar:panel:link
+```
+
+Without the panel, everything else (defining bundles in code, derived stock, pricing, component order lines) still works.
+
+## Fixed and configurable bundles
+
+A bundle with no groups is a **fixed bundle**: every component is always included. A bundle with one or more groups is a **configurable bundle**: the customer chooses between `min_selections` and `max_selections` options from each group. Fixed and grouped components can coexist ("always includes the body; choose a lens").
+
+### Data model
+
+**`Lunar\Bundles\Models\Bundle`**, one row per bundle variant:
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| product_variant_id | `foreignId` | The bundle variant; unique, cascades on delete |
+| pricing | `string` | `fixed` or `components`, cast to `Lunar\Bundles\Enums\BundlePricing` |
+| discount_percentage | `decimal` `nullable` | Only meaningful with `components` pricing; `null` means no saving |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `variant` | BelongsTo | `Lunar\Core\Models\ProductVariant` | The bundle variant |
+| `groups` | HasMany | `Lunar\Bundles\Models\BundleGroup` | Ordered by `position` |
+| `components` | HasMany | `Lunar\Bundles\Models\BundleComponent` | Every component, fixed and grouped, ordered by `position`, with `group` loaded |
+| `fixedComponents` | HasMany | `Lunar\Bundles\Models\BundleComponent` | Components with no group |
+
+| Method | Description |
+|:-------|:------------|
+| `isConfigurable(): bool` | `true` when the bundle has at least one group |
+| `syncComponents(array $components): Bundle` | Replace the component list, see [Defining a bundle in code](#defining-a-bundle-in-code) |
+| `syncGroups(array $groups): Bundle` | Replace the group list |
+| `reprice(): Bundle` | Rewrite the materialised price rows, see [Pricing](#pricing) |
+| `resolveSelection(array $meta = []): BundleSelection` | Resolve cart line meta to a validated selection, see [Selections](#selections) |
+
+**`Lunar\Bundles\Models\BundleGroup`**, a choice set inside a configurable bundle:
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Referenced from cart line meta |
+| bundle_id | `foreignId` | |
+| name | `json` | Translated |
+| min_selections | `smallInteger` | `0` makes the group optional; defaults to `1` |
+| max_selections | `smallInteger` | `1` is "pick one"; defaults to `1` |
+| position | `smallInteger` | |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `bundle` | BelongsTo | `Lunar\Bundles\Models\Bundle` | |
+| `components` | HasMany | `Lunar\Bundles\Models\BundleComponent` | The options in this group, ordered by `position` |
+
+**`Lunar\Bundles\Models\BundleComponent`**, a variant inside a bundle:
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Referenced from cart line meta |
+| bundle_id | `foreignId` | |
+| bundle_group_id | `foreignId` `nullable` | `null` means the component is always included |
+| product_variant_id | `foreignId` | The component variant; cascades on delete |
+| quantity | `smallInteger` | Units per bundle unit |
+| default | `boolean` | Pre-selected inside a group; the default selection drives the materialised price |
+| position | `smallInteger` | |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `bundle` | BelongsTo | `Lunar\Bundles\Models\Bundle` | |
+| `group` | BelongsTo | `Lunar\Bundles\Models\BundleGroup` | `null` for a fixed component |
+| `variant` | BelongsTo | `Lunar\Core\Models\ProductVariant` | The component variant |
+
+`isFixed(): bool` returns `true` when `bundle_group_id` is `null`. A `(bundle, group, variant)` combination is unique.
+
+All three models extend `Lunar\Core\Models\Base` with public ids, macros, and activity logging, and are registered with the model manifest under the morph keys `bundle`, `bundle_group`, and `bundle_component`. The add-on also adds two relations to core models:
+
+```php
+$variant->bundle;    // ?Lunar\Bundles\Models\Bundle, HasOne on Lunar\Core\Models\ProductVariant
+$product->bundles;   // HasManyThrough on Lunar\Core\Models\Product: every bundle among its variants
+```
+
+### Invariants
+
+The actions reject any change that would leave a bundle in one of these states:
+
+- A component variant that is itself a bundle variant, or that is the bundle's own variant (`Lunar\Bundles\Exceptions\BundleNesting`).
+- A variant that is already a component of another bundle being defined as a bundle (`BundleNesting`).
+- No components at all, or more than `lunar.bundles.max_components` (`Lunar\Bundles\Exceptions\InvalidBundleDefinition`).
+- A group whose `min_selections` exceeds its `max_selections`, or whose `max_selections` exceeds the number of options it holds (`InvalidBundleDefinition`).
+
+Deleting a component variant cascades to its `bundle_components` row. The **Included in bundles** card in the panel is the merchant's warning before doing that.
+
+### Defining a bundle in code
+
+Every operation is an action bound to a contract in `Lunar\Bundles\Contracts\Actions`. `DefinesBundle` creates or updates the definition on a variant; the rest are exposed as verbs on the `Bundle` model.
+
+```php
+use Lunar\Bundles\Contracts\Actions\DefinesBundle;
+use Lunar\Bundles\Enums\BundlePricing;
+use Lunar\Core\Models\ProductVariant;
+
+$kit = ProductVariant::query()->where('sku', 'CAM-KIT')->firstOrFail();
+$body = ProductVariant::query()->where('sku', 'CAM-BODY')->firstOrFail();
+$bag = ProductVariant::query()->where('sku', 'CAM-BAG')->firstOrFail();
+
+$bundle = app(DefinesBundle::class)->execute($kit, BundlePricing::Components, discountPercentage: 10);
+
+$bundle->syncComponents([
+    ['variant' => $body, 'quantity' => 1],
+    ['variant' => $bag, 'quantity' => 1],
+]);
+```
+
+That is a fixed bundle. To make it configurable, add a group and assign options to it. `syncGroups()` returns the bundle with fresh `groups`; a group's `id` may be passed back to update it, and groups left out of the list are deleted along with their components.
+
+```php
+$lens = $bundle->syncGroups([
+    ['name' => ['en' => 'Lens'], 'min_selections' => 1, 'max_selections' => 1],
+])->groups->first();
+
+$bundle->syncComponents([
+    ['variant' => $body, 'quantity' => 1],
+    ['variant' => $bag, 'quantity' => 1],
+    ['variant' => $lens35, 'quantity' => 1, 'group' => $lens, 'default' => true],
+    ['variant' => $lens50, 'quantity' => 1, 'group' => $lens],
+]);
+```
+
+`syncComponents()` accepts `variant` and `group` as models or ids, upserts the rows that match on `(group, variant)`, deletes the rest, validates the invariants, and reprices. Each entry takes `quantity` (defaults to `1`), `default` (defaults to `false`), and `position` (defaults to the array index).
+
+To turn a bundle back into an ordinary variant:
+
+```php
+use Lunar\Bundles\Contracts\Actions\DeletesBundle;
+
+app(DeletesBundle::class)->execute($bundle);
+```
+
+The definition, its groups, and its components are removed. Price rows the add-on materialised on the variant are left in place, so the variant keeps selling at its last derived price until the merchant changes it.
+
+| Contract | Default action | Signature |
+|---|---|---|
+| `DefinesBundle` | `Lunar\Bundles\Actions\DefineBundle` | `execute(ProductVariant $variant, BundlePricing $pricing, ?float $discountPercentage = null): Bundle` |
+| `SyncsBundleComponents` | `Lunar\Bundles\Actions\SyncBundleComponents` | `execute(Bundle $bundle, array $components): Bundle` |
+| `SyncsBundleGroups` | `Lunar\Bundles\Actions\SyncBundleGroups` | `execute(Bundle $bundle, array $groups): Bundle` |
+| `RepricesBundle` | `Lunar\Bundles\Actions\RepriceBundle` | `execute(Bundle $bundle): Bundle` |
+| `ResolvesBundleSelection` | `Lunar\Bundles\Actions\ResolveBundleSelection` | `execute(Bundle $bundle, array $meta = []): BundleSelection` |
+| `DeletesBundle` | `Lunar\Bundles\Actions\DeleteBundle` | `execute(Bundle $bundle): void` |
+
+## Pricing
+
+`Lunar\Bundles\Enums\BundlePricing` has two cases.
+
+**`Fixed`**: the merchant prices the bundle variant by hand, like any other variant, through the panel's pricing editor or `Lunar\Core\Models\Price` rows. The add-on does nothing to the price. The saving, if the merchant wants to show one, is a hand-set `list_price`.
+
+**`Components`**: the bundle's price is the quantity-weighted sum of its components' prices, less `discount_percentage`. Because every price reader in Lunar (the pricing manager, Scout price sorting, the panel price column, storefront listings) reads `prices` rows, the add-on does not compute this at read time. Instead `RepriceBundle` **materialises real `Price` rows** on the bundle variant and keeps them current.
+
+### How materialised prices behave
+
+Each reprice recomputes the rows from the bundle's **default selection**: the fixed components plus each group's `default` components. For a configurable bundle that is the "from" price on a listing.
+
+- **One base row per currency** in which every included component has a base price (`min_quantity = 1`, no customer group). A currency any component lacks gets no row, so the bundle is unsellable in that currency until the component is priced.
+- **One customer-group row per currency and group** where at least one component has a price for that group. Each component contributes its group price when it has one, otherwise its base price.
+- **`price`** is the sum less `discount_percentage`, rounded through the price calculator so it follows the currency's `decimal_places`. **`list_price`** is the undiscounted sum when a discount applies and `null` otherwise, so storefronts show the saving with the `list_price` machinery they already have.
+- **Quantity price breaks on components are ignored.** Bundle pricing is per bundle unit. Quantity breaks on the bundle variant itself (`min_quantity > 1` rows) are never touched by a reprice.
+- **The add-on owns every `min_quantity = 1` row on a `components` bundle variant.** A reprice rewrites the rows that still apply and deletes the rest, so a row for a currency a component no longer has a price in is removed, and a hand edit to a base or group row is overwritten on the next reprice. A merchant who wants to hand-tune the price switches the bundle to `Fixed`.
+
+Rows are written through the `Price` model, so cache invalidation and search reindexing fire as they do for any price change.
+
+### Reprice triggers
+
+| Trigger | Where |
+|---|---|
+| The bundle is defined, or its pricing mode or discount changes | `DefineBundle` |
+| Components or groups are synced | `SyncBundleComponents`, `SyncBundleGroups` |
+| A `Price` on a component variant is saved or deleted | `Lunar\Bundles\Listeners\RepriceOnComponentPriceChange`, a `Price` observer |
+| A component's product is invalidated (`Lunar\Core\Events\Catalog\ProductInvalidated`) | `Lunar\Bundles\Listeners\RepriceOnComponentInvalidation` |
+| On demand | `$bundle->reprice()` |
+
+Repricing runs synchronously on the triggering event. For a backfill, or after adding a currency or a customer group, recompute every `components` bundle at once:
+
+```bash
+php artisan lunar:bundles:reprice
+# Repriced 12 bundles.
+```
+
+`Fixed` bundles are skipped by every trigger and by the command.
+
+### Non-default selections at cart time
+
+The materialised rows cover the default selection only. When a customer's selection for a configurable `components` bundle differs from the default, `Lunar\Bundles\Pipelines\CartLine\PriceBundleSelection`, registered in the `CartLinePricing` step list after `GetUnitPrice`, prices the line from the resolved selection instead: each selected component is priced through the pricing manager with the cart's context (`$cart->context()`, so the cart's currency, customer, and customer groups) at a quantity of one, the quantity-weighted sum is discounted by `discount_percentage`, and the result replaces the line's `unitPrice` and `unitPriceInclTax`. Fixed bundles, default selections, and `Fixed`-priced bundles never enter the stage.
+
+### Tax and discounts
+
+The bundle line is taxed at the bundle variant's tax class, like any variant, so a bundle whose components carry different tax rates is taxed at one rate. Mixed-supply apportionment is not part of the add-on.
+
+A discount targeting the bundle product, or a collection it belongs to, applies to the bundle line as normal. A discount targeting a component product does **not** apply to bundles containing it: discounts see only the bundle cart line.
+
+## Stock
+
+The bundle variant's own `stock_*` columns are ignored and stay at zero. Its availability is derived from its components by `Lunar\Bundles\Actions\ResolveBundleInventory`, which decorates the core [`ResolvesInventory` seam](/reference/inventory#the-resolvesinventory-seam):
+
+- For a **fixed bundle**, `available` is the smallest number of complete kits any component can supply: each component's own available quantity divided by its `quantity` per kit, and the minimum taken across components.
+- For a **configurable bundle**, each group contributes its best-stocked option, so `available` answers "can at least one valid configuration be sold". The chosen selection is checked exactly at add-to-cart (below).
+- `unlimited` is `true` only when every candidate component is on the `Always` selling policy.
+- A bundle with no components has nothing to sell.
+
+Because the seam sits behind `getTotalInventory()` and `canBeFulfilledAtQuantity()`, every caller is right without knowing bundles exist: a storefront stock badge, the core `CartLineStock` validator, and the panel.
+
+```php
+$kit->getTotalInventory();           // complete kits the components can supply
+$kit->canBeFulfilledAtQuantity(3);   // bool
+```
+
+The decorator reads `$variant->bundle` to decide whether a variant is a bundle, so a listing that shows a stock badge per variant should eager load that relation (`->with('bundle')`) or it costs one query per variant.
+
+Component variants answer for themselves as usual. The bundle variant never has stock committed against it: its order line is stamped `requires_fulfilment = false`, so the commitment sync skips it, and the component lines commit the parts instead.
+
+## Selections
+
+A configurable bundle is added to the cart with the customer's choices in the line's `meta`, keyed by the group's `public_id` and listing the chosen components' `public_id`s:
+
+```php
+[
+    'bundle' => [
+        'selections' => [
+            '01JXX0GROUP0PUBLIC0ID000000' => ['01JXX0COMPONENT0PUBLIC0ID00'],
+        ],
+    ],
+]
+```
+
+`Lunar\Bundles\Actions\ResolveBundleSelection` is the single place this meta is interpreted, reachable as `$bundle->resolveSelection($meta)`:
+
+- Fixed components are always included.
+- For each group, the listed components must belong to that group and number between `min_selections` and `max_selections`.
+- A group absent from the meta contributes nothing when `min_selections` is `0`. Otherwise it falls back to its `default` components when they satisfy the limits, and is invalid when they do not.
+- Unknown groups, unknown components, duplicates, and malformed meta are invalid.
+
+The result is a `Lunar\Bundles\ValueObjects\BundleSelection`: a countable, iterable collection of `Lunar\Bundles\ValueObjects\SelectedComponent` (`variant`, `quantity` per kit, `group` or `null` for a fixed part, and the `component` row), plus `isDefault()`, `variants()`, `map()`, `each()`, and `isEmpty()`.
+
+```php
+$selection = $kit->bundle->resolveSelection($meta);
+
+foreach ($selection as $part) {
+    $part->variant;    // Lunar\Core\Models\ProductVariant
+    $part->quantity;   // per kit
+    $part->group;      // ?Lunar\Bundles\Models\BundleGroup
+}
+
+$selection->isDefault();   // exactly the fixed and default components
+```
+
+An invalid selection throws `Lunar\Bundles\Exceptions\InvalidBundleSelection` with a translated message from the `bundles` namespace, for example `Choose between 1 and 1 options in "Lens".` or `The bundle has no option group ":id".`
+
+## Cart and checkout
+
+A bundle is added to the cart as its variant, with the same `add()` call as any product. A fixed bundle, or a configurable bundle sold at its default selection, needs no meta:
+
+```php
+use Lunar\Core\Facades\CartSession;
+
+$cart = CartSession::current();
+
+$cart->add($kit, 1);
+```
+
+A configurable bundle passes the selection in `meta`. The public ids come from the bundle's groups and components, which a product page reads through `$variant->bundle`:
+
+```php
+use Lunar\Core\Facades\CartSession;
+
+$bundle = $kit->bundle;
+$lens = $bundle->groups->first();
+$chosen = $lens->components->firstWhere('product_variant_id', $lens50->id);
+
+$cart = CartSession::current();
+
+$cart->add($kit, 1, [
+    'bundle' => [
+        'selections' => [
+            $lens->public_id => [$chosen->public_id],
+        ],
+    ],
+]);
+```
+
+`CartSession::add(...)` with the same arguments forwards to the current cart. Cart line identity is the purchasable plus its `meta`, so two different selections of the same bundle become two lines, and re-adding the same selection increments the quantity. `updateLine()` accepts a new selection in its `meta` argument; an update without meta is validated against the meta the line already holds.
+
+### Validation
+
+`Lunar\Bundles\Validation\CartLine\BundleSelection` is appended to the `AddToCartValidation` and `UpdateCartLineValidation` step lists. For a bundle line it resolves the selection and, if that throws `InvalidBundleSelection`, fails validation with the exception's message under the `cart` key, surfacing as a `Lunar\Core\Exceptions\Carts\CartException` like any other cart validator. It then checks every selected component with `canBeFulfilledAtQuantity(quantity per kit x line quantity)`, so the cart-time stock check sees the actual selection rather than the best case the inventory seam reports, failing with `Bundle component ":identifier" is not available at this quantity.` when a part is short. Ordinary variants pass straight through.
+
+The core `CartLineStock` validator runs too, against the bundle variant's derived inventory. See [Validators](/extending/carts#validators) for how a storefront reports these errors.
+
+## How the order records a bundle
+
+When the order is created, `Lunar\Bundles\Pipelines\Order\Creation\CreateBundleComponentLines`, appended to the `OrderCreation` step list after `MapDiscountBreakdown`, gives every bundle line its component lines:
+
+1. The **parent line** (the image of the cart line) is stamped `type = 'bundle'` and `requires_fulfilment = false`. It keeps its `requires_shipping` value, so shipping is still required at the order level, and it keeps every money column: `unit_price`, `sub_total`, `discount_total`, `tax_breakdown`, `tax_total`, and `total`. `meta.bundle` stays as the cart line wrote it, so the order records which selection was sold.
+2. The selection is resolved from the parent's `meta`, and **one component line per selected component** is created with `parent_line_id` set to the parent: `purchasable` is the component variant; `type`, `requires_shipping`, `requires_fulfilment`, `description`, `option`, `identifier`, and `unit_quantity` are snapshotted from it; `quantity` is the component's quantity per kit multiplied by the parent's quantity; every money column is `0` and `tax_breakdown` is empty.
+3. Each component line's `meta.allocated_total` receives a share of the parent's `total`, distributed in proportion to the components' current unit prices (priced with the order's cart context) with the price calculator's `distribute()`, so the shares are exact to the minor unit. This is for revenue-per-SKU reporting only and never feeds a total.
+
+The stage is idempotent: re-running order creation for a draft order (`orderIdToUpdate`) replaces the component lines.
+
+Why this shape: the parent line is the customer's contract ("a kit at this price") and the only line that carries money, so totals, discount breakdowns, and refunds stay per bundle. The component lines are real order lines with a purchasable, a quantity, and fulfilment flags, so everything that already works from order lines does the rest with no bundle awareness. Because the component lines exist before `Lunar\Core\Events\Orders\OrderPlaced` fires:
+
+- The initial fulfilment claims the component lines (the parent is not fulfillable), so the pick list shows the parts.
+- Stock commitment counts the component lines against the component variants; nothing is committed against the bundle variant.
+- Shipping, returning, or cancelling the fulfilment moves component stock.
+- A mixed physical and digital bundle fulfils correctly: each component line carries its own variant's `type` and flags, so the physical part is picked and shipped while the digital part is recorded and needs no fulfilment.
+
+Refunds are parent-only. `refundableQuantity()` is `0` for a component line, so a refund of one damaged part is recorded as an amount against the parent line. See [Component lines](/reference/orders#component-lines) for the `OrderLine` API.
+
+The order-line snapshot is authoritative: the `Bundle` row can change afterwards without touching placed orders.
+
+### Order history
+
+Code that iterates `$order->lines` for display sees component lines with zero money. Query top-level lines and nest their components:
+
+```php
+use Lunar\Core\Models\Order;
+
+$order = Order::query()->with('lines.components.purchasable')->findOrFail($id);
+
+foreach ($order->lines()->topLevel()->with('components')->get() as $line) {
+    // $line->description, $line->quantity, $line->format('total')
+
+    foreach ($line->components as $part) {
+        // $part->description, $part->quantity; no money on a component line
+    }
+}
+```
+
+`$order->productLines` and the other line relations on `Order` include component lines. Filter with `->whereNull('parent_line_id')` or `isComponent()` where a query scope is not available.
+
+## Storefront surface
+
+The calls a headless storefront or product page needs, in one place:
+
+```php
+use Lunar\Core\Models\ProductVariant;
+
+$variant = ProductVariant::query()->with('bundle.groups.components.variant', 'bundle.fixedComponents.variant')->findOrFail($id);
+
+$variant->bundle;                                   // ?Lunar\Bundles\Models\Bundle; null for an ordinary variant
+$variant->bundle?->isConfigurable();                // has groups
+$variant->bundle?->fixedComponents;                 // always included, each with ->variant and ->quantity
+$variant->bundle?->groups;                          // each with ->name, ->min_selections, ->max_selections, ->components
+$variant->pricing()->get();                         // the merchant's rows (fixed) or the materialised rows (components)
+$variant->getTotalInventory();                      // complete kits the components can supply
+$variant->bundle?->resolveSelection($meta);         // BundleSelection, or throws InvalidBundleSelection
+```
+
+Search: bundles are products, indexed and found as products. The add-on adds nothing to the index.
+
+Cache: editing a bundle's components or groups invalidates the bundle's product, and `Lunar\Bundles\Listeners\InvalidateContainingBundles` fans a component product's `ProductInvalidated` event out to every bundle product that includes one of its variants, so a page cached against the bundle refreshes when a part's price or stock changes. The `Bundle` model fires `Lunar\Bundles\Events\BundleInvalidated`, a `CacheInvalidationEvent`, when its definition changes.
+
+## Extending
+
+Every seam is a container binding; the config holds values only.
+
+### Swapping an action
+
+Bind the contract to another implementation in a service provider. The `Bundle` verbs and the add-on's own stages resolve the contract, so the replacement is used everywhere.
+
+```php
+use App\Bundles\ResolveBundleSelectionWithLimits;
+use Lunar\Bundles\Contracts\Actions\ResolvesBundleSelection;
+
+public function register(): void
+{
+    $this->app->bind(ResolvesBundleSelection::class, ResolveBundleSelectionWithLimits::class);
+}
+```
+
+### Decorating the inventory seam
+
+The add-on itself is an example of decorating `Lunar\Core\Contracts\Actions\Products\ResolvesInventory`: `ResolveBundleInventory` wraps whatever was bound before it and falls through for non-bundle variants. Another package can wrap the binding again; register after the add-on so its decorator sits on the outside.
+
+```php
+use App\Inventory\CapAvailability;
+use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
+
+public function register(): void
+{
+    $this->app->extend(
+        ResolvesInventory::class,
+        fn (ResolvesInventory $inner) => new CapAvailability($inner),
+    );
+}
+```
+
+The decorator answers component variants through the inner action, never through the variant's own `getTotalInventory()`, which would re-enter the chain.
+
+### Step and validator order
+
+The service provider registers its steps with the `Lunar\Core\Facades\Steps` step lists (see [Registering calculation steps](/extending/carts#registering-calculation-steps)):
+
+```php
+Steps::for(StepList::AddToCartValidation)->append(BundleSelection::class);
+Steps::for(StepList::UpdateCartLineValidation)->append(BundleSelection::class);
+Steps::for(StepList::CartLinePricing)->after(GetUnitPrice::class, PriceBundleSelection::class);
+Steps::for(StepList::OrderCreation)->append(CreateBundleComponentLines::class);
+```
+
+`PriceBundleSelection` must run after `GetUnitPrice`, whose price it replaces, and `CreateBundleComponentLines` after `MapDiscountBreakdown`. A host moves or removes them with the same calls from its own service provider; `php artisan lunar:steps` shows where they sit once the add-on is installed.

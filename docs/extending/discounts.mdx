@@ -1,0 +1,117 @@
+---
+title: "Extending Discounts"
+sidebarTitle: "Discounts"
+---
+
+A custom discount type is a class registered with the discount manager, invoked against a cart during the discount stage of cart calculation.
+
+## The discount type contract
+
+Every discount type implements `Lunar\Core\Contracts\DiscountType`:
+
+```php
+namespace Lunar\Core\Contracts;
+
+use Lunar\Core\Models\Cart;
+
+interface DiscountType
+{
+    /**
+     * Return the name of the discount type.
+     */
+    public function getName(): string;
+
+    /**
+     * Execute and apply the discount if conditions are met.
+     */
+    public function apply(Cart $cart): Cart;
+}
+```
+
+Extend `Lunar\Core\DiscountTypes\AbstractDiscountType` rather than implementing the interface directly. It supplies the `Discount` model the type is running for (`$this->discount`, set via `with()`), plus helpers a discount type typically needs:
+
+- `markAsUsed(Cart $cart)` — increments the discount's use count and records the cart's user against it.
+- `getEligibleLines(Cart $cart)` — the cart lines the discount can apply to; defaults to every line.
+- `checkDiscountConditions(Cart $cart)` — validates the discount's customer restriction, coupon match, minimum spend, and use limits.
+- `addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)` — records the discount against the cart's breakdown, which is what makes it show up as applied.
+
+```php
+<?php
+
+namespace App\DiscountTypes;
+
+use Lunar\Core\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Models\Cart;
+
+class MyCustomDiscountType extends AbstractDiscountType
+{
+    public function getName(): string
+    {
+        return 'Custom Discount Type';
+    }
+
+    public function apply(Cart $cart): Cart
+    {
+        if (! $this->checkDiscountConditions($cart)) {
+            return $cart;
+        }
+
+        // Apply the discount to $cart, then:
+        $this->addDiscountBreakdown($cart, $breakdown);
+        $this->markAsUsed($cart);
+
+        return $cart;
+    }
+}
+```
+
+Lunar's own built-in types follow the same shape: `Lunar\Core\DiscountTypes\PercentageOff`, `Lunar\Core\DiscountTypes\FixedAmountOff`, and `Lunar\Core\DiscountTypes\BuyXGetY`. `PercentageOff` and `FixedAmountOff` also use `Lunar\Core\DiscountTypes\Concerns\TargetsCartLines`, a trait that narrows `getEligibleLines()` to the discount's collection, brand, product, or variant limitations — reach for it when a discount type should target specific lines rather than the whole cart.
+
+## Registering a discount type
+
+Register the type from a service provider's `boot` method, through the `Discounts` facade:
+
+```php
+use Lunar\Core\Facades\Discounts;
+
+public function boot(): void
+{
+    Discounts::addType(\App\DiscountTypes\MyCustomDiscountType::class);
+}
+```
+
+`Discounts` resolves `Lunar\Core\Contracts\DiscountManager`, implemented by `Lunar\Core\Managers\DiscountManager`. There is no config-based registration; `addType()` is the only seam.
+
+<Info>
+A discount record stores its type's class name directly in its own `type` column — `addType()` registers the class with the manager (which drives the admin type picker and validation), but at apply time each `Discount` instantiates its own stored type via `Discount::getType()`.
+</Info>
+
+## Applying discounts to a cart
+
+Discounts run as part of the cart calculation pipeline (see [Extending Carts](/extending/carts)), in the `ApplyDiscounts` step:
+
+```php
+class ApplyDiscounts
+{
+    public function handle(Cart $cart, Closure $next): mixed
+    {
+        $cart->discounts = collect([]);
+        $cart->discountBreakdown = collect([]);
+
+        Discounts::apply($cart);
+
+        return $next($cart);
+    }
+}
+```
+
+`DiscountManager::apply()` fetches every eligible `Discount`, ordered by `priority` descending (ties broken by id), and calls each one's type's `apply($cart)` in turn. A discount's `stop` flag, when true, halts the loop as soon as that discount applies — lower-priority discounts after it are skipped. Both `priority` and `stop` are plain columns on the `Discount` model, set through its admin form; a discount type does not need to implement anything to participate in ordering or stopping, as long as `apply()` calls `addDiscountBreakdown()` when it actually applies.
+
+## Adding an admin form
+
+A discount type with no registered form still works — the storefront applies it — but it has no dedicated fields in an admin panel. To add one:
+
+- **Filament admin**: implement `Lunar\Admin\Base\LunarPanelDiscountInterface`, which requires `lunarPanelSchema()`, `lunarPanelOnFill()`, `lunarPanelOnSave()`, and `lunarPanelRelationManagers()`.
+- **Inertia panel**: see [Discount Type Forms](/admin/extending/discount-forms) for the panel's own `DiscountTypeForm` contract.
+
+A type can implement both to serve both admins from one class; neither is required by the other.

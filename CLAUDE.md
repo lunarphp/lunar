@@ -7,6 +7,7 @@ Lunar is a headless PHP/Laravel e-commerce package. This directory is the **pack
 - `packages/` — sub-packages published from this monorepo (`core`, `admin`, `filament`, `panel`, `panel-addon-example`, `search`, `stripe`, `paypal`, `table-rate-shipping`, `meilisearch`, `upgrade`, `demo-data`).
 - `tests/` — Pest tests grouped per sub-package (admin, core, panel, search, stripe, shipping, upgrade); see `phpunit.xml` for the testsuites.
 - `specs/` — design docs for v2 work (see below).
+- `docs/` — the 2.x pages of docs.lunarphp.com (see Documentation below).
 - `TODO.md` — the v2 work tracker.
 - `composer.json` / `monorepo-builder.php` — the monorepo config; sub-packages are split out on release.
 
@@ -23,7 +24,7 @@ The directory **above this one** (`/Users/glenn/Herd/lunar-v2/`) is a standard L
 Every non-trivial change to Lunar v2 starts as a spec.
 
 - `TODO.md` lists outstanding work, ideas, and what is done.
-- `specs/NNNN-short-slug.md` — one file per TODO item, sequentially numbered. Use `specs/0000-template.md` as the starting point.
+- `specs/short-slug.md` — one file per TODO item, named by its slug, with no number. Use `specs/template.md` as the starting point. Refer to a spec by its slug (`spec cart-totals-caching`); older specs keep their numbers (`spec 0093`).
 - `specs/completed/` — specs whose implementation has shipped; move them there once merged.
 - See `specs/README.md` for the status lifecycle (`draft` → `proposed` → `accepted` → `implemented` / `superseded`).
 - A spec should land (reviewed + merged) before its implementation work begins. Keep specs in present tense, focused on the proposed change.
@@ -64,6 +65,13 @@ PHPStan (via Larastan, level 0) is part of the test pipeline and **must pass bef
 - The `composer test` script chains pint check + pest + phpstan; CI runs the same. Skipping phpstan locally just defers the failure to CI.
 - Fix the underlying type/contract issue. Do not add `@phpstan-ignore`, baseline entries, `assert()`, or inline `@var` to silence errors unless you have a specific reason (and call it out in the PR).
 - When introducing new public surface (selectors, schemas, helpers), add type hints and array-shape PHPDoc so phpstan can verify call sites without baseline noise.
+
+## Documentation
+
+- Docs for a change go in `docs/` in the same PR. They publish at the next 2.x release, not on merge.
+- Page paths and links are written without the `/2.x` prefix; link to other versions and to Support, Flight Plan or v0 pages with the full URL. See `docs/README.md`.
+- Follow the writing style in `docs/README.md`: third person, American English, full namespaces, and the field, relationship and scope tables for models.
+- Check with `mint validate` and `mint broken-links` from `docs/`; the `Docs` workflow runs both on PRs that change `docs/`.
 
 ## Reviewing changes
 

@@ -1,0 +1,256 @@
+---
+title: "Extending Carts"
+sidebarTitle: "Carts"
+---
+
+The cart system is extended by swapping action contracts in the container, by registering steps and validators in its calculation and validation step lists, and by hooking modifiers into cart calculation.
+
+## Overview
+
+Every operation `Lunar\Core\Models\Cart` performs — adding a line, setting a shipping option, creating an order — is a one-line delegation from a verb method on the model to an action contract resolved from the container. Swapping behavior means binding a different implementation of that contract in a service provider; the verb picks it up automatically.
+
+```php
+public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
+{
+    // ...
+    app(AddsOrUpdatesPurchasable::class)->execute($this, $purchasable, $quantity, $meta);
+
+    return $refresh ? $this->refresh()->recalculate() : $this;
+}
+```
+
+## Cart action contracts
+
+`Lunar\Core\ActionServiceProvider`'s `$actions` map is the canonical list of swappable action seams. The cart-related entries, each a `Lunar\Core\Contracts\Actions\Carts\*` interface bound to its `Lunar\Core\Actions\Carts\*` default implementation:
+
+| Contract | Default implementation |
+| --- | --- |
+| `AddsAddress` | `AddAddress` |
+| `AddsOrUpdatesPurchasable` | `AddOrUpdatePurchasable` |
+| `AssociatesUser` | `AssociateUser` |
+| `CreatesOrder` | `CreateOrder` |
+| `GeneratesFingerprint` | `GenerateFingerprint` |
+| `GetsExistingCartLine` | `GetExistingCartLine` |
+| `MergesCart` | `MergeCart` |
+| `RemovesPurchasable` | `RemovePurchasable` |
+| `SetsShippingOption` | `SetShippingOption` |
+| `UpdatesCartLine` | `UpdateCartLine` |
+
+Rebind a contract from a consumer's own service provider:
+
+```php
+use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
+
+public function register(): void
+{
+    $this->app->bind(AddsOrUpdatesPurchasable::class, MyAddsOrUpdatesPurchasable::class);
+}
+```
+
+<Info>
+Config-string class substitution (`config('lunar.*', SomeClass::class)`) is not used for these seams — the contract is bound in the container, and a consumer swaps it there. Do not add a config key to point at a custom class.
+</Info>
+
+## Registering calculation steps
+
+Cart calculation, cart line pricing, price matching, order creation, the cart validators and cart pruning each run an ordered list of classes, called a step list. Each list is named by a case of the `Lunar\Core\Enums\StepList` enum, seeded by core in code, and changed from a service provider through the `Lunar\Core\Facades\Steps` facade:
+
+```php
+use App\Pipelines\Cart\ApplyLoyaltyPricing;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
+use Lunar\Core\Pipelines\CartLine\GetUnitPrice;
+
+public function boot(): void
+{
+    Steps::for(StepList::CartLinePricing)->after(GetUnitPrice::class, ApplyLoyaltyPricing::class);
+}
+```
+
+`Steps::for()` returns the list's `Lunar\Core\Manifests\StepSequence`:
+
+| Method | Description |
+|:-------|:------------|
+| `append(string $step)` | Add a step to the end of the list. |
+| `prepend(string $step)` | Add a step to the start of the list. |
+| `before(string $anchor, string $step)` | Add a step immediately before `$anchor`. |
+| `after(string $anchor, string $step)` | Add a step after `$anchor`. Several steps placed after the same anchor keep their registration order. |
+| `remove(string $step)` | Remove a step. |
+| `replace(string $existing, string $step)` | Put `$step` in the place of `$existing`. |
+| `all()` | The resolved list of class names, in the order they run. |
+
+Each method except `all()` returns the sequence, so calls chain:
+
+```php
+Steps::for(StepList::CartCalculation)
+    ->replace(Lunar\Core\Pipelines\Cart\ApplyShipping::class, App\Pipelines\Cart\ApplyShipping::class)
+    ->before(Lunar\Core\Pipelines\Cart\CalculateTax::class, App\Pipelines\Cart\ApplyHandlingFee::class);
+```
+
+- Adding a class that is already in the list does nothing, so a service provider that boots twice cannot run a step twice.
+- Changes are recorded in registration order and applied when the list is first read. Register them in `register()` or `boot()`; changing a list during a request is unsupported.
+- `before()`, `after()` or `replace()` with an anchor that is not in the list throws `Lunar\Core\Exceptions\UnknownStepException` when the list is read, naming both classes. A step positioned against one that another service provider removed fails loudly rather than running in the wrong place.
+
+### The step lists
+
+| `StepList` case | Read by | Default steps |
+|:----------------|:--------|:--------------|
+| `CartCalculation` | `Cart::calculate()` | `Lunar\Core\Pipelines\Cart\CalculateLines`, `ApplyShipping`, `CalculateShippingSubTotal`, `ApplyDiscounts`, `CalculateTax`, `Calculate` |
+| `CartLinePricing` | `CalculateLines`, for each line | `Lunar\Core\Pipelines\CartLine\GetUnitPrice` |
+| `PriceMatching` | `PricingManager::get()` | none |
+| `OrderCreation` | `Lunar\Core\Actions\Carts\CreateOrder` | `Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart`, `CreateOrderLines`, `CreateOrderAddresses`, `CreateShippingLine`, `CleanUpOrderLines`, `MapDiscountBreakdown` |
+| `AddToCartValidation` | `Cart::add()` | `Lunar\Core\Validation\CartLine\CartLineQuantity`, `CartLineStock`, `CartLineAvailability` |
+| `UpdateCartLineValidation` | `Cart::updateLine()` | `Lunar\Core\Validation\CartLine\CartLineQuantity`, `CartLineStock`, `CartLineAvailability` |
+| `RemoveFromCartValidation` | `Cart::remove()` | none |
+| `AddAddressValidation` | `Cart::addAddress()` | none |
+| `SetShippingOptionValidation` | `Cart::setShippingOption()` | `Lunar\Core\Validation\Cart\ShippingOptionValidator` |
+| `OrderCreateValidation` | `Cart::createOrder()`, `Cart::canCreateOrder()` | `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation` |
+| `CartPruning` | `lunar:prune:carts` | `Lunar\Core\Pipelines\CartPrune\PruneAfter`, `WithoutOrders`, `WhereNotMerged` |
+
+List what runs, including steps registered by add-ons, with:
+
+```bash
+php artisan lunar:steps
+```
+
+<Warning>
+Step lists are not read from config. The `lunar.cart.pipelines`, `lunar.cart.validators`, `lunar.cart.prune_tables.pipelines`, `lunar.pricing.pipelines` and `lunar.orders.pipelines` keys no longer exist. If one is still defined, the first read of any step list throws `Lunar\Core\Exceptions\RemovedStepConfigException`, naming the key and the `Steps::for()` call that replaces it. Remove the key; `php artisan lunar:upgrade` prints the equivalent `Steps` calls for a customized list.
+</Warning>
+
+### Writing a cart step
+
+A `CartCalculation` step implements `handle(Cart $cart, Closure $next): mixed`. A `CartLinePricing` step has the same shape against `CartLine`.
+
+```php
+<?php
+
+namespace App\Pipelines\Cart;
+
+use Closure;
+use Lunar\Core\Models\Cart;
+
+class ApplyHandlingFee
+{
+    public function handle(Cart $cart, Closure $next): mixed
+    {
+        // ...
+
+        return $next($cart);
+    }
+}
+```
+
+## Validators
+
+`Cart::add()`, `updateLine()`, `remove()`, `addAddress()`, `setShippingOption()`, and `createOrder()` each run the validators in their step list (see the table above). A validator extends `Lunar\Core\Validation\BaseValidator`:
+
+```php
+<?php
+
+namespace App\Validation\CartLine;
+
+use Lunar\Core\Validation\BaseValidator;
+
+class MaximumPerOrder extends BaseValidator
+{
+    public function validate(): bool
+    {
+        $quantity = $this->parameters['quantity'] ?? 0;
+
+        if ($quantity > 10) {
+            return $this->fail('cart', 'No more than 10 of an item per order.');
+        }
+
+        return $this->pass();
+    }
+}
+```
+
+Register it against the relevant list:
+
+```php
+use App\Validation\CartLine\MaximumPerOrder;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
+
+Steps::for(StepList::AddToCartValidation)->append(MaximumPerOrder::class);
+Steps::for(StepList::UpdateCartLineValidation)->append(MaximumPerOrder::class);
+```
+
+If validation fails, `Lunar\Core\Exceptions\Carts\CartException` is thrown. Errors are accessed the same way as Laravel's own validation responses:
+
+```php
+try {
+    $cart->setShippingOption($option);
+} catch (\Lunar\Core\Exceptions\Carts\CartException $e) {
+    $e->errors()->all();
+}
+```
+
+## Modifiers
+
+Modifiers hook fixed points in cart calculation without depending on the names of core's steps. A `Lunar\Core\Modifiers\CartLineModifier` hooks each line; a `Lunar\Core\Modifiers\CartModifier` hooks the cart as a whole.
+
+| Hook | Fires |
+|:-----|:------|
+| `CartModifier::calculating($cart)` | Once, before the `CartCalculation` step list starts. |
+| `CartLineModifier::calculating($line)` | Per line, inside `CalculateLines`, before the `CartLinePricing` step list prices the line. |
+| `CartLineModifier::subtotalled($line)` | Per line, inside `CalculateLines`, once the line's unit price and subtotal are set and before its discounted subtotal and total are derived from them. |
+| `CartLineModifier::calculated($line)` | Per line, once the `CartCalculation` step list has finished, so discounts, tax and the line total are final. |
+| `CartModifier::calculated($cart)` | Once, after every line's `calculated` hook. |
+
+Each hook runs the registered modifiers in registration order, as a pipeline. The hooks run inside `calculate()`, so a modifier that prices something sees the same `$cart->context()` as the cart being calculated.
+
+<Warning>
+`calculating()` runs before `GetUnitPrice`, which always sets the line's unit price, so a unit price set in `calculating()` is overwritten. Change a line's price in `subtotalled()`, or register a step after `GetUnitPrice` in the `CartLinePricing` list.
+</Warning>
+
+A change to the subtotal in `subtotalled()` reaches discounts, tax and the cart total, since those are calculated from it:
+
+```php
+<?php
+
+namespace App\Modifiers;
+
+use Closure;
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Modifiers\CartLineModifier;
+
+class GiftWrapModifier extends CartLineModifier
+{
+    public function subtotalled(CartLine $cartLine, Closure $next): CartLine
+    {
+        if ($cartLine->meta['gift_wrap'] ?? false) {
+            $cartLine->subTotal = $cartLine->subTotal->add(
+                new PriceValue(250 * $cartLine->quantity, $cartLine->cart->currency)
+            );
+        }
+
+        return $next($cartLine);
+    }
+}
+```
+
+A cart modifier implements `calculating(Cart $cart, Closure $next): Cart` and `calculated(Cart $cart, Closure $next): Cart`. Every hook has a pass-through default, so a modifier overrides only the hooks it needs.
+
+Register an instance with the `Lunar\Core\Modifiers\CartLineModifiers` or `Lunar\Core\Modifiers\CartModifiers` collection, both singletons in the container:
+
+```php
+use App\Modifiers\GiftWrapModifier;
+use App\Modifiers\MyCartModifier;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
+
+public function boot(): void
+{
+    app(CartLineModifiers::class)->add(new GiftWrapModifier);
+    app(CartModifiers::class)->add(new MyCartModifier);
+}
+```
+
+Use a modifier for "after the subtotal" or "after calculation" logic. Register a step when the logic has to sit between two particular core steps. The shipping equivalent, `ShippingModifier`, is covered in [Extending Shipping](/extending/shipping).
+
+## Overriding order creation
+
+`Cart::createOrder()` delegates to `Contracts\Carts\CreatesOrder`, which in turn runs the order through the `StepList::OrderCreation` step list. See [Extending Orders](/extending/orders) for the order creation steps, order modifiers and action contracts.

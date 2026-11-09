@@ -1,0 +1,116 @@
+---
+title: "Countries & States"
+---
+
+Lunar ships with a full dataset of countries and states used for addresses, shipping, and tax calculations.
+
+## Overview
+
+Lunar ships with a full dataset of countries and states that can be imported into your database. These are used across the system for [Addresses](/reference/addresses), shipping zone configuration, tax calculations, and the [Regions](/reference/regions) a store trades in.
+
+## Countries
+
+```php
+Lunar\Core\Models\Country
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `name` | `string` | Full country name, e.g. `United States` |
+| `iso3` | `string` | [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) code, e.g. `USA` |
+| `iso2` | `string` `nullable` | [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code, e.g. `US` |
+| `phonecode` | `string` | International dialling code, e.g. `1` |
+| `capital` | `string` `nullable` | Capital city |
+| `currency` | `string` | Currency code, e.g. `USD` |
+| `native` | `string` `nullable` | Native name of the country |
+| `emoji` | `string` | Country flag emoji |
+| `emoji_u` | `string` | Country flag unicode |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+<Info>
+`currency` is a plain currency code copied from the import source, not a foreign key to `Lunar\Core\Models\Currency`. It reflects the country's national currency, not the currencies Lunar is configured to sell in.
+</Info>
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `states` | `HasMany` | `Lunar\Core\Models\State` | States belonging to this country |
+
+### Retrieving countries
+
+```php
+use Lunar\Core\Models\Country;
+
+// Find a country by ISO code
+$country = Country::where('iso2', 'US')->first();
+
+// Get all countries
+$countries = Country::all();
+
+// Get a country with its states
+$country = Country::with('states')->where('iso2', 'GB')->first();
+```
+
+## States
+
+States (also known as provinces or regions) belong to a country. They are useful for tax calculations and shipping zone configuration.
+
+```php
+Lunar\Core\Models\State
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `country_id` | `foreignId` `nullable` | The related country |
+| `name` | `string` | Full state name, e.g. `California` |
+| `code` | `string` | State code, e.g. `CA` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `country` | `BelongsTo` | `Lunar\Core\Models\Country` | The country this state belongs to |
+
+### Retrieving states
+
+```php
+use Lunar\Core\Models\State;
+
+// Get all states for a country
+$states = $country->states;
+
+// Find a state by code within a country
+$state = State::where('country_id', $country->id)
+    ->where('code', 'CA')
+    ->first();
+```
+
+<Info>
+A state's `code` is only unique within its own country: `WA` is both Washington and Western Australia. Code lookups used for tax zone resolution scope by `country_id` to avoid cross-country matches.
+</Info>
+
+## Importing data
+
+Country and state data is provided by the [countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database). Use the following Artisan command to import the data into your database.
+
+```sh
+php artisan lunar:import:address-data
+```
+
+<Info>
+This command should be run after installing Lunar and after any updates that may include new country or state data.
+</Info>
+
+## Countries and regions
+
+A [Region](/reference/regions) is the market a storefront trades in: it groups a channel, currency, language, and tax zone, and is served by a set of countries via the `country_region` pivot. `Lunar\Core\Models\Country` remains global reference data, unscoped to any region, while `Lunar\Core\Models\Region` determines which countries map to which market context.

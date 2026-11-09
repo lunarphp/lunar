@@ -1,0 +1,341 @@
+---
+title: "Attributes"
+description: "Store custom data on Eloquent models using configurable field types."
+---
+
+Attributes store custom data against Eloquent models using configurable field types.
+
+## Overview
+
+Attributes allow custom data to be stored against Eloquent models. They are most commonly used with products, where different information needs to be stored and presented to visitors.
+
+For example, a television might have the following attributes assigned:
+
+- Screen Size
+- Screen Technology
+- Tuner
+- Resolution
+
+Attributes are organized into **Attribute Groups** for display purposes. A group like "SEO" might contain attributes for "Meta Title" and "Meta Description".
+
+An attribute is not tied to a single model. Instead, it declares which model *types* it can appear on (for example `product` and `brand`), and `ProductType` records separately declare which of those attributes each product type actually presents to its products and variants.
+
+## Attribute Groups
+
+```php
+Lunar\Core\Models\AttributeGroup
+```
+
+Attribute groups form a logical collection of attributes.
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier. See [Public IDs](/reference/public-ids) |
+| `name` | `string` | |
+| `handle` | `string` | Underscored reference, e.g. `seo`. Must be unique |
+| `position` | `integer` | Sort order of the group, default `1` |
+| `system` | `boolean` | If `true`, the group should not be deleted |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `attributes` | HasMany | `Lunar\Core\Models\Attribute` | All attributes in this group, ordered by position |
+
+## Attributes
+
+```php
+Lunar\Core\Models\Attribute
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier. See [Public IDs](/reference/public-ids) |
+| `attribute_group_id` | `foreignId` `nullable` | The associated attribute group |
+| `name` | `string` | |
+| `handle` | `string` | Underscored reference, e.g. `screen_size`. Must be unique |
+| `type` | `string` | The field type key, e.g. `text`, `number`. Indexed |
+| `configuration` | `json` `nullable` | Field-type-specific configuration, cast to a collection |
+| `position` | `integer` | Sort order within the attribute group, default `1` |
+| `required` | `boolean` | Whether a value must be provided, default `false` |
+| `validation_rules` | `json` `nullable` | A list of Laravel validation rule strings, e.g. `["min:1", "max:10"]` |
+| `searchable` | `boolean` | Whether the attribute is included in search indexing, default `false`. Indexed |
+| `filterable` | `boolean` | Whether the attribute can be used for filtering, default `false`. Indexed |
+| `system` | `boolean` | If `true`, the attribute should not be deleted |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `group` | BelongsTo | `Lunar\Core\Models\AttributeGroup` | The group this attribute belongs to |
+| `models` | HasMany | `Lunar\Core\Models\AttributeModel` | The model types this attribute can appear on |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `system()` | Filter to attributes where `system` is `true` |
+
+### Methods
+
+| Method | Description |
+|:-------|:------------|
+| `fieldType()` | Resolve a new instance of the attribute's `Lunar\Core\Contracts\FieldType` implementation, via `FieldTypeManifest` |
+
+## Which model types an attribute applies to
+
+`Lunar\Core\Models\Attribute` does not carry a morph column for the model type it belongs to. Instead, each attribute has a `models` relationship to `Lunar\Core\Models\AttributeModel`, a simple table pairing an `attribute_id` with a `model_type` string (the morph alias, e.g. `product`, `brand`, `collection`). An attribute can apply to more than one model type.
+
+```php
+use Lunar\Core\Models\Attribute;
+
+$attribute = Attribute::find(1);
+
+// Attach the attribute to the "product" and "brand" model types
+$attribute->models()->create(['model_type' => 'product']);
+$attribute->models()->create(['model_type' => 'brand']);
+
+// See which model types this attribute applies to
+$attribute->models()->pluck('model_type');
+```
+
+The recommended way to create or update an attribute together with its model types is through the `CreatesAttribute` / `UpdatesAttribute` action contracts, which accept a `model_types` key and manage the `AttributeModel` rows for you.
+
+```php
+use Lunar\Core\Contracts\Actions\Attributes\CreatesAttribute;
+
+$attribute = app(CreatesAttribute::class)->execute([
+    'name' => 'Screen Size',
+    'handle' => 'screen_size',
+    'type' => 'text',
+    'model_types' => ['product'],
+]);
+```
+
+## Attributes on a Product Type
+
+`Lunar\Core\Models\ProductType` declares which of the available attributes it exposes to its products and variants, through the `product_type_attribute` pivot table (the `attributeMapping` relationship). This is a separate concern from `AttributeModel`: `AttributeModel` says which model *type* an attribute is valid for; `ProductType` says which of those attributes a specific product type actually presents.
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `attributeMapping` | BelongsToMany | `Lunar\Core\Models\Attribute` | All attributes mapped to this product type |
+| `productAttributes` | BelongsToMany | `Lunar\Core\Models\Attribute` | Attributes mapped to this product type whose `model_type` is `product` |
+| `variantAttributes` | BelongsToMany | `Lunar\Core\Models\Attribute` | Attributes mapped to this product type whose `model_type` is `product_variant` |
+
+```php
+use Lunar\Core\Models\ProductType;
+
+$productType = ProductType::find(1);
+
+$productType->attributeMapping()->attach($attribute->id);
+
+$productType->productAttributes; // attributes that apply to the product itself
+$productType->variantAttributes; // attributes that apply to each variant
+```
+
+## Field Types
+
+Field types determine how an attribute's value is stored and retrieved. Each type implements `Lunar\Core\Contracts\FieldType` and extends `Lunar\Core\FieldTypes\AbstractFieldType`.
+
+| Key | Class | Description |
+|:----|:------|:------------|
+| `text` | `Lunar\Core\FieldTypes\Text` | Single string value. The `richtext` configuration option marks it for rich text editing |
+| `translated_text` | `Lunar\Core\FieldTypes\TranslatedText` | A collection of `Text` values, keyed by locale |
+| `number` | `Lunar\Core\FieldTypes\Number` | Integer or decimal value |
+| `toggle` | `Lunar\Core\FieldTypes\Toggle` | Boolean on/off value |
+| `dropdown` | `Lunar\Core\FieldTypes\Dropdown` | Single selection from a list of predefined `lookups` |
+| `list` | `Lunar\Core\FieldTypes\ListField` | An array of values |
+| `file` | `Lunar\Core\FieldTypes\File` | Single or multiple file references |
+| `vimeo` | `Lunar\Core\FieldTypes\Vimeo` | A Vimeo video ID or URL |
+| `youtube` | `Lunar\Core\FieldTypes\YouTube` | A YouTube video ID or URL |
+
+These type keys are backed by `Lunar\Core\Enums\FieldTypeEnum`, which is the source of the default entries in the `FieldTypeManifest`.
+
+Each field type can describe its own configuration through two methods on the `FieldType` contract:
+
+- `getConfig()` returns the validation rules for the attribute's `configuration` array.
+- `getConfigurationFields()` returns a renderer-agnostic description of the configuration inputs (a `key`, an input `type` such as `text`, `number`, `toggle`, `select`, `tags`, or `lookups`, and a `label`), which an admin UI can use to build the attribute's configuration form.
+
+### Custom Field Types
+
+Custom field types can be created by extending `Lunar\Core\FieldTypes\AbstractFieldType` (or implementing `Lunar\Core\Contracts\FieldType` directly) and registering the type with the `FieldTypeManifest` in a service provider:
+
+```php
+use Lunar\Core\Facades\FieldTypeManifest;
+
+FieldTypeManifest::add('star_rating', \App\FieldTypes\StarRating::class);
+```
+
+The first argument is the type key stored in `attributes.type`; the second is the field type class. To make a custom field type editable in the admin panel, a corresponding admin component is also needed.
+
+## Models That Use Attributes
+
+The following models support attributes out of the box, via the `Lunar\Core\Models\Concerns\HasAttributeData` trait:
+
+- `Lunar\Core\Models\Product`
+- `Lunar\Core\Models\ProductVariant`
+- `Lunar\Core\Models\ProductType`
+- `Lunar\Core\Models\Collection`
+- `Lunar\Core\Models\Customer`
+- `Lunar\Core\Models\Brand`
+- `Lunar\Core\Models\CustomerGroup`
+
+## Saving Attribute Data
+
+Attribute values are stored in an `attribute_data` JSON column on the model. On disk, values are stored keyed by the attribute's numeric `id`, so renaming an attribute's handle never disconnects stored data. When assigning or reading the column, use the attribute's **handle** as the key: the `Lunar\Core\Casts\AsAttributeData` cast resolves handles to ids (and back) via an internal `AttributeCache`.
+
+```php
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+
+$product->attribute_data = collect([
+    'meta_title' => new Text('The best screwdriver you will ever buy!'),
+    'pack_qty' => new Number(2),
+    'description' => new TranslatedText(collect([
+        'en' => new Text('Blue'),
+        'fr' => new Text('Bleu'),
+    ])),
+]);
+
+$product->save();
+```
+
+## Accessing Attribute Data
+
+When the `attribute_data` property is accessed, it is hydrated into a collection of field type instances keyed by handle.
+
+```php
+dump($product->attribute_data);
+
+Illuminate\Support\Collection {#1522
+  #items: array:2 [
+    "description" => Lunar\Core\FieldTypes\TranslatedText {#1533
+      #value: Illuminate\Support\Collection {#1505
+        #items: array:2 [
+          "en" => Lunar\Core\FieldTypes\Text {#1506
+            #value: "Blue"
+          }
+          "fr" => Lunar\Core\FieldTypes\Text {#1514
+            #value: "Bleu"
+          }
+        ]
+      }
+    }
+    "meta_title" => Lunar\Core\FieldTypes\Text {#1537
+      #value: "The best screwdriver you will ever buy!"
+    }
+  ]
+}
+```
+
+### Retrieving a Single Attribute Value
+
+The `translateAttribute` method, from the `HasAttributeData` trait, returns the resolved value for a single attribute. For `TranslatedText` fields, it resolves the correct locale automatically, falling back to the first available value.
+
+```php
+// Returns the value for the current app locale
+$product->translateAttribute('description');
+
+// Returns the French translation
+$product->translateAttribute('description', 'fr');
+
+// Falls back to the first available value if the locale has no translation
+$product->translateAttribute('description', 'de');
+```
+
+The shorthand `attr` method does the same thing:
+
+```php
+$product->attr('description');
+$product->attr('description', 'fr');
+```
+
+For non-translatable fields, `translateAttribute` returns the raw value directly:
+
+```php
+// Returns the integer value
+$product->translateAttribute('pack_qty');
+```
+
+### All attributes mapped to a model
+
+The `mappedAttributes()` method (also exposed as the `mappedAttributes` accessor) returns every `Attribute` whose `models` relationship includes the calling model's morph type, ordered by position.
+
+```php
+$product->mappedAttributes();
+$product->mappedAttributes; // same result, as an accessor
+```
+
+## Validation Rules
+
+An attribute can carry its own Laravel validation rules in `validation_rules`, stored as a list of rule strings (for example `['min:1', 'max:10']`). Core stores and exposes these rules; it does not enforce them automatically when `attribute_data` is written outside of an admin panel — enforcement is the responsibility of the editing surface (the Filament and Inertia admin panels apply them to their attribute forms).
+
+`Lunar\Core\Rules\ValidRuleString` is a Laravel validation rule that checks a rule string is well-formed (a recognized rule name with valid parameters), useful when building a form that lets staff author `validation_rules` entries.
+
+## Adding Attributes to a Custom Model
+
+To make a custom model support attributes:
+
+1. Add the `HasAttributeData` trait.
+2. Add an `attribute_data` JSON column to the model's database table.
+3. Register the model as an attributable type so that attributes can target it.
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\Concerns\HasAttributeData;
+
+class MyModel extends Model
+{
+    use HasAttributeData;
+}
+```
+
+The `HasAttributeData` trait merges the `attribute_data` cast automatically, so no `$casts` entry is needed.
+
+```php
+Schema::table('my_models', function (Blueprint $table) {
+    $table->json('attribute_data')->nullable();
+});
+```
+
+Finally, register the model as an attributable type so that attributes and the admin UI know it exists:
+
+```php
+use Lunar\Core\Facades\AttributeManifest;
+
+// In a service provider's boot method
+AttributeManifest::addType(\App\Models\MyModel::class);
+```
+
+## Attribute Manifest
+
+`Lunar\Core\Manifests\AttributeManifest`, accessed through the `Lunar\Core\Facades\AttributeManifest` facade, manages which model types support attributes and caches searchable attribute lookups per type.
+
+```php
+use Lunar\Core\Facades\AttributeManifest;
+
+// Get all registered attributable types, keyed by their lowercase class basename
+$types = AttributeManifest::getTypes();
+
+// Get a specific type by key (lowercase class basename)
+$type = AttributeManifest::getType('product');
+
+// Register a new attributable type
+AttributeManifest::addType(\App\Models\MyModel::class);
+
+// Get all searchable attributes for a model type
+$searchable = AttributeManifest::getSearchableAttributes('product');
+```
+
+`Product`, `ProductVariant`, `ProductType`, `Collection`, `Customer`, `Brand`, and `CustomerGroup` are registered as attributable types out of the box.
