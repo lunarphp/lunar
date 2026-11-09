@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
@@ -269,3 +270,28 @@ test('the most specific postcode zone wins when an area zone and a district zone
     // BT23 matches the area zone only through its single letter; the district row wins.
     expect($resolve('BT23 6QH'))->toBe(['District', 'Everywhere']);
 });
+
+test('a lowercase stored postcode still ranks as the most specific match', function () {
+    // SQLite and Postgres compare postcodes case-sensitively, so the lowercase
+    // row never comes back from the database there. MySQL's default collation
+    // returns it, which is where ranking has to ignore case.
+    if (DB::connection()->getDriverName() !== 'mysql') {
+        $this->markTestSkipped('Needs a case-insensitive collation (MySQL).');
+    }
+
+    $country = Country::factory()->create();
+
+    $area = ShippingZone::factory()->create(['name' => 'Area', 'type' => 'postcodes']);
+    $area->countries()->attach($country);
+    $area->postcodes()->create(['postcode' => 'AB']);
+
+    $district = ShippingZone::factory()->create(['name' => 'District', 'type' => 'postcodes']);
+    $district->countries()->attach($country);
+    $district->postcodes()->create(['postcode' => 'ab36']);
+
+    $zones = (new ShippingZoneResolver)
+        ->postcode(new PostcodeLookup($country, 'AB36 8UZ'))
+        ->get();
+
+    expect($zones->pluck('name')->all())->toBe(['District']);
+})->group('cross-db');

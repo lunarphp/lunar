@@ -124,20 +124,24 @@ class ShippingZoneResolver
      * district can be priced, or excluded, differently from its area.
      * Country and state zones are untouched.
      *
+     * Postcodes are compared upper-cased: stored postcodes keep their case,
+     * and a case-insensitive collation lets "ab36" match the "AB36" part.
+     *
      * @param  Collection<int, ShippingZone>  $zones
      * @return Collection<int, ShippingZone>
      */
     protected function preferMostSpecificPostcodeZones(Collection $zones): Collection
     {
         $parts = $this->postcodeLookup->getParts()->values();
+        $normalisedParts = $parts->map(fn (string $part): string => strtoupper($part));
 
         $ranks = $zones
             ->where('type', 'postcodes')
-            ->mapWithKeys(function (ShippingZone $zone) use ($parts) {
+            ->mapWithKeys(function (ShippingZone $zone) use ($parts, $normalisedParts) {
                 $rank = $zone->postcodes()
                     ->whereIn('postcode', $parts)
                     ->pluck('postcode')
-                    ->map(fn (string $postcode): int|false => $parts->search($postcode))
+                    ->map(fn (string $postcode): int|false => $normalisedParts->search(strtoupper($postcode)))
                     ->filter(fn (int|false $index): bool => $index !== false)
                     ->min();
 
