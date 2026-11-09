@@ -124,3 +124,36 @@ test('drops table-rate options the previous resolution offered but this one does
     expect(ShippingManifest::getOptions($outOfZone->refresh())->pluck('identifier')->all())
         ->toBe(['foreign-courier']);
 });
+
+test('the latest resolution prices a method that resolves in different zones', function () {
+    $currency = Currency::factory()->create(['default' => true]);
+    $near = Country::factory()->create();
+    $far = Country::factory()->create();
+    TaxClass::factory()->create(['default' => true]);
+
+    $method = ShippingMethod::factory()->create(['driver' => 'ship-by', 'code' => 'BASEDEL', 'data' => ['minimum_spend' => [$currency->code => 200]]]);
+    $method->customerGroups()->sync([
+        CustomerGroup::factory()->create(['default' => true])->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
+    ]);
+
+    foreach ([[$near, 1000], [$far, 2500]] as [$country, $price]) {
+        $zone = ShippingZone::factory()->create(['type' => 'countries']);
+        $zone->countries()->attach($country);
+        $rate = ShippingRate::factory()->create(['shipping_method_id' => $method->id, 'shipping_zone_id' => $zone->id]);
+        $rate->prices()->create(['price' => $price, 'min_quantity' => 1, 'currency_id' => $currency->id]);
+    }
+
+    $nearCart = $this->createCart($currency, 6000, calculate: false);
+    $nearCart->shippingAddress()->create(CartAddress::factory()->make(['country_id' => $near->id, 'state' => null, 'type' => 'shipping'])->toArray());
+
+    expect(ShippingManifest::getOptions($nearCart->refresh())->firstWhere('identifier', 'BASEDEL')->price->value)
+        ->toBe(1000);
+
+    $farCart = $this->createCart($currency, 6000, calculate: false);
+    $farCart->shippingAddress()->create(CartAddress::factory()->make(['country_id' => $far->id, 'state' => null, 'type' => 'shipping'])->toArray());
+
+    $options = ShippingManifest::getOptions($farCart->refresh());
+
+    expect($options->pluck('identifier')->all())->toBe(['BASEDEL']);
+    expect($options->first()->price->value)->toBe(2500);
+});

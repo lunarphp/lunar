@@ -21,21 +21,16 @@ class ShippingModifier
         );
 
         /*
-         * The manifest only ever accumulates, and it is scoped rather than
-         * per-run, so an option this modifier added for an earlier address
-         * would survive a resolution that no longer offers it. Drop every
-         * table-rate option missing from this resolution; options other code
-         * added under identifiers that are not shipping method codes are left
-         * alone.
+         * The manifest is scoped rather than per-run, so options from an
+         * earlier resolution linger. Drop every table-rate option, then add
+         * this resolution's. Options under other identifiers are left alone.
          */
-        $offered = $options->map(fn ($option) => $option->option->getIdentifier());
         $methodCodes = ShippingMethod::query()->pluck('code');
 
         $manifest = ShippingManifest::getFacadeRoot();
 
         $manifest->options = $manifest->options->reject(
             fn ($existing) => $methodCodes->contains($existing->getIdentifier())
-                && ! $offered->contains($existing->getIdentifier())
         )->values();
 
         foreach ($options as $option) {
