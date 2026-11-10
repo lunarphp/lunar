@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_pickup' => 'Átvétel',
+    'pickup_from' => 'Átvétel itt: {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -95,6 +97,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'Ügyfél címe',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Belső megjegyzések',
@@ -149,6 +152,9 @@ return [
     'settlement_refund_due' => '{amount} over-settled — refund the difference to the customer.',
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
+
+    'payment_on_account' => 'Számlára',
+    'payment_on_account_sub' => 'Számlára kiszámlázva, a pénztárnál nem történt fizetés',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

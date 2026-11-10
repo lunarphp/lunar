@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_pickup' => 'تحویل حضوری',
+    'pickup_from' => 'تحویل از {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -95,6 +97,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'نشانی مشتری',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'یادداشت‌های داخلی',
@@ -149,6 +152,9 @@ return [
     'settlement_refund_due' => '{amount} over-settled — refund the difference to the customer.',
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
+
+    'payment_on_account' => 'به حساب',
+    'payment_on_account_sub' => 'به حساب صورت‌حساب شد، هنگام تسویه پرداختی دریافت نشد',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

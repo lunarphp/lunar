@@ -76,7 +76,7 @@ class Pickup implements FulfilmentMethod
      */
     public function claim(Order $order, Collection $unclaimed): Collection
     {
-        if (! $this->orderPicksUp($order)) {
+        if (! $order->isPickup()) {
             return $unclaimed->take(0);
         }
 
@@ -91,16 +91,5 @@ class Pickup implements FulfilmentMethod
     public function usesTracking(): bool
     {
         return false;
-    }
-
-    /**
-     * Whether the order's chosen shipping option is a pickup, read from the
-     * `pickup` flag stamped onto the shipping line's meta at order creation.
-     */
-    protected function orderPicksUp(Order $order): bool
-    {
-        $meta = $order->lines()->where('type', 'shipping')->first()?->meta;
-
-        return (bool) ($meta['pickup'] ?? false);
     }
 }

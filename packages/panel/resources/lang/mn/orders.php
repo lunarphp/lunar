@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_pickup' => 'Очиж авах',
+    'pickup_from' => '{name}-с очиж авах',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -95,6 +97,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'Харилцагчийн хаяг',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Дотоод тэмдэглэл',
@@ -149,6 +152,9 @@ return [
     'settlement_refund_due' => '{amount} over-settled — refund the difference to the customer.',
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
+
+    'payment_on_account' => 'Дансаар',
+    'payment_on_account_sub' => 'Дансаар нэхэмжилсэн, төлбөр тооцооны үед төлбөр аваагүй',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

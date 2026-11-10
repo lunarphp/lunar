@@ -100,6 +100,7 @@ Lunar\Core\Models\Order
 | `isPlaced(): bool` | `true` when `placed_at` is set |
 | `isOpen(): bool` / `isClosed(): bool` | Whether the order has been archived, see [Open and closed orders](#open-and-closed-orders) |
 | `isCancelled(): bool` | Whether the order has been cancelled |
+| `isPickup(): bool` | Whether the customer picks the order up rather than having it shipped: the shipping line's `meta['pickup']` is exactly `true` |
 | `lifecycleStatus(): string` | Returns `'cancelled'`, `'closed'`, or `'open'` — cancelled takes precedence. Used for badges and search |
 | `cancelReasonLabel(): ?string` | The human-readable label for `cancel_reason` |
 
