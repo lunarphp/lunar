@@ -14,6 +14,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
+- Per-customer discount limits for guest checkout — count `max_uses_per_user` by contact email as well as user, so guests can use limited coupons without bypassing the limit (spec guest-discount-usage-limits)
 - Add Boost guidelines to packages
 
 ## Ideas
