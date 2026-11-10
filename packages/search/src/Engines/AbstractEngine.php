@@ -158,6 +158,18 @@ abstract class AbstractEngine
         return $this;
     }
 
+    /**
+     * Query parameters the engine carries on its pagination links, so a later
+     * page keeps the active facets. A stage that rebuilds the paginator uses
+     * the same.
+     *
+     * @return array<string, mixed>
+     */
+    public function paginationQuery(): array
+    {
+        return [];
+    }
+
     public function getFacets(): array
     {
         return $this->facets;

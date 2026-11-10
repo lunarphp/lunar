@@ -72,9 +72,7 @@ class MeilisearchEngine extends AbstractEngine
             'facets' => $this->mapFacets($results),
             'links' => (clone $paginator)->setCollection(
                 collect($results['hits'])
-            )->appends([
-                'facets' => $this->facets,
-            ])->links(),
+            )->appends($this->paginationQuery())->links(),
         ]));
     }
 
@@ -204,6 +202,11 @@ class MeilisearchEngine extends AbstractEngine
         }
 
         return $facets;
+    }
+
+    public function paginationQuery(): array
+    {
+        return ['facets' => $this->facets];
     }
 
     protected function mapFilter(string $field, mixed $value): string

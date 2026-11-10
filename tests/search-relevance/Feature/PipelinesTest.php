@@ -518,3 +518,20 @@ it('does not create a cart to identify the shopper when carts are auto-created',
 
     expect(Cart::query()->count())->toBe(0);
 });
+
+it('keeps the active facets on the pagination links of widened results', function () {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search_relevance.window', 100);
+
+    fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1, 2, 3, 4, 5]));
+
+    $results = Search::model(Product::class)->query('cable')->setFacets(['brand' => ['acme']])->perPage(2)->get();
+
+    preg_match('/href="([^"]*page=2[^"]*)"/', (string) $results->links, $match);
+    parse_str((string) parse_url(html_entity_decode($match[1]), PHP_URL_QUERY), $query);
+
+    // Without the facets, page two would come back unfiltered. The value is
+    // what the Typesense engine puts on its own links.
+    expect($query['facets'] ?? null)->toBe(http_build_query(['brand' => ['acme']]));
+});

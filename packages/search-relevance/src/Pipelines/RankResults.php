@@ -73,9 +73,9 @@ class RankResults
             $pageHits[] = $this->toSearchHit($hit, $hitsById->get($hit->productId), $offset + $index + 1);
         }
 
-        $paginator = new LengthAwarePaginator($pageHits, $count, $perPage, $page, [
+        $paginator = (new LengthAwarePaginator($pageHits, $count, $perPage, $page, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
+        ]))->appends($request->engine->paginationQuery());
 
         $response->results = SearchResults::from([
             'query' => $results->query,

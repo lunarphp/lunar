@@ -176,10 +176,13 @@ class TypesenseEngine extends AbstractEngine
             'facets' => $facets,
             'links' => $newPaginator->setCollection(
                 collect($results['hits'])
-            )->appends([
-                'facets' => http_build_query($this->facets),
-            ])->links(),
+            )->appends($this->paginationQuery())->links(),
         ]));
+    }
+
+    public function paginationQuery(): array
+    {
+        return ['facets' => http_build_query($this->facets)];
     }
 
     protected function buildSearch(array $options): array
