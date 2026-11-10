@@ -83,20 +83,25 @@ Pull requests that are missing key information or are unclear in their purpose m
 
 ## Documentation
 
-Lunar's documentation is maintained in the [lunarphp/docs](https://github.com/lunarphp/docs) repository. It is built with [Mintlify](https://mintlify.com/) and all content is written in MDX.
+Lunar's documentation is built with [Mintlify](https://mintlify.com/) and written in MDX. The 2.x docs live in the `docs/` directory on the `2.x` branch of the [monorepo](https://github.com/lunarphp/lunar/tree/2.x/docs), next to the code they describe.
 
-To contribute documentation changes:
+- **A code change:** update the docs in the same pull request as the code.
+- **A docs-only change,** such as a correction or a clearer explanation: open a pull request against the `2.x` branch that changes only `docs/`.
 
-1. Fork the [lunarphp/docs](https://github.com/lunarphp/docs) repository
-2. Install the Mintlify CLI and run the dev server locally
-3. Make changes and verify they render correctly
-4. Submit a pull request
+Docs changes publish to docs.lunarphp.com with the next 2.x release, not when the pull request merges.
+
+To preview the docs locally:
 
 ```bash
 npm i -g mint
+cd docs
 mint dev
 ```
 
+Before opening the pull request, run `mint validate` and `mint broken-links` from `docs/`. The same checks run on every pull request that changes `docs/`. See [`docs/README.md`](https://github.com/lunarphp/lunar/blob/2.x/docs/README.md) for the linking rules and the writing style.
+
 <Info>
-Any new page must also be added to the `docs.json` navigation configuration, or it will not appear in the sidebar.
+Any new page must also be added to the navigation in `docs/docs.json`, or it will not appear in the sidebar.
 </Info>
+
+The Support, Flight Plan and v0 pages are maintained by the Lunar team. Suggest changes to them in [Discussions](https://github.com/lunarphp/lunar/discussions).

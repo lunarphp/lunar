@@ -10,8 +10,7 @@ Docs publish with releases. When a 2.x release is published, `lunarphp/docs` cop
 
 - Add every new page to the navigation in `docs.json`. Only its `navigation` is published; the theme, logo, redirects and the Support and Flight Plan tabs come from `lunarphp/docs`.
 - Write page paths and links without a version prefix: `reference/carts` in `docs.json`, `[Carts](/reference/carts)` in a page. The prefix is added when the docs are published.
-- Link to another version with its prefix, `/1.x/...`. These links only resolve on the published site.
-- Link to Support, Flight Plan or v0 pages with the full URL, `https://docs.lunarphp.com/support/community`. A root-relative link to them would be prefixed with `/2.x`.
+- Link to another version, or to Support, Flight Plan or v0 pages, with the full URL: `https://docs.lunarphp.com/1.x/...`, `https://docs.lunarphp.com/support/community`. Publishing prefixes every root-relative link with `/2.x`, so only this version's pages are root-relative.
 - Put images in `images/` and reference them as `/images/...`.
 
 ## Writing style
@@ -51,7 +50,8 @@ Show relationships as a table with the columns Relationship, Type, Related Model
 npm i -g mint
 cd docs
 mint dev            # http://localhost:3000
-mint broken-links   # links into other versions are reported; they resolve on the published site
+mint validate
+mint broken-links
 ```
 
-The preview uses this folder's `docs.json`, so it shows 2.x on its own, without the version switcher or the shared tabs.
+The preview uses this folder's `docs.json`, so it shows 2.x on its own, without the version switcher or the shared tabs. The `Docs` workflow runs `mint validate`, `mint broken-links` and a check for root-relative links to other versions and shared pages on every pull request that changes `docs/`.

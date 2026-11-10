@@ -14,7 +14,7 @@ use Lunar\Core\Modifiers\CartLineModifiers;
 use Lunar\Core\Modifiers\CartModifiers;
 
 /**
- * Decides how a cart gets its totals (spec 0096): the in-memory memo when it
+ * Decides how a cart gets its totals (spec cart-totals-caching): the in-memory memo when it
  * is already calculated, the persisted snapshot when that is fresh and
  * complete, and the calculation pipeline otherwise. A pipeline run persists
  * its result so the next request can be served from the row.

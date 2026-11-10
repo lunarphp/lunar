@@ -2,7 +2,7 @@
 
 ## Approach
 
-Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `NNNN-short-slug.md`, starting from `specs/0000-template.md`. See `specs/README.md` for the full convention. Item detail lives in the spec — keep entries here to a line.
+Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `short-slug.md`, starting from `specs/template.md`. See `specs/README.md` for the full convention. Item detail lives in the spec — keep entries here to a line.
 
 Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
@@ -36,7 +36,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
-- Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec 0096)
+- Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec cart-totals-caching)
 - Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
 - Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)

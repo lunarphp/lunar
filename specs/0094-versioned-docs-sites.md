@@ -36,7 +36,7 @@ docs/
   README.md        contributor guide (see Documentation)
 ```
 
-The contents are the current `lunarphp/docs` version directory with the version prefix dropped: `2.x/reference/carts.mdx` becomes `docs/reference/carts.mdx` on the `2.x` branch. Page paths in `docs.json` and root-relative links in pages drop the prefix too (`/reference/carts`, not `/2.x/reference/carts`); the Action adds it back when it publishes. A link to another version keeps that version's prefix (`/1.x/...`), and the Action leaves it unchanged.
+The contents are the current `lunarphp/docs` version directory with the version prefix dropped: `2.x/reference/carts.mdx` becomes `docs/reference/carts.mdx` on the `2.x` branch. Page paths in `docs.json` and root-relative links in pages drop the prefix too (`/reference/carts`, not `/2.x/reference/carts`); the Action adds it back when it publishes. A link to another version, or to the shared Support, Flight Plan and v0 pages, is a full `https://docs.lunarphp.com/...` URL, because the Action prefixes every other root-relative link. The `Docs` workflow checks this on every PR that changes `docs/`.
 
 `docs/docs.json` is a complete Mintlify config so that `mint dev` previews the version on its own. The Action reads only its `navigation` (a `tabs` array) and `redirects`; theme, colours, logo and every other setting come from the docs repository, so differences in the branch copy affect only local previews.
 

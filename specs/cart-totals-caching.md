@@ -1,4 +1,4 @@
-# 0096 — Cart totals caching in the database
+# Cart totals caching in the database
 
 - Status: implemented
 - Author: Glenn Jacobs

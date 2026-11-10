@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
 
 /**
- * v1 -> v2 upgrade data step: add the persisted cart totals columns (spec 0096).
+ * v1 -> v2 upgrade data step: add the persisted cart totals columns (spec cart-totals-caching).
  *
  * v2 writes each calculation's totals to `carts` / `cart_lines` and serves the
  * next calculate() from those rows while they are fresh. The create-table

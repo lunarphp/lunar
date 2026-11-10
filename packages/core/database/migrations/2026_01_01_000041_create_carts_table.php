@@ -25,7 +25,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->foreignId('tax_zone_id')->nullable()->constrained($this->prefix.'tax_zones')->nullOnDelete();
 
-            // Persisted totals snapshot (spec 0096). NULL means "not calculated".
+            // Persisted totals snapshot (spec cart-totals-caching). NULL means "not calculated".
             $table->unsignedBigInteger('sub_total')->nullable();
             $table->unsignedBigInteger('sub_total_discounted')->nullable();
             $table->unsignedBigInteger('discount_total')->nullable();

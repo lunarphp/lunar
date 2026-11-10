@@ -1,4 +1,4 @@
-# NNNN — Title
+# Title
 
 - Status: draft
 - Author:
@@ -31,7 +31,7 @@ Things that are not yet decided. Each question should have a clear owner or a pl
 
 ## References
 
-Links to issues, PRs, prior art, related specs (`[[0002-other-spec]]`).
+Links to issues, PRs, prior art, related specs (`[[other-spec]]`).
 
 ## Implementation plan
 
