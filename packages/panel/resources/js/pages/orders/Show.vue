@@ -28,6 +28,7 @@ import AddTrackingDialog from '../../components/orders/AddTrackingDialog.vue';
 import ChangeLocationDialog from '../../components/orders/ChangeLocationDialog.vue';
 import FulfilmentConfirmDialog, { type PendingFulfilmentAction } from '../../components/orders/FulfilmentConfirmDialog.vue';
 import OrderAddressDialog from '../../components/orders/OrderAddressDialog.vue';
+import OrderAddressDetails from '../../components/orders/OrderAddressDetails.vue';
 import RefundComposerDialog from '../../components/orders/RefundComposerDialog.vue';
 import SettlementBanner from '../../components/orders/SettlementBanner.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
@@ -77,6 +78,7 @@ const props = defineProps<{
         channel: string | null;
         new_customer: boolean;
         notes: string | null;
+        internal_notes: string | null;
         meta: Record<string, unknown> | null;
         placed_at: string | null;
         created_at: string;
@@ -142,6 +144,14 @@ const TXN_TYPE_LABELS: Record<string, string> = {
     intent: t('orders.txn_type_intent'),
 };
 const txnTypeLabel = (type: string): string => TXN_TYPE_LABELS[type] ?? type;
+
+// A transaction the gateway refused (a declined card, a failed refund) is
+// named by its outcome, not the step it was attempting: an unsuccessful
+// intent row is "Failed", never an "Authorization" that looks live.
+const txnLabel = (txn: { type: string; success: boolean }): string =>
+    txn.success ? txnTypeLabel(txn.type) : t('orders.txn_type_failed');
+const txnTone = (txn: { type: string; success: boolean }): Tone =>
+    !txn.success || txn.type === 'refund' ? 'danger' : 'sage';
 
 const page = usePage();
 const activities = computed(() => (page.props.activities as any[] | undefined) ?? []);
@@ -278,7 +288,7 @@ const addressDialogTitle = computed(() =>
 
 // Inline note editing.
 const editingNote = ref(false);
-const noteForm = useForm({ notes: props.order.notes ?? '' });
+const noteForm = useForm({ notes: props.order.internal_notes ?? '' });
 const saveNote = (): void => noteForm.put(props.urls.note, { preserveScroll: true, onSuccess: () => (editingNote.value = false) });
 
 // Inline tag editing.
@@ -302,17 +312,6 @@ const formatDate = (value: string): string =>
 const formatDateTime = (value: string): string =>
     new Date(value).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-const addressLines = (address: Address): string[] =>
-    [
-        [address.first_name, address.last_name].filter(Boolean).join(' '),
-        address.company_name,
-        address.line_one,
-        address.line_two,
-        address.line_three,
-        [address.city, address.postcode].filter(Boolean).join(' '),
-        address.state,
-        address.country,
-    ].filter((line): line is string => !!line && line.trim().length > 0);
 </script>
 
 <template>
@@ -436,7 +435,7 @@ const addressLines = (address: Address): string[] =>
                                     <tbody>
                                         <tr v-for="txn in transactions" :key="txn.id" class="border-b border-line last:border-0">
                                             <td class="py-2 pr-2">
-                                                <StatusBadge :tone="txn.type === 'refund' ? 'danger' : (txn.success ? 'sage' : 'warn')" size="sm">{{ txnTypeLabel(txn.type) }}</StatusBadge>
+                                                <StatusBadge :tone="txnTone(txn)" size="sm">{{ txnLabel(txn) }}</StatusBadge>
                                             </td>
                                             <td class="py-2 px-2 text-ink-700">
                                                 {{ txn.card_type || txn.driver }}<span v-if="txn.last_four" class="text-ink-500"> ····{{ txn.last_four }}</span>
@@ -529,12 +528,7 @@ const addressLines = (address: Address): string[] =>
                                     {{ t('common.edit') }}
                                 </button>
                             </template>
-                            <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
-                                <div v-for="(line, i) in addressLines(shippingAddress)" :key="i">{{ line }}</div>
-                                <div v-if="shippingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
-                                    <a :href="`tel:${shippingAddress.contact_phone}`" class="text-ink-500 hover:text-ink-900">{{ shippingAddress.contact_phone }}</a>
-                                </div>
-                            </address>
+                            <OrderAddressDetails :address="shippingAddress" show-instructions />
                         </SideCard>
 
                         <SideCard v-if="billingAddress" :title="t('orders.side_billing_address')">
@@ -543,12 +537,7 @@ const addressLines = (address: Address): string[] =>
                                     {{ t('common.edit') }}
                                 </button>
                             </template>
-                            <address class="not-italic text-[12.5px] text-ink-700 leading-relaxed">
-                                <div v-for="(line, i) in addressLines(billingAddress)" :key="i">{{ line }}</div>
-                                <div v-if="billingAddress.contact_phone" class="mt-1.5 pt-1.5 border-t border-line">
-                                    <a :href="`tel:${billingAddress.contact_phone}`" class="text-ink-500 hover:text-ink-900">{{ billingAddress.contact_phone }}</a>
-                                </div>
-                            </address>
+                            <OrderAddressDetails :address="billingAddress" />
                         </SideCard>
 
                         <SideCard :title="t('orders.side_tags')">
@@ -578,6 +567,10 @@ const addressLines = (address: Address): string[] =>
                             </div>
                         </SideCard>
 
+                        <SideCard v-if="order.notes" :title="t('orders.side_customer_notes')">
+                            <p class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.notes }}</p>
+                        </SideCard>
+
                         <SideCard :title="t('orders.side_notes')">
                             <template #actions>
                                 <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingNote = !editingNote">
@@ -585,7 +578,7 @@ const addressLines = (address: Address): string[] =>
                                 </button>
                             </template>
                             <template v-if="!editingNote">
-                                <p v-if="order.notes" class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.notes }}</p>
+                                <p v-if="order.internal_notes" class="m-0 text-[12.5px] text-ink-700 whitespace-pre-line">{{ order.internal_notes }}</p>
                                 <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.no_notes') }}</p>
                             </template>
                             <div v-else>

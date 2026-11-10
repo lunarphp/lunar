@@ -5,7 +5,9 @@ namespace Lunar\Core\DiscountTypes;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Collection as LunarCollection;
@@ -329,15 +331,14 @@ class BuyXGetY extends AbstractDiscountType
                         $cart->freeItems = collect();
                     }
 
-                    if (! $cart->freeItems->contains($selectedRewardItem)) {
-                        $cart->freeItems->push($selectedRewardItem);
+                    if (! $cart->freeItems->contains($purchasable)) {
+                        $cart->freeItems->push($purchasable);
                     }
 
                     $rewardLine = app(Pipeline::class)
                         ->send($rewardLine)
-                        ->through(
-                            config('lunar.cart.pipelines.cart_lines', [])
-                        )->thenReturn(function ($cartLine) {
+                        ->through(app(StepManifest::class)->for(StepList::CartLinePricing)->all())
+                        ->thenReturn(function ($cartLine) {
                             $cartLine->cacheProperties();
 
                             return $cartLine;
@@ -390,6 +391,11 @@ class BuyXGetY extends AbstractDiscountType
 
                 $rewardLine->meta = $meta;
                 $rewardLine->save();
+
+                // Priced with the rest of the cart in this run, as it is in every later one.
+                if (! $cart->lines->contains($rewardLine)) {
+                    $cart->lines->push($rewardLine);
+                }
 
                 $remainingRewardQty--;
             }

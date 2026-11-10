@@ -10,18 +10,18 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <div class="flex items-end gap-6">
+    <div class="example:flex example:items-end example:gap-6">
         <div>
-            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900">
+            <div class="example:text-[26px] example:leading-none example:font-semibold example:tracking-[-0.02em] example:[font-variant-numeric:tabular-nums] example:text-ink-900">
                 {{ data.total }}
             </div>
-            <div class="text-[11px] text-ink-500 mt-1">{{ t('example-addon::example.widget_total') }}</div>
+            <div class="example:text-[11px] example:text-ink-500 example:mt-1">{{ t('example-addon::example.widget_total') }}</div>
         </div>
         <div>
-            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900">
+            <div class="example:text-[26px] example:leading-none example:font-semibold example:tracking-[-0.02em] example:[font-variant-numeric:tabular-nums] example:text-ink-900">
                 {{ data.recent }}
             </div>
-            <div class="text-[11px] text-ink-500 mt-1">{{ t('example-addon::example.widget_recent') }}</div>
+            <div class="example:text-[11px] example:text-ink-500 example:mt-1">{{ t('example-addon::example.widget_recent') }}</div>
         </div>
     </div>
 </template>

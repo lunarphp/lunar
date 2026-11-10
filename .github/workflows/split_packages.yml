@@ -5,13 +5,53 @@ on:
     tags: "*"
 
 jobs:
+  # A single build ahead of the matrix: fail-fast is off, so a build failing
+  # inside it would still publish every other package at this tag.
+  build-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      # See the panel-js job in tests.yml: npm 10 can't resolve vitest's peers.
+      - name: Upgrade npm
+        run: npm install -g npm@11
+
+      - name: Install workspace dependencies
+        run: npm install
+
+      - name: Install panel dependencies
+        run: npm install
+        working-directory: packages/panel
+
+      - name: Build panel bundle
+        run: npx vite build
+        working-directory: packages/panel
+
+      - name: Build bundles add-on bundle
+        run: npm run build --workspace @lunarphp/bundles-addon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compiled-assets
+          if-no-files-found: error
+          path: |
+            packages/panel/public/build
+            packages/bundles/build
+
   split-monorepo:
+    needs: build-assets
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         package:
           - "admin"
+          - "bundles"
           - "core"
           - "demo-data"
           - "filament"
@@ -25,6 +65,14 @@ jobs:
           - "upgrade"
     steps:
       - uses: actions/checkout@v6
+
+      # Gitignored only at the repo root, which the split doesn't carry, so the
+      # action's `git add .` commits these into lunarphp/panel and lunarphp/bundles.
+      - uses: actions/download-artifact@v4
+        with:
+          name: compiled-assets
+          path: packages
+
       - name: Monorepo Split of ${{ matrix.package }}
         uses: danharrin/monorepo-split-github-action@v2.4.5
         env:

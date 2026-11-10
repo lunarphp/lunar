@@ -15,12 +15,13 @@ use Lunar\Core\Actions\Brands\UpdateBrand;
 use Lunar\Core\Actions\Carts\AddAddress;
 use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Core\Actions\Carts\AssociateUser;
-use Lunar\Core\Actions\Carts\CalculateLine;
-use Lunar\Core\Actions\Carts\CalculateLineSubtotal;
+use Lunar\Core\Actions\Carts\CalculateCart;
 use Lunar\Core\Actions\Carts\CreateOrder;
 use Lunar\Core\Actions\Carts\GenerateFingerprint;
 use Lunar\Core\Actions\Carts\GetExistingCartLine;
+use Lunar\Core\Actions\Carts\HydrateCartTotals;
 use Lunar\Core\Actions\Carts\MergeCart;
+use Lunar\Core\Actions\Carts\PersistCartTotals;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
@@ -109,6 +110,7 @@ use Lunar\Core\Actions\Products\RecomputeStockRollup;
 use Lunar\Core\Actions\Products\RecordStockMovement;
 use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
+use Lunar\Core\Actions\Products\ResolveInventory;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
 use Lunar\Core\Actions\Products\UpdateProduct;
 use Lunar\Core\Actions\Products\UpdateProductStatus;
@@ -172,12 +174,13 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\AddsAddress::class => AddAddress::class,
         Contracts\Carts\AddsOrUpdatesPurchasable::class => AddOrUpdatePurchasable::class,
         Contracts\Carts\AssociatesUser::class => AssociateUser::class,
-        Contracts\Carts\CalculatesLine::class => CalculateLine::class,
-        Contracts\Carts\CalculatesLineSubtotal::class => CalculateLineSubtotal::class,
+        Contracts\Carts\CalculatesCart::class => CalculateCart::class,
         Contracts\Carts\CreatesOrder::class => CreateOrder::class,
         Contracts\Carts\GeneratesFingerprint::class => GenerateFingerprint::class,
         Contracts\Carts\GetsExistingCartLine::class => GetExistingCartLine::class,
+        Contracts\Carts\HydratesCartTotals::class => HydrateCartTotals::class,
         Contracts\Carts\MergesCart::class => MergeCart::class,
+        Contracts\Carts\PersistsCartTotals::class => PersistCartTotals::class,
         Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
@@ -243,6 +246,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\RecomputesStockRollup::class => RecomputeStockRollup::class,
         Contracts\Products\RecordsStockMovement::class => RecordStockMovement::class,
         Contracts\Products\ReleasesReservation::class => ReleaseReservation::class,
+        Contracts\Products\ResolvesInventory::class => ResolveInventory::class,
         Contracts\Products\ReservesStock::class => ReserveStock::class,
         Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,

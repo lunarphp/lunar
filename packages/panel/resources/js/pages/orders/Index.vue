@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
 import { type RowAction } from '../../components/RowActions.vue';
-import { type BulkAction } from '../../components/BulkActionsToolbar.vue';
+import BulkActionsToolbar, { type BulkAction } from '../../components/BulkActionsToolbar.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
 import Breadcrumbs from '../../components/Breadcrumbs.vue';
@@ -309,37 +309,47 @@ const formatShortDate = (value: string): string =>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]">
-                    <div class="flex-1 max-w-[280px] min-w-[180px]">
-                        <TextInput v-model="q" clearable :placeholder="t('orders.search_placeholder')">
-                            <template #prefix><Icon name="search" cls="sm" /></template>
-                        </TextInput>
-                    </div>
-                    <FilterDropdown v-model="paymentFilter" :label="t('orders.filter_payment')" :options="paymentFilterOptions" default-value="all" />
-                    <FilterDropdown v-model="fulfilmentFilter" :label="t('orders.filter_fulfilment')" :options="fulfilmentFilterOptions" default-value="all" />
-                    <FilterDropdown v-model="channelFilter" :label="t('orders.filter_channel')" :options="channelOptions" default-value="all" />
-                    <FilterDropdown v-if="Object.keys(orderTags).length" v-model="tagFilter" :label="t('orders.filter_tag')" icon="tag" :options="tagOptions" default-value="all" />
-                    <FilterDropdown v-model="dateFilter" :label="t('orders.filter_date')" icon="calendar" :options="dateOptions" default-value="all" />
-                    <FilterDropdown v-model="lifecycleFilter" :label="t('orders.filter_lifecycle')" :options="lifecycleOptions" default-value="open" />
-                    <FilterDropdown
-                        v-for="filter in renderableExtensionFilters"
-                        :key="filter.key"
-                        v-model="extensionFilterValues[filter.key]"
-                        :label="filter.label"
-                        :options="extensionFilterOptions(filter)"
-                        default-value=""
+                    <template v-if="!(hasBulkActions && selected.length)">
+                        <div class="flex-1 max-w-[280px] min-w-[180px]">
+                            <TextInput v-model="q" clearable :placeholder="t('orders.search_placeholder')">
+                                <template #prefix><Icon name="search" cls="sm" /></template>
+                            </TextInput>
+                        </div>
+                        <FilterDropdown v-model="paymentFilter" :label="t('orders.filter_payment')" :options="paymentFilterOptions" default-value="all" />
+                        <FilterDropdown v-model="fulfilmentFilter" :label="t('orders.filter_fulfilment')" :options="fulfilmentFilterOptions" default-value="all" />
+                        <FilterDropdown v-model="channelFilter" :label="t('orders.filter_channel')" :options="channelOptions" default-value="all" />
+                        <FilterDropdown v-if="Object.keys(orderTags).length" v-model="tagFilter" :label="t('orders.filter_tag')" icon="tag" :options="tagOptions" default-value="all" />
+                        <FilterDropdown v-model="dateFilter" :label="t('orders.filter_date')" icon="calendar" :options="dateOptions" default-value="all" />
+                        <FilterDropdown v-model="lifecycleFilter" :label="t('orders.filter_lifecycle')" :options="lifecycleOptions" default-value="open" />
+                        <FilterDropdown
+                            v-for="filter in renderableExtensionFilters"
+                            :key="filter.key"
+                            v-model="extensionFilterValues[filter.key]"
+                            :label="filter.label"
+                            :options="extensionFilterOptions(filter)"
+                            default-value=""
+                        />
+                        <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
+                        <button
+                            v-if="hasActiveFilters"
+                            type="button"
+                            class="text-[12px] text-ink-500 underline underline-offset-2 whitespace-nowrap rounded-sm hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
+                            @click="clearFilters"
+                        >{{ t('orders.clear_filters') }}</button>
+                        <div class="flex-1" />
+                        <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('orders.count_of', { shown: orders.total, total: totalCount }) }}</span>
+                        <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
+                            <span class="hidden sm:inline">{{ t('orders.show_kpis') }}</span>
+                        </Button>
+                    </template>
+
+                    <BulkActionsToolbar
+                        v-else
+                        :actions="props.tableBulkActions"
+                        :selected="selected"
+                        @clear="selected = []"
+                        @done="selected = []"
                     />
-                    <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
-                    <button
-                        v-if="hasActiveFilters"
-                        type="button"
-                        class="text-[12px] text-ink-500 underline underline-offset-2 whitespace-nowrap rounded-sm hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
-                        @click="clearFilters"
-                    >{{ t('orders.clear_filters') }}</button>
-                    <div class="flex-1" />
-                    <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('orders.count_of', { shown: orders.total, total: totalCount }) }}</span>
-                    <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
-                        <span class="hidden sm:inline">{{ t('orders.show_kpis') }}</span>
-                    </Button>
                 </div>
 
                 <DataTable

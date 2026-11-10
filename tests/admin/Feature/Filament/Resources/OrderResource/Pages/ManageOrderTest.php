@@ -9,6 +9,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\OrderNotifications;
+use Lunar\Core\Facades\Payments;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
@@ -19,9 +20,11 @@ use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\Price as ModelsPrice;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\Notifications\RefundIssued;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
+use Lunar\Tests\Core\Stubs\TestPaymentDriver;
 
 uses(TestCase::class)
     ->group('resource.order');
@@ -203,7 +206,7 @@ it('renders the order page when an address has no country', function () {
 });
 
 it('hides the notify customer action while no notifications are registered', function () {
-    OrderNotifications::forget('order-update');
+    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()));
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
@@ -281,3 +284,31 @@ it('does not display numeric order meta values as yes/no', function () {
         ->assertSchemaComponentStateSet('meta.meta_failed_attempts', 0)
         ->assertSchemaComponentStateSet('meta.meta_floor', '1');
 });
+
+it('refunds with or without emailing the customer, as the notify toggle says', function (bool $notify) {
+    Payments::extend('testing', fn ($app) => $app->make(TestPaymentDriver::class));
+    NotificationFacade::fake();
+
+    $this->order->updateQuietly(['placed_at' => now(), 'total' => 5000]);
+
+    $capture = $this->order->transactions()->create([
+        'type' => 'capture', 'success' => true, 'amount' => 5000,
+        'driver' => 'testing', 'reference' => 'CAP-1', 'status' => 'settled',
+    ]);
+
+    Livewire::test(ManageOrder::class, ['record' => $this->order->getRouteKey()])
+        ->assertActionExists('refund')
+        ->callAction('refund', data: [
+            'transaction' => $capture->id,
+            'amount' => '10.00',
+            'confirm' => true,
+            'notify' => $notify,
+        ])
+        ->assertHasNoActionErrors();
+
+    expect($this->order->transactions()->whereType('refund')->where('success', true)->exists())->toBeTrue();
+
+    $notify
+        ? NotificationFacade::assertSentTo($this->order->fresh(), RefundIssued::class)
+        : NotificationFacade::assertNotSentTo($this->order->fresh(), RefundIssued::class);
+})->with(['notify on' => [true], 'notify off' => [false]]);

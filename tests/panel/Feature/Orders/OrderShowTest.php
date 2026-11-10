@@ -90,6 +90,11 @@ it('renders the order view with shaped props', function () {
             // Pending shipping parcel: in-progress (transition) + shipped (ship).
             ->has('fulfilments.0.transitions', 2)
             ->where('fulfilments.0.transitions.1.via', 'ship')
+            // A shipped email is registered, so the ship transition offers the notify toggle.
+            ->where('fulfilments.0.transitions.1.notify', true)
+            ->where('fulfilments.0.transitions.0.notify', false)
+            ->has('notifications', 6)
+            ->where('notifications.order-confirmation', 'Order confirmation')
             // One unit allocated — nothing to split; nothing to merge into.
             ->where('fulfilments.0.can.split', false)
             ->where('fulfilments.0.can.merge', false)
@@ -190,6 +195,51 @@ it('flags a refund-due settlement when settled money exceeds the total', functio
             ->component('orders/Show')
             ->where('settlement.status', 'refund_due')
             ->where('settlement.variance', '£20.00')
+        );
+});
+
+it('keeps a fully refunded order balanced, not outstanding', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 10000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+            ->where('settlement.variance', null)
+        );
+});
+
+it('keeps a partly refunded order balanced, not outstanding', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 2500]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'balanced')
+            ->where('settlement.refunded', '£25.00')
+        );
+});
+
+it('still flags an under-captured order as outstanding after a refund', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create(['total' => 10000]);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 6000]);
+    Transaction::factory()->for($order)->create(['type' => 'refund', 'success' => true, 'amount' => 1000]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('settlement.status', 'outstanding')
+            ->where('settlement.variance', '£40.00')
         );
 });
 
@@ -341,4 +391,68 @@ it('forbids staff without the manage-orders permission', function () {
     $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
 
     $this->get(route('panel.orders.show', $order))->assertForbidden();
+});
+
+it('sends the customer notes and the internal notes separately', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'notes' => 'Leave with the neighbour',
+        'internal_notes' => 'Handle with care',
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('order.notes', 'Leave with the neighbour')
+            ->where('order.internal_notes', 'Handle with care')
+        );
+});
+
+it('nests component lines under their parent and marks them in fulfilments', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+
+    $parent = OrderLine::factory()->for($order)->create([
+        'type' => 'bundle',
+        'description' => 'Camera starter kit',
+        'requires_shipping' => true,
+        'requires_fulfilment' => false,
+        'quantity' => 1,
+        'unit_price' => 30000,
+        'total' => 30000,
+    ]);
+
+    $component = OrderLine::factory()->for($order)->create([
+        'parent_line_id' => $parent->id,
+        'type' => 'physical',
+        'description' => 'Camera body',
+        'identifier' => 'BODY',
+        'quantity' => 1,
+        'unit_price' => 0,
+        'sub_total' => 0,
+        'tax_total' => 0,
+        'total' => 0,
+    ]);
+
+    $fulfilment = Fulfilment::factory()->for($order)->create();
+    FulfilmentLine::factory()->create(['fulfilment_id' => $fulfilment->id, 'order_line_id' => $component->id, 'quantity' => 1]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('orders/Show')
+            ->where('fulfilments.0.lines.0.order_line_id', $component->id)
+            ->where('fulfilments.0.lines.0.part_of', 'Camera starter kit')
+            // The parent is the customer-facing, non-fulfillable line with its parts nested.
+            ->has('otherLines', 1)
+            ->where('otherLines.0.id', $parent->id)
+            ->has('otherLines.0.components', 1)
+            ->where('otherLines.0.components.0.description', 'Camera body')
+            ->where('otherLines.0.components.0.quantity', 1)
+            // Component lines carry no money, so only the parent can be refunded.
+            ->has('refundableLines', 1)
+            ->where('refundableLines.0.id', $parent->id)
+        );
 });
