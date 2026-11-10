@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Ridicare',
+                'flat-rate' => 'Tarif fix',
+                'free-shipping' => 'Livrare gratuită',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Ridicare',
+                'flat-rate' => 'Tarif fix',
+                'free-shipping' => 'Livrare gratuită',
             ],
         ],
     ],

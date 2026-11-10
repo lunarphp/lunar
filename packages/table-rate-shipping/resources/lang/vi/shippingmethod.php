@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Tiêu chuẩn',
                 'collection' => 'Nhận tại cửa hàng',
+                'flat-rate' => 'Đồng giá',
+                'free-shipping' => 'Miễn phí vận chuyển',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Tiêu chuẩn',
                 'collection' => 'Nhận tại cửa hàng',
+                'flat-rate' => 'Đồng giá',
+                'free-shipping' => 'Miễn phí vận chuyển',
             ],
         ],
     ],

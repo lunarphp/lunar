@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Padrão',
                 'collection' => 'Coleta',
+                'flat-rate' => 'Taxa fixa',
+                'free-shipping' => 'Frete grátis',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Padrão',
                 'collection' => 'Coleta',
+                'flat-rate' => 'Taxa fixa',
+                'free-shipping' => 'Frete grátis',
             ],
         ],
     ],
