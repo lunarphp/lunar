@@ -19,6 +19,7 @@ class StepRegistry
     public const STEPS = [
         ComposerRequireRewriteStep::class,
         RectorStep::class,
+        StepListConfigStep::class,
         DataMigrationStep::class,
         LedgerRewriteStep::class,
     ];

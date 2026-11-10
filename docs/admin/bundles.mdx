@@ -1,0 +1,101 @@
+---
+title: "Bundles"
+description: "The product-page bundle editor shipped by the Bundles add-on, the products table badge and filter, and how bundles appear in the order view."
+---
+
+The [Bundles](/addons/bundles) add-on (`lunarphp/bundles`) extends the admin panel's Catalog section so a merchant can turn any product variant into a bundle of other variants and see, on a component's own page, which bundles include it. It is an add-on section extension, built with the same extension API described under [Extending the panel](/admin/extending/overview), so it appears only when both `lunarphp/panel` and the add-on are installed.
+
+Bundles are products, so the extension adds no navigation item, no permission, and no search source. A bundle is edited on its product's own pages, and product search already finds it.
+
+## Setup
+
+Install the add-on and run its migrations, then publish (or, in local development, link) its compiled assets so the cards load on the product pages:
+
+```bash
+php artisan vendor:publish --tag=bundles-panel-assets --force
+# or every add-on at once
+php artisan vendor:publish --tag=panel-all-assets --force
+# or, locally
+php artisan lunar:panel:link
+```
+
+See the [add-on installation](/addons/bundles#installation) for the full steps.
+
+## Permission
+
+Every route and card is gated by the Catalog section's existing products permission (`catalog:manage-products`), the same handle that grants the product pages themselves. Staff who can edit products can define bundles; there is nothing extra to assign. See [Access control](/admin/access-control).
+
+## The Bundle card
+
+The **Bundle** card is the editor. It appears in two places:
+
+- On the **variant edit page**, below the main column (the `products.variants.edit:main:after` zone), as the full editor for that variant.
+- On the **product edit page**, below the variants card (the `products.edit:variants:after` zone). For a single-variant product it is the full editor inline. For a multi-variant product it lists each variant with a "{count} components" badge or "Not a bundle", and an **Edit variant** link to the variant page where the bundle is edited, because a bundle is defined per variant.
+
+The card loads its data on demand through the extension's own JSON routes, so products that are not bundles pay nothing beyond one request. Every change saves immediately through those routes, the way media and URLs save on the product page, rather than through the page's edit draft. The product's own drafted fields are untouched, and there is nothing to publish. A successful save shows a "Bundle saved." toast; a rejected change (a nesting or definition error) is listed at the top of the card.
+
+### Sell as a bundle
+
+The **Sell as a bundle** toggle creates the bundle definition on the variant (as a fixed-price bundle with no components), or removes it. Turning it off asks "Stop selling as a bundle?": the component list and option groups are removed, the variant keeps its prices, and it becomes an ordinary variant again.
+
+A variant that is already a component of another bundle cannot be sold as a bundle, and the variant picker never offers a bundle variant as a component, so bundles cannot nest from the UI any more than from code.
+
+### Pricing
+
+Two modes, matching `Lunar\Bundles\Enums\BundlePricing`:
+
+- **Fixed price**: the merchant sets the bundle variant's prices in the pricing editor as for any other variant.
+- **Sum of components**: the price is derived from the components, less an optional **Discount** percentage taken off the component total. The card shows the resulting **Derived prices** per currency, with the undiscounted sum as the "Was" price when a discount applies, and names any component that has no price in a currency, since the bundle cannot be priced in that currency until it does.
+
+In this mode the derived rows appear in the variant's pricing editor like any other price, but a note on the card warns that they are overwritten whenever the bundle is repriced. To hand-tune the price, switch to a fixed price. See [Pricing](/addons/bundles#pricing) for what triggers a reprice.
+
+### Components
+
+The **Components** list holds the fixed components: variants that are always included, in the order shown. **Add component** opens the variant picker (search by name or SKU; bundle variants and the variant being edited are excluded). Each row shows the component's thumbnail, product name, option, and SKU with a **Qty** field for units per bundle, and can be moved up or down or removed. The list must hold at least one component before the bundle can be sold, and no more than `lunar.bundles.max_components` in total.
+
+### Option groups
+
+**Option groups** turn a fixed bundle into a configurable one. **Add group** creates one named "New group" with **Min** and **Max** of `1`. Each group has a **Group name** (edited in the store's default language; the field is marked with the language code), **Min** and **Max** selections (a minimum of `0` makes the group optional; a maximum of `1` is "pick one"), and its own list of options added with **Add option**, which opens the same picker. Marking an option **Default** pre-selects it: the default selection is what the derived price is computed from, and what the storefront sells when the customer does not choose. A group's maximum cannot exceed the number of options it holds. **Remove group** asks for confirmation and removes the group's options with it.
+
+### Availability
+
+The line beside the **Sell as a bundle** toggle is the bundle's derived stock: "{count} can be sold from component stock.", or "Not limited by component stock." when every part sells without a stock limit, or "Out of stock: a component is unavailable." This is the figure the storefront and the cart see for the bundle variant.
+
+The first-party **Inventory** card on the same variant page still shows the bundle variant's own stock levels. Those figures are ignored for a bundle: the variant never holds stock, nothing is committed against it, and they stay at zero. The Bundle card's availability line is the one that matters.
+
+## The Included in bundles card
+
+On the product edit page sidebar (the `products.edit:sidebar:after` zone), the **Included in bundles** card lists every bundle that includes any of this product's variants, each linking to the bundle's product, with the quantity of this product's variant in it. It is hidden when the product is in no bundle.
+
+Deleting a variant removes it from these bundles, so this card is the merchant's warning before doing that.
+
+## Products table
+
+The products table gains a **Bundle** column, showing a **Bundle** badge on products with at least one bundle variant and an empty cell otherwise, and a **Bundles** filter with a single **Bundles only** option that limits the table to those products. The column is computed with a single exists-subquery, so the table stays one query.
+
+## Orders
+
+The order view needs nothing from the extension: nesting of component lines is first-party panel behavior, driven by the `parent_line_id` the add-on sets when the order is created. See [Component lines](/reference/orders#component-lines).
+
+- **Fulfilment cards** list the component lines, since those are what is picked and shipped. Each shows a "Part of {parent}" hint under its description and its quantity in parts, with no unit price, so the pick list reads "Camera body, part of Camera starter kit, 1".
+- **Other items**, the card for lines that are not in any fulfilment, shows the bundle's parent line with its price and totals, and its components nested beneath it as description, option, SKU, and quantity only.
+- **The refund composer** lists only lines with a refundable quantity. A component line's refundable quantity is always zero, so a refund of one damaged part is recorded as an amount against the bundle line, which holds the money.
+
+## Routes
+
+All routes are named `panel.bundles.*`, live under `{panel path}/bundles` (`/panel/bundles` by default), return JSON, and sit behind the products permission:
+
+| Route | Method and path | Purpose |
+| --- | --- | --- |
+| `panel.bundles.search-variants` | `GET /bundles/search-variants?q=&exclude=` | Variant picker search; excludes bundle variants and the variant being edited |
+| `panel.bundles.variants.show` | `GET /bundles/variants/{variant}` | Summary JSON for the Bundle card on a variant |
+| `panel.bundles.variants.update` | `PUT /bundles/variants/{variant}` | Define the bundle, or change its pricing mode and discount |
+| `panel.bundles.variants.destroy` | `DELETE /bundles/variants/{variant}` | Remove the definition |
+| `panel.bundles.variants.components` | `PUT /bundles/variants/{variant}/components` | Replace the component list |
+| `panel.bundles.variants.groups` | `PUT /bundles/variants/{variant}/groups` | Replace the option groups |
+| `panel.bundles.products.show` | `GET /bundles/products/{product}` | One summary per variant, for the card on a product page |
+| `panel.bundles.products.included-in` | `GET /bundles/products/{product}/included-in` | JSON for the Included in bundles card |
+
+Every mutating route answers with the same summary the `show` route returns, so the card replaces its state wholesale after each save.
+
+The Filament admin (`lunarphp/admin`) has no bundle editor; bundles are defined in code or through the panel.

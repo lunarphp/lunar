@@ -17,11 +17,13 @@ use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Pricing\PriceFormatterInterface;
 
 /**
  * @property int $id
  * @property string $public_id
  * @property int $order_id
+ * @property ?int $parent_line_id
  * @property string $purchasable_type
  * @property int $purchasable_id
  * @property string $type
@@ -95,9 +97,74 @@ class OrderLine extends Base implements HasCurrency
         return $this->order?->currency ?? Currency::getDefault();
     }
 
+    /**
+     * Format the given money column divided by the line's `unit_quantity`. A line
+     * stores the pack price, so `unitFormat('unit_price')` is the per-single-unit price.
+     */
+    public function unitFormat(string $field, ?string $locale = null, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): ?string
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => max(1, (int) $this->unit_quantity),
+        ])->unitFormatted($locale, decimalPlaces: $decimalPlaces, trimTrailingZeros: $trimTrailingZeros);
+    }
+
+    /**
+     * Decimal form of {@see unitFormat()}.
+     */
+    public function unitDecimal(string $field, bool $rounding = true): ?float
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => max(1, (int) $this->unit_quantity),
+        ])->unitDecimal($rounding);
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    /**
+     * The line this one is a component of. Component lines are the parts of a
+     * composite purchasable (a bundle) recorded so fulfilment and stock see them;
+     * the parent holds the money.
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(OrderLine::class, 'parent_line_id');
+    }
+
+    public function components(): HasMany
+    {
+        return $this->hasMany(OrderLine::class, 'parent_line_id')->orderBy('id');
+    }
+
+    public function isComponent(): bool
+    {
+        return $this->parent_line_id !== null;
+    }
+
+    /**
+     * Limit the query to lines that are not components of another line.
+     */
+    public function scopeTopLevel(Builder $query): Builder
+    {
+        return $query->whereNull('parent_line_id');
     }
 
     public function fulfilmentLines(): HasMany
@@ -112,10 +179,15 @@ class OrderLine extends Base implements HasCurrency
 
     /**
      * Quantity still available to refund — the line's quantity minus
-     * whatever refund_lines have already claimed against it.
+     * whatever refund_lines have already claimed against it. Component lines
+     * carry no money, so they are refunded through their parent.
      */
     public function refundableQuantity(): int
     {
+        if ($this->isComponent()) {
+            return 0;
+        }
+
         return max(0, $this->quantity - $this->refunded_quantity);
     }
 

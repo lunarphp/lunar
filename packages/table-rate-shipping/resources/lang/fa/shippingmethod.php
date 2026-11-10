@@ -45,7 +45,7 @@ return [
             'label' => 'نوع',
             'options' => [
                 'ship-by' => 'استاندارد',
-                'collection' => 'تحویل حضوری',
+                'pickup' => 'تحویل حضوری',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'نوع',
             'options' => [
                 'ship-by' => 'استاندارد',
-                'collection' => 'تحویل حضوری',
+                'pickup' => 'تحویل حضوری',
             ],
         ],
     ],

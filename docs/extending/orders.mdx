@@ -1,0 +1,231 @@
+---
+title: "Extending Orders"
+sidebarTitle: "Orders"
+---
+
+The order system is extended by swapping action contracts in the container, registering order creation steps and modifiers, and binding a handful of dedicated registries for order-level preferences and notifications.
+
+## Overview
+
+`Lunar\Core\Models\Order` exposes its operations as verb methods, each a one-line delegation to an action contract resolved from the container:
+
+```php
+public function cancel(?string $reason = null, ?string $note = null, bool $notify = true): Order
+{
+    return app(CancelsOrder::class)->execute($this, $reason, $note, $notify);
+}
+```
+
+| Verb | Delegates to |
+| --- | --- |
+| `createFulfilment(array $lines, array $attributes = [])` | `CreatesFulfilment` |
+| `cancel(?string $reason = null, ?string $note = null, bool $notify = true)` | `CancelsOrder` |
+| `notifyCustomer(string $notification, ?string $message = null, array $recipients = [])` | `NotifiesCustomer` |
+| `close()` | `ClosesOrder` |
+| `reopen()` | `ReopensOrder` |
+| `capture(int\|string $transactionId, float\|int\|string $amount)` | `CapturesOrder` |
+| `refund(RefundRequest $request)` | `RefundsOrder` |
+
+There is no `ship()` or `fulfil()` verb on `Order` itself — fulfilment shipping is a verb on the `Fulfilment` model created by `createFulfilment()` (`$fulfilment->ship($tracking)`).
+
+## Order action contracts
+
+`Lunar\Core\ActionServiceProvider`'s `$actions` map is the canonical list of swappable action seams. The order-related entries, each a `Lunar\Core\Contracts\Actions\Orders\*` interface bound to its `Lunar\Core\Actions\Orders\*` default implementation:
+
+| Contract | Default implementation |
+| --- | --- |
+| `CancelsOrder` | `CancelOrder` |
+| `CapturesOrder` | `CaptureOrder` |
+| `ClosesOrder` | `CloseOrder` |
+| `GeneratesOrderReference` | `GenerateOrderReference` |
+| `NotifiesCustomer` | `NotifyCustomer` |
+| `RecomputesOrderStatus` | `RecomputeOrderStatus` |
+| `RefundsOrder` | `RefundOrder` |
+| `ReopensOrder` | `ReopenOrder` |
+| `ResolvesFulfilmentStatus` | `ResolveFulfilmentStatus` |
+| `ResolvesPaymentStatus` | `ResolvePaymentStatus` |
+
+Creating an order from a cart is a cart-side operation: `Cart::createOrder()` delegates to `Contracts\Carts\CreatesOrder`. See [Extending Carts](/extending/carts).
+
+Rebind a contract from a consumer's own service provider:
+
+```php
+use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
+
+public function register(): void
+{
+    $this->app->bind(CancelsOrder::class, MyCancelsOrder::class);
+}
+```
+
+## Order reference generation
+
+`Contracts\Orders\GeneratesOrderReference`'s default implementation, `Actions\Orders\GenerateOrderReference`, formats a reference through whichever class implements `Lunar\Core\Contracts\OrderReferenceGenerator`:
+
+```php
+namespace Lunar\Core\Contracts;
+
+interface OrderReferenceGenerator
+{
+    public function generate(Order $order): string;
+}
+```
+
+That class is currently selected through `config/lunar/orders.php`, rather than a container binding:
+
+```php
+'reference_generator' => Lunar\Core\Orders\ReferenceGenerator::class,
+
+'reference_format' => [
+    'prefix' => null,
+    'padding_direction' => STR_PAD_LEFT,
+    'padding_character' => '0',
+    'length' => 8,
+],
+```
+
+Implement the interface and point the config key at the custom class:
+
+```php
+<?php
+
+namespace App\Orders;
+
+use Lunar\Core\Contracts\OrderReferenceGenerator;
+use Lunar\Core\Models\Order;
+
+class MyReferenceGenerator implements OrderReferenceGenerator
+{
+    public function generate(Order $order): string
+    {
+        return 'ORD-'.$order->id;
+    }
+}
+```
+
+```php
+'reference_generator' => App\Orders\MyReferenceGenerator::class,
+```
+
+## Order creation steps
+
+Creating an order runs it through the `Lunar\Core\Enums\StepList::OrderCreation` step list. Core seeds it with:
+
+1. `Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart`
+2. `Lunar\Core\Pipelines\Order\Creation\CreateOrderLines`
+3. `Lunar\Core\Pipelines\Order\Creation\CreateOrderAddresses`
+4. `Lunar\Core\Pipelines\Order\Creation\CreateShippingLine`
+5. `Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines`
+6. `Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown`
+
+A step implements `handle(Order $order, Closure $next): mixed`:
+
+```php
+<?php
+
+namespace App\Pipelines\Orders;
+
+use Closure;
+use Lunar\Core\Models\Order;
+
+class CreateGiftMessageLine
+{
+    public function handle(Order $order, Closure $next): mixed
+    {
+        // ...
+
+        return $next($order);
+    }
+}
+```
+
+Register it from a service provider, positioned against a core step:
+
+```php
+use App\Pipelines\Orders\CreateGiftMessageLine;
+use Lunar\Core\Enums\StepList;
+use Lunar\Core\Facades\Steps;
+use Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines;
+
+public function boot(): void
+{
+    Steps::for(StepList::OrderCreation)->before(CleanUpOrderLines::class, CreateGiftMessageLine::class);
+}
+```
+
+`Steps::for()` also supports `append()`, `prepend()`, `after()`, `remove()` and `replace()`. See [Registering calculation steps](/extending/carts#registering-calculation-steps) for the full API, and run `php artisan lunar:steps` to see what runs.
+
+## Order modifiers
+
+A `Lunar\Core\Modifiers\OrderModifier` hooks order creation without depending on the names of the creation steps:
+
+| Hook | Fires |
+|:-----|:------|
+| `creating(Cart $cart, Closure $next): Cart` | Once, before the `OrderCreation` step list starts. Changes to the cart reach the creation steps. |
+| `created(Order $order, Closure $next): Order` | Once, after the creation steps have run and the cart's discounts are marked as used. |
+
+Both hooks run inside `CreateOrder`'s database transaction, so an exception from a modifier rolls back the order with everything else. Modifiers run in registration order, and each hook has a pass-through default.
+
+```php
+<?php
+
+namespace App\Modifiers;
+
+use Closure;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Modifiers\OrderModifier;
+
+class TagWholesaleOrders extends OrderModifier
+{
+    public function created(Order $order, Closure $next): Order
+    {
+        // ...
+
+        return $next($order);
+    }
+}
+```
+
+Register an instance with the `Lunar\Core\Modifiers\OrderModifiers` collection, a singleton in the container:
+
+```php
+use App\Modifiers\TagWholesaleOrders;
+use Lunar\Core\Modifiers\OrderModifiers;
+
+public function boot(): void
+{
+    app(OrderModifiers::class)->add(new TagWholesaleOrders);
+}
+```
+
+## Order status
+
+An order does not carry a single guarded status. It exposes two independently derived rollups, each a `Spatie\ModelStates\State` subclass recomputed from the order's ledger rather than transitioned by hand:
+
+- `payment_status` — `Lunar\Core\States\Order\Payment\PaymentStatus` (`Pending`, `Authorized`, `PartiallyPaid`, `Paid`, `PartiallyRefunded`, `Refunded`, `Voided`)
+- `fulfilment_status` — `Lunar\Core\States\Order\Fulfilment\FulfilmentStatus` (`Unfulfilled`, `PartiallyFulfilled`, `Fulfilled`, `PartiallyReturned`, `Returned`)
+
+`Contracts\Orders\ResolvesPaymentStatus` and `Contracts\Orders\ResolvesFulfilmentStatus` compute these values whenever the order's transactions or fulfilments change; because any value can follow any other, extending order-level status logic means rebinding those two action contracts rather than editing a transition table.
+
+The order's broader lifecycle — `isOpen()`, `isClosed()`, `isCancelled()`, `lifecycleStatus()` — is a plain computed method over `cancelled_at` and `closed_at`, not a state machine.
+
+<Info>
+Fulfilments do have a guarded, extensible state machine: `Lunar\Core\States\Fulfilment\FulfilmentState`, governed by `Lunar\Core\Contracts\FulfilmentStateConfig`. Bind a custom implementation of that contract in a service provider's `register()` to add states or reshape the transition table.
+</Info>
+
+## Order preferences and notifications
+
+A handful of order-level concerns are container-bound registries rather than config, since they are expected to become per-store (channel) values:
+
+- `Lunar\Core\Contracts\OrderSettings` — `autoClosesSettledOrders(Order $order): bool`. Bind a custom implementation to change whether an order auto-closes once fully paid and fulfilled.
+- `Lunar\Core\Contracts\OrderNotificationManifest` — the catalogue of notifications sent about an order. `register()` and `forget()` entries from a service provider to add, replace, or remove a notification.
+- `Lunar\Core\Contracts\CancelReasonManifest` and `Lunar\Core\Contracts\HoldReasonManifest` — the reasons an order can be cancelled, and a fulfilment placed on hold. Both extend the shared `Lunar\Core\Contracts\ReasonManifest` registry.
+
+```php
+use Lunar\Core\Contracts\OrderSettings;
+
+public function register(): void
+{
+    $this->app->singleton(OrderSettings::class, MyOrderSettings::class);
+}
+```

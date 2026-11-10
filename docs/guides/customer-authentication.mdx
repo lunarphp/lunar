@@ -1,0 +1,513 @@
+---
+title: "Customer Authentication"
+description: "Link Laravel users to Lunar customers, manage the storefront session, and handle cart association on login and logout."
+---
+
+This guide covers linking the application's Laravel `User` model to Lunar's `Customer` model, resolving the current customer through the storefront session, and understanding what happens to the cart on login and logout.
+
+## Overview
+
+Lunar separates authentication (handled by Laravel) from commerce data (stored in `Lunar\Core\Models\Customer`). The two are linked through the `Lunar\Core\Models\Concerns\IsLunarUser` trait and the `Lunar\Core\Contracts\LunarUser` contract, which together add customer, cart, and order relationships to the application's `User` model. This guide walks through setting up the connection, creating a customer on registration, resolving the current customer from the storefront session, and how the cart behaves across login and logout.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## Setting Up the User Model
+
+Implement the `LunarUser` contract and add the `IsLunarUser` trait to the application's `User` model.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Lunar\Core\Contracts\LunarUser;
+use Lunar\Core\Models\Concerns\IsLunarUser;
+
+class User extends Authenticatable implements LunarUser
+{
+    use IsLunarUser;
+
+    // ...
+}
+```
+
+<Info>
+This is one of the required setup steps documented on the [installation page](/getting-started/setup/installation). Several parts of Lunar core — cart association on login, the storefront session's customer resolution — check for this contract, so it needs to be in place for the rest of this guide to work.
+</Info>
+
+The `IsLunarUser` trait provides the following relationships:
+
+| Relationship | Type | Related Model | Description |
+|:---|:---|:---|:---|
+| `customers` | BelongsToMany | `Lunar\Core\Models\Customer` | All linked customer records, pivot: `customer_user` |
+| `carts` | HasMany | `Lunar\Core\Models\Cart` | All carts belonging to this user |
+| `orders` | HasMany | `Lunar\Core\Models\Order` | All orders placed by this user |
+
+It also provides a helper method:
+
+```php
+$user->latestCustomer(); // Returns the most recently created Customer, or null
+```
+
+<Info>
+A user can be associated with multiple customers. This supports scenarios like a sales representative managing multiple accounts. For most storefronts, each user has a single customer record.
+</Info>
+
+## Creating a Customer on Registration
+
+When a new user registers, create a corresponding `Lunar\Core\Models\Customer` record and link the two together.
+
+### Registration Controller
+
+```php
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Lunar\Core\Models\Customer;
+
+class RegisterController extends Controller
+{
+    public function store(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->first_name.' '.$request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $customer = Customer::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+        ]);
+
+        $customer->users()->attach($user);
+
+        Auth::login($user);
+
+        return redirect()->route('home');
+    }
+}
+```
+
+### Adding to an Existing Registration Flow
+
+If the application already has registration (for example, via Laravel Breeze or Fortify), add customer creation using a listener on the `Registered` event instead:
+
+```php
+<?php
+
+namespace App\Listeners;
+
+use Illuminate\Auth\Events\Registered;
+use Lunar\Core\Models\Customer;
+
+class CreateCustomerForUser
+{
+    public function handle(Registered $event): void
+    {
+        $user = $event->user;
+
+        $customer = Customer::create([
+            'first_name' => $user->name,
+            'last_name' => '',
+        ]);
+
+        $customer->users()->attach($user);
+    }
+}
+```
+
+Register the listener using the `Event` facade, typically in a service provider's `boot()` method:
+
+```php
+use App\Listeners\CreateCustomerForUser;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
+
+Event::listen(Registered::class, CreateCustomerForUser::class);
+```
+
+## The Storefront Session
+
+`Lunar\Core\Facades\StorefrontSession` tracks the selections that frame a storefront visit — region, channel, currency, customer, and customer groups. It is resolved once per request (bound `scoped` in the container, not `singleton`, so nothing leaks between requests under Octane or a queue worker) and restores its state from the session automatically on construction.
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+
+// Get the current customer (null if none is resolved)
+$customer = StorefrontSession::getCustomer();
+
+// Get the current channel
+$channel = StorefrontSession::getChannel();
+
+// Get the current currency
+$currency = StorefrontSession::getCurrency();
+
+// Get the current customer groups
+$customerGroups = StorefrontSession::getCustomerGroups();
+```
+
+### How Customer Resolution Works
+
+When `StorefrontSession` is constructed, it resolves the current customer using this cascade:
+
+1. Check the session for a previously stored customer ID.
+2. If none is found and a user is authenticated whose model implements `LunarUser`, call `$user->latestCustomer()` to find the most recently created customer.
+3. Store the resolved customer ID in the session for subsequent requests.
+
+Because this runs in the constructor of a request-scoped service, a customer created and attached during the current request (for example, in the registration flow above) is not automatically picked up until the *next* request. Redirecting after registration — as in the example above — is enough; the next request resolves the session again and finds the newly attached customer via `latestCustomer()`.
+
+### Setting the Customer Manually
+
+In some cases the customer needs to be set explicitly, for example immediately after registration (to avoid the redirect round-trip), or when a user has multiple customer accounts:
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+use Lunar\Core\Models\Customer;
+
+$customer = Customer::find($request->customer_id);
+
+StorefrontSession::setCustomer($customer);
+```
+
+<Warning>
+When a user is authenticated, `setCustomer()` validates that the customer belongs to the user (via the `customer_user` pivot table). If the customer does not belong to the user, a `Lunar\Core\Exceptions\CustomerNotBelongsToUserException` is thrown.
+</Warning>
+
+### Changing Channel or Currency
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+
+// Switch channel
+$channel = Channel::where('handle', 'wholesale')->firstOrFail();
+StorefrontSession::setChannel($channel);
+
+// Switch currency
+$currency = Currency::where('code', 'EUR')->firstOrFail();
+StorefrontSession::setCurrency($currency);
+```
+
+Setting the currency also pushes it to `Lunar\Core\Facades\CartSession`, so an existing cart is re-priced in the new currency.
+
+<Info>
+See the [Storefront Session reference](/storefront-utils/storefront-session) for the full API, including regions, customer groups, and resolving an immutable `StorefrontContext` snapshot for code that should not depend on there being an HTTP session (queued jobs, an API resolving selections from headers).
+</Info>
+
+## Cart Behavior on Login and Logout
+
+Lunar automatically handles cart association when users log in and out, through `Lunar\Core\Listeners\CartSessionAuthListener`. This listener is registered by Lunar's service provider and responds to Laravel's `Login` and `Logout` authentication events. It only acts when the authenticating user's model uses `IsLunarUser`.
+
+### What Happens on Login
+
+1. If a cart already exists in the session and has no `user_id` (a guest cart), it is associated with the newly authenticated user. Depending on the configured policy, the guest cart's lines are either **merged** into the user's existing cart, or the guest cart **overrides** it.
+2. If no cart exists in the session at all, the listener looks for the user's most recent active cart and loads it into the session.
+
+### What Happens on Logout
+
+On logout, the listener calls `CartSession::forget()`, which by default **soft-deletes** the session's cart in addition to clearing it from the session — controlled by `delete_on_forget` in `config/lunar/cart_session.php` (defaults to `true`). Because the cart is soft-deleted, it is excluded from the normal queries used to find "the user's active cart", so it is not picked up again on the next login. Set `delete_on_forget` to `false` to keep the cart around (and restorable on the next login) instead.
+
+```php
+// config/lunar/cart_session.php
+return [
+    // ...
+    'delete_on_forget' => true, // or false to keep the cart after logout
+];
+```
+
+### Cart Association Policy
+
+The association policy used on login is configured in `config/lunar/cart.php`:
+
+```php
+return [
+    'auth_policy' => 'merge', // 'merge' or 'override'
+];
+```
+
+| Policy | Behavior |
+|:---|:---|
+| `merge` | The guest cart's lines are merged into the user's existing cart |
+| `override` | The guest cart replaces the user's existing cart |
+
+<Tip>
+The `merge` policy is the default and recommended for most storefronts. It ensures customers do not lose items they added while browsing as a guest.
+</Tip>
+
+## Customer Account Page
+
+Build an account dashboard that displays the customer's profile, linked addresses, and recent orders.
+
+### Account Controller
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Lunar\Core\Facades\StorefrontSession;
+
+class AccountController extends Controller
+{
+    public function show()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            return redirect()->route('login');
+        }
+
+        $customer->load([
+            'addresses.country',
+            'orders' => fn ($query) => $query->whereNotNull('placed_at')
+                ->latest('placed_at')
+                ->limit(5),
+        ]);
+
+        return view('account.show', compact('customer'));
+    }
+}
+```
+
+### Displaying Customer Details
+
+```blade
+<h1>My Account</h1>
+
+<h2>Profile</h2>
+<p>{{ $customer->full_name }}</p>
+@if($customer->company_name)
+    <p>{{ $customer->company_name }}</p>
+@endif
+
+<h2>Recent Orders</h2>
+@forelse($customer->orders as $order)
+    <a href="{{ route('account.orders.show', $order) }}">
+        <p>{{ $order->reference }}</p>
+        <p>{{ $order->placed_at->format('M d, Y') }}</p>
+        <p>{{ $order->format('total') }}</p>
+    </a>
+@empty
+    <p>No orders yet.</p>
+@endforelse
+
+<h2>Addresses</h2>
+@forelse($customer->addresses as $address)
+    <div>
+        <p>{{ $address->first_name }} {{ $address->last_name }}</p>
+        <p>{{ $address->line_one }}</p>
+        <p>{{ $address->city }}, {{ $address->postcode }}</p>
+        <p>{{ $address->country?->name }}</p>
+
+        @if($address->shipping_default)
+            <span>Default Shipping</span>
+        @endif
+
+        @if($address->billing_default)
+            <span>Default Billing</span>
+        @endif
+    </div>
+@empty
+    <p>No saved addresses.</p>
+@endforelse
+```
+
+<Info>
+`$order->format('total')` returns the total formatted as a currency string. Order totals are stored as integers in the currency's minor unit and cast through `Lunar\Core\Models\Concerns\FormatsPrices`, which every model implementing `HasCurrency` uses. See the [Order History guide](/guides/order-history) for the full breakdown.
+</Info>
+
+## Updating Customer Profile
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Core\Facades\StorefrontSession;
+
+class AccountController extends Controller
+{
+    public function update(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+        ]);
+
+        $customer = StorefrontSession::getCustomer();
+
+        $customer->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'company_name' => $request->company_name,
+        ]);
+
+        return redirect()->route('account.show')
+            ->with('message', 'Profile updated.');
+    }
+}
+```
+
+## Checking Authentication in Views
+
+Use `StorefrontSession` to conditionally display content based on whether a customer is resolved:
+
+```blade
+@php
+    $customer = \Lunar\Core\Facades\StorefrontSession::getCustomer();
+@endphp
+
+@if($customer)
+    <a href="{{ route('account.show') }}">
+        Hi, {{ $customer->first_name }}
+    </a>
+@else
+    <a href="{{ route('login') }}">Sign In</a>
+    <a href="{{ route('register') }}">Register</a>
+@endif
+```
+
+## Routes
+
+```php
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Auth\RegisterController;
+
+// Registration
+Route::get('/register', [RegisterController::class, 'create'])->name('register');
+Route::post('/register', [RegisterController::class, 'store']);
+
+// Account (requires authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/account', [AccountController::class, 'show'])->name('account.show');
+    Route::patch('/account', [AccountController::class, 'update'])->name('account.update');
+});
+```
+
+## Putting It All Together
+
+Here is a complete registration controller and account controller:
+
+```php
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Lunar\Core\Models\Customer;
+
+class RegisterController extends Controller
+{
+    public function create()
+    {
+        return view('auth.register');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->first_name.' '.$request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $customer = Customer::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+        ]);
+
+        $customer->users()->attach($user);
+
+        Auth::login($user);
+
+        return redirect()->route('home');
+    }
+}
+```
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Core\Facades\StorefrontSession;
+
+class AccountController extends Controller
+{
+    public function show()
+    {
+        $customer = StorefrontSession::getCustomer();
+
+        if (! $customer) {
+            return redirect()->route('login');
+        }
+
+        $customer->load([
+            'addresses.country',
+            'orders' => fn ($query) => $query->whereNotNull('placed_at')
+                ->latest('placed_at')
+                ->limit(5),
+        ]);
+
+        return view('account.show', compact('customer'));
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+        ]);
+
+        $customer = StorefrontSession::getCustomer();
+
+        $customer->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'company_name' => $request->company_name,
+        ]);
+
+        return redirect()->route('account.show')
+            ->with('message', 'Profile updated.');
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Customers reference](/reference/customers) for the full list of customer model fields, relationships, and customer groups.
+- Review the [Storefront Session reference](/storefront-utils/storefront-session) for the full session API and the `StorefrontContext` snapshot.
+- Review the [Customer Addresses guide](/guides/customer-addresses) for managing saved addresses.
+- Review the [Order History guide](/guides/order-history) for displaying past orders.
+- Review the [Cart guide](/guides/cart) for details on cart calculation and session management.

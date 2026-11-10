@@ -54,7 +54,7 @@ const chartPoints = [
 </script>
 
 <template>
-    <div data-screen-label="Example Add-on" class="contents">
+    <div data-screen-label="Example Add-on" class="example:contents">
         <Breadcrumbs :items="breadcrumbs" />
 
         <PageHeader
@@ -67,14 +67,14 @@ const chartPoints = [
             </template>
         </PageHeader>
 
-        <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+        <div class="example:px-4 example:sm:px-5 example:lg:px-7 example:max-w-[1400px] example:w-full example:mx-auto example:pt-5 example:pb-7">
             <PageZone region="main" position="before" />
 
-            <p class="text-[13px] text-ink-700">
+            <p class="example:text-[13px] example:text-ink-700">
                 {{ message ?? 'This page is served by a separately-compiled add-on package.' }}
             </p>
 
-            <div class="mt-5">
+            <div class="example:mt-5">
                 <DataTable
                     :columns="columns"
                     :rows="widgets ?? []"
@@ -87,28 +87,45 @@ const chartPoints = [
                 </DataTable>
             </div>
 
-            <SideCard title="Reusing panel components" class="mt-5 max-w-md">
-                <p class="text-[12.5px] text-ink-700">
+            <SideCard title="Reusing panel components" class="example:mt-5 example:max-w-md">
+                <p class="example:text-[12.5px] example:text-ink-700">
                     This card, its badge, and the header above are all the panel's own
                     components, imported from <code>@lunarphp/panel</code>. The panel
                     name below comes from <code>usePage()</code> and the link routes
                     through Inertia — both via the panel's shared
                     <code>@inertiajs/vue3</code> instance.
                 </p>
-                <div class="mt-2 flex items-center gap-2">
+                <div class="example:mt-2 example:flex example:items-center example:gap-2">
                     <StatusBadge tone="sage" size="sm">{{ panelName }}</StatusBadge>
-                    <Link href="/panel/customers" class="text-[12.5px] text-ink-700 underline underline-offset-2 hover:text-ink-900">
+                    <Link href="/panel/customers" class="example:text-[12.5px] example:text-ink-700 example:underline example:underline-offset-2 example:hover:text-ink-900">
                         Customers
                     </Link>
                 </div>
             </SideCard>
 
-            <SideCard title="Charting from an add-on" class="mt-5 max-w-md">
-                <p class="text-[12.5px] text-ink-700 mb-2">
+            <SideCard title="Charting from an add-on" class="example:mt-5 example:max-w-md">
+                <p class="example:text-[12.5px] example:text-ink-700 example:mb-2">
                     The panel's <code>TimeSeriesChart</code> is on the same public
                     surface, so add-ons can plot their own data.
                 </p>
                 <TimeSeriesChart :points="chartPoints" :height="140" ariaLabel="Example widget sales" />
+            </SideCard>
+
+            <SideCard title="Add-on styles stay scoped" class="example:mt-5 example:max-w-md" data-testid="styling-isolation">
+                <p class="example:text-[12.5px] example:text-ink-700 example:mb-2">
+                    This add-on builds its own CSS with every class prefixed <code>example:</code>,
+                    so nothing it emits can match panel markup.
+                </p>
+                <!-- Panel markup, unprefixed on purpose: the panel's PageHeader uses the same pair. -->
+                <div data-testid="panel-responsive" class="hidden sm:flex">
+                    Panel <code>hidden sm:flex</code>: shown from the sm breakpoint up.
+                </div>
+                <div data-testid="addon-hidden" class="example:hidden">
+                    Add-on <code>example:hidden</code>: never shown.
+                </div>
+                <div data-testid="addon-only" class="example:mt-2 example:rounded-md example:bg-danger/5 example:px-2 example:py-1 example:text-[11px] example:text-danger">
+                    Classes the panel never emits, resolved against its live tokens.
+                </div>
             </SideCard>
 
             <PageZone region="main" position="after" />

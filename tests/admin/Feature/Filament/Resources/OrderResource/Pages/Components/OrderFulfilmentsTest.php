@@ -332,28 +332,28 @@ it('returns a shipped fulfilment', function () {
     expect((string) $fulfilment->refresh()->state)->toBe('returned');
 });
 
-it('fulfils a collection parcel via the no-tracking fulfil action', function () {
-    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'collection']);
+it('fulfils a pickup parcel via the no-tracking fulfil action', function () {
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'pickup']);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('fulfil', arguments: ['fulfilment' => $fulfilment->id])
         ->assertHasNoActionErrors();
 
-    expect((string) $fulfilment->refresh()->state)->toBe('collected')
+    expect((string) $fulfilment->refresh()->state)->toBe('picked-up')
         ->and($fulfilment->shipped_at)->not->toBeNull();
 });
 
-it('routes the terminal status to fulfil for collection and ship for shipping', function () {
+it('routes the terminal status to fulfil for pickup and ship for shipping', function () {
     $component = Livewire::test(OrderFulfilments::class, ['record' => $this->order])->instance();
 
-    $collection = $this->order->createFulfilment([$this->line->id => 2], ['method' => 'collection']);
+    $pickup = $this->order->createFulfilment([$this->line->id => 2], ['method' => 'pickup']);
     $shipping = $this->order->createFulfilment([$this->line->id => 2]);
 
-    $collectionTransitions = $component->statusTransitions($collection->refresh()->load('lines'));
+    $pickupTransitions = $component->statusTransitions($pickup->refresh()->load('lines'));
     $shippingTransitions = $component->statusTransitions($shipping->refresh()->load('lines'));
 
-    expect($collectionTransitions->firstWhere('name', 'collected')['action'])->toBe('fulfil')
-        ->and($collectionTransitions->pluck('name'))->not->toContain('shipped')
+    expect($pickupTransitions->firstWhere('name', 'picked-up')['action'])->toBe('fulfil')
+        ->and($pickupTransitions->pluck('name'))->not->toContain('shipped')
         ->and($shippingTransitions->firstWhere('name', 'shipped')['action'])->toBe('ship');
 });
 
@@ -361,6 +361,7 @@ it('shows the notify toggle on the ship modal only when a shipped notification i
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
     // Nothing registered for the shipped state — progressive disclosure hides it.
+    OrderNotifications::forget('order-shipped');
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
         ->assertSchemaComponentDoesNotExist('notify');
@@ -375,6 +376,9 @@ it('shows the notify toggle on the ship modal only when a shipped notification i
 it('sends the per-parcel notification when shipping with the notify toggle on', function () {
     OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     NotificationFacade::fake();
+
+    // Draft orders never email; place it quietly so the setup sends nothing.
+    $this->order->updateQuietly(['placed_at' => now()]);
 
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 

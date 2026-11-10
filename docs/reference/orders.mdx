@@ -1,0 +1,556 @@
+---
+title: "Orders"
+description: "Order creation, lifecycle, lines, transactions, cancellation, and refunds in Lunar."
+---
+
+An order is a purchase created from a cart, tracked through payment and fulfilment until it is archived.
+
+## Overview
+
+An order is created from a [cart](/reference/carts) at checkout. It snapshots the cart's lines, addresses, and totals so the record stays accurate even if products, prices, or addresses change later. An order's lifecycle is read from two independently derived rollups, `payment_status` and `fulfilment_status`, plus an open/closed archive flag — there is no single headline "order status" column.
+
+<Info>
+All monetary values (such as `sub_total`, `total`, `tax_total`) are stored as integers in the currency's minor unit and cast through `Lunar\Core\Models\Concerns\FormatsPrices`, which exposes formatted/decimal accessors.
+</Info>
+
+Fulfilment (shipping, pickup, digital provisioning, tracking, carriers) is covered in full on the [Fulfilments](/reference/fulfilments) page. Sending emails to the customer is covered on the [Notifications](/reference/notifications) page. Capturing and refunding money through a payment provider is covered on the [Payments](/reference/payments) page — this page documents the order-side records those operations write to.
+
+## Order model
+
+```php
+Lunar\Core\Models\Order
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier for APIs and integrations |
+| user_id | `foreignId` `nullable` | The authenticated user who placed the order |
+| channel_id | `foreignId` | The channel the order was placed through |
+| payment_status | `string` | Derived rollup of the transaction ledger, see [Payment status](#payment-status) |
+| fulfilment_status | `string` | Derived rollup of the order's fulfilments, see [Fulfilment status](#fulfilment-status) |
+| reference | `string` `nullable` | The generated order reference |
+| customer_reference | `string` `nullable` | A reference provided by the customer |
+| sub_total | `unsignedBigInteger` | The subtotal minus any discounts, excluding tax |
+| discount_total | `unsignedBigInteger` | The discount amount, excluding tax |
+| shipping_total | `unsignedBigInteger` | The shipping total including tax |
+| tax_breakdown | `jsonb` | Breakdown of applied taxes |
+| tax_total | `unsignedBigInteger` | The total amount of tax applied |
+| total | `unsignedBigInteger` | The grand total including tax |
+| notes | `text` `nullable` | Additional order notes |
+| currency_code | `string` | The currency code the order was placed in |
+| compare_currency_code | `string` `nullable` | The default currency code at the time of the order |
+| exchange_rate | `decimal` | The exchange rate between `currency_code` and `compare_currency_code` |
+| placed_at | `dateTime` `nullable` | The datetime the order was considered placed. Null means the order is still a draft |
+| closed_at | `dateTime` `nullable` | The datetime the order was archived, see [Open and closed orders](#open-and-closed-orders) |
+| cancelled_at | `dateTime` `nullable` | The datetime the order was cancelled, see [Cancelling an order](#cancelling-an-order) |
+| cancel_reason | `string` `nullable` | The cancellation reason key |
+| cancel_note | `text` `nullable` | A staff note recorded with the cancellation |
+| meta | `jsonb` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+| customer_id | `foreignId` `nullable` | |
+| new_customer | `boolean` | Whether the customer is a first-time buyer |
+| discount_breakdown | `jsonb` `nullable` | Breakdown of applied discounts |
+| shipping_breakdown | `jsonb` `nullable` | Breakdown of shipping charges |
+| cart_id | `unsignedBigInteger` `nullable` | The cart used to create the order |
+| fingerprint | `string` `nullable` | A hash used to detect cart changes since the order was created |
+| region_id | `foreignId` `nullable` | The region resolved for the order |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `channel` | BelongsTo | `Lunar\Core\Models\Channel` | |
+| `region` | BelongsTo | `Lunar\Core\Models\Region` | |
+| `cart` | BelongsTo | `Lunar\Core\Models\Cart` | |
+| `lines` | HasMany | `Lunar\Core\Models\OrderLine` | Ordered by `id` |
+| `fulfilments` | HasMany | `Lunar\Core\Models\Fulfilment` | See [Fulfilments](/reference/fulfilments) |
+| `physicalLines` | HasMany | `Lunar\Core\Models\OrderLine` | Lines where `type` is `physical` |
+| `fulfillableLines` | HasMany | `Lunar\Core\Models\OrderLine` | Lines where `requires_fulfilment` is `true` — the set fulfilments are created against |
+| `digitalLines` | HasMany | `Lunar\Core\Models\OrderLine` | Lines where `type` is `digital` |
+| `shippingLines` | HasMany | `Lunar\Core\Models\OrderLine` | Lines where `type` is `shipping` |
+| `productLines` | HasMany | `Lunar\Core\Models\OrderLine` | All lines excluding shipping |
+| `currency` | BelongsTo | `Lunar\Core\Models\Currency` | Matched on `currency_code` |
+| `addresses` | HasMany | `Lunar\Core\Models\OrderAddress` | |
+| `shippingAddress` | HasOne | `Lunar\Core\Models\OrderAddress` | Address where `type` is `shipping` |
+| `billingAddress` | HasOne | `Lunar\Core\Models\OrderAddress` | Address where `type` is `billing` |
+| `transactions` | HasMany | `Lunar\Core\Models\Transaction` | Ordered by `created_at` descending |
+| `captures` | HasMany | `Lunar\Core\Models\Transaction` | Transactions where `type` is `capture` |
+| `intents` | HasMany | `Lunar\Core\Models\Transaction` | Transactions where `type` is `intent` |
+| `refunds` | HasMany | `Lunar\Core\Models\Transaction` | Transactions where `type` is `refund` |
+| `customer` | BelongsTo | `Lunar\Core\Models\Customer` | |
+| `user` | BelongsTo | User | The authenticatable model from the auth config |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `open` | Orders where `closed_at` is null |
+| `closed` | Orders where `closed_at` is set |
+| `cancelled` | Orders where `cancelled_at` is set |
+
+### Other useful methods
+
+| Method | Description |
+|:-------|:------------|
+| `isDraft(): bool` | `true` when `placed_at` is empty |
+| `isPlaced(): bool` | `true` when `placed_at` is set |
+| `isOpen(): bool` / `isClosed(): bool` | Whether the order has been archived, see [Open and closed orders](#open-and-closed-orders) |
+| `isCancelled(): bool` | Whether the order has been cancelled |
+| `isPickup(): bool` | Whether the customer picks the order up rather than having it shipped: the shipping line's `meta['pickup']` is exactly `true` |
+| `lifecycleStatus(): string` | Returns `'cancelled'`, `'closed'`, or `'open'` — cancelled takes precedence. Used for badges and search |
+| `cancelReasonLabel(): ?string` | The human-readable label for `cancel_reason` |
+
+## Creating an order from a cart
+
+An order is created from a cart via the `createOrder()` verb:
+
+```php
+use Lunar\Core\Models\Cart;
+
+$cart = Cart::find(1);
+
+$order = $cart->createOrder(
+    allowMultipleOrders: false,
+    orderIdToUpdate: null,
+);
+```
+
+- `allowMultipleOrders` — a cart generally has one draft order associated with it. Pass `true` to allow multiple orders per cart (for example, a declined payment followed by a new checkout attempt with a different order).
+- `orderIdToUpdate` — optionally pass the ID of an existing draft order (one with a null `placed_at`) belonging to the cart, to update it instead of creating a new one.
+
+Before creating, the cart is validated against the `Lunar\Core\Enums\StepList::OrderCreateValidation` step list (defaulting to `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation`), which throws a validation exception with a helpful message when the cart is not ready. Check readiness without throwing:
+
+```php
+$cart->canCreateOrder(); // bool
+```
+
+`createOrder()` delegates to `Lunar\Core\Contracts\Actions\Carts\CreatesOrder` (default `Lunar\Core\Actions\Carts\CreateOrder`), which fills the order's `cart_id` and `fingerprint`, then runs it through the `StepList::OrderCreation` step list. Core seeds it with:
+
+```php
+Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart::class,
+Lunar\Core\Pipelines\Order\Creation\CreateOrderLines::class,
+Lunar\Core\Pipelines\Order\Creation\CreateOrderAddresses::class,
+Lunar\Core\Pipelines\Order\Creation\CreateShippingLine::class,
+Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines::class,
+Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown::class,
+```
+
+Each stage runs in order: `FillOrderFromCart` copies totals, currency, and customer data across and generates the reference; `CreateOrderLines` snapshots the cart's lines onto `OrderLine` rows; `CreateOrderAddresses` copies the cart's addresses; `CreateShippingLine` adds a `shipping` line when a shipping option was chosen; `CleanUpOrderLines` and `MapDiscountBreakdown` tidy up lines and rewrite the discount breakdown once discounts are marked as used. Registered `Lunar\Core\Modifiers\OrderModifier` classes run their `creating()` hook before the first step and their `created()` hook once the order is created, all inside the same database transaction. Add a custom step with `Lunar\Core\Facades\Steps::for(StepList::OrderCreation)` (see [Extending Orders](/extending/orders#order-creation-steps)), or replace `CreatesOrder`'s binding to change the flow entirely.
+
+`payment_status` and `fulfilment_status` are not set explicitly during creation — they take the migration column defaults (`pending` and `unfulfilled`) until the first recompute runs (for example, when a transaction or fulfilment is recorded against the order).
+
+### Order reference generation
+
+The order reference is generated from `config/lunar/orders.php`:
+
+```php
+'reference_format' => [
+    'prefix' => null,
+    'padding_direction' => STR_PAD_LEFT,
+    'padding_character' => '0',
+    'length' => 8,
+],
+
+'reference_generator' => Lunar\Core\Orders\ReferenceGenerator::class,
+```
+
+The default generator pads the order's ID to `length` characters using `padding_character`/`padding_direction`, then prepends `prefix`. Set `reference_generator` to `null` to disable reference generation. A custom generator implements `Lunar\Core\Contracts\OrderReferenceGenerator`:
+
+```php
+namespace App\Orders;
+
+use Lunar\Core\Contracts\OrderReferenceGenerator;
+use Lunar\Core\Models\Order;
+
+class CustomReferenceGenerator implements OrderReferenceGenerator
+{
+    public function generate(Order $order): string
+    {
+        return 'ORD-'.$order->id;
+    }
+}
+```
+
+## Order lifecycle
+
+An order's lifecycle is read from three independent signals rather than one status column: whether it is a draft or placed (`placed_at`), its two derived rollups (`payment_status`, `fulfilment_status`), and whether it has been archived (`closed_at`) or cancelled (`cancelled_at`).
+
+<Warning>
+`payment_status` and `fulfilment_status` are **derived, unguarded rollups**, not a hand-driven state machine — there is no fixed transition graph and nothing to call `transitionTo()` on. They are recomputed automatically from the transaction ledger and the order's fulfilments whenever either changes, and any value can follow any other as the underlying records change.
+</Warning>
+
+### Payment status
+
+`payment_status` is cast to a `Lunar\Core\States\Order\Payment\PaymentStatus` instance, rolled up from the order's `transactions`:
+
+| State | `$name` | Meaning |
+|:------|:--------|:--------|
+| `Pending` | `pending` | No transactions recorded |
+| `Voided` | `voided` | Transactions exist but none succeeded |
+| `Authorized` | `authorized` | A successful payment intent exists, nothing captured yet |
+| `PartiallyPaid` | `partially-paid` | Some, but not all, of the order total has been captured |
+| `Paid` | `paid` | The full order total has been captured (or the order total is zero) |
+| `PartiallyRefunded` | `partially-refunded` | The order was paid in full and part of it has since been refunded |
+| `Refunded` | `refunded` | Everything captured has been refunded |
+
+### Fulfilment status
+
+`fulfilment_status` is cast to a `Lunar\Core\States\Order\Fulfilment\FulfilmentStatus` instance, rolled up from the order's fulfillable lines and its `fulfilments` (see [Fulfilments](/reference/fulfilments) for the per-fulfilment lifecycle):
+
+| State | `$name` | Meaning |
+|:------|:--------|:--------|
+| `Unfulfilled` | `unfulfilled` | None of the fulfillable quantity has been dispatched |
+| `PartiallyFulfilled` | `partially-fulfilled` | Some, but not all, of the fulfillable quantity has been dispatched |
+| `Fulfilled` | `fulfilled` | All fulfillable quantity has been dispatched (an order with nothing to fulfil resolves here immediately) |
+| `PartiallyReturned` | `partially-returned` | Some dispatched quantity has been returned |
+| `Returned` | `returned` | All dispatched quantity has been returned |
+
+Both rollups recompute automatically whenever a `Transaction` or a `Fulfilment`/`FulfilmentLine` changes, dispatching `Lunar\Core\Events\Orders\OrderPaymentStatusUpdated` / `OrderFulfilmentStatusUpdated` when the value actually changes.
+
+### Open and closed orders
+
+Independently of payment and fulfilment, an order is either open (in the active work queue) or closed (archived):
+
+```php
+$order->close();   // Lunar\Core\Contracts\Actions\Orders\ClosesOrder
+$order->reopen();  // Lunar\Core\Contracts\Actions\Orders\ReopensOrder
+```
+
+Both are idempotent — closing a closed order, or reopening an open one, is a no-op. A cancelled order cannot be reopened.
+
+<Tip>
+An order can be closed automatically the moment it becomes fully paid (`Paid`) and fully fulfilled (`Fulfilled`). It is off by default — bind a custom `Lunar\Core\Contracts\OrderSettings` implementation and return `true` from `autoClosesSettledOrders()` to opt in:
+
+```php
+use Lunar\Core\Contracts\OrderSettings;
+use Lunar\Core\Models\Order;
+
+class AutoCloseOrderSettings implements OrderSettings
+{
+    public function autoClosesSettledOrders(Order $order): bool
+    {
+        return true;
+    }
+}
+```
+
+Bind it in a service provider: `$this->app->bind(OrderSettings::class, AutoCloseOrderSettings::class);`. Auto-close never reopens an order that later regresses (a return or a partial refund) — that stays a deliberate `reopen()`.
+</Tip>
+
+### Cancelling an order
+
+```php
+$order->cancel(
+    reason: 'customer',
+    note: 'Customer changed their mind',
+    notify: true,
+);
+```
+
+Cancellation is one-way and covers status only — it does not issue a refund or restock inventory. An order can be cancelled as long as it is not already cancelled and nothing on it has shipped or returned. Cancelling voids the order's un-shipped fulfilments, stamps `cancelled_at`/`cancel_reason`/`cancel_note`, and also closes the order.
+
+Reasons come from the `CancelReasons` manifest rather than config, so they can be adjusted per application:
+
+```php
+use Lunar\Core\Facades\CancelReasons;
+
+CancelReasons::all();                          // array<string, string>
+CancelReasons::add('warehouse-error', 'Warehouse error');
+CancelReasons::forget('fraud');
+```
+
+## Order lines
+
+```php
+Lunar\Core\Models\OrderLine
+```
+
+<Info>
+There is no generic "fee" or "extra charge" line primitive. A line's `type` is whatever the purchasable's `getType()` returns (core's `ProductVariant` returns `physical` or `digital`); an extra charge is modelled as an order line tied to its own `Purchasable`, and incoming money is tracked separately as `Transaction` rows (see [Transactions](#transactions)) rather than as a line item.
+</Info>
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| order_id | `foreignId` | |
+| parent_line_id | `foreignId` `nullable` | Set on a component line that belongs to another line (a bundle part); cascades on delete, see [Component lines](#component-lines) |
+| purchasable_type | `string` `nullable` | Polymorphic type for the purchasable item. Empty on shipping lines |
+| purchasable_id | `unsignedBigInteger` `nullable` | Polymorphic ID for the purchasable item. Empty on shipping lines |
+| type | `string` | The line type, from the purchasable's `getType()` (e.g. `physical`, `digital`); always `shipping` for the shipping line |
+| requires_shipping | `boolean` | Needs physical delivery, stamped from the purchasable's `isShippable()` |
+| requires_fulfilment | `boolean` | Needs fulfilling at all — a superset of `requires_shipping` that drives the fulfilment rollup |
+| description | `string` | A description of the line item |
+| option | `string` `nullable` | Option information if the item is a variant |
+| identifier | `string` | An identifier for the purchasable item, typically a SKU |
+| unit_price | `unsignedBigInteger` | The price of one pack of `unit_quantity` units |
+| unit_quantity | `smallInteger` | The unit quantity, typically `1` |
+| quantity | `unsignedInteger` | The quantity purchased |
+| sub_total | `unsignedBigInteger` | The subtotal minus any discounts, excluding tax |
+| discount_total | `unsignedBigInteger` | The discount amount, excluding tax |
+| tax_breakdown | `jsonb` | Breakdown of applied taxes |
+| tax_total | `unsignedBigInteger` | The total amount of tax applied |
+| total | `unsignedBigInteger` | The grand total including tax |
+| refunded_quantity | `unsignedInteger` | Rollup of `refund_lines.quantity` for this line, see [Refunds](#refunds) |
+| notes | `text` `nullable` | Additional line notes |
+| meta | `jsonb` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Core\Models\Order` | |
+| `purchasable` | MorphTo | — | The polymorphic purchasable item. `null` on shipping lines |
+| `parent` | BelongsTo | `Lunar\Core\Models\OrderLine` | The line this component line belongs to. `null` on a top-level line, see [Component lines](#component-lines) |
+| `components` | HasMany | `Lunar\Core\Models\OrderLine` | Component lines belonging to this line, ordered by `id` |
+| `fulfilmentLines` | HasMany | `Lunar\Core\Models\FulfilmentLine` | See [Fulfilments](/reference/fulfilments) |
+| `refundLines` | HasMany | `Lunar\Core\Models\RefundLine` | See [Refunds](#refunds) |
+| `currency` | HasOneThrough | `Lunar\Core\Models\Currency` | Resolved through the order |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `withoutFulfilment` | Lines not yet allocated to any fulfilment |
+| `topLevel` | Lines where `parent_line_id` is null, that is, lines that are not components of another line |
+
+### Other useful methods
+
+```php
+$line->refundableQuantity(): int; // quantity minus refunded_quantity, floored at 0; always 0 for a component line
+$line->isComponent(): bool;       // true when parent_line_id is set
+$line->unitFormat('unit_price');   // per-single-unit price, formatted (unit_price / unit_quantity)
+$line->unitDecimal('unit_price');  // per-single-unit price, as a decimal
+```
+
+`unitFormat()` and `unitDecimal()` divide the given money column by the line's own `unit_quantity`, alongside the `format()` / `decimal()` helpers every priced model has. See [Unit pricing](/reference/pricing#unit-pricing).
+
+### Component lines
+
+A component line is an order line that belongs to another order line, linked by `parent_line_id`. The core ships the primitive; the [Bundles add-on](/addons/bundles) is what creates them today, one per part of a bundle, so that fulfilment, stock commitment, and returns see the parts of a kit while the customer's contract stays on one line.
+
+A component line is a real order line. It has a `purchasable`, `type`, `requires_shipping`, `requires_fulfilment`, `identifier`, and `quantity`, so everything that walks order lines to fulfil, allocate, ship, return, or commit stock treats it like any other line. What it does not carry is money: `unit_price`, `sub_total`, `discount_total`, `tax_total`, and `total` are `0` and `tax_breakdown` is empty. The parent line holds the price, the tax, and the refundable amount; `refundableQuantity()` returns `0` for a component line, so refunds are recorded against the parent.
+
+For reporting, a component line's `meta.allocated_total` holds its share of the parent's `total`, distributed across the parent's components in proportion to their unit prices with `Lunar\Core\Pricing\PriceCalculatorInterface::distribute()`. The shares sum exactly to the parent's total. It never feeds an order total.
+
+```php
+use Lunar\Core\Models\Order;
+
+$order = Order::query()->findOrFail($id);
+
+// Display: top-level lines with their components nested
+$lines = $order->lines()->topLevel()->with('components.purchasable')->get();
+
+foreach ($lines as $line) {
+    $line->format('total');          // the money lives here
+
+    foreach ($line->components as $component) {
+        $component->quantity;                    // parts, not kits
+        $component->meta['allocated_total'];     // reporting share of the parent's total
+    }
+}
+
+$component->parent;          // the line it belongs to
+$component->isComponent();   // true
+```
+
+Deleting a parent line cascades to its component lines. The order creation stages that match order lines to cart lines (`CreateOrderLines`, `CleanUpOrderLines`, `MapDiscountBreakdown`) only consider top-level lines, because a component line is never the image of a cart line.
+
+<Warning>
+`$order->lines`, `$order->productLines`, and the other line relations on `Order` include component lines. Code that iterates them for display or totals should use the `topLevel()` scope, or skip lines where `isComponent()` is `true`, or it will show zero-money rows and count parts as items.
+</Warning>
+
+<Info>
+Shipping lines have no `purchasable` — a shipping option is a data transfer object rather than a model, so shipping lines are stored with no morph. Everything needed to display the line (`description`, `unit_price`, `total`, `meta`) is snapshotted onto the line itself. Guard for `null` when iterating `$order->lines`, or use `$order->productLines` to exclude shipping lines.
+</Info>
+
+## Order addresses
+
+An order has many addresses, typically one for billing and one for shipping. They are created automatically by the `createOrder()` pipeline.
+
+```php
+Lunar\Core\Models\OrderAddress
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| order_id | `foreignId` | |
+| country_id | `foreignId` `nullable` | |
+| title | `string` `nullable` | |
+| first_name | `string` `nullable` | |
+| last_name | `string` `nullable` | |
+| company_name | `string` `nullable` | |
+| line_one | `string` `nullable` | |
+| line_two | `string` `nullable` | |
+| line_three | `string` `nullable` | |
+| city | `string` `nullable` | |
+| state | `string` `nullable` | |
+| postcode | `string` `nullable` | |
+| delivery_instructions | `string` `nullable` | |
+| contact_email | `string` `nullable` | |
+| contact_phone | `string` `nullable` | |
+| type | `string` | The address type: `billing` or `shipping` |
+| shipping_option | `string` `nullable` | A unique identifier for the selected shipping option |
+| meta | `jsonb` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+| tax_identifier | `string` `nullable` | A tax identification number |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Core\Models\Order` | |
+| `country` | BelongsTo | `Lunar\Core\Models\Country` | |
+
+The shipping and billing addresses are accessed directly from the order:
+
+```php
+$order->shippingAddress;
+$order->billingAddress;
+```
+
+## Transactions
+
+Money movement against an order — authorizations, captures, and refunds — is recorded on `Transaction` rows. There is no separate "tender" model: a successful `capture` transaction *is* the record of money received, and a `refund` transaction is money paid back out.
+
+```php
+Lunar\Core\Models\Transaction
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| order_id | `foreignId` | |
+| success | `boolean` | Whether the transaction was successful |
+| driver | `string` | The payment driver used, e.g. `stripe` |
+| amount | `integer` | The transaction amount, in the order currency's minor unit |
+| reference | `string` | The reference returned from the payment provider |
+| status | `string` | The transaction status, e.g. `settled` |
+| notes | `string` `nullable` | Any relevant notes |
+| card_type | `string` `nullable` | The card type, e.g. `visa` |
+| last_four | `string` `nullable` | The last four digits of the card |
+| meta | `jsonb` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+| parent_transaction_id | `foreignId` `nullable` | A reference to a parent transaction |
+| captured_at | `dateTime` `nullable` | When the transaction was captured |
+| type | `enum` | The transaction type: `capture`, `intent`, or `refund` |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Core\Models\Order` | |
+| `currency` | HasOneThrough | `Lunar\Core\Models\Currency` | Resolved through the order |
+| `refundLines` | HasMany | `Lunar\Core\Models\RefundLine` | Line-level allocations for a refund transaction, see [Refunds](#refunds) |
+
+<Info>
+See the [Payments](/reference/payments) reference for how a payment driver authorizes and creates these transactions in the first place.
+</Info>
+
+### Capturing a payment
+
+Capture an amount against a successful payment intent transaction:
+
+```php
+$capture = $order->capture(
+    transactionId: $transaction->id,
+    amount: 49.99, // major units, converted to the currency's minor unit internally
+);
+
+$capture->success; // bool
+$capture->message; // string
+```
+
+`$order->capture()` delegates to `Lunar\Core\Contracts\Actions\Orders\CapturesOrder`, guards that the amount does not exceed the intent, and dispatches the driver's `capture()` — which creates the `capture` `Transaction`. Recording the capture triggers a `payment_status` recompute automatically.
+
+## Refunds
+
+A refund targets a specific capture `Transaction` and can cover order lines, shipping, and a manual adjustment in one request:
+
+```php
+use Lunar\Core\DataObjects\RefundRequest;
+
+$refund = $order->refund(new RefundRequest(
+    transactionId: $transaction->id,
+    lines: [
+        ['order_line_id' => $line->id, 'quantity' => 1],
+    ],
+    shipping: 0,
+    adjustment: 0,
+    notes: 'Damaged on arrival',
+    notify: true,
+));
+
+$refund->success;     // bool
+$refund->message;     // ?string
+$refund->transaction; // ?Lunar\Core\Models\Transaction — the refund transaction, when the driver records one
+```
+
+Each requested line is validated against its own `refundableQuantity()`, and the total requested amount is validated against the order's available-to-refund balance (captured minus already refunded). An amount-only refund — no line allocation — is expressed with an empty `lines` array and the whole amount on `adjustment`.
+
+When the driver's refund succeeds and returns a `Transaction`, each line allocation is recorded as a `RefundLine` and the corresponding `OrderLine.refunded_quantity` is incremented:
+
+```php
+Lunar\Core\Models\RefundLine
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| transaction_id | `foreignId` | The refund transaction this allocation belongs to |
+| order_line_id | `foreignId` | The order line this allocation refunds |
+| quantity | `unsignedInteger` | The quantity refunded |
+| amount | `unsignedBigInteger` | The refunded amount, in the order currency's minor unit |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `transaction` | BelongsTo | `Lunar\Core\Models\Transaction` | |
+| `orderLine` | BelongsTo | `Lunar\Core\Models\OrderLine` | |
+
+<Info>
+Not every payment driver hands back the `Transaction` it created for a refund — `$refund->transaction` can be `null`. In that case the money still refunds correctly through the provider, it just cannot be attributed to specific lines in the ledger.
+</Info>
+
+## Notifying the customer
+
+```php
+$order->notifyCustomer(
+    notification: 'order-update',
+    message: 'Your order has been delayed by a day.',
+    recipients: [], // defaults to the order's billing + shipping contacts
+);
+```
+
+Lunar ships default emails for the order lifecycle (confirmation on placement, payment received, shipped, ready for pickup, provisioned, return received, cancelled, and refund issued), each overridable or removable from a service provider. See the [Notifications](/reference/notifications) reference for the full set, the notification manifest, mail routing, and how to customize the templates.
+
+## Fulfilments
+
+An order's shipped, picked-up, or digital fulfilment is tracked through `Fulfilment` records, created against the order's `fulfillableLines`:
+
+```php
+$fulfilment = $order->createFulfilment(
+    lines: [$line->id => 1],
+);
+```
+
+See the [Fulfilments](/reference/fulfilments) reference for the full fulfilment lifecycle, methods, carriers, and tracking.

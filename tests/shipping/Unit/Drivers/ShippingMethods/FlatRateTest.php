@@ -68,3 +68,37 @@ test('can get flat rate shipping', function () {
 
     expect($shippingOption->price->value)->toEqual(600);
 });
+
+test('flat rate shipping is priced in the cart currency, not the default currency', function () {
+    $default = Currency::factory()->create(['default' => true, 'code' => 'USD']);
+    $cartCurrency = Currency::factory()->create(['default' => false, 'code' => 'GBP']);
+
+    TaxClass::factory()->create(['default' => true]);
+
+    $shippingZone = ShippingZone::factory()->create(['type' => 'countries']);
+
+    $shippingMethod = ShippingMethod::factory()->create([
+        'driver' => 'flat-rate',
+        'data' => [],
+    ]);
+
+    $shippingRate = ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
+        ['price' => 600, 'min_quantity' => 1, 'currency_id' => $default->id],
+        ['price' => 450, 'min_quantity' => 1, 'currency_id' => $cartCurrency->id],
+    ]);
+
+    // Not calculated, so no cart line has been priced before the driver runs.
+    $cart = $this->createCart($cartCurrency, 500, calculate: false);
+
+    $shippingOption = (new FlatRate)->resolve(new ShippingOptionRequest(
+        cart: $cart,
+        shippingRate: $shippingRate
+    ));
+
+    expect($shippingOption->price->value)->toEqual(450);
+});

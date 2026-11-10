@@ -1,5 +1,1 @@
 node_modules/
-# The compiled bundle IS committed (shipped to consumers via the split; built
-# by the build-panel-assets workflow). Only the transient Vite dev hot file is
-# ignored -- `npm run dev` writes it and it must never be committed.
-public/build/hot

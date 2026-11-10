@@ -41,12 +41,6 @@ class ShipBy implements ShippingRateInterface
         $shippingZone = $shippingRate->shippingZone;
         $data = $shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
-        $customerGroups = collect([]);
-
-        if ($user = $cart->user) {
-            $customerGroups = $user->customers->pluck('customerGroups')->flatten();
-        }
-
         $subTotal = $cart->lines->sum('subTotal.value');
 
         // Do we have any products in our exclusions list?
@@ -84,8 +78,7 @@ class ShipBy implements ShippingRateInterface
         // Do we have a suitable tier price?
         try {
             $pricing = Pricing::for($shippingRate)
-                ->currency($cart->currency)
-                ->customerGroups($customerGroups)
+                ->using($cart->context())
                 ->qty($tier)
                 ->get();
         } catch (MissingCurrencyPriceException) {

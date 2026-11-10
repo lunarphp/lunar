@@ -32,6 +32,7 @@ use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Panel\Support\FulfilmentTransitions;
 use Lunar\Panel\Support\TimelineActivity;
@@ -39,12 +40,24 @@ use Spatie\Activitylog\Models\Activity;
 
 class OrderShowController
 {
+    /**
+     * The `payment_method` handle, stamped into the order meta by whatever
+     * placed the order, for an order invoiced on account. Such an order sits
+     * in `Pending` by design, so the panel reads it as on account rather than
+     * unpaid.
+     */
+    public const ON_ACCOUNT = 'on-account';
+
     public function show(Order $order): Response
     {
         $order->load([
             'lines.purchasable',
+            'lines.parent',
+            'lines.components',
             'lines.fulfilmentLines',
             'fulfilments.lines.orderLine.purchasable',
+            'fulfilments.lines.orderLine.parent',
+            'fulfilments.lines.orderLine.components',
             'fulfilments.trackings',
             'fulfilments.location',
             'transactions.refundLines.orderLine',
@@ -65,6 +78,7 @@ class OrderShowController
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
         $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
+        $onAccount = $this->onAccount($order);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -79,8 +93,11 @@ class OrderShowController
                 'id' => $order->id,
                 'reference' => $order->reference ?: '#'.$order->id,
                 'customer_reference' => $order->customer_reference,
+                'on_account' => $onAccount,
                 'payment_status' => $order->payment_status::$name,
-                'payment_status_label' => $order->payment_status->label(),
+                'payment_status_label' => $onAccount
+                    ? __('panel::orders.payment_on_account')
+                    : $order->payment_status->label(),
                 'fulfilment_status' => $order->fulfilment_status::$name,
                 'fulfilment_status_label' => $order->fulfilment_status->label(),
                 'lifecycle' => $order->lifecycleStatus(),
@@ -91,6 +108,7 @@ class OrderShowController
                 'channel' => $order->channel?->name,
                 'new_customer' => (bool) $order->new_customer,
                 'notes' => $order->notes,
+                'internal_notes' => $order->internal_notes,
                 'meta' => $order->meta,
                 'placed_at' => $order->placed_at,
                 'created_at' => $order->created_at,
@@ -102,9 +120,10 @@ class OrderShowController
             ),
             // Non-shipping lines with no fulfilment allocation — services and
             // other non-fulfillable purchasables. Fulfillable lines always live
-            // in a fulfilment (created at placement, split/merged after).
+            // in a fulfilment (created at placement, split/merged after), and a
+            // component line is shown nested under its parent, never on its own.
             'otherLines' => $order->lines
-                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && $line->fulfilmentLines->isEmpty())
+                ->filter(fn (OrderLine $line) => $line->type !== 'shipping' && ! $line->isComponent() && $line->fulfilmentLines->isEmpty())
                 ->values()
                 ->map(fn (OrderLine $line) => $this->line($line, $line->quantity, $money)),
             // Every non-shipping line with quantity still left to refund —
@@ -355,6 +374,15 @@ class OrderShowController
             ])->values()->all(),
             'total' => $money($line->total),
             'notes' => $line->notes,
+            // Component lines (a bundle's parts) carry no money; the parent holds it.
+            'part_of' => $line->parent?->description,
+            'components' => $line->components->map(fn (OrderLine $component) => [
+                'id' => $component->id,
+                'description' => $component->description,
+                'option' => $component->option,
+                'identifier' => $component->identifier,
+                'quantity' => $component->quantity,
+            ])->values()->all(),
         ];
     }
 
@@ -393,7 +421,10 @@ class OrderShowController
      * balanced — that's the ordinary pre-payment state, not a divergence to
      * flag. A cancelled order's reference is 0, not its total — nothing
      * should be kept, so any money still held is a refund due regardless of
-     * how much of the original total it represents.
+     * how much of the original total it represents. Otherwise a refund
+     * lowers what the customer owes as well as what they have paid, so the
+     * reference is the total less refunds: a full or part refund leaves the
+     * order balanced, not outstanding.
      *
      * @return array{status: string, captured: ?string, refunded: ?string, total: string, variance: ?string, varianceMajor: float}
      */
@@ -401,7 +432,7 @@ class OrderShowController
     {
         $total = (int) $order->total;
         $settled = $captured - $refunded;
-        $reference = $order->isCancelled() ? 0 : $total;
+        $reference = $order->isCancelled() ? 0 : $total - $refunded;
 
         $status = match (true) {
             $settled > $reference => 'refund_due',
@@ -422,13 +453,36 @@ class OrderShowController
     }
 
     /**
-     * The delivery method chosen at checkout — the shipping-breakdown snapshot,
-     * falling back to the shipping line for orders without a breakdown.
+     * Whether the order was invoiced on account and is still awaiting payment
+     * under that arrangement: placed with the on-account payment method and
+     * still `Pending`. Once payment is taken, or the status otherwise moves
+     * on, the order reads like any other.
+     */
+    protected function onAccount(Order $order): bool
+    {
+        return ($order->meta['payment_method'] ?? null) === self::ON_ACCOUNT
+            && $order->payment_status instanceof Pending;
+    }
+
+    /**
+     * The delivery method chosen at checkout: the shipping-breakdown snapshot,
+     * falling back to the shipping line for orders without a breakdown. The
+     * pickup flag comes from {@see Order::isPickup()}. The pickup point
+     * comes from the shipping line's meta, written there by the checkout, and
+     * is only returned for a pickup.
      *
-     * @return array{name: string, identifier: ?string, price: ?string}|null
+     * @return array{name: string, identifier: ?string, price: ?string, pickup: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
      */
     protected function shippingOption(Order $order, callable $money): ?array
     {
+        $line = $order->lines->firstWhere('type', 'shipping');
+        $isPickup = $order->isPickup();
+
+        $pickup = [
+            'pickup' => $isPickup,
+            'pickup_point' => $isPickup ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
+        ];
+
         $item = $order->shipping_breakdown?->items?->first();
 
         if ($item) {
@@ -436,10 +490,9 @@ class OrderShowController
                 'name' => $item->name,
                 'identifier' => $item->identifier,
                 'price' => $item->price->format(),
+                ...$pickup,
             ];
         }
-
-        $line = $order->lines->firstWhere('type', 'shipping');
 
         if (! $line) {
             return null;
@@ -449,6 +502,31 @@ class OrderShowController
             'name' => $line->description,
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
+            ...$pickup,
+        ];
+    }
+
+    /**
+     * Normalise the pickup point the checkout stored on the shipping line.
+     * The panel does not own that meta, so anything malformed is dropped
+     * rather than trusted.
+     *
+     * @return array{handle: string, name: string, lines: list<string>}|null
+     */
+    protected function pickupPoint(mixed $point): ?array
+    {
+        if (! is_array($point) || ! is_scalar($point['handle'] ?? null)) {
+            return null;
+        }
+
+        $name = $point['name'] ?? null;
+
+        return [
+            'handle' => (string) $point['handle'],
+            'name' => (string) (is_scalar($name) ? $name : $point['handle']),
+            'lines' => is_array($point['lines'] ?? null)
+                ? array_values(array_map('strval', array_filter($point['lines'], 'is_scalar')))
+                : [],
         ];
     }
 

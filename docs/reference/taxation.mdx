@@ -1,0 +1,249 @@
+---
+title: "Taxation"
+---
+
+Lunar provides configurable tax rules for calculating sales tax on orders.
+
+## Overview
+
+Lunar provides manual tax rules to implement the correct sales tax for each order. For complex taxation scenarios (e.g. US states), integrating with a service such as [TaxJar](https://www.taxjar.com/) is recommended.
+
+## Tax Classes
+
+Tax Classes are assigned to products and allow classification into taxable groups that may have differing tax rates.
+
+```php
+Lunar\Core\Models\TaxClass
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `name` | `string` | e.g. `Clothing` |
+| `default` | `boolean` | Whether this is the default tax class |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+```php
+use Lunar\Core\Models\TaxClass;
+
+$taxClass = TaxClass::create([
+    'name' => 'Clothing',
+]);
+```
+
+## Tax Zones
+
+Tax Zones specify a geographic zone for tax rates to be applied. They can be based on countries, states, or zip/postcodes.
+
+```php
+Lunar\Core\Models\TaxZone
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `name` | `string` | e.g. `UK` |
+| `zone_type` | `string` | `country`, `states`, or `postcodes` |
+| `active` | `boolean` | Whether the zone is active |
+| `default` | `boolean` | Whether the zone is the default |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+```php
+use Lunar\Core\Models\TaxZone;
+
+$taxZone = TaxZone::create([
+    'name' => 'UK',
+    'zone_type' => 'country',
+    'active' => true,
+    'default' => true,
+]);
+```
+
+<Info>
+Tax-inclusive versus tax-exclusive price *display* is no longer stored on the tax zone. It is a per-[Region](/reference/regions) preference (`Region::displaysPricesIncludingTax()`), falling back to the global `config('lunar.pricing.stored_inclusive_of_tax')` default when the region has no override. The tax *arithmetic* (whether stored prices already include tax) is always driven by that global config, never by the zone or region.
+</Info>
+
+### Tax Zone Countries
+
+```php
+Lunar\Core\Models\TaxZoneCountry
+```
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `tax_zone_id` | `foreignId` `nullable` | |
+| `country_id` | `foreignId` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+
+```php
+$taxZone->countries()->create([
+    'country_id' => \Lunar\Core\Models\Country::first()->id,
+]);
+```
+
+### Tax Zone States
+
+```php
+Lunar\Core\Models\TaxZoneState
+```
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `tax_zone_id` | `foreignId` `nullable` | |
+| `state_id` | `foreignId` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+```php
+$taxZone->states()->create([
+    'state_id' => \Lunar\Core\Models\State::first()->id,
+]);
+```
+
+<Info>
+State lookups are scoped to the address country, so a state zone only applies to addresses in that state's own country. This matters because state codes are reused across countries: `WA` is both Washington and Western Australia.
+</Info>
+
+### Tax Zone Postcodes
+
+```php
+Lunar\Core\Models\TaxZonePostcode
+```
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `tax_zone_id` | `foreignId` `nullable` | |
+| `country_id` | `foreignId` `nullable` | |
+| `postcode` | `string` | Supports wildcards, e.g. `9021*` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Tax Zone Customer Groups
+
+```php
+Lunar\Core\Models\TaxZoneCustomerGroup
+```
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `tax_zone_id` | `foreignId` `nullable` | |
+| `customer_group_id` | `foreignId` `nullable` | |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Zone resolution
+
+`Lunar\Core\Actions\Taxes\GetTaxZone` resolves the tax zone for an address, checking each type of zone in turn and returning the first match:
+
+1. **Postcode** — matched against the address postcode, honoring wildcards.
+2. **State** — matched against the address state, scoped to the address country.
+3. **Country** — matched against the address country.
+4. **Default** — the tax zone flagged as the default, returned when nothing above matches.
+
+```php
+use Lunar\Core\Contracts\Actions\Taxes\GetsTaxZone;
+
+$taxZone = app(GetsTaxZone::class)->execute($address);
+```
+
+Passing no address (or an address with none of these fields set) returns the default tax zone. A cart can also override this resolution entirely, see [Carts → Addresses and tax zone](/reference/carts#addresses-and-tax-zone).
+
+## Tax Rates
+
+Tax Zones have one or many tax rates. For example, a zone might have a tax rate for the state and also the city, which collectively make up the total tax amount.
+
+```php
+Lunar\Core\Models\TaxRate
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `tax_zone_id` | `foreignId` `nullable` | |
+| `priority` | `tinyInteger` | The priority order for this rate (default `1`) |
+| `name` | `string` | e.g. `UK` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Tax Rate Amounts
+
+```php
+Lunar\Core\Models\TaxRateAmount
+```
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Publicly exposable identifier |
+| `tax_class_id` | `foreignId` `nullable` | |
+| `tax_rate_id` | `foreignId` `nullable` | |
+| `percentage` | `decimal(7,3)` | e.g. `6` for 6% |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+
+## Settings
+
+- Shipping and other specific costs are assigned to tax classes in the settings.
+- Tax calculation can be based on the shipping or billing address.
+- A default Tax Zone can be configured.
+
+## The tax driver
+
+Tax calculation for a cart line is delegated to a `Lunar\Core\Drivers\TaxDriver` implementation, resolved through `Lunar\Core\Facades\Taxes` (backed by `Lunar\Core\Contracts\TaxManager`). The driver receives the shipping and billing addresses, the currency, and the purchasable/cart line being priced, and returns a `Lunar\Core\ValueObjects\Cart\TaxBreakdown` describing the tax amount per rate.
+
+```php
+namespace Lunar\Core\Drivers;
+
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
+
+interface TaxDriver
+{
+    public function setShippingAddress(?Addressable $address = null): self;
+
+    public function setCurrency(Currency $currency): self;
+
+    public function setBillingAddress(?Addressable $address = null): self;
+
+    public function setPurchasable(Purchasable $purchasable): self;
+
+    public function setCartLine(CartLine $cartLine): self;
+
+    public function setTaxZone(?TaxZone $taxZone = null): self;
+
+    public function getBreakdown($subTotal): TaxBreakdown;
+}
+```
+
+`setTaxZone()` lets a caller override zone resolution entirely — for example to tax on IP-derived location — bypassing the address-derived lookup.
+
+Lunar ships one built-in driver, `Lunar\Core\Drivers\SystemTaxDriver`, which resolves the tax zone via `GetsTaxZone` (or the overridden zone), looks up the tax class's rates in that zone, and calculates each rate's share of the sub total.
+
+## Extending
+
+Sometimes the standard tax calculations are not sufficient, and custom logic may be needed, perhaps connecting to a tax service such as TaxJar.
+
+Lunar allows custom tax drivers to be implemented via `Taxes::extend()`. See the [Extending Taxation](/extending/taxation) section for more information.

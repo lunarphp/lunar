@@ -5,7 +5,6 @@ namespace Lunar\Search\Engines;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\EngineManager;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchFacet;
@@ -13,6 +12,7 @@ use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchHitHighlight;
 use Lunar\Search\Data\SearchResults;
+use RuntimeException;
 use Typesense\Documents;
 use Typesense\Exceptions\ObjectNotFound;
 use Typesense\Exceptions\ServiceUnavailable;
@@ -20,10 +20,9 @@ use Typesense\Exceptions\ServiceUnavailable;
 class TypesenseEngine extends AbstractEngine
 {
     /**
-     * Typesense defaults to 10 values per facet and caps the parameter at
-     * 250; hierarchical category facets need far more than either default.
+     * Overrides lunar.search.typesense.max_facet_values for this search.
      */
-    protected int $maxFacetValues = 50;
+    protected ?int $maxFacetValues = null;
 
     public function maxFacetValues(int $count): self
     {
@@ -52,11 +51,11 @@ class TypesenseEngine extends AbstractEngine
 
                 // A multi-search request resolves with HTTP 200 even when the
                 // collection is missing; the failure surfaces as a per-search
-                // error code in the body (e.g. 404 "Not found."). Treat any
-                // non-200 result as an empty result set rather than letting the
+                // error code in the body (e.g. 404 "Not found."). Report it and
+                // treat it as an empty result set rather than letting the
                 // missing 'hits'/'facet_counts' keys blow up downstream.
                 if (($completeResults['code'] ?? 200) !== 200) {
-                    Log::error('Typesense search failed: '.($completeResults['error'] ?? 'Unknown error'));
+                    report(new RuntimeException('Typesense search failed: '.($completeResults['error'] ?? 'Unknown error')));
 
                     return [
                         'hits' => [],
@@ -84,7 +83,7 @@ class TypesenseEngine extends AbstractEngine
             });
 
         } catch (ConnectException|ServiceUnavailable|ObjectNotFound $e) {
-            Log::error($e->getMessage());
+            report($e);
             $paginator = new LengthAwarePaginator(
                 items: [
                     'hits' => [],
@@ -214,11 +213,23 @@ class TypesenseEngine extends AbstractEngine
             $facetQuery = $facetQuery->join(',');
 
             foreach ($searchQuery->facetFilters as $field => $values) {
+                // Facet names and values usually come from the request, so
+                // anything that is not a plain field name or a value of the
+                // field's type is dropped rather than written into filter_by.
+                if (! is_string($field) || ! preg_match('/^[A-Za-z0-9_.]+$/', $field)) {
+                    continue;
+                }
+
                 $fieldType = $this->getFieldType($field);
 
-                $values = collect($values)->map(
-                    fn ($value) => $this->quoteFilterValue($value, $fieldType)
-                );
+                $values = collect($values)
+                    ->map(fn ($value) => $this->quoteFilterValue($value, $fieldType))
+                    ->filter(fn (?string $value): bool => $value !== null)
+                    ->values();
+
+                if ($values->isEmpty()) {
+                    continue;
+                }
 
                 if ($values->count() > 1) {
                     $filters->push($field.':['.collect($values)->join(',').']');
@@ -275,7 +286,7 @@ class TypesenseEngine extends AbstractEngine
                     ->push('embedding')
                     ->unique()
                     ->join(','),
-                'max_facet_values' => $this->maxFacetValues,
+                'max_facet_values' => $this->maxFacetValues ?? (int) config('lunar.search.typesense.max_facet_values', 50),
                 'sort_by' => $this->sortRaw ?: ($this->sortByIsValid() ? $this->sort : '_text_match:desc'),
                 'facet_by' => implode(',', $searchQuery->facets),
             ];
@@ -354,9 +365,16 @@ class TypesenseEngine extends AbstractEngine
      *
      * A field the schema does not declare keeps the quoted form it has always
      * had, so a host that configures its collection elsewhere cannot regress.
+     *
+     * Null for a value that cannot be written safely (a non-scalar, or a
+     * non-number on a numeric field); the caller drops it.
      */
-    protected function quoteFilterValue(mixed $value, ?string $type): string
+    protected function quoteFilterValue(mixed $value, ?string $type): ?string
     {
+        if (! is_scalar($value)) {
+            return null;
+        }
+
         // Booleans have never been quoted — keep the literal strings working
         // for hosts that pass them through from a request.
         if (is_bool($value) || $value === 'true' || $value === 'false') {
@@ -365,15 +383,18 @@ class TypesenseEngine extends AbstractEngine
 
         $baseType = str_replace('[]', '', (string) $type);
 
+        // Unquoted, so only an actual number may pass: anything else could
+        // carry its own filter_by clause.
         if (in_array($baseType, ['int32', 'int64', 'float'], true)) {
-            return (string) $value;
+            return is_numeric($value) ? (string) $value : null;
         }
 
         if ($baseType === 'bool') {
             return filter_var($value, FILTER_VALIDATE_BOOL) ? 'true' : 'false';
         }
 
-        return '`'.$value.'`';
+        // filter_by has no escape for a backtick inside a quoted literal.
+        return '`'.str_replace('`', '', (string) $value).'`';
     }
 
     protected function getFieldType(string $field): ?string
