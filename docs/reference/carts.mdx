@@ -411,7 +411,7 @@ Each stage populates public properties on the cart (and its lines) as `Lunar\Cor
 A `PriceValue` exposes `->value` (the integer minor-unit amount), `->decimal()`, and `->format()`, resolved against the cart's currency. It also supports `add()`, `subtract()`, `multiply()`, and `clampToZero()` for combining amounts in custom pipeline stages.
 
 <Info>
-Registered modifiers run around these steps. `Lunar\Core\Modifiers\CartModifier::calculating()` runs before the first step. After the last step, each line's `Lunar\Core\Modifiers\CartLineModifier::calculated()` hook runs with final totals, followed by `CartModifier::calculated()`. Custom logic is added as a modifier at these fixed points, or as a step at a precise position in a step list. See [Extending Carts](/extending/carts).
+Registered modifiers run around these steps. `Lunar\Core\Modifiers\CartModifier::calculating()` runs before the first step. After the last step, each line's `Lunar\Core\Modifiers\CartLineModifier::calculated()` hook runs with final totals, followed by `CartModifier::calculated()`. Custom logic is added as a modifier at these fixed points, or as a step at a precise position in a step list. Modifiers and steps run only when the calculation runs, not when a fresh snapshot is served, so data they record beyond the standard totals belongs in `meta`. See [Extending Carts](/extending/carts#modifiers).
 </Info>
 
 ### Persisted totals

@@ -243,7 +243,7 @@ Modifiers hook fixed points in cart calculation without depending on the names o
 
 Each hook runs the registered modifiers in registration order, as a pipeline. The hooks run inside `calculate()`, so a modifier that prices something sees the same `$cart->context()` as the cart being calculated.
 
-The hooks run only when the steps run. When `calculate()` serves the persisted totals snapshot instead, no hook fires: the snapshot already holds the totals the modifiers produced. Keep side effects out of modifiers, or call `recalculate()` where they must run. See [Totals caching](#totals-caching).
+The hooks run only when the steps run. When `calculate()` serves the persisted totals snapshot instead, no hook fires: the snapshot already holds the totals the modifiers produced. Keep side effects out of modifiers, or call `recalculate()` where they must run. A modifier that records data beyond the standard totals writes it to the cart's or line's `meta`, which is stored on the row, rather than to a custom property on the model, which a served snapshot does not restore. See [Totals caching](#totals-caching).
 
 <Warning>
 `calculating()` runs before `GetUnitPrice`, which always sets the line's unit price, so a unit price set in `calculating()` is overwritten. Change a line's price in `subtotalled()`, or register a step after `GetUnitPrice` in the `CartLinePricing` list.
