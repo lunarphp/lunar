@@ -135,7 +135,7 @@ test('a per-parcel notification configured for the returned state fires on markR
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create();
+    $order = Order::factory()->placed()->create();
     $lineA = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 1]);
     $lineB = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 1]);
 

@@ -73,4 +73,12 @@ interface FulfilmentMethodManifest
      * @return list<string>
      */
     public function stateNamesIn(FulfilmentStateCategory $category): array;
+
+    /**
+     * State names whose goods have gone to the customer: the `Fulfilled` and
+     * `Returned` categories across every registered method.
+     *
+     * @return array<int, string>
+     */
+    public function dispatchedStateNames(): array;
 }

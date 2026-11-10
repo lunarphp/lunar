@@ -33,7 +33,10 @@ class OrderConfirmation extends Notification implements AcceptsCustomerMessage
 
     public function toMail(object $notifiable): MailMessage
     {
-        $this->order->loadMissing(['productLines', 'billingAddress.country', 'shippingAddress.country']);
+        $this->order->loadMissing(['currency', 'productLines', 'billingAddress.country', 'shippingAddress.country']);
+
+        // Line totals format through the line's order currency; share this order.
+        $this->order->productLines->each->setRelation('order', $this->order);
 
         $reference = $this->order->reference ?? (string) $this->order->id;
 

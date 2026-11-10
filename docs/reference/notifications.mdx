@@ -41,14 +41,15 @@ What each one contains:
 - **Return received**: the lines received back. A refund that follows sends its own email.
 - **Order cancelled**: the cancellation, with the cancel reason's label when one was recorded.
 - **Refund issued**: the refund, with the amount read from the latest successful refund transaction on the order.
-- **Partial fulfilment update**: a manual-only "part of your order is still to come" email listing the lines still outstanding (ordered quantity minus the quantity on fulfilments that have gone to the customer), so a delay notice is a pick-and-send rather than free text.
+- **Partial fulfilment update**: a manual-only "part of your order is still to come" email listing the lines still outstanding (ordered quantity minus the quantity on fulfilments that have gone to the customer and any refunded units that will not ship), so a delay notice is a pick-and-send rather than free text.
 - **Order update**: a general-purpose update rendering the admin's free-text message.
 
 The fulfilment-scoped defaults are not manually sendable because the "Notify customer" composers are order-scoped. The manifest still answers `sendable(NotificationScope::Fulfilment)`, so an application can build its own resend path for them.
 
 ### Trigger rules
 
-- **Only placed orders receive rollup emails.** The payment-status and fulfilment-status listeners return early while `$order->isPlaced()` is false. A card checkout records its capture before `placed_at` is stamped, so the `paid` rollup fires on an unplaced order and is skipped, and the order confirmation that follows carries the payment state. The customer gets one email, not two. A later capture on a placed order sends `payment-received` as intended, and draft orders never email a customer.
+- **Only placed orders receive emails.** Every automatic listener returns early while `$order->isPlaced()` is false, so a draft order is never emailed, whether it is shipped, cancelled or refunded. A card checkout records its capture before `placed_at` is stamped, so the `paid` rollup fires on an unplaced order and is skipped, and the order confirmation that follows carries the payment state. The customer gets one email, not two. A later capture on a placed order sends `payment-received` as intended.
+- **Emails send once the change commits.** A listener that fires inside a database transaction defers the send until that transaction commits, so a rolled-back checkout or shipment sends nothing. The email is built from freshly loaded models, so it carries the committed state: the tracking saved with a shipment, the payment status recorded by the capture.
 - **The refund event key is `refund-issued`, not `refunded`.** `refunded` and `partially-refunded` are payment-status rollups, which fire without a `notify` flag whenever the ledger changes. The refund operation dispatches its own gated event, resolved through `refund-issued`. Registering a notification `on: ['refunded']` sends it on every rollup to that state, which is rarely what a store wants.
 - **Per-fulfilment states only.** The defaults register against fulfilment states (`shipped`, `returned`, and so on), never the order-level `fulfilled` or `returned` rollups, so a customer is emailed once per parcel rather than once per parcel and again when the order rolls up.
 - **`picked-up`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing.** A pickup is a counter handover, the others are back-office moves, and an order-level cancellation is covered by `order-cancelled`.
@@ -56,6 +57,26 @@ The fulfilment-scoped defaults are not manually sendable because the "Notify cus
 
 <Info>
 A payment driver that places the order inside `authorize()` must record its capture transactions before stamping `placed_at`, or the placed-order rule above cannot suppress the duplicate "paid" email at checkout. The first-party Stripe and PayPal drivers do this; see [Extending payments](/extending/payments#recording-transactions).
+</Info>
+
+### Muting notifications
+
+Wrap code that should not email customers, such as an order import or a back-office repair script, in `OrderNotifications::withoutSending()`:
+
+```php
+use Lunar\Core\Facades\OrderNotifications;
+
+OrderNotifications::withoutSending(function () use ($rows) {
+    foreach ($rows as $row) {
+        Order::create([...$row, 'placed_at' => $row['placed_at']]);
+    }
+});
+```
+
+Only the automatic customer emails are skipped. Order events still fire, so placement still creates the initial fulfilment and commits stock. The mute is read when each event fires, so a send that would otherwise wait for an enclosing transaction to commit is skipped too. `withoutSending()` returns the callback's return value, and `OrderNotifications::isMuted()` reports whether a mute is active.
+
+<Info>
+An order created with `placed_at` already set dispatches `OrderPlaced` from the `created` event, before its lines and addresses exist. An import that builds orders that way should mute notifications, or create the order unplaced and set `placed_at` once its lines and addresses are saved.
 </Info>
 
 ## Customizing the default emails

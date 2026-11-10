@@ -377,6 +377,9 @@ it('sends the per-parcel notification when shipping with the notify toggle on', 
     OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     NotificationFacade::fake();
 
+    // Draft orders never email; place it quietly so the setup sends nothing.
+    $this->order->updateQuietly(['placed_at' => now()]);
+
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])

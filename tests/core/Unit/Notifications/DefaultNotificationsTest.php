@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage;
 use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\OrderNotifications;
@@ -245,4 +246,73 @@ test('the tracking partial falls back to the raw carrier key for an unregistered
     $fulfilment->addTracking(['carrier' => 'acme', 'tracking_number' => 'ZZ9']);
 
     expect(renderNotification(new OrderShipped($fulfilment->fresh())))->toContain('acme');
+});
+
+/**
+ * Mail bodies the array mailer actually sent, as text.
+ *
+ * @return array<int, string>
+ */
+function sentMailBodies(): array
+{
+    return collect(app('mailer')->getSymfonyTransport()->messages())
+        ->map(fn ($sent) => $sent->getOriginalMessage()->getHtmlBody())
+        ->all();
+}
+
+test('the shipped email sent on shipping lists the tracking recorded with it', function () {
+    config(['mail.default' => 'array']);
+
+    $order = notificationOrder();
+    $widget = $order->lines()->whereType('physical')->orderBy('id')->first();
+
+    $order->createFulfilment([$widget->id => 2])->ship(['carrier' => 'acme', 'tracking_number' => 'AB123']);
+
+    $bodies = sentMailBodies();
+
+    expect($bodies)->toHaveCount(1)
+        ->and($bodies[0])->toContain('AB123');
+});
+
+test('the partial fulfilment update does not list refunded quantities as still to come', function () {
+    $order = notificationOrder();
+    [$widget, $gadget] = $order->lines()->whereType('physical')->orderBy('id')->get();
+
+    $order->createFulfilment([$widget->id => 1])->ship(notify: false);
+    $widget->update(['refunded_quantity' => 1]);
+
+    $rows = (new PartialFulfilmentUpdate($order->fresh()))->toMail(new AnonymousNotifiable)->viewData['lines'];
+
+    expect($rows)->toBe([
+        ['description' => 'Gadget', 'option' => null, 'quantity' => 1],
+    ]);
+});
+
+test('a pipe in a line description stays inside its table cell', function () {
+    $order = notificationOrder();
+    $order->lines()->whereType('physical')->orderBy('id')->first()->update(['description' => 'T-Shirt | Blue']);
+
+    $html = renderNotification(new OrderConfirmation($order->fresh()));
+
+    expect($html)->toMatch('/<td[^>]*>\s*T-Shirt \| Blue/');
+});
+
+test('rendering the confirmation does not query per line', function () {
+    $order = notificationOrder();
+
+    $queries = function () use ($order): int {
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        renderNotification(new OrderConfirmation($order->fresh()));
+        $count = count(DB::getQueryLog());
+        DB::disableQueryLog();
+
+        return $count;
+    };
+
+    $withThreeLines = $queries();
+
+    OrderLine::factory()->count(4)->for($order)->create(['type' => 'physical', 'quantity' => 1, 'total' => 1000]);
+
+    expect($queries())->toBe($withThreeLines);
 });

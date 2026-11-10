@@ -136,7 +136,7 @@ test('a cancelled notification is dispatched when the order is cancelled with no
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create();
+    $order = Order::factory()->placed()->create();
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'type' => 'physical',

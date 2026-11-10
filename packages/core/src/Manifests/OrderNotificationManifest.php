@@ -24,6 +24,8 @@ class OrderNotificationManifest implements OrderNotificationManifestContract
      */
     protected array $notifications = [];
 
+    protected int $muted = 0;
+
     public function __construct()
     {
         foreach ($this->defaults() as $key => $definition) {
@@ -124,6 +126,28 @@ class OrderNotificationManifest implements OrderNotificationManifestContract
         }
 
         return $sendable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function withoutSending(callable $callback): mixed
+    {
+        $this->muted++;
+
+        try {
+            return $callback();
+        } finally {
+            $this->muted--;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isMuted(): bool
+    {
+        return $this->muted > 0;
     }
 
     /**

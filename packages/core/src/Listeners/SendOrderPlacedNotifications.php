@@ -5,6 +5,7 @@ namespace Lunar\Core\Listeners;
 use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderPlaced;
+use Lunar\Core\Listeners\Concerns\SendsCustomerNotifications;
 
 /**
  * Dispatch any notifications registered for the `placed` key when an order is
@@ -13,14 +14,14 @@ use Lunar\Core\Events\Orders\OrderPlaced;
  */
 class SendOrderPlacedNotifications
 {
+    use SendsCustomerNotifications;
+
     public function __construct(
         protected OrderNotificationManifest $notifications,
     ) {}
 
     public function handle(OrderPlaced $event): void
     {
-        foreach ($this->notifications->triggeredBy('placed', NotificationScope::Order) as $class) {
-            $event->order->notify(new $class($event->order));
-        }
+        $this->sendAfterCommit($event->order, $this->notifications->triggeredBy('placed', NotificationScope::Order));
     }
 }

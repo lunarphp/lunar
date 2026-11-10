@@ -5,6 +5,7 @@ namespace Lunar\Core\Listeners;
 use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderRefunded;
+use Lunar\Core\Listeners\Concerns\SendsCustomerNotifications;
 
 /**
  * Dispatch any notifications registered for a refunded order, when the
@@ -15,6 +16,8 @@ use Lunar\Core\Events\Orders\OrderRefunded;
  */
 class SendOrderRefundedNotifications
 {
+    use SendsCustomerNotifications;
+
     public function __construct(
         protected OrderNotificationManifest $notifications,
     ) {}
@@ -25,8 +28,6 @@ class SendOrderRefundedNotifications
             return;
         }
 
-        foreach ($this->notifications->triggeredBy('refund-issued', NotificationScope::Order) as $class) {
-            $event->order->notify(new $class($event->order));
-        }
+        $this->sendAfterCommit($event->order, $this->notifications->triggeredBy('refund-issued', NotificationScope::Order));
     }
 }

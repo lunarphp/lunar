@@ -2,7 +2,7 @@
 | {{ __('lunar::notifications.partials.item') }} | {{ __('lunar::notifications.partials.quantity') }} | {{ __('lunar::notifications.partials.total') }} |
 |:--|:--:|--:|
 @foreach ($lines as $line)
-| {{ $line->description }}@if (filled($line->option)) ({{ $line->option }})@endif | {{ $line->quantity }} | {{ $line->format('total') }} |
+| {{ \Lunar\Core\Notifications\MailTable::cell($line->description) }}@if (filled($line->option)) ({{ \Lunar\Core\Notifications\MailTable::cell($line->option) }})@endif | {{ $line->quantity }} | {{ $line->format('total') }} |
 @endforeach
 | **{{ __('lunar::notifications.partials.sub_total') }}** | | {{ $order->format('sub_total') }} |
 @if ($order->discount_total > 0)

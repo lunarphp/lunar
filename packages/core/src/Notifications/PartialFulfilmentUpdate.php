@@ -5,6 +5,7 @@ namespace Lunar\Core\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Facades\FulfilmentMethods;
@@ -58,26 +59,40 @@ class PartialFulfilmentUpdate extends Notification implements AcceptsCustomerMes
     {
         $this->order->loadMissing('fulfillableLines');
 
-        $dispatchedStates = array_merge(
-            FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled),
-            FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Returned),
-        );
-
-        $dispatchedByLine = FulfilmentLine::query()
-            ->whereIn('order_line_id', $this->order->fulfillableLines->pluck('id'))
-            ->whereHas('fulfilment', fn ($query) => $query->whereIn('state', $dispatchedStates))
-            ->selectRaw('order_line_id, sum(quantity) as quantity')
-            ->groupBy('order_line_id')
-            ->pluck('quantity', 'order_line_id');
+        $dispatchedByLine = $this->quantitiesByLine(FulfilmentMethods::dispatchedStateNames());
+        $returnedByLine = $this->quantitiesByLine(FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Returned));
 
         return $this->order->fulfillableLines
-            ->map(fn ($line) => [
-                'description' => (string) $line->description,
-                'option' => $line->option,
-                'quantity' => (int) $line->quantity - (int) ($dispatchedByLine[$line->id] ?? 0),
-            ])
+            ->map(function ($line) use ($dispatchedByLine, $returnedByLine) {
+                $dispatched = (int) ($dispatchedByLine[$line->id] ?? 0);
+                $returned = (int) ($returnedByLine[$line->id] ?? 0);
+
+                // A refund beyond what came back covers units that will never ship;
+                // a refund of returned units leaves the line still owed.
+                $neverShipping = max(0, (int) $line->refunded_quantity - $returned);
+
+                return [
+                    'description' => (string) $line->description,
+                    'option' => $line->option,
+                    'quantity' => (int) $line->quantity - $dispatched - $neverShipping,
+                ];
+            })
             ->filter(fn (array $row) => $row['quantity'] > 0)
             ->values()
             ->all();
+    }
+
+    /**
+     * @param  array<int, string>  $states
+     * @return Collection<int, int>
+     */
+    protected function quantitiesByLine(array $states): Collection
+    {
+        return FulfilmentLine::query()
+            ->whereIn('order_line_id', $this->order->fulfillableLines->pluck('id'))
+            ->whereHas('fulfilment', fn ($query) => $query->whereIn('state', $states))
+            ->selectRaw('order_line_id, sum(quantity) as quantity')
+            ->groupBy('order_line_id')
+            ->pluck('quantity', 'order_line_id');
     }
 }
