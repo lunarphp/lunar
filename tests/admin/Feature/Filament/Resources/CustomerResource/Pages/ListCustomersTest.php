@@ -65,7 +65,7 @@ it('can filter customers by customer group', function () {
         ->assertCanNotSeeTableRecords([$outOfGroup]);
 });
 
-it('does not use DISTINCT ON when filtering by customer group on PostgreSQL', function () {
+it('does not use DISTINCT when filtering by customer group on PostgreSQL', function () {
     $this->asStaff();
 
     $group = CustomerGroup::factory()->create();
@@ -79,8 +79,12 @@ it('does not use DISTINCT ON when filtering by customer group on PostgreSQL', fu
             ->filterTable('customer_group', [$group->id]);
     });
 
-    $sql = collect($queries)->pluck('query')->implode("\n");
+    // The customers query, carrying the filter's exists subquery on the groups.
+    $filtered = collect($queries)->pluck('query')
+        ->filter(fn (string $query) => str_contains($query, 'from "lunar_customers"') && str_contains($query, 'lunar_customer_groups'));
 
-    expect($sql)->toContain('lunar_customer_groups')
-        ->and(strtolower($sql))->not->toContain('distinct on');
+    // DISTINCT ON is ambiguous across the pivot join, and a plain DISTINCT
+    // fails on the json attribute_data column of databases upgraded from v1.
+    expect($filtered)->not->toBeEmpty()
+        ->and(strtolower($filtered->implode("\n")))->not->toContain('distinct');
 });
