@@ -13,7 +13,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
 - Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
-- Cart totals caching in the database — additive performance optimisation
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Add Boost guidelines to packages
@@ -37,6 +36,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec cart-totals-caching)
 - Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
 - Product bundles — `lunarphp/bundles`: a variant with components, derived stock, component order lines, panel editor (spec 0085)
 - PricingManager consumes `StorefrontContext` — one source of pricing state, visible to pricing pipelines (spec 0091)

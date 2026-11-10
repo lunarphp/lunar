@@ -28,10 +28,13 @@ public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [
 | `AddsAddress` | `AddAddress` |
 | `AddsOrUpdatesPurchasable` | `AddOrUpdatePurchasable` |
 | `AssociatesUser` | `AssociateUser` |
+| `CalculatesCart` | `CalculateCart` |
 | `CreatesOrder` | `CreateOrder` |
 | `GeneratesFingerprint` | `GenerateFingerprint` |
 | `GetsExistingCartLine` | `GetExistingCartLine` |
+| `HydratesCartTotals` | `HydrateCartTotals` |
 | `MergesCart` | `MergeCart` |
+| `PersistsCartTotals` | `PersistCartTotals` |
 | `RemovesPurchasable` | `RemovePurchasable` |
 | `SetsShippingOption` | `SetShippingOption` |
 | `UpdatesCartLine` | `UpdateCartLine` |
@@ -95,7 +98,7 @@ Steps::for(StepList::CartCalculation)
 
 | `StepList` case | Read by | Default steps |
 |:----------------|:--------|:--------------|
-| `CartCalculation` | `Cart::calculate()` | `Lunar\Core\Pipelines\Cart\CalculateLines`, `ApplyShipping`, `CalculateShippingSubTotal`, `ApplyDiscounts`, `CalculateTax`, `Calculate` |
+| `CartCalculation` | `Cart::calculate()`, through `Lunar\Core\Actions\Carts\CalculateCart` | `Lunar\Core\Pipelines\Cart\CalculateLines`, `ApplyShipping`, `CalculateShippingSubTotal`, `ApplyDiscounts`, `CalculateTax`, `Calculate` |
 | `CartLinePricing` | `CalculateLines`, for each line | `Lunar\Core\Pipelines\CartLine\GetUnitPrice` |
 | `PriceMatching` | `PricingManager::get()` | none |
 | `OrderCreation` | `Lunar\Core\Actions\Carts\CreateOrder` | `Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart`, `CreateOrderLines`, `CreateOrderAddresses`, `CreateShippingLine`, `CleanUpOrderLines`, `MapDiscountBreakdown` |
@@ -139,6 +142,45 @@ class ApplyHandlingFee
     }
 }
 ```
+
+## Totals caching
+
+`Cart::calculate()` delegates to `Lunar\Core\Contracts\Actions\Carts\CalculatesCart`. The default `Lunar\Core\Actions\Carts\CalculateCart` chooses between the totals already in memory, the snapshot persisted on the `carts` row, and a run of the modifiers and the `CartCalculation` steps (see [Persisted totals](/reference/carts#persisted-totals)). Steps stay free of persistence: `CalculateCart` writes the snapshot through `PersistsCartTotals` after the run, and reads it back through `HydratesCartTotals`.
+
+To change the caching policy, bind a different `CalculatesCart` in a service provider. Extending `CalculateCart` keeps the calculation itself. This one never serves the snapshot to a cart with a coupon applied:
+
+```php
+<?php
+
+namespace App\Actions\Carts;
+
+use Lunar\Core\Actions\Carts\CalculateCart as BaseCalculateCart;
+use Lunar\Core\Models\Cart;
+
+class CalculateCart extends BaseCalculateCart
+{
+    public function execute(Cart $cart, bool $force = false): Cart
+    {
+        return parent::execute($cart, $force || filled($cart->coupon_code));
+    }
+}
+```
+
+```php
+use App\Actions\Carts\CalculateCart;
+use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
+
+public function register(): void
+{
+    $this->app->bind(CalculatesCart::class, CalculateCart::class);
+}
+```
+
+To keep writing the snapshot but never serve it, set `lunar.cart.totals.ttl` to `0` instead. No binding is needed.
+
+<Warning>
+Code that writes `carts`, `cart_lines`, or `cart_addresses` rows without going through the model (a query-builder `update()` or a raw statement) bypasses the observers that mark the snapshot stale. Call `$cart->invalidateTotals()` after such a write, otherwise `calculate()` can serve totals that predate it for up to `lunar.cart.totals.ttl` seconds.
+</Warning>
 
 ## Validators
 
@@ -200,6 +242,8 @@ Modifiers hook fixed points in cart calculation without depending on the names o
 | `CartModifier::calculated($cart)` | Once, after every line's `calculated` hook. |
 
 Each hook runs the registered modifiers in registration order, as a pipeline. The hooks run inside `calculate()`, so a modifier that prices something sees the same `$cart->context()` as the cart being calculated.
+
+The hooks run only when the steps run. When `calculate()` serves the persisted totals snapshot instead, no hook fires: the snapshot already holds the totals the modifiers produced. Keep side effects out of modifiers, or call `recalculate()` where they must run. A modifier that records data beyond the standard totals writes it to the cart's or line's `meta`, which is stored on the row, rather than to a custom property on the model, which a served snapshot does not restore. See [Totals caching](#totals-caching).
 
 <Warning>
 `calculating()` runs before `GetUnitPrice`, which always sets the line's unit price, so a unit price set in `calculating()` is overwritten. Change a line's price in `subtotalled()`, or register a step after `GetUnitPrice` in the `CartLinePricing` list.
