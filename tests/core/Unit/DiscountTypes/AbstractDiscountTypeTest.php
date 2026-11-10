@@ -95,7 +95,7 @@ test('will handle customer limitation', function () {
     expect($cart->subTotalDiscounted->value)->toBe(900);
 });
 
-test('applies a discount with max uses per user on a guest cart', function () {
+test('does not apply a per-user-limited discount to a guest cart', function () {
     $channel = Channel::getDefault();
     $currency = Currency::getDefault();
 
@@ -138,7 +138,8 @@ test('applies a discount with max uses per user on a guest cart', function () {
 
     $cart->calculate();
 
-    expect($cart->subTotalDiscounted->value)->toBe(900);
+    // Usage is recorded against a user, so a guest cannot be held to the limit.
+    expect($cart->subTotalDiscounted->value)->toBe(1000);
 });
 
 test('applies a discount when the user is under the per-user limit', function () {
