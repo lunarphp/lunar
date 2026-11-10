@@ -43,6 +43,12 @@ php artisan migrate
 
 This creates four tables, prefixed like every other Lunar table: `search_queries`, `search_events`, `search_query_scores`, and `search_learning_overrides`. It also seeds the `search:manage-relevance` permission used by the panel section.
 
+On Meilisearch, re-run the index setup so the product `id` is filterable. The add-on fetches learned products by id, and Meilisearch rejects a filter on an attribute that isn't filterable:
+
+```bash
+php artisan lunar:meilisearch:setup
+```
+
 Make sure a queue worker and the scheduler are running. Logging, event recording, and attribution are dispatched as queued jobs, and scoring runs from the scheduler:
 
 ```bash

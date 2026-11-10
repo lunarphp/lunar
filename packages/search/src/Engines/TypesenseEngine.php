@@ -197,7 +197,10 @@ class TypesenseEngine extends AbstractEngine
             $filters = collect($options['filter_by'])->filter(fn ($filter) => filled($filter));
 
             foreach ($this->filters as $key => $value) {
-                $filters->push($key.':'.collect($value)->join(','));
+                $values = collect($value);
+
+                // `field:a,b` silently matches only `a`; several values need brackets.
+                $filters->push($values->count() > 1 ? $key.':['.$values->join(',').']' : $key.':'.$values->first());
             }
 
             $facetQuery = collect();

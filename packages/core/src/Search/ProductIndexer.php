@@ -21,6 +21,9 @@ class ProductIndexer extends ScoutIndexer
     {
         return [
             '__soft_deleted',
+            // Lets a search fetch known products by id, as the search
+            // relevance add-on does for learned results.
+            'id',
             'skus',
             'status',
         ];

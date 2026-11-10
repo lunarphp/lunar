@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Exceptions;
 use Laravel\Scout\EngineManager;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Search\ProductIndexer;
 use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
@@ -726,4 +727,15 @@ it('resolves the collections index when scout has no prefix', function () {
     expect($index)->toBe('collections')
         ->and(app(EngineManager::class)->engine('typesense')->getCollections()->{$index})
         ->toBeInstanceOf(TypesenseCollection::class);
+});
+
+it('filters on several values with the bracket syntax Typesense matches all of', function () {
+    // `id:9,42` silently matches only the first value; `id:[9,42]` matches both.
+    $params = typesenseTestEngine()->filter(['id' => [9, 42], 'status' => 'published'])->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0];
+
+    expect($params['filter_by'])->toBe('id:[9,42] && status:published');
+});
+
+it('makes the product id filterable, so a search can fetch products by id', function () {
+    expect((new ProductIndexer)->getFilterableFields())->toContain('id');
 });
