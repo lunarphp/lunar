@@ -10,7 +10,7 @@ use Lunar\Search\CustomerIndexer;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 

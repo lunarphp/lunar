@@ -1,0 +1,109 @@
+---
+title: "Contributing"
+description: "How to contribute code, report bugs, and improve the documentation."
+---
+
+Lunar is an open source project and welcomes contributions of all kinds, from bug reports and documentation improvements to new features and code fixes.
+
+## Monorepo
+
+Lunar uses a monorepo at [lunarphp/lunar](https://github.com/lunarphp/lunar) to manage its codebase. All packages, tests, and admin panel code live in a single repository. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are common in large projects and allow changes that span multiple packages to be developed and reviewed together.
+
+## Contributing Code
+
+The basic process for contributing code to Lunar is:
+
+1. Fork the [lunarphp/lunar](https://github.com/lunarphp/lunar) monorepo
+2. Clone the fork locally
+3. Create a new branch for the change
+4. Make changes and write tests
+5. Ensure the full test suite passes
+6. Submit a pull request
+
+<Tip>
+For a step-by-step walkthrough of setting up the monorepo inside a Laravel application, see the [Local Development](/getting-started/overview/local-development) guide.
+</Tip>
+
+### Coding Standards
+
+Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) to enforce it. Before submitting a pull request, run Pint from the repository root:
+
+```bash
+vendor/bin/pint
+```
+
+### Running Tests
+
+Lunar uses [Pest](https://pestphp.com/) for its test suite. Tests can be run from the repository root:
+
+```bash
+vendor/bin/pest
+```
+
+All existing tests must continue to pass, and new features or bug fixes should include corresponding test coverage.
+
+## Reporting a Bug
+
+If a bug is discovered, please open a GitHub issue on the [lunarphp/lunar](https://github.com/lunarphp/lunar/issues) repository. The issue should include:
+
+**At minimum:**
+
+- A clear title and description of the issue
+- Steps to reproduce the behavior
+
+**Ideally:**
+
+- The version of Lunar, PHP, and Laravel in use
+- An accompanying pull request with a failing test that demonstrates the issue
+
+Providing as much detail as possible gives the issue the best chance of being resolved quickly. Creating an issue does not guarantee immediate activity; maintainers review issues as time allows.
+
+<Warning>
+Security vulnerabilities should not be reported as public issues. See the [Security](/getting-started/overview/security) page for responsible disclosure instructions.
+</Warning>
+
+## Proposing a Feature
+
+Before investing time on a new feature, it is strongly recommended to start a [discussion](https://github.com/lunarphp/lunar/discussions) first. This allows the community and maintainers to provide feedback on whether the feature aligns with Lunar's direction before any code is written.
+
+Prototyping the feature alongside the discussion is welcome if it helps illustrate the proposal.
+
+## Making a Pull Request
+
+When submitting a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request), the repository provides a template to guide the submission. A well-structured pull request should include:
+
+- A title that clearly summarizes the change
+- A description explaining what the change does and why it is valuable
+- References to any related issues (e.g., `Fixes #123`)
+- A label of `bug`, `enhancement`, or `feature`
+- Automated tests with adequate coverage
+- Any relevant documentation updates
+
+Pull requests that are missing key information or are unclear in their purpose may be delayed or closed.
+
+## Documentation
+
+Lunar's documentation is built with [Mintlify](https://mintlify.com/) and written in MDX. The 1.x docs live in the `docs/` directory on the `1.x` branch of the [monorepo](https://github.com/lunarphp/lunar/tree/1.x/docs), next to the code they describe.
+
+- **A code change:** update the docs in the same pull request as the code.
+- **A docs-only change,** such as a correction or a clearer explanation: open a pull request against the `1.x` branch that changes only `docs/`.
+
+Docs changes publish to docs.lunarphp.com with the next 1.x release, not when the pull request merges.
+
+The `1.4` maintenance branch has no docs. Changes to the v1 docs target `1.x`.
+
+To preview the docs locally:
+
+```bash
+npm i -g mint
+cd docs
+mint dev
+```
+
+Before opening the pull request, run `mint validate` and `mint broken-links` from `docs/`. The same checks run on every pull request that changes `docs/`. See [`docs/README.md`](https://github.com/lunarphp/lunar/blob/1.x/docs/README.md) for the linking rules and the writing style.
+
+<Info>
+Any new page must also be added to the navigation in `docs/docs.json`, or it will not appear in the sidebar.
+</Info>
+
+The Support, Flight Plan and v0 pages are maintained by the Lunar team. Suggest changes to them in [Discussions](https://github.com/lunarphp/lunar/discussions).

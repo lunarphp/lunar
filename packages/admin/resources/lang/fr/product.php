@@ -12,11 +12,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Actuellement en statut de brouillon, ce produit est masqué sur tous les canaux et groupes de clients.',
+            'content' => 'Actuellement en statut de brouillon, ce produit est indisponible sur tous les canaux et groupes de clients.',
         ],
         'availability' => [
             'customer_groups' => 'Ce produit est actuellement indisponible pour tous les groupes de clients.',
             'channels' => 'Ce produit est actuellement indisponible pour tous les canaux.',
+            'hidden_from_guests' => 'Les invités ne peuvent actuellement ni voir ni acheter ce produit. Le groupe de clients par défaut n\'est pas activé ou visible pour ce produit.',
+            'no_default_customer_group' => 'Aucun groupe de clients par défaut n\'est défini, la visibilité pour les invités ne peut donc pas être contrôlée ici. Définissez un groupe de clients par défaut pour gérer l\'accès des invités.',
         ],
     ],
 

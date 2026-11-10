@@ -45,7 +45,7 @@ class CalculateLineSubtotal
             );
 
             $priceInclTax = new Price(
-                $priceResponse->matched->priceIncTax()->value,
+                $priceResponse->matched->priceIncTax($cart->taxZone)->value,
                 $cart->currency,
                 $purchasable->getUnitQuantity()
             );

@@ -11,6 +11,8 @@ return [
     'carts.billing_incomplete' => 'Het factuuradres is onvolledig',
     'carts.order_exists' => 'Er bestaat al een bestelling voor deze winkelwagen',
     'carts.shipping_option_missing' => 'Ontbrekende verzendoptie',
+    'carts.line_unavailable' => 'Een regel in deze winkelwagen is niet meer beschikbaar (:identifier)',
+    'carts.line_not_purchasable' => ':identifier kan niet worden gekocht in dit kanaal of door uw klantgroep',
     'missing_currency_price' => 'Er bestaat geen prijs voor valuta ":currency"',
     'minimum_quantity' => 'U moet minimaal :quantity items toevoegen.',
     'quantity_increment' => 'Hoeveelheid :quantity moet in stappen van :increment zijn',

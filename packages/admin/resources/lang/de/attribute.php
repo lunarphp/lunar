@@ -50,5 +50,9 @@ return [
         'validation_rules' => [
             'label' => 'Validierungsregeln',
         ],
+        'default_value' => [
+            'label' => 'Standardwert',
+            'helper' => 'Wird als Anfangswert beim Erstellen eines neuen Eintrags mit diesem Attribut verwendet.',
+        ],
     ],
 ];

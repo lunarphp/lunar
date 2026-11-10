@@ -1,0 +1,306 @@
+---
+title: "Storefront Search"
+sidebarTitle: "Storefront Search"
+---
+
+## Overview
+
+The Storefront Search add-on provides a unified API for performing search operations across multiple search engines. It wraps Laravel Scout and adds support for faceted search, filtering, sorting, and consistent response formatting using [Spatie Laravel Data](https://spatie-laravel-data.com).
+
+### Supported Engines
+
+| Engine | Driver Name | Features |
+|---|---|---|
+| Database | `database` | Basic search via Scout's database driver |
+| Meilisearch | `meilisearch` | Faceted search, filtering, sorting |
+| Typesense | `typesense` | Faceted search, filtering, sorting, highlights, vector search |
+
+## Installation
+
+### Require the composer package
+
+```sh
+composer require lunarphp/search
+```
+
+The package auto-discovers its service provider, so no additional registration is needed.
+
+### Configuration
+
+Publish and customize the configuration by creating or editing `config/lunar/search.php`. The add-on configuration controls which facets are available for each model:
+
+```php
+// config/lunar/search.php
+return [
+    'facets' => [
+        \Lunar\Models\Product::class => [
+            'brand' => [
+                'label' => 'Brand',
+            ],
+            'colour' => [
+                'label' => 'Colour',
+            ],
+            'size' => [
+                'label' => 'Size',
+            ],
+        ],
+    ],
+];
+```
+
+Each facet key corresponds to a field in the searchable index. The `label` property is optional and defaults to the field name if not provided.
+
+<Tip>
+    The `engine_map` configuration, which controls which search driver is used for each model, is defined in the core Lunar search config. See the [Search reference](/reference/search) for details.
+</Tip>
+
+## Usage
+
+### Basic Search
+
+Search models using the `Search` facade. By default, searches are performed against `Lunar\Models\Product`:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')->get();
+```
+
+To search a different model, use the `model()` method:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::model(\Lunar\Models\Collection::class)
+    ->query('Hoodies')
+    ->get();
+```
+
+Under the hood, the package detects which Scout driver is mapped for the given model via the `engine_map` configuration and performs the search using that driver. To improve performance, results are not hydrated from the database — instead, the raw indexed data is returned directly from the search provider.
+
+### Specifying a Driver
+
+To explicitly use a specific search driver, call the `driver()` method:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::driver('meilisearch')
+    ->query('Hoodies')
+    ->get();
+```
+
+### Filtering
+
+Apply filters to narrow down search results. Filters are passed as key-value pairs where the key is the field name and the value is the filter value:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->filter([
+        'status' => 'published',
+        'brand' => 'Acme',
+    ])
+    ->get();
+```
+
+### Faceted Search
+
+Facets allow users to refine search results by selecting values within categories (e.g., brand, color, size). Set active facet selections using `setFacets()`:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->setFacets([
+        'brand' => ['Nike', 'Adidas'],
+        'colour' => ['Red'],
+    ])
+    ->get();
+```
+
+The search response includes updated facet counts that reflect the current selections, allowing the storefront to show how many results match each facet value.
+
+To remove a specific facet or value:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$search = Search::query('Hoodies')
+    ->setFacets(['brand' => ['Nike', 'Adidas']]);
+
+// Remove a specific value from a facet
+$search->removeFacet('brand', 'Nike');
+
+// Remove an entire facet
+$search->removeFacet('brand');
+
+$results = $search->get();
+```
+
+### Sorting
+
+Sort results by a specific field:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->sort('created_at:desc')
+    ->get();
+```
+
+The sort format is `field:direction` where direction is either `asc` or `desc`. The field must be configured as sortable in the search engine.
+
+For Typesense, a raw sort expression can also be used:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->sortRaw('_text_match:desc,created_at:desc')
+    ->get();
+```
+
+### Pagination
+
+Control the number of results per page using the `perPage()` method. The default is 50:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->perPage(24)
+    ->get();
+```
+
+### Extending Queries
+
+For advanced use cases, extend the search query using `extendQuery()`:
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->extendQuery(function ($engine, &$queries) {
+        // Modify search queries before execution
+    })
+    ->get();
+```
+
+## Response Format
+
+All search engines return a `Lunar\Search\Data\SearchResults` object with a consistent structure:
+
+| Property | Type | Description |
+|---|---|---|
+| `query` | `?string` | The search query that was executed |
+| `count` | `int` | Total number of matching results |
+| `page` | `int` | Current page number |
+| `perPage` | `int` | Number of results per page |
+| `totalPages` | `int` | Total number of pages |
+| `hits` | `SearchHit[]` | Array of search result hits |
+| `facets` | `SearchFacet[]` | Array of available facets with counts |
+| `links` | `View` | Pagination links (Laravel paginator view) |
+
+### SearchHit
+
+Each hit contains the indexed document data and any highlights (Typesense only):
+
+| Property | Type | Description |
+|---|---|---|
+| `highlights` | `SearchHitHighlight[]` | Matched field highlights |
+| `document` | `array` | The raw indexed document data |
+
+### SearchHitHighlight
+
+| Property | Type | Description |
+|---|---|---|
+| `field` | `string` | The field that matched |
+| `matches` | `string[]` | The matched tokens |
+| `snippet` | `?string` | A highlighted snippet of the match |
+
+### SearchFacet
+
+| Property | Type | Description |
+|---|---|---|
+| `label` | `string` | Display label for the facet |
+| `field` | `string` | The index field name |
+| `values` | `SearchFacetValue[]` | Available values with counts |
+| `hierarchy` | `bool` | Whether this facet is hierarchical |
+
+### SearchFacetValue
+
+| Property | Type | Description |
+|---|---|---|
+| `label` | `string` | Display label for the value |
+| `value` | `string` | The actual value for filtering |
+| `count` | `int` | Number of results matching this value |
+| `active` | `bool` | Whether this value is currently selected |
+| `children` | `SearchFacetValue[]` | Child values for hierarchical facets |
+
+## Handling the Response
+
+### Displaying Results
+
+```blade
+@foreach($results->hits as $hit)
+    <div>{{ $hit->document['name'] }}</div>
+@endforeach
+```
+
+### Displaying Facets
+
+```blade
+@foreach($results->facets as $facet)
+    <div>
+        <strong>{{ $facet->label }}</strong>
+        @foreach($facet->values as $facetValue)
+            <label>
+                <input type="checkbox" value="{{ $facetValue->value }}" @checked($facetValue->active) />
+                <span @class(['text-blue-500' => $facetValue->active])>
+                    {{ $facetValue->label }}
+                </span>
+                ({{ $facetValue->count }})
+            </label>
+        @endforeach
+    </div>
+@endforeach
+```
+
+### Pagination
+
+The `links` property contains a standard Laravel pagination view:
+
+```blade
+{{ $results->links }}
+```
+
+### Accessing Pagination Metadata
+
+```blade
+<p>Showing page {{ $results->page }} of {{ $results->totalPages }} ({{ $results->count }} results)</p>
+```
+
+## TypeScript Integration
+
+If [Spatie TypeScript Transformer](https://spatie.be/docs/typescript-transformer) is being used, add the data path to the `typescript-transformer.php` config to generate TypeScript types for the search response classes:
+
+```php
+return [
+    // ...
+    'auto_discover_types' => [
+        // ...
+        \Lunar\Search\data_path(),
+    ],
+];
+```
+
+The generated types are available under the `Lunar.Search` namespace:
+
+```ts
+defineProps<{
+    results: Lunar.Search.SearchResults
+}>()
+```

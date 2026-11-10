@@ -1,0 +1,62 @@
+---
+title: "Introduction"
+description: "Start building e-commerce with Laravel"
+---
+
+Lunar is a headless e-commerce package for [Laravel](https://laravel.com/) that provides everything needed to build a fully featured online store.
+
+## Why Lunar?
+
+Unlike hosted platforms such as Shopify or WooCommerce, Lunar gives developers complete ownership of the codebase, the data, and the storefront. It handles the complex e-commerce logic — products, carts, orders, payments, discounts, taxation, and more — while leaving full creative control over the customer-facing experience.
+
+Because Lunar is a Laravel package (not a standalone application), it integrates directly into any Laravel project. There is no separate system to maintain, no external API to call, and no vendor lock-in.
+
+## Tech Stack
+
+Lunar is made up of two primary Composer packages:
+
+- **`lunarphp/core`** — the e-commerce engine: models, pipelines, pricing, search, and all core functionality.
+- **`lunarphp/lunar`** — the admin panel, built on [Filament](https://filamentphp.com/), for managing products, orders, customers, and more.
+
+<Info>Although the admin panel uses Laravel Livewire, there is no requirement for the storefront to use Livewire.</Info>
+
+## Key Features
+
+- **Product catalog** — products, variants, options, collections, associations, and flexible attribute system
+- **Cart and checkout** — cart management with built-in pipelines for validation, tax calculation, and shipping
+- **Order management** — full order lifecycle with statuses, transactions, and PDF support
+- **Discounts** — percentage, fixed amount, and "buy X get Y" discount types with conditions and limitations
+- **Payments** — first-party drivers for Stripe, PayPal, and Opayo, plus an extensible payment interface
+- **Search** — Algolia and Meilisearch support through Laravel Scout with pre-configured indexing
+- **Multi-channel and multi-currency** — sell across multiple channels with localized pricing
+- **Taxation** — configurable tax classes, zones, and rates
+- **Extensible admin panel** — customize pages, resources, and relation managers through Filament
+
+## Getting Started
+
+<Card
+  title="Install Lunar"
+  icon="rocket"
+  href="/getting-started/setup/installation"
+  horizontal
+>
+  Add Lunar to a Laravel application with Composer.
+</Card>
+
+<Card
+  title="Livewire Starter Kit"
+  icon="bolt"
+  href="/getting-started/starter-kits/livewire"
+  horizontal
+>
+  Spin up a fully working storefront as a starting point.
+</Card>
+
+<Card
+  title="Storefront Guides"
+  icon="book"
+  href="/guides/catalog-menu"
+  horizontal
+>
+  Step-by-step guides for building catalog, cart, and checkout flows.
+</Card>

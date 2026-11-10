@@ -76,7 +76,7 @@ class AttributesRelationManager extends BaseRelationManager
                         $set('handle', Str::snake(Str::lower($state)));
                     })
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
-                        return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
+                        return $rule->where('attribute_type', $livewire->ownerRecord->attributable_type);
                     })->disabled(
                         fn (?Model $record) => (bool) $record
                     )
@@ -122,6 +122,16 @@ class AttributesRelationManager extends BaseRelationManager
                     ->nullable()
                     ->helperText(
                         __('lunarpanel::attribute.form.validation_rules.helper')
+                    ),
+                TextInput::make('default_value')->label(
+                    __('lunarpanel::attribute.form.default_value.label')
+                )
+                    ->string()
+                    ->nullable()
+                    ->visible(fn (Get $get) => AttributeData::canHaveDefaultValue($get('type')))
+                    ->rules(fn (Get $get) => AttributeData::getDefaultValueValidationRules($get('type'), $get('configuration') ?? []))
+                    ->helperText(
+                        __('lunarpanel::attribute.form.default_value.helper')
                     ),
                 Grid::make(1)
                     ->schema(function (Get $get) {

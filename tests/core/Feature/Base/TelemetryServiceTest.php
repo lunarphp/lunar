@@ -22,6 +22,34 @@ test('can opt out of telemetry', function () {
     expect(Telemetry::shouldRun())->toBeFalse();
 });
 
+test('skips telemetry when the cache store does not persist', function () {
+    config()->set('cache.default', 'null');
+
+    expect(Telemetry::shouldRun())->toBeFalse();
+});
+
+test('records the attempt before the HTTP call so failures still throttle', function () {
+    Http::fake([
+        Telemetry::getInsightsUrl() => Http::response(null, 500),
+    ]);
+
+    expect(Telemetry::shouldRun())->toBeTrue();
+
+    Telemetry::run();
+
+    expect(Telemetry::shouldRun())->toBeFalse();
+});
+
+test('does not propagate exceptions from the HTTP client', function () {
+    Http::fake(function () {
+        throw new RuntimeException('connection refused');
+    });
+
+    Telemetry::run();
+
+    expect(Telemetry::shouldRun())->toBeFalse();
+});
+
 test('can only run once a day', function () {
     Http::fake();
 

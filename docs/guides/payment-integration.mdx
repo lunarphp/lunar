@@ -1,0 +1,577 @@
+---
+title: "Payment Integration"
+description: "Integrate payment processing with Lunar using Stripe, covering payment intents, frontend elements, webhooks, and the complete payment lifecycle."
+---
+
+This guide walks through wiring a payment provider into Lunar end to end, using Stripe as the worked example.
+
+## Overview
+
+Lunar uses a driver-based payment system through the `Payments` facade. This guide focuses on integrating Stripe as the payment provider, covering the complete flow from creating a payment intent to handling webhooks. The same high-level patterns apply to other payment drivers.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## Payment Architecture
+
+Lunar's payment system has three layers:
+
+1. **Payment Manager** (`Lunar\Facades\Payments`) — routes payment calls to the correct driver based on configuration
+2. **Payment Type** (e.g., `Lunar\Stripe\StripePaymentType`) — handles authorization, capture, and refund logic for a specific provider
+3. **Transactions** (`Lunar\Models\Transaction`) — records of every payment event stored against the order
+
+Payment types are configured in `config/lunar/payments.php`:
+
+```php
+return [
+    'default' => env('PAYMENTS_TYPE', 'offline'),
+
+    'types' => [
+        'cash-in-hand' => [
+            'driver' => 'offline',
+            'authorized' => 'payment-offline',
+        ],
+        'card' => [
+            'driver' => 'stripe',
+            'released' => 'payment-received',
+        ],
+    ],
+];
+```
+
+Each type maps a name (used in `Payments::driver()`) to a driver class and the order statuses to assign on success.
+
+## Setting Up Stripe
+
+### Installation
+
+```bash
+composer require lunarphp/stripe
+```
+
+### Configuration
+
+Publish the configuration file:
+
+```bash
+php artisan vendor:publish --tag=lunar.stripe.config
+```
+
+Set the Stripe keys in the application's `.env` file:
+
+```bash
+STRIPE_SECRET=sk_test_...
+STRIPE_PUBLIC=pk_test_...
+```
+
+### Stripe Configuration Options
+
+The published config file (`config/lunar/stripe.php`) contains:
+
+```php
+return [
+    'webhook_path' => 'stripe/webhook',
+
+    'policy' => 'automatic',
+
+    'sync_addresses' => true,
+
+    'status_mapping' => [
+        // Maps Stripe PaymentIntent statuses to Lunar order statuses
+    ],
+];
+```
+
+| Option | Description |
+|:---|:---|
+| `webhook_path` | The URL path where Stripe sends webhook events |
+| `policy` | `automatic` captures payment immediately; `manual` authorizes first and captures later |
+| `sync_addresses` | When `true`, billing and shipping addresses from Stripe are synced to the order |
+| `status_mapping` | Maps Stripe `PaymentIntent` statuses to Lunar order statuses |
+
+### Register the Payment Driver
+
+In a service provider (e.g., `AppServiceProvider`), register the Stripe driver:
+
+```php
+use Lunar\Facades\Payments;
+use Lunar\Stripe\StripePaymentType;
+
+public function boot(): void
+{
+    Payments::extend('stripe', function ($app) {
+        return $app->make(StripePaymentType::class);
+    });
+}
+```
+
+Update the payments configuration to use the Stripe driver:
+
+```php
+// config/lunar/payments.php
+return [
+    'default' => 'card',
+
+    'types' => [
+        'card' => [
+            'driver' => 'stripe',
+            'released' => 'payment-received',
+        ],
+    ],
+];
+```
+
+## Payment Flow
+
+The Stripe integration follows this lifecycle:
+
+1. **Create a PaymentIntent** — when the customer reaches checkout, a Stripe PaymentIntent is created for the cart total
+2. **Collect payment details** — the frontend renders Stripe's Payment Element to collect card details
+3. **Confirm the payment** — Stripe.js confirms the payment on the client side and redirects back
+4. **Authorize in Lunar** — the return handler calls `Payments::authorize()` to complete the order
+5. **Webhook backup** — Stripe sends webhook events to handle edge cases (browser closed, network issues)
+
+## Creating a Payment Intent
+
+Use the `Stripe` facade to create or fetch a PaymentIntent for the cart. The intent amount is automatically calculated from the cart total.
+
+```php
+use Lunar\Facades\CartSession;
+use Lunar\Stripe\Facades\Stripe;
+
+$cart = CartSession::current();
+
+$intent = Stripe::fetchOrCreateIntent($cart);
+
+$clientSecret = $intent->client_secret;
+```
+
+`fetchOrCreateIntent()` checks whether an active intent already exists for the cart. If one exists, it syncs the amount and returns it. If none exists, it creates a new one.
+
+<Info>
+The PaymentIntent is linked to the cart through the `lunar_stripe_payment_intents` table. This table tracks the intent ID, cart ID, status, and processing state.
+</Info>
+
+### Syncing the Intent
+
+If the cart total changes (for example, after applying a coupon or changing the shipping method), sync the intent to update the amount:
+
+```php
+Stripe::syncIntent($cart);
+```
+
+This updates the existing PaymentIntent on Stripe to match the current cart total.
+
+## Frontend Integration
+
+Stripe's [Payment Element](https://stripe.com/docs/payments/payment-element) renders a prebuilt UI for collecting payment details. It supports cards, wallets, bank transfers, and other payment methods automatically.
+
+### Including Stripe.js
+
+Add the Stripe.js script to the checkout layout:
+
+```html
+<script src="https://js.stripe.com/v3/"></script>
+```
+
+### Rendering the Payment Element
+
+```blade
+<div
+    x-data="stripePayment"
+    x-init="init()"
+>
+    <div x-ref="paymentElement"></div>
+
+    <button
+        x-on:click="submit()"
+        x-bind:disabled="processing"
+    >
+        <span x-show="!processing">Pay {{ $cart->total->formatted() }}</span>
+        <span x-show="processing">Processing...</span>
+    </button>
+
+    <p x-show="error" x-text="error" style="color: red;"></p>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('stripePayment', () => ({
+        stripe: null,
+        elements: null,
+        paymentElement: null,
+        processing: false,
+        error: null,
+
+        init() {
+            this.stripe = Stripe('{{ config("services.stripe.key") }}');
+
+            this.elements = this.stripe.elements({
+                clientSecret: '{{ $clientSecret }}',
+            });
+
+            this.paymentElement = this.elements.create('payment', {
+                fields: {
+                    billingDetails: 'never',
+                },
+            });
+
+            this.paymentElement.mount(this.$refs.paymentElement);
+        },
+
+        async submit() {
+            this.processing = true;
+            this.error = null;
+
+            const billingAddress = @json([
+                'name' => $cart->billingAddress->first_name . ' ' . $cart->billingAddress->last_name,
+                'email' => $cart->billingAddress->contact_email,
+                'phone' => $cart->billingAddress->contact_phone ?? '',
+                'address' => [
+                    'line1' => $cart->billingAddress->line_one,
+                    'line2' => $cart->billingAddress->line_two ?? '',
+                    'city' => $cart->billingAddress->city,
+                    'state' => $cart->billingAddress->state ?? '',
+                    'postal_code' => $cart->billingAddress->postcode,
+                    'country' => $cart->billingAddress->country?->iso2 ?? '',
+                ],
+            ]);
+
+            const { error } = await this.stripe.confirmPayment({
+                elements: this.elements,
+                confirmParams: {
+                    return_url: '{{ route("checkout.callback") }}',
+                    payment_method_data: {
+                        billing_details: billingAddress,
+                    },
+                },
+            });
+
+            if (error) {
+                this.error = error.message;
+                this.processing = false;
+            }
+        },
+    }));
+});
+</script>
+```
+
+<Info>
+Setting `billingDetails: 'never'` on the Payment Element prevents Stripe from showing its own billing address fields, since the address is already collected during checkout and passed in `confirmParams`.
+</Info>
+
+### What Happens After Confirmation
+
+After `confirmPayment()` succeeds, Stripe redirects the customer to the `return_url` with query parameters including `payment_intent` and `payment_intent_client_secret`. The callback handler uses these to authorize the payment in Lunar.
+
+## Handling the Payment Callback
+
+When Stripe redirects back to the storefront, authorize the payment through the `Payments` facade:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Facades\CartSession;
+use Lunar\Facades\Payments;
+
+class CheckoutController extends Controller
+{
+    public function callback(Request $request)
+    {
+        $cart = CartSession::current();
+
+        if (! $cart) {
+            return redirect()->route('cart.show');
+        }
+
+        $payment = Payments::driver('card')
+            ->cart($cart)
+            ->withData([
+                'payment_intent' => $request->get('payment_intent'),
+            ])
+            ->authorize();
+
+        if (! $payment->success) {
+            return redirect()->route('checkout.show')
+                ->withErrors(['payment' => $payment->message ?? 'Payment could not be processed.']);
+        }
+
+        CartSession::forget();
+
+        return redirect()->route('checkout.complete', [
+            'order' => $payment->orderId,
+        ]);
+    }
+}
+```
+
+The `authorize()` method returns a `PaymentAuthorize` object:
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `success` | `bool` | Whether the payment was authorized |
+| `message` | `?string` | Error or status message |
+| `orderId` | `?int` | The ID of the placed order |
+| `paymentType` | `?string` | The payment driver used |
+
+### What Happens During Authorization
+
+When `authorize()` is called on the Stripe payment type:
+
+1. Retrieves the `StripePaymentIntent` record linked to the cart
+2. Fetches the current status from Stripe's API
+3. Creates an order from the cart (if one does not already exist)
+4. If the policy is `automatic` and the status is `requires_capture`, captures the payment immediately
+5. Updates the order status based on Stripe's status mapping
+6. Sets `placed_at` on the order when the payment succeeds
+7. Stores charge details (card brand, last four digits) as transaction records
+
+## Webhooks
+
+Stripe sends webhook events for payment status changes. These handle edge cases where the customer's browser closes before the callback completes, or when 3D Secure authentication completes asynchronously.
+
+### Webhook Route
+
+The Stripe package registers a webhook route automatically at the path configured in `config/lunar/stripe.php` (default: `stripe/webhook`).
+
+Configure the webhook endpoint in the Stripe dashboard:
+
+```
+https://your-store.com/stripe/webhook
+```
+
+Set the webhook signing secret in `.env`:
+
+```bash
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+### How Webhooks Are Processed
+
+When a webhook event arrives:
+
+1. The signature is verified against the webhook secret
+2. A `ProcessStripeWebhook` job is dispatched (with a short delay to allow the callback to complete first)
+3. The job fetches the PaymentIntent from Stripe and updates the order status accordingly
+
+This ensures orders are placed even if the customer never returns to the callback URL.
+
+<Tip>
+During local development, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhook events to the local server: `stripe listen --forward-to localhost:8000/stripe/webhook`.
+</Tip>
+
+## Capture and Refund
+
+### Manual Capture
+
+When using the `manual` capture policy, payments are authorized but not captured immediately. This is useful for stores that want to review orders before charging the customer.
+
+```php
+use Lunar\Facades\Payments;
+use Lunar\Models\Order;
+
+$order = Order::find($orderId);
+$transaction = $order->transactions()->where('type', 'intent')->first();
+
+$result = Payments::driver('card')
+    ->order($order)
+    ->capture($transaction, $amount);
+
+if ($result->success) {
+    // Payment captured
+}
+```
+
+The `$amount` parameter is in the currency's smallest unit (e.g., cents). Pass `0` to capture the full amount.
+
+### Refunds
+
+Issue a full or partial refund through the payment driver:
+
+```php
+use Lunar\Facades\Payments;
+use Lunar\Models\Order;
+
+$order = Order::find($orderId);
+$transaction = $order->transactions()->where('type', 'capture')->first();
+
+$result = Payments::driver('card')
+    ->order($order)
+    ->refund($transaction, amount: 1500, notes: 'Customer return');
+
+if ($result->success) {
+    // Refund processed, transaction record created
+}
+```
+
+A new transaction record with type `refund` is created automatically.
+
+## Transactions
+
+Every payment event is recorded as a `Lunar\Models\Transaction` on the order. Transactions provide a complete audit trail.
+
+| Field                   | Type                   | Description                                 |
+| :---------------------- | :--------------------- | :------------------------------------------ |
+| `id`                    | `bigint`               | Primary key                                 |
+| `parent_transaction_id` | `foreignId` `nullable` | The ID of the preceding transaction         |
+| `order_id`              | `foreignId`            | The associated order                        |
+| `success`               | `boolean`              | Whether the transaction succeeded           |
+| `type`                  | `enum`                 | One of `intent`, `capture`, or `refund`     |
+| `driver`                | `string`               | The payment driver, e.g. `stripe`           |
+| `amount`                | `integer`              | Amount in the currency's smallest unit      |
+| `reference`             | `string`               | Provider reference, e.g. Stripe charge ID   |
+| `status`                | `string`               | Provider-specific status                    |
+| `notes`                 | `string` `nullable`    | Any additional notes for the transaction    |
+| `card_type`             | `string` `nullable`    | Card brand, e.g. `visa` or `mastercard`     |
+| `last_four`             | `string` `nullable`    | Last four digits of the card                |
+| `meta`                  | `json` `nullable`      | Additional provider data                    |
+| `captured_at`           | `dateTime` `nullable`  | When the payment was captured               |
+| `created_at`            | `timestamp` `nullable` |                                             |
+| `updated_at`            | `timestamp` `nullable` |                                             |
+
+### Displaying Transaction History
+
+```blade
+<h2>Payments</h2>
+@foreach($order->transactions as $transaction)
+    <div>
+        <p>
+            {{ ucfirst($transaction->type) }}
+            — {{ $transaction->success ? 'Successful' : 'Failed' }}
+        </p>
+        <p>
+            {{ \Lunar\DataTypes\Price::from($transaction->amount, $order->currency)->formatted() }}
+        </p>
+        @if($transaction->card_type)
+            <p>{{ ucfirst($transaction->card_type) }} ending {{ $transaction->last_four }}</p>
+        @endif
+        <p>{{ $transaction->created_at->format('M d, Y H:i') }}</p>
+    </div>
+@endforeach
+```
+
+## Offline Payments
+
+For payment methods that do not require online processing (cash on delivery, bank transfer, purchase orders), use the built-in `offline` driver:
+
+```php
+$payment = Payments::driver('cash-in-hand')
+    ->cart($cart)
+    ->authorize();
+```
+
+The offline driver creates the order, sets `placed_at`, and updates the status to the configured `authorized` status. No external API calls are made.
+
+## Routes
+
+```php
+use App\Http\Controllers\CheckoutController;
+
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+Route::post('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/checkout/callback', [CheckoutController::class, 'callback'])->name('checkout.callback');
+Route::get('/checkout/complete/{order}', [CheckoutController::class, 'complete'])->name('checkout.complete');
+```
+
+## Putting It All Together
+
+Here is a complete checkout controller covering the Stripe payment flow:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\CartSession;
+use Lunar\Facades\Payments;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Country;
+use Lunar\Models\Order;
+use Lunar\Stripe\Facades\Stripe;
+
+class CheckoutController extends Controller
+{
+    public function show()
+    {
+        $cart = CartSession::current();
+
+        if (! $cart || $cart->lines->isEmpty()) {
+            return redirect()->route('cart.show');
+        }
+
+        $countries = Country::orderBy('name')->get();
+
+        $shippingOptions = $cart->shippingAddress
+            ? ShippingManifest::getOptions($cart)
+            : collect();
+
+        $clientSecret = null;
+
+        if ($cart->billingAddress) {
+            $intent = Stripe::fetchOrCreateIntent($cart);
+            $clientSecret = $intent->client_secret;
+        }
+
+        return view('checkout.show', [
+            'cart' => $cart,
+            'countries' => $countries,
+            'shippingOptions' => $shippingOptions,
+            'clientSecret' => $clientSecret,
+        ]);
+    }
+
+    public function callback(Request $request)
+    {
+        $cart = CartSession::current();
+
+        if (! $cart) {
+            return redirect()->route('cart.show');
+        }
+
+        $payment = Payments::driver('card')
+            ->cart($cart)
+            ->withData([
+                'payment_intent' => $request->get('payment_intent'),
+            ])
+            ->authorize();
+
+        if (! $payment->success) {
+            return redirect()->route('checkout.show')
+                ->withErrors(['payment' => $payment->message ?? 'Payment could not be processed.']);
+        }
+
+        CartSession::forget();
+
+        return redirect()->route('checkout.complete', [
+            'order' => $payment->orderId,
+        ]);
+    }
+
+    public function complete(Order $order)
+    {
+        if ($order->isDraft()) {
+            abort(404);
+        }
+
+        $order->load([
+            'lines.purchasable.product',
+            'addresses',
+            'transactions',
+        ]);
+
+        return view('checkout.complete', compact('order'));
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Stripe add-on documentation](/addons/payments/stripe) for advanced configuration options.
+- Review the [Payments reference](/reference/payments) for the full payment API and transaction model.
+- Review the [Extending Payments](/extending/payments) guide for building a custom payment driver.
+- Review the [Checkout guide](/guides/checkout) for the complete checkout flow including address collection and shipping.

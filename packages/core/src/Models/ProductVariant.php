@@ -106,7 +106,9 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'
-        )->withTimestamps();
+        )->withTimestamps()
+            ->orderBy('position')
+            ->orderByPivot('id');
     }
 
     public function getPrices(): Collection
@@ -209,6 +211,14 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
         }
 
         return $quantity <= $this->getTotalInventory();
+    }
+
+    public function isPurchasable(): bool
+    {
+        return ! $this->trashed()
+            && $this->product
+            && ! $this->product->trashed()
+            && $this->product->status === 'published';
     }
 
     public function getTotalInventory(): int

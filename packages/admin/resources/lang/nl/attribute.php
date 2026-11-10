@@ -51,5 +51,9 @@ return [
             'label' => 'Validatieregels',
             'helper' => 'Regels voor attribuutveld, voorbeeld: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Standaardwaarde',
+            'helper' => 'Toegepast als beginwaarde bij het aanmaken van een nieuw record met dit attribuut.',
+        ],
     ],
 ];

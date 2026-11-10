@@ -16,6 +16,11 @@ class OrderLineObserver
     public function creating(OrderLineContract $orderLine): void
     {
         /** @var OrderLine $orderLine */
+        // Self-describing line (shipping, ad-hoc charge) — no morph to validate.
+        if ($orderLine->purchasable_type === null) {
+            return;
+        }
+
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :
             Relation::getMorphedModel($orderLine->purchasable_type);
@@ -30,6 +35,11 @@ class OrderLineObserver
      */
     public function updating(OrderLineContract $orderLine): void
     {
+        // Self-describing line (shipping, ad-hoc charge) — no morph to validate.
+        if ($orderLine->purchasable_type === null) {
+            return;
+        }
+
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :
             Relation::getMorphedModel($orderLine->purchasable_type);

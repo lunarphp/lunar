@@ -37,6 +37,7 @@ class CalculateTax
                 ->setCurrency($cart->currency)
                 ->setPurchasable($cartLine->purchasable)
                 ->setCartLine($cartLine)
+                ->setTaxZone($cart->taxZone)
                 ->getBreakdown($subTotal);
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
@@ -70,6 +71,7 @@ class CalculateTax
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
                 ->setCurrency($cart->currency)
                 ->setPurchasable($shippingOption)
+                ->setTaxZone($cart->taxZone)
                 ->getBreakdown($shippingSubTotal);
 
             $shippingTaxTotal = $shippingTax->amounts->sum('price.value');

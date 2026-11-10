@@ -166,10 +166,8 @@ class ShippingZoneResource extends BaseResource
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Model $record): array {
-                $record->loadMissing('countries');
-
-                return $record->countries
+            })->getOptionLabelsUsing(static function (array $values): array {
+                return Country::whereIn('id', $values)
                     ->pluck('name', 'id')
                     ->toArray();
             })
@@ -199,10 +197,8 @@ class ShippingZoneResource extends BaseResource
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Model $record): array {
-                $record->loadMissing('states');
-
-                return $record->states
+            })->getOptionLabelsUsing(static function (array $values): array {
+                return State::whereIn('id', $values)
                     ->pluck('name', 'id')
                     ->toArray();
             })

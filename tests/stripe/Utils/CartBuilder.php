@@ -15,15 +15,15 @@ use Lunar\Models\TaxClass;
 
 class CartBuilder
 {
-    public static function build(array $cartParams = [])
+    public static function build(array $cartParams = [], array $currencyParams = [])
     {
         Language::factory()->create([
             'default' => true,
         ]);
 
-        $currency = Currency::factory()->create([
+        $currency = Currency::factory()->create(array_merge([
             'default' => true,
-        ]);
+        ], $currencyParams));
 
         $taxClass = TaxClass::factory()->create();
 

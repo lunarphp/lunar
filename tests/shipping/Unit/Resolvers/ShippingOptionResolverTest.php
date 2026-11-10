@@ -17,7 +17,8 @@ use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
 
-uses(TestCase::class);
+uses(TestCase::class)
+    ->group('shipping', 'shipping-option');
 
 uses(RefreshDatabase::class);
 uses(TestUtils::class);

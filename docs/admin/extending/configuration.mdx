@@ -1,0 +1,67 @@
+---
+title: "Configuration"
+description: "Configure the admin panel behavior and options."
+---
+
+## Panel Configuration
+
+Publish the panel configuration file if it has not already been published:
+
+```bash
+php artisan vendor:publish --tag=lunar-panel
+```
+
+This creates `config/lunar-panel.php` with the following options:
+
+| Option | Type | Default | Description |
+|:-------|:-----|:--------|:------------|
+| `enable_variants` | `bool` | `true` | Show the variants manager when editing a product. Set to `false` if the storefront does not support variants. |
+| `pdf_rendering` | `string` | `download` | How PDFs are handled in the panel. Options are `download` or `stream`. |
+| `scout_enabled` | `bool` | `false` | Use Laravel Scout for searching supported models in panel tables. |
+| `order_count_statuses` | `array` | `['payment-received']` | Order statuses included in the navigation badge count. |
+
+## Product Association Types
+
+By default, the admin panel provides three association types in the product associations dropdown: Cross Sell, Up Sell, and Alternate. These come from the `Lunar\Base\Enums\ProductAssociation` enum.
+
+To add custom association types, create a new backed enum that implements the `ProvidesProductAssociationType` interface:
+
+```php
+namespace App\Enums;
+
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
+
+enum ProductAssociation: string implements ProvidesProductAssociationType
+{
+    case CROSS_SELL = 'cross-sell';
+    case UP_SELL = 'up-sell';
+    case ALTERNATE = 'alternate';
+    case BUNDLE = 'bundle';
+    case ACCESSORY = 'accessory';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::CROSS_SELL => 'Cross Sell',
+            self::UP_SELL => 'Up Sell',
+            self::ALTERNATE => 'Alternate',
+            self::BUNDLE => 'Bundle',
+            self::ACCESSORY => 'Accessory',
+        };
+    }
+}
+```
+
+Then update `config/lunar/products.php` to point to the custom enum:
+
+```php
+return [
+    'association_types_enum' => \App\Enums\ProductAssociation::class,
+];
+```
+
+The admin panel reads from this configuration automatically. The custom types will appear in the association type dropdown when creating or viewing product associations, with no additional setup required.
+
+<Info>
+The enum must be a backed string enum, and each case must implement a `label()` method that returns the human-readable name. See the [Associations reference](/reference/associations#custom-types) for full details on using custom types in application code.
+</Info>

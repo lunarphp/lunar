@@ -10,4 +10,5 @@ return [
      * or add a callable to use your own logic (eg => [MyTaxRateCalculator::class, 'calculate'])
      */
     'shipping_rate_tax_calculation' => 'default',
+
 ];

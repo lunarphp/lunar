@@ -1,0 +1,9 @@
+{
+  "id": "re_TEST",
+  "object": "refund",
+  "amount": {refund_amount},
+  "currency": "usd",
+  "payment_intent": "{payment_intent}",
+  "reason": null,
+  "status": "succeeded"
+}

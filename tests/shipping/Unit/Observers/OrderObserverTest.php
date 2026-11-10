@@ -15,7 +15,8 @@ use Lunar\Shipping\Observers\OrderObserver;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
 
-uses(TestCase::class);
+uses(TestCase::class)
+    ->group('shipping', 'shipping-order');
 uses(RefreshDatabase::class);
 uses(TestUtils::class);
 

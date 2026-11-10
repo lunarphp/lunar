@@ -1,0 +1,376 @@
+---
+title: "Extending Pages"
+sidebarTitle: "Pages"
+description: "How to extend Create, Edit, List, View, and Relation pages in the Lunar admin panel."
+---
+
+Lunar provides extension classes for each type of Filament page. These allow customizing headings, actions, widgets, form behavior, and lifecycle hooks.
+
+Place extension classes in the application, for example at `App\Lunar\Extensions\MyCreateExtension`. Once created, register the extension in a service provider.
+
+## CreatePageExtension
+
+Extends create pages with custom headings, actions, widgets, and lifecycle hooks.
+
+```php
+use Filament\Actions;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Extending\CreatePageExtension;
+
+class MyCreateExtension extends CreatePageExtension
+{
+    public function heading($title): string
+    {
+        return $title . ' - Custom';
+    }
+
+    public function subheading($title): ?string
+    {
+        return 'A custom subheading';
+    }
+
+    public function headerActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\Action::make('Cancel'),
+        ];
+    }
+
+    public function formActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\Action::make('Create and Edit'),
+        ];
+    }
+
+    public function headerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyCustomWidget::make(),
+        ];
+    }
+
+    public function footerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyOtherWidget::make(),
+        ];
+    }
+
+    public function beforeCreate(array $data): array
+    {
+        // Modify data before validation
+        $data['model_code'] .= 'ABC';
+
+        return $data;
+    }
+
+    public function beforeCreation(array $data): array
+    {
+        // Modify data after validation but before saving
+        return $data;
+    }
+
+    public function afterCreation(Model $record, array $data): Model
+    {
+        // Perform actions after the record is created
+        return $record;
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class => MyCreateExtension::class,
+]);
+```
+
+## EditPageExtension
+
+Extends edit pages with custom headings, actions, widgets, and lifecycle hooks.
+
+```php
+use Filament\Actions;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Extending\EditPageExtension;
+
+class MyEditExtension extends EditPageExtension
+{
+    public function heading($title, Model $record): string
+    {
+        return $title . ' - ' . $record->name;
+    }
+
+    public function subheading($title, Model $record): ?string
+    {
+        return 'Editing ' . $record->name;
+    }
+
+    public function headerActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('View on Storefront'),
+                Actions\Action::make('Copy Link'),
+                Actions\Action::make('Duplicate'),
+            ]),
+        ];
+    }
+
+    public function formActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\Action::make('Update and Continue'),
+        ];
+    }
+
+    public function headerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyCustomWidget::make(),
+        ];
+    }
+
+    public function footerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyOtherWidget::make(),
+        ];
+    }
+
+    public function beforeFill(array $data): array
+    {
+        // Modify data before the form is filled
+        return $data;
+    }
+
+    public function beforeSave(array $data): array
+    {
+        // Modify data before saving
+        return $data;
+    }
+
+    public function beforeUpdate(array $data, Model $record): array
+    {
+        // Modify data before the record is updated
+        return $data;
+    }
+
+    public function afterUpdate(Model $record, array $data): Model
+    {
+        // Perform actions after the record is updated
+        return $record;
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class => MyEditExtension::class,
+]);
+```
+
+## ListPageExtension
+
+Extends list pages with custom headings, actions, widgets, and tabs.
+
+```php
+use Filament\Actions;
+use Filament\Resources\Components\Tab;
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Admin\Support\Extending\ListPageExtension;
+
+class MyListExtension extends ListPageExtension
+{
+    public function heading($title): string
+    {
+        return $title . ' - Custom';
+    }
+
+    public function subheading($title): ?string
+    {
+        return 'A custom subheading';
+    }
+
+    public function headerActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\Action::make('Export'),
+        ];
+    }
+
+    public function getTabs(array $tabs): array
+    {
+        return [
+            ...$tabs,
+            'review' => Tab::make('Review')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'review')),
+        ];
+    }
+
+    public function headerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyCustomWidget::make(),
+        ];
+    }
+
+    public function footerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyOtherWidget::make(),
+        ];
+    }
+
+    public function relationManagers(array $managers): array
+    {
+        return $managers;
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class => MyListExtension::class,
+]);
+```
+
+## ViewPageExtension
+
+Extends view pages with custom headings and actions.
+
+```php
+use Filament\Actions;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Extending\ViewPageExtension;
+
+class MyViewExtension extends ViewPageExtension
+{
+    public function heading($title, Model $record): string
+    {
+        return $title . ' - ' . $record->name;
+    }
+
+    public function subheading($title, Model $record): ?string
+    {
+        return 'Viewing ' . $record->name;
+    }
+
+    public function headerActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('Download PDF'),
+            ]),
+        ];
+    }
+
+    public function headerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyCustomWidget::make(),
+        ];
+    }
+
+    public function footerWidgets(array $widgets): array
+    {
+        return [
+            ...$widgets,
+            MyOtherWidget::make(),
+        ];
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class => MyViewExtension::class,
+]);
+```
+
+## RelationPageExtension
+
+Extends relation pages with custom headings, actions, and table customization.
+
+Relation-style pages (those built on `Lunar\Admin\Support\Pages\BaseManageRelatedRecords`) include:
+
+- `ManageBrandCollections`, `ManageBrandProducts`
+- `ManageCollectionChildren`, `ManageCollectionProducts`
+- `ManageProductAssociations`, `ManageProductCollections`, `ManageProductVariants`
+- `ManageVariantMedia`
+- `ManageUrlsRelatedRecords`
+
+```php
+use Filament\Actions;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Extending\RelationPageExtension;
+
+class MyRelationExtension extends RelationPageExtension
+{
+    public function heading($title, Model $record): string
+    {
+        return $title . ' - Custom';
+    }
+
+    public function subheading($title, Model $record): ?string
+    {
+        return 'A custom subheading';
+    }
+
+    public function headerActions(array $actions): array
+    {
+        return [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('Download PDF'),
+            ]),
+        ];
+    }
+
+    public function extendTable(Table $table): Table
+    {
+        return $table->columns([
+            ...$table->getColumns(),
+            TextColumn::make('sku')->label('SKU'),
+        ]);
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class => MyRelationExtension::class,
+]);
+```
+
+### Extending the table <Badge color="green" icon="sparkles" size="sm">Added in 1.5</Badge>
+
+`extendTable` receives the page's default table and returns the modified instance. It is the same seam used by resource and relation-manager extensions, so columns, actions, filters, and query modifiers can all be applied without replacing the page class.
+
+When no extension is registered, the default table behavior is unchanged.
+
+## Extending Pages in Addons
+
+When building an addon for Lunar, a defensive approach is needed when modifying forms since the contents may have been altered by other extensions. Use `getComponents()` to retrieve the currently registered components before appending new ones:
+
+```php
+public function extendForm(Form $form): Form
+{
+    $form->schema([
+        ...$form->getComponents(true),  // Gets the currently registered components
+        TextInput::make('model_code'),
+    ]);
+
+    return $form;
+}
+```

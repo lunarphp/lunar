@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Discount;
+use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -58,6 +59,82 @@ test('can validate based on uses', function () {
     $discount->update([
         'max_uses' => null,
     ]);
+
+    expect($validator->validate('10OFF'))->toBeTrue();
+});
+
+test('enforces max uses per user for the authenticated user', function () {
+    setAuthUserConfig();
+
+    $validator = app(CouponValidator::class);
+
+    $user = User::factory()->create();
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'max_uses_per_user' => 1,
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $this->actingAs($user);
+
+    expect($validator->validate('10OFF'))->toBeTrue();
+
+    $discount->users()->attach($user->id);
+
+    expect($validator->validate('10OFF'))->toBeFalse();
+});
+
+test('does not enforce max uses per user for a guest', function () {
+    setAuthUserConfig();
+
+    $validator = app(CouponValidator::class);
+
+    $user = User::factory()->create();
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'max_uses_per_user' => 1,
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $discount->users()->attach($user->id);
+
+    expect($validator->validate('10OFF'))->toBeTrue();
+});
+
+test('allows another user when one is at the per-user limit', function () {
+    setAuthUserConfig();
+
+    $validator = app(CouponValidator::class);
+
+    $userA = User::factory()->create();
+    $userB = User::factory()->create();
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'max_uses_per_user' => 1,
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $discount->users()->attach($userA->id);
+
+    $this->actingAs($userB);
 
     expect($validator->validate('10OFF'))->toBeTrue();
 });

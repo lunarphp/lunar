@@ -9,6 +9,11 @@ use Lunar\Models\Attribute;
 
 class TranslatedText extends BaseFieldType
 {
+    public static function canHaveDefaultValue(): bool
+    {
+        return true;
+    }
+
     protected static string $synthesizer = TranslatedTextSynth::class;
 
     public static function getConfigurationFields(): array

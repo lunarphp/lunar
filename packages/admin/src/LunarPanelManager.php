@@ -5,6 +5,9 @@ namespace Lunar\Admin;
 use Closure;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -192,6 +195,11 @@ class LunarPanelManager
         Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
         Grid::configureUsing(fn (Grid $grid) => $grid->columnSpanFull());
         Fieldset::configureUsing(fn (Fieldset $fieldset) => $fieldset->columnSpanFull());
+
+        // Livewire skips the TrimStrings middleware, so trim at the form layer instead.
+        TextInput::configureUsing(fn (TextInput $input) => $input->trim());
+        Textarea::configureUsing(fn (Textarea $textarea) => $textarea->trim());
+        TagsInput::configureUsing(fn (TagsInput $tagsInput) => $tagsInput->trim());
 
         return $this;
     }

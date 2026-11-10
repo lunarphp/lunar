@@ -12,11 +12,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Şu anda taslak durumunda olan bu ürün, tüm kanallarda ve müşteri gruplarında gizlidir.',
+            'content' => 'Şu anda taslak durumunda olan bu ürün, tüm kanallarda ve müşteri gruplarında kullanılamaz.',
         ],
         'availability' => [
             'customer_groups' => 'Bu ürün şu anda tüm müşteri grupları için mevcut değil.',
             'channels' => 'Bu ürün şu anda tüm kanallar için mevcut değil.',
+            'hidden_from_guests' => 'Misafirler şu anda bu ürünü göremez veya satın alamaz. Varsayılan müşteri grubu bu ürün için etkin veya görünür değil.',
+            'no_default_customer_group' => 'Varsayılan bir müşteri grubu ayarlanmadığından misafir görünürlüğü buradan kontrol edilemez. Misafir erişimini yönetmek için bir müşteri grubunu varsayılan olarak işaretleyin.',
         ],
     ],
 

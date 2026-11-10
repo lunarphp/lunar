@@ -1167,6 +1167,90 @@ test('can get same draft order when cart does not change', function () {
 
 });
 
+test('cart tax zone override is applied through the full calculation pipeline', function () {
+    // Prices are stored ex-tax; tax is added on top during cart calculation.
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->state(['code' => 'GBP'])->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxClass = TaxClass::factory()->create(['name' => 'Standard', 'default' => true]);
+
+    // Default zone: 0 % – simulates a store where no tax applies for unknown locations.
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
+    $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create(['name' => 'Default Rate']);
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id' => $defaultRate->id,
+        'percentage' => 0,
+    ]);
+
+    // UAE zone: 20 % – the override set by IP-detection middleware.
+    $uaeZone = TaxZone::factory()->state(['default' => false])->create(['name' => 'UAE']);
+    $uaeRate = TaxRate::factory()->state(['tax_zone_id' => $uaeZone])->create(['name' => 'UAE VAT']);
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id' => $uaeRate->id,
+        'percentage' => 20,
+    ]);
+
+    $purchasable = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    // Default zone (0 %) – the cart-level zone is passed through the full pipeline:
+    // CalculateLines publishes the Blink key; CalculateTax forwards it to the driver.
+    $cart->setTaxZone($defaultTaxZone)->calculate();
+    expect($cart->taxTotal->value)->toEqual(0);
+    expect($cart->total->value)->toEqual(1000);
+
+    // Switch to UAE zone (20 %) – the override is correctly picked up.
+    $cart->setTaxZone($uaeZone)->recalculate();
+    expect($cart->taxTotal->value)->toEqual(200);   // 20 % of 1000
+    expect($cart->total->value)->toEqual(1200);
+
+    // Switch back to the default zone – pipeline correctly reverts to 0 %.
+    $cart->setTaxZone($defaultTaxZone)->recalculate();
+    expect($cart->taxTotal->value)->toEqual(0);
+    expect($cart->total->value)->toEqual(1000);
+});
+
+test('setShippingAddress clears the tax zone override by default', function () {
+    $currency = Currency::factory()->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxZone = TaxZone::factory()->state(['default' => false])->create();
+    $cart->setTaxZone($taxZone, refresh: false)->save();
+
+    $cart->setShippingAddress(CartAddress::factory()->make()->toArray());
+
+    expect($cart->fresh()->tax_zone_id)->toBeNull();
+});
+
+test('setShippingAddress preserves the tax zone override when opted out', function () {
+    $currency = Currency::factory()->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxZone = TaxZone::factory()->state(['default' => false])->create();
+    $cart->setTaxZone($taxZone, refresh: false)->save();
+
+    $cart->setShippingAddress(CartAddress::factory()->make()->toArray(), clearTaxZone: false);
+
+    expect($cart->fresh()->tax_zone_id)->toEqual($taxZone->id);
+});
+
 test('active scope correctly filters unmerged carts and isolates users', function () {
     setAuthUserConfig();
 
@@ -1245,4 +1329,34 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
         ->and($foundCart->id)->not->toBe($older->id)
         ->and($foundCart->id)->not->toBe($mergedCart->id)
         ->and($foundCart->merged_id)->toBeNull();
+});
+
+test('orders cart lines by id', function () {
+    $cart = Cart::factory()->create();
+
+    // Cart::lines() must carry an explicit ordering contract. Without an
+    // ORDER BY, row order is undefined by the SQL standard: MySQL/InnoDB
+    // returns clustered primary-key order by coincidence, but PostgreSQL
+    // returns heap order, which changes after an UPDATE. Lunar relies on a
+    // stable line sequence (e.g. GenerateFingerprint reduces $cart->lines in
+    // iteration order), so it must be deterministic across engines.
+    expect($cart->lines()->toBase()->orders)
+        ->toBe([['column' => 'id', 'direction' => 'asc']]);
+});
+
+test('can retrieve cart lines in ascending id order', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $lines = CartLine::factory()
+        ->count(5)
+        ->create(['cart_id' => $cart->id]);
+
+    $expectedOrder = $lines->pluck('id')->sort()->values()->all();
+
+    expect($cart->load('lines')->lines->pluck('id')->all())
+        ->toBe($expectedOrder);
 });

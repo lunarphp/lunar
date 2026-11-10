@@ -1,0 +1,51 @@
+---
+title: "Extending Relation Managers"
+sidebarTitle: "Relation Managers"
+description: "How to extend Filament relation managers in the Lunar admin panel."
+---
+
+Relation manager extensions allow modifying the form and table of any relation manager in the Lunar admin panel. Create a class that extends `RelationManagerExtension` and register it with the `LunarPanel` facade.
+
+## Example
+
+The following example extends the `CustomerGroupPricingRelationManager` to add a custom column to the form and table:
+
+```php
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Lunar\Admin\Support\Extending\RelationManagerExtension;
+
+class MyCustomerGroupPricingExtension extends RelationManagerExtension
+{
+    public function extendForm(Form $form): Form
+    {
+        return $form->schema([
+            ...$form->getComponents(withHidden: true),
+            TextInput::make('custom_column'),
+        ]);
+    }
+
+    public function extendTable(Table $table): Table
+    {
+        return $table->columns([
+            ...$table->getColumns(),
+            TextColumn::make('product_code'),
+        ]);
+    }
+}
+
+// Typically placed in a service provider...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager::class => MyCustomerGroupPricingExtension::class,
+]);
+```
+
+## Available Methods
+
+| Method | Description |
+|:-------|:------------|
+| `extendForm(Form $form)` | Modify the relation manager's form schema. |
+| `extendTable(Table $table)` | Modify the relation manager's table columns and configuration. |
+| `headerActions(array $actions)` | Add or modify header actions. |

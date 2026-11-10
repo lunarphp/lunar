@@ -52,7 +52,7 @@ class SyncTags implements ShouldQueue
     {
         DB::transaction(function () {
             $tagIds = [];
-            // Make sure the tags are uppercase
+            // Tag::value has an uppercasing mutator, but we still upper here so the firstOrCreate lookup matches existing rows under case-sensitive collations.
             $this->tags->map(fn ($tag) => Str::upper($tag))
                 ->each(function ($tag) use (&$tagIds) {
                     $model = Tag::firstOrCreate([

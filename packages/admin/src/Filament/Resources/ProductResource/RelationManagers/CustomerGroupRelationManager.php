@@ -111,9 +111,14 @@ class CustomerGroupRelationManager extends BaseRelationManager
                     ),
             ])->columns([
                 ...[
-                    TextColumn::make('name')->label(
-                        __('lunarpanel::relationmanagers.customer_groups.table.name.label')
-                    ),
+                    TextColumn::make('name')
+                        ->label(
+                            __('lunarpanel::relationmanagers.customer_groups.table.name.label')
+                        )
+                        ->description(fn ($record) => $record->default
+                            ? __('lunarpanel::relationmanagers.customer_groups.table.name.default_description')
+                            : null
+                        ),
                 ],
                 ...$pivotColumns,
                 ...[

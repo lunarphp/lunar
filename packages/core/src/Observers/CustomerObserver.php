@@ -7,12 +7,18 @@ use Lunar\Models\Contracts\Customer as CustomerContract;
 class CustomerObserver
 {
     /**
-     * Handle the Discount "deleting" event.
+     * Handle the Customer "deleting" event.
      *
-     * @return void
+     * Releases foreign key references so the customer can be deleted without
+     * constraint violations. Order and cart rows are kept (customer_id nulled);
+     * addresses are owned by the customer and removed.
      */
-    public function deleting(CustomerContract $customer)
+    public function deleting(CustomerContract $customer): void
     {
+        $customer->carts()->update(['customer_id' => null]);
+        $customer->orders()->update(['customer_id' => null]);
+        $customer->addresses()->delete();
+
         $customer->customerGroups()->detach();
         $customer->discounts()->detach();
         $customer->users()->detach();

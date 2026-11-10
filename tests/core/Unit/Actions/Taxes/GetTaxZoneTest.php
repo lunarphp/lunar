@@ -89,3 +89,43 @@ test('can prioritize taxzones', function () {
 
     expect($zone3->id)->toEqual($defaultTaxZone->id);
 });
+
+test('can ignore a state tax zone from another country', function () {
+    $australia = Country::factory()->create([
+        'name' => 'Australia',
+    ]);
+
+    $unitedStates = Country::factory()->create([
+        'name' => 'United States',
+    ]);
+
+    $washington = State::factory()->create([
+        'country_id' => $unitedStates->id,
+        'code' => 'WA',
+        'name' => 'Washington',
+    ]);
+
+    TaxZoneState::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'state_id' => $washington->id,
+    ]);
+
+    $auZone = TaxZoneCountry::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => $australia->id,
+    ]);
+
+    TaxZone::factory(['default' => true])->create();
+
+    // Western Australia is also "WA", but has no tax zone of its own, so the
+    // Australian country zone should apply.
+    $address = Address::factory()->create([
+        'postcode' => '6000',
+        'state' => 'WA',
+        'country_id' => $australia->id,
+    ]);
+
+    $zone = app(GetTaxZone::class)->execute($address);
+
+    expect($zone->id)->toEqual($auZone->tax_zone_id);
+});

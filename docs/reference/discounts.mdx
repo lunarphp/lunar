@@ -1,0 +1,354 @@
+---
+title: "Discounts"
+description: "Flexible discount system supporting coupons, percentage/fixed reductions, and buy-x-get-y promotions."
+---
+
+Lunar provides a flexible discount system supporting coupons, percentage and fixed reductions, and buy-x-get-y promotions.
+
+## Overview
+
+Lunar provides a discount system that supports multiple discount types out of the box, including amount-off (percentage or fixed) and buy-x-get-y promotions. Discounts can be scoped to specific channels, customer groups, collections, brands, and individual products or variants.
+
+```php
+Lunar\Models\Discount
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `name` | `string` | |
+| `handle` | `string` | Unique identifier |
+| `coupon` | `string` `nullable` | Coupon code customers can enter to apply the discount |
+| `type` | `string` | Fully qualified class name of the discount type |
+| `starts_at` | `dateTime` | When the discount becomes active |
+| `ends_at` | `dateTime` `nullable` | When the discount expires, if `null` the discount does not expire |
+| `uses` | `unsignedInteger` | How many times the discount has been used |
+| `max_uses` | `unsignedMediumInteger` `nullable` | Maximum times this discount can be applied storewide |
+| `max_uses_per_user` | `unsignedMediumInteger` `nullable` | Maximum times a single user can use this discount |
+| `priority` | `unsignedMediumInteger` | Order of priority (default: `1`) |
+| `stop` | `boolean` | Whether to stop processing further discounts after this one is applied |
+| `restriction` | `string` `nullable` | Restriction type |
+| `data` | `json` `nullable` | Discount type-specific configuration data |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `users` | `BelongsToMany` | `User` | Users who have used this discount |
+| `customers` | `BelongsToMany` | `Lunar\Models\Customer` | Customers the discount is restricted to |
+| `customerGroups` | `BelongsToMany` | `Lunar\Models\CustomerGroup` | Customer groups the discount is available to |
+| `channels` | `MorphToMany` | `Lunar\Models\Channel` | Channels the discount is available on |
+| `collections` | `BelongsToMany` | `Lunar\Models\Collection` | Collections associated with the discount |
+| `brands` | `BelongsToMany` | `Lunar\Models\Brand` | Brands associated with the discount |
+| `discountables` | `HasMany` | `Lunar\Models\Discountable` | All discountable entries (conditions, exclusions, limitations, rewards) |
+| `discountableConditions` | `HasMany` | `Lunar\Models\Discountable` | Products or variants that must be in the cart to activate the discount |
+| `discountableExclusions` | `HasMany` | `Lunar\Models\Discountable` | Products or variants excluded from the discount |
+| `discountableLimitations` | `HasMany` | `Lunar\Models\Discountable` | Products or variants the discount is limited to |
+| `discountableRewards` | `HasMany` | `Lunar\Models\Discountable` | Reward products or variants (used by BuyXGetY) |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `active()` | Filters to discounts that have started and have not expired |
+| `usable()` | Filters to discounts where `uses` is less than `max_uses`, or `max_uses` is `null` |
+| `products($productIds, $types)` | Filters by associated product IDs and discountable types |
+| `productVariants($variantIds, $types)` | Filters by associated variant IDs and discountable types |
+| `collections($collectionIds, $types)` | Filters by associated collection IDs and discountable types |
+| `brands($brandIds, $types)` | Filters by associated brand IDs and discountable types |
+| `channel($channel)` | Filters by channel |
+| `customerGroup($customerGroup)` | Filters by customer group |
+
+## Creating a Discount
+
+```php
+use Lunar\Models\Discount;
+
+Discount::create([
+    'name' => '20% Coupon',
+    'handle' => '20_coupon',
+    'coupon' => '20OFF',
+    'type' => 'Lunar\DiscountTypes\AmountOff',
+    'data' => [
+        'fixed_value' => false,
+        'percentage' => 20,
+        'min_prices' => [
+            'USD' => 2000, // $20.00 minimum spend
+        ],
+    ],
+    'starts_at' => '2024-01-01 00:00:00',
+    'ends_at' => null,
+    'max_uses' => null,
+]);
+```
+
+## Discount Status
+
+The `Discount` model provides a `status` attribute that returns the current state of the discount based on its dates and usage.
+
+```php
+use Lunar\Models\Discount;
+
+$discount = Discount::find(1);
+
+$discount->status; // 'active', 'pending', 'expired', or 'scheduled'
+```
+
+| Status | Description |
+|:-------|:------------|
+| `active` | The discount has started and has not expired |
+| `pending` | The discount has not started yet |
+| `expired` | The discount has passed its `ends_at` date |
+| `scheduled` | The discount is scheduled for a future date |
+
+## Resetting the Discount Cache
+
+For performance reasons, applicable discounts are cached per request. To reset this cache (for example, after adding a discount code to a cart), call `resetDiscounts()` on the `Discounts` facade:
+
+```php
+use Lunar\Facades\Discounts;
+
+Discounts::resetDiscounts();
+```
+
+## Validating Coupons
+
+The `Discounts` facade provides a method to validate whether a coupon code is valid:
+
+```php
+use Lunar\Facades\Discounts;
+
+$isValid = Discounts::validateCoupon('20OFF');
+```
+
+The default coupon validator checks that the coupon exists on an active, usable discount. The validator class can be customized in the `config/lunar/discounts.php` configuration file:
+
+```php
+return [
+    'coupon_validator' => \Lunar\Base\Validation\CouponValidator::class,
+];
+```
+
+## Discountable
+
+The `Discountable` model links products, product variants, or collections to a discount. Each entry has a `type` that determines its role.
+
+```php
+Lunar\Models\Discountable
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `discount_id` | `foreignId` | |
+| `discountable_type` | `string` | Morph type (e.g., `product`, `product_variant`, `collection`) |
+| `discountable_id` | `unsignedBigInteger` | Morph ID |
+| `type` | `string` | The role: `condition`, `exclusion`, `limitation`, or `reward` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+The `type` field determines how the discountable relates to the discount:
+
+- **`condition`** — The product or variant must be in the cart for the discount to activate.
+- **`exclusion`** — The product or variant is excluded from the discount.
+- **`limitation`** — The discount only applies to these products or variants.
+- **`reward`** — These products or variants are given as the reward (used by BuyXGetY).
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `discount` | `BelongsTo` | `Lunar\Models\Discount` | The parent discount |
+| `discountable` | `MorphTo` | `Product`, `ProductVariant`, or `Collection` | The associated purchasable or collection |
+
+## Built-in Discount Types
+
+Lunar ships with two discount types. Both extend `Lunar\DiscountTypes\AbstractDiscountType`.
+
+### AmountOff
+
+```php
+Lunar\DiscountTypes\AmountOff
+```
+
+Applies either a percentage or fixed amount discount to eligible cart lines. The `data` column stores the discount configuration:
+
+**Percentage discount:**
+
+```php
+use Lunar\Models\Discount;
+
+Discount::create([
+    'name' => '10% Off',
+    'handle' => '10_percent_off',
+    'type' => 'Lunar\DiscountTypes\AmountOff',
+    'data' => [
+        'fixed_value' => false,
+        'percentage' => 10,
+        'min_prices' => [
+            'USD' => 5000, // $50.00 minimum spend
+        ],
+    ],
+    'starts_at' => now(),
+    'ends_at' => null,
+]);
+```
+
+**Fixed value discount:**
+
+```php
+use Lunar\Models\Discount;
+
+Discount::create([
+    'name' => '$5 Off',
+    'handle' => '5_dollars_off',
+    'type' => 'Lunar\DiscountTypes\AmountOff',
+    'data' => [
+        'fixed_value' => true,
+        'fixed_values' => [
+            'USD' => 500, // $5.00 off (stored in minor units)
+            'EUR' => 450,
+        ],
+    ],
+    'starts_at' => now(),
+    'ends_at' => null,
+]);
+```
+
+### BuyXGetY
+
+```php
+Lunar\DiscountTypes\BuyXGetY
+```
+
+Allows "buy X, get Y free" style promotions. Condition products are defined through the `discountableConditions` relationship, and reward products through the `discountableRewards` relationship. Both relationships accept products, product variants, or collections.
+
+```php
+use Lunar\Models\Discount;
+
+$discount = Discount::create([
+    'name' => 'Buy 2 Get 1 Free',
+    'handle' => 'buy_2_get_1',
+    'type' => 'Lunar\DiscountTypes\BuyXGetY',
+    'data' => [
+        'min_qty' => 2,
+        'reward_qty' => 1,
+        'max_reward_qty' => 5,
+        'automatically_add_rewards' => false,
+    ],
+    'starts_at' => now(),
+    'ends_at' => null,
+]);
+```
+
+| Data Field | Type | Description |
+|:-----------|:-----|:------------|
+| `min_qty` | `integer` | Minimum quantity of condition products required to trigger the discount |
+| `reward_qty` | `integer` | Number of reward items per qualifying group |
+| `max_reward_qty` | `integer` | Maximum total reward items (optional) |
+| `automatically_add_rewards` | `boolean` | Whether to automatically add reward items to the cart |
+
+<Info>
+From Lunar 1.5, `BuyXGetY` also enforces the discount's own conditions (minimum spend, customer restrictions, and `max_uses_per_user`) before awarding a reward, in the same way as `Lunar\DiscountTypes\AmountOff`. In earlier versions only `min_qty` gated the discount. See the [upgrade guide](/getting-started/overview/upgrade-guide#discount-conditions-are-now-honored-by-buyxgety).
+</Info>
+
+#### Automatically adding rewards
+
+When `automatically_add_rewards` is `true`, qualifying carts have the reward added as a cart line rather than requiring the customer to add it themselves.
+
+- Products, product variants, and collections are all supported as the automatically added reward.
+- A reward quantity greater than one produces a single cart line with that quantity, not one line per item.
+- Reward lines are stored using Lunar's morph map, so `purchasable_type` matches any other line holding the same purchasable (for example `product_variant`). Queries that filter cart or order lines by morph type include reward lines.
+- Only rewards that can be fulfilled are selected, so a reward that is out of stock is skipped rather than raising an error when the line is added.
+
+#### Collection conditions and rewards <Badge color="green" icon="sparkles" size="sm">Added in 1.5</Badge>
+
+A `BuyXGetY` discount can match against an entire collection rather than listing every product or variant individually. The match logic walks each cart line's product, checks the collections it belongs to, and compares those against the collections attached as conditions or rewards.
+
+```php
+use Lunar\Models\Collection;
+use Lunar\Models\Discount;
+
+$collection = Collection::find(1);
+
+$discount = Discount::create([
+    'name' => 'Buy 2 from Summer, Get 1 from Sale',
+    'handle' => 'summer_sale',
+    'type' => 'Lunar\DiscountTypes\BuyXGetY',
+    'data' => [
+        'min_qty' => 2,
+        'reward_qty' => 1,
+    ],
+]);
+
+$discount->collections()->attach($collection, ['type' => 'condition']);
+$discount->collections()->attach($collection, ['type' => 'reward']);
+```
+
+Conditions and rewards can mix product, variant, and collection discountables on the same discount.
+
+## Custom Discount Types
+
+Custom discount types can be created by extending `Lunar\DiscountTypes\AbstractDiscountType`:
+
+```php
+<?php
+
+namespace App\DiscountTypes;
+
+use Lunar\Models\Contracts\Cart;
+use Lunar\DiscountTypes\AbstractDiscountType;
+
+class CustomDiscountType extends AbstractDiscountType
+{
+    /**
+     * Return the name of the discount type.
+     */
+    public function getName(): string
+    {
+        return 'Custom Discount Type';
+    }
+
+    /**
+     * Apply the discount to the cart.
+     */
+    public function apply(Cart $cart): Cart
+    {
+        // Custom discount logic...
+        return $cart;
+    }
+}
+```
+
+Register the custom type using the `Discounts` facade, typically in a service provider:
+
+```php
+use Lunar\Facades\Discounts;
+use App\DiscountTypes\CustomDiscountType;
+
+Discounts::addType(CustomDiscountType::class);
+```
+
+## Discounts Facade
+
+The `Lunar\Facades\Discounts` facade provides methods for managing and applying discounts:
+
+```php
+use Lunar\Facades\Discounts;
+```
+
+| Method | Returns | Description |
+|:-------|:--------|:------------|
+| `channel($channel)` | `DiscountManager` | Set the channel(s) for discount filtering |
+| `customerGroup($group)` | `DiscountManager` | Set the customer group(s) for discount filtering |
+| `getChannels()` | `Collection` | Get the currently set channels |
+| `getCustomerGroups()` | `Collection` | Get the currently set customer groups |
+| `getDiscounts()` | `Collection` | Get available discounts for the current channels and groups |
+| `addType($type)` | `DiscountManager` | Register a custom discount type |
+| `getTypes()` | `Collection` | Get all registered discount types |
+| `apply($cart)` | `Cart` | Apply all relevant discounts to a cart |
+| `getApplied()` | `Collection` | Get the discounts that were applied |
+| `resetDiscounts()` | `DiscountManager` | Clear the cached discounts |
+| `validateCoupon($coupon)` | `bool` | Validate whether a coupon code is valid and usable |

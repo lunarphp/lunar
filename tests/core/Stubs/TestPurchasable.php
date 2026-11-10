@@ -160,4 +160,9 @@ class TestPurchasable implements Purchasable
     {
         return 999;
     }
+
+    public function isPurchasable(): bool
+    {
+        return true;
+    }
 }

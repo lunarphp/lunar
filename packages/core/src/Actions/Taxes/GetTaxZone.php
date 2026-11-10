@@ -17,7 +17,7 @@ class GetTaxZone
         }
 
         if ($address && $address->state) {
-            $stateZone = app(GetTaxZoneState::class)->execute($address->state);
+            $stateZone = app(GetTaxZoneState::class)->execute($address->state, $address->country_id);
             if ($stateZone) {
                 return $stateZone->taxZone;
             }

@@ -1,0 +1,116 @@
+---
+title: "Extending Taxation"
+sidebarTitle: "Taxation"
+---
+
+Taxation is driver-based, allowing custom tax calculation logic to replace or extend the default system.
+
+## Overview
+
+Taxation is complex and sometimes what Lunar offers out of the box is not sufficient. This is why taxation is driver-based, allowing custom logic to be added as needed.
+
+By default, a `SystemTaxDriver` is used, which relies on Lunar's internal models and database as outlined in the [Taxation](/reference/taxation) reference. To use a custom implementation, the driver can be changed in the `config/lunar/taxes.php` config file.
+
+```php
+<?php
+
+return [
+    'driver' => 'system',
+];
+```
+
+## Writing a Custom Driver
+
+A custom driver must implement the `Lunar\Base\TaxDriver` interface:
+
+```php
+<?php
+
+namespace App\Drivers;
+
+use Lunar\Base\Addressable;
+use Lunar\Base\Purchasable;
+use Lunar\Base\TaxDriver;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Models\Contracts\CartLine;
+use Lunar\Models\Contracts\Currency;
+
+class TaxJar implements TaxDriver
+{
+    /**
+     * Set the shipping address.
+     */
+    public function setShippingAddress(?Addressable $address = null): self
+    {
+        // ...
+        return $this;
+    }
+
+    /**
+     * Set the billing address.
+     */
+    public function setBillingAddress(?Addressable $address = null): self
+    {
+        // ...
+        return $this;
+    }
+
+    /**
+     * Set the currency.
+     */
+    public function setCurrency(Currency $currency): self
+    {
+        // ...
+        return $this;
+    }
+
+    /**
+     * Set the purchasable item.
+     */
+    public function setPurchasable(Purchasable $purchasable): self
+    {
+        // ...
+        return $this;
+    }
+
+    /**
+     * Set the cart line.
+     */
+    public function setCartLine(CartLine $cartLine): self
+    {
+        // ...
+        return $this;
+    }
+
+    /**
+     * Return the tax breakdown from a given sub total.
+     *
+     * @param  int  $subTotal
+     */
+    public function getBreakdown($subTotal): TaxBreakdown
+    {
+        // Build and return a TaxBreakdown instance...
+    }
+}
+```
+
+Once the driver is created, register it by extending the tax manager in a service provider:
+
+```php
+public function boot()
+{
+    \Lunar\Facades\Taxes::extend('taxjar', function ($app) {
+        return $app->make(TaxJar::class);
+    });
+}
+```
+
+Then set the driver in the `config/lunar/taxes.php` config:
+
+```php
+<?php
+
+return [
+    'driver' => 'taxjar',
+];
+```

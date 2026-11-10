@@ -1,0 +1,132 @@
+---
+title: "Extending Carts"
+sidebarTitle: "Carts"
+---
+
+The cart system can be extended with custom pipelines and modifiers to add business logic.
+
+## Overview
+
+Carts are a central part of any e-commerce storefront. The cart system is designed to be easily extended, allowing any custom logic to be added throughout a cart's lifetime.
+
+## Pipelines
+
+### Adding a Cart Pipeline
+
+All pipelines are defined in `config/lunar/cart.php`
+
+```php
+'pipelines' => [
+    /*
+     * Run these pipelines when the cart is calculating.
+     */
+    'cart' => [
+        Lunar\Pipelines\Cart\CalculateLines::class,
+        Lunar\Pipelines\Cart\ApplyShipping::class,
+        Lunar\Pipelines\Cart\ApplyDiscounts::class,
+        Lunar\Pipelines\Cart\CalculateTax::class,
+        Lunar\Pipelines\Cart\Calculate::class,
+    ],
+
+    /*
+     * Run these pipelines when the cart lines are being calculated.
+     */
+    'cart_lines' => [
+        Lunar\Pipelines\CartLine\GetUnitPrice::class,
+    ],
+],
+```
+
+You can add your own pipelines to the configuration, they might look something like:
+
+```php
+<?php
+
+namespace App\Pipelines\Cart;
+
+use Closure;
+use Lunar\Models\Contracts\Cart;
+
+class CustomCartPipeline
+{
+    public function handle(Cart $cart, Closure $next): mixed
+    {
+        // Do something to the cart...
+
+        return $next($cart);
+    }
+}
+```
+
+```php
+'cart' => [
+    // ...
+    App\Pipelines\Cart\CustomCartPipeline::class,
+],
+```
+
+<Tip>
+Pipelines will run from top to bottom
+</Tip>
+
+## Actions
+
+During the lifecycle of a cart, various actions are taken. While generally what Lunar provides will be fine for most storefronts, there are times where something slightly different may be needed. For this reason, all actions are configurable and can be swapped out as needed.
+
+Actions are defined in `config/lunar/cart.php` and if you need to replace an action, check the class of the action you want to change to see what it is expecting.
+
+## Action validation
+
+You may wish to provide some validation against actions before they run. Your own validation may look something like:
+
+
+```php
+<?php
+
+namespace App\Validation\CartLine;
+
+use Lunar\Validation\BaseValidator;
+
+class CartLineQuantity extends BaseValidator
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function validate(): bool
+    {
+        $quantity = $this->parameters['quantity'] ?? 0;
+
+        // ...
+
+        if (!$condition) {
+            return $this->fail('cart', 'Something went wrong');
+        }
+
+
+        return $this->pass();
+    }
+}
+
+```
+
+You can then register this class against the corresponding action in `config/lunar/cart.php`:
+
+```php
+'validators' => [
+    'add_to_cart' => [
+        // ...
+        \App\Validation\CartLine\CartLineQuantity::class,
+    ],
+    // ...
+],
+```
+
+If validation fails, a `Lunar\Exceptions\Carts\CartException` will be thrown. Errors can be accessed in the same way as Laravel's own validation responses.
+
+```php
+try {
+    $cart->setShippingOption($option);
+} catch (\Lunar\Exceptions\Carts\CartException $e) {
+    $e->errors()->all();
+}
+```

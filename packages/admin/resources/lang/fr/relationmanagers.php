@@ -32,6 +32,7 @@ return [
             'description' => 'Associez des groupes de clients à ce :type pour déterminer sa disponibilité.',
             'name' => [
                 'label' => 'Nom',
+                'default_description' => 'Par défaut — contrôle l\'accès des invités',
             ],
             'enabled' => [
                 'label' => 'Activé',

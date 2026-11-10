@@ -19,6 +19,13 @@ class MockClient implements ClientInterface
 
     public string $url;
 
+    /**
+     * Every request made against the mock, for asserting outgoing payloads.
+     *
+     * @var array<int, array{method: string, url: string, params: ?array}>
+     */
+    public array $requests = [];
+
     private bool $failThenCaptureCalled = false;
 
     public function __construct()
@@ -35,6 +42,8 @@ class MockClient implements ClientInterface
 
     public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
     {
+        $this->requests[] = ['method' => $method, 'url' => $absUrl, 'params' => $params];
+
         $id = array_slice(explode('/', $absUrl), -1)[0];
 
         $policy = config('lunar.stripe.policy');
@@ -42,6 +51,16 @@ class MockClient implements ClientInterface
         if ($method == 'get' && str_contains($absUrl, 'charges/CH_LINK')) {
             $this->rBody = $this->getResponse('charge_link', [
                 'status' => 'succeeded',
+                ...$this->nextData,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
+        if ($method == 'get' && str_contains($absUrl, 'charges/')) {
+            $this->rBody = $this->getResponse('charge', [
+                'id' => $id,
+                'payment_intent' => 'PI_CAPTURE',
                 ...$this->nextData,
             ]);
 
@@ -158,6 +177,15 @@ class MockClient implements ClientInterface
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
+        }
+
+        if ($method == 'post' && str_contains($absUrl, 'refunds')) {
+            $this->rBody = $this->getResponse('refund', [
+                'refund_amount' => $params['amount'] ?? 0,
+                'payment_intent' => $params['payment_intent'] ?? 'PI_CAPTURE',
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
         }
 
         if ($method == 'post' && str_contains($absUrl, 'payment_intents')) {

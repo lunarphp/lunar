@@ -1,0 +1,138 @@
+---
+title: "Security"
+description: "Security features and best practices for Lunar-powered storefronts."
+---
+
+Lunar is built on Laravel's security foundations and adds e-commerce-specific protections for payments, admin access, and customer data.
+
+## Reporting Vulnerabilities
+
+If a security issue is discovered in Lunar, please reach out privately on [Discord](https://lunarphp.com/discord) or via email at [security@lunarphp.io](mailto:security@lunarphp.io) so the issue can be addressed and patched as soon as possible. Do not open public GitHub issues for security vulnerabilities.
+
+## Securing Laravel
+
+Lunar inherits Laravel's built-in security features including CSRF protection, encryption, and hashed passwords. Before deploying to production, review these Laravel guides:
+
+- [Deployment](https://laravel.com/docs/deployment)
+- [Encryption](https://laravel.com/docs/encryption)
+- [Hashing](https://laravel.com/docs/hashing)
+
+## Admin Panel Security
+
+The admin panel uses a dedicated `staff` authentication guard, separate from your storefront's user authentication. This means admin sessions are completely isolated from customer sessions.
+
+### Two-Factor Authentication
+
+Lunar's admin panel supports two-factor authentication (2FA) out of the box. In production environments, 2FA can be enforced for all staff members:
+
+```php
+use Lunar\Admin\LunarPanelManager;
+
+LunarPanelManager::forceTwoFactorAuth();
+```
+
+To disable 2FA entirely (not recommended for production):
+
+```php
+LunarPanelManager::disableTwoFactorAuth();
+```
+
+When enabled, staff members are prompted to set up 2FA on their next login and are provided with recovery codes for account recovery.
+
+### Role-Based Access Control
+
+Lunar uses [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) for granular access control. Permissions are scoped to the `staff` guard and support hierarchical grouping with dot notation (e.g., `settings:manage-staff`).
+
+For more details on configuring roles and permissions, see the [Access Control](/admin/extending/access-control) documentation.
+
+### Session Protection
+
+The admin panel applies the following middleware to all routes:
+
+- **CSRF verification** prevents cross-site request forgery attacks
+- **Cookie encryption** ensures cookies cannot be tampered with
+- **Session authentication** regenerates the session ID on authentication changes, preventing session fixation attacks
+
+## Payment Security
+
+### PCI Compliance
+
+Lunar does not store sensitive card data. All payment processing is delegated to PCI-compliant providers such as Stripe, PayPal, and Opayo. Only non-sensitive reference data is stored locally:
+
+- Last four digits of the card number
+- Card type/brand
+- Transaction reference IDs
+
+Raw card numbers, CVVs, and full expiry dates are never stored in the database.
+
+### Webhook Verification
+
+Payment add-ons such as Stripe automatically verify webhook signatures before processing events. This ensures that incoming webhook requests genuinely originate from the payment provider and have not been tampered with.
+
+### 3D Secure & Strong Customer Authentication
+
+The Opayo add-on includes built-in support for 3D Secure and Strong Customer Authentication (SCA/PSD2). The Stripe add-on handles SCA through Stripe's Payment Intents API. These protocols add an additional layer of verification during checkout to reduce fraud.
+
+## Cart & Session Security
+
+Lunar's cart session manager ties carts to the authenticated user when available, preventing cart hijacking. On logout, cart sessions are automatically cleared through the `CartSessionAuthListener`, ensuring abandoned sessions cannot be reused.
+
+These behaviors are configurable in `config/lunar/cart_session.php`:
+
+| Option | Description |
+|:--|:--|
+| `session_key` | The session key used to store the cart identifier |
+| `auto_create` | Whether to create a cart automatically when none exists |
+| `delete_on_forget` | Whether to delete cart data from the database on logout |
+
+## Activity Logging
+
+Lunar uses [Spatie Activity Log](https://spatie.be/docs/laravel-activitylog) to maintain an audit trail of changes to core models including orders, transactions, and carts. Every change records what was modified, when, and by whom. Activity logs are viewable from the admin panel.
+
+Sensitive fields can be excluded from logging on a per-model basis to prevent unnecessary exposure.
+
+## Securing Search
+
+Depending on the search driver in use, additional steps may be needed to protect indexed data in production. To provide a rich search experience in the admin panel, Lunar indexes several models, some of which may contain sensitive information.
+
+### What Is Sensitive Information?
+
+Sensitive information includes any data that contains details about customers or orders, whether personally identifiable or not. This includes addresses, email addresses, names, and order details.
+
+### Lunar's Indexes
+
+Index names are relative to the `SCOUT_PREFIX` environment variable.
+
+| Model | Index | Contains Sensitive Information |
+|:--|:--|:--|
+| `Lunar\Models\Product` | `products` | No |
+| `Lunar\Models\Collection` | `collections` | No |
+| `Lunar\Models\ProductOption` | `product_options` | No |
+| `Lunar\Models\Customer` | `customers` | Yes |
+| `Lunar\Models\Order` | `orders` | Yes |
+
+### Securing Meilisearch
+
+In a production environment, an API key must be set to control access to Meilisearch endpoints. It is recommended to use two API keys: one for admin tasks such as indexing documents (read/write) and one solely for reading.
+
+See: [Run Meilisearch in production](https://docs.meilisearch.com/learn/cookbooks/running_production.html)
+
+### Securing Algolia
+
+Algolia provides many security features out of the box, along with additional steps to further lock down access.
+
+See: [Algolia Security Best Practices](https://www.algolia.com/doc/guides/security/security-best-practices/)
+
+## Production Checklist
+
+Before deploying a Lunar-powered storefront to production, verify the following:
+
+- [ ] `APP_DEBUG` is set to `false`
+- [ ] `APP_ENV` is set to `production`
+- [ ] All payment provider API keys use production credentials, not test keys
+- [ ] Webhook secrets are configured for payment providers
+- [ ] Two-factor authentication is enabled (or enforced) for admin staff
+- [ ] Staff roles and permissions are configured, not all staff given admin access
+- [ ] Search API keys are restricted to the minimum required access
+- [ ] HTTPS is enforced for all traffic
+- [ ] The `APP_KEY` is set and kept secret

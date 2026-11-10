@@ -8,6 +8,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
@@ -244,4 +246,55 @@ test('can get correct price inc tax based on tax class', function () {
     expect($genericProductVariant->pricing()->currency($currency)->get()->matched->priceIncTax()->value)->toEqual(12200);
     expect($foodProductVariant->pricing()->currency($currency)->get()->matched->priceIncTax()->value)->toEqual(416);
     expect($genericProductVariant->pricing()->qty(20)->currency($currency)->get()->matched->priceIncTax()->value)->toEqual(9760);
+});
+
+test('reports unpurchasable when soft-deleted', function () {
+    $variant = ProductVariant::factory()->create();
+
+    expect($variant->isPurchasable())->toBeTrue();
+
+    $variant->delete();
+
+    expect($variant->fresh()->isPurchasable())->toBeFalse();
+});
+
+test('reports unpurchasable when the parent product is draft', function () {
+    $product = Product::factory()->create(['status' => 'draft']);
+    $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    expect($variant->isPurchasable())->toBeFalse();
+
+    $product->update(['status' => 'published']);
+
+    expect($variant->fresh()->isPurchasable())->toBeTrue();
+});
+
+test('reports unpurchasable when the parent product is soft-deleted', function () {
+    $product = Product::factory()->create(['status' => 'published']);
+    $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    expect($variant->isPurchasable())->toBeTrue();
+
+    $product->delete();
+
+    expect($variant->fresh()->isPurchasable())->toBeFalse();
+});
+
+test('returns variant option values ordered by position', function () {
+    $variant = ProductVariant::factory()->create();
+    $option = ProductOption::factory()->create();
+
+    // Attached deliberately out of position order. Without an explicit ORDER BY
+    // the pivot rows would come back in attachment order ([3, 1, 2]); the
+    // relationship must order by the option value's position so getOption()
+    // (snapshotted onto order lines) is deterministic across database engines.
+    $values = collect([3, 1, 2])->map(fn ($position) => ProductOptionValue::factory()->create([
+        'product_option_id' => $option->id,
+        'position' => $position,
+    ]));
+
+    $variant->values()->attach($values->pluck('id')->all());
+
+    expect($variant->load('values')->values->pluck('position')->all())
+        ->toBe([1, 2, 3]);
 });

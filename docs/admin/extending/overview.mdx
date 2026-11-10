@@ -1,0 +1,121 @@
+---
+title: "Extending the Admin Panel"
+description: "An overview of how to extend Lunar's admin panel pages and resources."
+---
+
+The Lunar admin panel is highly customizable. Extensions allow adding and changing the behavior of existing Filament resources. This is useful for adding buttons, custom functionality, or modifying how data is displayed.
+
+## Extending Pages
+
+To extend a page, create an extension class and register it with the `LunarPanel` facade.
+
+### Extending an edit page
+
+The following example registers a custom extension for the `EditProduct` page:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
+use App\Admin\Extensions\MyEditExtension;
+
+LunarPanel::extensions([
+    EditProduct::class => MyEditExtension::class,
+]);
+```
+
+### Extending a list page
+
+The following example registers a custom extension for the `ListProducts` page:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
+use App\Admin\Extensions\MyListExtension;
+
+LunarPanel::extensions([
+    ListProducts::class => MyListExtension::class,
+]);
+```
+
+## Extending Resources
+
+Much like extending pages, resource extensions are created and registered with the `LunarPanel` facade.
+
+The following example registers a custom extension for the `ProductResource`:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Admin\Filament\Resources\ProductResource;
+use App\Admin\Extensions\MyProductResourceExtension;
+
+LunarPanel::extensions([
+    ProductResource::class => MyProductResourceExtension::class,
+]);
+```
+
+## Extendable Resources
+
+All Lunar panel resources are extendable, allowing custom functionality to be added or existing behavior to be changed.
+
+```php
+use Lunar\Admin\Filament\Resources\ActivityResource;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource;
+use Lunar\Admin\Filament\Resources\BrandResource;
+use Lunar\Admin\Filament\Resources\ChannelResource;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource;
+use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Filament\Resources\CurrencyResource;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource;
+use Lunar\Admin\Filament\Resources\CustomerResource;
+use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\LanguageResource;
+use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\ProductOptionResource;
+use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductTypeResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\StaffResource;
+use Lunar\Admin\Filament\Resources\TagResource;
+use Lunar\Admin\Filament\Resources\TaxClassResource;
+use Lunar\Admin\Filament\Resources\TaxRateResource;
+use Lunar\Admin\Filament\Resources\TaxZoneResource;
+```
+
+## Events
+
+The admin panel dispatches events for changes made through its relation managers and management pages, where an Eloquent model event alone would not describe what happened. These are useful for invalidating caches, syncing to an external system, or triggering downstream work.
+
+Every event lives in the `Lunar\Admin\Events` namespace and exposes a single public property, `$model`. For changes made through a relation manager, `$model` is the record that owns the relationship rather than the related record that changed.
+
+| Event | Dispatched when | `$model` |
+|:------|:----------------|:---------|
+| `ChildCollectionCreated` | A child collection is created beneath another collection | Parent collection |
+| `CollectionProductAttached` | A product is attached to a collection | Collection |
+| `CollectionProductDetached` | A product is detached from a collection | Collection |
+| `CustomerAddressEdited` | A customer's address is edited | Address |
+| `CustomerUserEdited` | A user associated with a customer is edited | User |
+| `ModelChannelsUpdated` | A model's channel availability is updated | Owning model |
+| `ModelMediaUpdated` | A model's media is added, edited, or removed | Owning model |
+| `ModelPricesUpdated` | A model's prices are updated | Owning model |
+| `ModelUrlsUpdated` | A model's URLs are updated | Owning model |
+| `ProductAssociationsUpdated` | A product's associations are updated | Product |
+| `ProductCollectionsUpdated` | The collections a product belongs to are updated | Product |
+| `ProductCustomerGroupsUpdated` | A product's customer group availability is updated | Product |
+| `ProductPricingUpdated` | A product's customer group pricing is updated | Product |
+| `ProductVariantInventoryUpdated` <Badge color="green" icon="sparkles" size="sm">Added in 1.5</Badge> | Stock is saved on the product or variant inventory page | Product variant |
+| `ProductVariantOptionsUpdated` | A product's option values are updated | Product |
+
+Listen for them as with any Laravel event:
+
+```php
+use Illuminate\Support\Facades\Event;
+use Lunar\Admin\Events\ProductVariantInventoryUpdated;
+
+Event::listen(ProductVariantInventoryUpdated::class, function (ProductVariantInventoryUpdated $event) {
+    $event->model; // Lunar\Models\ProductVariant
+});
+```
+
+<Info>
+These events cover changes made through the admin panel only. To react to changes from any source, including the storefront and queued jobs, observe the Eloquent model instead.
+</Info>

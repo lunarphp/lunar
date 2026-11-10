@@ -29,7 +29,10 @@ class CustomerIndexer extends ScoutIndexer
     public function makeAllSearchableUsing(Builder $query): Builder
     {
         return $query->with([
-            'users',
+            'users' => fn ($query) => $query->select(
+                $query->getModel()->qualifyColumn('id'),
+                $query->getModel()->qualifyColumn('email'),
+            ),
         ]);
     }
 

@@ -155,4 +155,9 @@ class ShippingOption implements Purchasable
     {
         return 1;
     }
+
+    public function isPurchasable(): bool
+    {
+        return true;
+    }
 }

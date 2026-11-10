@@ -1,0 +1,224 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Lunar PHP",
+  "colors": {
+    "primary": "#4bc7f8",
+    "light": "#4bc7f8",
+    "dark": "#4bc7f8"
+  },
+  "background": {
+    "decoration": "grid"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Poppins"
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/lunarphp/lunar"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://lunarphp.com",
+      "x": "https://x.com/lunarphp",
+      "github": "https://github.com/lunarphp",
+      "discord": "https://lunarphp.com/discord",
+      "linkedin": "https://linkedin.com/company/lunarphp"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Getting Started",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "getting-started/overview/introduction",
+              "getting-started/overview/upgrade-guide",
+              "getting-started/overview/security",
+              "getting-started/overview/contributing",
+              "getting-started/overview/local-development",
+              "getting-started/overview/ai-development"
+            ]
+          },
+          {
+            "group": "Setup & Configuration",
+            "pages": [
+              "getting-started/setup/installation",
+              "getting-started/setup/system-settings"
+            ]
+          },
+          {
+            "group": "Starter Kits",
+            "pages": [
+              "getting-started/starter-kits/livewire",
+              "getting-started/starter-kits/inertia-vue"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Storefront",
+            "pages": [
+              "guides/catalog-menu",
+              "guides/product-listing-page",
+              "guides/product-display-page",
+              "guides/search",
+              "guides/cart",
+              "guides/checkout",
+              "guides/payment-integration"
+            ]
+          },
+          {
+            "group": "Customer Account",
+            "pages": [
+              "guides/customer-authentication",
+              "guides/order-history",
+              "guides/customer-addresses"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Core",
+            "pages": [
+              {
+                "group": "Catalog",
+                "pages": [
+                  "reference/associations",
+                  "reference/attributes",
+                  "reference/collections",
+                  "reference/media",
+                  "reference/products",
+                  "reference/search",
+                  "reference/urls"
+                ]
+              },
+              {
+                "group": "Order Management",
+                "pages": [
+                  "reference/addresses",
+                  "reference/carts",
+                  "reference/countries-states",
+                  "reference/customers",
+                  "reference/discounts",
+                  "reference/orders",
+                  "reference/payments",
+                  "reference/pricing"
+                ]
+              },
+              {
+                "group": "Configuration",
+                "pages": [
+                  "reference/activity-log",
+                  "reference/channels",
+                  "reference/currencies",
+                  "reference/languages",
+                  "reference/tags",
+                  "reference/taxation"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Storefront",
+            "pages": [
+              "storefront-utils/storefront-session"
+            ]
+          },
+          {
+            "group": "Extending",
+            "pages": [
+              "extending/carts",
+              "extending/discounts",
+              "extending/models",
+              "extending/orders",
+              "extending/payments",
+              "extending/search",
+              "extending/shipping",
+              "extending/taxation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Admin Panel",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "admin/introduction"
+            ]
+          },
+          {
+            "group": "Extending",
+            "pages": [
+              "admin/extending/overview",
+              "admin/extending/access-control",
+              "admin/extending/addons",
+              "admin/extending/attributes",
+              "admin/extending/configuration",
+              "admin/extending/panel",
+              "admin/extending/pages",
+              "admin/extending/resources",
+              "admin/extending/relation-managers",
+              "admin/extending/order-management"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Add-ons",
+        "groups": [
+          {
+            "group": "General",
+            "pages": [
+              "addons/table-rate-shipping",
+              "addons/search"
+            ]
+          },
+          {
+            "group": "Payments",
+            "pages": [
+              "addons/payments/stripe",
+              "addons/payments/paypal",
+              "addons/payments/opayo"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "addons/community/overview"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+---
+title: "Access Control"
+description: "Manage staff members, roles, permissions, and two-factor authentication in the admin panel."
+---
+
+## Staff Members
+
+Staff members are the users who can log in to the admin panel. They are stored in a separate table from the `users` table used for customer authentication. This is a deliberate design choice to ensure that customers can never accidentally be given access to the admin panel.
+
+## Roles and Permissions
+
+The Lunar admin panel uses roles and permissions for authorization, powered by the `spatie/laravel-permission` package. Multiple permissions can be assigned to a role, and roles can be assigned to staff members rather than assigning permissions individually.
+
+### Roles
+
+Lunar provides two built-in roles: `admin` and `staff`. New roles can be created using the Access Control page in the Staff menu.
+
+After installation, the panel has one admin. Additional admin accounts can be assigned, but non-admin staff cannot assign the admin role to others.
+
+### Permissions
+
+Permissions can be assigned to roles or directly to individual staff members. Permissions control what a staff member can see and do in the panel. If a user does not have the required permission for a page or action, they will receive an unauthorized HTTP error. They may also see fewer menu items in the navigation.
+
+To manage permissions for a staff member, edit them through the staff page and assign the desired permissions.
+
+### Adding Permissions
+
+Permissions should not be created through the panel UI, as the corresponding authorization logic must be implemented in code. The recommended approach is to create permissions through a Laravel migration or Lunar migration state, which allows them to be deployed consistently across environments.
+
+## Authorization
+
+First-party permissions provided by Lunar are used to authorize the respective sections of the panel. When adding custom permissions for new pages or functionality, the corresponding authorization checks must also be implemented.
+
+For example, authorization can be applied using middleware or checked directly in code:
+
+```php
+// As route middleware
+Route::get('/custom-page', CustomPageController::class)
+    ->middleware('can:permission-handle');
+
+// Checking in code
+Auth::user()->can('permission-handle');
+```
+
+## Two-Factor Authentication
+
+Two-factor authentication can be enforced or disabled for all staff members:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+public function register(): void
+{
+    // Enforce two-factor authentication for all staff
+    LunarPanel::forceTwoFactorAuth()->register();
+
+    // Or disable two-factor authentication entirely
+    LunarPanel::disableTwoFactorAuth()->register();
+}
+```

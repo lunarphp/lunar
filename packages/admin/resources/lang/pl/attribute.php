@@ -50,5 +50,9 @@ return [
         'validation_rules' => [
             'label' => 'Reguły walidacji',
         ],
+        'default_value' => [
+            'label' => 'Wartość domyślna',
+            'helper' => 'Stosowana jako wartość początkowa podczas tworzenia nowego rekordu z tym atrybutem.',
+        ],
     ],
 ];

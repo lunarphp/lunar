@@ -1,0 +1,83 @@
+---
+title: "Livewire Starter Kit"
+---
+
+The Livewire Starter Kit is a basic reference implementation for building a storefront with Lunar using [Laravel Livewire](https://livewire.laravel.com). It demonstrates how to load products and collections, manage a cart, and process a checkout.
+
+<Warning>
+This starter kit is intended as a reference implementation only and is not production-ready. An [Inertia + Vue Starter Kit](/getting-started/starter-kits/inertia-vue) is currently in development and will serve as a production-ready foundation for new storefront projects.
+</Warning>
+
+To install Lunar into an existing Laravel application instead, follow the [installation guide](/getting-started/setup/installation).
+
+## Requirements
+
+- PHP >= 8.2
+- MySQL 8.0+ / PostgreSQL 9.4+
+- exif PHP extension (on most systems it will be installed by default)
+- intl PHP extension (on most systems it will be installed by default)
+- bcmath PHP extension (on most systems it will be installed by default)
+- GD PHP extension (used for image manipulation)
+
+## Installation
+
+<Tip>
+A suitable local development environment is needed to run Lunar. [Laravel Herd](https://herd.laravel.com) is recommended for this purpose.
+</Tip>
+
+### Create a new project
+
+```bash
+composer create-project --stability dev lunarphp/livewire-starter-kit my-store
+
+cd my-store
+```
+
+Or using the Laravel Installer:
+
+```bash
+laravel new my-store --using=lunarphp/livewire-starter-kit
+
+cd my-store
+```
+
+### Configure the Laravel app
+
+Copy the `.env.example` file to `.env` and update the values to match the local environment.
+
+```bash
+cp .env.example .env
+```
+
+All relevant configuration files are included in the repository.
+
+### Migrate and seed
+
+Install Lunar:
+
+```bash
+php artisan lunar:install
+```
+
+Seed the demo data:
+
+```bash
+php artisan db:seed
+```
+
+Link the storage directory:
+
+```bash
+php artisan storage:link
+```
+
+## Access the storefront
+
+Once installation is complete:
+
+- Storefront: `http://<yoursite>`
+- Admin panel: `http://<yoursite>/lunar`
+
+## Source code
+
+The full source is available on GitHub: [lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit).

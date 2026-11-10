@@ -25,10 +25,15 @@ interface Price
     /**
      * Return the price exclusive of tax.
      */
-    public function priceExTax(): \Lunar\DataTypes\Price;
+    public function priceExTax(?TaxZone $taxZone = null): \Lunar\DataTypes\Price;
 
     /**
      * Return the price inclusive of tax.
      */
-    public function priceIncTax(): int|\Lunar\DataTypes\Price;
+    public function priceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price;
+
+    /**
+     * Return the compare price inclusive of tax.
+     */
+    public function comparePriceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price;
 }

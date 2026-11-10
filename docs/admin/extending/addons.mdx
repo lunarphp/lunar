@@ -1,0 +1,24 @@
+---
+title: "Developing Addons"
+sidebarTitle: "Addons"
+description: "How to develop addon packages that extend the Lunar admin panel."
+---
+
+When creating addon packages for Lunar, new screens and functionality can be added to the admin panel by creating a Filament plugin. With Filament plugins, additional resources, pages, and widgets can be registered. See the [Filament documentation](https://filamentphp.com/docs) for more information on building plugins.
+
+## Registering Filament Plugins
+
+Addon packages should not auto-register Filament plugins in the Lunar panel. Instead, provide installation instructions so that developers can register the plugin manually in their service provider.
+
+Below is an example of how a plugin should be registered:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+LunarPanel::panel(fn ($panel) => $panel->plugin(new ReviewsPlugin()))
+    ->register();
+```
+
+<Info>
+When extending forms or tables in an addon, use a defensive approach since the form contents may have been modified by other extensions. See [Extending Pages in Addons](/admin/extending/pages#extending-pages-in-addons) for more details.
+</Info>

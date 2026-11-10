@@ -24,7 +24,9 @@ class ProductOptionIndexer extends ScoutIndexer
 
     public function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query;
+        return $query->with([
+            'values' => fn ($query) => $query->select('id', 'product_option_id', 'name'),
+        ]);
     }
 
     public function toSearchableArray(Model $model): array

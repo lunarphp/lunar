@@ -32,6 +32,7 @@ return [
             'description' => 'Asocia grupos de clientes a este :type para determinar su disponibilidad.',
             'name' => [
                 'label' => 'Nombre',
+                'default_description' => 'Predeterminado — controla el acceso de invitados',
             ],
             'enabled' => [
                 'label' => 'Habilitado',

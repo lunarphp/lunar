@@ -41,6 +41,7 @@ class CartLine extends BaseModel implements Contracts\CartLine
      */
     public $cachableProperties = [
         'unitPrice',
+        'unitPriceInclTax',
         'subTotal',
         'discountTotal',
         'taxAmount',
@@ -147,6 +148,6 @@ class CartLine extends BaseModel implements Contracts\CartLine
 
     public function purchasable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 }

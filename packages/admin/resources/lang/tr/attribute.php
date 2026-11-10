@@ -51,5 +51,9 @@ return [
             'label' => 'Doğrulama Kuralları',
             'helper' => 'Özellik alanı için kurallar, örnek: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Varsayılan değer',
+            'helper' => 'Bu özellikle yeni bir kayıt oluşturulurken başlangıç değeri olarak uygulanır.',
+        ],
     ],
 ];

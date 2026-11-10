@@ -51,5 +51,9 @@ return [
             'label' => 'Validation Rules',
             'helper' => 'Rules for attribute field, example: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'مقدار پیش‌فرض',
+            'helper' => 'به عنوان مقدار اولیه هنگام ایجاد یک رکورد جدید با این ویژگی اعمال می‌شود.',
+        ],
     ],
 ];

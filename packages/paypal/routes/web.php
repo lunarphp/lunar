@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Paypal\Http\Controllers\GetPaypalOrderController;
 
 Route::group([

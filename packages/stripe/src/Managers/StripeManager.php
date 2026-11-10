@@ -5,6 +5,7 @@ namespace Lunar\Stripe\Managers;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
@@ -85,7 +86,7 @@ class StripeManager
         }
 
         $paymentIntent = $this->buildIntent(
-            $cart->total->value,
+            static::toStripeAmount($cart->total->value, $cart->currency),
             $cart->currency->code,
             $opts
         );
@@ -154,7 +155,7 @@ class StripeManager
 
         $this->getClient()->paymentIntents->update(
             $intentId,
-            ['amount' => $cart->total->value]
+            ['amount' => static::toStripeAmount($cart->total->value, $cart->currency)]
         );
     }
 
@@ -214,6 +215,101 @@ class StripeManager
     public function getCharge(string $chargeId): Charge
     {
         return $this->getClient()->charges->retrieve($chargeId);
+    }
+
+    /**
+     * Zero-decimal currencies, per Stripe. The amount sent to Stripe is the
+     * major unit amount as-is.
+     *
+     * @see https://docs.stripe.com/currencies#zero-decimal
+     */
+    protected const ZERO_DECIMAL_CURRENCIES = [
+        'bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg',
+        'rwf', 'ugx', 'vnd', 'vuv', 'xaf', 'xof', 'xpf',
+    ];
+
+    /**
+     * Three-decimal currencies, per Stripe. The amount sent to Stripe is the
+     * major unit amount multiplied by 1000.
+     *
+     * @see https://docs.stripe.com/currencies#three-decimal
+     */
+    protected const THREE_DECIMAL_CURRENCIES = ['bhd', 'jod', 'kwd', 'omr', 'tnd'];
+
+    /**
+     * HUF, TWD and UGX are ISO zero-decimal currencies, but Stripe still
+     * requires amounts to be sent as if they had two decimal places.
+     *
+     * @see https://docs.stripe.com/currencies#special-cases
+     */
+    protected const SPECIAL_ZERO_DECIMAL_CURRENCIES = ['huf', 'twd', 'ugx'];
+
+    /**
+     * Convert a Lunar price value to the amount expected by Stripe.
+     *
+     * Lunar stores prices as integers scaled by `Currency::decimal_places`,
+     * which merchants can set independently of what Stripe expects for a
+     * given currency. This converts back to the major unit amount first,
+     * then re-scales it to whatever sub-unit Stripe requires for the
+     * currency, so the result is correct regardless of how the merchant has
+     * configured `Currency::decimal_places`.
+     *
+     * @see https://docs.stripe.com/currencies
+     */
+    public static function toStripeAmount(int $value, CurrencyContract $currency): int
+    {
+        return self::rescale($value, max($currency->decimal_places, 0), self::stripeDecimalPlaces($currency));
+    }
+
+    /**
+     * Convert an amount received from Stripe back to a Lunar price value,
+     * scaled by `Currency::decimal_places`. Inverse of `toStripeAmount()`.
+     */
+    public static function fromStripeAmount(int $amount, CurrencyContract $currency): int
+    {
+        return self::rescale($amount, self::stripeDecimalPlaces($currency), max($currency->decimal_places, 0));
+    }
+
+    /**
+     * The number of decimal places Stripe expects amounts in for a currency.
+     */
+    protected static function stripeDecimalPlaces(CurrencyContract $currency): int
+    {
+        $code = strtolower($currency->code);
+
+        // UGX is also in the zero-decimal list; the special case takes precedence.
+        if (in_array($code, self::SPECIAL_ZERO_DECIMAL_CURRENCIES, true)) {
+            return 2;
+        }
+
+        if (in_array($code, self::ZERO_DECIMAL_CURRENCIES, true)) {
+            return 0;
+        }
+
+        if (in_array($code, self::THREE_DECIMAL_CURRENCIES, true)) {
+            return 3;
+        }
+
+        return 2;
+    }
+
+    /**
+     * Rescale an integer amount between decimal-place precisions using integer
+     * arithmetic only — float division misrounds at half-unit boundaries
+     * (145 at 3dp: 0.145 stores as 0.1449…, so round() gives 14, not 15).
+     * Rounds half away from zero, matching round().
+     */
+    protected static function rescale(int $value, int $fromDecimalPlaces, int $toDecimalPlaces): int
+    {
+        $exponent = $toDecimalPlaces - $fromDecimalPlaces;
+
+        if ($exponent >= 0) {
+            return $value * (10 ** $exponent);
+        }
+
+        $divisor = 10 ** (-$exponent);
+
+        return intdiv(abs($value) + intdiv($divisor, 2), $divisor) * ($value < 0 ? -1 : 1);
     }
 
     /**

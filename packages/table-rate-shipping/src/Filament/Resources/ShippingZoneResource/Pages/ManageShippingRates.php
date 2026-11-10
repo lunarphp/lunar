@@ -117,16 +117,25 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->numeric()
                         ->required(),
                     Forms\Components\TextInput::make('min_quantity')
-                        ->label(
-                            function (Get $get) {
-                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
-                                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label');
-                                }
-
-                                return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label');
-                            }
+                        ->label(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label')
+                            : __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label')
+                        )
+                        ->helperText(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text', [
+                                'unit' => static::getShippingWeightUnit($get('../../shipping_method_id')),
+                            ])
+                            : null
+                        )
+                        // Unit symbol — intentionally not translated.
+                        ->suffix(fn (Get $get) => static::isWeightCharge($get)
+                            ? static::getShippingWeightUnit($get('../../shipping_method_id'))
+                            : null
                         )
                         ->numeric()
+                        // Weight tiers are stored as raw integers in the method's
+                        // weight unit — reject decimals instead of truncating them.
+                        ->rules(fn (Get $get) => static::isWeightCharge($get) ? ['integer'] : [])
                         ->required(),
                 ])->afterStateHydrated(
                     static function (Forms\Components\Repeater $component, ?Model $record = null): void {
@@ -142,7 +151,7 @@ class ManageShippingRates extends ManageRelatedRecords
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity / 100,
+                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity,
                                     ];
                                 })->toArray()
                             );
@@ -224,6 +233,24 @@ class ManageShippingRates extends ManageRelatedRecords
         return ($method?->data['charge_by'] ?? null) ?? 'cart_total';
     }
 
+    private static function isWeightCharge(Get $get): bool
+    {
+        return static::getShippingChargeBy($get('../../shipping_method_id')) === 'weight';
+    }
+
+    private static function getShippingWeightUnit(ShippingMethodContract|int|null $method): string
+    {
+        if (blank($method)) {
+            return 'kg';
+        }
+
+        if (! $method instanceof ShippingMethodContract) {
+            $method = ShippingMethod::find($method);
+        }
+
+        return $method?->weight_unit ?: 'kg';
+    }
+
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
         $shippingRate->basePrices()->delete();
@@ -259,7 +286,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 if ($chargeBy == 'cart_total') {
                     $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
                 } else {
-                    $price['min_quantity'] = (int) ($price['min_quantity'] * 100);
+                    $price['min_quantity'] = (int) $price['min_quantity'];
                 }
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);

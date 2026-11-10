@@ -10,6 +10,8 @@ return [
     'carts.billing_incomplete' => 'Die Rechnungsadresse ist unvollständig',
     'carts.order_exists' => 'Für diesen Warenkorb existiert bereits eine Bestellung',
     'carts.shipping_option_missing' => 'Eine gültige Versandart fehlt',
+    'carts.line_unavailable' => 'Eine Position in diesem Warenkorb ist nicht mehr verfügbar (:identifier)',
+    'carts.line_not_purchasable' => ':identifier kann in diesem Kanal oder von Ihrer Kundengruppe nicht gekauft werden',
     'missing_currency_price' => 'Es existiert kein Preis für die Währung ":currency"',
     'fieldtype_missing' => 'Der FeldType ":class" existiert nicht',
     'invalid_fieldtype' => 'Die Klasse ":class" implementiert nicht das Feldtyp-Interface.',

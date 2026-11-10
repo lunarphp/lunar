@@ -51,5 +51,9 @@ return [
             'label' => 'Érvényesítési szabályok',
             'helper' => 'Szabályok az attribútum mezőhöz, pl.: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Alapértelmezett érték',
+            'helper' => 'Kezdeti értékként kerül alkalmazásra új rekord létrehozásakor ezzel az attribútummal.',
+        ],
     ],
 ];

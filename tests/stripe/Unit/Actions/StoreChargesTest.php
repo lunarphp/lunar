@@ -8,7 +8,13 @@ use Lunar\Tests\Stripe\Utils\CartBuilder;
 uses(TestCase::class);
 
 it('can store successful charge', function () {
-    $cart = CartBuilder::build();
+    // Pin a two-decimal currency: the factory's random faker code can land on
+    // a currency Stripe scales differently (JPY, HUF, ...), which makes the
+    // stored amount diverge from the raw charge fixture amount.
+    $cart = CartBuilder::build(currencyParams: [
+        'code' => 'USD',
+        'decimal_places' => 2,
+    ]);
 
     $order = $cart->createOrder();
 

@@ -32,6 +32,7 @@ return [
             'description' => 'Asociați grupuri de clienți la acest :type pentru a determina disponibilitatea.',
             'name' => [
                 'label' => 'Nume',
+                'default_description' => 'Implicit — controlează accesul vizitatorilor',
             ],
             'enabled' => [
                 'label' => 'Activat',

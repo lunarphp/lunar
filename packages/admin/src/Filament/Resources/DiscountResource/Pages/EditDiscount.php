@@ -3,8 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
 use Filament\Actions\DeleteAction;
+use Filament\Resources\RelationManagers\RelationGroup;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -89,7 +91,10 @@ class EditDiscount extends BaseEditRecord
         $managers = [];
 
         if ($this->record->type == BuyXGetY::class) {
-            $managers[] = ProductConditionRelationManager::class;
+            $managers[] = RelationGroup::make(__('lunarpanel::discount.form.conditions.heading'), [
+                ProductConditionRelationManager::class,
+                CollectionConditionRelationManager::class,
+            ]);
             $managers[] = ProductRewardRelationManager::class;
         }
 

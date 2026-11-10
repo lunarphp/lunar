@@ -51,5 +51,9 @@ return [
             'label' => 'Quy tắc xác thực',
             'helper' => 'Quy tắc cho trường thuộc tính, ví dụ: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Giá trị mặc định',
+            'helper' => 'Được áp dụng làm giá trị ban đầu khi tạo bản ghi mới với thuộc tính này.',
+        ],
     ],
 ];

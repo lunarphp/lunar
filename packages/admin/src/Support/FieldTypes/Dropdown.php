@@ -5,12 +5,29 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
+use Illuminate\Validation\Rule;
 use Lunar\Admin\Support\Synthesizers\DropdownSynth;
 use Lunar\Models\Attribute;
 
 class Dropdown extends BaseFieldType
 {
     protected static string $synthesizer = DropdownSynth::class;
+
+    public static function canHaveDefaultValue(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<mixed>
+     */
+    public static function getDefaultValueValidationRules(array $configuration): array
+    {
+        $lookups = static::mutateConfigurationForForm($configuration)['lookups'] ?? [];
+
+        return [Rule::in(array_values($lookups))];
+    }
 
     /**
      * @param  array<string, mixed>  $configuration

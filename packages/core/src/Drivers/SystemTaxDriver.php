@@ -11,6 +11,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Contracts\CartLine;
 use Lunar\Models\Contracts\Currency;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\TaxZone;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
@@ -40,6 +41,12 @@ class SystemTaxDriver implements TaxDriver
      * The cart line model.
      */
     protected ?CartLine $cartLine = null;
+
+    /**
+     * An optional tax zone override supplied at the cart level.
+     * When set this takes precedence over the address-derived zone.
+     */
+    protected ?TaxZoneContract $taxZone = null;
 
     /**
      * {@inheritDoc}
@@ -94,9 +101,19 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
+    public function setTaxZone(?TaxZoneContract $taxZone = null): self
+    {
+        $this->taxZone = $taxZone;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getBreakdown($subTotal): TaxBreakdown
     {
-        $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
+        $taxZone = $this->taxZone ?? app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
 
         $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
@@ -160,6 +177,6 @@ class SystemTaxDriver implements TaxDriver
 
     protected function defaultTaxZone()
     {
-        return TaxZone::where('default', '=', 1)->first();
+        return TaxZone::getDefault();
     }
 }

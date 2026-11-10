@@ -12,6 +12,7 @@ use Lunar\Pipelines\Cart\ApplyDiscounts;
 use Lunar\Pipelines\Cart\ApplyShipping;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Pipelines\Cart\CalculateLines;
+use Lunar\Pipelines\Cart\CalculateShippingSubTotal;
 use Lunar\Pipelines\Cart\CalculateTax;
 use Lunar\Pipelines\CartLine\GetUnitPrice;
 use Lunar\Pipelines\CartPrune\PruneAfter;
@@ -19,6 +20,7 @@ use Lunar\Pipelines\CartPrune\WhereNotMerged;
 use Lunar\Pipelines\CartPrune\WithoutOrders;
 use Lunar\Validation\Cart\ShippingOptionValidator;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Validation\CartLine\CartLineAvailability;
 use Lunar\Validation\CartLine\CartLineQuantity;
 use Lunar\Validation\CartLine\CartLineStock;
 
@@ -64,6 +66,7 @@ return [
         'cart' => [
             CalculateLines::class,
             ApplyShipping::class,
+            CalculateShippingSubTotal::class,
             ApplyDiscounts::class,
             CalculateTax::class,
             Calculate::class,
@@ -110,11 +113,13 @@ return [
         'add_to_cart' => [
             CartLineQuantity::class,
             CartLineStock::class,
+            CartLineAvailability::class,
         ],
 
         'update_cart_line' => [
             CartLineQuantity::class,
             CartLineStock::class,
+            CartLineAvailability::class,
         ],
 
         'remove_from_cart' => [],

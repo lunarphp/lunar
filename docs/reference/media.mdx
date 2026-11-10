@@ -1,0 +1,317 @@
+---
+title: "Media"
+description: "Managing images and files on Lunar models using Spatie's Media Library."
+---
+
+Lunar uses Spatie's Media Library package to manage images and files across models.
+
+## Overview
+
+Lunar uses the [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) package by Spatie to handle media across all models. Rather than reinvent the wheel, Lunar leverages this battle-tested package and adds its own conventions on top, including configurable media definitions, automatic image conversions, and primary image management.
+
+### Supported Models
+
+The following models support media out of the box via the `Lunar\Base\Traits\HasMedia` trait:
+
+| Model | Class | Has Thumbnail |
+|---|---|---|
+| Product | `Lunar\Models\Product` | Yes |
+| Product Option | `Lunar\Models\ProductOption` | No |
+| Product Option Value | `Lunar\Models\ProductOptionValue` | No |
+| Collection | `Lunar\Models\Collection` | Yes |
+| Brand | `Lunar\Models\Brand` | No |
+| Asset | `Lunar\Models\Asset` | No |
+
+<Info>
+`Lunar\Models\ProductVariant` does not use the `HasMedia` trait directly. Instead, it uses a many-to-many relationship with media through a pivot table. See [Product Variant Images](#product-variant-images) for details.
+</Info>
+
+## Configuration
+
+The media configuration is published at `config/lunar/media.php`.
+
+```php
+use Lunar\Base\StandardMediaDefinitions;
+
+return [
+    'definitions' => [
+        'asset' => StandardMediaDefinitions::class,
+        'brand' => StandardMediaDefinitions::class,
+        'collection' => StandardMediaDefinitions::class,
+        'product' => StandardMediaDefinitions::class,
+        'product-option' => StandardMediaDefinitions::class,
+        'product-option-value' => StandardMediaDefinitions::class,
+    ],
+
+    'collection' => 'images',
+
+    'fallback' => [
+        'url' => env('FALLBACK_IMAGE_URL', null),
+        'path' => env('FALLBACK_IMAGE_PATH', null),
+    ],
+];
+```
+
+| Key | Description |
+|---|---|
+| `definitions` | Maps model aliases to their media definition class. Each model can have its own definition class to customize collections and conversions. |
+| `collection` | The default media collection name used across all models. |
+| `fallback.url` | A fallback URL returned when a model has no media. |
+| `fallback.path` | A fallback file path returned when a model has no media. |
+
+The `definitions` keys use kebab-case aliases derived from the model class name (e.g., `Product` becomes `product`, `ProductOptionValue` becomes `product-option-value`). You can also use the fully qualified class name as the key.
+
+## Adding Media
+
+Adding media to a model follows the standard Spatie Media Library API.
+
+```php
+use Lunar\Models\Product;
+
+$product = Product::find(123);
+
+$product->addMedia($request->file('image'))->toMediaCollection('images');
+```
+
+For more information, see [Associating files](https://spatie.be/docs/laravel-medialibrary/v11/basic-usage/associating-files) in the Spatie documentation.
+
+## Retrieving Media
+
+```php
+use Lunar\Models\Product;
+
+$product = Product::find(123);
+
+// Get all images
+$product->getMedia('images');
+
+// Get the first image URL
+$product->getFirstMediaUrl('images');
+
+// Get a specific conversion URL
+$product->getFirstMediaUrl('images', 'medium');
+```
+
+For more information, see [Retrieving media](https://spatie.be/docs/laravel-medialibrary/v11/basic-usage/retrieving-media) in the Spatie documentation.
+
+## Primary Images
+
+Lunar adds a concept of "primary" images on top of Spatie's media library. Each model can have one image marked as primary per collection, tracked via a `primary` custom property on the media item.
+
+### Thumbnail Relationship
+
+Models using the `HasMedia` trait have a `thumbnail` relationship that returns the primary image:
+
+```php
+use Lunar\Models\Product;
+
+$product = Product::find(123);
+
+// Get the primary image via the thumbnail relationship
+$product->thumbnail;
+```
+
+### Automatic Primary Management
+
+Lunar includes a `MediaObserver` that automatically enforces the following rules:
+
+- When a media item is marked as primary, all other items in the same collection are unmarked.
+- When the primary image is deleted, the first remaining image in the collection is automatically promoted to primary.
+- When a new image is added to an empty collection, it is automatically marked as primary.
+
+### Setting the Primary Image
+
+```php
+$media = $product->getMedia('images')->first();
+
+$media->setCustomProperty('primary', true)->save();
+```
+
+## Product Variant Images
+
+`ProductVariant` handles media differently from other models. Instead of using the `HasMedia` trait, it uses a many-to-many relationship with the `media` table through a `media_product_variant` pivot table.
+
+```php
+use Lunar\Models\ProductVariant;
+
+$variant = ProductVariant::find(456);
+
+// Get all images (ordered by position)
+$variant->images;
+
+// Get the thumbnail (primary image, or falls back to the product's thumbnail)
+$variant->getThumbnail();
+```
+
+The pivot table includes:
+
+| Column | Type | Description |
+|---|---|---|
+| `primary` | `boolean` | Whether this is the primary image for the variant |
+| `position` | `smallInteger` | Display order of the image |
+
+## Fallback Images
+
+If a model has no media, calling `getFirstMediaUrl` or `getFirstMediaPath` returns an empty string by default. Fallback images can be configured in `config/lunar/media.php` or via environment variables:
+
+```php
+'fallback' => [
+    'url' => env('FALLBACK_IMAGE_URL', null),
+    'path' => env('FALLBACK_IMAGE_PATH', null),
+]
+```
+
+These values are passed to Spatie's `useFallbackUrl` and `useFallbackPath` methods on the media collection.
+
+## Default Conversions
+
+The `StandardMediaDefinitions` class registers the following image conversions by default:
+
+| Conversion | Width | Height | Notes |
+|---|---|---|---|
+| `small` | 300 | 300 | Used by the admin panel for thumbnails. Registered globally (runs for all collections). |
+| `medium` | 500 | 500 | Registered on the `images` collection. |
+| `large` | 800 | 800 | Registered on the `images` collection. |
+| `zoom` | 500 | 500 | Registered on the `images` collection. |
+
+All conversions use `Fit::Fill` for sizing, a white background, and preserve the original image format.
+
+## Custom Media Definitions
+
+To customize the media collections and conversions for a model, create a class that implements `Lunar\Base\MediaDefinitionsInterface`:
+
+```php
+namespace App\Media;
+
+use Lunar\Base\MediaDefinitionsInterface;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+class CustomMediaDefinitions implements MediaDefinitionsInterface
+{
+    public function registerMediaConversions(HasMedia $model, ?Media $media = null): void
+    {
+        $model->addMediaConversion('small')
+            ->fit(Fit::Fill, 300, 300)
+            ->sharpen(10)
+            ->keepOriginalImageFormat();
+    }
+
+    public function registerMediaCollections(HasMedia $model): void
+    {
+        $fallbackUrl = config('lunar.media.fallback.url');
+        $fallbackPath = config('lunar.media.fallback.path');
+
+        // Reset to avoid duplication
+        $model->mediaCollections = [];
+
+        $collection = $model->addMediaCollection('images');
+
+        if ($fallbackUrl) {
+            $collection = $collection->useFallbackUrl($fallbackUrl);
+        }
+
+        if ($fallbackPath) {
+            $collection = $collection->useFallbackPath($fallbackPath);
+        }
+
+        $this->registerCollectionConversions($collection, $model);
+    }
+
+    protected function registerCollectionConversions(MediaCollection $collection, HasMedia $model): void
+    {
+        $conversions = [
+            'zoom' => [
+                'width' => 500,
+                'height' => 500,
+            ],
+            'large' => [
+                'width' => 800,
+                'height' => 800,
+            ],
+            'medium' => [
+                'width' => 500,
+                'height' => 500,
+            ],
+        ];
+
+        $collection->registerMediaConversions(function (Media $media) use ($model, $conversions) {
+            foreach ($conversions as $key => $conversion) {
+                $model->addMediaConversion($key)
+                    ->fit(
+                        Fit::Fill,
+                        $conversion['width'],
+                        $conversion['height']
+                    )->keepOriginalImageFormat();
+            }
+        });
+    }
+
+    public function getMediaCollectionTitles(): array
+    {
+        return [
+            'images' => 'Images',
+        ];
+    }
+
+    public function getMediaCollectionDescriptions(): array
+    {
+        return [
+            'images' => '',
+        ];
+    }
+}
+```
+
+Then register the class in `config/lunar/media.php`:
+
+```php
+'definitions' => [
+    'product' => \App\Media\CustomMediaDefinitions::class,
+    // ...
+],
+```
+
+### Regenerating Conversions
+
+After changing conversion definitions, regenerate existing conversions using the Spatie artisan command:
+
+```bash
+php artisan media-library:regenerate
+```
+
+This creates queue jobs for each media entry to be reprocessed. See the [Spatie documentation](https://spatie.be/docs/laravel-medialibrary/v11/converting-images/regenerating-images) for more options.
+
+## Extending Your Own Models
+
+Custom models can be given media support using the Lunar `HasMedia` trait:
+
+```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Traits\HasMedia;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+
+class YourCustomModel extends Model implements SpatieHasMedia
+{
+    use HasMedia;
+}
+```
+
+This provides access to all Lunar media features including configurable definitions and automatic conversions.
+
+<Warning>
+To use Lunar's media definitions and conversions, models must use the `Lunar\Base\Traits\HasMedia` trait. Using Spatie's `InteractsWithMedia` trait directly bypasses Lunar's media definition system. See the [Spatie documentation](https://spatie.be/docs/laravel-medialibrary/v11/basic-usage/preparing-your-model) for using the library directly.
+</Warning>
+
+### Definition Resolution
+
+The `HasMedia` trait resolves the media definition class for a model using the following priority:
+
+1. A snake_case alias in `config('lunar.media.definitions')` (e.g., `product` for `Product`)
+2. The fully qualified class name in the config
+3. The parent class name in the config (useful for extended models)
+4. Falls back to `Lunar\Base\StandardMediaDefinitions`

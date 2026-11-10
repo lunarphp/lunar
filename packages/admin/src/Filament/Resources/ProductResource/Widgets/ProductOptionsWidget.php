@@ -59,6 +59,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             ->get();
 
         return Action::make('addSharedOption')
+            ->label(
+                __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.label')
+            )
             ->schema([
                 Shout::make('no_shared_components')
                     ->content(
@@ -356,6 +359,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function saveVariantsAction(): Action
     {
         return Action::make('saveVariants')
+            ->label(
+                __('lunarpanel::productoption.widgets.product-options.actions.save-variants.label')
+            )
             ->action(function () {
                 DB::beginTransaction();
 
@@ -399,6 +405,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     if (! empty($variantData['variant_id'])) {
                         $variant = ProductVariant::find($variantData['variant_id']);
                         $basePrice = $variant->basePrices->first();
+                    }
+
+                    if (empty($variantData['variant_id']) && empty($variantData['copied_id'])) {
+                        $variantData['copied_id'] = $this->record->variants()->orderBy('id')->value('id');
                     }
 
                     if (! empty($variantData['copied_id'])) {

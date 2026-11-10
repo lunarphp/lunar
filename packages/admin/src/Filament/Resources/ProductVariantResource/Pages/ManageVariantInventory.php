@@ -8,6 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Events\ProductVariantInventoryUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -59,6 +60,15 @@ class ManageVariantInventory extends BaseEditRecord
                 $this->getRecord()
             ),
         ];
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $record = parent::handleRecordUpdate($record, $data);
+
+        ProductVariantInventoryUpdated::dispatch($record);
+
+        return $record;
     }
 
     public function getDefaultForm(Schema $schema): Schema

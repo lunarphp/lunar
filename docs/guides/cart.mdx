@@ -1,0 +1,457 @@
+---
+title: "Cart"
+description: "Build a cart page with Lunar, covering line item display, quantity updates, coupon codes, and order totals."
+---
+
+## Overview
+
+The cart page displays the items a customer has added to their cart, lets them adjust quantities or remove items, apply coupon codes, and review totals before proceeding to checkout. This guide walks through building a cart page using Lunar's `Cart` model and `CartSession` facade.
+
+The examples below use standard Laravel controllers and Blade templates. The same concepts apply whether the storefront is built with Livewire, Inertia, or a headless API.
+
+## Fetching the Current Cart
+
+The `CartSession` facade retrieves the cart for the current session. Calling `current()` automatically calculates totals (sub total, tax, discounts, etc.) before returning the cart.
+
+```php
+use Lunar\Facades\CartSession;
+
+$cart = CartSession::current();
+```
+
+If no cart exists in the session, `current()` returns `null`. Handle this in the controller:
+
+```php
+use Lunar\Facades\CartSession;
+
+class CartController extends Controller
+{
+    public function show()
+    {
+        $cart = CartSession::current();
+
+        if (! $cart || $cart->lines->isEmpty()) {
+            return view('cart.empty');
+        }
+
+        return view('cart.show', compact('cart'));
+    }
+}
+```
+
+<Info>
+Cart prices are dynamically calculated and are not stored in the database. Calling `current()` triggers the calculation pipeline automatically. To force a recalculation after making changes, call `$cart->recalculate()`.
+</Info>
+
+## Displaying Cart Lines
+
+Each cart line holds a reference to a `Purchasable` (typically a `ProductVariant`) along with the quantity and any custom metadata. After calculation, each line has computed properties for unit price, tax, discounts, and total.
+
+```blade
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($cart->lines as $line)
+            @php
+                $variant = $line->purchasable;
+                $product = $variant->product;
+            @endphp
+
+            <tr>
+                <td>
+                    <img
+                        src="{{ $variant->getThumbnailImage() }}"
+                        alt="{{ $product->attr('name') }}"
+                    >
+                    <div>
+                        <p>{{ $product->attr('name') }}</p>
+                        @if($variant->getOptions()->isNotEmpty())
+                            <p>{{ $variant->getOption() }}</p>
+                        @endif
+                        <p>{{ $variant->sku }}</p>
+                    </div>
+                </td>
+                <td>{{ $line->unitPrice->formatted() }}</td>
+                <td>
+                    <form method="POST" action="{{ route('cart.update-line') }}">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="line_id" value="{{ $line->id }}">
+                        <input
+                            type="number"
+                            name="quantity"
+                            value="{{ $line->quantity }}"
+                            min="1"
+                        >
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+                <td>{{ $line->subTotal->formatted() }}</td>
+                <td>
+                    <form method="POST" action="{{ route('cart.remove-line') }}">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="line_id" value="{{ $line->id }}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+```
+
+### Computed Properties on Cart Lines
+
+After `calculate()` runs, each `CartLine` has the following properties:
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `unitPrice` | `Lunar\DataTypes\Price` | Price for a single unit, excluding tax |
+| `unitPriceInclTax` | `Lunar\DataTypes\Price` | Price for a single unit, including tax |
+| `subTotal` | `Lunar\DataTypes\Price` | Line total before discounts and tax (unit price x quantity) |
+| `subTotalDiscounted` | `Lunar\DataTypes\Price` | Line total after discounts, before tax |
+| `discountTotal` | `Lunar\DataTypes\Price` | Total discount applied to this line |
+| `taxAmount` | `Lunar\DataTypes\Price` | Tax amount for this line |
+| `total` | `Lunar\DataTypes\Price` | Final line total including tax and discounts |
+
+All values are `Lunar\DataTypes\Price` objects with access to `value` (integer), `decimal()` (float), and `formatted()` (currency string).
+
+### Accessing the Product from a Cart Line
+
+The `purchasable` relationship on a cart line is polymorphic. For standard product variants:
+
+```php
+$variant = $line->purchasable;              // Lunar\Models\ProductVariant
+$product = $line->purchasable->product;     // Lunar\Models\Product
+
+$product->attr('name');                     // Product name
+$variant->getOption();                      // e.g. "Blue, Large"
+$variant->sku;                              // e.g. "TSHIRT-BLU-L"
+```
+
+<Tip>
+The cart's default eager loading (configured in `config/lunar/cart.php`) already loads `lines.purchasable.product`, `lines.purchasable.values`, and `lines.purchasable.product.thumbnail`, so these relationships are available without additional queries.
+</Tip>
+
+## Updating Quantities
+
+Use the `updateLine()` method on the cart to change a line's quantity. This triggers validation (e.g., stock checks) and recalculates the cart.
+
+```php
+class CartController extends Controller
+{
+    public function updateLine(Request $request)
+    {
+        $request->validate([
+            'line_id' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = CartSession::current();
+
+        $cart->updateLine(
+            cartLineId: $request->line_id,
+            quantity: $request->quantity,
+        );
+
+        return redirect()->route('cart.show');
+    }
+}
+```
+
+The full method signature accepts an optional `meta` parameter for updating custom metadata on the line:
+
+```php
+$cart->updateLine(
+    cartLineId: $lineId,
+    quantity: 3,
+    meta: ['gift_wrap' => true],
+);
+```
+
+### Validation Errors
+
+When updating a line, Lunar runs validators defined in `config/lunar/cart.php`. If validation fails (for example, the requested quantity exceeds available stock), a `Lunar\Exceptions\Carts\CartException` is thrown.
+
+```php
+use Lunar\Exceptions\Carts\CartException;
+
+try {
+    $cart->updateLine(cartLineId: $lineId, quantity: 100);
+} catch (CartException $e) {
+    return redirect()->back()->withErrors(['quantity' => $e->getMessage()]);
+}
+```
+
+## Removing Lines
+
+Use the `remove()` method to delete a line from the cart.
+
+```php
+class CartController extends Controller
+{
+    public function removeLine(Request $request)
+    {
+        $request->validate([
+            'line_id' => 'required|integer',
+        ]);
+
+        $cart = CartSession::current();
+
+        $cart->remove(cartLineId: $request->line_id);
+
+        return redirect()->route('cart.show');
+    }
+}
+```
+
+To remove all lines at once, use `clear()`:
+
+```php
+$cart->clear();
+```
+
+## Coupon Codes
+
+Coupon codes are stored on the cart's `coupon_code` field. When the cart recalculates, the discount pipeline checks whether the code matches any active discount and applies it.
+
+### Applying a Coupon
+
+```php
+class CartController extends Controller
+{
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'coupon_code' => 'required|string',
+        ]);
+
+        $cart = CartSession::current();
+
+        $cart->update([
+            'coupon_code' => $request->coupon_code,
+        ]);
+
+        $cart->recalculate();
+
+        if ($cart->discountTotal?->value === 0) {
+            return redirect()->route('cart.show')
+                ->withErrors(['coupon_code' => 'This coupon code is not valid.']);
+        }
+
+        return redirect()->route('cart.show')
+            ->with('message', 'Coupon applied.');
+    }
+}
+```
+
+### Removing a Coupon
+
+```php
+$cart->update(['coupon_code' => null]);
+$cart->recalculate();
+```
+
+### Displaying Applied Discounts
+
+After calculation, the cart provides a breakdown of all applied discounts:
+
+```blade
+@if($cart->discountTotal?->value > 0)
+    <p>Discount: -{{ $cart->discountTotal->formatted() }}</p>
+
+    @foreach($cart->discountBreakdown as $breakdown)
+        <p>{{ $breakdown->discount->name }}: -{{ $breakdown->price->formatted() }}</p>
+    @endforeach
+@endif
+```
+
+## Cart Totals
+
+After calculation, the cart provides all the totals needed to build a summary.
+
+```blade
+<dl>
+    <dt>Subtotal</dt>
+    <dd>{{ $cart->subTotal->formatted() }}</dd>
+
+    @if($cart->discountTotal?->value > 0)
+        <dt>Discount</dt>
+        <dd>-{{ $cart->discountTotal->formatted() }}</dd>
+    @endif
+
+    @if($cart->shippingTotal?->value > 0)
+        <dt>Shipping</dt>
+        <dd>{{ $cart->shippingTotal->formatted() }}</dd>
+    @endif
+
+    <dt>Tax</dt>
+    <dd>{{ $cart->taxTotal->formatted() }}</dd>
+
+    <dt>Total</dt>
+    <dd>{{ $cart->total->formatted() }}</dd>
+</dl>
+```
+
+### Computed Properties on the Cart
+
+| Property | Type | Description |
+|:---|:---|:---|
+| `subTotal` | `Lunar\DataTypes\Price` | Sum of all line subtotals, before tax and discounts |
+| `subTotalDiscounted` | `Lunar\DataTypes\Price` | Subtotal after line-level discounts |
+| `discountTotal` | `Lunar\DataTypes\Price` | Total of all discounts applied |
+| `discountBreakdown` | `Collection` | Breakdown of each discount with affected lines |
+| `taxTotal` | `Lunar\DataTypes\Price` | Total tax across all lines and shipping |
+| `taxBreakdown` | `TaxBreakdown` | Breakdown of taxes by rate |
+| `shippingSubTotal` | `Lunar\DataTypes\Price` | Shipping cost before tax |
+| `shippingTaxTotal` | `Lunar\DataTypes\Price` | Tax on shipping |
+| `shippingTotal` | `Lunar\DataTypes\Price` | Shipping cost including tax |
+| `total` | `Lunar\DataTypes\Price` | Final cart total |
+
+### Tax Breakdown
+
+To display a detailed tax breakdown (useful for stores with multiple tax rates):
+
+```blade
+@foreach($cart->taxBreakdown->amounts as $tax)
+    <p>{{ $tax->description }} ({{ $tax->percentage }}%): {{ $tax->price->formatted() }}</p>
+@endforeach
+```
+
+## Estimated Shipping
+
+Shipping costs are typically calculated during checkout once a full address is provided. However, the cart page can show an estimated shipping cost based on a partial address.
+
+```php
+$cart->getEstimatedShipping([
+    'postcode' => $request->postcode,
+    'country_id' => $request->country_id,
+], setOverride: true);
+
+$cart->recalculate();
+```
+
+Passing `setOverride: true` tells the cart to use the returned shipping option when calculating totals for that request. The `shippingTotal` on the cart will then reflect the estimate.
+
+When using `CartSession`, set the estimation parameters once and they persist for the session:
+
+```php
+CartSession::estimateShippingUsing([
+    'postcode' => $request->postcode,
+    'country_id' => $request->country_id,
+]);
+
+$cart = CartSession::current(estimateShipping: true);
+```
+
+## Routes
+
+```php
+use App\Http\Controllers\CartController;
+
+Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+Route::patch('/cart/line', [CartController::class, 'updateLine'])->name('cart.update-line');
+Route::delete('/cart/line', [CartController::class, 'removeLine'])->name('cart.remove-line');
+Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.apply-coupon');
+```
+
+## Putting It All Together
+
+Here is a complete controller for the cart page:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\CartSession;
+
+class CartController extends Controller
+{
+    public function show()
+    {
+        $cart = CartSession::current();
+
+        if (! $cart || $cart->lines->isEmpty()) {
+            return view('cart.empty');
+        }
+
+        return view('cart.show', compact('cart'));
+    }
+
+    public function updateLine(Request $request)
+    {
+        $request->validate([
+            'line_id' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = CartSession::current();
+
+        try {
+            $cart->updateLine(
+                cartLineId: $request->line_id,
+                quantity: $request->quantity,
+            );
+        } catch (CartException $e) {
+            return redirect()->route('cart.show')
+                ->withErrors(['quantity' => $e->getMessage()]);
+        }
+
+        return redirect()->route('cart.show');
+    }
+
+    public function removeLine(Request $request)
+    {
+        $request->validate([
+            'line_id' => 'required|integer',
+        ]);
+
+        $cart = CartSession::current();
+
+        $cart->remove(cartLineId: $request->line_id);
+
+        return redirect()->route('cart.show');
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'coupon_code' => 'required|string',
+        ]);
+
+        $cart = CartSession::current();
+
+        $cart->update([
+            'coupon_code' => $request->coupon_code,
+        ]);
+
+        $cart->recalculate();
+
+        if ($cart->discountTotal?->value === 0) {
+            return redirect()->route('cart.show')
+                ->withErrors(['coupon_code' => 'This coupon code is not valid.']);
+        }
+
+        return redirect()->route('cart.show')
+            ->with('message', 'Coupon applied.');
+    }
+}
+```
+
+## Next Steps
+
+- Review the [Carts reference](/reference/carts) for the full list of cart and cart line fields, configuration options, and session management.
+- Review the [Extending Carts](/extending/carts) for customizing the cart calculation pipeline, adding validators, and overriding actions.
+- Review the [Product Display Page guide](/guides/product-display-page) for adding items to the cart from a product page.

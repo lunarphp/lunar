@@ -1,0 +1,77 @@
+---
+title: "Currencies"
+---
+
+Currencies define the monetary units available for pricing, with exchange rates for conversion.
+
+## Overview
+
+Currencies allow pricing to be managed in different monetary units. Each currency has an exchange rate relative to the default currency, enabling price conversion.
+
+```php
+Lunar\Models\Currency
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `code` | `string` | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code |
+| `name` | `string` | A descriptive name for the currency |
+| `exchange_rate` | `decimal(10,4)` | The exchange rate relative to the default currency |
+| `decimal_places` | `integer` | The number of decimal places, e.g. `2` |
+| `enabled` | `boolean` | Whether the currency is enabled |
+| `default` | `boolean` | Whether the currency is the default |
+| `sync_prices` | `boolean` | Whether to synchronize prices for this currency |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-|:-|:-|:-|
+| `prices` | `HasMany` | `Lunar\Models\Price` | Prices in this currency |
+
+### Scopes
+
+| Scope | Description |
+|:-|:-|
+| `enabled($enabled = true)` | Filter to enabled/disabled currencies |
+| `default($default = true)` | Filter to the default currency |
+
+## Creating a currency
+
+```php
+use Lunar\Models\Currency;
+
+Currency::create([
+    'code' => 'GBP',
+    'name' => 'British Pound',
+    'exchange_rate' => 1.0000,
+    'decimal_places' => 2,
+    'enabled' => true,
+    'default' => true,
+]);
+```
+
+## Exchange rates
+
+Exchange rates are relative to the default currency. For example, given the following default currency:
+
+```php
+use Lunar\Models\Currency;
+
+Currency::create([
+    'code' => 'GBP',
+    'name' => 'British Pound',
+    'exchange_rate' => 1.0000,
+    'decimal_places' => 2,
+    'enabled' => true,
+    'default' => true,
+]);
+```
+
+The default currency's exchange rate is set to `1` as the base. To add EUR (Euros) when the exchange rate from GBP to EUR is `1.17`, the value should be relative to the default: 1 / 1.17 = 0.8547.
+
+The exchange rate is independent of product pricing, as prices can be specified per currency directly. The exchange rate serves as a helper when working with prices.

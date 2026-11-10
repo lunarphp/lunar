@@ -42,6 +42,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
@@ -53,6 +54,7 @@ use Lunar\Validation\CartLine\CartLineStock;
  * @property ?int $merged_id
  * @property int $currency_id
  * @property int $channel_id
+ * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
  * @property ?Carbon $completed_at
@@ -210,9 +212,14 @@ class Cart extends BaseModel implements Contracts\Cart
         'coupon_code' => CouponString::class,
     ];
 
+    /**
+     * Memoised result of {@see self::consumedDiscountIds()}.
+     */
+    protected ?Collection $consumedDiscountIds = null;
+
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id');
+        return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id')->orderBy('id');
     }
 
     public function currency(): BelongsTo
@@ -228,6 +235,11 @@ class Cart extends BaseModel implements Contracts\Cart
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::modelClass());
+    }
+
+    public function taxZone(): BelongsTo
+    {
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     public function scopeUnmerged(Builder $query): Builder
@@ -275,6 +287,53 @@ class Cart extends BaseModel implements Contracts\Cart
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
                 $query->where('id', $draftOrderId);
             })->whereNull('placed_at');
+    }
+
+    /**
+     * The ids of any discounts this cart has already consumed.
+     *
+     * Order creation records a use as soon as the draft order exists, so a
+     * checkout that runs it a second time - a declined card and a retry - would
+     * otherwise find its own coupon exhausted and re-price that same order
+     * without it. A cart's own consumption must not count against it.
+     *
+     * Memoised per instance, because this is read once when the discount set is
+     * rebuilt and once per discount while conditions are checked - a fresh query
+     * each time costs a single-row lookup per discount on every calculate,
+     * including for carts that never reach a checkout. Order creation is the
+     * only thing that changes the answer, so it forgets the memo.
+     *
+     * @see self::forgetConsumedDiscountIds()
+     */
+    public function consumedDiscountIds(): Collection
+    {
+        if ($this->consumedDiscountIds !== null) {
+            return $this->consumedDiscountIds;
+        }
+
+        // Read the raw column: the cast hydrates an OrderLine per breakdown
+        // line, which is a lot of work to reach an id.
+        $breakdown = $this->draftOrder()->first()?->getRawOriginal('discount_breakdown');
+
+        return $this->consumedDiscountIds = collect(json_decode($breakdown ?: '[]', true) ?: [])
+            ->pluck('discount_id')
+            ->filter()
+            ->unique()
+            ->values();
+    }
+
+    /**
+     * Forget the memoised consumed discount ids.
+     *
+     * Order creation writes the breakdown consumedDiscountIds() reads, so a set
+     * memoised before it ran is stale afterwards: on a same-request retry the
+     * cart's own coupon would look unconsumed to CreateOrder and be consumed
+     * twice, and exhausted to the discount conditions, re-pricing the order
+     * without it.
+     */
+    public function forgetConsumedDiscountIds(): void
+    {
+        $this->consumedDiscountIds = null;
     }
 
     public function currentDraftOrder(?int $draftOrderId = null)
@@ -493,8 +552,12 @@ class Cart extends BaseModel implements Contracts\Cart
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    public function setShippingAddress(array|Addressable $address): Cart
+    public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
     {
+        if ($clearTaxZone && $this->tax_zone_id) {
+            $this->taxZone()->dissociate()->save();
+        }
+
         return $this->addAddress($address, 'shipping');
     }
 
@@ -621,5 +684,29 @@ class Cart extends BaseModel implements Contracts\Cart
         }
 
         return $option;
+    }
+
+    /**
+     * Set the tax zone override for this cart.
+     *
+     * When set, all tax calculations use this zone instead of resolving one from the shipping address.
+     * Pass null to clear the override and fall back to the address-derived (or default) zone.
+     * Pass `$refresh = false` to skip persistence and recalculation (useful for previewing without writing).
+     */
+    public function setTaxZone(?TaxZoneContract $taxZone, bool $refresh = true): Cart
+    {
+        if ($taxZone) {
+            $this->taxZone()->associate($taxZone);
+        } else {
+            $this->taxZone()->dissociate();
+        }
+
+        if (! $refresh) {
+            return $this;
+        }
+
+        $this->save();
+
+        return $this->refresh()->recalculate();
     }
 }

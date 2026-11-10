@@ -51,5 +51,9 @@ return [
             'label' => 'Pravila validacije',
             'helper' => 'Pravila za polje atributa, primjer: min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Zadana vrijednost',
+            'helper' => 'Primjenjuje se kao početna vrijednost pri stvaranju novog zapisa s ovim atributom.',
+        ],
     ],
 ];

@@ -99,10 +99,7 @@ class MediaRelationManager extends BaseRelationManager
                             ->usingFileName(
                                 $data['media']->getClientOriginalName()
                             )
-                            ->withCustomProperties([
-                                'name' => $data['custom_properties']['name'],
-                                'primary' => $data['custom_properties']['primary'],
-                            ])
+                            ->withCustomProperties($data['custom_properties'] ?? [])
                             ->preservingOriginal()
                             ->toMediaCollection($this->mediaCollection);
                     })->after(
@@ -112,11 +109,20 @@ class MediaRelationManager extends BaseRelationManager
                     ),
             ])
             ->recordActions([
-                EditAction::make()->after(
-                    fn () => ModelMediaUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                EditAction::make()
+                    ->mutateDataUsing(function (array $data, Media $record): array {
+                        $data['custom_properties'] = array_merge(
+                            $record->custom_properties ?? [],
+                            $data['custom_properties'] ?? [],
+                        );
+
+                        return $data;
+                    })
+                    ->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 DeleteAction::make(),
                 Action::make('view_open')
                     ->label(__('lunarpanel::relationmanagers.medias.actions.view.label'))

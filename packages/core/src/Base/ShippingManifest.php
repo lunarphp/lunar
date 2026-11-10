@@ -18,6 +18,11 @@ class ShippingManifest implements ShippingManifestInterface
     public ?Closure $getOptionUsing = null;
 
     /**
+     * Whether the shipping modifiers are currently being run.
+     */
+    protected bool $resolving = false;
+
+    /**
      * Initiate the class.
      */
     public function __construct()
@@ -77,11 +82,24 @@ class ShippingManifest implements ShippingManifestInterface
      */
     public function getOptions(Cart $cart): Collection
     {
-        app(Pipeline::class)
-            ->send($cart)
-            ->through(
-                app(ShippingModifiers::class)->getModifiers()->toArray()
-            )->thenReturn();
+        // A modifier is free to calculate the cart, which runs ApplyShipping
+        // and lands back here. Hand back what has been resolved so far rather
+        // than running the modifiers again.
+        if ($this->resolving) {
+            return $this->options;
+        }
+
+        $this->resolving = true;
+
+        try {
+            app(Pipeline::class)
+                ->send($cart)
+                ->through(
+                    app(ShippingModifiers::class)->getModifiers()->toArray()
+                )->thenReturn();
+        } finally {
+            $this->resolving = false;
+        }
 
         return $this->options;
     }
