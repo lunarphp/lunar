@@ -71,6 +71,7 @@ return [
         'refund' => [
             'label' => 'Refund',
             'modal_heading' => 'Refund payment',
+            'notify' => 'Gửi thông báo cho khách hàng',
             'confirm' => [
                 'helper_text' => 'I confirm I want to refund this amount.',
             ],

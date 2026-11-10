@@ -40,7 +40,7 @@
         "spatie/typescript-transformer": "^3.3",
         "stripe/stripe-php": "^16.0",
         "mallardduck/blade-lucide-icons": "^1.26",
-        "typesense/typesense-php": "^4.9"
+        "typesense/typesense-php": "^5.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",

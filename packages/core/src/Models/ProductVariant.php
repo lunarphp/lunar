@@ -294,8 +294,8 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
         return app(ResolvesInventory::class)->execute($this)->available;
     }
 
-    public function getThumbnailImage(): string
+    public function getThumbnailImage(): ?string
     {
-        return $this->getThumbnail()?->getUrl('small') ?? '';
+        return $this->getThumbnail()?->getUrl('small');
     }
 }

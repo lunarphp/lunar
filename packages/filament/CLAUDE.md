@@ -50,7 +50,7 @@ src/
 Anything reachable from outside `Concerns/`, `Support/`, and internal namespaces is contract.
 
 - **Net-additive changes** (new selectors, new action classes, new schema methods, new descriptors) ship without a spec.
-- **Renames, removals, signature changes, behavioural shifts** require a spec under `specs/NNNN-…md` in the monorepo and a corresponding Rector rule in `lunarphp/upgrade` so consumers on the previous version can auto-migrate.
+- **Renames, removals, signature changes, behavioural shifts** require a spec under `specs/` in the monorepo and a corresponding Rector rule in `lunarphp/upgrade` so consumers on the previous version can auto-migrate.
 - A deprecated class becomes a thin shim that forwards to the replacement, marked `@deprecated since vX — use Y`. It stays for one minor cycle before removal.
 - Adding a `protected static` property on a trait that's also redeclared by consumers is a fatal — declare the property only on consumer classes and document the requirement in the trait's docblock (see `Concerns/HasLunarGlobalSearch.php` for the precedent).
 
@@ -65,7 +65,7 @@ When you add or change a public surface, **the README is the canonical user-faci
    - Match the existing tone: terse, code-first, examples drawn from the actual class. Don't repeat what a `@phpdoc` block already says — link the reader to the class.
 
 2. **`IDEAS.md`** — backlog of future additions.
-   - When you ship something that was an idea, append `_(Shipped in spec NNNN.)_` to the item; don't delete it.
+   - When you ship something that was an idea, append `_(Shipped in spec <name>.)_` to the item; don't delete it.
    - When a spec is suggested as "next", refresh the "Suggested next spec" footer.
 
 3. **Release notes come from PR titles** — there is no per-package `CHANGELOG.md` (features regularly span sub-packages, so a single package's file told a partial story). Give every PR a conventional-commit title scoped to the package(s) it touches (`feat(filament): …`, `fix(core,filament): …`); release notes are compiled from merged PR titles at each release. Call out deprecations and behavioural changes prominently in the PR description — that text is what the release notes link to.
@@ -106,7 +106,7 @@ After the v2.0.0 split, tests move into the standalone repo.
 
 ## Spec-driven development
 
-Non-trivial additions go through `specs/NNNN-{slug}.md` in the monorepo. The spec lands before implementation. Already-shipped specs that shaped this package:
+Non-trivial additions go through `specs/{slug}.md` in the monorepo. The spec lands before implementation. Already-shipped specs that shaped this package:
 
 - `0006` — bridge package extraction and install model.
 - `0007` — page-extension traits inlined into base page classes.

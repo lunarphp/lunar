@@ -61,6 +61,12 @@ return new class extends Migration
         $this->derivePaymentStatus($orders);
         $this->stampTimestamps($orders, $closed, $cancelled);
 
+        if (Schema::hasIndex($orders, ['status'])) {
+            Schema::table($orders, function (Blueprint $table) {
+                $table->dropIndex(['status']);
+            });
+        }
+
         Schema::table($orders, function (Blueprint $table) {
             $table->dropColumn('status');
         });

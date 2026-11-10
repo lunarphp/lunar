@@ -142,8 +142,33 @@ Order notifications are configured through an `OrderNotifications` manifest
 (each entry carries its auto-triggers, a manual/resendable flag and a scope)
 rather than a config map. An interactive "Notify customer" order action lets
 staff pick a notification, add a message, choose recipients and record the send.
-Fulfilment events gate on a "notify customer" toggle. (Branded default templates
-for the full lifecycle are still to come.)
+Fulfilment events gate on a "notify customer" toggle.
+
+Core ships branded, overridable defaults for the whole lifecycle, on for every
+install: order confirmation (on placement), payment received (a capture after
+placement), shipped with tracking, ready for collection, digital provisioning,
+return received, cancellation and refund issued, plus two manual-only variants
+(a partial-fulfilment update listing the outstanding lines, and the free-text
+order update). Templates are markdown mail views under the `lunar` namespace
+(`vendor:publish --tag=lunar.views`), themed through Laravel's own
+`laravel-mail` layout, with copy in `lunar::notifications`. To switch one off
+or swap it, forget or re-register its key in a service provider:
+
+```php
+OrderNotifications::forget('payment-received');
+OrderNotifications::register('order-confirmation', MyConfirmation::class, label: 'Order confirmation', on: ['placed']);
+```
+
+A few trigger rules come with the defaults. Only placed orders are emailed, so a
+draft is never told it shipped or was cancelled, and a card checkout sends one
+confirmation (which carries the payment state) rather than a confirmation plus a
+"paid" email; a driver must record its capture before stamping `placed_at`.
+Emails send once the change that fired them commits, built from freshly loaded
+models, so a rolled-back checkout sends nothing and a shipped email carries its
+tracking. `OrderNotifications::withoutSending()` mutes them for imports. And the refund
+event now resolves the `refund-issued` key, not `refunded` (which stays the
+payment-status rollup's key) — a notification registered `on: ['refunded']` for
+the refund event should move to `on: ['refund-issued']`.
 
 ## Caching & events
 
@@ -226,6 +251,12 @@ registration needed. Building the panel's own assets (`npm run build` inside
 the package, before publishing) is only required if you're developing the
 panel or an add-on for it locally; `php artisan lunar:panel:link` symlinks
 add-on builds during development.
+
+An add-on can compile its own prefixed Tailwind utilities against the panel's
+design tokens by importing `@lunarphp/panel/addon-theme.css`. The token names in
+that file are a public contract: renaming or removing one is a breaking change
+and will be listed here. The add-on styling guide lives in the
+`panel-addon-example` README.
 
 ## Foundations & external addressing
 

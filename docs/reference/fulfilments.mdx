@@ -1,0 +1,377 @@
+---
+title: "Fulfilments"
+description: "Track shipping, pickup, and digital provisioning against an order's lines, with carriers, tracking, and per-method lifecycles."
+---
+
+A fulfilment is a unit of "getting the order's goods to the customer" — a shipment, an in-store pickup, or a digital provisioning — tracked independently of payment.
+
+## Overview
+
+An order's [`fulfillableLines`](/reference/orders#order-model) (lines where `requires_fulfilment` is `true`) are covered by one or more `Fulfilment` records. When an order is placed, Lunar automatically creates its initial fulfilments: each registered [fulfilment method](#fulfilment-methods) claims the lines it covers, in priority order, and a method that claims at least one line gets one fulfilment covering them. A basket of a shippable product, a licence key, and a click-and-collect item ends up with three fulfilments — one per method. A merchant does not create the initial fulfilment by hand; they split, merge, or move lines between the fulfilments that already exist.
+
+Each fulfilment progresses through a state graph owned by its method — a shipping fulfilment ships and can be returned, a digital one is provisioned, a pickup one is marked picked up. The order's own [`fulfilment_status`](/reference/orders#fulfilment-status) is a rollup over all of an order's fulfilments and is method-agnostic.
+
+## Fulfilment model
+
+```php
+Lunar\Core\Models\Fulfilment
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| order_id | `foreignId` | |
+| location_id | `foreignId` | The `Lunar\Core\Models\Location` this fulfilment is assigned to |
+| reference | `string` `nullable` | |
+| method | `string` | The fulfilment method key, resolved via the method manifest, see [Fulfilment methods](#fulfilment-methods) |
+| state | `string` | The current lifecycle state, see [Fulfilment lifecycle](#fulfilment-lifecycle) |
+| notes | `text` `nullable` | |
+| meta | `jsonb` `nullable` | Custom metadata |
+| shipped_at | `dateTime` `nullable` | When the fulfilment was handed over (shipped, picked up, or provisioned) |
+| held_at | `dateTime` `nullable` | When the fulfilment was put on hold, see [Holding a fulfilment](#holding-a-fulfilment) |
+| hold_reason | `string` `nullable` | |
+| hold_note | `text` `nullable` | |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `order` | BelongsTo | `Lunar\Core\Models\Order` | |
+| `location` | BelongsTo | `Lunar\Core\Models\Location` | |
+| `lines` | HasMany | `Lunar\Core\Models\FulfilmentLine` | See [Fulfilment lines](#fulfilment-lines) |
+| `trackings` | HasMany | `Lunar\Core\Models\FulfilmentTracking` | See [Tracking](#tracking) |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `onHold` | Fulfilments where `held_at` is set |
+
+### Other useful methods
+
+| Method | Description |
+|:-------|:------------|
+| `isOnHold(): bool` | Whether the fulfilment is currently blocked from shipping |
+| `holdReasonLabel(): ?string` | The human-readable label for `hold_reason` |
+| `method(): Lunar\Core\Contracts\FulfilmentMethod` | Resolves the registered method for this fulfilment |
+
+## Fulfilment lifecycle
+
+`state` is cast to a `Lunar\Core\States\Fulfilment\FulfilmentState` instance. Unlike the order's derived `payment_status`/`fulfilment_status`, this is a hand-driven, **guarded** state machine — an illegal transition throws.
+
+<Info>
+The state graph is owned by the fulfilment's [method](#fulfilment-methods), not a single fixed graph. Every state and transition contributed by any registered method is known to the underlying `spatie/laravel-model-states` machine (so it can cast any fulfilment's state), but a per-method guard (`MethodAwareTransition`) enforces that a given fulfilment only ever follows its own method's transitions — a `collection` fulfilment cannot move to `Shipped` even though that transition exists for `shipping`.
+</Info>
+
+Every state belongs to a fixed rollup category — `Outstanding`, `Fulfilled`, `Returned`, or `Cancelled` — which is what the order-level `fulfilment_status` rollup and the split/merge/return mechanics reason over, regardless of method:
+
+| State | `$name` | Category | Used by |
+|:------|:--------|:---------|:--------|
+| `Pending` | `pending` | Outstanding | shipping, pickup, digital |
+| `InProgress` | `in-progress` | Outstanding | shipping |
+| `ReadyForPickup` | `ready-for-pickup` | Outstanding | pickup |
+| `Shipped` | `shipped` | Fulfilled | shipping |
+| `PickedUp` | `picked-up` | Fulfilled | pickup |
+| `Provisioned` | `provisioned` | Fulfilled | digital |
+| `Returned` | `returned` | Returned | shipping, pickup |
+| `Cancelled` | `cancelled` | Cancelled | shipping, pickup, digital |
+
+### Per-method transition graphs
+
+**`shipping`** (default state `Pending`, fulfilled state `Shipped`):
+
+- `Pending → InProgress, Shipped, Cancelled`
+- `InProgress → Pending, Shipped, Cancelled`
+- `Shipped → Pending, Returned`
+- `Returned → Shipped`
+- `Cancelled` is terminal
+
+**`pickup`** (default state `Pending`, fulfilled state `PickedUp`):
+
+- `Pending → ReadyForPickup, PickedUp, Cancelled`
+- `ReadyForPickup → Pending, PickedUp, Cancelled`
+- `PickedUp → Pending, Returned`
+- `Returned → PickedUp`
+- `Cancelled` is terminal
+
+**`digital`** (default state `Pending`, fulfilled state `Provisioned`):
+
+- `Pending → Provisioned, Cancelled`
+- `Provisioned → Pending`
+- `Cancelled` is terminal
+
+Digital fulfilments have no return transition.
+
+Entering a `Fulfilled`-category state stamps `shipped_at` (unless already set); reverting from `Fulfilled` back to `Outstanding` clears it and deletes any tracking — the fulfilment was never really handed over.
+
+## Verb methods
+
+Every fulfilment operation is a verb on the `Fulfilment` model, delegating to an action contract:
+
+| Verb | Delegates to | Description |
+|:-----|:-------------|:------------|
+| `ship(array $tracking = [], bool $notify = true)` | `Contracts\Actions\Fulfilment\ShipsFulfilment` | Advances to the method's fulfilled state and records tracking. Only valid for methods with `usesTracking()` |
+| `fulfil(bool $notify = true)` | `FulfilsFulfilment` | Advances to the method's fulfilled state with no tracking — pickup → `PickedUp`, digital → `Provisioned` |
+| `split(array $moves)` | `SplitsFulfilment` | Moves outstanding `[order_line_id => quantity]` out into a new fulfilment. Returns the new fulfilment |
+| `merge(Collection $sources)` | `MergesFulfilments` | Absorbs outstanding source fulfilments into this one. Sources and target must share an order, location, and method |
+| `moveLinesTo(Fulfilment $to, array $moves)` | `MovesFulfilmentLines` | Moves selected `[order_line_id => quantity]` into another outstanding fulfilment on the same order |
+| `cancel()` | `CancelsFulfilment` | Voids the fulfilment; its quantities return to the order's unfulfilled pool. Never sends a customer notification |
+| `markReturned(bool $notify = true)` | `ReturnsFulfilment` | Marks a shipped or picked-up fulfilment as returned. Independent of refunds |
+| `transition(string $state, bool $notify = true)` | `TransitionsFulfilment` | A plain guarded transition for moves with no extra behaviour |
+| `hold(?string $reason = null, ?string $note = null)` | `HoldsFulfilment` | Blocks a pre-ship fulfilment from shipping |
+| `release()` | `ReleasesFulfilment` | Releases a held fulfilment |
+| `changeLocation(int $locationId)` | `ChangesFulfilmentLocation` | Moves the fulfilment to another location |
+| `addTracking(array $attributes)` | `AddsFulfilmentTracking` | Appends a tracking reference, returning the `FulfilmentTracking` |
+
+```php
+use Lunar\Core\Models\Fulfilment;
+
+$fulfilment = Fulfilment::find(1);
+
+$fulfilment->ship([
+    'carrier' => 'royal-mail',
+    'shipping_method' => 'tracked-48',
+    'tracking_number' => 'AB123456789GB',
+]);
+
+$fulfilment->hold(reason: 'stock-check', note: 'Confirming stock before dispatch');
+$fulfilment->release();
+
+$fulfilment->markReturned();
+```
+
+`ship()`, `fulfil()`, `markReturned()`, and `transition()` accept a trailing `notify` flag — when `true` (the default), a state change fires the notifications registered against it, see [Notifications on fulfilment events](#notifications-on-fulfilment-events).
+
+<Warning>
+`split()`, `merge()`, and `moveLinesTo()` only operate on fulfilments still in an `Outstanding` state — they reorganise quantities that have not yet been handed over, and never change the total fulfilled quantity.
+</Warning>
+
+## Fulfilment methods
+
+A fulfilment method is the registered driver that owns a fulfilment's flow: its state graph, which order lines it claims, and whether it carries carrier tracking.
+
+```php
+interface Lunar\Core\Contracts\FulfilmentMethod
+{
+    public function getKey(): string;
+    public function getLabel(): string;
+    public function states(): array;
+    public function transitions(): array;
+    public function defaultState(): string;
+    public function fulfilledState(): string;
+    public function claim(Order $order, Collection $unclaimed): Collection;
+    public function priority(): int;
+    public function usesTracking(): bool;
+}
+```
+
+Core registers three, in `packages/core/src/Drivers/FulfilmentMethods/`:
+
+| Method | Key | Priority | Claims | Tracking |
+|:-------|:----|:---------|:-------|:---------|
+| `Shipping` | `shipping` | 30 (runs last, catch-all) | Any remaining line with `requires_shipping` | Yes |
+| `Pickup` | `pickup` | 20 | `requires_shipping` lines, only when the order's chosen shipping option was a pickup | No |
+| `Digital` | `digital` | 10 (runs first) | Lines with `requires_fulfilment` and not `requires_shipping` | No |
+
+Methods claim lines in ascending priority order over a shrinking pool of unclaimed lines, so `digital` and `pickup` get first pick and `shipping` claims whatever is left.
+
+Manage the registry via the `FulfilmentMethods` facade:
+
+```php
+use Lunar\Core\Enums\FulfilmentStateCategory;
+use Lunar\Core\Facades\FulfilmentMethods;
+
+FulfilmentMethods::register(App\Fulfilment\Methods\PrescriptionMethod::class);
+FulfilmentMethods::forget('pickup');
+FulfilmentMethods::all(); // Collection<string, FulfilmentMethod>, priority order
+FulfilmentMethods::get('shipping');
+FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled); // state $names in a category, across every method
+FulfilmentMethods::dispatchedStateNames(); // Fulfilled and Returned categories: goods that reached the customer
+```
+
+A custom `Lunar\Core\Contracts\FulfilmentMethodManifest` implements both. The order's `fulfilment_status` rollup and the partial fulfilment update email count a line as dispatched through `dispatchedStateNames()`.
+
+## Creating fulfilments
+
+Lunar creates an order's initial fulfilments automatically when it is placed — no call is needed for the common case. To create an additional fulfilment by hand (for example, covering a subset of lines with a specific method), use the order's `createFulfilment()` verb:
+
+```php
+$fulfilment = $order->createFulfilment(
+    lines: [$line->id => 1], // [order_line_id => quantity]
+    attributes: [
+        'method' => 'shipping',
+        'location_id' => $location->id,
+        'reference' => 'PACK-042',
+    ],
+);
+```
+
+`lines` maps an order line ID to the quantity to cover. `attributes['method']` defaults to `shipping`; `location_id` defaults to the store's default location (creating one named `Default` if none exists yet).
+
+Before creating, the requested quantities are validated against how much of each line is still outstanding — a line's quantity minus what its existing (non-cancelled) fulfilments already cover. Requesting more than is outstanding, or against a line where `requires_fulfilment` is `false`, throws.
+
+## Fulfilment lines
+
+```php
+Lunar\Core\Models\FulfilmentLine
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| fulfilment_id | `foreignId` | |
+| order_line_id | `foreignId` | |
+| quantity | `unsignedInteger` | The quantity this fulfilment covers for the order line |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `fulfilment` | BelongsTo | `Lunar\Core\Models\Fulfilment` | |
+| `orderLine` | BelongsTo | `Lunar\Core\Models\OrderLine` | |
+
+A `[fulfilment_id, order_line_id]` pair is unique — a fulfilment carries at most one line row per order line.
+
+## Tracking
+
+A fulfilment can carry several tracking references (a shipment split across boxes or carriers).
+
+```php
+Lunar\Core\Models\FulfilmentTracking
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| id | `bigIncrements` | Primary key |
+| public_id | `ulid` | Stable external identifier |
+| fulfilment_id | `foreignId` | |
+| carrier | `string` `nullable` | The registered carrier key, see [Carriers](#carriers) |
+| shipping_method | `string` `nullable` | A service key from the carrier's `getServices()` |
+| tracking_number | `string` `nullable` | |
+| tracking_url | `string` `nullable` | An explicit tracking URL. Takes precedence over one derived from the carrier |
+| meta | `jsonb` `nullable` | Custom metadata |
+| created_at | `timestamp` | |
+| updated_at | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `fulfilment` | BelongsTo | `Lunar\Core\Models\Fulfilment` | |
+
+### Other useful methods
+
+| Method | Description |
+|:-------|:------------|
+| `carrier(): ?Lunar\Core\Contracts\ShippingCarrier` | Resolves the registered carrier for this tracking |
+| `shippingMethodLabel(): ?string` | The translated label for `shipping_method`, resolved through the carrier's service catalogue |
+| `url` (accessor) | The public tracking URL — `tracking_url` if set, otherwise derived from the carrier and tracking number |
+| `remove(): void` | Removes this tracking reference — the swappable seam, rather than calling `delete()` directly |
+
+Add tracking through the fulfilment's `ship()` or `addTracking()` verb rather than creating a `FulfilmentTracking` row directly, so tracking-number validation runs against the carrier:
+
+```php
+$fulfilment->addTracking([
+    'carrier' => 'dpd',
+    'shipping_method' => 'next-day',
+    'tracking_number' => '01234567891234',
+]);
+```
+
+### Carriers
+
+A carrier resolves service labels and tracking URLs for a shipping provider.
+
+```php
+interface Lunar\Core\Contracts\ShippingCarrier
+{
+    public function getKey(): string;
+    public function getName(): string;
+    public function getServices(): array;
+    public function getTrackingUrl(string $trackingNumber): ?string;
+    public function validateTrackingNumber(string $trackingNumber): bool;
+}
+```
+
+Core registers four, extending the abstract `Lunar\Core\Shipping\Carriers\Carrier` base (which implements URL-template substitution and pattern validation from two protected hooks): `royal-mail`, `dpd`, `ups`, `fedex`.
+
+Manage the registry via the `Carriers` facade:
+
+```php
+use Lunar\Core\Facades\Carriers;
+
+Carriers::register(App\Shipping\Carriers\Interlink::class);
+Carriers::forget('fedex');
+Carriers::all(); // Collection<string, ShippingCarrier>
+Carriers::get('royal-mail');
+```
+
+A custom carrier extends the base class:
+
+```php
+namespace App\Shipping\Carriers;
+
+use Lunar\Core\Shipping\Carriers\Carrier;
+
+class Interlink extends Carrier
+{
+    public function getKey(): string
+    {
+        return 'interlink';
+    }
+
+    public function getName(): string
+    {
+        return 'Interlink Express';
+    }
+
+    public function getServices(): array
+    {
+        return [
+            'standard' => __('Standard'),
+            'next-day' => __('Next day'),
+        ];
+    }
+
+    protected function trackingUrlTemplate(): ?string
+    {
+        return 'https://interlink.example/track/{tracking_number}';
+    }
+}
+```
+
+## Holding a fulfilment
+
+A pre-ship fulfilment (`pending` or `in-progress`) can be put on hold, blocking it from shipping until released:
+
+```php
+$fulfilment->hold(reason: 'address-query', note: 'Confirming delivery address with customer');
+$fulfilment->release();
+```
+
+Holding is orthogonal to the state graph — the fulfilment keeps its current state while `held_at` is set. Reasons come from the `HoldReasons` manifest, mirroring [order cancel reasons](/reference/orders#cancelling-an-order):
+
+```php
+use Lunar\Core\Facades\HoldReasons;
+
+HoldReasons::all();
+HoldReasons::add('address-query', 'Address query');
+```
+
+## Notifications on fulfilment events
+
+`ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job).
+
+Lunar registers a default email for four of these states: `shipped` (`Lunar\Core\Notifications\OrderShipped`, with the fulfilment's lines and tracking), `ready-for-pickup` (`OrderReadyForPickup`), `provisioned` (`OrderProvisioned`), and `returned` (`ReturnReceived`). `picked-up`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing. See the [Notifications](/reference/notifications#default-notifications) reference for what each contains, how to customize the templates, and how to register a notification against a custom fulfilment state.

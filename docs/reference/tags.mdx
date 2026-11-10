@@ -1,0 +1,59 @@
+---
+title: "Tags"
+---
+
+Tags provide a way to relate otherwise unrelated models, enabling features like dynamic collections.
+
+## Overview
+
+Tags provide a way to relate otherwise unrelated models in the system. They also impact other features such as Dynamic Collections.
+
+For example, two products "Blue T-Shirt" and "Blue Shoes" are unrelated by nature, but adding a `BLUE` tag to each product allows a Dynamic Collection to include any products with that tag.
+
+```php
+Lunar\Core\Models\Tag
+```
+
+### Fields
+
+| Field | Type | Description |
+|:-|:-|:-|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Public-facing identifier, generated automatically |
+| `value` | `string` | The tag value |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+<Tip>
+Tags are automatically converted to uppercase whenever the `value` attribute is set, including through `syncTags`.
+</Tip>
+
+## Enabling tags
+
+To enable tagging on a model, add the `HasTags` trait:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\Concerns\HasTags;
+
+class SomethingWithTags extends Model
+{
+    use HasTags;
+
+    // ...
+}
+```
+
+Tags can then be attached using `syncTags`:
+
+```php
+$model = SomethingWithTags::first();
+
+$model->syncTags(collect(['TAG ONE', 'TAG TWO', 'TAG THREE']));
+```
+
+The `syncTags` method accepts a collection of tag value strings, not `Tag` model instances. It finds or creates a `Lunar\Core\Models\Tag` for each value and syncs the model's `tags` relationship to them. Values are automatically converted to uppercase. The sync process runs via a queued job (`Lunar\Core\Jobs\SyncTags`), so changes may not be reflected immediately if using an asynchronous queue driver.

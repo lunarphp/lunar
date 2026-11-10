@@ -1,0 +1,124 @@
+---
+title: "Public IDs"
+description: "A stable, external identifier for addressing Lunar models outside the database."
+---
+
+Public IDs give Lunar models a stable, non-sequential external identifier, separate from their auto-increment primary key.
+
+## Overview
+
+Every Lunar model is stored with a standard auto-increment integer `id`, used internally as the primary key and as the target of every foreign key. That integer is a poor choice for addressing a record outside the application (in an API, a webhook payload, or a URL):
+
+- It leaks business data — an order numbered `41` reveals how many orders the store has taken.
+- It is guessable and enumerable.
+- It is not portable — a backfill, a merge, or a cross-environment sync cannot preserve integer keys.
+
+`public_id` solves this by giving addressable models a second, unique column: a [ULID](https://github.com/ulid/spec) generated when the record is created. The integer `id` stays the internal primary key; `public_id` is the outward-facing handle for APIs, webhooks, and integrations.
+
+ULIDs were chosen over UUIDs because they are time-ordered (they sort lexically by creation time and index well, avoiding the random-insert fragmentation of UUIDv4) and because Laravel already generates them natively via `Illuminate\Support\Str::ulid()`. Public IDs carry no type prefix (nothing like `prod_...`) — that kind of presentation is left to the API layer that exposes the id, not to core.
+
+## The `HasPublicId` trait
+
+`Lunar\Core\Models\Concerns\HasPublicId` adds the column and its lookup scope to a model:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Lunar\Core\Models\Builders\Builder;
+
+trait HasPublicId
+{
+    public function initializeHasPublicId(): void
+    {
+        if (empty($this->public_id)) {
+            $this->public_id = (string) Str::ulid();
+        }
+    }
+
+    public static function bootHasPublicId(): void
+    {
+        static::creating(function (Model $model) {
+            if (empty($model->public_id)) {
+                $model->public_id = (string) Str::ulid();
+            }
+        });
+
+        static::replicating(function (Model $model) {
+            $model->public_id = null;
+        });
+    }
+
+    public function scopeWherePublicId(Builder $query, string|array $publicId): Builder
+    {
+        return $query->whereIn('public_id', (array) $publicId);
+    }
+}
+```
+
+- Generation is lazy and non-clobbering: a value supplied explicitly (for example, by a sync process carrying an id across environments) is preserved; otherwise a ULID is minted on construction and again, defensively, on the model's `creating` event. This covers persistence paths that bypass model events, such as `createQuietly()`, `saveQuietly()`, and `withoutEvents()`.
+- Replicating a model (`->replicate()`) clears the copied `public_id` so a fresh one is minted on save, rather than colliding with the source record's unique value.
+- The `wherePublicId()` scope is the canonical lookup: it accepts a single id or an array of ids.
+
+## Column shape
+
+Each included table carries the column right after `id`:
+
+```php
+$table->ulid('public_id')->unique();
+```
+
+## Looking up a model by its public ID
+
+```php
+use Lunar\Core\Models\Product;
+
+$product = Product::wherePublicId('01J8X8N4V1Z9V2R6K7T3F5D0YQ')->firstOrFail();
+
+// Or with multiple ids
+$products = Product::wherePublicId([
+    '01J8X8N4V1Z9V2R6K7T3F5D0YQ',
+    '01J8X8N7Q6D3E5S9B7VW4RXNMT',
+])->get();
+```
+
+There is no `findByPublicId()` helper — `wherePublicId()` is the seam, composed like any other query scope.
+
+## Which models have a public ID
+
+The rule is default-on: every standalone model gets a `public_id`, except two kinds:
+
+- **Link and pivot models** — they have no independent identity and are addressed through the two records they join (for example `Lunar\Core\Models\AttributeModel`, `Lunar\Core\Models\Discountable`, `Lunar\Core\Models\ProductAssociation`, `Lunar\Core\Models\TaxZoneCountry`, `Lunar\Core\Models\TaxZoneState`, `Lunar\Core\Models\TaxZoneCustomerGroup`, `Lunar\Core\Models\DiscountCollection`, `Lunar\Core\Models\UserPermission`).
+- **Immutable-standard-code models** — the model's code is already a stable, external identifier, and a better one than a ULID: `Lunar\Core\Models\Country` (`iso2`/`iso3`), `Lunar\Core\Models\Currency` (`code`), `Lunar\Core\Models\Language` (`code`), `Lunar\Core\Models\State` (`code`).
+
+Every other model extending `Lunar\Core\Models\Base` — including `Product`, `ProductVariant`, `Order`, `Customer`, `Collection`, `Brand`, `Cart`, `Discount`, `Fulfilment`, `Transaction`, and the taxonomy and configuration models such as `Channel`, `Region`, `Attribute`, `AttributeGroup`, `ProductType`, `TaxClass`, `TaxZone`, `Tag`, and `Url` — carries a `public_id`. `Lunar\Core\Models\Staff`, which authenticates admin users and extends `Illuminate\Foundation\Auth\User` rather than `Base`, also carries one.
+
+<Info>
+A dedicated architecture test enforces this rule: any new model that neither uses `HasPublicId` nor is added to the exclusion list fails the test suite, so membership is always a conscious decision rather than something left to memory.
+</Info>
+
+## Route binding
+
+Route model binding is not switched to `public_id` globally — Filament and the admin panel resolve models by `id`, and changing the default route key would break every existing admin URL. Route binding stays on `id` everywhere in Lunar itself.
+
+A consumer building their own storefront routes can opt in to `public_id` binding per model with the standard Laravel override:
+
+```php
+namespace App\Models;
+
+use Lunar\Core\Models\Product as BaseProduct;
+
+class Product extends BaseProduct
+{
+    public function getRouteKeyName(): string
+    {
+        return 'public_id';
+    }
+}
+```
+
+## What public IDs are not
+
+- **Not shown in the admin panel.** `public_id` has no form field, table column, or infolist entry in Filament or the Inertia admin panel — it is a machine address for integrations, not something staff read or act on.
+- **Not the search index key.** `getScoutKey()` stays `id`; `public_id` is included as a filterable/returnable field in the indexers of searchable models instead.
+- **Not a cache key.** Cache invalidation tags are still built from `id`.
+- **Not a replacement for `Order::reference`.** `Order` keeps its human-facing, sequential `reference` (the number a customer quotes) alongside its `public_id` (the opaque, enumeration-resistant address an integration uses) — they serve different purposes and coexist.

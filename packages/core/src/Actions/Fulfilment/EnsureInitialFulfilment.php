@@ -14,7 +14,7 @@ use Lunar\Core\Models\Order;
  * claims a subset, and a method that claims >= 1 line gets one fulfilment (in its
  * `defaultState()`) covering them at full quantity. One method, an all-physical
  * order → exactly one fulfilment (today's behaviour); a basket of a delivered good
- * + a licence key + a collection item → a fulfilment per claiming method.
+ * + a licence key + a pickup item → a fulfilment per claiming method.
  *
  * Idempotent — a no-op if the order already has any fulfilment, or has no
  * fulfillable lines. Returns the first fulfilment created (or null). The merchant
