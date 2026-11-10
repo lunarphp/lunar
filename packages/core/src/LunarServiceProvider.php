@@ -84,6 +84,7 @@ use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
+use Lunar\Core\Listeners\SendOrderPlacedNotifications;
 use Lunar\Core\Listeners\SendOrderRefundedNotifications;
 use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
@@ -106,6 +107,7 @@ use Lunar\Core\Manifests\StepManifest as StepManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
@@ -132,6 +134,7 @@ use Lunar\Core\Modifiers\OrderModifiers;
 use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Observers\AddressObserver;
 use Lunar\Core\Observers\AttributeObserver;
+use Lunar\Core\Observers\CartAddressObserver;
 use Lunar\Core\Observers\CartLineObserver;
 use Lunar\Core\Observers\CartObserver;
 use Lunar\Core\Observers\ChannelObserver;
@@ -196,6 +199,7 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar');
 
         $this->registerAddonManifest();
 
@@ -244,6 +248,10 @@ class LunarServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../resources/lang' => lang_path('vendor/lunar'),
             ], 'lunar.translation');
+
+            $this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/lunar'),
+            ], 'lunar.views');
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
@@ -304,6 +312,8 @@ class LunarServiceProvider extends ServiceProvider
             Logout::class,
             [CartSessionAuthListener::class, 'logout']
         );
+
+        Event::listen(OrderPlaced::class, SendOrderPlacedNotifications::class);
 
         // The remember token is random and only its hash is stored, so encryption adds nothing and would break lookups on routes without EncryptCookies.
         EncryptCookies::except(config('lunar.cart_session.remember.cookie', 'lunar_cart_remember'));
@@ -591,6 +601,7 @@ class LunarServiceProvider extends ServiceProvider
         Address::observe(AddressObserver::class);
         Attribute::observe(AttributeObserver::class);
         Cart::observe(CartObserver::class);
+        CartAddress::observe(CartAddressObserver::class);
         CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
         Collection::observe(CollectionObserver::class);

@@ -108,6 +108,8 @@ return redirect()->back()->withErrors([
 
 <Warning>
 An order is only considered "placed" when its `placed_at` column has a datetime value. Each driver is responsible for setting this once payment succeeds. A draft order (where `placed_at` is `null`) has not been placed, even if an order record already exists.
+
+Setting `placed_at` also sends the order confirmation email, so record the payment's capture transactions first. The confirmation then carries the payment state, and no separate "payment received" email is sent. See [Extending payments](/extending/payments#recording-transactions).
 </Warning>
 
 If a draft order does not already exist for the cart, most drivers create one as part of `authorize()` — see the [Checkout guide](/guides/checkout) for the alternative of calling `CartSession::createOrder()` explicitly before authorizing.

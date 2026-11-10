@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Хүлээгдэж буй',
         'in-progress' => 'Хийгдэж байгаа',
-        'ready-for-collection' => 'Очиж авахад бэлэн',
+        'ready-for-pickup' => 'Очиж авахад бэлэн',
         'shipped' => 'Илгээсэн',
-        'collected' => 'Хүлээн авсан',
+        'picked-up' => 'Хүлээн авсан',
         'provisioned' => 'Нийлүүлсэн',
         'cancelled' => 'Цуцлагдсан',
         'returned' => 'Буцаасан',
