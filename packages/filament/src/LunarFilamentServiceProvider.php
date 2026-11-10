@@ -4,6 +4,7 @@ namespace Lunar\Filament;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Lunar\Core\Models\Staff as CoreStaff;
 use Lunar\Filament\Models\Staff;
 use Lunar\Filament\Support\ComponentExtensions\Registry as ComponentExtensionsRegistry;
 use Lunar\Filament\Support\Facades\AttributeData as AttributeDataFacade;
@@ -19,7 +20,9 @@ class LunarFilamentServiceProvider extends ServiceProvider
             'lunar.filament'
         );
 
-        $this->app['config']->set('lunar.staff.model', Staff::class);
+        if (config('lunar.staff.model', CoreStaff::class) === CoreStaff::class) {
+            $this->app['config']->set('lunar.staff.model', Staff::class);
+        }
 
         $this->app->singleton(ComponentExtensionsRegistry::class, function () {
             return new ComponentExtensionsRegistry;
