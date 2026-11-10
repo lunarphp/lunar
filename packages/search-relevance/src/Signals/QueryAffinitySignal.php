@@ -53,7 +53,7 @@ class QueryAffinitySignal implements Signal
         $this->cache->forever(self::CACHE_GENERATION_KEY, $this->generation() + 1);
     }
 
-    protected function generation(): int
+    public function generation(): int
     {
         return (int) $this->cache->get(self::CACHE_GENERATION_KEY, 0);
     }

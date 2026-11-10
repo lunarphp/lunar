@@ -8,6 +8,7 @@ use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
 use Lunar\SearchRelevance\Jobs\RecordEvent;
+use Lunar\SearchRelevance\Learning\Overrides;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
 use Lunar\SearchRelevance\Pipelines\PartNumberFallback;
@@ -95,6 +96,7 @@ beforeEach(function () {
     Config::set('lunar.search_relevance.mode', 'shadow');
     Config::set('lunar.search_relevance.window', 250);
     Config::set('lunar.search_relevance.bucket_size', 10);
+    Config::set('lunar.search_relevance.shadow_sample_rate', 1.0);
 });
 
 it('widens the request to the window and slices back to the requested page', function () {
@@ -551,4 +553,32 @@ it('treats a raw sort as the shopper choosing an order, unless it is by relevanc
 })->with([
     'by price' => ['price:asc', false],
     'by relevance' => ['_text_match:desc', true],
+]);
+
+it('applies a staff exclusion to the next search, not after the cached window expires', function () {
+    Config::set('lunar.search_relevance.mode', 'on');
+    $products = Fixtures::products(5);
+    $boosted = $products[4]->id;
+    learn($boosted);
+
+    expect(ids(Search::model(Product::class)->query('cable')->get())[0])->toBe($boosted);
+
+    app(Overrides::class)->exclude(Product::class, 'cable', $boosted);
+
+    expect(ids(Search::model(Product::class)->query('cable')->get())[0])->not->toBe($boosted);
+});
+
+it('widens only a sample of shadow searches, and every search when ranking is on', function (string $mode, float $rate, int $logged) {
+    Config::set('lunar.search_relevance.mode', $mode);
+    Config::set('lunar.search_relevance.shadow_sample_rate', $rate);
+    Fixtures::products(30);
+
+    $results = Search::model(Product::class)->query('cable')->perPage(10)->get();
+
+    // A widened search logs the whole window; one run as asked logs its page.
+    expect(SearchQuery::query()->find($results->meta['search_id'])->shown)->toHaveCount($logged);
+})->with([
+    'shadow, not sampled' => ['shadow', 0.0, 10],
+    'shadow, sampled' => ['shadow', 1.0, 30],
+    'on, ignores the sample rate' => ['on', 0.0, 30],
 ]);

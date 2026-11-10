@@ -125,7 +125,8 @@ class RankResults
             $context->mode,
             $context->normalisedQuery,
             $context->filtersHash,
-            (string) $context->customerId,
+            // Bumped when scores are written or staff change an override.
+            $this->affinity->generation(),
         ]));
 
         $cached = $this->cache->get($key);

@@ -24,6 +24,12 @@ return [
     */
     'mode' => env('LUNAR_SEARCH_RELEVANCE_MODE', 'shadow'),
 
+    // In shadow mode, the share of searches (0 to 1) widened and reranked for
+    // the replay report. Shoppers still see the engine's order, so the rest
+    // run at their requested size and are logged as usual. On mode=on every
+    // search is widened.
+    'shadow_sample_rate' => (float) env('LUNAR_SEARCH_RELEVANCE_SHADOW_SAMPLE_RATE', 0.1),
+
     // Searchable models whose results are ranked and logged.
     'models' => [Product::class],
 

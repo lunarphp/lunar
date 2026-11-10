@@ -4,6 +4,7 @@ namespace Lunar\SearchRelevance\Pipelines;
 
 use Closure;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Lottery;
 use Lunar\Search\Pipelines\SearchRequest;
 use Lunar\SearchRelevance\Contracts\QueryNormaliser;
 use Lunar\SearchRelevance\DataObjects\RankingContext;
@@ -63,12 +64,28 @@ class WidenRequest
         $window = (int) $this->config->get('lunar.search_relevance.window', 250);
         $isPartNumber = (bool) ($request->context['relevance_part_number'] ?? false);
 
-        if ($context->shouldRank() && ! $isPartNumber && $request->requestedPage * $request->requestedPerPage <= $window) {
+        if ($context->shouldRank() && ! $isPartNumber && $request->requestedPage * $request->requestedPerPage <= $window && $this->sampled($mode)) {
             $request->context['relevance_widened'] = true;
             $engine->page(1)->perPage($window);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Whether this search is widened: always when ranking is on, and for the
+     * configured sample in shadow mode, where shoppers still see the engine's
+     * order and the widened fetch only feeds the replay report.
+     */
+    protected function sampled(string $mode): bool
+    {
+        if ($mode !== 'shadow') {
+            return true;
+        }
+
+        $rate = max(0.0, min(1.0, (float) $this->config->get('lunar.search_relevance.shadow_sample_rate', 0.1)));
+
+        return $rate >= 1.0 || ($rate > 0.0 && Lottery::odds($rate)->choose());
     }
 
     /**

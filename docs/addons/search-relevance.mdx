@@ -112,7 +112,7 @@ The `mode` config key (or the `LUNAR_SEARCH_RELEVANCE_MODE` environment variable
 | `shadow` | Yes | Yes, stored beside the shown order | No, the engine order is shown |
 | `on` | Yes | Yes | Yes |
 
-`shadow` is the default after install. Nothing changes for shoppers, but training data accrues from day one, and the [replay command](#replay) can prove the uplift before the switch to `on`. This is the recommended rollout:
+`shadow` is the default after install. Nothing changes for shoppers, but training data accrues from day one, and the [replay command](#replay) can prove the uplift before the switch to `on`. Ranking a search means fetching the whole candidate window from the engine, so in `shadow` only a sample of searches is widened and reranked for the replay report (`shadow_sample_rate`, 10% by default); the rest run at their requested size and are logged as usual. In `on`, every search is widened. This is the recommended rollout:
 
 1. Install in `shadow`. Add the storefront tracking (below) so clicks are recorded.
 2. Let the scoring job run for a few weeks. Check the panel's overview or `lunar:search-relevance:replay` for the share of searches where the ranked order placed the purchased product higher.
@@ -329,7 +329,7 @@ Both need the Laravel scheduler running (`php artisan schedule:work` locally, or
 
 Logging a search, recording an event, and attributing a cart or order line are queued jobs on the default queue. With the `sync` driver they run inline: correct, but every search then performs an insert on the request path, and every tracked click does a validation query. For anything beyond a development environment, run a queue worker.
 
-The ranked window is cached on the default cache store as plain arrays, so any cache driver works.
+The ranked window is cached on the default cache store as plain arrays, so any cache driver works. It is shared between shoppers, since ranking doesn't depend on who is searching, and it is keyed on the score generation, so a nightly scoring run or a staff override applies to the next search rather than after `cache_ttl`.
 
 ## Replay
 
@@ -365,6 +365,7 @@ The full config, merged under `lunar.search_relevance`:
 | `models` | `[Lunar\Core\Models\Product::class]` | Searchable models whose results are logged and ranked |
 | `window` | `250` | Candidate window fetched from the engine and reordered. Requests beyond the window (`page * perPage > window`) pass through unranked but are still logged. |
 | `bucket_size` | `10` | Hits are reordered only within buckets of this size |
+| `shadow_sample_rate` | `env('LUNAR_SEARCH_RELEVANCE_SHADOW_SAMPLE_RATE', 0.1)` | In `shadow`, the share of searches (0 to 1) widened and reranked for the replay report. `on` widens every search. |
 | `cache_ttl` | `300` | Seconds the ranked window is cached |
 | `learned_union.max` | `5` | Most learned products inserted that the engine did not return |
 | `learned_union.min_relative` | `0.1` | Minimum relative score for a learned product to be inserted |
