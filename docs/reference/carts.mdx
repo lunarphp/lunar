@@ -347,7 +347,7 @@ $cart->setTaxZone(null);
 ```php
 use Lunar\Core\DataTypes\ShippingOption;
 
-$option = $cart->getEstimatedShipping($params);     // cheapest non-collection option, for display
+$option = $cart->getEstimatedShipping($params);     // cheapest non-pickup option, for display
 $cart->setShippingOption($option);                  // persist the chosen option on the shipping address
 $current = $cart->getShippingOption();               // the option currently applied to the calculated cart
 ```

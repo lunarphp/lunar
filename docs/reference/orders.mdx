@@ -13,7 +13,7 @@ An order is created from a [cart](/reference/carts) at checkout. It snapshots th
 All monetary values (such as `sub_total`, `total`, `tax_total`) are stored as integers in the currency's minor unit and cast through `Lunar\Core\Models\Concerns\FormatsPrices`, which exposes formatted/decimal accessors.
 </Info>
 
-Fulfilment (shipping, collection, digital provisioning, tracking, carriers) is covered in full on the [Fulfilments](/reference/fulfilments) page. Sending emails to the customer is covered on the [Notifications](/reference/notifications) page. Capturing and refunding money through a payment provider is covered on the [Payments](/reference/payments) page — this page documents the order-side records those operations write to.
+Fulfilment (shipping, pickup, digital provisioning, tracking, carriers) is covered in full on the [Fulfilments](/reference/fulfilments) page. Sending emails to the customer is covered on the [Notifications](/reference/notifications) page. Capturing and refunding money through a payment provider is covered on the [Payments](/reference/payments) page — this page documents the order-side records those operations write to.
 
 ## Order model
 
@@ -544,7 +544,7 @@ See the [Notifications](/reference/notifications) reference for the notification
 
 ## Fulfilments
 
-An order's physical, digital, or click-and-collect fulfilment is tracked through `Fulfilment` records, created against the order's `fulfillableLines`:
+An order's shipped, picked-up, or digital fulfilment is tracked through `Fulfilment` records, created against the order's `fulfillableLines`:
 
 ```php
 $fulfilment = $order->createFulfilment(

@@ -116,6 +116,7 @@ The bundled Rector configuration (`vendor/lunarphp/upgrade/config/rector.php`) a
 - **`Order::refund()` call sites** rewrite from three positional arguments to a `Lunar\Core\DataObjects\RefundRequest`: `$order->refund($transactionId, $amount, $notes)` becomes `$order->refund(new RefundRequest(transactionId: $transactionId, adjustment: $amount, notes: $notes))`.
 - **Action call sites.** `SomeAction::run(...$args)` rewrites to `app(SomeContract::class)->execute(...$args)`, following the move to constructor-injected action classes bound to a contract.
 - **Translated catalogue field access.** `$product->translateAttribute('name')` / `$product->attr('name')` rewrite to `$product->translate('name')` for `name` and `description`, now dedicated translatable columns instead of `attribute_data` entries.
+- **`ShippingOption` pickup flag.** `$option->collect` and the `collect:` named argument rewrite to `$option->pickup` and `pickup:`.
 - **Custom price formatter signatures.** A consumer's own `PriceFormatterInterface` implementation has its `$formatterStyle` parameter retyped from `string` to `int` on `formatted()`, `unitFormatted()`, and `formatValue()`, matching the `NumberFormatter::*` constants it receives.
 
 ## What the data migrations do
@@ -141,6 +142,7 @@ The package ships one data migration per v1 to v2 schema change, run in dependen
 - **`AmountOff` discount type split** — converts stored `AmountOff` discount rows into `PercentageOff` or `FixedAmountOff` based on the discount's `data.fixed_value` flag (see the manual action above).
 - **Product association `sort` column backfill.**
 - **Cart `remember_token` column** — adds the nullable column used to [remember guest carts](/reference/carts#remembering-guest-carts). Existing carts get a token the next time they become a session's cart, so no backfill is needed.
+- **Table-rate shipping `collection` driver** — renames the stored `shipping_methods.driver` key from `collection` to `pickup`, following the driver's rename to `Lunar\Shipping\Drivers\ShippingMethods\Pickup`. A no-op on stores without the table-rate-shipping package.
 - **Cart totals columns** — adds the persisted totals snapshot columns (`sub_total`, `total`, `revision`, `calculated_at`, and the rest) to `carts` and `cart_lines`. No backfill: every upgraded cart reads as not yet calculated and is filled in by its next `calculate()`.
 
 ### Order status mapping
