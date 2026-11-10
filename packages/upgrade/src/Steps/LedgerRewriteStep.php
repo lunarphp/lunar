@@ -111,20 +111,21 @@ class LedgerRewriteStep implements UpgradeStep
     }
 
     /**
-     * Staff lived in the v1 admin package. v2 folded `create_staff` into core,
-     * so the migration file is always present even when the table was never
-     * created (core-only / headless v1). Marking it run would skip the create
-     * and leave later core staff migrations altering a missing table.
+     * Staff and the permission tables lived in the v1 admin package. v2 folded
+     * their migrations into core, so the files are always present even when
+     * the tables were never created (core-only / headless v1). Marking them
+     * run would skip the create and leave staff and authorisation without
+     * their tables.
      */
     protected function baselineSchemaPresent(string $migration, ?string $connection): bool
     {
-        if ($migration !== '2026_01_01_900000_create_staff_table') {
-            return true;
-        }
+        $table = match ($migration) {
+            '2026_01_01_900000_create_staff_table' => config('lunar.database.table_prefix').'staff',
+            '2026_01_01_900002_create_permission_tables' => config('permission.table_names.roles', 'roles'),
+            default => false,
+        };
 
-        return Schema::connection($connection)->hasTable(
-            config('lunar.database.table_prefix').'staff',
-        );
+        return $table === false || Schema::connection($connection)->hasTable($table);
     }
 
     /**
