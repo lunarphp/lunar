@@ -16,8 +16,8 @@ use Lunar\SearchRelevance\Signals\QueryAffinitySignal;
  * whether a bound float needs a cast.
  *
  * Abuse guards applied here: each session contributes at most one event of
- * each type per query and product; only trusted sessions (a cart or a known
- * customer) count when `trusted_sessions_only` is set; excluded products
+ * each type per query and product; only trusted events count when
+ * `trusted_sessions_only` is set (see {@see ScoreAggregator}); excluded products
  * and events before a query reset are ignored.
  */
 abstract class SqlScoreAggregator implements ScoreAggregator
@@ -46,7 +46,7 @@ abstract class SqlScoreAggregator implements ScoreAggregator
         $scores = $prefix.'search_query_scores';
         $overrides = $prefix.'search_learning_overrides';
         $trustedOnly = (bool) ($config['trusted_sessions_only'] ?? false);
-        $trust = $trustedOnly ? "AND (q.session_id LIKE 'cart:%' OR q.customer_id IS NOT NULL)" : '';
+        $trust = $trustedOnly ? "AND (q.customer_id IS NOT NULL OR e.session_id LIKE 'cart:%' OR e.type IN ('basket', 'purchase'))" : '';
 
         $weights = $config['weights'] ?? [];
         $windowStart = $start->copy()->subDays((int) ($config['window_days'] ?? 180));

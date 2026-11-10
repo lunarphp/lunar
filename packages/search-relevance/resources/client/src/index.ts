@@ -22,17 +22,13 @@ export interface SearchEventPayload {
     product_id: string | number;
     position: number;
     source?: HitSource;
-    /** Explicit shopper id for clients without a cart session cookie. */
-    session_id?: string;
 }
 
 export interface TrackingOptions {
     /** Defaults to `/lunar/search/events` (route `lunar.search-relevance.events`). */
     endpoint?: string;
-    /** CSRF token; read from `<meta name="csrf-token">` when omitted. */
+    /** CSRF token; read from `<meta name="csrf-token">` when omitted. The endpoint doesn't require one. */
     token?: string | null;
-    /** Sent as `session_id` with every event. */
-    sessionId?: string | null;
 }
 
 export const DEFAULT_ENDPOINT = '/lunar/search/events';
@@ -61,10 +57,6 @@ export function sendSearchEvent(payload: SearchEventPayload, options: TrackingOp
     data.append('position', String(payload.position));
     data.append('source', payload.source ?? 'organic');
 
-    const sessionId = payload.session_id ?? options.sessionId;
-    if (sessionId) {
-        data.append('session_id', sessionId);
-    }
     if (token) {
         data.append('_token', token);
     }

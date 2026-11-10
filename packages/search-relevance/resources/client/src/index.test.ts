@@ -29,17 +29,17 @@ describe('sendSearchEvent', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it('falls back to a keepalive fetch and passes the session id', async () => {
+    it('falls back to a keepalive fetch', async () => {
         Object.defineProperty(navigator, 'sendBeacon', { value: undefined, configurable: true });
         const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 204 }));
 
-        sendSearchEvent({ search_id: 'abc', product_id: 7, position: 2, source: 'learned' }, { endpoint: '/events', token: null, sessionId: 'cart:9' });
+        sendSearchEvent({ search_id: 'abc', product_id: 7, position: 2, source: 'learned' }, { endpoint: '/events', token: null });
 
         expect(fetchSpy).toHaveBeenCalledOnce();
         const [endpoint, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
         expect(endpoint).toBe('/events');
         expect(init.keepalive).toBe(true);
-        expect(formEntries(init.body as FormData)).toEqual({ search_id: 'abc', product_id: '7', position: '2', source: 'learned', session_id: 'cart:9' });
+        expect(formEntries(init.body as FormData)).toEqual({ search_id: 'abc', product_id: '7', position: '2', source: 'learned' });
     });
 });
 

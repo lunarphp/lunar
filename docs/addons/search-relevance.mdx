@@ -178,7 +178,7 @@ const { track, attrs } = useSearchTracking(() => props.results);
 
 Both calls are safe when the search was not logged (for example, in `off` mode): `track()` does nothing and `attrs()` returns an empty object. The `v-lunar-search-hit` directive does both at once for storefronts that prefer it: `v-lunar-search-hit="{ results, hit }"`.
 
-The composable accepts options as its second argument: `endpoint` (defaults to `/lunar/search/events`), `token` (the CSRF token; read from `<meta name="csrf-token">` when omitted), and `sessionId`, sent as `session_id` for clients that carry no cart session cookie.
+The composable accepts options as its second argument: `endpoint` (defaults to `/lunar/search/events`) and `token` (the CSRF token; read from `<meta name="csrf-token">` when omitted). The endpoint doesn't require the token.
 
 Any other framework uses the framework-agnostic entry. `attachSearchTracking()` adds delegated click tracking to elements that carry the `data-lunar-*` attributes (rendered with `trackingAttributes(results, hit)`), and `trackHit()` or `sendSearchEvent()` send an event directly:
 
@@ -203,7 +203,7 @@ fetch('/lunar/search/events', {
 });
 ```
 
-The route runs under the `web` middleware group, so a browser client sends the CSRF token and its session cookie as it would for any other form. The endpoint accepts JSON or form data:
+The route runs under the `web` middleware group, for the session, but without CSRF verification, so a headless storefront can post events without a token. That is safe because an event only ever counts for the shopper who made the search: a forged post from another site adds nothing a direct one couldn't. The endpoint accepts JSON or form data:
 
 | Field | Required | Description |
 |---|---|---|
@@ -257,7 +257,7 @@ In plain language, for each normalised query and product:
 - **Events at low positions count more.** A click on the product at position 8 says more than a click at position 1, because position 1 gets clicked whatever it is. An event at position `p` is multiplied by `p ^ position_eta`, capped at `max_position_weight`. Without this correction the ranking learns position bias, cementing whatever the engine showed first. Events from the `explore` source skip the correction.
 - **Recent events count more.** Each event's weight halves every `half_life_days` (30 by default), so a product that used to convert but no longer does fades out.
 - **Sparse data is ignored.** Only events within `window_days` are considered, and a query and product pair needs events from at least `min_sessions` distinct shoppers before it gets a score. Sessions searching faster than `guards.max_searches_per_minute` are excluded as bots.
-- **One vote per shopper.** Each session contributes at most one event of each type per query and product, however many times it repeats the search. With `guards.trusted_sessions_only` (the default), only sessions that hold a cart or belong to a known customer count at all.
+- **One vote per shopper.** Each session contributes at most one event of each type per query and product, however many times it repeats the search. With `guards.trusted_sessions_only` (the default), an event counts only when its search belonged to a known customer, its own session holds a cart, or it is a basket or purchase, which are only recorded server-side from a real cart line or order. A first-time guest searches before they have a cart, so their journey counts through its basket and purchase.
 - **Staff overrides win.** Products excluded from learning for a query, and events before a query's learning was reset, are ignored. See [Abuse and manipulation](#abuse-and-manipulation).
 - **Scores are relative.** Within a query, each product's score is divided by the best score for that query, giving a `relative` value from 0 to 1. At most `max_products_per_query` products are kept per query.
 
@@ -284,7 +284,7 @@ Learned ranking is a feedback loop, so bots and bad actors can try to feed it. T
 
 - **Structural.** The ranker only reorders within buckets of `bucket_size` hits, and learned products the engine did not return are inserted at the head of the second bucket. Nothing can be pushed into the first bucket unless the engine already put it there, whatever the event volume.
 - **Event validation.** An event needs a real search id, a product from that search's shown list, a position inside it, and must arrive within `guards.event_window_minutes` of the search. Repeats of an event already recorded for the search, product, and type are dropped, and the endpoint is rate limited per shopper and per IP.
-- **Scoring.** Each session contributes one event of each type per query and product. With `guards.trusted_sessions_only`, only sessions that hold a cart or belong to a known customer count, so a bot minting fresh sessions gains nothing. Sessions searching faster than `guards.max_searches_per_minute` are excluded.
+- **Scoring.** Each session contributes one event of each type per query and product. With `guards.trusted_sessions_only`, an event counts only when its search belonged to a known customer, its own session holds a cart, or it is a basket or purchase, which are only recorded server-side from a real cart line or order. A first-time guest searches before they have a cart, so their journey counts through its basket and purchase, and a bot minting fresh sessions to post clicks gains nothing. Sessions searching faster than `guards.max_searches_per_minute` are excluded.
 - **Crawlers.** Searches from user agents matching `guards.ignored_user_agents` are neither logged nor ranked, so reporting stays honest and the tables stay small. Headless API clients without a session are still logged; they identify the shopper explicitly on the events endpoint.
 - **Refunds and cancellations.** `Lunar\SearchRelevance\Listeners\ForgetPurchases` removes the purchase events an order's attributed lines produced when `Lunar\Core\Events\Orders\OrderCancelled` or `OrderRefunded` fires.
 - **Staff overrides.** From the admin panel's query page, staff can exclude a product from learning for a query (its learned score is removed immediately and future events ignored; reversible) or reset learning for a query (everything learned is discarded and only events after the reset count). Both are stored in the `search_learning_overrides` table and applied through `Lunar\SearchRelevance\Learning\Overrides`, which any code can call:
@@ -374,7 +374,7 @@ The full config, merged under `lunar.search_relevance`:
 | `guards.events_rate_limit` | `'60,1'` | Events endpoint rate limit as `attempts,minutes`, per shopper and per IP |
 | `guards.max_searches_per_minute` | `30` | Sessions searching faster than this are ignored by scoring |
 | `guards.event_window_minutes` | `120` | Events are only accepted this long after the search they belong to |
-| `guards.trusted_sessions_only` | `true` | Only sessions holding a cart or belonging to a known customer count towards learning |
+| `guards.trusted_sessions_only` | `true` | Only events from a known customer, from a session holding a cart, or of type basket or purchase count towards learning |
 | `guards.ignored_user_agents` | bot, crawl, spider, ... | Searches from user agents containing any of these substrings are neither logged nor ranked |
 
 The three pipeline stages (`Lunar\SearchRelevance\Pipelines\PartNumberRetrieval`, `WidenRequest`, and `RankResults`) are appended to `lunar.search.pipelines.request` and `lunar.search.pipelines.results` by the service provider unless they are already listed. A host that sets those keys explicitly in `config/lunar/search.php` controls their order, and can leave one out; `PartNumberRetrieval` and `WidenRequest` must run in that order, and `WidenRequest` must run before any stage that changes the page.

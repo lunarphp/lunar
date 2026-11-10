@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
 use Lunar\SearchRelevance\Jobs\RecordEvent;
@@ -146,4 +147,11 @@ it('drops a click whose position does not match where the product was shown', fu
     postJson(route('lunar.search-relevance.events'), ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 3])->assertNoContent();
 
     expect(SearchEvent::query()->count())->toBe(0);
+});
+
+it('takes events without a CSRF token, so headless storefronts can post them', function () {
+    // Safe without one: an event only counts for the shopper who made the search.
+    $route = app('router')->getRoutes()->getByName('lunar.search-relevance.events');
+
+    expect($route->excludedMiddleware())->toContain(ValidateCsrfToken::class);
 });

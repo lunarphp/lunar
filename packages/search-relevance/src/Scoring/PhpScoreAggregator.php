@@ -55,7 +55,7 @@ class PhpScoreAggregator implements ScoreAggregator
                         continue;
                     }
 
-                    if ($trustedOnly && ! str_starts_with($event->session_id, 'cart:') && $event->customer_id === null) {
+                    if ($trustedOnly && $event->customer_id === null && ! str_starts_with($event->session_id, 'cart:') && ! in_array($event->type, ['basket', 'purchase'], true)) {
                         continue;
                     }
 
