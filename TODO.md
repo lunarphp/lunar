@@ -15,7 +15,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Add Boost guidelines to packages
-- Discount coupons — a discount has many coupon codes, each with its own usage limit and optional customer, and codes can be generated in bulk (spec discount-coupons)
+- Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
 
 ## Ideas
 
