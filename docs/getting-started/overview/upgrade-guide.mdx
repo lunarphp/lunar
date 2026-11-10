@@ -117,6 +117,7 @@ The bundled Rector configuration (`vendor/lunarphp/upgrade/config/rector.php`) a
 - **Action call sites.** `SomeAction::run(...$args)` rewrites to `app(SomeContract::class)->execute(...$args)`, following the move to constructor-injected action classes bound to a contract.
 - **Translated catalogue field access.** `$product->translateAttribute('name')` / `$product->attr('name')` rewrite to `$product->translate('name')` for `name` and `description`, now dedicated translatable columns instead of `attribute_data` entries.
 - **`ShippingOption` pickup flag.** `$option->collect` and the `collect:` named argument rewrite to `$option->pickup` and `pickup:`.
+- **`getThumbnailImage()` returns `?string`.** `HasThumbnailImage::getThumbnailImage()` now returns `null` when a record has no thumbnail, as `Product`, `ProductVariant`, and `Collection` do, instead of an empty string. Rector retypes a consumer's `getThumbnailImage(): string` to `?string` and replaces a `''` fallback in it with `null`. Code that passes the result into a `string` parameter should accept `null`.
 - **Custom price formatter signatures.** A consumer's own `PriceFormatterInterface` implementation has its `$formatterStyle` parameter retyped from `string` to `int` on `formatted()`, `unitFormatted()`, and `formatValue()`, matching the `NumberFormatter::*` constants it receives.
 
 ## What the data migrations do

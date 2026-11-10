@@ -14,11 +14,17 @@ class ThumbnailImageColumn extends ImageColumn
         parent::setUp();
 
         $this->getStateUsing(function (): ?string {
-            if ($this->resolveThumbnailUrlUsing) {
-                return $this->evaluate($this->resolveThumbnailUrlUsing);
+            $thumbnail = $this->resolveThumbnailUrlUsing
+                ? $this->evaluate($this->resolveThumbnailUrlUsing)
+                : $this->getRecord()?->getThumbnailImage();
+
+            // A root-relative URL (media on a disk whose url has no host) is a
+            // browser path, which Filament would otherwise read as a disk path.
+            if (is_string($thumbnail) && str_starts_with($thumbnail, '/') && ! str_starts_with($thumbnail, '//')) {
+                return url($thumbnail);
             }
 
-            return $this->getRecord()?->getThumbnailImage();
+            return $thumbnail;
         });
     }
 
