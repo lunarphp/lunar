@@ -19,12 +19,27 @@ use function Pest\Laravel\partialMock;
 
 uses(TestCase::class)->group('search-relevance');
 
+/** The engine state at each query, since the engine is restored afterwards. */
+final class EngineQueries
+{
+    /** @var array<int, array{params: array, perPage: int, page: int}> */
+    public static array $calls = [];
+}
+
+/** What the engine searched with on its nth query (the shopper's search first). */
+function queried(int $call = 0): array
+{
+    return EngineQueries::$calls[$call];
+}
+
 /**
  * A fake engine whose getRawResults() answers with each item set in turn, so
  * the learned-union fetch (the second call) can return different documents.
  */
 function fakeEngine(string $class, string $driver, array ...$responses): object
 {
+    EngineQueries::$calls = [];
+
     $engine = partialMock($class, function (MockInterface $mock) use ($responses) {
         $paginators = array_map(fn ($items) => new LengthAwarePaginator(
             items: $items,
@@ -35,7 +50,15 @@ function fakeEngine(string $class, string $driver, array ...$responses): object
 
         $mock->shouldAllowMockingProtectedMethods()
             ->shouldReceive('getRawResults')
-            ->andReturn(...$paginators);
+            ->andReturnUsing(function () use ($mock, &$paginators) {
+                EngineQueries::$calls[] = [
+                    'params' => $mock->getParams(),
+                    'perPage' => $mock->getPerPage(),
+                    'page' => $mock->getPage(),
+                ];
+
+                return count($paginators) > 1 ? array_shift($paginators) : $paginators[0];
+            });
     });
 
     Search::extend($driver, fn () => $engine);
@@ -270,7 +293,7 @@ it('restricts a part-number search to the sku fields on typesense', function () 
 
     $results = Search::model(Product::class)->query('HAG-MB-32A')->get();
 
-    expect($engine->getParams())->toBe([
+    expect(queried()['params'])->toBe([
         'query_by' => 'skus,skus_normalised',
         'query_by_weights' => null,
         'prefix' => true,
@@ -279,7 +302,7 @@ it('restricts a part-number search to the sku fields on typesense', function () 
         'drop_tokens_threshold' => 0,
         'vector_query' => null,
     ])
-        ->and($engine->getPerPage())->toBe(50)
+        ->and(queried()['perPage'])->toBe(50)
         ->and($results->meta['ranking_version'])->toBe('n1:typesense:keyword')
         ->and(SearchQuery::query()->find($results->meta['search_id'])->ranked)->toBeNull();
 });
@@ -296,7 +319,7 @@ it('restricts a part-number search to the sku fields on meilisearch', function (
 
     Search::model(Product::class)->query('hagmb32')->get();
 
-    expect($engine->getParams())->toBe([
+    expect(queried()['params'])->toBe([
         'attributesToSearchOn' => ['skus', 'skus_normalised'],
         'matchingStrategy' => 'all',
     ]);
@@ -315,7 +338,7 @@ it('turns semantic search off for part numbers on meilisearch when an embedder i
 
     Search::model(Product::class)->query('hagmb32')->get();
 
-    expect($engine->getParams()['hybrid'])->toBe(['semanticRatio' => 0]);
+    expect(queried()['params']['hybrid'])->toBe(['semanticRatio' => 0]);
 });
 
 it('widens, ranks and unions through a typesense engine', function () {
@@ -331,8 +354,8 @@ it('widens, ranks and unions through a typesense engine', function () {
 
     $results = Search::model(Product::class)->query('cable')->perPage(2)->page(2)->get();
 
-    expect($engine->getPerPage())->toBe(100)
-        ->and($engine->getPage())->toBe(1)
+    expect(queried()['perPage'])->toBe(100)
+        ->and(queried()['page'])->toBe(1)
         // Window after union and ranking: [1,2,3] [9,5,4]; page two of two is [3, 9].
         ->and(ids($results))->toBe([3, 9])
         ->and($results->count)->toBe(6)
@@ -355,7 +378,7 @@ it('restricts a part-number search to the exact-match fields the indexer declare
 
     Search::model(Product::class)->query('FTP25')->get();
 
-    expect($engine->getParams())->toMatchArray([
+    expect(queried()['params'])->toMatchArray([
         'query_by' => 'skus,skus_normalised,mpns,eans',
         'infix' => 'always,always,always,always',
         'num_typos' => '0,0,0,0',
@@ -372,8 +395,8 @@ it('searches a part number as usual when the indexer declares no exact-match fie
 
     Search::model(Product::class)->query('FTP25')->get();
 
-    expect($engine->getParams())->toBe([])
-        ->and($engine->getPerPage())->toBe(250);
+    expect(queried()['params'])->toBe([])
+        ->and(queried()['perPage'])->toBe(250);
 });
 
 it('leaves part-number searches alone when relevance is off', function () {
@@ -385,7 +408,7 @@ it('leaves part-number searches alone when relevance is off', function () {
 
     $results = Search::model(Product::class)->query('HAG-MB-32A')->get();
 
-    expect($engine->getParams())->toBe([])
+    expect(queried()['params'])->toBe([])
         ->and($results->meta)->not->toHaveKey('search_id')
         ->and(SearchQuery::query()->count())->toBe(0);
 });
@@ -440,7 +463,7 @@ it('ranks a search sorted by relevance like an unsorted one', function (string $
 
     Search::model(Product::class)->query('cable')->sort($sort)->perPage(2)->get();
 
-    expect($engine->getPerPage())->toBe($perPage);
+    expect(queried()['perPage'])->toBe($perPage);
 })->with([
     'relevance' => ['relevance:asc', 250],
     'text match' => ['_text_match:desc', 250],

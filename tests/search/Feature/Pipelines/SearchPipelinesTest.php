@@ -78,6 +78,16 @@ final class ReverseResultsStage
     }
 }
 
+final class ParamsRequestStage
+{
+    public function handle(SearchRequest $request, Closure $next): SearchRequest
+    {
+        $request->engine->withParams(['query_by' => 'skus']);
+
+        return $next($request);
+    }
+}
+
 function fakeEngineWithHits(string $class, string $driver, array $items): void
 {
     $engine = partialMock($class, function (MockInterface $mock) use ($items) {
@@ -223,4 +233,32 @@ it('resolves the page from the request unless page() is called', function () {
     expect($engine->getPage())->toBe(2)
         ->and($engine->get()->page)->toBe(2)
         ->and(Search::model(Product::class)->perPage(2)->page(1)->get()->page)->toBe(1);
+});
+
+it('restores the shared engine after a search so request stages do not leak into the next one', function () {
+    Config::set('scout.driver', 'database');
+    Config::set('lunar.search.engine_map', [Product::class => 'database']);
+    Config::set('lunar.search.pipelines.request', [WideningRequestStage::class, ParamsRequestStage::class]);
+
+    Search::model(Product::class)->perPage(2)->page(2)->get();
+
+    // The manager hands every caller the same engine instance.
+    $engine = Search::model(Product::class)->driver();
+
+    expect($engine->getPerPage())->toBe(2)
+        ->and($engine->getPage())->toBe(2)
+        ->and($engine->getParams())->toBe([]);
+});
+
+it('resets the per-search pipeline options after a search', function () {
+    Config::set('scout.driver', 'database');
+    Config::set('lunar.search.engine_map', [Product::class => 'database']);
+    Config::set('lunar.search.pipelines.request', [FirstRequestStage::class]);
+
+    Search::model(Product::class)->withoutPipelines()->get();
+
+    PipelineSpy::reset();
+    Search::model(Product::class)->get();
+
+    expect(PipelineSpy::$log)->toBe(['first']);
 });

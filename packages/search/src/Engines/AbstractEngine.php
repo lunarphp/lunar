@@ -42,6 +42,15 @@ abstract class AbstractEngine
 
     protected string $sortRaw = '';
 
+    /**
+     * The caller's state from before the request pipeline ran, put back once
+     * the search finishes. The manager caches engines, so a stage's changes
+     * (a widened page, extra params) would otherwise leak into the next search.
+     *
+     * @var array<string, mixed>|null
+     */
+    protected ?array $stateBeforePipeline = null;
+
     public function getModelType(): string
     {
         return $this->modelType;
@@ -222,6 +231,21 @@ abstract class AbstractEngine
      */
     protected function pipeRequest(): SearchRequest
     {
+        // A previous search that threw before its results pipeline still has
+        // stage changes applied; undo them first.
+        $this->restoreStateBeforePipeline();
+
+        $this->stateBeforePipeline = [
+            'query' => $this->query,
+            'filters' => $this->filters,
+            'facets' => $this->facets,
+            'perPage' => $this->perPage,
+            'page' => $this->page,
+            'params' => $this->params,
+            'sort' => $this->sort,
+            'sortRaw' => $this->sortRaw,
+        ];
+
         $request = new SearchRequest($this, $this->getPage(), $this->perPage);
 
         return app(Pipeline::class)
@@ -236,12 +260,42 @@ abstract class AbstractEngine
      */
     protected function pipeResults(SearchRequest $request, SearchResults $results): SearchResults
     {
-        $response = app(Pipeline::class)
-            ->send(new SearchResponse($request, $results))
-            ->through($this->pipelineStages('results'))
-            ->thenReturn();
+        try {
+            $response = app(Pipeline::class)
+                ->send(new SearchResponse($request, $results))
+                ->through($this->pipelineStages('results'))
+                ->thenReturn();
+        } finally {
+            $this->restoreStateBeforePipeline();
+
+            // Per-search options, not engine configuration.
+            $this->withoutPipelines = false;
+            $this->skippedStages = [];
+        }
 
         return $response->results;
+    }
+
+    /**
+     * A clone runs its own search (a stage fetching extra documents), so it
+     * must not restore the original search's state.
+     */
+    public function __clone(): void
+    {
+        $this->stateBeforePipeline = null;
+    }
+
+    protected function restoreStateBeforePipeline(): void
+    {
+        if ($this->stateBeforePipeline === null) {
+            return;
+        }
+
+        foreach ($this->stateBeforePipeline as $property => $value) {
+            $this->{$property} = $value;
+        }
+
+        $this->stateBeforePipeline = null;
     }
 
     /**
