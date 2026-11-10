@@ -45,6 +45,7 @@ class AttributeData
 
         /** @var Component $component */
         $component = $fieldType::getFilamentComponent($attribute);
+        $component->meta('handle', $attribute->handle); // Consistent with attribute group metadata
 
         return $component
             ->label(
