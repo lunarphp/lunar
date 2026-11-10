@@ -17,6 +17,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
 - Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Add Boost guidelines to packages
+- Agent instructions in `AGENTS.md` — Codex and other agents read the same instructions as Claude Code (spec agents-md)
 
 ## Ideas
 
