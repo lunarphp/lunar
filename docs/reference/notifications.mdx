@@ -326,9 +326,6 @@ The defaults send synchronously, like any notification without `ShouldQueue`, on
 
 The order screen's "Notify customer" action populates its notification dropdown from `OrderNotifications::sendable()`, lets staff pick recipients from the order's contacts (or add an extra address), and calls `$order->notifyCustomer()`, so a notification sent from the admin leaves the same activity-log trail as one sent through the API. With the defaults registered the dropdown offers the order confirmation, payment received, order cancelled, refund issued, partial fulfilment update, and order update entries.
 
-The fulfilment controls (ship, ready-for-pickup, provision, return) show a "notify customer" toggle only when a notification is registered for the state they produce, which with the defaults is always. Cancel and refund behave differently per admin:
-
-- **Panel:** the cancel and refund dialogs always show the toggle.
-- **Filament:** the cancel action shows the toggle when an `order-cancelled` notification is registered. The refund action has no toggle, so a refund issued there always sends the refund email.
+The fulfilment controls (ship, ready-for-pickup, provision, return) show a "notify customer" toggle only when a notification is registered for the state they produce, which with the defaults is always. The cancel and refund dialogs always show the toggle in the panel. In Filament they show it when a notification is registered on `cancelled` or `refund-issued`.
 
 Capturing a payment has no toggle in either admin; see the trigger rules above.

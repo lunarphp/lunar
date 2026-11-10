@@ -3,10 +3,13 @@
 namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Exceptions\OrderActionException;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Order;
 use Lunar\Filament\Actions\Concerns\ConfirmsDestructiveAction;
 use Lunar\Filament\Actions\Concerns\InteractsWithTransactions;
@@ -53,6 +56,10 @@ class RefundOrderAction extends Action
             ),
             $this->amountInput($availableMajor, $record),
             $this->notesInput(),
+            Toggle::make('notify')
+                ->label(__('lunar-filament::actions.orders.refund.notify'))
+                ->default(true)
+                ->visible(fn (): bool => OrderNotifications::triggeredBy('refund-issued', NotificationScope::Order) !== []),
             $this->confirmToggle(__('lunar-filament::actions.orders.refund.confirm.helper_text')),
         ];
     }
@@ -67,6 +74,7 @@ class RefundOrderAction extends Action
                 transactionId: $data['transaction'],
                 adjustment: $data['amount'],
                 notes: $data['notes'] ?? null,
+                notify: (bool) ($data['notify'] ?? true),
             ));
         } catch (OrderActionException $exception) {
             $this->failureNotification(
