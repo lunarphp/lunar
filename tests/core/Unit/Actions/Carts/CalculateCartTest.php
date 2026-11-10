@@ -29,7 +29,7 @@ use Lunar\Tests\Core\Stubs\CartPipelineSpy;
 use Lunar\Tests\Core\TestCase;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
-uses(TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts', 'cross-db');
 
 uses(RefreshDatabase::class);
 

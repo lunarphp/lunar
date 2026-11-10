@@ -149,14 +149,31 @@ class PersistCartTotals implements PersistsCartTotals
     protected function isStored(Model $model, array $raw): bool
     {
         foreach ($raw as $column => $value) {
-            $stored = $model->getRawOriginal($column);
-
-            if ($value === null || $stored === null ? $value !== $stored : (string) $value !== (string) $stored) {
+            if (! $this->isSameValue($value, $model->getRawOriginal($column))) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Postgres jsonb and MySQL json return JSON reformatted (spacing, key
+     * order), so JSON is compared decoded.
+     */
+    protected function isSameValue(mixed $value, mixed $stored): bool
+    {
+        if ($value === null || $stored === null) {
+            return $value === $stored;
+        }
+
+        if ((string) $value === (string) $stored) {
+            return true;
+        }
+
+        $decoded = json_decode((string) $value, true);
+
+        return is_array($decoded) && $decoded == json_decode((string) $stored, true);
     }
 
     /**

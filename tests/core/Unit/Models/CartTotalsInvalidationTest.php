@@ -25,7 +25,7 @@ use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
-uses(TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts', 'cross-db');
 
 uses(RefreshDatabase::class);
 
@@ -349,7 +349,7 @@ function writeOrder(Closure $write): array
     $order = [];
 
     DB::listen(function ($query) use (&$order, $carts, $lines) {
-        if (preg_match('/^(update|delete)\s+(from\s+)?"?(\w+)"?/i', $query->sql, $match) && in_array($match[3], [$carts, $lines], true)) {
+        if (preg_match('/^(update|delete)\s+(from\s+)?[`"]?(\w+)[`"]?/i', $query->sql, $match) && in_array($match[3], [$carts, $lines], true)) {
             $order[] = $match[3] === $carts ? 'cart' : 'line';
         }
     });

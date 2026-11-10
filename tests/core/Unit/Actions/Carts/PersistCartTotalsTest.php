@@ -10,7 +10,7 @@ use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts', 'cross-db');
 
 uses(RefreshDatabase::class);
 
@@ -127,7 +127,32 @@ test('it does not rewrite lines whose stored totals are unchanged', function () 
     $writes = 0;
 
     DB::listen(function ($query) use (&$writes, $lines) {
-        if (str_starts_with(strtolower($query->sql), "update \"{$lines}\"")) {
+        if (preg_match("/^update\\s+[`\"]?{$lines}[`\"]?\\s/i", $query->sql)) {
+            $writes++;
+        }
+    });
+
+    $cart->recalculate();
+
+    expect($writes)->toBe(0);
+});
+
+test('it does not rewrite a line whose stored JSON the database has reformatted', function () {
+    $cart = persistableCart()->calculate();
+    $line = $cart->lines->first();
+
+    // Postgres jsonb and MySQL json hand JSON back reformatted: spacing and key order change.
+    $stored = json_decode(CartLine::query()->toBase()->find($line->id)->tax_breakdown, true);
+    $reformatted = json_encode(array_map(fn ($amount) => is_array($amount) ? array_reverse($amount, true) : $amount, $stored), JSON_PRETTY_PRINT);
+
+    CartLine::query()->whereKey($line->id)->toBase()->update(['tax_breakdown' => $reformatted]);
+    $line->setRawAttributes(array_merge($line->getAttributes(), ['tax_breakdown' => $reformatted]), true);
+
+    $lines = (new CartLine)->getTable();
+    $writes = 0;
+
+    DB::listen(function ($query) use (&$writes, $lines) {
+        if (preg_match("/^update\\s+[`\"]?{$lines}[`\"]?\\s/i", $query->sql)) {
             $writes++;
         }
     });
