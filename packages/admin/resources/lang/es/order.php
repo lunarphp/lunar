@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Enviado el',
             'handed_over' => [
                 'shipping' => 'Enviado el',
-                'collection' => 'Recogido el',
+                'pickup' => 'Recogido el',
                 'digital' => 'Aprovisionado el',
             ],
             'handed_over_default' => 'Cumplido el',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Marcar como cumplido',
                 'modal_heading' => 'Marcar el cumplimiento como cumplido',
                 'labels' => [
-                    'collection' => 'Marcar como recogido',
+                    'pickup' => 'Marcar como recogido',
                 ],
                 'notification' => [
                     'success' => 'Cumplimiento marcado como cumplido.',

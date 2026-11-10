@@ -2,24 +2,24 @@
 
 namespace Lunar\Core\Drivers\FulfilmentMethods;
 
-use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\Cancelled;
-use Lunar\Core\States\Fulfilment\Collected;
 use Lunar\Core\States\Fulfilment\Pending;
-use Lunar\Core\States\Fulfilment\ReadyForCollection;
+use Lunar\Core\States\Fulfilment\PickedUp;
+use Lunar\Core\States\Fulfilment\ReadyForPickup;
 use Lunar\Core\States\Fulfilment\Returned;
 
 /**
  * Click-and-collect / trade-counter pickup. Claims physical lines when the
- * order's chosen shipping option is a collection (`collect === true`, persisted
- * onto the shipping line at order creation), so the fulfilment presents "ready for
- * collection → collected" instead of ship-and-track. No tracking.
+ * order's chosen shipping option is a pickup (`pickup === true`, persisted
+ * onto the shipping line at order creation), so the fulfilment presents "ready
+ * for pickup → picked up" instead of ship-and-track. No tracking.
  */
-class Collection implements FulfilmentMethod
+class Pickup implements FulfilmentMethod
 {
-    public const KEY = 'collection';
+    public const KEY = 'pickup';
 
     public function getKey(): string
     {
@@ -28,7 +28,7 @@ class Collection implements FulfilmentMethod
 
     public function getLabel(): string
     {
-        return __('lunar::fulfilment.methods.collection');
+        return __('lunar::fulfilment.methods.pickup');
     }
 
     /**
@@ -38,8 +38,8 @@ class Collection implements FulfilmentMethod
     {
         return [
             Pending::class,
-            ReadyForCollection::class,
-            Collected::class,
+            ReadyForPickup::class,
+            PickedUp::class,
             Cancelled::class,
             Returned::class,
         ];
@@ -51,13 +51,13 @@ class Collection implements FulfilmentMethod
     public function transitions(): array
     {
         return [
-            Pending::class => [ReadyForCollection::class, Collected::class, Cancelled::class],
-            ReadyForCollection::class => [Pending::class, Collected::class, Cancelled::class],
-            // A collected fulfilment can be reverted to `Pending` (un-collect) or
-            // marked `Returned` (the customer brings goods back).
-            Collected::class => [Pending::class, Returned::class],
+            Pending::class => [ReadyForPickup::class, PickedUp::class, Cancelled::class],
+            ReadyForPickup::class => [Pending::class, PickedUp::class, Cancelled::class],
+            // A picked-up fulfilment can be reverted to `Pending` (undo the pickup)
+            // or marked `Returned` (the customer brings goods back).
+            PickedUp::class => [Pending::class, Returned::class],
             Cancelled::class => [],
-            Returned::class => [Collected::class],
+            Returned::class => [PickedUp::class],
         ];
     }
 
@@ -68,13 +68,13 @@ class Collection implements FulfilmentMethod
 
     public function fulfilledState(): string
     {
-        return Collected::class;
+        return PickedUp::class;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function claim(Order $order, SupportCollection $unclaimed): SupportCollection
+    public function claim(Order $order, Collection $unclaimed): Collection
     {
         if (! $order->isCollection()) {
             return $unclaimed->take(0);

@@ -139,7 +139,7 @@ This returns a collection of `Lunar\Core\DataTypes\ShippingOption` objects. Each
 | `description` | `?string` | A longer description of the option |
 | `identifier` | `string` | Unique identifier used to select this option |
 | `price` | `Lunar\Core\DataObjects\PriceValue` | The cost of this shipping method |
-| `collect` | `bool` | Whether this is a collection/pickup option rather than a delivery |
+| `pickup` | `bool` | Whether this is an in-store pickup option rather than a delivery |
 
 ```blade
 @foreach($shippingOptions as $option)

@@ -10,14 +10,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Pipeline\Pipeline;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Lunar\Core\Casts\CouponString;
+use Lunar\Core\Casts\ShippingBreakdown as ShippingBreakdownCast;
+use Lunar\Core\Casts\TaxBreakdown as TaxBreakdownCast;
 use Lunar\Core\Contracts\Actions\Carts\AddsAddress;
 use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
 use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
+use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
 use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
 use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
 use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
@@ -41,8 +44,6 @@ use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Modifiers\CartLineModifiers;
-use Lunar\Core\Modifiers\CartModifiers;
 use Lunar\Core\Validation\CartLine\CartLineStock;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\ValueObjects\Cart\FreeItem;
@@ -62,6 +63,9 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
+ * @property int $revision
+ * @property ?int $calculated_revision
+ * @property ?Carbon $calculated_at
  * @property ?string $remember_token
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
@@ -89,6 +93,7 @@ class Cart extends Base
      */
     public $cachableProperties = [
         'subTotal',
+        'subTotalDiscounted',
         'shippingSubTotal',
         'shippingTaxTotal',
         'shippingTotal',
@@ -101,6 +106,13 @@ class Cart extends Base
         'promotions',
         'freeItems',
     ];
+
+    /**
+     * Whether the calculation pipeline is currently running against this
+     * instance. Lines the pipeline writes itself are part of the calculation,
+     * so the line observer skips invalidation while this is set.
+     */
+    protected bool $calculating = false;
 
     /**
      * The cart sub total.
@@ -214,6 +226,17 @@ class Cart extends Base
     protected $guarded = [];
 
     /**
+     * A cart created in this request reads as revision 0 before any reload,
+     * matching the column default, so a persist in the same request guards
+     * on the value the row actually holds.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'revision' => 0,
+    ];
+
+    /**
      * @var list<string>
      */
     protected $hidden = [
@@ -227,16 +250,115 @@ class Cart extends Base
      */
     protected $casts = [
         'completed_at' => 'datetime',
+        'calculated_at' => 'datetime',
         'meta' => AsArrayObject::class,
         'coupon_code' => CouponString::class,
+        'tax_breakdown' => TaxBreakdownCast::class,
+        'shipping_breakdown' => ShippingBreakdownCast::class,
+        'shipping_tax_breakdown' => TaxBreakdownCast::class,
+        'discount_breakdown' => 'array',
+        'free_items' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        // Any change to the cart row outside the snapshot itself invalidates
+        // the snapshot. The bump is a SQL-side increment in the same UPDATE so
+        // two concurrent writers cannot both write the same value.
+        static::updating(function (Cart $cart) {
+            if ($cart->hasChangesOutsideTotals()) {
+                $cart->revision = $cart->getConnection()->raw('revision + 1');
+            }
+        });
+
+        // The expression above is opaque in memory; read the value it produced
+        // so the persister guards on an integer.
+        static::saved(function (Cart $cart) {
+            if (($cart->getAttributes()['revision'] ?? null) instanceof Expression) {
+                $cart->syncRevision();
+            }
+        });
+    }
+
+    /**
+     * Columns written by the persisted totals snapshot. Changing these does
+     * not count as a change to the cart, and they are kept out of the
+     * activity log.
+     *
+     * @return array<int, string>
+     */
+    public static function totalsColumns(): array
+    {
+        return [
+            'sub_total',
+            'sub_total_discounted',
+            'discount_total',
+            'shipping_sub_total',
+            'shipping_tax_total',
+            'shipping_total',
+            'tax_total',
+            'total',
+            'tax_breakdown',
+            'shipping_breakdown',
+            'shipping_tax_breakdown',
+            'discount_breakdown',
+            'free_items',
+            'revision',
+            'calculated_revision',
+            'calculated_at',
+        ];
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [...static::totalsColumns(), 'remember_token'];
+    }
+
+    /**
+     * Whether this calculation depends on state that is not in the database:
+     * an estimated shipping option or unsaved cart or line attributes. Such a
+     * calculation is neither served from the snapshot nor written to it.
+     */
+    public function hasUnpersistedInputs(): bool
+    {
+        if ($this->shippingOptionOverride || $this->hasChangesOutsideTotals()) {
+            return true;
+        }
+
+        return $this->relationLoaded('lines') && $this->lines->contains(
+            fn (CartLine $line) => ! $line->exists || array_diff(array_keys($line->getDirty()), CartLine::totalsColumns())
+        );
+    }
+
+    /**
+     * Read the revision back from the row. Writes made through another
+     * instance of this cart (a line or address observer) bump the row, not
+     * this model.
+     */
+    public function syncRevision(): static
+    {
+        $this->revision = (int) $this->newModelQuery()->whereKey($this->getKey())->toBase()->value('revision');
+        $this->syncOriginalAttribute('revision');
+
+        return $this;
+    }
+
+    protected function hasChangesOutsideTotals(): bool
+    {
+        $ignored = array_merge(static::totalsColumns(), [
+            static::CREATED_AT,
+            static::UPDATED_AT,
+        ]);
+
+        return (bool) array_diff(array_keys($this->getDirty()), $ignored);
+    }
 
     /**
      * @return HasMany<CartLine, $this>
      */
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::class, 'cart_id', 'id')->orderBy('id');
+        return $this->hasMany(CartLine::class, 'cart_id', 'id')->orderBy('id')->chaperone();
     }
 
     public function currency(): BelongsTo
@@ -454,39 +576,14 @@ class Cart extends Base
 
     /**
      * Calculate the cart totals and cache the result.
+     *
+     * May serve totals persisted by an earlier calculation, up to
+     * `lunar.cart.totals.ttl` seconds old. Code that needs a guaranteed-fresh
+     * total (checkout, payment amount guards) uses {@see recalculate()}.
      */
     public function calculate(bool $force = false): Cart
     {
-        if (! $force && $this->isCalculated()) {
-            // Don't recalculate
-            return $this;
-        }
-
-        // Resolve the context once for the whole calculation, not once per line.
-        $this->calculationContext = null;
-        $this->calculationContext = $this->context();
-
-        $cartModifiers = app(CartModifiers::class);
-        $cartLineModifiers = app(CartLineModifiers::class);
-
-        try {
-            $cart = app(Pipeline::class)
-                ->send($cartModifiers->calculating($this))
-                ->through($this->steps(StepList::CartCalculation))
-                ->thenReturn();
-
-            if ($cartLineModifiers->getModifiers()->isNotEmpty()) {
-                foreach ($cart->loadMissing('lines')->lines as $line) {
-                    $cartLineModifiers->calculated($line);
-                }
-            }
-
-            $cart = $cartModifiers->calculated($cart);
-        } finally {
-            $this->calculationContext = null;
-        }
-
-        return $cart->cacheProperties();
+        return app(CalculatesCart::class)->execute($this, $force);
     }
 
     /**
@@ -495,6 +592,60 @@ class Cart extends Base
     public function recalculate(): Cart
     {
         return $this->calculate(force: true);
+    }
+
+    /**
+     * Whether the persisted totals snapshot can be served: it was computed at
+     * the cart's current revision and is younger than the configured TTL.
+     */
+    public function totalsAreFresh(): bool
+    {
+        if ($this->calculated_revision === null || $this->calculated_at === null) {
+            return false;
+        }
+
+        if ((int) $this->calculated_revision !== (int) $this->revision) {
+            return false;
+        }
+
+        $ttl = (int) config('lunar.cart.totals.ttl', 300);
+
+        if ($ttl <= 0) {
+            return false;
+        }
+
+        return $this->calculated_at->greaterThanOrEqualTo(now()->subSeconds($ttl));
+    }
+
+    /**
+     * Mark the persisted totals snapshot as stale.
+     *
+     * An atomic SQL-side increment that fires no model events and logs no
+     * activity. The snapshot columns are left in place for reporting; they
+     * are simply no longer served. Public for consumers that write cart rows
+     * outside the model verbs.
+     */
+    public function invalidateTotals(): static
+    {
+        $this->incrementQuietly('revision');
+
+        return $this;
+    }
+
+    public function isCalculating(): bool
+    {
+        return $this->calculating;
+    }
+
+    public function setCalculating(bool $calculating): static
+    {
+        $this->calculating = $calculating;
+
+        // Resolve the context once for the whole calculation, not once per line.
+        $this->calculationContext = null;
+        $this->calculationContext = $calculating ? $this->context() : null;
+
+        return $this;
     }
 
     public function isCalculated(): bool
@@ -570,7 +721,7 @@ class Cart extends Base
 
         app(UpdatesCartLine::class)->execute($cartLineId, $quantity, $meta);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function updateLines(Collection $lines): Cart
@@ -591,7 +742,9 @@ class Cart extends Base
 
     public function clear(): Cart
     {
+        // A query-builder delete fires no line events, so invalidate here.
         $this->lines()->delete();
+        $this->invalidateTotals();
 
         return $this->refresh()->recalculate();
     }
@@ -643,7 +796,7 @@ class Cart extends Base
 
         app(AddsAddress::class)->execute($this, $address, $type);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
@@ -673,7 +826,7 @@ class Cart extends Base
 
         app(SetsShippingOption::class)->execute($this, $option);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function getShippingOption(): ?ShippingOption
@@ -763,7 +916,7 @@ class Cart extends Base
         $this->shippingEstimateMeta = $params;
         $option = ShippingManifest::getOptions($this)
             ->filter(
-                fn ($option) => ! $option->collect
+                fn ($option) => ! $option->pickup
             )->sortBy('price.value')->first();
 
         if ($setOverride && $option) {
@@ -795,12 +948,5 @@ class Cart extends Base
         $this->save();
 
         return $this->refresh()->recalculate();
-    }
-
-    public static function getDefaultLogExcept(): array
-    {
-        return [
-            'remember_token',
-        ];
     }
 }

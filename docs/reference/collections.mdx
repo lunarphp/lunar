@@ -297,6 +297,6 @@ Collections use the `HasMedia` trait (via Spatie Media Library), allowing images
 ```php
 $collection->addMedia($pathToFile)->toMediaCollection('images');
 
-// Get the thumbnail URL
+// Get the thumbnail URL, or null when the collection has no thumbnail
 $collection->getThumbnailImage();
 ```
