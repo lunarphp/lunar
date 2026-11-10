@@ -21,6 +21,7 @@ use Lunar\SearchRelevance\Database\Factories\SearchQueryFactory;
  * @property string $mode
  * @property int $result_count
  * @property array<int, int> $shown
+ * @property int $shown_offset
  * @property ?array<int, int> $ranked
  * @property ?array<int, array<string, mixed>> $features
  * @property ?Carbon $created_at
@@ -36,6 +37,7 @@ class SearchQuery extends Base
 
     protected $casts = [
         'shown' => 'array',
+        'shown_offset' => 'integer',
         'ranked' => 'array',
         'features' => 'array',
         'created_at' => 'datetime',

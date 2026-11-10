@@ -80,6 +80,7 @@ class SearchLogger
         array $shown,
         ?array $ranked,
         ?array $features = null,
+        int $shownOffset = 0,
     ): void {
         $this->bus->dispatch(new LogSearch([
             'id' => $searchId,
@@ -93,6 +94,7 @@ class SearchLogger
             'mode' => $context->mode,
             'result_count' => $resultCount,
             'shown' => array_values($shown),
+            'shown_offset' => $shownOffset,
             'ranked' => $ranked === null ? null : array_values($ranked),
             'features' => $features,
             'created_at' => now(),

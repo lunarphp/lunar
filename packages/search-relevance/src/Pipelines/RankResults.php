@@ -98,7 +98,10 @@ class RankResults
 
         $logged = (int) $this->config->get('lunar.search_relevance.impressions_logged', 50);
         $rankedIds = array_slice($ranked->productIds(), 0, $logged);
-        $shownIds = array_slice($displayed->productIds(), 0, $logged);
+
+        // From the top of the window through the page being viewed, so a click
+        // on a later page is in the list and replay compares like with like.
+        $shownIds = array_slice($displayed->productIds(), 0, max($logged, $offset + $perPage));
 
         $this->logger->log(
             $searchId,
@@ -106,7 +109,7 @@ class RankResults
             (string) $request->engine->getQuery(),
             $count,
             $shownIds,
-            $rankedIds === $shownIds ? null : $rankedIds,
+            $rankedIds === array_slice($shownIds, 0, $logged) ? null : $rankedIds,
             $this->features($ranked, $logged),
         );
 
@@ -268,6 +271,7 @@ class RankResults
             $results->count,
             array_slice($shown, 0, (int) $this->config->get('lunar.search_relevance.impressions_logged', 50)),
             null,
+            shownOffset: $offset,
         );
     }
 

@@ -130,3 +130,19 @@ it('retries an event until its search row exists, then records it', function () 
     $job->assertNotReleased();
     expect(SearchEvent::query()->sole()->product_id)->toBe(10);
 });
+
+it('accepts a click on a later page of a search logged from that page', function () {
+    // A passthrough search logs the page it served, starting at its offset.
+    $search = SearchQuery::factory()->create(['shown' => [40, 50, 60], 'shown_offset' => 24]);
+
+    postJson(route('lunar.search-relevance.events'), ['search_id' => $search->id, 'product_id' => 50, 'position' => 26])->assertNoContent();
+
+    expect(SearchEvent::query()->sole())->toMatchArray(['product_id' => 50, 'position' => 26]);
+});
+
+it('drops a click whose position does not match where the product was shown', function () {
+    // Product 10 was shown at position 1; claiming a lower position would earn a bigger weight.
+    postJson(route('lunar.search-relevance.events'), ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 3])->assertNoContent();
+
+    expect(SearchEvent::query()->count())->toBe(0);
+});

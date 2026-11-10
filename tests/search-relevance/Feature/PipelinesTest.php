@@ -6,6 +6,7 @@ use Lunar\Core\Models\Product;
 use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
+use Lunar\SearchRelevance\Jobs\RecordEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\SearchRelevance\Models\SearchQueryScore;
 use Lunar\SearchRelevance\Pipelines\PartNumberFallback;
@@ -140,7 +141,22 @@ it('leaves a page beyond the window alone but still logs it', function () {
     $logged = SearchQuery::query()->find($results->meta['search_id']);
 
     expect($logged->shown)->toBe(collect($products)->pluck('id')->slice(20, 10)->values()->all())
+        ->and($logged->shown_offset)->toBe(20)
         ->and($logged->ranked)->toBeNull();
+});
+
+it('logs a widened search down to the page being viewed so its clicks are accepted', function () {
+    Config::set('lunar.search_relevance.impressions_logged', 5);
+    $products = Fixtures::products(30);
+
+    $results = Search::model(Product::class)->query('cable')->perPage(10)->page(3)->get();
+    $hit = $results->hits[9];
+    $logged = SearchQuery::query()->find($results->meta['search_id']);
+
+    expect($hit->meta['position'])->toBe(30)
+        ->and($logged->shown_offset)->toBe(0)
+        ->and($logged->shown)->toHaveCount(30)
+        ->and(RecordEvent::accepts($logged, (int) $hit->document['id'], 30, 120))->toBeTrue();
 });
 
 it('caps the logged impressions', function () {

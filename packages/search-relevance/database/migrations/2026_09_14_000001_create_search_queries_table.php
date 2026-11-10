@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('mode', 8);
             $table->integer('result_count');
             $table->json('shown');
+            // Absolute position of shown[0]: a passthrough search logs only the page it served.
+            $table->unsignedInteger('shown_offset')->default(0);
             $table->json('ranked')->nullable();
             $table->json('features')->nullable();
             $table->timestamp('created_at')->index();

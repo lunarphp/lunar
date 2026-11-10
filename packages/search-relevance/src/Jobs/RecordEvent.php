@@ -53,7 +53,9 @@ class RecordEvent implements ShouldQueue
             return false;
         }
 
-        return in_array($productId, $shown, true) && $position >= 1 && $position <= count($shown);
+        // The position must be where this product was shown, so a client can't
+        // claim a lower slot to earn a bigger position weight.
+        return ($shown[$position - 1 - (int) $search->shown_offset] ?? null) === $productId;
     }
 
     public function handle(Repository $config): void
