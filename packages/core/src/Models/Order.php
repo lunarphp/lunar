@@ -163,18 +163,18 @@ class Order extends Base implements HasCurrency
     }
 
     /**
-     * Whether the customer collects the order rather than having it shipped,
-     * read from the `collect` flag stamped onto the shipping line's meta at
+     * Whether the customer picks the order up rather than having it shipped,
+     * read from the `pickup` flag stamped onto the shipping line's meta at
      * order creation. Uses the loaded `lines` relation when present so
      * callers that eager load lines don't pay for another query.
      */
-    public function isCollection(): bool
+    public function isPickup(): bool
     {
         $line = $this->relationLoaded('lines')
             ? $this->lines->firstWhere('type', 'shipping')
             : $this->shippingLines()->first();
 
-        return ($line?->meta['collect'] ?? false) === true;
+        return ($line?->meta['pickup'] ?? false) === true;
     }
 
     /**

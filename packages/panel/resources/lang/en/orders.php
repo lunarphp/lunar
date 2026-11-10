@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Collection',
-    'collect_from' => 'Collect from {name}',
+    'section_pickup' => 'Pickup',
+    'pickup_from' => 'Pick up from {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

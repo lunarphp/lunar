@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'الاستلام',
-    'collect_from' => 'الاستلام من {name}',
+    'section_pickup' => 'الاستلام',
+    'pickup_from' => 'الاستلام من {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

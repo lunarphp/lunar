@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Ridicare',
-    'collect_from' => 'Ridicare de la {name}',
+    'section_pickup' => 'Ridicare',
+    'pickup_from' => 'Ridicare de la {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

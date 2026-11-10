@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Odbiór osobisty',
-    'collect_from' => 'Odbiór w {name}',
+    'section_pickup' => 'Odbiór osobisty',
+    'pickup_from' => 'Odbiór w {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

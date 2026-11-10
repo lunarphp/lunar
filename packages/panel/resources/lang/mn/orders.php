@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Очиж авах',
-    'collect_from' => '{name}-с очиж авах',
+    'section_pickup' => 'Очиж авах',
+    'pickup_from' => '{name}-с очиж авах',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

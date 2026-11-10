@@ -406,19 +406,19 @@ it('exposes the pickup point from the shipping line meta', function () {
         'unit_price' => 0,
         'total' => 0,
         'meta' => [
-            'collect' => true,
+            'pickup' => true,
             'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP'], 'meta' => []],
         ],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.collect', true)
+            ->where('shippingOption.pickup', true)
             ->where('shippingOption.pickup_point.name', 'Dartford')
             ->where('shippingOption.pickup_point.lines.0', 'DA2 6EP'));
 });
 
-it('marks a courier line as not collect', function () {
+it('marks a courier line as not a pickup', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create();
@@ -428,16 +428,16 @@ it('marks a courier line as not collect', function () {
         'identifier' => 'standard',
         'unit_price' => 500,
         'total' => 500,
-        'meta' => ['collect' => false],
+        'meta' => ['pickup' => false],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.collect', false)
+            ->where('shippingOption.pickup', false)
             ->where('shippingOption.pickup_point', null));
 });
 
-it('drops the pickup point when the order is not a collection', function () {
+it('drops the pickup point when the order is not a pickup', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create();
@@ -448,14 +448,14 @@ it('drops the pickup point when the order is not a collection', function () {
         'unit_price' => 500,
         'total' => 500,
         'meta' => [
-            'collect' => false,
+            'pickup' => false,
             'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP']],
         ],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.collect', false)
+            ->where('shippingOption.pickup', false)
             ->where('shippingOption.pickup_point', null));
 });
 
@@ -470,7 +470,7 @@ it('tolerates a malformed pickup point', function () {
         'unit_price' => 0,
         'total' => 0,
         'meta' => [
-            'collect' => true,
+            'pickup' => true,
             'pickup_point' => ['handle' => 'dartford', 'name' => ['nested'], 'lines' => 'DA2 6EP'],
         ],
     ]);
@@ -478,7 +478,7 @@ it('tolerates a malformed pickup point', function () {
     $this->get(route('panel.orders.show', $order))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.collect', true)
+            ->where('shippingOption.pickup', true)
             ->where('shippingOption.pickup_point.name', 'dartford')
             ->where('shippingOption.pickup_point.lines', []));
 });
@@ -494,7 +494,7 @@ it('drops non-scalar pickup point lines', function () {
         'unit_price' => 0,
         'total' => 0,
         'meta' => [
-            'collect' => true,
+            'pickup' => true,
             'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP', ['nested'], 42]],
         ],
     ]);

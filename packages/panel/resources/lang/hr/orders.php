@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Preuzimanje',
-    'collect_from' => 'Preuzimanje na lokaciji {name}',
+    'section_pickup' => 'Preuzimanje',
+    'pickup_from' => 'Preuzimanje na lokaciji {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

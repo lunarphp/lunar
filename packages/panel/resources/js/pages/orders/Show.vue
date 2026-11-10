@@ -111,7 +111,7 @@ const props = defineProps<{
         name: string;
         identifier: string | null;
         price: string | null;
-        collect: boolean;
+        pickup: boolean;
         pickup_point: { handle: string; name: string; lines: string[] } | null;
     } | null;
     countries: { id: number; name: string }[];
@@ -461,10 +461,10 @@ const formatDateTime = (value: string): string =>
                         </Section>
 
                         <!-- The delivery method chosen at checkout. -->
-                        <Section v-if="shippingOption" :title="shippingOption.collect ? t('orders.section_collection') : t('orders.section_shipping')">
+                        <Section v-if="shippingOption" :title="shippingOption.pickup ? t('orders.section_pickup') : t('orders.section_shipping')">
                             <div class="flex items-start gap-3">
                                 <div class="w-9 h-9 rounded-md bg-surface-2 border border-line grid place-items-center text-ink-700 shrink-0">
-                                    <Icon :name="shippingOption.collect ? 'mapPin' : 'truck'" cls="sm" />
+                                    <Icon :name="shippingOption.pickup ? 'mapPin' : 'truck'" cls="sm" />
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[12.5px] text-ink-900 font-medium">{{ shippingOption.name }}</div>
@@ -473,8 +473,8 @@ const formatDateTime = (value: string): string =>
                                         <span v-if="shippingOption.identifier && shippingOption.price"> · </span>
                                         <span v-if="shippingOption.price" class="[font-variant-numeric:tabular-nums]">{{ shippingOption.price }}</span>
                                     </div>
-                                    <div v-if="shippingOption.collect && shippingOption.pickup_point" class="mt-1.5 text-[12px] text-ink-700">
-                                        <div class="font-medium">{{ t('orders.collect_from', { name: shippingOption.pickup_point.name }) }}</div>
+                                    <div v-if="shippingOption.pickup && shippingOption.pickup_point" class="mt-1.5 text-[12px] text-ink-700">
+                                        <div class="font-medium">{{ t('orders.pickup_from', { name: shippingOption.pickup_point.name }) }}</div>
                                         <div v-for="line in shippingOption.pickup_point.lines" :key="line" class="text-ink-500">{{ line }}</div>
                                     </div>
                                 </div>
@@ -536,7 +536,7 @@ const formatDateTime = (value: string): string =>
                             </div>
                         </SideCard>
 
-                        <SideCard v-if="shippingAddress" :title="shippingOption?.collect ? t('orders.side_customer_address') : t('orders.side_shipping_address')">
+                        <SideCard v-if="shippingAddress" :title="shippingOption?.pickup ? t('orders.side_customer_address') : t('orders.side_shipping_address')">
                             <template #actions>
                                 <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingAddress = shippingAddress">
                                     {{ t('common.edit') }}

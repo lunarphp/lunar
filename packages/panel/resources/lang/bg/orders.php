@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Вземане от място',
-    'collect_from' => 'Вземане от {name}',
+    'section_pickup' => 'Вземане от място',
+    'pickup_from' => 'Вземане от {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

@@ -137,16 +137,16 @@ test('can close and reopen an order', function () {
         ->and($order->fresh()->closed_at)->toBeNull();
 });
 
-test('is a collection only when the shipping line meta sets collect to true', function (mixed $collect, bool $expected) {
+test('is a pickup only when the shipping line meta sets pickup to true', function (mixed $pickup, bool $expected) {
     $order = Order::factory()->create(['user_id' => null]);
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'type' => 'shipping',
-        'meta' => $collect === null ? [] : ['collect' => $collect],
+        'meta' => $pickup === null ? [] : ['pickup' => $pickup],
     ]);
 
-    expect($order->fresh()->isCollection())->toBe($expected)
-        ->and($order->fresh()->load('lines')->isCollection())->toBe($expected);
+    expect($order->fresh()->isPickup())->toBe($expected)
+        ->and($order->fresh()->load('lines')->isPickup())->toBe($expected);
 })->with([
     'true' => [true, true],
     'false' => [false, false],
@@ -154,10 +154,10 @@ test('is a collection only when the shipping line meta sets collect to true', fu
     'missing' => [null, false],
 ]);
 
-test('is not a collection without a shipping line', function () {
+test('is not a pickup without a shipping line', function () {
     $order = Order::factory()->create(['user_id' => null]);
 
-    expect($order->isCollection())->toBeFalse();
+    expect($order->isPickup())->toBeFalse();
 });
 
 test('open and closed scopes filter by archive state', function () {

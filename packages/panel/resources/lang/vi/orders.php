@@ -68,8 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
-    'section_collection' => 'Nhận tại cửa hàng',
-    'collect_from' => 'Nhận tại {name}',
+    'section_pickup' => 'Nhận tại cửa hàng',
+    'pickup_from' => 'Nhận tại {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',

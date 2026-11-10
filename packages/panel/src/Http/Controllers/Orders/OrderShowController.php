@@ -467,20 +467,20 @@ class OrderShowController
     /**
      * The delivery method chosen at checkout: the shipping-breakdown snapshot,
      * falling back to the shipping line for orders without a breakdown. The
-     * collect flag comes from {@see Order::isCollection()}. The pickup point
+     * pickup flag comes from {@see Order::isPickup()}. The pickup point
      * comes from the shipping line's meta, written there by the checkout, and
-     * is only returned for a collection.
+     * is only returned for a pickup.
      *
-     * @return array{name: string, identifier: ?string, price: ?string, collect: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
+     * @return array{name: string, identifier: ?string, price: ?string, pickup: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
      */
     protected function shippingOption(Order $order, callable $money): ?array
     {
         $line = $order->lines->firstWhere('type', 'shipping');
-        $isCollection = $order->isCollection();
+        $isPickup = $order->isPickup();
 
-        $collect = [
-            'collect' => $isCollection,
-            'pickup_point' => $isCollection ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
+        $pickup = [
+            'pickup' => $isPickup,
+            'pickup_point' => $isPickup ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
         ];
 
         $item = $order->shipping_breakdown?->items?->first();
@@ -490,7 +490,7 @@ class OrderShowController
                 'name' => $item->name,
                 'identifier' => $item->identifier,
                 'price' => $item->price->format(),
-                ...$collect,
+                ...$pickup,
             ];
         }
 
@@ -502,7 +502,7 @@ class OrderShowController
             'name' => $line->description,
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
-            ...$collect,
+            ...$pickup,
         ];
     }
 
