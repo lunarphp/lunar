@@ -26,6 +26,12 @@ class RecordEvent implements ShouldQueue
 
     public const SOURCES = ['organic', 'learned', 'explore'];
 
+    /**
+     * The search row is written by a queued job of its own, so an event can be
+     * handled first; it is retried this many times, a few seconds apart.
+     */
+    public int $tries = 5;
+
     public function __construct(
         public string $searchId,
         public int $productId,
@@ -58,9 +64,17 @@ class RecordEvent implements ShouldQueue
 
         $search = SearchQuery::query()->find($this->searchId);
 
+        if (! $search) {
+            if ($this->attempts() < $this->tries) {
+                $this->release(5);
+            }
+
+            return;
+        }
+
         $window = (int) $config->get('lunar.search_relevance.guards.event_window_minutes', 120);
 
-        if (! $search || ! self::accepts($search, $this->productId, $this->position, $window)) {
+        if (! self::accepts($search, $this->productId, $this->position, $window)) {
             return;
         }
 

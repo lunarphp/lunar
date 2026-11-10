@@ -45,7 +45,9 @@ class SearchEventController
 
         $window = (int) $this->config->get('lunar.search_relevance.guards.event_window_minutes', 120);
 
-        if (! $search || ! RecordEvent::accepts($search, $productId, $position, $window)) {
+        // A search not written yet (its row is logged by a queued job) is
+        // checked by the event job, which retries until the row exists.
+        if ($search && ! RecordEvent::accepts($search, $productId, $position, $window)) {
             return response()->noContent();
         }
 

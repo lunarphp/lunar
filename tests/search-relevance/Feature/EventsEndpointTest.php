@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
+use Lunar\SearchRelevance\Jobs\RecordEvent;
 use Lunar\SearchRelevance\Models\SearchEvent;
 use Lunar\SearchRelevance\Models\SearchQuery;
 use Lunar\Tests\SearchRelevance\Support\Fixtures;
@@ -55,7 +57,6 @@ it('answers 204 without recording anything for bad input', function (array $payl
     expect(SearchEvent::query()->count())->toBe(0)
         ->and(session()->get('lunar_search_relevance.attribution'))->toBeNull();
 })->with([
-    'unknown search' => fn () => ['search_id' => '01ARZ3NDEKTSV4RRFFQ69G5FAV', 'product_id' => 10, 'position' => 1],
     'malformed search id' => fn () => ['search_id' => 'nope', 'product_id' => 10, 'position' => 1],
     'missing product' => fn () => ['search_id' => $this->search->id, 'position' => 1],
     'position below one' => fn () => ['search_id' => $this->search->id, 'product_id' => 10, 'position' => 0],
@@ -98,4 +99,34 @@ it('drops events for searches older than the event window', function () {
 
     expect(SearchEvent::query()->count())->toBe(0)
         ->and(session()->has('lunar_search_relevance.attribution.7'))->toBeFalse();
+});
+
+it('queues a click for a search whose row has not been written yet', function () {
+    // The search row is written by a queued job, so a quick click can arrive first.
+    Bus::fake([RecordEvent::class]);
+
+    postJson(route('lunar.search-relevance.events'), [
+        'search_id' => '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        'product_id' => 10,
+        'position' => 1,
+    ])->assertNoContent();
+
+    Bus::assertDispatched(RecordEvent::class, fn (RecordEvent $job) => $job->searchId === '01ARZ3NDEKTSV4RRFFQ69G5FAV');
+});
+
+it('retries an event until its search row exists, then records it', function () {
+    $job = (new RecordEvent('01ARZ3NDEKTSV4RRFFQ69G5FAV', 10, 1, 'click', 'organic', 'session:abc'))->withFakeQueueInteractions();
+
+    $job->handle(app('config'));
+
+    $job->assertReleased();
+    expect(SearchEvent::query()->count())->toBe(0);
+
+    SearchQuery::factory()->create(['id' => '01ARZ3NDEKTSV4RRFFQ69G5FAV', 'shown' => [10, 20, 30]]);
+
+    $job = (new RecordEvent('01ARZ3NDEKTSV4RRFFQ69G5FAV', 10, 1, 'click', 'organic', 'session:abc'))->withFakeQueueInteractions();
+    $job->handle(app('config'));
+
+    $job->assertNotReleased();
+    expect(SearchEvent::query()->sole()->product_id)->toBe(10);
 });
