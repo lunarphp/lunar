@@ -20,7 +20,16 @@ class CouponValidator implements CouponValidatorContract
             return false;
         }
 
-        if ($discount->max_uses_per_user && $user = auth()->user()) {
+        if ($discount->max_uses_per_user) {
+            $user = auth()->user();
+
+            // Per-user usage is recorded against a user, so the discount never
+            // applies to a guest; reject it here rather than accept a coupon
+            // that changes nothing.
+            if (! $user) {
+                return false;
+            }
+
             $uses = $discount->users()
                 ->whereUserId($user->getKey())
                 ->count();

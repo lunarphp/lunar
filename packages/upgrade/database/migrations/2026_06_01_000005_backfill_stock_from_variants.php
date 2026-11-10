@@ -39,6 +39,12 @@ return new class extends Migration
 
         $this->backfill($variants, $this->defaultLocationId());
 
+        if (Schema::hasIndex($variants, ['stock'])) {
+            Schema::table($variants, function (Blueprint $table) {
+                $table->dropIndex(['stock']);
+            });
+        }
+
         Schema::table($variants, function (Blueprint $table) {
             $table->dropColumn('stock');
         });

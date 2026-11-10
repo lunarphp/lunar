@@ -85,6 +85,10 @@ class StripeManager
     public function createIntent(Cart $cart, array $opts = [], string $flavour = 'standard'): PaymentIntent
     {
         /** @var Cart $cart */
+        // The caller's total may be a persisted snapshot; charge what the
+        // pipeline produces, which the amount guards check against.
+        $cart = $cart->recalculate();
+
         $existingId = $this->getCartIntentId($cart, $flavour);
 
         if (
@@ -222,7 +226,7 @@ class StripeManager
             return;
         }
 
-        $cart = $cart->calculate();
+        $cart = $cart->recalculate();
 
         $this->getClient()->paymentIntents->update(
             $intentId,

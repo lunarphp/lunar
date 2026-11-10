@@ -235,8 +235,8 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
         return new CollectionQueryBuilder($query);
     }
 
-    public function getThumbnailImage(): string
+    public function getThumbnailImage(): ?string
     {
-        return $this->thumbnail?->getUrl('small') ?? '';
+        return $this->thumbnail?->getUrl('small');
     }
 }
