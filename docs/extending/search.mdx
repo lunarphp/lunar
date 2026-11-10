@@ -1,0 +1,241 @@
+---
+title: "Extending Search"
+sidebarTitle: "Search"
+---
+
+Search indexing in Lunar can be customized by making additional models searchable, changing what data is sent to the search index, and choosing which search engine each model uses.
+
+<Tip>
+This page covers customizing how models are indexed. For day-to-day search usage, configuration, and the search artisan commands, see the [Search reference](/reference/search).
+</Tip>
+
+## Overview
+
+Every Lunar model that can be searched uses the `Lunar\Core\Models\Concerns\Searchable` trait, which wraps Laravel Scout's own `Laravel\Scout\Searchable` trait. Instead of implementing Scout's methods directly on the model, the trait delegates them to an indexer class, resolved from `config('lunar.search.indexers')`. This keeps indexing logic out of the model and makes it swappable per model.
+
+There are three things to consider when extending search:
+
+- Which models are searchable
+- What data is sent to the index (searchable, sortable, and filterable fields)
+- Which search engine a model's index lives on
+
+## Making a custom model searchable
+
+Any Eloquent model, not just Lunar's own models, can be added to the search index. Add the `Searchable` trait to the model:
+
+```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\Concerns\Searchable;
+
+class Example extends Model
+{
+    use Searchable;
+}
+```
+
+Then register the model in `config/lunar/search.php` under `models`:
+
+```php
+return [
+    'models' => [
+        // These models are required by the system, do not change them.
+        Lunar\Core\Models\Brand::class,
+        Lunar\Core\Models\Collection::class,
+        Lunar\Core\Models\Customer::class,
+        Lunar\Core\Models\Order::class,
+        Lunar\Core\Models\Product::class,
+        Lunar\Core\Models\ProductOption::class,
+
+        // Below you can add your own models for indexing...
+        App\Models\Example::class,
+    ],
+    // ...
+];
+```
+
+<Info>
+Only models listed in `models` are picked up by the `lunar:search:index` artisan command. See the [Search reference](/reference/search) for indexing commands.
+</Info>
+
+## Default indexing behavior
+
+If a model isn't mapped in the `indexers` config, `Lunar\Core\Search\ScoutIndexer` is used by default. Its `toSearchableArray()` indexes:
+
+- The model's `id`
+- Any attributes marked `searchable` on the model's attribute data (via `mapSearchableAttributes()`)
+
+`ScoutIndexer` also exposes two protected helpers that a custom indexer can call when extending it:
+
+```php
+protected function mapSearchableAttributes(Model $model): array
+```
+
+Maps every custom attribute marked `searchable` for the model's attribute type into the index. This means attributes marked searchable in the admin panel are automatically added to the index without further code changes. `TranslatedText` attribute values are exploded into locale-suffixed keys (for example, `name_en`, `name_fr`).
+
+```php
+protected function mapTranslatableFields(Model $model, array $fields): array
+```
+
+Takes a list of column names and explodes any translatable columns (such as a model's own `name` or `description`) into locale-suffixed index keys, the same way translatable attributes are handled. A plain, non-translatable string column is indexed under its bare field name.
+
+Lunar's own models are mapped to dedicated indexers that extend `ScoutIndexer` to add fields specific to that model. `Lunar\Core\Search\ProductIndexer`, for example, adds:
+
+- `public_id` and `status`
+- `product_type` (the product type's name) and `brand` (the brand's name, if set)
+- `created_at` as a Unix timestamp
+- Translatable `name`, `description`, and `short_description` fields, exploded per locale
+- Any searchable custom attributes
+- `thumbnail` (the small variant's URL, if a thumbnail is set)
+- `skus`, an array of the product's variant SKUs
+
+Its sortable fields are `created_at`, `updated_at`, `skus`, and `status`; its filterable fields are `__soft_deleted`, `skus`, and `status`.
+
+Lunar ships similar dedicated indexers for `BrandIndexer`, `CollectionIndexer`, `CustomerIndexer`, `OrderIndexer`, and `ProductOptionIndexer`. See the [Search reference](/reference/search) for what each one indexes.
+
+## Mapping custom indexers
+
+All indexers are mapped in `config/lunar/search.php` under `indexers`. To change how a model is indexed, map it to a custom class:
+
+```php
+return [
+    // ...
+    'indexers' => [
+        Lunar\Core\Models\Product::class => App\Search\CustomProductIndexer::class,
+    ],
+];
+```
+
+## Creating a custom indexer
+
+A custom indexer can extend `Lunar\Core\Search\ScoutIndexer` to reuse its helpers, or implement `Lunar\Core\Search\Interfaces\ScoutIndexerInterface` directly if none of the default behavior is needed:
+
+```php
+namespace App\Search;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Search\ScoutIndexer;
+
+class CustomProductIndexer extends ScoutIndexer
+{
+    public function searchableAs(Model $model): string
+    {
+        return 'custom_index_name';
+    }
+
+    public function shouldBeSearchable(Model $model): bool
+    {
+        return true;
+    }
+
+    public function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with([
+            'thumbnail',
+            'variants',
+            'productType',
+            'brand',
+        ]);
+    }
+
+    public function getScoutKey(Model $model): mixed
+    {
+        return $model->getKey();
+    }
+
+    public function getScoutKeyName(Model $model): mixed
+    {
+        return $model->getKeyName();
+    }
+
+    public function getSortableFields(): array
+    {
+        return [
+            'created_at',
+            'updated_at',
+        ];
+    }
+
+    public function getFilterableFields(): array
+    {
+        return [
+            '__soft_deleted',
+        ];
+    }
+
+    public function toSearchableArray(Model $model): array
+    {
+        return array_merge([
+            'id' => (string) $model->id,
+        ], $this->mapSearchableAttributes($model));
+    }
+}
+```
+
+Then map the model to this indexer in `config/lunar/search.php`:
+
+```php
+return [
+    // ...
+    'indexers' => [
+        Lunar\Core\Models\Product::class => App\Search\CustomProductIndexer::class,
+    ],
+];
+```
+
+<Warning>
+`Lunar\Core\Search\Interfaces\ScoutIndexerInterface::toSearchableArray()` takes a single `Model $model` argument, and every indexer shipped with Lunar implements it with just that one argument. Implement it the same way in a custom indexer.
+</Warning>
+
+## Custom search engines
+
+### Mapping a model to a different engine
+
+By default, Scout indexes every searchable model using the driver set by the `SCOUT_DRIVER` environment variable. To send a specific model's index to a different engine, for example keeping high-volume order data off a paid service used for products, map it under `engine_map` in `config/lunar/search.php`:
+
+```php
+return [
+    // ...
+    'engine_map' => [
+        Lunar\Core\Models\Product::class => 'typesense',
+        Lunar\Core\Models\Order::class => 'meilisearch',
+    ],
+];
+```
+
+Any model not listed in `engine_map` falls back to the default Scout driver.
+
+### Registering a new engine
+
+Adding an entirely new search engine (one that isn't already a Scout driver) is not something Lunar reinvents: the `Searchable` trait resolves engines through Laravel Scout's own `Laravel\Scout\EngineManager`, so a custom engine is registered the standard Scout way, using `EngineManager::extend()`:
+
+```php
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Laravel\Scout\EngineManager;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->app->make(EngineManager::class)->extend('custom', function () {
+            return new \App\Search\CustomEngine;
+        });
+    }
+}
+```
+
+Once registered, map the desired model to the new driver name in `engine_map`:
+
+```php
+'engine_map' => [
+    Lunar\Core\Models\Product::class => 'custom',
+],
+```
+
+<Info>
+The storefront search package (namespace `Lunar\Search\...`) is a separate package from the indexing pieces described on this page. It provides the storefront-facing query layer: faceted filtering, sorting, and instant search, built on top of the Scout search results that Lunar's core indexers produce. Indexers control *what* gets indexed; `Lunar\Search\...` controls how the storefront *queries* it. See the [Search reference](/reference/search) for details.
+</Info>

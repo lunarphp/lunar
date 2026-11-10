@@ -127,9 +127,9 @@ class Paypal implements PaypalInterface
 
     public function buildInitialOrder(Cart $cart): array
     {
-        // The total is null until the cart is calculated, and reading through it
-        // blind is how this used to fatal.
-        $cart = $cart->total ? $cart : $cart->calculate();
+        // The amount sent to PayPal must be the pipeline's answer, not a
+        // persisted snapshot; reading total blind is how this used to fatal.
+        $cart = $cart->recalculate();
 
         $billingAddress = $cart->billingAddress;
         $shippingAddress = $cart->shippingAddress ?: $billingAddress;

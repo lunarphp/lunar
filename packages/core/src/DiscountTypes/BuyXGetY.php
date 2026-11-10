@@ -331,8 +331,8 @@ class BuyXGetY extends AbstractDiscountType
                         $cart->freeItems = collect();
                     }
 
-                    if (! $cart->freeItems->contains($selectedRewardItem)) {
-                        $cart->freeItems->push($selectedRewardItem);
+                    if (! $cart->freeItems->contains($purchasable)) {
+                        $cart->freeItems->push($purchasable);
                     }
 
                     $rewardLine = app(Pipeline::class)
@@ -391,6 +391,11 @@ class BuyXGetY extends AbstractDiscountType
 
                 $rewardLine->meta = $meta;
                 $rewardLine->save();
+
+                // Priced with the rest of the cart in this run, as it is in every later one.
+                if (! $cart->lines->contains($rewardLine)) {
+                    $cart->lines->push($rewardLine);
+                }
 
                 $remainingRewardQty--;
             }

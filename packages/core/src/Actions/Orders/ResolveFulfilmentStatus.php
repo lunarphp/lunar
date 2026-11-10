@@ -38,10 +38,7 @@ class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
 
         $totalQuantity = (int) $order->fulfillableLines()->sum('quantity');
 
-        $dispatchedStates = array_merge(
-            $this->methods->stateNamesIn(FulfilmentStateCategory::Fulfilled),
-            $this->methods->stateNamesIn(FulfilmentStateCategory::Returned),
-        );
+        $dispatchedStates = $this->methods->dispatchedStateNames();
 
         $returnedStates = $this->methods->stateNamesIn(FulfilmentStateCategory::Returned);
 

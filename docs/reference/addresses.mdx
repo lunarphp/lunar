@@ -1,0 +1,141 @@
+---
+title: "Addresses"
+---
+
+Addresses store shipping and billing information for customers.
+
+## Overview
+
+Addresses belong to [Customers](/reference/customers) and are used to store shipping and billing information. A customer can have multiple addresses, with the ability to mark defaults for both shipping and billing. Addresses are linked to a [Country](/reference/countries-states#countries) and have an optional `state` string field for storing state or province information.
+
+## Addresses
+
+```php
+Lunar\Core\Models\Address
+```
+
+|Field|Type|Description|
+|:-|:-|:-|
+|`id`||primary key|
+|`public_id`|`ulid`|Public-facing identifier, generated automatically|
+|`customer_id`|`foreignId` `nullable`|The related customer|
+|`country_id`|`foreignId` `nullable`|The related country|
+|`title`|`string` `nullable`|Salutation e.g. Mr, Mrs, Dr|
+|`first_name`|`string`||
+|`last_name`|`string`||
+|`company_name`|`string` `nullable`||
+|`line_one`|`string`|Primary address line|
+|`line_two`|`string` `nullable`||
+|`line_three`|`string` `nullable`||
+|`city`|`string`||
+|`state`|`string` `nullable`||
+|`postcode`|`string` `nullable`||
+|`delivery_instructions`|`string` `nullable`|Special delivery notes|
+|`contact_email`|`string` `nullable`||
+|`contact_phone`|`string` `nullable`||
+|`meta`|`jsonb` `nullable`||
+|`shipping_default`|`boolean`|Whether this is the default shipping address|
+|`billing_default`|`boolean`|Whether this is the default billing address|
+|`created_at`|`timestamp`||
+|`updated_at`|`timestamp`||
+|`tax_identifier`|`string` `nullable`||
+
+### Creating an address
+
+The recommended way to create an address is through the customer relationship.
+
+```php
+$customer = \Lunar\Core\Models\Customer::find(1);
+
+$address = $customer->addresses()->create([
+    'title' => 'Mr',
+    'first_name' => 'Tony',
+    'last_name' => 'Stark',
+    'company_name' => 'Stark Industries',
+    'line_one' => '10880 Malibu Point',
+    'line_two' => null,
+    'line_three' => null,
+    'city' => 'Malibu',
+    'state' => 'California',
+    'postcode' => '90265',
+    'country_id' => $country->id,
+    'delivery_instructions' => 'Leave at the front gate',
+    'contact_email' => 'tony@starkindustries.com',
+    'contact_phone' => '555-0123',
+    'shipping_default' => true,
+    'billing_default' => true,
+    'meta' => [
+        'type' => 'headquarters',
+    ],
+]);
+```
+
+An address can also be created directly.
+
+```php
+$address = \Lunar\Core\Models\Address::create([
+    'customer_id' => $customer->id,
+    'first_name' => 'Tony',
+    'last_name' => 'Stark',
+    'line_one' => '200 Park Avenue',
+    'city' => 'New York',
+    'postcode' => '10166',
+    'country_id' => $country->id,
+    'contact_email' => 'tony@starkindustries.com',
+    'contact_phone' => '555-0456',
+    'shipping_default' => false,
+    'billing_default' => false,
+]);
+```
+
+### Retrieving addresses
+
+```php
+// Get all addresses for a customer
+$addresses = $customer->addresses;
+
+// Get the default shipping address
+$shippingAddress = $customer->addresses()
+    ->where('shipping_default', true)
+    ->first();
+
+// Get the default billing address
+$billingAddress = $customer->addresses()
+    ->where('billing_default', true)
+    ->first();
+```
+
+### Default addresses
+
+Each customer can have one default shipping address and one default billing address. These are controlled by the `shipping_default` and `billing_default` boolean fields.
+
+```php
+// Set an address as the default shipping address
+$address->update([
+    'shipping_default' => true,
+]);
+
+// Set an address as the default billing address
+$address->update([
+    'billing_default' => true,
+]);
+```
+
+<Tip>
+When an address is set as the default, Lunar automatically unsets the previous default for that customer via an observer. There is no need to manually manage this.
+</Tip>
+
+### Relationships
+
+|Relationship|Type|Related Model|Description|
+|:-|:-|:-|:-|
+|`customer`|`BelongsTo`|`Lunar\Core\Models\Customer`|The customer who owns this address|
+|`country`|`BelongsTo`|`Lunar\Core\Models\Country`|The country this address is in|
+
+```php
+// Get the country for an address
+$country = $address->country;
+
+// Get the customer for an address
+$customer = $address->customer;
+```

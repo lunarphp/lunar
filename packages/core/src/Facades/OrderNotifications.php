@@ -13,6 +13,8 @@ use Lunar\Core\Enums\NotificationScope;
  * @method static string|null label(?string $key)
  * @method static array<string, string> sendable(NotificationScope $scope = NotificationScope::Order)
  * @method static array<int, class-string> triggeredBy(string $status, NotificationScope $scope = NotificationScope::Order)
+ * @method static mixed withoutSending(callable $callback)
+ * @method static bool isMuted()
  *
  * @see OrderNotificationManifest
  */

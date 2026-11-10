@@ -71,6 +71,7 @@ return [
         'refund' => [
             'label' => 'Refund',
             'modal_heading' => 'Refund payment',
+            'notify' => 'Send a notification to the customer',
             'confirm' => [
                 'helper_text' => 'I confirm I want to refund this amount.',
             ],

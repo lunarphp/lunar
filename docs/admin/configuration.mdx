@@ -1,0 +1,60 @@
+---
+title: "Configuration"
+description: "The lunar.panel configuration reference for Lunar's Inertia and Vue admin panel."
+---
+
+The panel's configuration lives in `config/lunar/panel.php`, published by `php artisan lunar:panel:install` (or `vendor:publish --tag=panel-config`), and merged under the `lunar.panel` key.
+
+## Configuration reference
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `path` | `panel` | The URI prefix the panel is served under, e.g. `/panel`. |
+| `name` | `Lunar` | The panel's name, shown in the browser title and sidebar header. |
+| `guard` | `null` | The auth guard the panel authenticates against. When `null`, it falls back to `lunar.staff.guard` (default `staff`). |
+| `route_middleware` | `['lunar.panel']` | The base middleware group applied to every panel route group. See [The `lunar.panel` middleware group](#the-lunar-panel-middleware-group) below. |
+| `storefront_url` | `null` | The URL used for the "View storefront" link in the user menu. Omitted when not set. |
+| `drafts.ttl_days` | `7` | How long an edit draft can go untouched before the scheduled `model:prune` run deletes it. Its base snapshot becomes too stale for reliable conflict detection past this point. |
+| `support_url` | `https://docs.lunarphp.com/` | The support link shown in the user menu. |
+| `dashboard.low_stock_threshold` | `10` | Variants with `stock_available` at or below this value surface in the dashboard's Low stock widget. |
+| `search.scout_enabled` | `env('LUNAR_PANEL_SEARCH_SCOUT', false)` | Whether the global search (command palette) routes matching through Laravel Scout instead of a SQL `LIKE` query. See [Scout-backed search](#scout-backed-search) below. |
+| `menus` | `[]` | Optional grouping of sections into named top-level menus. See [Menus](#menus) below. |
+
+## The `lunar.panel` middleware group
+
+The panel registers and defaults to its own `route_middleware` group, `lunar.panel`, rather than the host application's `web` group. The group is assembled from the same framework primitives as the default `web` group — cookie encryption, session handling, error sharing, CSRF protection, and route-model binding substitution — so session, cookie, and CSRF behavior read from the host's own configuration exactly as they would under `web`.
+
+The reason is isolation: the panel ships its own Inertia middleware (`Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests`) on every route. If the panel instead ran inside the host's `web` group, any middleware the host application appends there — its own Inertia middleware, locale switching, tenancy, custom auth, rate limiting — would silently apply to panel routes too. Two Inertia middlewares stacked on one response is the most visible failure mode: the host's `share()` props leak into panel responses, and the asset `version()` values disagree, triggering spurious full-page reloads.
+
+A host application that deliberately wants the `web` stack, or a bespoke stack, can still override `route_middleware` in the published config:
+
+```php
+'route_middleware' => ['web'],
+```
+
+## Menus
+
+`menus` groups sections into named top-level navigation menus instead of listing every section as its own sidebar entry. Each entry maps a set of section keys to a menu:
+
+```php
+'menus' => [
+    [
+        'key' => 'catalog',
+        'label' => 'Catalog',
+        'icon' => 'package',
+        'sections' => ['catalog', 'collections'],
+    ],
+],
+```
+
+Left empty (the default), sections render as individual top-level sidebar entries.
+
+## Scout-backed search
+
+The panel's global search (the command palette) matches records with a SQL `LIKE` query by default. Setting `search.scout_enabled` to `true` (or the `LUNAR_PANEL_SEARCH_SCOUT` environment variable) routes matching through Laravel Scout instead, for any model that is indexed. This is what makes search tolerate typos: engines such as Meilisearch and Typesense provide fuzzy matching, where Scout's database driver only matches substrings.
+
+```env
+LUNAR_PANEL_SEARCH_SCOUT=true
+```
+
+See the [Search](/guides/search) documentation for indexing models with Scout.

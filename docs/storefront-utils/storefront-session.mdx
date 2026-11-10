@@ -1,0 +1,175 @@
+---
+title: "Storefront Session"
+description: "Track a visitor's region, channel, currency, customer, and customer groups across requests, and resolve them into a passable context."
+---
+
+`Lunar\Core\Facades\StorefrontSession` tracks the selections that frame a storefront visit — region, channel, currency, customer, and customer groups — in the session, and can produce an immutable `StorefrontContext` snapshot of them for code that should not reach into the session directly.
+
+## Overview
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+```
+
+`StorefrontSession` is backed by `Lunar\Core\Managers\StorefrontSessionManager`, bound to the `Lunar\Core\Contracts\StorefrontSession` contract. It is resolved once per request (or job): its constructor restores region, channel, customer groups, currency, and customer from the session, falling back to each primitive's configured default when nothing is stored yet.
+
+<Info>
+v1 exposed a `Lunar\Facades\StorefrontSession` with `init*()` methods (`initChannel()`, `initCurrency()`, `initCustomerGroups()`, `initCustomer()`) that had to be called to restore session state. In v2 this restoration runs automatically in the manager's constructor — the `init*()` methods still exist and are safe to call, but they are no-ops once a value is already resolved.
+</Info>
+
+## What it holds
+
+| Selection | Accessor | Type | Notes |
+|:----------|:---------|:-----|:------|
+| Region | `getRegion()` | `?Lunar\Core\Models\Region` | The market this visit belongs to; `null` only when no region is configured |
+| Channel | `getChannel()` | `Lunar\Core\Models\Channel` | Falls back to the region's channel, then the default channel |
+| Currency | `getCurrency()` | `Lunar\Core\Models\Currency` | Falls back to the region's currency, then the default currency |
+| Customer groups | `getCustomerGroups()` | `Illuminate\Support\Collection<Lunar\Core\Models\CustomerGroup>` | Falls back to the default customer group, which is not persisted to the session |
+| Customer | `getCustomer()` | `?Lunar\Core\Models\Customer` | `null` until set; falls back to the authenticated user's latest customer |
+
+Setting a region also sets the channel and currency from it (a region belongs to a channel and has a default currency), unless overridden afterwards by an explicit `setChannel()` / `setCurrency()` call.
+
+## Setting values
+
+```php
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Region;
+
+StorefrontSession::setRegion($region);
+StorefrontSession::setChannel($channel);
+StorefrontSession::setCurrency($currency);
+StorefrontSession::setCustomer($customer);
+StorefrontSession::setCustomerGroups(collect([$retail, $wholesale]));
+StorefrontSession::setCustomerGroup($retail);   // shorthand for setCustomerGroups(collect([$retail]))
+```
+
+Each setter persists its selection to the session (region and customer groups by `handle`, channel by `handle`, currency by `code`, customer by `id`) so it survives to the next request.
+
+<Warning>
+`setCustomer()` throws `Lunar\Core\Exceptions\CustomerNotBelongsToUserException` if a user is authenticated and the given customer does not belong to that user.
+</Warning>
+
+Setting the currency also pushes it to `Lunar\Core\Facades\CartSession`, so the visitor's cart (if any) is reprised in the new currency — a storefront currency switch has to reach the cart, since the cart carries its own `currency_id` and prices from it.
+
+### Resetting customer groups
+
+```php
+StorefrontSession::resetCustomerGroups();
+```
+
+Clears the customer groups from the session and resets the collection to empty (the next read re-resolves the default group via `initCustomerGroups()`).
+
+Groups set with `setCustomerGroups()` / `setCustomerGroup()`, or restored from the session, count as chosen and are passed to `context()` as-is. Until groups are chosen (or after a reset), `context()` derives them from the session's customer instead, so a logged-in customer is priced with their own groups.
+
+### Clearing the session
+
+```php
+StorefrontSession::forget();
+```
+
+Removes the stored region, channel, customer groups, currency, and customer from the session. This does not delete any database records.
+
+## Resolving a context
+
+```php
+use Lunar\Core\DataObjects\StorefrontContext;
+
+$context = StorefrontSession::context();
+```
+
+`context(): StorefrontContext` bundles the session's current selections — channel, currency, language, region, customer, and customer groups — into `Lunar\Core\DataObjects\StorefrontContext`, an immutable value object. It exists so business logic that needs "the buyer's selections" can accept an explicit value instead of depending on there being an HTTP session at all: a queued job pricing a catalogue for a market, an API resolving selections from headers, or a test exercising pricing for a given currency and customer group.
+
+`Lunar\Core\Models\Cart` exposes the same shape via `$cart->context()`, built from the cart's own stored `channel`, `currency`, `customer`, and `region` — a cart is already a context, so post-checkout logic and pre-cart browse logic consume the same explicit type.
+
+### Feeding pricing
+
+```php
+use Lunar\Core\Facades\Pricing;
+
+Pricing::for($product)->using($context)->get();
+```
+
+`Pricing::using()` prices against the whole context (currency, customer groups, customer, region, and channel) in one call, in place of chaining `currency(...)->customerGroups(...)`. Cart calculation does not read the session: it prices each line with `$cart->context()`, built from the cart's own stored values.
+
+## Using the session as the default pricing context
+
+A bare price call, with no context passed, prices against store defaults: the default region, its channel and currency, the default customer group, and no customer. The pricing manager never reads the session or the auth guard itself.
+
+```php
+$variant->pricing()->get(); // store defaults, unless the request nominated the session
+```
+
+`useAsDefaultContext()` makes the session the default for the current request, so bare calls price for the current visitor's currency, region, customer, and customer groups:
+
+```php
+use Lunar\Core\Facades\StorefrontSession;
+
+StorefrontSession::useAsDefaultContext();
+```
+
+The session's `context()` is resolved on each bare `get()`, not when `useAsDefaultContext()` is called, so a login or currency switch earlier in the same request is seen. An explicitly supplied context (`using($context)` or `pricing($context)`) always takes priority over the default.
+
+Call it from a middleware on the `web` group:
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Lunar\Core\Facades\StorefrontSession;
+
+class UseSessionStorefrontContext
+{
+    public function handle(Request $request, Closure $next): mixed
+    {
+        StorefrontSession::useAsDefaultContext();
+
+        return $next($request);
+    }
+}
+```
+
+```php
+// bootstrap/app.php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->web(append: [
+        App\Http\Middleware\UseSessionStorefrontContext::class,
+    ]);
+})
+```
+
+<Warning>
+`useAsDefaultContext()` must run **once per request**. The default it registers is bound `scoped` (`Lunar\Core\Contracts\DefaultStorefrontContext`), so it is discarded when the request or job ends. Calling it from a service provider's `boot()` works only until the first scope flush under Octane, and then silently stops.
+</Warning>
+
+<Warning>
+It must also run for Livewire update requests, or prices change between the initial render and the next component update. Livewire update requests pass through the `web` group, which is why the middleware belongs there. A storefront that applies the middleware per route instead must register it with `Livewire::addPersistentMiddleware()`, since Livewire only re-applies a fixed list of route middleware on updates.
+</Warning>
+
+Lunar ships no middleware for this and registers nothing by default: the `web` group also serves the admin panel and any other routes in the application. A session-less storefront API can register its own resolver instead, through `Lunar\Core\Contracts\DefaultStorefrontContext::resolveUsing()`.
+
+Outside a request (queued jobs, console commands, scheduled tasks) nothing is registered, so bare calls price against store defaults. Pass a context explicitly there: from the model in hand (`$cart->context()`) or one built with `Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext`.
+
+### Catching missing contexts
+
+`Pricing::preventDefaultContext()` makes `get()` throw `Lunar\Core\Exceptions\MissingStorefrontContextException` when no context was supplied through `using()` or `pricing($context)` and no default resolver is registered for the request. The individual setters (`currency()`, `customerGroups()`) do not count as a context. Enable it outside production from a service provider:
+
+```php
+use Lunar\Core\Facades\Pricing;
+
+public function boot(): void
+{
+    Pricing::preventDefaultContext(! app()->isProduction());
+}
+```
+
+Requests that called `useAsDefaultContext()` are unaffected. What it surfaces is a job, command, or route that prices against store defaults by accident.
+
+## Session-scoped, not a singleton
+
+`Lunar\Core\Contracts\StorefrontSession` (like `Lunar\Core\Contracts\CartSession`, which it depends on) is bound `scoped` in the container, not `singleton`. Under Octane or a queue worker a `singleton` binding would persist across requests, leaking one visitor's region, currency, or customer into the next request served by the same worker. `scoped` memoizes the resolved selections for the life of one request or job and is discarded when it ends.

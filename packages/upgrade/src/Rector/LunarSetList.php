@@ -8,6 +8,7 @@ use Lunar\Upgrade\Rector\Media\RetypeGetThumbnailImageRector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
 use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
 use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
+use Lunar\Upgrade\Rector\Shipping\RenameShippingOptionCollectArgRector;
 
 /**
  * Catalog of Rector renames contributed by v2 breaking specs.
@@ -522,6 +523,9 @@ final class LunarSetList
         // --- Spec 0075: first staff account creation moves to core ---
         'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
 
+        // --- Spec rename-collection-fulfilment-to-pickup: the collection fulfilment method becomes pickup ---
+        'Lunar\\Shipping\\Drivers\\ShippingMethods\\Collection' => 'Lunar\\Shipping\\Drivers\\ShippingMethods\\Pickup',
+
     ];
 
     /**
@@ -534,6 +538,7 @@ final class LunarSetList
         RewriteOrderRefundCallRector::class,
         RetypeFormatterStyleParamRector::class,
         RetypeGetThumbnailImageRector::class,
+        RenameShippingOptionCollectArgRector::class,
     ];
 
     /**
@@ -684,6 +689,10 @@ final class LunarSetList
      * `V1_TO_V2_METHOD_RENAMES`); the property fetch form
      * (`$type->mappedAttributes`) is covered here.
      *
+     * Spec rename-collection-fulfilment-to-pickup renamed `ShippingOption::$collect` to `$pickup`. This covers
+     * the property fetch (`$option->collect`); the `collect:` named argument
+     * on construction is rewritten by `RenameShippingOptionCollectArgRector`.
+     *
      * @var array<int, array{0: class-string, 1: string, 2: string}>
      */
     public const V1_TO_V2_PROPERTY_RENAMES = [
@@ -693,6 +702,8 @@ final class LunarSetList
         ['Lunar\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
         ['Lunar\\Core\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
         ['Lunar\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
+        ['Lunar\\Core\\DataTypes\\ShippingOption', 'collect', 'pickup'],
+        ['Lunar\\DataTypes\\ShippingOption', 'collect', 'pickup'],
     ];
 
     /**

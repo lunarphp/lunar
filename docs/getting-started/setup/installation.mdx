@@ -1,0 +1,182 @@
+---
+title: "Installation"
+description: "Add Lunar to a Laravel application with Composer."
+---
+
+Lunar integrates into an existing Laravel application as a set of Composer packages. This guide walks through installing the headless core and an admin panel.
+
+<Warning>
+Lunar v2 is in alpha. The version constraints below may need an explicit alpha flag (for example `@alpha`, or a `minimum-stability: dev` / `prefer-stable: false` entry in `composer.json`) until a stable v2 tag is published. APIs and config keys can still change before release.
+</Warning>
+
+## Requirements
+
+- PHP >= 8.4
+- Laravel 12 or 13
+- `bcmath` PHP extension
+- `exif` PHP extension
+- `intl` PHP extension
+- MySQL or PostgreSQL
+
+<Info>
+Lunar v2 splits what was previously a single `lunarphp/lunar` package into a headless core plus a choice of admin panel. `lunarphp/core` has no Filament dependency and works standalone for a custom storefront, a custom admin, or an API-only deployment.
+</Info>
+
+## 1. Install the core package
+
+```sh
+composer require lunarphp/core
+```
+
+This is the headless commerce core: models, actions, carts, orders, pricing, tax, and the rest of the domain. It has no admin UI.
+
+## 2. Choose an admin panel
+
+Install one panel package alongside the core. Each is an equal, explicit choice — none is bundled by default.
+
+| Package | Description |
+|:--------|:-------------|
+| `lunarphp/panel` | The [Inertia.js admin panel](/admin/introduction). |
+| `lunarphp/admin` | A [turnkey Filament v5 admin panel](/addons/filament/overview). |
+| `lunarphp/filament` | [Filament components, widgets, and schemas](/addons/filament/overview) for building a custom Filament v5 panel. |
+
+```sh
+composer require lunarphp/panel
+```
+
+<Info>
+It is possible to run Lunar with no panel at all — for example, an API-only storefront that manages products and orders through custom tooling.
+</Info>
+
+See [Admin Panel Installation](/admin/installation) for panel-specific setup steps, including `php artisan lunar:panel:install`.
+
+## 3. Add the LunarUser contract
+
+Parts of Lunar core rely on the `User` model exposing certain e-commerce relationships (carts, orders, customers). Add the bundled trait and interface to any model that represents users in the application.
+
+```php
+use Lunar\Core\Contracts\LunarUser;
+use Lunar\Core\Models\Concerns\IsLunarUser;
+
+class User extends Authenticatable implements LunarUser
+{
+    use IsLunarUser;
+    // ...
+}
+```
+
+## 4. Run the installer
+
+```sh
+php artisan lunar:install
+```
+
+The installer:
+
+- Publishes configuration files (skips existing ones unless told to overwrite)
+- Prompts to run database migrations
+- Creates the first admin staff account (via `lunar:create-admin`, when none exists)
+- Imports country and state reference data
+- Seeds initial data: a default channel, location, language, currency (USD), customer group, collection group, tax class, tax zone, product type, and a default region tying these together
+- Publishes Filament assets (when Filament is installed)
+- Offers to run `lunar:panel:install` (when the Inertia panel is installed)
+
+The panel-specific steps only run for whichever panel package is present, so the installer works the same for a Filament, Inertia, or panel-free application.
+
+## 5. Access the admin panel
+
+Once installed, visit the admin panel at the path configured by the chosen panel package. See [Admin Panel Installation](/admin/installation) for the default path and how to change it.
+
+## Telemetry
+
+Lunar sends anonymous usage data once per day to help the maintainers understand how Lunar is used. The data does not identify a store in any way.
+
+To opt out, add the following to a service provider's `boot` method:
+
+```php
+\Lunar\Core\Facades\Telemetry::optOut();
+```
+
+## Advanced installation options
+
+### Publish configuration before installing
+
+The installer publishes configuration files automatically, but to customize settings before running `php artisan lunar:install`, publish them manually first:
+
+```sh
+php artisan vendor:publish --tag=lunar
+```
+
+The installer detects the existing configuration and skips overwriting it.
+
+### Table prefix
+
+Lunar prefixes all of its database tables to avoid conflicts. The default prefix is `lunar_` and can be changed in `config/lunar/database.php`:
+
+```php
+'table_prefix' => 'lunar_',
+```
+
+### Database connection and morph prefix
+
+`config/lunar/database.php` also controls which database connection Lunar's models use, and an optional prefix for Lunar's morph map aliases:
+
+```php
+'connection' => null,   // null uses the application's default connection
+'morph_prefix' => null, // e.g. 'lunar_product' instead of 'product'
+```
+
+### User ID field type
+
+Lunar assumes the `User` model primary key is a `BIGINT`. If the application uses `INT` or `UUID` primary keys, update `config/lunar/database.php` before running migrations:
+
+```php
+// Supported values: 'bigint', 'int', 'uuid'
+'users_id_type' => 'bigint',
+```
+
+### Disable bundled migrations
+
+To take full control of Lunar's database migrations, disable the bundled migrations and publish them into the application:
+
+```php
+// config/lunar/database.php
+'disable_migrations' => true,
+```
+
+```sh
+php artisan vendor:publish --tag=lunar.migrations
+```
+
+### Search
+
+`lunarphp/core` depends on Laravel Scout, and defaults to Scout's `collection` driver, which needs no external service and is suitable for local development. For production search (faceted search, filtering, and dedicated engines like Meilisearch or Typesense), install the [Storefront Search add-on](/addons/search).
+
+## What's next?
+
+<Card
+  title="Starter Kits"
+  icon="rocket"
+  href="/getting-started/starter-kits/livewire"
+  horizontal
+>
+  Get a head start with a pre-built Livewire or Inertia storefront.
+</Card>
+
+<Card
+  title="Storefront Guides"
+  icon="store"
+  href="/guides/catalog-menu"
+  horizontal
+>
+  Learn how to build a storefront from scratch with step-by-step guides.
+</Card>
+
+<Card
+  title="System Settings"
+  icon="gear"
+  href="/getting-started/setup/system-settings"
+  horizontal
+>
+  Configure regions, channels, languages, currencies, and more.
+</Card>
