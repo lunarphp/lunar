@@ -7,6 +7,7 @@ namespace Lunar\Upgrade\Rector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
 use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
 use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
+use Lunar\Upgrade\Rector\Shipping\RenameShippingOptionCollectArgRector;
 
 /**
  * Catalog of Rector renames contributed by v2 breaking specs.
@@ -27,8 +28,6 @@ final class LunarSetList
         'Lunar\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Actions\\Carts\\AddAddress',
         'Lunar\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable',
         'Lunar\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Actions\\Carts\\AssociateUser',
-        'Lunar\\Actions\\Carts\\CalculateLine' => 'Lunar\\Core\\Actions\\Carts\\CalculateLine',
-        'Lunar\\Actions\\Carts\\CalculateLineSubtotal' => 'Lunar\\Core\\Actions\\Carts\\CalculateLineSubtotal',
         'Lunar\\Actions\\Carts\\CreateOrder' => 'Lunar\\Core\\Actions\\Carts\\CreateOrder',
         'Lunar\\Actions\\Carts\\GenerateFingerprint' => 'Lunar\\Core\\Actions\\Carts\\GenerateFingerprint',
         'Lunar\\Actions\\Carts\\GetExistingCartLine' => 'Lunar\\Core\\Actions\\Carts\\GetExistingCartLine',
@@ -523,6 +522,9 @@ final class LunarSetList
         // --- Spec 0075: first staff account creation moves to core ---
         'Lunar\\Admin\\Console\\Commands\\MakeLunarAdminCommand' => 'Lunar\\Core\\Console\\Commands\\CreateAdmin',
 
+        // --- Spec rename-collection-fulfilment-to-pickup: the collection fulfilment method becomes pickup ---
+        'Lunar\\Shipping\\Drivers\\ShippingMethods\\Collection' => 'Lunar\\Shipping\\Drivers\\ShippingMethods\\Pickup',
+
     ];
 
     /**
@@ -534,6 +536,7 @@ final class LunarSetList
         RewriteModelClassCallRector::class,
         RewriteOrderRefundCallRector::class,
         RetypeFormatterStyleParamRector::class,
+        RenameShippingOptionCollectArgRector::class,
     ];
 
     /**
@@ -578,21 +581,23 @@ final class LunarSetList
      * Money attribute columns that carry a unit-quantity semantic,
      * contributed by spec 0012.
      *
-     * Only the catalogue `Price` model (`lunar_prices.price` /
-     * `list_price`) stores a raw per-pack price that requires
-     * division by `priceable->unit_quantity` to display per-single-unit.
-     * `OrderLine.unit_price` is persisted *already divided* to per-
-     * single-unit by `CalculateLineSubtotal`, so `unitDecimal` /
-     * `unitFormatted` calls on order lines were a latent v1 bug (double
-     * division when `unit_quantity > 1`). The unit-rewrite rule only
-     * touches the catalogue Price model; `unit*` calls on other models
-     * are left alone for manual review (the upgrade docs flag this).
+     * Two columns store a per-pack price that is divided by a unit
+     * quantity to display per-single-unit: the catalogue `Price` model's
+     * `price` / `list_price` (divided by `priceable->unit_quantity`) and
+     * `OrderLine.unit_price` (divided by the line's own `unit_quantity`).
+     * Cart calculation keeps the pack price on the line and order creation
+     * stores it with `unit_quantity`, in v1 and v2 alike, so v1's
+     * `unitDecimal()` / `unitFormatted()` on these columns were correct and
+     * map onto the models' `unitDecimal()` / `unitFormat()`. Other money
+     * columns are line or order totals, with no per-unit meaning.
      *
      * @var array<class-string, list<string>>
      */
     public const V1_TO_V2_UNIT_AWARE_ATTRIBUTES = [
         'Lunar\\Core\\Models\\Price' => ['price', 'list_price'],
         'Lunar\\Models\\Price' => ['price', 'list_price'],
+        'Lunar\\Core\\Models\\OrderLine' => ['unit_price'],
+        'Lunar\\Models\\OrderLine' => ['unit_price'],
     ];
 
     /**
@@ -613,6 +618,11 @@ final class LunarSetList
         // `Lunar\Core\Contracts\Actions\…` interface instead.
         'Lunar\\Actions\\AbstractAction',
         'Lunar\\Core\\Actions\\AbstractAction',
+        // Spec 0092 deleted the single-line calculation actions; cart
+        // calculation never used them. Call `$cart->calculate()` and read the
+        // line's totals instead.
+        'Lunar\\Actions\\Carts\\CalculateLine',
+        'Lunar\\Actions\\Carts\\CalculateLineSubtotal',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFooterWidgets',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFormActions',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsForms',
@@ -677,6 +687,10 @@ final class LunarSetList
      * `V1_TO_V2_METHOD_RENAMES`); the property fetch form
      * (`$type->mappedAttributes`) is covered here.
      *
+     * Spec rename-collection-fulfilment-to-pickup renamed `ShippingOption::$collect` to `$pickup`. This covers
+     * the property fetch (`$option->collect`); the `collect:` named argument
+     * on construction is rewritten by `RenameShippingOptionCollectArgRector`.
+     *
      * @var array<int, array{0: class-string, 1: string, 2: string}>
      */
     public const V1_TO_V2_PROPERTY_RENAMES = [
@@ -686,6 +700,8 @@ final class LunarSetList
         ['Lunar\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
         ['Lunar\\Core\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
         ['Lunar\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
+        ['Lunar\\Core\\DataTypes\\ShippingOption', 'collect', 'pickup'],
+        ['Lunar\\DataTypes\\ShippingOption', 'collect', 'pickup'],
     ];
 
     /**
@@ -701,8 +717,6 @@ final class LunarSetList
         'Lunar\\Core\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsAddress',
         'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsOrUpdatesPurchasable',
         'Lunar\\Core\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AssociatesUser',
-        'Lunar\\Core\\Actions\\Carts\\CalculateLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLine',
-        'Lunar\\Core\\Actions\\Carts\\CalculateLineSubtotal' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLineSubtotal',
         'Lunar\\Core\\Actions\\Carts\\CreateOrder' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CreatesOrder',
         'Lunar\\Core\\Actions\\Carts\\GenerateFingerprint' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GeneratesFingerprint',
         'Lunar\\Core\\Actions\\Carts\\GetExistingCartLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GetsExistingCartLine',

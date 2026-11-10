@@ -1,0 +1,246 @@
+---
+title: "Extending"
+description: "Extension hooks, publishable resources and schemas, and the lunarphp/filament component library."
+---
+
+There are three routes to customizing the Filament admin, from lightest to heaviest:
+
+1. **Extension hooks** — register extension classes against the shipped resources, pages, forms, and tables to add fields, columns, actions, tabs, and lifecycle behavior without owning any copied code. Prefer this for additive changes.
+2. **Your own Filament code** — register additional resources, pages, and widgets on the panel through the `panel()` closure, exactly as in any Filament application.
+3. **Publish and own** — copy a shipped resource or schema into the application and take over its maintenance. A one-way door: published copies do not receive upstream improvements.
+
+## Extension hooks
+
+Extensions are registered as a map of target class to extension class (or instance) before `register()`:
+
+```php
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+LunarPanel::extensions([
+    EditProduct::class => EditProductExtension::class,
+])->register();
+```
+
+An extension is a plain class whose methods match hook names. Each hook receives the value being built (a schema, a table, an array of actions), and must return it. Convenience base classes under `Lunar\Admin\Support\Extending\` — `ListPageExtension`, `CreatePageExtension`, `EditPageExtension`, `ViewPageExtension`, and `RelationManagerExtension` — declare the common hooks, but any object with a matching method works:
+
+```php
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Lunar\Admin\Support\Extending\EditPageExtension;
+
+class EditProductExtension extends EditPageExtension
+{
+    public function extendForm(Schema $schema): Schema
+    {
+        return $schema->components([
+            ...$schema->getComponents(),
+            TextInput::make('meta_keywords'),
+        ]);
+    }
+}
+```
+
+Multiple extensions may target the same class; they stack, each receiving the previous one's return value.
+
+### Available hooks by target
+
+| Target class | Hooks |
+| --- | --- |
+| A resource (e.g. `ProductResource`) | `extendPages`, `getRelations`, `extendSubNavigation` |
+| List pages | `heading`, `subheading`, `headerActions`, `headerWidgets`, `footerWidgets`, `getTabs` |
+| Create pages | the list-page hooks plus `formActions`, `extendForm`, `beforeCreate`, `beforeCreation`, `afterCreation` |
+| Edit pages | the list-page hooks plus `formActions`, `extendForm`, `beforeFill`, `beforeSave`, `beforeUpdate`, `afterUpdate` |
+| View pages | `heading`, `subheading`, `extendsInfolist` |
+| Relation managers | `extendForm`, `extendTable` |
+| The dashboard | `getWidgets`, `getOverviewWidgets`, `getChartWidgets`, `getTableWidgets` |
+
+The order page (`ManageOrder`) additionally fires a large set of granular hooks for its summary, transaction, shipping, and fulfilment sections — search the `Lunar\Admin\Filament\Resources\OrderResource` namespace for `callLunarHook` to see what is available where.
+
+### Extending forms and tables
+
+Form and table definitions live in the bridge package as dedicated schema and table classes — `Lunar\Filament\Schemas\{Model}\{Model}Form` and `Lunar\Filament\Tables\{Model}\{Model}Table`. To modify one, target **that class** with a `configureForm` or `configureTable` hook:
+
+```php
+use Filament\Tables\Table;
+use Lunar\Filament\Tables\Currency\CurrencyTable;
+
+class CurrencyTableExtension
+{
+    public function configureTable(Table $table): Table
+    {
+        return $table->defaultSort('code');
+    }
+}
+
+LunarPanel::extensions([
+    CurrencyTable::class => CurrencyTableExtension::class,
+])->register();
+```
+
+Because the schema and table classes belong to the bridge, this works in a bespoke Filament panel too — without `lunarphp/admin`, register through the bridge's own facade instead:
+
+```php
+use Lunar\Filament\Support\Facades\LunarFilament;
+
+LunarFilament::extensions([
+    CurrencyTable::class => CurrencyTableExtension::class,
+]);
+```
+
+### Adding relation managers and pages to shipped resources
+
+The resource-level hooks attach new relation managers, pages, and record sub-navigation to a shipped resource:
+
+```php
+use Lunar\Admin\Filament\Resources\CustomerResource;
+use Lunar\Admin\Support\Extending\ResourceExtension;
+
+class CustomerResourceExtension extends ResourceExtension
+{
+    public function getRelations(array $managers): array
+    {
+        return [
+            ...$managers,
+            LoyaltyCardRelationManager::class,
+        ];
+    }
+}
+
+LunarPanel::extensions([
+    CustomerResource::class => CustomerResourceExtension::class,
+])->register();
+```
+
+Custom relation managers extend `Lunar\Filament\RelationManagers\BaseRelationManager`, which carries the `extendForm`/`extendTable` hooks so the new manager is itself extensible.
+
+## Registering your own resources, pages, and widgets
+
+The panel closure exposes the underlying `Filament\Panel`, so additional Filament code registers the standard way:
+
+```php
+use Filament\Panel;
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+LunarPanel::panel(fn (Panel $panel) => $panel
+    ->resources([BlogPostResource::class])
+    ->pages([ReportsPage::class])
+    ->widgets([RevenueGoalWidget::class])
+)->register();
+```
+
+To hook custom resources and pages into Lunar's permission system, set a `protected static ?string $permission` and use `Lunar\Admin\Support\Resources\Concerns\HasLunarPermissions` (resources) or extend `Lunar\Admin\Support\Pages\BasePage` (pages). Permission handles are listed in [Access Control](/admin/access-control) — both panels enforce the same set against the same staff accounts.
+
+## Publishing resources
+
+When hooks are not enough, a shipped resource can be copied into the application and owned outright:
+
+```sh
+php artisan lunar:admin:publish products
+php artisan lunar:admin:publish --all
+```
+
+The command copies the resource class and its pages into `app/Filament/Resources` (configurable with `--namespace` and `--path`), rewriting the namespace. Then exclude the original so the two do not both register:
+
+```php
+LunarPanel::excludeResources([
+    \Lunar\Admin\Filament\Resources\ProductResource::class,
+])->register();
+```
+
+<Warning>
+A published resource stops receiving upstream fixes and features — every future change to that screen becomes the application's responsibility. Exhaust the extension hooks first.
+</Warning>
+
+## Publishing schemas and tables
+
+The bridge's schema, table, and relation-manager classes are publishable as a set:
+
+```sh
+php artisan vendor:publish --tag=lunar-filament.schemas
+```
+
+This copies them into `app/Filament/{Schemas,Tables,RelationManagers}`. The bridge resolves definitions through `Lunar\Filament\Support\Resolver`: when a published class exists at the mirrored application namespace (for example `App\Filament\Schemas\Product\ProductForm`) and extends the bridge class, it is used automatically — no registration needed. Set `lunar.filament.resolver.prefer_published` to `false` to switch back to the shipped classes. The same one-way-door caveat applies.
+
+## The bridge component library
+
+Everything below lives in `lunarphp/filament` and works in any Filament v5 panel, with or without `lunarphp/admin`.
+
+### Entity selectors
+
+Form components under `Lunar\Filament\Forms\Components\` for picking Lunar records, all created with the standard Filament `::make('field_name')`:
+
+- **Search-backed** (use Laravel Scout when `lunar.filament.scout_enabled` is on, falling back to database search): `ProductSelect`, `ProductVariantSelect`, `CollectionSelect`, `CustomerSelect`.
+- **Option lists**: `BrandSelect`, `ChannelSelect`, `CountrySelect`, `CurrencySelect`, `CustomerGroupSelect`, `LanguageSelect`, `ProductTypeSelect`, `TagSelect`, `TaxClassSelect`, `TaxZoneSelect`, `StateSelect`, `DiscountTargetSelect`.
+
+Each selector carries entity-specific refinements, for example:
+
+```php
+use Lunar\Filament\Forms\Components\ProductSelect;
+
+ProductSelect::make('product_id')
+    ->showSku()
+    ->scopeStatus('published')
+    ->excludeAttached();
+```
+
+Alongside the selectors sit translation-aware inputs (`TranslatedText`, `TranslatedRichEditor`), attribute-data components (`Attributes`, `AttributeSelector`), a `PermissionSelector`, and table columns such as `Lunar\Filament\Tables\Columns\TranslatedTextColumn` and `ThumbnailImageColumn`.
+
+### Actions
+
+Prebuilt Filament actions under `Lunar\Filament\Actions\` that delegate to [Lunar's core action contracts](/extending/models), so business rules, validation, and events behave identically to programmatic calls:
+
+| Group | Actions |
+| --- | --- |
+| Orders | `RefundOrderAction`, `CaptureOrderAction`, `CancelOrderAction`, `CloseOrderAction`, `ReopenOrderAction`, `NotifyCustomerAction`, `AddOrderNoteAction` |
+| Products | `AdjustStockAction`, `DuplicateProductAction`, `PublishProductsBulkAction`, `UnpublishProductsBulkAction`, `ArchiveProductsBulkAction` |
+| Attributes | `CreateAttributeAction`, `EditAttributeAction`, `DeleteAttributeAction`, `DeleteAttributesBulkAction` |
+| Collections | `CreateRootCollectionAction`, `CreateChildCollectionAction`, `MoveCollectionAction`, `DeleteCollectionAction` |
+
+They attach the normal Filament way — `headerActions()`, `recordActions()`, `toolbarActions()`, or a page's `getHeaderActions()` — and the order actions manage their own visibility (a capture action only shows when the order has an uncaptured intent, for example):
+
+```php
+use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+
+protected function getHeaderActions(): array
+{
+    return [
+        CaptureOrderAction::make(),
+    ];
+}
+```
+
+### Global search
+
+Per-model descriptors (`ProductGlobalSearch`, `OrderGlobalSearch`, `CustomerGlobalSearch`, `CollectionGlobalSearch`, `BrandGlobalSearch` under `Lunar\Filament\GlobalSearch\`) define searchable attributes and result formatting once, shared between resources. A resource opts in with the trait and a `$globalSearch` property — the property must be declared on the resource itself:
+
+```php
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
+use Lunar\Filament\GlobalSearch\ProductGlobalSearch;
+
+class ProductResource extends Resource
+{
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = ProductGlobalSearch::class;
+}
+```
+
+Custom descriptors extend `Lunar\Filament\GlobalSearch\GlobalSearchDescriptor`.
+
+### Attribute field types
+
+The bridge maps Lunar's [attribute field types](/reference/attributes) to Filament components. A custom field type registers its component through the bridge facade:
+
+```php
+use Lunar\Filament\Support\Facades\AttributeData;
+
+AttributeData::registerFieldType(
+    ColorField::class,
+    ColorFilamentFieldType::class,
+);
+```
+
+## Discount type forms
+
+A [custom discount type](/extending/discounts) provides its admin form by implementing `Lunar\Filament\Contracts\DiscountFormType` on the discount type class — `lunarPanelSchema()` returns the form components, `lunarPanelOnFill()` / `lunarPanelOnSave()` map data in and out, and `lunarPanelRelationManagers()` attaches any relation managers the type needs.

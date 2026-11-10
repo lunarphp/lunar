@@ -1,0 +1,99 @@
+---
+title: "Installation"
+description: "Install Lunar's Inertia and Vue admin panel into a Laravel application."
+---
+
+## Requirements
+
+Lunar core (`lunarphp/core`) must already be installed and migrated before adding the panel — the panel authenticates against the staff table core creates and reads its permissions from core's access control manifest.
+
+## Require the package
+
+```bash
+composer require lunarphp/panel
+```
+
+The service provider, `Lunar\Panel\PanelServiceProvider`, is auto-discovered. No manual registration is needed.
+
+## Run the installer
+
+```bash
+php artisan lunar:panel:install
+```
+
+This wraps two `vendor:publish` calls:
+
+- `--tag=panel-config` publishes the panel's config to `config/lunar/panel.php` (merged under the `lunar.panel` key).
+- `--tag=panel-all-assets --force` copies the panel's compiled build to `public/vendor/lunar-panel/build`, its favicons to `public/vendor/lunar-panel/favicons`, and the compiled build of every registered add-on module to `public/vendor/lunar-panel/{key}`.
+
+On an interactive first run, the installer also offers to create the first admin staff account when none exists. Non-interactive runs (`--no-interaction`, or a deploy pipeline without a terminal) never prompt, so the command stays safe to re-run on every deploy.
+
+<Tip>
+Re-run `php artisan lunar:panel:install` after every package update. The host application serves pre-compiled assets, so a stale build is the most common cause of a change not appearing in the browser.
+</Tip>
+
+To publish only the panel's own assets, without sweeping every registered add-on, use `--tag=panel-assets` instead of `--tag=panel-all-assets`.
+
+## Migrations
+
+The panel ships two migrations, run as part of the standard `php artisan migrate`:
+
+- `create_edit_drafts_table` — backs the edit-drafts feature.
+- `create_staff_preferences_table` — stores per-staff UI preferences such as dark mode and sidebar collapse state.
+
+## Create a staff account
+
+The panel authenticates against Lunar's staff guard, backed by `Lunar\Core\Models\Staff`. Only staff with `admin` set to `true`, or an explicit permission, can sign in and act inside the panel — see [Access control](/admin/access-control).
+
+The `lunar:create-admin` command, shipped with Lunar core, creates a staff account with `admin` set to `true`. Run interactively, it prompts for a name, email, and password:
+
+```bash
+php artisan lunar:create-admin
+```
+
+For scripted setups, pass the details as options instead:
+
+```bash
+php artisan lunar:create-admin \
+    --firstname=Ada \
+    --lastname=Lovelace \
+    --email=ada@example.com \
+    --password=secret-password
+```
+
+`lunar:panel:install` offers to run this command on an interactive first run, so a fresh install usually already has its first account by this point.
+
+<Warning>
+Every staff login requires a second factor — an authenticator app or an emailed code. There is no password-only login path. See [Access control](/admin/access-control) for the enrollment flow.
+</Warning>
+
+## Visit the panel
+
+The panel is served at `/{lunar.panel.path}` — `/panel` by default, so a fresh install is reachable at `https://your-app.test/panel`. Change the path in `config/lunar/panel.php`; see [Configuration](/admin/configuration).
+
+## Production asset publishing
+
+Because the panel ships compiled assets rather than source, redeploying does not automatically pick up a new package version's build. As part of every deploy, run:
+
+```bash
+php artisan vendor:publish --tag=panel-all-assets --force
+```
+
+This is exactly what `lunar:panel:install` runs, and it is safe to re-run on every deploy — it also sweeps builds for any add-on packages registered with the panel.
+
+## Local development
+
+Inside this monorepo (or any setup using local path repositories), re-publishing assets after every rebuild is slow. Symlink the builds instead:
+
+- The panel's own build: symlink the package's `public/build` directory to `public/vendor/lunar-panel/build`. Because the symlink also exposes the package's `public/build/hot` file, running `npm run dev` inside the panel package gives full Vite HMR in the host application with no further wiring. Favicons still need a one-off publish.
+- Add-on builds: run
+
+  ```bash
+  php artisan lunar:panel:link
+  ```
+
+  This symlinks every registered add-on module's compiled build into `public/vendor/lunar-panel/{key}`, so a rebuild is picked up without re-publishing.
+
+<Info>
+`lunar:panel:link` warns and skips a module if its build path does not exist yet (run `npm run build` in that module first), if a directory already exists at the target (remove it to allow a symlink), or if the link is already in place.
+</Info>

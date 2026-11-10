@@ -21,12 +21,50 @@ trait CachesProperties
         $ro = new ReflectionClass($this);
 
         foreach ($this->cachableProperties as $property) {
-            $defaultValue = $ro->getProperty($property)->getDefaultValue();
+            $reflected = $ro->getProperty($property);
 
-            $this->{$property} = $defaultValue;
+            // A typed property with no default (CartLine::$taxBreakdown) can't
+            // take null; unsetting returns it to uninitialised, as on a
+            // freshly retrieved model.
+            if (! $reflected->hasDefaultValue()) {
+                unset($this->{$property});
+
+                continue;
+            }
+
+            $this->{$property} = $reflected->getDefaultValue();
         }
 
         return $this;
+    }
+
+    /**
+     * Array access prefers a declared calculated property over an attribute of
+     * the same name, so `$line['total']` and `->pluck('total')` (which read
+     * models through ArrayAccess) return the PriceValue, as `$line->total`
+     * does, rather than the persisted `total` column.
+     */
+    public function offsetExists($offset): bool
+    {
+        if ($this->isCachableProperty($offset)) {
+            return isset($this->{$offset});
+        }
+
+        return parent::offsetExists($offset);
+    }
+
+    public function offsetGet($offset): mixed
+    {
+        if ($this->isCachableProperty($offset)) {
+            return $this->{$offset};
+        }
+
+        return parent::offsetGet($offset);
+    }
+
+    protected function isCachableProperty(mixed $key): bool
+    {
+        return is_string($key) && in_array($key, $this->cachableProperties, true);
     }
 
     /**

@@ -1,6 +1,6 @@
 {
     "name": "@lunarphp/panel",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "type": "module",
     "description": "Panel layout and page-chrome components for building lunarphp/panel add-on pages.",
     "license": "MIT",
@@ -16,16 +16,24 @@
         ".": {
             "types": "./dist/ui.d.ts",
             "default": "./index.js"
-        }
+        },
+        "./addon-theme.css": "./addon-theme.css"
     },
     "files": [
+        "dist",
         "index.js",
-        "dist"
+        "addon-theme.css"
     ],
     "scripts": {
         "prepublishOnly": "npm --prefix ../.. run build:types"
     },
     "peerDependencies": {
+        "tailwindcss": "^4.0.6",
         "vue": "^3.0.0"
+    },
+    "peerDependenciesMeta": {
+        "tailwindcss": {
+            "optional": true
+        }
     }
 }

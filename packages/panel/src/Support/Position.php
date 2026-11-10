@@ -23,22 +23,22 @@ final class Position
 
     public static function last(): static
     {
-        return new static('last');
+        return new self('last');
     }
 
     public static function after(string $key, int $priority = 50): static
     {
-        return new static('after', $key, $priority);
+        return new self('after', $key, $priority);
     }
 
     public static function before(string $key, int $priority = 50): static
     {
-        return new static('before', $key, $priority);
+        return new self('before', $key, $priority);
     }
 
     public static function priority(int $n): static
     {
-        return new static('priority', $n, $n);
+        return new self('priority', $n, $n);
     }
 
     /**

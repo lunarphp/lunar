@@ -18,18 +18,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * Rewrites `$price->col->unitDecimal(...)` / `unitFormatted(...)` on the
- * catalogue `Lunar\Core\Models\Price` model (spec 0012) to
- * `$price->unitDecimal('col', ...)` / `$price->unitFormat('col', ...)`.
- * The new helpers divide by `priceable->unit_quantity`, matching v1
- * `Casts\Price::resolveUnitQuantity()` for catalogue rows.
+ * Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` to
+ * `$model->unitDecimal('col', ...)` / `$model->unitFormat('col', ...)` for
+ * the unit-aware columns in `LunarSetList::V1_TO_V2_UNIT_AWARE_ATTRIBUTES`
+ * (spec 0012): the catalogue `Price` model, divided by
+ * `priceable->unit_quantity`, and `OrderLine.unit_price`, divided by the
+ * line's `unit_quantity`. Both match what v1's `Casts\Price` divided by.
  *
- * Calls on other models (`Order`, `OrderLine`, `Transaction`) are
- * intentionally **not** rewritten by this rule: their persisted money
- * columns are already per-single-unit (`CalculateLineSubtotal` does the
- * division eagerly), so `unitDecimal` / `unitFormatted` there was a
- * latent v1 bug. The upgrade docs flag those callsites as a manual
- * review point.
+ * Unit calls on other money columns are left alone: those columns are
+ * totals, with no per-unit meaning.
  *
  * Dynamic property accesses (`$price->{$col}->unitDecimal(...)`) and
  * non-Lunar receivers are also left untouched.

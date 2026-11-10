@@ -1,0 +1,84 @@
+---
+title: "Ordering with Position"
+sidebarTitle: "Ordering"
+description: "Placing navigation items, table columns, and actions relative to each other with Lunar\\Panel\\Support\\Position."
+---
+
+Every entry an add-on contributes to an ordered set in the panel — navigation groups and items, table columns, filters, row actions, bulk actions, page actions, dashboard widgets, global-search sources and commands — exposes a `position(): Position` method, and the whole set is sorted by one shared resolver. The same placement rules apply panel-wide, so learning `Position` once covers all of it.
+
+## The API
+
+`Lunar\Panel\Support\Position` is constructed through one of its static factories:
+
+```php
+use Lunar\Panel\Support\Position;
+
+Position::priority(int $n);        // coarse ordering; lower sorts first
+Position::first();                 // always sorts before every priority
+Position::last();                  // always sorts after every priority (the default)
+Position::before(string $key, int $priority = 50);
+Position::after(string $key, int $priority = 50);
+```
+
+`priority()` is the coarse default most entries use implicitly — first-party entries sit at predictable priorities, and an entry that declares no position at all defaults to `last()`. `before()`/`after()` anchor an entry immediately adjacent to another entry in the same set, identified by its key, first-party or add-on.
+
+### Anchoring a row action next to another
+
+`lunarphp/panel-addon-example`'s `PingRowAction` places itself right after the built-in `edit` row action on the Customers table:
+
+```php
+use Lunar\Panel\Support\Position;
+use Lunar\Panel\Tables\TableAction;
+
+class PingRowAction extends TableAction
+{
+    // ...key(), label(), icon(), method(), url()
+
+    public function position(): Position
+    {
+        return Position::after('edit');
+    }
+}
+```
+
+First-party actions like `edit` and `delete` are ordinary `TableAction`s in the same ordered set, so an add-on can position relative to them exactly as it would relative to another add-on's action.
+
+### Inserting a navigation item before another
+
+The same `before()`/`after()` anchors work on a `NavigationItem`'s `position` parameter, keyed by another item's `key`:
+
+```php
+use Lunar\Panel\Navigation\NavigationItem;
+use Lunar\Panel\Support\Position;
+
+$registry->addItem('sales', new NavigationItem(
+    key: 'example-addon-orders-note',
+    label: 'example-addon::example.orders_note',
+    route: 'panel.example-addon.index',
+    position: Position::before('orders'),
+));
+```
+
+`NavigationItem`'s `priority` constructor argument remains the ergonomic shortcut for coarse placement; an explicit `position` wins over it when both are considered. `NavigationGroup` supports the same `priority`/`position` pair for ordering groups relative to each other.
+
+## Fallback behavior
+
+An anchor whose target key doesn't exist — a typo, a reference to a key from an add-on that isn't installed, or a cycle — falls back to priority-weight ordering, logged as a warning:
+
+```
+Panel order anchor could not be resolved: 'my-action' targets missing key 'edit'.
+```
+
+Nothing throws, and the entry is never dropped: it renders, just wherever its priority weight would place it, rather than where the missing anchor asked for. This is what makes it safe to anchor against a first-party key across a Lunar version bump, or against another add-on that might not be present in every installation — placement degrades gracefully instead of breaking the page.
+
+Multiple entries anchored to the same target resolve in ascending priority order, so siblings that all say `Position::after('edit')` read left to right by their own priority rather than in registration order.
+
+## Where Position applies
+
+- `NavigationGroup` and `NavigationItem` (`navigation()` / `settingsNavigation()`), including nested child items.
+- `TableColumn`, `TableFilter`, `TableAction`, and `TableBulkAction` (`tableExtensions()`).
+- `PageAction` (`pageActions()`).
+- `Widget` (`widgets()`).
+- `SearchSource` and `SearchCommand` (`searchSources()` / `searchCommands()`).
+
+See [Extending the Admin Panel](/admin/extending/overview#the-hook-table) for what each of these hooks registers, and [Pages and Navigation](/admin/extending/pages#navigation-and-settings-navigation) for the full `NavigationItem` shape.
