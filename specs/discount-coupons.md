@@ -1,6 +1,6 @@
 # Discount coupons
 
-- Status: draft
+- Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-11-10
 - TODO item: Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk
@@ -145,9 +145,9 @@ A new synchronous listener, `Listeners\RecordDiscountRedemptions`, handles `Orde
 
 1. Insert a `discount_redemptions` row with `insertOrIgnore`. If it was ignored, this order already recorded the discount, so move on.
 2. Increment `discounts.uses`, and `coupons.uses` for a coupon entry, with an atomic `UPDATE … SET uses = uses + 1`.
-3. If either counter is now above its `max_uses`, dispatch `Events\Discounts\DiscountLimitExceeded` with the order, the discount and the coupon.
+3. If either counter is now above its `max_uses`, dispatch `Events\Discounts\DiscountLimitExceeded` with the order, the discount and the coupon, and log an activity on the order with the event `discount-limit-exceeded` and the discount name, coupon code, uses and limit as properties.
 
-The listener never rejects a redemption. The payment has been taken by the time an order is placed, so the order stands and the merchant is told. Eligibility is enforced before payment: conditions are checked on every cart calculation, and the payment drivers check the amount being charged against a fresh total. What remains is a window of a few seconds in which two carts pay with the same last use. For a code issued to one person, that is the same person paying twice at the same moment, and the event makes it visible.
+The listener never rejects a redemption. The payment has been taken by the time an order is placed, so the order stands and the merchant is told. The activity puts it in the order timeline, so a merchant without a developer sees it. The order is not put on hold: the cost is usually small, and holding a real customer's order over it does more harm. A merchant who wants a hold adds one from a listener on `DiscountLimitExceeded`. Eligibility is enforced before payment: conditions are checked on every cart calculation, and the payment drivers check the amount being charged against a fresh total. What remains is a window of a few seconds in which two carts pay with the same last use. For a code issued to one person, that is the same person paying twice at the same moment, and the event makes it visible.
 
 `AbstractDiscountType::markAsUsed()` is removed. Usage is recorded from the placed order, not from the discount type.
 
@@ -156,7 +156,7 @@ The listener never rejects a redemption. The payment has been taken by the time 
 - `Contracts\CouponCodeGenerator` with `generate(CouponBatch $batch): string`, bound in `LunarServiceProvider::registerServices()`. The default, `Generators\CouponCodeGenerator`, draws from an alphabet without look-alike characters (no `0`, `O`, `1`, `I`, `L`).
 - `DataObjects\CouponBatch` describes one run: `length` (default 10), `prefix` (default none), `maxUses` (default 1), and either a `quantity` or a list of `emails`. `CouponBatch::ofQuantity(int $quantity)` makes anonymous codes. `CouponBatch::forEmails(iterable $emails)` makes one code per distinct, normalized address and records it in `email`.
 - `Contracts\Discounts\GeneratesCoupons` → `Actions\Discounts\GenerateCoupons`, registered in `ActionServiceProvider`. `execute(Discount $discount, CouponBatch $batch): string` creates a batch ULID, generates codes in chunks of 1,000, inserts with `insertOrIgnore`, and keeps going until the batch is complete, so a code that collides with an existing one is replaced, not lost. It returns the batch ULID.
-- Above a threshold (500 codes), the panel dispatches `Jobs\GenerateCouponsJob`, which calls the action. Code callers choose for themselves.
+- Above `lunar.discounts.coupons.queue_threshold` codes, the panel dispatches `Jobs\GenerateCouponsJob`, which calls the action, and shows the batch as generating until it completes. Below it, the panel generates in the request. Code callers choose for themselves. The default is set from a timing test in slice 4 (1k, 5k, 10k and 50k codes on Postgres and MySQL, into a table that already holds many codes, and with the `sync` queue driver), and is expected to be a few thousand.
 
 The campaign in the community example is `$discount->generateCoupons(CouponBatch::forEmails($customerEmails))`, then exporting the batch as email and code pairs for the mail merge.
 
@@ -172,12 +172,14 @@ On the discount edit page:
   - Export to CSV (code, email, uses, redeemed at), for all codes or one batch.
   - Delete code.
 
+The order timeline shows the `discount-limit-exceeded` activity with a translated label, through `Support\TimelineActivity::description()`.
+
 The index's redemption filter reads `redemption`, and the coupon column shows the code when there is one and the count when there are several. With `discount_redemptions`, the redemptions KPI can count a time window instead of a lifetime total. That is a follow-on, not part of this spec.
 
 ### Out of scope
 
 - Pushing codes to email platforms, merge tags, and campaign attribution. Integrations build on `generateCoupons()` and the export.
-- Checking the cart's contact email against `coupons.email`. See open questions.
+- Checking the cart's contact email against `coupons.email`. The code is the credential, and single-use codes already limit a forwarded or leaked code to one use. A check would remove the discount mid-checkout when a guest enters their address, and would block recipients who check out with a different address from the one the code was sent to. `email` is recorded, so a per-discount "only the recipient can redeem" condition can be added later without a schema change.
 - Reserving a code when payment starts. See alternatives.
 
 ## Alternatives considered
@@ -190,6 +192,7 @@ The index's redemption filter reads `redemption`, and the coupon column shows th
 - **Leave it to an add-on, and make core extensible with a `CouponResolver` contract.** It is the smallest core change, but the add-on still has to replace usage counting and the order record, as the community implementation shows. Codes as rows is the general model, and a single shared code is the one-row case of it.
 - **`cart_id` and `redeemed_at` on the coupon, as in the community implementation.** It fits single-use codes, but a multi-use code has many redemptions, and automatic discounts need a record too for counting at placement to be idempotent.
 - **Keep `discount_user` beside `discount_redemptions`.** Both would record a signed-in user's redemption, and they could drift.
+- **Hold the order when a limit is exceeded.** It makes the merchant decide before fulfilment, but delays a real customer's order over what is usually a small amount. A listener on `DiscountLimitExceeded` can add a hold for merchants who want one.
 - **Tie a code to a `customer_id` and check it at redemption.** It only works when the customer is on the cart, which for a guest is too late or never. `email` records the recipient without blocking guests.
 - **A `coupon_batches` table with names and metadata.** The `batch` ULID covers grouping and export. A batches table is an additive change if campaigns need names or notes later.
 
@@ -206,15 +209,14 @@ The index's redemption filter reads `redemption`, and the coupon column shows th
   - copies each `discount_user` row into `discount_redemptions` with `user_id` and `redeemed_at` from `created_at`, and null `order_id` and `cart_id`.
 
   The `create_discount_user_table` entry in `packages/upgrade/config/upgrade.php` is replaced. A Rector rule is not practical for `$discount->coupon` reads or `markAsUsed()` overrides, because the replacements change shape. The upgrade notes call them out instead.
-- **Translations:** new keys in `packages/panel/resources/lang/*/discounts.php` for the redemption choice, the Coupons section, generation and export, in all 16 locales. `field_coupon_hint` is removed.
+- **Config:** `lunar.discounts.coupons.queue_threshold` in `packages/core/config/discounts.php`.
+- **Translations:** new keys in `packages/panel/resources/lang/*/discounts.php` for the redemption choice, the Coupons section, generation and export, and in `packages/panel/resources/lang/*/orders.php` for the `discount-limit-exceeded` timeline entry, in all 16 locales. `field_coupon_hint` is removed.
 - **Panel:** the discount edit page and index as described above.
 - **Docs:** `docs/reference/discounts.mdx` (the `Coupon` and `DiscountRedemption` models, `redemption`, generation, usage counted at placement, `DiscountLimitExceeded`, and `max_uses_per_user` being for signed-in users), `docs/extending/discounts.mdx` (custom types, `$cart->coupon`, and the removal of `markAsUsed()`), and a guide for running a single-use code campaign with guest checkout.
 
 ## Open questions
 
-- Is the `DiscountLimitExceeded` event enough, or should the panel's order screen also flag an order that went over a limit? Owner: Glenn, before `accepted`.
-- Should a merchant be able to opt in to checking the cart's contact email against `coupons.email` at checkout, for codes that must only work for their recipient? The proposal leaves it out: the code is the credential, and a stricter check is a condition an add-on or a later spec can add.
-- Is 500 the right threshold for queueing generation in the panel? Settle it with a timing test on Postgres and MySQL during slice 4.
+None.
 
 ## References
 
@@ -225,9 +227,9 @@ The index's redemption filter reads `redemption`, and the coupon column shows th
 
 ## Implementation plan
 
-- [ ] Slice 1 — Count usage at placement: `discount_redemptions` replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded`, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event.
+- [ ] Slice 1 — Count usage at placement: `discount_redemptions` replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded` and the order activity, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event and logs the activity.
 - [ ] Slice 2 — Coupons: `coupons` table, `redemption` column, `Coupon` model and factory, `Cart::coupon()`, matching in `DiscountManager`, `AbstractDiscountType` and `CouponValidator`, and the coupon on the order breakdown. Existing behavior covered by moving each single-code test to a one-row coupon, plus guest-cart tests.
 - [ ] Slice 3 — Upgrade: v1 `discounts.coupon` → `coupons` and `discount_user` → `discount_redemptions` in the data migration step, and upgrade notes.
-- [ ] Slice 4 — Generation: `CouponCodeGenerator`, `CouponBatch`, `GenerateCoupons` action and job, and `Discount::generateCoupons()`.
-- [ ] Slice 5 — Panel: redemption choice, Coupons section, generation by quantity or email list, CSV export, index filter and column, translations in all 16 locales.
+- [ ] Slice 4 — Generation: `CouponCodeGenerator`, `CouponBatch`, `GenerateCoupons` action and job, `Discount::generateCoupons()`, and the timing test that sets the `queue_threshold` default.
+- [ ] Slice 5 — Panel: the timeline label for `discount-limit-exceeded`, redemption choice, Coupons section, generation by quantity or email list, CSV export, index filter and column, translations in all 16 locales.
 - [ ] Slice 6 — Docs, including the guest-checkout campaign guide.
