@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\DataObjects\PriceValue;
@@ -22,6 +23,7 @@ use Lunar\Core\Models\TaxZone;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 uses(TestCase::class)->group('carts');
 
@@ -333,3 +335,53 @@ test('the revision and snapshot columns stay out of the activity log', function 
         ->and($activity->properties['attributes'])->not->toHaveKey('revision')
         ->and($activity->properties['attributes'])->not->toHaveKey('total');
 });
+
+/**
+ * The totals persister locks the cart row before its lines, so every line
+ * write must lock the cart first too or the two can deadlock.
+ *
+ * @return array<int, string>
+ */
+function writeOrder(Closure $write): array
+{
+    $carts = (new Cart)->getTable();
+    $lines = (new CartLine)->getTable();
+    $order = [];
+
+    DB::listen(function ($query) use (&$order, $carts, $lines) {
+        if (preg_match('/^(update|delete)\s+(from\s+)?"?(\w+)"?/i', $query->sql, $match) && in_array($match[3], [$carts, $lines], true)) {
+            $order[] = $match[3] === $carts ? 'cart' : 'line';
+        }
+    });
+
+    DB::transaction($write);
+
+    return array_values(array_unique($order));
+}
+
+test('a line write locks the cart before the line', function (Closure $write) {
+    [$cart] = snapshotCart();
+
+    expect(writeOrder(fn () => $write($cart)))->toBe(['cart', 'line']);
+})->with([
+    'update' => [fn (Cart $cart) => $cart->updateLine($cart->lines->first()->id, 3, refresh: false)],
+    'remove' => [fn (Cart $cart) => $cart->remove($cart->lines->first()->id, refresh: false)],
+]);
+
+test('a verb that skips the refresh keeps the in-memory revision current', function (Closure $write) {
+    [$cart, $first, $second] = snapshotCart();
+
+    Blink::flush();
+
+    $loaded = Cart::query()->find($cart->id);
+
+    $write($loaded, $second);
+
+    expect($loaded->revision)->toBe(rowRevisions($loaded)[0])
+        ->and($loaded->totalsAreFresh())->toBeFalse();
+})->with([
+    'add' => [fn (Cart $cart, ProductVariant $variant) => $cart->add($variant, 1, refresh: false)],
+    'update line' => [fn (Cart $cart) => $cart->updateLine($cart->lines->first()->id, 3, refresh: false)],
+    'remove' => [fn (Cart $cart) => $cart->remove($cart->lines->first()->id, refresh: false)],
+    'add address' => [fn (Cart $cart) => $cart->addAddress(CartAddress::factory()->make()->toArray(), 'shipping', refresh: false)],
+]);

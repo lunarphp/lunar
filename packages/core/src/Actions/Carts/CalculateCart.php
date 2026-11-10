@@ -37,7 +37,9 @@ class CalculateCart implements CalculatesCart
             return $cart;
         }
 
-        if (! $force && $cart->totalsAreFresh() && $this->snapshotCoversEveryLine($cart)) {
+        $persistable = ! $cart->hasUnpersistedInputs();
+
+        if (! $force && $persistable && $cart->totalsAreFresh() && $this->snapshotCoversEveryLine($cart)) {
             return $this->hydratesCartTotals->execute($cart);
         }
 
@@ -67,7 +69,9 @@ class CalculateCart implements CalculatesCart
         $cart->lines->each(fn (CartLine $line) => $line->cacheProperties());
         $cart->cacheProperties();
 
-        $this->persistsCartTotals->execute($cart);
+        if ($persistable) {
+            $this->persistsCartTotals->execute($cart);
+        }
 
         return $cart;
     }

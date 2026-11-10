@@ -392,9 +392,8 @@ class CartSessionManager implements CartSession
                 'currency_id' => $currency->id,
             ]);
 
-            // Prices are resolved from the cart's loaded relations, and the
-            // lines carry their own copy of the cart (see lunar.cart.eager_load).
-            // A refresh drops those and the in-memory totals memo, so the next
+            // Prices are resolved from the cart's loaded relations and the
+            // in-memory totals memo; a refresh drops both, so the next
             // calculate() prices in the new currency rather than serving the
             // old one.
             $this->cart->refresh();

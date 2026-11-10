@@ -57,12 +57,36 @@ class HydrateCartTotals implements HydratesCartTotals
 
         $cart->freeItems = $this->freeItems($cart);
 
+        $this->hydrateShippingAddress($cart);
+
         foreach ($cart->lines as $line) {
             $line->setRelation('cart', $cart);
             $this->hydrateLine($line, $currency);
         }
 
         return $cart->cacheProperties();
+    }
+
+    /**
+     * ApplyShipping and CalculateTax leave the chosen option's totals on the
+     * shipping address as well as the cart.
+     */
+    protected function hydrateShippingAddress(Cart $cart): void
+    {
+        if ($cart->getAttribute('shipping_sub_total') === null || ! $cart->loadMissing('shippingAddress')->shippingAddress) {
+            return;
+        }
+
+        $address = $cart->shippingAddress;
+
+        $address->shippingSubTotal = $cart->shippingSubTotal;
+        $address->shippingTaxTotal = $cart->shippingTaxTotal;
+        $address->shippingTotal = $cart->shippingTotal;
+        $address->taxBreakdown = $this->hasRaw($cart, 'shipping_tax_breakdown')
+            ? $cart->getAttribute('shipping_tax_breakdown')
+            : new TaxBreakdown;
+
+        $address->cacheProperties();
     }
 
     protected function hydrateLine(CartLine $line, Currency $currency): void

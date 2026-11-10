@@ -148,9 +148,9 @@ function calculatedSurface(Cart $cart): array
         'subTotal' => $cart->subTotal->value,
         'subTotalDiscounted' => $cart->subTotalDiscounted->value,
         'discountTotal' => $cart->discountTotal->value,
-        'shippingSubTotal' => $cart->shippingSubTotal->value,
-        'shippingTaxTotal' => $cart->shippingTaxTotal->value,
-        'shippingTotal' => $cart->shippingTotal->value,
+        'shippingSubTotal' => $cart->shippingSubTotal?->value,
+        'shippingTaxTotal' => $cart->shippingTaxTotal?->value,
+        'shippingTotal' => $cart->shippingTotal?->value,
         'taxTotal' => $cart->taxTotal->value,
         'total' => $cart->total->value,
         'taxBreakdown' => $cart->taxBreakdown->amounts->map(fn ($amount) => [$amount->identifier, $amount->price->value, $amount->percentage])->values()->all(),
@@ -162,6 +162,12 @@ function calculatedSurface(Cart $cart): array
         ])->values()->all(),
         'discounts' => $cart->discounts->map(fn ($type) => [$type::class, $type->discount->id])->values()->all(),
         'freeItems' => ($cart->freeItems ?? collect())->map(fn ($item) => [$item->getMorphClass(), $item->getKey()])->values()->all(),
+        'shippingAddress' => [
+            'shippingSubTotal' => $cart->shippingAddress?->shippingSubTotal?->value,
+            'shippingTaxTotal' => $cart->shippingAddress?->shippingTaxTotal?->value,
+            'shippingTotal' => $cart->shippingAddress?->shippingTotal?->value,
+            'taxBreakdown' => $cart->shippingAddress?->taxBreakdown?->amounts->map(fn ($amount) => [$amount->identifier, $amount->price->value, $amount->percentage])->values()->all(),
+        ],
         'lines' => $cart->lines->map($line)->values()->all(),
         'fingerprint' => $cart->fingerprint(),
     ];
@@ -392,18 +398,121 @@ test('an automatic reward line written during the pipeline does not prevent the 
         ->and($cart->freeItems)->toHaveCount(1)
         ->and($cart->fresh()->calculated_revision)->toBe($cart->fresh()->revision);
 
-    // The reward line is picked up by the next run, and from then on the
-    // snapshot covers every line and is served.
-    Blink::flush();
-    Cart::query()->find($cart->id)->calculate();
-
-    expect(CartPipelineSpy::$runs)->toBe(2);
-
+    // The reward line is priced in the run that adds it, so the first
+    // snapshot already covers it and is served.
     Blink::flush();
     $served = Cart::query()->find($cart->id)->calculate();
 
-    expect(CartPipelineSpy::$runs)->toBe(2)
+    expect(CartPipelineSpy::$runs)->toBe(1)
         ->and($served->lines)->toHaveCount(2)
         ->and($served->freeItems)->toHaveCount(1)
         ->and($served->freeItems->first()->is($purchasableB))->toBeTrue();
+});
+
+function estimatedShippingOption(Cart $cart): ShippingOption
+{
+    return new ShippingOption(
+        name: 'Estimated Delivery',
+        description: 'Estimated Delivery',
+        identifier: 'ESTDEL',
+        price: new PriceValue(900, $cart->currency),
+        taxClass: TaxClass::query()->first(),
+    );
+}
+
+test('a calculation with an estimated shipping option is not persisted', function () {
+    $cart = calculableCart();
+
+    $expected = calculatedSurface($cart->calculate());
+
+    $cart->shippingOptionOverride = estimatedShippingOption($cart);
+    $cart->recalculate();
+
+    expect($cart->shippingSubTotal->value)->toBe(900);
+
+    Blink::flush();
+
+    expect(calculatedSurface(Cart::query()->find($cart->id)->calculate()))->toEqual($expected);
+});
+
+test('a calculation over unsaved cart changes is not persisted', function () {
+    $cart = calculableCart();
+
+    $expected = calculatedSurface($cart->calculate());
+
+    $cart->coupon_code = null;
+    $cart->recalculate();
+
+    expect($cart->discountTotal->value)->toBe(0);
+
+    Blink::flush();
+
+    expect(calculatedSurface(Cart::query()->find($cart->id)->calculate()))->toEqual($expected);
+});
+
+test('a cart with an estimated shipping option is not served from the snapshot', function () {
+    $cart = calculableCart();
+
+    $cart->calculate();
+
+    Blink::flush();
+
+    $reloaded = Cart::query()->find($cart->id);
+    $reloaded->shippingOptionOverride = estimatedShippingOption($reloaded);
+    $reloaded->calculate();
+
+    expect(CartPipelineSpy::$runs)->toBe(2)
+        ->and($reloaded->shippingSubTotal->value)->toBe(900);
+});
+
+test('the first calculation of an automatic reward matches the next one', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create(['product_id' => $productB->id]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Free B with A',
+        'data' => ['min_qty' => 1, 'reward_qty' => 1, 'automatically_add_rewards' => true],
+    ]);
+
+    $discount->customerGroups()->sync([$customerGroup->id => ['enabled' => true, 'starts_at' => now()]]);
+    $discount->channels()->sync([$channel->id => ['enabled' => true, 'starts_at' => now()->subHour()]]);
+    $discount->discountableConditions()->create(['discountable_type' => $productA->getMorphClass(), 'discountable_id' => $productA->id]);
+    $discount->discountableRewards()->create(['discountable_type' => $productB->getMorphClass(), 'discountable_id' => $productB->id, 'type' => 'reward']);
+
+    $first = calculatedSurface($cart->refresh()->calculate());
+
+    Blink::flush();
+
+    $second = calculatedSurface(Cart::query()->find($cart->id)->recalculate());
+
+    expect($first)->toEqual($second);
 });

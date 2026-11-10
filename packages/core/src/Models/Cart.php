@@ -255,6 +255,7 @@ class Cart extends Base
         'coupon_code' => CouponString::class,
         'tax_breakdown' => TaxBreakdownCast::class,
         'shipping_breakdown' => ShippingBreakdownCast::class,
+        'shipping_tax_breakdown' => TaxBreakdownCast::class,
         'discount_breakdown' => 'array',
         'free_items' => 'array',
     ];
@@ -274,8 +275,7 @@ class Cart extends Base
         // so the persister guards on an integer.
         static::saved(function (Cart $cart) {
             if (($cart->getAttributes()['revision'] ?? null) instanceof Expression) {
-                $cart->revision = (int) $cart->newModelQuery()->whereKey($cart->getKey())->toBase()->value('revision');
-                $cart->syncOriginalAttribute('revision');
+                $cart->syncRevision();
             }
         });
     }
@@ -300,6 +300,7 @@ class Cart extends Base
             'total',
             'tax_breakdown',
             'shipping_breakdown',
+            'shipping_tax_breakdown',
             'discount_breakdown',
             'free_items',
             'revision',
@@ -311,6 +312,35 @@ class Cart extends Base
     public static function getDefaultLogExcept(): array
     {
         return [...static::totalsColumns(), 'remember_token'];
+    }
+
+    /**
+     * Whether this calculation depends on state that is not in the database:
+     * an estimated shipping option or unsaved cart or line attributes. Such a
+     * calculation is neither served from the snapshot nor written to it.
+     */
+    public function hasUnpersistedInputs(): bool
+    {
+        if ($this->shippingOptionOverride || $this->hasChangesOutsideTotals()) {
+            return true;
+        }
+
+        return $this->relationLoaded('lines') && $this->lines->contains(
+            fn (CartLine $line) => ! $line->exists || array_diff(array_keys($line->getDirty()), CartLine::totalsColumns())
+        );
+    }
+
+    /**
+     * Read the revision back from the row. Writes made through another
+     * instance of this cart (a line or address observer) bump the row, not
+     * this model.
+     */
+    public function syncRevision(): static
+    {
+        $this->revision = (int) $this->newModelQuery()->whereKey($this->getKey())->toBase()->value('revision');
+        $this->syncOriginalAttribute('revision');
+
+        return $this;
     }
 
     protected function hasChangesOutsideTotals(): bool
@@ -691,7 +721,7 @@ class Cart extends Base
 
         app(UpdatesCartLine::class)->execute($cartLineId, $quantity, $meta);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function updateLines(Collection $lines): Cart
@@ -766,7 +796,7 @@ class Cart extends Base
 
         app(AddsAddress::class)->execute($this, $address, $type);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
@@ -796,7 +826,7 @@ class Cart extends Base
 
         app(SetsShippingOption::class)->execute($this, $option);
 
-        return $refresh ? $this->refresh()->recalculate() : $this;
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
     }
 
     public function getShippingOption(): ?ShippingOption

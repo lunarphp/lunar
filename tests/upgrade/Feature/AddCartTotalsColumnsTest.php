@@ -69,7 +69,7 @@ test('it adds the totals columns and leaves existing carts uncalculated', functi
     $carts = CART_TOTALS_UPG_PREFIX.'carts';
     $lines = CART_TOTALS_UPG_PREFIX.'cart_lines';
 
-    foreach (['sub_total', 'total', 'tax_breakdown', 'free_items', 'revision', 'calculated_revision', 'calculated_at'] as $column) {
+    foreach (['sub_total', 'total', 'tax_breakdown', 'shipping_tax_breakdown', 'free_items', 'revision', 'calculated_revision', 'calculated_at'] as $column) {
         expect(Schema::hasColumn($carts, $column))->toBeTrue("carts.{$column} missing");
     }
 

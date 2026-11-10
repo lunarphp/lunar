@@ -34,12 +34,16 @@ class CartLineObserver
         }
     }
 
-    public function saved(CartLine $cartLine): void
+    /**
+     * Invalidated before the line is written so the cart row is locked
+     * before the line row, the order PersistCartTotals takes them in.
+     */
+    public function saving(CartLine $cartLine): void
     {
         $this->invalidateCartTotals($cartLine);
     }
 
-    public function deleted(CartLine $cartLine): void
+    public function deleting(CartLine $cartLine): void
     {
         $this->invalidateCartTotals($cartLine);
     }

@@ -49,7 +49,6 @@ return [
         'lines.purchasable.prices.currency',
         'lines.purchasable.prices.priceable',
         'lines.purchasable.product',
-        'lines.cart.currency',
     ],
 
     /*

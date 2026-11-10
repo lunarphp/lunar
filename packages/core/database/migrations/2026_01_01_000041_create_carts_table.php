@@ -36,6 +36,7 @@ return new class extends Migration
             $table->unsignedBigInteger('total')->nullable();
             $table->jsonb('tax_breakdown')->nullable();
             $table->jsonb('shipping_breakdown')->nullable();
+            $table->jsonb('shipping_tax_breakdown')->nullable();
             $table->jsonb('discount_breakdown')->nullable();
             $table->jsonb('free_items')->nullable();
             $table->unsignedInteger('revision')->default(0);

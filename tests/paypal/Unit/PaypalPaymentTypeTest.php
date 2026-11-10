@@ -413,7 +413,9 @@ it('returns no checks when paypal sent no processor response', function () {
 });
 
 it('refuses a paypal order that matches a stale persisted total but not the pipeline result', function () {
-    $cart = CartBuilder::build()->calculate();
+    $cart = CartBuilder::build()->refresh()->calculate();
+
+    expect($cart->totalsAreFresh())->toBeTrue();
 
     // Tamper with the persisted snapshot so the row reads a lower total than
     // the pipeline produces, while still looking fresh.

@@ -49,6 +49,7 @@ Lunar\Core\Models\Cart
 | `total` | `unsignedBigInteger` `nullable` | Shadowed by the `total` property, read the column through `getAttribute('total')` |
 | `tax_breakdown` | `jsonb` `nullable` | Cast to `Lunar\Core\ValueObjects\Cart\TaxBreakdown` |
 | `shipping_breakdown` | `jsonb` `nullable` | Cast to `Lunar\Core\ValueObjects\Cart\ShippingBreakdown` |
+| `shipping_tax_breakdown` | `jsonb` `nullable` | The shipping address's tax breakdown, cast to `Lunar\Core\ValueObjects\Cart\TaxBreakdown` |
 | `discount_breakdown` | `jsonb` `nullable` | `[{"discount_id": 3, "total": 500, "lines": [{"id": 12, "qty": 2}]}]`, with cart line IDs |
 | `free_items` | `jsonb` `nullable` | Morph references of the free purchasables, `[{"type": "product_variant", "id": 41}]` |
 | `revision` | `unsignedInteger` | Incremented by every change to the cart, its lines, or its addresses (default `0`) |
@@ -419,6 +420,8 @@ After each calculation, Lunar writes the resulting totals to the `carts` row and
 
 - `calculated_revision` equals the cart's current `revision`, so nothing on the cart has changed since the snapshot was written.
 - `calculated_at` is within `lunar.cart.totals.ttl` seconds of now.
+
+A calculation that uses an estimated shipping option, or a cart or line with unsaved changes, is never served from the snapshot or written to it.
 
 ```php
 // config/lunar/cart.php

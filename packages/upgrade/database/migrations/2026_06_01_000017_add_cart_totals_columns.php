@@ -53,7 +53,7 @@ return new class extends Migration
                 }
             }
 
-            foreach (['tax_breakdown', 'shipping_breakdown', 'discount_breakdown', 'free_items'] as $column) {
+            foreach (['tax_breakdown', 'shipping_breakdown', 'shipping_tax_breakdown', 'discount_breakdown', 'free_items'] as $column) {
                 if ($missing($column)) {
                     $blueprint->jsonb($column)->nullable();
                 }

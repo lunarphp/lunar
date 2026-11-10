@@ -37,6 +37,7 @@ v2 is in alpha, so the columns are born on the existing `create_carts_table` / `
 | `total` | `unsignedBigInteger` nullable | `total` |
 | `tax_breakdown` | `jsonb` nullable | `taxBreakdown` |
 | `shipping_breakdown` | `jsonb` nullable | `shippingBreakdown` |
+| `shipping_tax_breakdown` | `jsonb` nullable | `shippingAddress->taxBreakdown` (the shipping address's totals are rebuilt from this and the `shipping_*` columns) |
 | `discount_breakdown` | `jsonb` nullable | `discountBreakdown` |
 | `free_items` | `jsonb` nullable | `freeItems` |
 | `revision` | `unsignedInteger` default `0` | — (bumped by every change to the cart) |
@@ -122,7 +123,11 @@ UPDATE carts SET sub_total = ?, …, calculated_revision = ?, calculated_at = ? 
 
 Zero rows affected means another request changed the cart while this one was calculating; the snapshot is skipped, the in-memory totals stay valid for this request, and the next request recalculates. (MySQL reports changed rows rather than matched rows, so a zero result is confirmed by re-reading `revision` before it is treated as a failed guard.) Line rows are written with one `UPDATE ... WHERE id = ?` per line inside the same transaction, only when the cart guard passed — not an `upsert`, which would resurrect a line another request removed between the guard and the write. The guard is exact: every change is a distinct integer, so there is no timing window, and `updated_at` keeps its ordinary meaning for pruning and activity.
 
-**Snapshot completeness.** A line the pipeline itself adds (a `BuyXGetY` automatic reward) is saved during the run but is not in `$cart->lines` for that run, so the snapshot written afterwards has no totals for it. `CalculateCart` treats a snapshot that does not cover every loaded line (`cart_lines.total IS NULL`) as not servable and runs the pipeline, which fills the line in; from the next request the snapshot is complete and served. Serving it early would render the reward line without a price.
+**Snapshot completeness.** A line the pipeline itself adds (a `BuyXGetY` automatic reward) joins `$cart->lines` in the run that adds it, so the snapshot covers it. A line written outside the model layer has no totals of its own, so `CalculateCart` treats a snapshot that does not cover every loaded line (`cart_lines.total IS NULL`) as not servable and runs the pipeline. Serving it would render that line without a price.
+
+**Unpersisted inputs.** A calculation that depends on state not in the database (`shippingOptionOverride` from a shipping estimate, or unsaved cart or line attributes such as `setTaxZone(refresh: false)`) is neither served from the snapshot nor written to it (`Cart::hasUnpersistedInputs()`). Otherwise the next request would be served totals for an estimate or a preview.
+
+**Lock order.** `PersistCartTotals` locks the cart row, then its lines. The line observer bumps the cart's `revision` on `saving` / `deleting`, before the line is written, so every line write takes the same order and the two cannot deadlock.
 
 ### C. Actions and entry points
 

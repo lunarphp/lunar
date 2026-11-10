@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Carts\PersistsCartTotals;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
@@ -105,4 +107,32 @@ test('it does not bump updated_at or fire model events', function () {
     expect($cart->fresh()->updated_at->equalTo($updatedAt))->toBeTrue()
         ->and($saved)->toBe(0)
         ->and($cart->fresh()->calculated_revision)->toBe($cart->revision);
+});
+
+test('it clears a stored breakdown the calculation no longer produces', function () {
+    $cart = persistableCart()->calculate();
+
+    Cart::query()->whereKey($cart->id)->toBase()->update(['shipping_breakdown' => '{"items":[{"name":"Old","identifier":"OLD","price":500}]}']);
+
+    $cart->shippingBreakdown = null;
+
+    expect(app(PersistsCartTotals::class)->execute($cart))->toBeTrue()
+        ->and(Cart::query()->toBase()->find($cart->id)->shipping_breakdown)->toBeNull();
+});
+
+test('it does not rewrite lines whose stored totals are unchanged', function () {
+    $cart = persistableCart()->calculate();
+
+    $lines = (new CartLine)->getTable();
+    $writes = 0;
+
+    DB::listen(function ($query) use (&$writes, $lines) {
+        if (str_starts_with(strtolower($query->sql), "update \"{$lines}\"")) {
+            $writes++;
+        }
+    });
+
+    $cart->recalculate();
+
+    expect($writes)->toBe(0);
 });

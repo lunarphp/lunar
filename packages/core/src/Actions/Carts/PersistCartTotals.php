@@ -46,6 +46,7 @@ class PersistCartTotals implements PersistsCartTotals
             'total' => $cart->total->value,
             'tax_breakdown' => $cart->taxBreakdown,
             'shipping_breakdown' => $cart->shippingBreakdown,
+            'shipping_tax_breakdown' => $cart->relationLoaded('shippingAddress') ? $cart->shippingAddress?->taxBreakdown : null,
             'discount_breakdown' => $this->discountBreakdown($cart),
             'free_items' => $this->freeItems($cart),
             'calculated_revision' => $revision,
@@ -87,10 +88,16 @@ class PersistCartTotals implements PersistsCartTotals
                     continue;
                 }
 
+                $raw = $this->raw($line, $lines->get($line->getKey()));
+
+                if ($this->isStored($line, $raw)) {
+                    continue;
+                }
+
                 $line->newModelQuery()
                     ->whereKey($line->getKey())
                     ->toBase()
-                    ->update($this->raw($line, $lines->get($line->getKey())));
+                    ->update($raw);
             }
 
             return true;
@@ -127,10 +134,29 @@ class PersistCartTotals implements PersistsCartTotals
      */
     protected function raw(Model $model, array $values): array
     {
-        $copy = (clone $model)->forceFill($values);
+        // Nulls skip the casts: the breakdown casts store null as `[]`.
+        $set = array_filter($values, fn ($value) => $value !== null);
 
-        return Arr::only($copy->getAttributes(), array_keys($values))
+        $copy = (clone $model)->forceFill($set);
+
+        return Arr::only($copy->getAttributes(), array_keys($set))
             + array_fill_keys(array_keys($values), null);
+    }
+
+    /**
+     * @param  array<string, mixed>  $raw
+     */
+    protected function isStored(Model $model, array $raw): bool
+    {
+        foreach ($raw as $column => $value) {
+            $stored = $model->getRawOriginal($column);
+
+            if ($value === null || $stored === null ? $value !== $stored : (string) $value !== (string) $stored) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
