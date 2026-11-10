@@ -2,6 +2,7 @@
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Config;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Product;
 use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Engines\TypesenseEngine;
@@ -496,4 +497,24 @@ it('reports the engine total when a search matches more than the window', functi
         ->and($results->count)->toBe(30)
         ->and($results->totalPages)->toBe(6)
         ->and(SearchQuery::query()->find($results->meta['search_id'])->result_count)->toBe(30);
+});
+
+it('logs a keyed hash of the session id, never the session id itself', function () {
+    Fixtures::products(3);
+
+    $results = Search::model(Product::class)->query('cable')->get();
+    $logged = SearchQuery::query()->find($results->meta['search_id']);
+
+    // A stored session id could be replayed as the session cookie.
+    expect($logged->session_id)->toMatch('/^session:[0-9a-f]{40}$/')
+        ->and($logged->session_id)->not->toContain(session()->getId());
+});
+
+it('does not create a cart to identify the shopper when carts are auto-created', function () {
+    Config::set('lunar.cart_session.auto_create', true);
+    Fixtures::products(3);
+
+    Search::model(Product::class)->query('cable')->get();
+
+    expect(Cart::query()->count())->toBe(0);
 });

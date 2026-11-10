@@ -211,9 +211,10 @@ The route runs under the `web` middleware group, so a browser client sends the C
 | `product_id` | Yes | The product id, as indexed under `document.id` |
 | `position` | Yes | The 1-based position the product was displayed at (`hit.meta.position`) |
 | `source` | No | `organic`, `learned`, or `explore` (`hit.meta.source`); defaults to `organic` |
-| `session_id` | No | An explicit shopper identifier for API clients that carry no cart session cookie. Omit it from a browser and the server resolves the shopper from the cart session. |
 
-The endpoint always answers with an empty `204`, whether or not the event was accepted, so a bot learns nothing about which searches or products exist. It is rate limited per shopper and per IP (`guards.events_rate_limit`, whichever trips first). The queued `RecordEvent` job then checks that `search_id` exists, that the search is no older than `guards.event_window_minutes`, that `product_id` was in that search's shown list (the first `impressions_logged` results), and that `position` is within it, and silently drops anything else. Each search records at most one event of each type per product, so replaying a click adds nothing.
+The event is attributed to the shopper who made the search, as logged with it. A client cannot name its own shopper, since one that could would pose as several.
+
+The endpoint always answers with an empty `204`, whether or not the event was accepted, so a bot learns nothing about which searches or products exist. It is rate limited per shopper and per IP (`guards.events_rate_limit`, whichever trips first). The queued `RecordEvent` job then checks that the search is no older than `guards.event_window_minutes` and that `product_id` was shown at exactly `position`, and silently drops anything else. A widened search logs its results from the top down to the page being viewed (at least `impressions_logged` of them); a search served at its requested size logs the page it served, with that page's offset. The search row is itself written by a queued job, so a click that arrives first is retried for a few seconds until the row exists. Each search records at most one event of each type per product, so replaying a click adds nothing.
 
 ## Attribution
 
@@ -235,7 +236,7 @@ $line->meta['search_attribution'];
 // ]
 ```
 
-Shopper identity is the Lunar cart session identifier when `session_key` is `cart` (the default), stored as `cart:{id}`. It survives login, and it is what cart and order lines already relate to. Set `session_key` to `session` to use the Laravel session id (`session:{id}`) instead; that is also the fallback when no cart exists yet.
+Shopper identity is the Lunar cart session identifier when `session_key` is `cart` (the default), stored as `cart:{id}`. It survives login, and it is what cart and order lines already relate to. Set `session_key` to `session` to identify the shopper by their Laravel session instead; that is also the fallback when no cart exists yet. A session is stored as `session:` and a keyed hash of its id (using `app.key`), never the id itself, so the logs can't be used to take over a session. Identifying the shopper never creates a cart, even with `lunar.cart_session.auto_create` on.
 
 Every event is written by the queued `Lunar\SearchRelevance\Jobs\RecordEvent` job, which re-validates the search id, the product, and the position before inserting, so nothing runs on the request path beyond the session write.
 

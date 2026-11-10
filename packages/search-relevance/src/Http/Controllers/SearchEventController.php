@@ -33,7 +33,6 @@ class SearchEventController
                 'product_id' => ['required', 'integer'],
                 'position' => ['required', 'integer', 'min:1'],
                 'source' => ['nullable', 'in:organic,learned,explore'],
-                'session_id' => ['nullable', 'string', 'max:64'],
             ]);
         } catch (ValidationException) {
             return response()->noContent();
@@ -52,7 +51,9 @@ class SearchEventController
         }
 
         $source = $data['source'] ?? 'organic';
-        $sessionId = $data['session_id'] ?? $this->logger->sessionId();
+        // The shopper who made the search, never one the client names: a
+        // client choosing its own session could pose as several shoppers.
+        $sessionId = $search?->session_id ?? $this->logger->sessionId();
 
         $this->bus->dispatch(new RecordEvent($data['search_id'], $productId, $position, 'click', $source, $sessionId));
 

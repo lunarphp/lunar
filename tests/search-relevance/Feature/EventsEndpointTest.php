@@ -40,7 +40,8 @@ it('records a click and stores attribution in the session', function () {
         ->and($attribution['expires'])->toBeGreaterThan(now()->getTimestamp());
 });
 
-it('accepts a form post with an explicit shopper id', function () {
+it('records a click as the shopper who made the search, ignoring a client-supplied session', function () {
+    // A client choosing its own session id could pose as several shoppers.
     post(route('lunar.search-relevance.events'), [
         'search_id' => $this->search->id,
         'product_id' => 10,
@@ -48,7 +49,7 @@ it('accepts a form post with an explicit shopper id', function () {
         'session_id' => 'cart:99',
     ])->assertNoContent();
 
-    expect(SearchEvent::query()->sole())->toMatchArray(['product_id' => 10, 'source' => 'organic', 'session_id' => 'cart:99']);
+    expect(SearchEvent::query()->sole())->toMatchArray(['product_id' => 10, 'source' => 'organic', 'session_id' => $this->search->session_id]);
 });
 
 it('answers 204 without recording anything for bad input', function (array $payload) {

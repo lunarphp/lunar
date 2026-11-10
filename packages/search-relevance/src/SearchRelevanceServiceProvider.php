@@ -124,7 +124,7 @@ class SearchRelevanceServiceProvider extends ServiceProvider
     {
         $this->app->make(RateLimiter::class)->for('lunar-search-relevance-events', function (Request $request) {
             [$attempts, $minutes] = array_pad(explode(',', (string) config('lunar.search_relevance.guards.events_rate_limit', '60,1')), 2, 1);
-            $shopper = $request->input('session_id') ?: $this->app->make(SearchLogger::class)->sessionId();
+            $shopper = $this->app->make(SearchLogger::class)->sessionId();
 
             return [
                 Limit::perMinutes((int) $minutes, (int) $attempts)->by('shopper:'.$shopper),

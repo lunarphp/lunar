@@ -52,14 +52,22 @@ class SearchLogger
     public function sessionId(): string
     {
         if ($this->config->get('lunar.search_relevance.session_key', 'cart') === 'cart') {
-            $cart = $this->cartSession->current(calculate: false);
+            // The cart id the session already holds: current() would create a
+            // cart for every search and beacon when carts are auto-created.
+            $cartId = $this->session?->get($this->cartSession->getSessionKey());
 
-            if ($cart) {
-                return 'cart:'.$cart->id;
+            if ($cartId) {
+                return 'cart:'.$cartId;
             }
         }
 
-        return 'session:'.($this->session?->getId() ?: 'none');
+        $id = $this->session?->getId();
+
+        // Keyed hash, never the id itself: a stored session id could be
+        // replayed as the session cookie.
+        return $id
+            ? 'session:'.substr(hash_hmac('sha256', $id, (string) $this->config->get('app.key')), 0, 40)
+            : 'session:none';
     }
 
     public function customerId(): ?int
