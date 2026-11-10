@@ -90,7 +90,7 @@ test('enforces max uses per user for the authenticated user', function () {
     expect($validator->validate('10OFF'))->toBeFalse();
 });
 
-test('does not enforce max uses per user for a guest', function () {
+test('rejects a per-user-limited coupon for a guest', function () {
     setAuthUserConfig();
 
     $validator = app(CouponValidator::class);
@@ -110,7 +110,9 @@ test('does not enforce max uses per user for a guest', function () {
 
     $discount->users()->attach($user->id);
 
-    expect($validator->validate('10OFF'))->toBeTrue();
+    // The discount only applies to a known user, so accepting it here would
+    // leave the coupon on the cart with no effect.
+    expect($validator->validate('10OFF'))->toBeFalse();
 });
 
 test('allows another user when one is at the per-user limit', function () {
