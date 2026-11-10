@@ -332,6 +332,12 @@ it('serves the add-on lang group from the translations endpoint', function () {
         ->assertJsonPath('messages.search-relevance::panel.title', 'Search relevance');
 });
 
+it('serves the add-on lang group in the panel locale', function () {
+    $this->getJson('/panel/translations/de')
+        ->assertOk()
+        ->assertJsonPath('messages.search-relevance::panel.title', 'Suchrelevanz');
+});
+
 it('lets staff exclude a product from learning and allow it again', function () {
     $staff = Staff::factory()->create(['admin' => true]);
     $product = Product::factory()->create();
