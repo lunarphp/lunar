@@ -52,7 +52,8 @@ class WidenRequest
             sessionId: $this->logger->sessionId(),
             customerId: $this->logger->customerId(),
             mode: $mode,
-            sort: $this->explicitSort($engine->getSort()),
+            // An engine that takes a raw sort uses it ahead of sort().
+            sort: $this->explicitSort($engine->getSortRaw() ?: $engine->getSort()),
             filtersHash: md5(json_encode([$engine->getFilters(), $engine->getFacets()])),
             version: $this->version->current($modelType),
         );

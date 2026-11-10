@@ -220,6 +220,11 @@ abstract class AbstractEngine
         return $this;
     }
 
+    public function getSortRaw(): string
+    {
+        return $this->sortRaw;
+    }
+
     public function query(string $query): AbstractEngine
     {
         $this->query = $query;

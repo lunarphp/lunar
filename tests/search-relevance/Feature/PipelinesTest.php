@@ -535,3 +535,20 @@ it('keeps the active facets on the pagination links of widened results', functio
     // what the Typesense engine puts on its own links.
     expect($query['facets'] ?? null)->toBe(http_build_query(['brand' => ['acme']]));
 });
+
+it('treats a raw sort as the shopper choosing an order, unless it is by relevance', function (string $sortRaw, bool $ranked) {
+    Config::set('scout.driver', 'typesense');
+    Config::set('lunar.search.engine_map', [Product::class => 'typesense']);
+    Config::set('lunar.search_relevance.mode', 'on');
+    Config::set('lunar.search_relevance.window', 100);
+
+    fakeEngine(TypesenseEngine::class, 'typesense', typesenseHits([1, 2, 3, 4, 5]));
+
+    Search::model(Product::class)->query('cable')->sortRaw($sortRaw)->perPage(2)->get();
+
+    // A ranked search is widened to the window; a sorted one runs as asked.
+    expect(queried()['perPage'])->toBe($ranked ? 100 : 2);
+})->with([
+    'by price' => ['price:asc', false],
+    'by relevance' => ['_text_match:desc', true],
+]);
