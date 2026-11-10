@@ -43,6 +43,12 @@ class EditProductExtension extends EditPageExtension
 
 Multiple extensions may target the same class; they stack, each receiving the previous one's return value.
 
+On product, variant, collection, and other attributable edit forms, each attribute group's section and each attribute's field carry the record's `handle` as Filament metadata. Find them by handle rather than by their translated label, which staff can rename:
+
+```php
+$component->getMeta('handle'); // the attribute group or attribute handle
+```
+
 ### Available hooks by target
 
 | Target class | Hooks |
