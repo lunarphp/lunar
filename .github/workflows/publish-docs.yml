@@ -1,0 +1,25 @@
+name: Publish docs
+
+# Asks lunarphp/docs to sync; it works out which release each version publishes (spec 0094).
+on:
+  release:
+    types: [published]
+
+jobs:
+  dispatch:
+    if: github.repository == 'lunarphp/lunar'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v2
+        id: token
+        with:
+          app-id: ${{ vars.DOCS_APP_ID }}
+          private-key: ${{ secrets.DOCS_APP_PRIVATE_KEY }}
+          owner: lunarphp
+          repositories: docs
+
+      - name: Dispatch docs-published
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh api repos/lunarphp/docs/dispatches -f event_type=docs-published -f "client_payload[tag]=$TAG"

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
@@ -52,7 +53,13 @@ return new class extends Migration
                 ->whereNotNull('deleted_at')
                 ->update([$column => $hidden]);
 
-            Schema::table($table, function ($blueprint) {
+            if (Schema::hasIndex($table, ['deleted_at'])) {
+                Schema::table($table, function (Blueprint $blueprint) {
+                    $blueprint->dropIndex(['deleted_at']);
+                });
+            }
+
+            Schema::table($table, function (Blueprint $blueprint) {
                 $blueprint->dropColumn('deleted_at');
             });
         }

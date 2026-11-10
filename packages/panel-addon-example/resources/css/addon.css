@@ -1,0 +1,12 @@
+/*
+ * Utilities-only stylesheet built against the panel's tokens. Every class in
+ * this add-on carries the `example:` prefix, so nothing emitted here can match
+ * panel markup. A fork picks its own prefix (letters only, unique to it).
+ */
+@import 'tailwindcss/theme.css' theme(reference) prefix(example);
+@import '@lunarphp/panel/addon-theme.css' theme(reference inline);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../js';

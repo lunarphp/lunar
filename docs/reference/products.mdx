@@ -1,0 +1,768 @@
+---
+title: "Products"
+description: "Define, categorize, and manage products with variants, pricing, options, and associations."
+---
+
+Products are the core catalog model in Lunar, representing items available for sale with variants, pricing, and options.
+
+## Overview
+
+Products represent the items available for sale in a store. Every product belongs to a `ProductType`, which determines which attributes are available to it and its variants, and can optionally belong to a `Brand`.
+
+A product always has at least one variant. When a product has only a single variant, the editing experience appears as though the product itself is being edited directly, but behind the scenes the purchasable data (pricing, stock, tax, dimensions) lives on the variant.
+
+```php
+Lunar\Core\Models\Product
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier |
+| `product_type_id` | `foreignId` | The product's type |
+| `brand_id` | `foreignId` `nullable` | Optional brand association |
+| `status` | `string` | Product lifecycle state: `draft`, `published`, or `archived`. Default: `draft` |
+| `name` | `jsonb` | Translatable name, e.g. `{"en": "Trainers"}` |
+| `description` | `jsonb` `nullable` | Translatable long-form description |
+| `short_description` | `jsonb` `nullable` | Translatable excerpt/teaser for listings and cards |
+| `attribute_data` | `jsonb` `nullable` | Custom attribute data |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+<Info>
+Products do not use soft deletes. A product with order history cannot be hard-deleted; `$product->hasOrderHistory()` reports whether any of its variants appear on a historical order line, and such products should be archived instead of deleted.
+</Info>
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `productType` | BelongsTo | `Lunar\Core\Models\ProductType` | The product's type |
+| `brand` | BelongsTo | `Lunar\Core\Models\Brand` | The product's brand |
+| `variants` | HasMany | `Lunar\Core\Models\ProductVariant` | All variants of the product |
+| `variant` | HasOne | `Lunar\Core\Models\ProductVariant` | Single variant convenience accessor |
+| `prices` | HasManyThrough | `Lunar\Core\Models\Price` | All prices across variants |
+| `collections` | BelongsToMany | `Lunar\Core\Models\Collection` | Pivot: `position` |
+| `associations` | HasMany | `Lunar\Core\Models\ProductAssociation` | Outgoing product associations, ordered by `sort` then `id` |
+| `inverseAssociations` | HasMany | `Lunar\Core\Models\ProductAssociation` | Incoming product associations |
+| `customerGroups` | BelongsToMany | `Lunar\Core\Models\CustomerGroup` | Pivot: `purchasable`, `visible`, `enabled`, `starts_at`, `ends_at` |
+| `channels` | MorphToMany | `Lunar\Core\Models\Channel` | Pivot: `enabled`, `starts_at`, `ends_at` |
+| `productOptions` | BelongsToMany | `Lunar\Core\Models\ProductOption` | Pivot: `position` |
+| `urls` | MorphMany | `Lunar\Core\Models\Url` | SEO-friendly URLs |
+| `tags` | MorphToMany | `Lunar\Core\Models\Tag` | |
+| `images` | MorphMany | Media | Product images |
+| `thumbnail` | MorphOne | Media | Primary thumbnail image |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `status($status)` | Filter by product status |
+| `whereVisible()` | Filter to products in the `published` state |
+| `channel($channel, $startsAt, $endsAt)` | Filter by channel availability |
+| `customerGroup($group, $startsAt, $endsAt)` | Filter by customer group visibility |
+
+## Creating a Product
+
+```php
+use Lunar\Core\Models\Product;
+
+Product::create([
+    'product_type_id' => $productType->id,
+    'brand_id' => $brand->id,
+    'status' => 'published',
+    'name' => [
+        'en' => 'FooBar',
+    ],
+    'description' => [
+        'en' => 'This is a Foobar product.',
+    ],
+]);
+```
+
+### Name and description
+
+Unlike custom attributes, `name`, `description`, and `short_description` are dedicated, translatable columns on the product, guaranteeing every product has a real, queryable name. They are stored as a locale-keyed map and read through the `translate()` helper:
+
+```php
+$product->translate('name');
+$product->translate('description', 'fr');
+```
+
+`attribute_data` remains available for genuinely custom, per-product-type attributes. See the [Attributes](/reference/attributes) reference for details.
+
+### Filtering by status
+
+```php
+use Lunar\Core\Models\Product;
+
+Product::status('published')->get();
+
+// Or, equivalently, restrict to the published state
+Product::whereVisible()->get();
+```
+
+## Channels
+
+Products support multi-channel availability through the `HasChannels` trait. When a product is created, all channels are automatically synced. Each channel can be independently enabled or disabled, with optional start and end dates for scheduled availability.
+
+### Scheduling a channel
+
+```php
+// Enable for a channel immediately
+$product->scheduleChannel($channel);
+
+// Schedule availability to start in 14 days
+$product->scheduleChannel($channel, now()->addDays(14));
+
+// Accepts a collection of channels
+$product->scheduleChannel(Channel::get());
+```
+
+### Filtering by channel
+
+```php
+use Lunar\Core\Models\Product;
+
+$products = Product::channel($channel)->get();
+```
+
+## Customer Groups
+
+Products can be assigned to customer groups with optional scheduling. This controls whether the product is visible and purchasable for members of each group.
+
+### Scheduling a customer group
+
+```php
+// Enable for this customer group immediately
+$product->scheduleCustomerGroup($customerGroup);
+
+// Schedule the product to be enabled in 14 days for this customer group
+$product->scheduleCustomerGroup($customerGroup, now()->addDays(14));
+
+// Accepts an array or collection of customer groups
+$product->scheduleCustomerGroup(CustomerGroup::get());
+```
+
+### Filtering by customer group
+
+The `customerGroup` scope accepts a single customer group (or ID), or a collection/array of customer groups or IDs.
+
+```php
+use Lunar\Core\Models\Product;
+
+$products = Product::customerGroup(CustomerGroup::find(1))->paginate(50);
+
+$products = Product::customerGroup([
+    $groupA,
+    $groupB,
+])->paginate(50);
+```
+
+## Product Types
+
+Product types categorize products and determine which attributes are available during editing (e.g. Television, T-Shirt, Book, Phone).
+
+```php
+Lunar\Core\Models\ProductType
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier |
+| `name` | `string` | The product type name |
+| `handle` | `string` | Unique, kebab-case reference derived from the name |
+| `status` | `string` | `draft` or `active`. Default: `active`. Gates the product create flow — a draft type cannot be chosen for a new product |
+| `description` | `text` `nullable` | |
+| `default_tax_class_id` | `foreignId` `nullable` | Default tax class applied to new products of this type |
+| `attribute_data` | `jsonb` `nullable` | Custom attribute data on the type itself |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+<Info>
+A product type cannot be deleted while products still reference it — reassign or remove them first, otherwise `ProductTypeActionException` is thrown.
+</Info>
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `products` | HasMany | `Lunar\Core\Models\Product` | All products of this type |
+| `defaultTaxClass` | BelongsTo | `Lunar\Core\Models\TaxClass` | The default tax class for new products |
+| `attributeMapping` | BelongsToMany | `Lunar\Core\Models\Attribute` | Every attribute mapped to this type |
+| `productAttributes` | BelongsToMany | `Lunar\Core\Models\Attribute` | Attributes mapped to this type for products |
+| `variantAttributes` | BelongsToMany | `Lunar\Core\Models\Attribute` | Attributes mapped to this type for variants |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `active()` | Filter to product types in the `active` state |
+
+### Creating a product type
+
+```php
+use Lunar\Core\Models\ProductType;
+
+$productType = ProductType::create([
+    'name' => 'Boots',
+]);
+```
+
+Product types have [Attributes](/reference/attributes) associated to them. These associated attributes determine which fields are available to products and variants when editing. For example, an attribute of `Screen Type` associated to a `TVs` product type would make that field available on any product with that type.
+
+Attributes can be associated using a standard [polymorphic relationship](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations):
+
+```php
+$productType->attributeMapping()->attach([/* attribute ids ... */]);
+```
+
+Both `Product` and `ProductVariant` attributes can be associated to a product type, and each will display on the corresponding model when editing.
+
+<Warning>
+Deleting an attribute will drop the association and could result in data loss.
+</Warning>
+
+### Retrieving the product type relationship
+
+```php
+$product->productType;
+
+$product->load(['productType']);
+```
+
+## Product Options
+
+Product options define the different variations available for a product. Each `ProductOption` has a set of `ProductOptionValue` models. For example, a `ProductOption` called "Color" could have values like "Blue", "Red", and "Green".
+
+<Tip>
+Product options and product option values are defined at a system level and are translatable.
+</Tip>
+
+```php
+Lunar\Core\Models\ProductOption
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier |
+| `name` | `jsonb` | Translatable name, e.g. `{"en": "Color"}` |
+| `handle` | `string` `nullable` | Slug reference |
+| `type` | `string` | Rendering type. Default: `text` |
+| `shared` | `boolean` | Whether the option can be reused across multiple products (`true`), or is restricted to a single product (`false`). Default: `false` |
+| `label` | `jsonb` `nullable` | Translatable display label, e.g. `{"en": "Color"}` |
+| `meta` | `jsonb` `nullable` | Custom metadata (color hex values, image links, etc.) |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `values` | HasMany | `Lunar\Core\Models\ProductOptionValue` | The option's values, ordered by `position` |
+| `products` | BelongsToMany | `Lunar\Core\Models\Product` | Products this option is attached to. Pivot: `position` |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `shared()` | Filter to options that can be reused across products |
+| `exclusive()` | Filter to options restricted to a single product |
+| `type($type)` | Filter by rendering type |
+
+### Creating a ProductOption
+
+```php
+use Lunar\Core\Models\ProductOption;
+
+$option = ProductOption::create([
+    'name' => [
+        'en' => 'Color',
+        'fr' => 'Couleur',
+    ],
+    'label' => [
+        'en' => 'Color',
+        'fr' => 'Couleur',
+    ],
+]);
+```
+
+Values can then be created for the option:
+
+```php
+// Lunar\Core\Models\ProductOptionValue
+$option->values()->createMany([
+    [
+        'name' => [
+            'en' => 'Blue',
+            'fr' => 'Bleu',
+        ],
+    ],
+    [
+        'name' => [
+            'en' => 'Red',
+            'fr' => 'Rouge',
+        ],
+    ],
+]);
+```
+
+This product option and its values are now ready to be used with product variants.
+
+### ProductOptionValue Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier |
+| `product_option_id` | `foreignId` | The parent option |
+| `name` | `jsonb` | Translatable value name |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+| `position` | `integer` | Sort order, default `0` |
+| `meta` | `jsonb` `nullable` | Custom metadata |
+
+### Product Option Meta
+
+Both `ProductOption` and `ProductOptionValue` models include a `meta` field for storing custom information such as color hex values, image links, or other display data.
+
+Lunar makes no assumptions about the structure of the `meta` JSON field. Any values can be stored in whatever format the application requires.
+
+## Product Associations
+
+Products can be associated with other products as cross-sells, up-sells, or alternates. See the [Associations](/reference/associations) reference for full details on creating and managing product associations.
+
+## Variants
+
+Variants represent the different purchasable permutations of a product, such as "Small Blue T-shirt" or "Size 9 Leather Boots". The product acts as the parent, and variants hold the specific data including pricing, inventory, shipping information, and product identifiers.
+
+A product always has at least one variant.
+
+```php
+Lunar\Core\Models\ProductVariant
+```
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `public_id` | `ulid` | Stable external identifier |
+| `product_id` | `foreignId` | The parent product |
+| `enabled` | `boolean` | Merchant availability toggle: a disabled variant is never purchasable, regardless of product status or stock. Default: `true` |
+| `tax_class_id` | `foreignId` | Tax classification |
+| `tax_ref` | `string` `nullable` | Tax reference identifier |
+| `unit_quantity` | `integer` | Units per single purchase, default: `1` |
+| `sku` | `string` `nullable` | Stock keeping unit |
+| `gtin` | `string` `nullable` | Global Trade Item Number |
+| `mpn` | `string` `nullable` | Manufacturer Part Number |
+| `ean` | `string` `nullable` | European Article Number |
+| `length_value` | `decimal(10,4)` `nullable` | Length dimension |
+| `length_unit` | `string` `nullable` | Length unit of measure |
+| `width_value` | `decimal(10,4)` `nullable` | Width dimension |
+| `width_unit` | `string` `nullable` | Width unit of measure |
+| `height_value` | `decimal(10,4)` `nullable` | Height dimension |
+| `height_unit` | `string` `nullable` | Height unit of measure |
+| `weight_value` | `decimal(10,4)` `nullable` | Weight value |
+| `weight_unit` | `string` `nullable` | Weight unit of measure, default `kg` |
+| `volume_value` | `decimal(10,4)` `nullable` | Volume value |
+| `volume_unit` | `string` `nullable` | Volume unit of measure |
+| `shippable` | `boolean` | Whether the variant requires shipping, default: `true` |
+| `backorder` | `integer` | Backorder allowance, default: `0` |
+| `selling_policy` | `string` | Selling policy: `always`, `in_stock`, or `in_stock_or_on_backorder`, default: `always` |
+| `stock_on_hand` | `integer` | Cached stock rollup. Default: `0` |
+| `stock_incoming` | `integer` | Default: `0` |
+| `stock_committed` | `integer` | Default: `0` |
+| `stock_reserved` | `integer` | Default: `0` |
+| `stock_unavailable` | `integer` | Default: `0` |
+| `stock_available` | `integer` | Sellable figure: `on_hand - committed - reserved - unavailable`. Default: `0` |
+| `quantity_increment` | `integer` | Purchase quantity step, default: `1` |
+| `min_quantity` | `integer` | Minimum purchasable quantity, default: `1` |
+| `attribute_data` | `jsonb` `nullable` | Custom attribute data |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+<Info>
+Stock is a cached rollup derived from the variant's per-location stock levels and an append-only movement ledger. See the [Inventory](/reference/inventory) reference for the full stock model, location tracking, and movement API.
+</Info>
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `product` | BelongsTo | `Lunar\Core\Models\Product` | The parent product |
+| `taxClass` | BelongsTo | `Lunar\Core\Models\TaxClass` | The variant's tax class |
+| `values` | BelongsToMany | `Lunar\Core\Models\ProductOptionValue` | The option values that make up this variant |
+| `prices` | HasMany | `Lunar\Core\Models\Price` | The variant's prices (via `HasPrices`) |
+| `images` | BelongsToMany | Media | Pivot: `primary`, `position` |
+| `stockLevels` | HasMany | `Lunar\Core\Models\StockLevel` | Per-location stock balances |
+| `stockMovements` | HasMany | `Lunar\Core\Models\StockMovement` | The variant's `on_hand` movement ledger |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `enabled()` | Filter to enabled variants |
+
+### Selling Policy
+
+`selling_policy` decides whether a variant can be sold relative to its stock, cast to the `Lunar\Core\Enums\SellingPolicy` enum:
+
+```php
+use Lunar\Core\Enums\SellingPolicy;
+
+SellingPolicy::Always;               // 'always' — sell regardless of stock; any quantity is fulfillable
+SellingPolicy::InStock;              // 'in_stock' — sell only what is physically available
+SellingPolicy::InStockOrOnBackorder; // 'in_stock_or_on_backorder' — sell available stock plus the backorder allowance
+```
+
+```php
+$variant->canBeFulfilledAtQuantity(5);
+$variant->getTotalInventory();
+```
+
+### Product Identifiers
+
+Each variant can store product identifiers for use in internal systems or external services.
+
+**SKU** (Stock Keeping Unit) — A code (usually eight alphanumeric digits) used to track stock levels internally. Each variant of a product typically has a unique SKU.
+
+**GTIN** (Global Trade Item Number) — An internationally recognized product identifier, often accompanying a barcode. Useful with services like Google Shopping to help classify products.
+
+**MPN** (Manufacturer Part Number) — An identifier from the manufacturer that differentiates a product among similar items from the same brand.
+
+**EAN** (European Article Number) — A series of characters that identifies specific products within an inventory system.
+
+### Creating Variants
+
+A product variant requires a product and a tax class.
+
+```php
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\Currency;
+
+$product = Product::where(...)->first();
+$taxClass = TaxClass::where(...)->first();
+$currency = Currency::where(...)->first();
+```
+
+Create the product option and its values:
+
+```php
+use Lunar\Core\Models\ProductOption;
+
+$option = ProductOption::create([
+    'name' => [
+        'en' => 'Color',
+    ],
+    'label' => [
+        'en' => 'Color',
+    ],
+]);
+
+$blueOption = $option->values()->create([
+    'name' => [
+        'en' => 'Blue',
+    ],
+]);
+
+$redOption = $option->values()->create([
+    'name' => [
+        'en' => 'Red',
+    ],
+]);
+```
+
+Create the variants and attach their option values:
+
+```php
+$blueVariant = ProductVariant::create([
+    'product_id' => $product->id,
+    'tax_class_id' => $taxClass->id,
+    'sku' => 'blue-product',
+]);
+
+$blueVariant->values()->attach($blueOption);
+
+$redVariant = ProductVariant::create([
+    'product_id' => $product->id,
+    'tax_class_id' => $taxClass->id,
+    'sku' => 'red-product',
+]);
+
+$redVariant->values()->attach($redOption);
+```
+
+Then create pricing for each variant. See the [Pricing](/reference/pricing) reference for full details on prices, price breaks, and fetching the correct price for a customer.
+
+```php
+$blueVariant->prices()->create([
+    'price' => 199,
+    'currency_id' => $currency->id,
+]);
+
+$redVariant->prices()->create([
+    'price' => 199,
+    'currency_id' => $currency->id,
+]);
+```
+
+## Shipping
+
+By default, all product variants are marked as shippable. To mark a variant as non-shippable:
+
+```php
+$variant->update([
+    'shippable' => false,
+]);
+```
+
+### Dimensions
+
+Products can store dimension data on each variant. The available dimensions are:
+
+- Length
+- Width
+- Height
+- Weight
+- Volume
+
+For handling unit conversions, Lunar uses the [Cartalyst Converter](https://github.com/cartalyst/converter) package, which supports a wide range of units of measure.
+
+Each dimension has a corresponding `_value` and `_unit` column in the database:
+
+```php
+$variant->length_value;
+$variant->length_unit;
+$variant->width_value;
+$variant->width_unit;
+// etc.
+```
+
+### Configuring measurements
+
+Available units of measure can be configured in the `lunar/shipping.php` config file. The defaults include:
+
+**Length:** m, mm, cm, ft, in
+
+**Weight:** kg, g, lbs
+
+**Volume:** l, ml, gal, floz
+
+### Getting and converting measurement values
+
+The raw `*_value` and `*_unit` values can be accessed directly, but Lunar also provides an accessor for each dimension that supports conversion:
+
+```php
+$variant->length->to('length.ft')->convert();
+```
+
+#### Volume calculation
+
+Volume can be calculated automatically from the length, width, and height dimensions, or set manually:
+
+```php
+$variant->update([
+    'length_value' => 50,
+    'length_unit' => 'mm',
+    'height_value' => 50,
+    'height_unit' => 'mm',
+    'width_value' => 50,
+    'width_unit' => 'mm',
+]);
+
+// Returns ml by default
+$variant->volume->getValue(); // 125.0
+
+// Convert to any supported volume unit
+$variant->volume->to('volume.l')->convert()->getValue(); // 0.125
+
+// Setting a manual volume overrides the automatic calculation
+$variant->update([
+    'volume_unit' => 'floz',
+    'volume_value' => 100,
+]);
+
+$variant->volume->getValue(); // 100
+
+$variant->volume->to('volume.l')->convert()->getValue(); // 2.95735...
+```
+
+**Formatted values**
+
+```php
+$variant->length->to('length.cm')->convert()->format(); // 50cm
+```
+
+## Pricing
+
+Pricing is defined at the variant level: each variant has its own price for each currency, plus optional customer group pricing and quantity breaks. See the [Pricing](/reference/pricing) reference for the full API, including the `PricingManager` facade used to fetch the correct price for a customer.
+
+To retrieve all prices across a product's variants without loading the variants individually, use the `prices` relationship on the product:
+
+```php
+$product->prices;
+```
+
+## Full Example
+
+This example walks through creating a pair of Dr. Martens boots with multiple size and color variants.
+
+The steps involved are:
+
+- Create the product type
+- Create the initial product
+- Create product options and their values
+- Create the variants
+
+### Set up the product type
+
+```php
+use Lunar\Core\Models\ProductType;
+
+$productType = ProductType::create([
+    'name' => 'Boots',
+]);
+```
+
+### Create the initial product
+
+```php
+use Lunar\Core\Models\Product;
+
+$product = Product::create([
+    'product_type_id' => $productType->id,
+    'status' => 'published',
+    'brand_id' => $brandId,
+    'name' => [
+        'en' => '1460 PATENT LEATHER BOOTS',
+    ],
+    'description' => [
+        'en' => 'Even more shades from the archive...',
+    ],
+]);
+```
+
+### Create product options
+
+Based on the example above, two options are needed: Size and Color.
+
+```php
+use Lunar\Core\Models\ProductOption;
+
+$color = ProductOption::create([
+    'name' => [
+        'en' => 'Color',
+    ],
+    'label' => [
+        'en' => 'Color',
+    ],
+]);
+
+$size = ProductOption::create([
+    'name' => [
+        'en' => 'Size',
+    ],
+    'label' => [
+        'en' => 'Size',
+    ],
+]);
+```
+
+### Create product option values
+
+```php
+$color->values()->createMany([
+    [
+        'name' => [
+            'en' => 'Black',
+        ],
+    ],
+    [
+        'name' => [
+            'en' => 'White',
+        ],
+    ],
+    [
+        'name' => [
+            'en' => 'Pale Pink',
+        ],
+    ],
+    [
+        'name' => [
+            'en' => 'Mid Blue',
+        ],
+    ],
+]);
+
+$size->values()->createMany([
+    [
+        'name' => [
+            'en' => '3',
+        ],
+    ],
+    [
+        'name' => [
+            'en' => '6',
+        ],
+    ],
+]);
+```
+
+### Create the variants
+
+With the options and values defined, variants can be created for each combination. Each variant needs a product, tax class, SKU, and at least one price.
+
+```php
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\Currency;
+
+$taxClass = TaxClass::first();
+$currency = Currency::first();
+$count = 0;
+
+foreach ($color->values as $colorValue) {
+    foreach ($size->values as $sizeValue) {
+        $count++;
+
+        $variant = ProductVariant::create([
+            'product_id' => $product->id,
+            'tax_class_id' => $taxClass->id,
+            'sku' => "DRBOOT-{$count}",
+        ]);
+
+        $variant->values()->attach([$colorValue->id, $sizeValue->id]);
+
+        $variant->prices()->create([
+            'price' => 16900,
+            'currency_id' => $currency->id,
+        ]);
+    }
+}
+```
+
+The resulting variants:
+
+| SKU | Color | Size |
+|:---------|:----------|:-----|
+| DRBOOT-1 | Black | 3 |
+| DRBOOT-2 | Black | 6 |
+| DRBOOT-3 | White | 3 |
+| DRBOOT-4 | White | 6 |
+| DRBOOT-5 | Pale Pink | 3 |
+| DRBOOT-6 | Pale Pink | 6 |
+| DRBOOT-7 | Mid Blue | 3 |
+| DRBOOT-8 | Mid Blue | 6 |
+
+SKUs, pricing, and other variant details can be adjusted as needed before publishing.

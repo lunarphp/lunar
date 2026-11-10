@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Facades\Pricing;
+use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
@@ -20,6 +21,9 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
+
+// Pricing resolves a storefront context, which always names a channel.
+beforeEach(fn () => Channel::factory()->create(['default' => true]));
 
 test('can create prices through relationship', function () {
     $product = Product::factory()->create();

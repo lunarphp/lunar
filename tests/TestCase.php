@@ -4,6 +4,7 @@ namespace Lunar\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 use function Orchestra\Testbench\after_resolving;
@@ -15,9 +16,33 @@ class TestCase extends BaseTestCase
 
     private static bool $storagePrepared = false;
 
+    /**
+     * The suite TestCase whose providers last migrated this worker's database.
+     */
+    private static ?string $migratedBy = null;
+
     protected function setUp(): void
     {
+        $this->remigrateWhenProvidersChange();
+
         parent::setUp();
+    }
+
+    /**
+     * RefreshDatabase migrates once per process, with the providers of the
+     * first test that runs. A cross-db run mixes suites in one process, so a
+     * worker migrated by a core test has no tables for a package that only
+     * the shipping TestCase registers. Migrate again whenever the TestCase
+     * that declares the providers changes.
+     */
+    private function remigrateWhenProvidersChange(): void
+    {
+        $declaredBy = (new \ReflectionMethod($this, 'getPackageProviders'))->getDeclaringClass()->getName();
+
+        if (self::$migratedBy !== $declaredBy) {
+            RefreshDatabaseState::$migrated = false;
+            self::$migratedBy = $declaredBy;
+        }
     }
 
     protected function getEnvironmentSetUp($app)

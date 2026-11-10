@@ -4,6 +4,8 @@ namespace Lunar\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Pipeline\Pipeline;
+use Lunar\Core\Contracts\StepManifest;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
 
 class PruneCarts extends Command
@@ -27,7 +29,7 @@ class PruneCarts extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle(StepManifest $steps)
     {
         $this->info('Beginning prune');
 
@@ -35,9 +37,8 @@ class PruneCarts extends Command
 
         $carts = app(Pipeline::class)
             ->send($query)
-            ->through(
-                config('lunar.cart.prune_tables.pipelines', [])
-            )->then(function ($query) {
+            ->through($steps->for(StepList::CartPruning)->all())
+            ->then(function ($query) {
                 $query->chunk(200, function ($carts) {
                     $carts->each(fn ($cart) => $this->pruneCart($cart));
                 });

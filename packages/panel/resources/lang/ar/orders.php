@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_pickup' => 'الاستلام',
+    'pickup_from' => 'الاستلام من {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -90,13 +92,16 @@ return [
     'txn_type_capture' => 'Payment',
     'txn_type_refund' => 'Refund',
     'txn_type_intent' => 'Authorization',
+    'txn_type_failed' => 'فشلت',
 
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'عنوان العميل',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
-    'side_notes' => 'Notes',
+    'side_notes' => 'ملاحظات داخلية',
+    'side_customer_notes' => 'ملاحظات العميل',
     'side_metadata' => 'Metadata',
 
     'cancel_reason' => 'Reason',
@@ -148,6 +153,9 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
+    'payment_on_account' => 'على الحساب',
+    'payment_on_account_sub' => 'تمت الفوترة على الحساب، ولم يتم تحصيل أي دفعة عند إتمام الطلب',
+
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',
     'no_reason' => 'No reason given',
@@ -175,13 +183,13 @@ return [
     'update_status' => 'Update status',
 
     'handed_over_shipping' => 'Shipped',
-    'handed_over_collection' => 'Collected',
+    'handed_over_pickup' => 'Picked up',
     'handed_over_digital' => 'Provisioned',
     'handed_over_default' => 'Fulfilled',
 
     'mark_shipped' => 'Mark shipped',
     'fulfil_label' => 'Mark fulfilled',
-    'fulfil_label_collection' => 'Mark collected',
+    'fulfil_label_pickup' => 'Mark picked up',
 
     'action_split' => 'Split…',
     'action_merge' => 'Merge into…',
@@ -239,6 +247,7 @@ return [
     'line_sub_total' => 'Subtotal',
     'line_discount' => 'Discount',
     'line_total' => 'Total',
+    'line_part_of' => 'جزء من {parent}',
 
     'flash_fulfilment_shipped' => 'Fulfilment marked as shipped.',
     'flash_fulfilment_fulfilled' => 'Fulfilment marked as fulfilled.',
