@@ -175,7 +175,6 @@ class CustomerResource extends BaseResource
             ->relationship(
                 name: 'customerGroups',
                 titleAttribute: 'name',
-                modifyQueryUsing: fn (Builder $query) => $query->distinct()
             );
     }
 
@@ -221,7 +220,6 @@ class CustomerResource extends BaseResource
                     ->relationship(
                         name: 'customerGroups',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => $query->distinct()
                     )
                     ->multiple()
                     ->searchable()
