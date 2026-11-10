@@ -153,3 +153,20 @@ jobs:
       - name: Apply remaining migrations
         working-directory: /tmp/vanilla-lunar
         run: php artisan migrate --force --no-interaction
+
+      # A core-only v1 store had no staff or permission tables (they lived in
+      # the v1 admin package), so the upgrade must create them rather than
+      # mark their migrations as run.
+      - name: Check the staff and permission tables exist
+        working-directory: /tmp/vanilla-lunar
+        run: |
+          cat > check-schema.php <<'PHP'
+          <?php
+          $missing = array_filter(
+              [config('permission.table_names.roles'), config('permission.table_names.permissions'), config('lunar.database.table_prefix').'staff'],
+              fn ($table) => ! Illuminate\Support\Facades\Schema::hasTable($table),
+          );
+          echo $missing ? 'Missing tables: '.implode(', ', $missing).PHP_EOL : 'Upgraded schema has the staff and permission tables.'.PHP_EOL;
+          exit($missing ? 1 : 0);
+          PHP
+          php artisan tinker check-schema.php

@@ -252,3 +252,56 @@ it('skips when no ledger config is set', function () {
 
     expect($report->rows()[0]['status'])->toBe(StepReport::STATUS_SKIPPED);
 });
+
+it('does not mark create_permission_tables as run when the permission tables are missing', function () {
+    Schema::dropIfExists(config('permission.table_names.roles', 'roles'));
+
+    touch($this->migrationPath.'/2026_01_01_900002_create_permission_tables.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => ['2026_01_01_900002_create_permission_tables'],
+    ]);
+
+    app(LedgerRewriteStep::class)->run(new StepContext(
+        dryRun: false,
+        paths: [],
+        output: new OutputStyle(new StringInput(''), new BufferedOutput),
+        report: new StepReport,
+    ));
+
+    assertDatabaseMissing('migrations', ['migration' => '2026_01_01_900002_create_permission_tables']);
+});
+
+it('marks create_permission_tables as run when the permission tables already exist', function () {
+    $table = config('permission.table_names.roles', 'roles');
+    $created = ! Schema::hasTable($table);
+
+    if ($created) {
+        Schema::create($table, function ($blueprint) {
+            $blueprint->id();
+        });
+    }
+
+    touch($this->migrationPath.'/2026_01_01_900002_create_permission_tables.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => ['2026_01_01_900002_create_permission_tables'],
+    ]);
+
+    try {
+        app(LedgerRewriteStep::class)->run(new StepContext(
+            dryRun: false,
+            paths: [],
+            output: new OutputStyle(new StringInput(''), new BufferedOutput),
+            report: new StepReport,
+        ));
+
+        assertDatabaseHas('migrations', ['migration' => '2026_01_01_900002_create_permission_tables']);
+    } finally {
+        if ($created) {
+            Schema::dropIfExists($table);
+        }
+    }
+});
