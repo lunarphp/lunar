@@ -1,9 +1,9 @@
-# 0079 — Rename the collection fulfilment method to pickup
+# Rename the collection fulfilment method to pickup
 
 - Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-09-07
-- TODO item: Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec 0079)
+- TODO item: Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec rename-collection-fulfilment-to-pickup)
 
 ## Problem
 
