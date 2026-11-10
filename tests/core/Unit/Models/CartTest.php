@@ -829,6 +829,77 @@ test('can create a discount breakdown', function () {
     expect($cart->discountBreakdown->first()->price->value)->toBe(10);
 });
 
+test('caches subTotalDiscounted for the same request', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => 'valid-coupon',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'visible' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $variant = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->coupon_code = 'valid-coupon';
+
+    $cart->calculate();
+
+    expect($cart->subTotal->value)->toBe(100);
+    expect($cart->subTotalDiscounted->value)->toBe(90);
+
+    // Disable the discount without recalculating - a fresh fetch of the
+    // cart within the same request should still see the previously
+    // calculated, cached value rather than an uncalculated one.
+    $discount->channels()->sync([]);
+
+    $fresh = $cart->fresh();
+
+    expect($fresh->subTotalDiscounted->value)->toBe(90);
+});
+
 test('can validate fingerprint', function () {
     $currency = Currency::factory()->create();
     $channel = Channel::factory()->create();
