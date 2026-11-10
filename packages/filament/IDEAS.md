@@ -1,6 +1,6 @@
 # Filament Package — Future Ideas
 
-Brainstorm of additions to `lunarphp/filament` that would make it more useful to Filament developers. Not specs, not commitments — a parking lot. Promote an item to `specs/NNNN-…md` when work starts.
+Brainstorm of additions to `lunarphp/filament` that would make it more useful to Filament developers. Not specs, not commitments — a parking lot. Promote an item to a spec in `specs/` when work starts.
 
 Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped. Spec 0010 (item #1) shipped; items #11, #12, #16 dropped as superseded.
 

@@ -1,9 +1,9 @@
 ---
 title: "Fulfilments"
-description: "Track shipping, collection, and digital provisioning against an order's lines, with carriers, tracking, and per-method lifecycles."
+description: "Track shipping, pickup, and digital provisioning against an order's lines, with carriers, tracking, and per-method lifecycles."
 ---
 
-A fulfilment is a unit of "getting the order's goods to the customer" — a shipment, a collection, or a digital provisioning — tracked independently of payment.
+A fulfilment is a unit of "getting the order's goods to the customer" — a shipment, an in-store pickup, or a digital provisioning — tracked independently of payment.
 
 ## Overview
 
@@ -30,7 +30,7 @@ Lunar\Core\Models\Fulfilment
 | state | `string` | The current lifecycle state, see [Fulfilment lifecycle](#fulfilment-lifecycle) |
 | notes | `text` `nullable` | |
 | meta | `jsonb` `nullable` | Custom metadata |
-| shipped_at | `dateTime` `nullable` | When the fulfilment was handed over (shipped, collected, or provisioned) |
+| shipped_at | `dateTime` `nullable` | When the fulfilment was handed over (shipped, picked up, or provisioned) |
 | held_at | `dateTime` `nullable` | When the fulfilment was put on hold, see [Holding a fulfilment](#holding-a-fulfilment) |
 | hold_reason | `string` `nullable` | |
 | hold_note | `text` `nullable` | |
@@ -72,14 +72,14 @@ Every state belongs to a fixed rollup category — `Outstanding`, `Fulfilled`, `
 
 | State | `$name` | Category | Used by |
 |:------|:--------|:---------|:--------|
-| `Pending` | `pending` | Outstanding | shipping, collection, digital |
+| `Pending` | `pending` | Outstanding | shipping, pickup, digital |
 | `InProgress` | `in-progress` | Outstanding | shipping |
-| `ReadyForCollection` | `ready-for-collection` | Outstanding | collection |
+| `ReadyForPickup` | `ready-for-pickup` | Outstanding | pickup |
 | `Shipped` | `shipped` | Fulfilled | shipping |
-| `Collected` | `collected` | Fulfilled | collection |
+| `PickedUp` | `picked-up` | Fulfilled | pickup |
 | `Provisioned` | `provisioned` | Fulfilled | digital |
-| `Returned` | `returned` | Returned | shipping, collection |
-| `Cancelled` | `cancelled` | Cancelled | shipping, collection, digital |
+| `Returned` | `returned` | Returned | shipping, pickup |
+| `Cancelled` | `cancelled` | Cancelled | shipping, pickup, digital |
 
 ### Per-method transition graphs
 
@@ -91,12 +91,12 @@ Every state belongs to a fixed rollup category — `Outstanding`, `Fulfilled`, `
 - `Returned → Shipped`
 - `Cancelled` is terminal
 
-**`collection`** (default state `Pending`, fulfilled state `Collected`):
+**`pickup`** (default state `Pending`, fulfilled state `PickedUp`):
 
-- `Pending → ReadyForCollection, Collected, Cancelled`
-- `ReadyForCollection → Pending, Collected, Cancelled`
-- `Collected → Pending, Returned`
-- `Returned → Collected`
+- `Pending → ReadyForPickup, PickedUp, Cancelled`
+- `ReadyForPickup → Pending, PickedUp, Cancelled`
+- `PickedUp → Pending, Returned`
+- `Returned → PickedUp`
 - `Cancelled` is terminal
 
 **`digital`** (default state `Pending`, fulfilled state `Provisioned`):
@@ -116,12 +116,12 @@ Every fulfilment operation is a verb on the `Fulfilment` model, delegating to an
 | Verb | Delegates to | Description |
 |:-----|:-------------|:------------|
 | `ship(array $tracking = [], bool $notify = true)` | `Contracts\Actions\Fulfilment\ShipsFulfilment` | Advances to the method's fulfilled state and records tracking. Only valid for methods with `usesTracking()` |
-| `fulfil(bool $notify = true)` | `FulfilsFulfilment` | Advances to the method's fulfilled state with no tracking — collection → `Collected`, digital → `Provisioned` |
+| `fulfil(bool $notify = true)` | `FulfilsFulfilment` | Advances to the method's fulfilled state with no tracking — pickup → `PickedUp`, digital → `Provisioned` |
 | `split(array $moves)` | `SplitsFulfilment` | Moves outstanding `[order_line_id => quantity]` out into a new fulfilment. Returns the new fulfilment |
 | `merge(Collection $sources)` | `MergesFulfilments` | Absorbs outstanding source fulfilments into this one. Sources and target must share an order, location, and method |
 | `moveLinesTo(Fulfilment $to, array $moves)` | `MovesFulfilmentLines` | Moves selected `[order_line_id => quantity]` into another outstanding fulfilment on the same order |
 | `cancel()` | `CancelsFulfilment` | Voids the fulfilment; its quantities return to the order's unfulfilled pool. Never sends a customer notification |
-| `markReturned(bool $notify = true)` | `ReturnsFulfilment` | Marks a shipped/collected fulfilment as returned. Independent of refunds |
+| `markReturned(bool $notify = true)` | `ReturnsFulfilment` | Marks a shipped or picked-up fulfilment as returned. Independent of refunds |
 | `transition(string $state, bool $notify = true)` | `TransitionsFulfilment` | A plain guarded transition for moves with no extra behaviour |
 | `hold(?string $reason = null, ?string $note = null)` | `HoldsFulfilment` | Blocks a pre-ship fulfilment from shipping |
 | `release()` | `ReleasesFulfilment` | Releases a held fulfilment |
@@ -175,10 +175,10 @@ Core registers three, in `packages/core/src/Drivers/FulfilmentMethods/`:
 | Method | Key | Priority | Claims | Tracking |
 |:-------|:----|:---------|:-------|:---------|
 | `Shipping` | `shipping` | 30 (runs last, catch-all) | Any remaining line with `requires_shipping` | Yes |
-| `Collection` | `collection` | 20 | `requires_shipping` lines, only when the order's chosen shipping option was a collection | No |
+| `Pickup` | `pickup` | 20 | `requires_shipping` lines, only when the order's chosen shipping option was a pickup | No |
 | `Digital` | `digital` | 10 (runs first) | Lines with `requires_fulfilment` and not `requires_shipping` | No |
 
-Methods claim lines in ascending priority order over a shrinking pool of unclaimed lines, so `digital` and `collection` get first pick and `shipping` claims whatever is left.
+Methods claim lines in ascending priority order over a shrinking pool of unclaimed lines, so `digital` and `pickup` get first pick and `shipping` claims whatever is left.
 
 Manage the registry via the `FulfilmentMethods` facade:
 
@@ -186,7 +186,7 @@ Manage the registry via the `FulfilmentMethods` facade:
 use Lunar\Core\Facades\FulfilmentMethods;
 
 FulfilmentMethods::register(App\Fulfilment\Methods\PrescriptionMethod::class);
-FulfilmentMethods::forget('collection');
+FulfilmentMethods::forget('pickup');
 FulfilmentMethods::all(); // Collection<string, FulfilmentMethod>, priority order
 FulfilmentMethods::get('shipping');
 ```

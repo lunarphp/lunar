@@ -9,7 +9,7 @@ use Spatie\ModelStates\StateConfig;
 
 /**
  * The per-fulfilment lifecycle — a hand-driven machine a merchant
- * progresses (mark shipped, mark collected, mark provisioned). The state graph
+ * progresses (mark shipped, mark picked up, mark provisioned). The state graph
  * itself is owned by the fulfilment's registered fulfilment method; this abstract
  * base reads the union catalogue from the bound `FulfilmentStateConfig`, and a
  * per-state {@see category()} keeps the order rollup method-agnostic.

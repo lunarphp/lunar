@@ -44,7 +44,7 @@ const tone = computed<Tone>(() => CATEGORY_TONES[props.fulfilment.state_category
 const iconClasses = computed(() => CATEGORY_ICON_CLASSES[props.fulfilment.state_category] ?? 'bg-surface-2 border-line text-ink-500');
 
 // The method's terminal verb, when currently reachable: "Mark shipped" opens
-// the tracking dialog; "Mark collected" / "Mark fulfilled" confirm directly.
+// the tracking dialog; "Mark picked up" / "Mark fulfilled" confirm directly.
 const primary = computed(() => props.fulfilment.transitions.find((tr) => tr.via === 'ship' || tr.via === 'fulfil') ?? null);
 const primaryLabel = computed(() =>
     primary.value?.via === 'ship' ? t('orders.mark_shipped') : props.fulfilment.fulfil_label,

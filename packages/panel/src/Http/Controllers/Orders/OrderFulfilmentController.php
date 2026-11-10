@@ -47,7 +47,7 @@ class OrderFulfilmentController
     }
 
     /**
-     * The no-tracking terminal verb — mark collected / mark fulfilled for
+     * The no-tracking terminal verb — mark picked up / mark fulfilled for
      * methods that don't carry tracking. Tracking methods ship instead.
      */
     public function fulfil(Request $request, Order $order, Fulfilment $fulfilment): RedirectResponse
@@ -61,7 +61,7 @@ class OrderFulfilmentController
     }
 
     /**
-     * A plain intermediate transition (in progress, ready for collection, …).
+     * A plain intermediate transition (in progress, ready for pickup, …).
      * The target must be one the panel offers for this fulfilment — terminal
      * moves route through their dedicated endpoints.
      */

@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Enviado em',
             'handed_over' => [
                 'shipping' => 'Enviado em',
-                'collection' => 'Retirado em',
+                'pickup' => 'Retirado em',
                 'digital' => 'Disponibilizado em',
             ],
             'handed_over_default' => 'Concluído em',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Marcar como concluído',
                 'modal_heading' => 'Marcar fulfillment como concluído',
                 'labels' => [
-                    'collection' => 'Marcar como retirado',
+                    'pickup' => 'Marcar como retirado',
                 ],
                 'notification' => [
                     'success' => 'Fulfillment marcado como concluído.',

@@ -168,7 +168,7 @@ class ShippingMethodForm
             ->label(__('lunarpanel.shipping::shippingmethod.form.driver.label'))
             ->options([
                 'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),
-                'collection' => __('lunarpanel.shipping::shippingmethod.form.driver.options.collection'),
+                'pickup' => __('lunarpanel.shipping::shippingmethod.form.driver.options.pickup'),
             ])
             ->default('ship-by')
             ->required();
