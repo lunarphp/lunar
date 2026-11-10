@@ -17,7 +17,7 @@ use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\OrderCancellation;
 use Lunar\Core\Notifications\OrderConfirmation;
 use Lunar\Core\Notifications\OrderProvisioned;
-use Lunar\Core\Notifications\OrderReadyForCollection;
+use Lunar\Core\Notifications\OrderReadyForPickup;
 use Lunar\Core\Notifications\OrderShipped;
 use Lunar\Core\Notifications\PartialFulfilmentUpdate;
 use Lunar\Core\Notifications\PaymentReceived;
@@ -141,15 +141,15 @@ test('the shipped email omits the tracking block when the fulfilment has no refe
         ->and($html)->toContain('Widget');
 });
 
-test('the ready for collection email names the location', function () {
+test('the ready for pickup email names the location', function () {
     $order = notificationOrder();
     $line = $order->lines()->whereType('physical')->first();
 
-    $fulfilment = $order->createFulfilment([$line->id => 2], ['method' => 'collection']);
+    $fulfilment = $order->createFulfilment([$line->id => 2], ['method' => 'pickup']);
 
-    $mail = (new OrderReadyForCollection($fulfilment))->toMail(new AnonymousNotifiable);
+    $mail = (new OrderReadyForPickup($fulfilment))->toMail(new AnonymousNotifiable);
 
-    expect($mail->subject)->toBe('Your order ORD-1 is ready to collect')
+    expect($mail->subject)->toBe('Your order ORD-1 is ready for pickup')
         ->and((string) $mail->render())->toContain('Camden store')
         ->and((string) $mail->render())->toContain('Widget');
 });
@@ -231,7 +231,7 @@ test('order-scoped defaults accept a customer message and fulfilment-scoped ones
         expect(is_subclass_of(OrderNotifications::get($key), AcceptsCustomerMessage::class))->toBeTrue($key);
     }
 
-    foreach (['order-shipped', 'order-ready-for-collection', 'order-provisioned', 'return-received'] as $key) {
+    foreach (['order-shipped', 'order-ready-for-pickup', 'order-provisioned', 'return-received'] as $key) {
         expect(is_subclass_of(OrderNotifications::get($key), AcceptsCustomerMessage::class))->toBeFalse($key);
     }
 });

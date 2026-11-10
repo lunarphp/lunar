@@ -35,7 +35,7 @@ return [
         'outro' => 'Gracias por tu compra.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Listo para recoger',
         'subject' => 'Tu pedido :reference está listo para recoger',
         'heading' => 'Tu pedido está listo para recoger',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Dirección de envío',
         'billing_address' => 'Dirección de facturación',
         'payment_status' => 'Estado del pago',
-        'collect_from' => 'Recoger en',
+        'pickup_from' => 'Recoger en',
         'reason' => 'Motivo',
         'refund_amount' => 'Importe reembolsado',
     ],

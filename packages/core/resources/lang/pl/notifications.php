@@ -35,7 +35,7 @@ return [
         'outro' => 'Dziękujemy za zakupy.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Gotowe do odbioru',
         'subject' => 'Twoje zamówienie :reference jest gotowe do odbioru',
         'heading' => 'Twoje zamówienie jest gotowe do odbioru',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Adres dostawy',
         'billing_address' => 'Adres rozliczeniowy',
         'payment_status' => 'Status płatności',
-        'collect_from' => 'Odbiór w',
+        'pickup_from' => 'Odbiór w',
         'reason' => 'Powód',
         'refund_amount' => 'Kwota zwrotu',
     ],

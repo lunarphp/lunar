@@ -9,11 +9,11 @@ use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Notifications\Concerns\DescribesFulfilmentLines;
 
 /**
- * Sent when a collection fulfilment reaches `ready-for-collection` with
- * "notify customer" on: the lines to collect and the fulfilment's location.
- * Registered as the `order-ready-for-collection` default.
+ * Sent when a pickup fulfilment reaches `ready-for-pickup` with
+ * "notify customer" on: the lines to pick up and the fulfilment's location.
+ * Registered as the `order-ready-for-pickup` default.
  */
-class OrderReadyForCollection extends Notification
+class OrderReadyForPickup extends Notification
 {
     use DescribesFulfilmentLines;
     use Queueable;
@@ -38,8 +38,8 @@ class OrderReadyForCollection extends Notification
         $reference = $this->orderReference($this->fulfilment);
 
         return (new MailMessage)
-            ->subject(__('lunar::notifications.order_ready_for_collection.subject', ['reference' => $reference]))
-            ->markdown('lunar::mail.orders.ready-for-collection', [
+            ->subject(__('lunar::notifications.order_ready_for_pickup.subject', ['reference' => $reference]))
+            ->markdown('lunar::mail.orders.ready-for-pickup', [
                 'order' => $this->fulfilment->order,
                 'fulfilment' => $this->fulfilment,
                 'reference' => $reference,

@@ -23,7 +23,7 @@ beforeEach(function () {
 
     // The default catalogue is covered by DefaultNotificationTriggersTest;
     // these tests exercise the listener plumbing in isolation.
-    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()), ...['order-shipped', 'order-ready-for-collection', 'order-provisioned', 'return-received']);
+    OrderNotifications::forget(...array_keys(OrderNotifications::sendable()), ...['order-shipped', 'order-ready-for-pickup', 'order-provisioned', 'return-received']);
 });
 
 class FakeShippedNotification extends Notification

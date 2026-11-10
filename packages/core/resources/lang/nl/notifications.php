@@ -35,7 +35,7 @@ return [
         'outro' => 'Bedankt voor je bestelling.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Klaar om af te halen',
         'subject' => 'Je bestelling :reference staat klaar om af te halen',
         'heading' => 'Je bestelling staat klaar om af te halen',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Verzendadres',
         'billing_address' => 'Factuuradres',
         'payment_status' => 'Betaalstatus',
-        'collect_from' => 'Afhalen bij',
+        'pickup_from' => 'Afhalen bij',
         'reason' => 'Reden',
         'refund_amount' => 'Terugbetaald bedrag',
     ],

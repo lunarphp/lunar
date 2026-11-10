@@ -35,7 +35,7 @@ return [
         'outro' => 'Îți mulțumim pentru cumpărături.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Gata de ridicare',
         'subject' => 'Comanda ta :reference este gata de ridicare',
         'heading' => 'Comanda ta este gata de ridicare',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Adresă de livrare',
         'billing_address' => 'Adresă de facturare',
         'payment_status' => 'Starea plății',
-        'collect_from' => 'Ridicare de la',
+        'pickup_from' => 'Ridicare de la',
         'reason' => 'Motiv',
         'refund_amount' => 'Sumă rambursată',
     ],

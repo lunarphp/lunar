@@ -35,7 +35,7 @@ return [
         'outro' => 'Cảm ơn bạn đã mua sắm cùng chúng tôi.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Sẵn sàng để nhận',
         'subject' => 'Đơn hàng :reference của bạn đã sẵn sàng để nhận',
         'heading' => 'Đơn hàng của bạn đã sẵn sàng để nhận',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Địa chỉ giao hàng',
         'billing_address' => 'Địa chỉ thanh toán',
         'payment_status' => 'Trạng thái thanh toán',
-        'collect_from' => 'Nhận hàng tại',
+        'pickup_from' => 'Nhận hàng tại',
         'reason' => 'Lý do',
         'refund_amount' => 'Số tiền hoàn',
     ],

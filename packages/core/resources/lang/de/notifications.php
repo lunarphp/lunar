@@ -35,7 +35,7 @@ return [
         'outro' => 'Vielen Dank für Ihren Einkauf.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Abholbereit',
         'subject' => 'Ihre Bestellung :reference ist abholbereit',
         'heading' => 'Ihre Bestellung ist abholbereit',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Lieferadresse',
         'billing_address' => 'Rechnungsadresse',
         'payment_status' => 'Zahlungsstatus',
-        'collect_from' => 'Abholung bei',
+        'pickup_from' => 'Abholung bei',
         'reason' => 'Grund',
         'refund_amount' => 'Erstattungsbetrag',
     ],

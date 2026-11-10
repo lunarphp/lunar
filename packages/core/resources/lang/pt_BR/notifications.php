@@ -35,7 +35,7 @@ return [
         'outro' => 'Obrigado por comprar conosco.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Pronto para retirada',
         'subject' => 'O seu pedido :reference está pronto para retirada',
         'heading' => 'O seu pedido está pronto para retirada',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Endereço de entrega',
         'billing_address' => 'Endereço de cobrança',
         'payment_status' => 'Status do pagamento',
-        'collect_from' => 'Retirar em',
+        'pickup_from' => 'Retirar em',
         'reason' => 'Motivo',
         'refund_amount' => 'Valor reembolsado',
     ],

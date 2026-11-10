@@ -35,7 +35,7 @@ return [
         'outro' => 'از خرید شما سپاسگزاریم.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'آماده تحویل حضوری',
         'subject' => 'سفارش :reference شما آماده تحویل حضوری است',
         'heading' => 'سفارش شما آماده تحویل حضوری است',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'نشانی ارسال',
         'billing_address' => 'نشانی صورتحساب',
         'payment_status' => 'وضعیت پرداخت',
-        'collect_from' => 'محل تحویل',
+        'pickup_from' => 'محل تحویل',
         'reason' => 'دلیل',
         'refund_amount' => 'مبلغ بازپرداخت',
     ],

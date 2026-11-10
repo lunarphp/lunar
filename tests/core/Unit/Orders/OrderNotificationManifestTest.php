@@ -5,7 +5,7 @@ use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Notifications\OrderCancellation;
 use Lunar\Core\Notifications\OrderConfirmation;
 use Lunar\Core\Notifications\OrderProvisioned;
-use Lunar\Core\Notifications\OrderReadyForCollection;
+use Lunar\Core\Notifications\OrderReadyForPickup;
 use Lunar\Core\Notifications\OrderShipped;
 use Lunar\Core\Notifications\OrderUpdate;
 use Lunar\Core\Notifications\PaymentReceived;
@@ -38,13 +38,13 @@ it('ships the lifecycle defaults keyed to their triggers, with the manual varian
         // The refund event key is distinct from the payment-status rollup.
         ->and(OrderNotifications::triggeredBy('refunded'))->toBe([])
         ->and(OrderNotifications::triggeredBy('shipped', NotificationScope::Fulfilment))->toBe([OrderShipped::class])
-        ->and(OrderNotifications::triggeredBy('ready-for-collection', NotificationScope::Fulfilment))->toBe([OrderReadyForCollection::class])
+        ->and(OrderNotifications::triggeredBy('ready-for-pickup', NotificationScope::Fulfilment))->toBe([OrderReadyForPickup::class])
         ->and(OrderNotifications::triggeredBy('provisioned', NotificationScope::Fulfilment))->toBe([OrderProvisioned::class])
         ->and(OrderNotifications::triggeredBy('returned', NotificationScope::Fulfilment))->toBe([ReturnReceived::class])
         // Per-fulfilment states only: the order rollups never double-send.
         ->and(OrderNotifications::triggeredBy('fulfilled'))->toBe([])
         ->and(OrderNotifications::triggeredBy('returned'))->toBe([])
-        ->and(OrderNotifications::triggeredBy('collected', NotificationScope::Fulfilment))->toBe([]);
+        ->and(OrderNotifications::triggeredBy('picked-up', NotificationScope::Fulfilment))->toBe([]);
 });
 
 it('registers a notification with a label and class', function () {

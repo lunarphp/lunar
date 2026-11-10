@@ -7,7 +7,7 @@ use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Notifications\OrderCancellation;
 use Lunar\Core\Notifications\OrderConfirmation;
 use Lunar\Core\Notifications\OrderProvisioned;
-use Lunar\Core\Notifications\OrderReadyForCollection;
+use Lunar\Core\Notifications\OrderReadyForPickup;
 use Lunar\Core\Notifications\OrderShipped;
 use Lunar\Core\Notifications\OrderUpdate;
 use Lunar\Core\Notifications\PartialFulfilmentUpdate;
@@ -47,7 +47,7 @@ class OrderNotificationManifest implements OrderNotificationManifestContract
             'order-confirmation' => [OrderConfirmation::class, 'lunar::notifications.order_confirmation.label', ['placed'], true, NotificationScope::Order],
             'payment-received' => [PaymentReceived::class, 'lunar::notifications.payment_received.label', ['paid'], true, NotificationScope::Order],
             'order-shipped' => [OrderShipped::class, 'lunar::notifications.order_shipped.label', ['shipped'], false, NotificationScope::Fulfilment],
-            'order-ready-for-collection' => [OrderReadyForCollection::class, 'lunar::notifications.order_ready_for_collection.label', ['ready-for-collection'], false, NotificationScope::Fulfilment],
+            'order-ready-for-pickup' => [OrderReadyForPickup::class, 'lunar::notifications.order_ready_for_pickup.label', ['ready-for-pickup'], false, NotificationScope::Fulfilment],
             'order-provisioned' => [OrderProvisioned::class, 'lunar::notifications.order_provisioned.label', ['provisioned'], false, NotificationScope::Fulfilment],
             'return-received' => [ReturnReceived::class, 'lunar::notifications.return_received.label', ['returned'], false, NotificationScope::Fulfilment],
             'order-cancelled' => [OrderCancellation::class, 'lunar::notifications.order_cancelled.label', ['cancelled'], true, NotificationScope::Order],

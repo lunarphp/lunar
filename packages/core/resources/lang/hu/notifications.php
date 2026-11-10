@@ -35,7 +35,7 @@ return [
         'outro' => 'Köszönjük a vásárlást.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Átvételre kész',
         'subject' => 'A(z) :reference rendelése átvehető',
         'heading' => 'A rendelése átvehető',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Szállítási cím',
         'billing_address' => 'Számlázási cím',
         'payment_status' => 'Fizetés állapota',
-        'collect_from' => 'Átvétel helye',
+        'pickup_from' => 'Átvétel helye',
         'reason' => 'Indok',
         'refund_amount' => 'Visszatérített összeg',
     ],

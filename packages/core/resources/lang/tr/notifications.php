@@ -35,7 +35,7 @@ return [
         'outro' => 'Bizden alışveriş yaptığınız için teşekkür ederiz.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Teslim Almaya Hazır',
         'subject' => ':reference numaralı siparişiniz teslim almaya hazır',
         'heading' => 'Siparişiniz teslim almaya hazır',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Teslimat Adresi',
         'billing_address' => 'Fatura Adresi',
         'payment_status' => 'Ödeme Durumu',
-        'collect_from' => 'Teslim Alma Noktası',
+        'pickup_from' => 'Teslim Alma Noktası',
         'reason' => 'Sebep',
         'refund_amount' => 'Geri Ödeme Tutarı',
     ],

@@ -14,12 +14,12 @@ use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\OrderCancellation;
 use Lunar\Core\Notifications\OrderConfirmation;
 use Lunar\Core\Notifications\OrderProvisioned;
-use Lunar\Core\Notifications\OrderReadyForCollection;
+use Lunar\Core\Notifications\OrderReadyForPickup;
 use Lunar\Core\Notifications\OrderShipped;
 use Lunar\Core\Notifications\PaymentReceived;
 use Lunar\Core\Notifications\RefundIssued;
 use Lunar\Core\Notifications\ReturnReceived;
-use Lunar\Core\States\Fulfilment\ReadyForCollection;
+use Lunar\Core\States\Fulfilment\ReadyForPickup;
 use Lunar\Tests\Core\Stubs\TestPaymentDriver;
 use Lunar\Tests\Core\TestCase;
 
@@ -112,18 +112,18 @@ test('shipping sends the shipped email carrying the fulfilment, and a quiet ship
     NotificationFacade::assertNotSentTo($quiet->fresh(), OrderShipped::class);
 });
 
-test('a collection fulfilment reaching ready-for-collection sends the collection email', function () {
+test('a pickup fulfilment reaching ready-for-pickup sends the pickup email', function () {
     $order = notificationDraftOrder();
-    $fulfilment = $order->createFulfilment([$order->lines()->first()->id => 1], ['method' => 'collection']);
+    $fulfilment = $order->createFulfilment([$order->lines()->first()->id => 1], ['method' => 'pickup']);
 
-    $fulfilment->transition(ReadyForCollection::class);
+    $fulfilment->transition(ReadyForPickup::class);
 
-    NotificationFacade::assertSentToTimes($order->fresh(), OrderReadyForCollection::class, 1);
+    NotificationFacade::assertSentToTimes($order->fresh(), OrderReadyForPickup::class, 1);
 
     // Collecting is a counter handover: no email.
     $fulfilment->fresh()->fulfil();
 
-    NotificationFacade::assertSentToTimes($order->fresh(), OrderReadyForCollection::class, 1);
+    NotificationFacade::assertSentToTimes($order->fresh(), OrderReadyForPickup::class, 1);
     NotificationFacade::assertNotSentTo($order->fresh(), OrderShipped::class);
 });
 

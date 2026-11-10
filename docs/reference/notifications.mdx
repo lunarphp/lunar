@@ -23,7 +23,7 @@ Lunar registers the following notifications out of the box. All classes live in 
 | `order-confirmation` | `OrderConfirmation` | `placed` | Yes | Order |
 | `payment-received` | `PaymentReceived` | `paid` (see [trigger rules](#trigger-rules)) | Yes | Order |
 | `order-shipped` | `OrderShipped` | `shipped` | No | Fulfilment |
-| `order-ready-for-collection` | `OrderReadyForCollection` | `ready-for-collection` | No | Fulfilment |
+| `order-ready-for-pickup` | `OrderReadyForPickup` | `ready-for-pickup` | No | Fulfilment |
 | `order-provisioned` | `OrderProvisioned` | `provisioned` | No | Fulfilment |
 | `return-received` | `ReturnReceived` | `returned` | No | Fulfilment |
 | `order-cancelled` | `OrderCancellation` | `cancelled` | Yes | Order |
@@ -36,7 +36,7 @@ What each one contains:
 - **Order confirmation**: reference, placed date, a line summary with totals, the billing and shipping addresses, and the current payment state. Renders the optional admin message when resent by hand.
 - **Payment received**: sent when a capture takes an already placed order to `paid`, such as an authorize-then-capture flow or an offline payment marked paid in the admin. Shows the order total.
 - **Order shipped**: the lines in the fulfilment and one row per tracking reference (carrier, tracking number, link).
-- **Ready for collection**: the lines to collect and the name of the fulfilment's location.
+- **Ready for pickup**: the lines to pick up and the name of the fulfilment's location.
 - **Order provisioned**: the lines provisioned. Core records no download link, so none is rendered; a store that has one re-registers the key with its own class.
 - **Return received**: the lines received back. A refund that follows sends its own email.
 - **Order cancelled**: the cancellation, with the cancel reason's label when one was recorded.
@@ -51,7 +51,7 @@ The fulfilment-scoped defaults are not manually sendable because the "Notify cus
 - **Only placed orders receive rollup emails.** The payment-status and fulfilment-status listeners return early while `$order->isPlaced()` is false. A card checkout records its capture before `placed_at` is stamped, so the `paid` rollup fires on an unplaced order and is skipped, and the order confirmation that follows carries the payment state. The customer gets one email, not two. A later capture on a placed order sends `payment-received` as intended, and draft orders never email a customer.
 - **The refund event key is `refund-issued`, not `refunded`.** `refunded` and `partially-refunded` are payment-status rollups, which fire without a `notify` flag whenever the ledger changes. The refund operation dispatches its own gated event, resolved through `refund-issued`. Registering a notification `on: ['refunded']` sends it on every rollup to that state, which is rarely what a store wants.
 - **Per-fulfilment states only.** The defaults register against fulfilment states (`shipped`, `returned`, and so on), never the order-level `fulfilled` or `returned` rollups, so a customer is emailed once per parcel rather than once per parcel and again when the order rolls up.
-- **`collected`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing.** Collection is a counter handover, the others are back-office moves, and an order-level cancellation is covered by `order-cancelled`.
+- **`picked-up`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing.** A pickup is a counter handover, the others are back-office moves, and an order-level cancellation is covered by `order-cancelled`.
 - **The `notify` flag still gates every event-driven send.** `ship(notify: false)`, `cancel(notify: false)`, a `RefundRequest` with `notify: false`, and the matching toggles in the admin all suppress the email.
 
 <Info>
@@ -87,7 +87,7 @@ This copies them to `resources/views/vendor/lunar/mail`, where Laravel looks bef
 | `orders/confirmation.blade.php` | `OrderConfirmation` | `placedAt`, `lines` (the order's non-shipping `OrderLine` models) |
 | `orders/payment-received.blade.php` | `PaymentReceived` | |
 | `orders/shipped.blade.php` | `OrderShipped` | `fulfilment`, `lines`, `trackings` |
-| `orders/ready-for-collection.blade.php` | `OrderReadyForCollection` | `fulfilment`, `lines`, `location` |
+| `orders/ready-for-pickup.blade.php` | `OrderReadyForPickup` | `fulfilment`, `lines`, `location` |
 | `orders/provisioned.blade.php` | `OrderProvisioned` | `fulfilment`, `lines` |
 | `orders/return-received.blade.php` | `ReturnReceived` | `fulfilment`, `lines` |
 | `orders/cancellation.blade.php` | `OrderCancellation` | `reason` |
@@ -299,4 +299,4 @@ The defaults send synchronously, like any notification without `ShouldQueue`. To
 
 The order screen's "Notify customer" action populates its notification dropdown from `OrderNotifications::sendable()`, lets staff pick recipients from the order's contacts (or add an extra address), and calls `$order->notifyCustomer()`, so a notification sent from the admin leaves the same activity-log trail as one sent through the API. With the defaults registered the dropdown offers the order confirmation, payment received, order cancelled, refund issued, partial fulfilment update, and order update entries.
 
-The ship, collection-ready, provision, return, cancel, and refund controls each show a "notify customer" toggle whenever a notification is registered for the state or event they produce, which with the defaults is always.
+The ship, ready-for-pickup, provision, return, cancel, and refund controls each show a "notify customer" toggle whenever a notification is registered for the state or event they produce, which with the defaults is always.

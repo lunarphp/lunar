@@ -35,7 +35,7 @@ return [
         'outro' => 'Merci pour votre achat.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Prêt pour le retrait',
         'subject' => 'Votre commande :reference est prête à être retirée',
         'heading' => 'Votre commande est prête à être retirée',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Adresse de livraison',
         'billing_address' => 'Adresse de facturation',
         'payment_status' => 'Statut du paiement',
-        'collect_from' => 'À retirer chez',
+        'pickup_from' => 'À retirer chez',
         'reason' => 'Motif',
         'refund_amount' => 'Montant remboursé',
     ],

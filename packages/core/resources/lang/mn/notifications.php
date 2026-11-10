@@ -35,7 +35,7 @@ return [
         'outro' => 'Манайхаас худалдан авалт хийсэнд баярлалаа.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Очиж авахад бэлэн',
         'subject' => 'Таны :reference захиалга очиж авахад бэлэн боллоо',
         'heading' => 'Таны захиалга очиж авахад бэлэн боллоо',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Хүргэлтийн хаяг',
         'billing_address' => 'Нэхэмжлэхийн хаяг',
         'payment_status' => 'Төлбөрийн төлөв',
-        'collect_from' => 'Очиж авах газар',
+        'pickup_from' => 'Очиж авах газар',
         'reason' => 'Шалтгаан',
         'refund_amount' => 'Буцаасан дүн',
     ],

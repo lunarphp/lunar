@@ -35,7 +35,7 @@ return [
         'outro' => 'Hvala vam na kupnji.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Spremno za preuzimanje',
         'subject' => 'Vaša narudžba :reference je spremna za preuzimanje',
         'heading' => 'Vaša narudžba je spremna za preuzimanje',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Adresa dostave',
         'billing_address' => 'Adresa za račun',
         'payment_status' => 'Status plaćanja',
-        'collect_from' => 'Preuzimanje u',
+        'pickup_from' => 'Preuzimanje u',
         'reason' => 'Razlog',
         'refund_amount' => 'Iznos povrata',
     ],

@@ -35,7 +35,7 @@ return [
         'outro' => 'Благодарим ви, че пазарувахте при нас.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'Готова за получаване',
         'subject' => 'Вашата поръчка :reference е готова за получаване',
         'heading' => 'Вашата поръчка е готова за получаване',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Адрес за доставка',
         'billing_address' => 'Адрес за фактуриране',
         'payment_status' => 'Статус на плащането',
-        'collect_from' => 'Получаване от',
+        'pickup_from' => 'Получаване от',
         'reason' => 'Причина',
         'refund_amount' => 'Възстановена сума',
     ],

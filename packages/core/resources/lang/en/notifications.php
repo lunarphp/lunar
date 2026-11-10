@@ -35,12 +35,12 @@ return [
         'outro' => 'Thank you for shopping with us.',
     ],
 
-    'order_ready_for_collection' => [
-        'label' => 'Ready for collection',
-        'subject' => 'Your order :reference is ready to collect',
-        'heading' => 'Your order is ready to collect',
-        'intro' => 'The following items from your order :reference are ready for you to collect.',
-        'outro' => 'Please bring your order reference with you when you collect.',
+    'order_ready_for_pickup' => [
+        'label' => 'Ready for pickup',
+        'subject' => 'Your order :reference is ready for pickup',
+        'heading' => 'Your order is ready for pickup',
+        'intro' => 'The following items from your order :reference are ready for you to pick up.',
+        'outro' => 'Please bring your order reference with you when you pick up your order.',
     ],
 
     'order_provisioned' => [
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'Shipping address',
         'billing_address' => 'Billing address',
         'payment_status' => 'Payment status',
-        'collect_from' => 'Collect from',
+        'pickup_from' => 'Pick up from',
         'reason' => 'Reason',
         'refund_amount' => 'Refund amount',
     ],

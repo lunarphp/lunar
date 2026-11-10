@@ -35,7 +35,7 @@ return [
         'outro' => 'شكراً لتسوقك معنا.',
     ],
 
-    'order_ready_for_collection' => [
+    'order_ready_for_pickup' => [
         'label' => 'جاهز للاستلام',
         'subject' => 'طلبك :reference جاهز للاستلام',
         'heading' => 'طلبك جاهز للاستلام',
@@ -102,7 +102,7 @@ return [
         'shipping_address' => 'عنوان الشحن',
         'billing_address' => 'عنوان الفوترة',
         'payment_status' => 'حالة الدفع',
-        'collect_from' => 'الاستلام من',
+        'pickup_from' => 'الاستلام من',
         'reason' => 'السبب',
         'refund_amount' => 'المبلغ المسترد',
     ],
