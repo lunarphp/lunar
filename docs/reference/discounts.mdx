@@ -123,7 +123,7 @@ use Lunar\Facades\Discounts;
 $isValid = Discounts::validateCoupon('20OFF');
 ```
 
-The default coupon validator checks that the coupon exists on an active, usable discount. The validator class can be customized in the `config/lunar/discounts.php` configuration file:
+The default coupon validator checks that the coupon exists on an active, usable discount. When the discount sets `max_uses_per_user`, the coupon is only valid for a signed-in user who is under that limit: per-user usage is recorded against a user, so a guest cannot use the coupon. The validator class can be customized in the `config/lunar/discounts.php` configuration file:
 
 ```php
 return [
