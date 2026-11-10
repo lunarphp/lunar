@@ -134,6 +134,62 @@ it('keeps rows for the upgrade package data migrations', function () {
     assertDatabaseHas('migrations', ['migration' => '2026_06_01_000000_rewrite_lunar_class_strings']);
 });
 
+it('does not mark create_staff as run when the staff table is missing', function () {
+    touch($this->migrationPath.'/2026_01_01_900000_create_staff_table.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => [
+            '2026_01_01_000000_create_channels_table',
+            '2026_01_01_900000_create_staff_table',
+        ],
+    ]);
+
+    $report = new StepReport;
+    $context = new StepContext(
+        dryRun: false,
+        paths: [],
+        output: new OutputStyle(new StringInput(''), new BufferedOutput),
+        report: $report,
+    );
+
+    app(LedgerRewriteStep::class)->run($context);
+
+    assertDatabaseHas('migrations', ['migration' => '2026_01_01_000000_create_channels_table']);
+    assertDatabaseMissing('migrations', ['migration' => '2026_01_01_900000_create_staff_table']);
+});
+
+it('marks create_staff as run when the staff table already exists', function () {
+    $table = config('lunar.database.table_prefix').'staff';
+
+    Schema::create($table, function ($blueprint) {
+        $blueprint->id();
+    });
+
+    touch($this->migrationPath.'/2026_01_01_900000_create_staff_table.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => ['2026_01_01_900000_create_staff_table'],
+    ]);
+
+    $report = new StepReport;
+    $context = new StepContext(
+        dryRun: false,
+        paths: [],
+        output: new OutputStyle(new StringInput(''), new BufferedOutput),
+        report: $report,
+    );
+
+    try {
+        app(LedgerRewriteStep::class)->run($context);
+
+        assertDatabaseHas('migrations', ['migration' => '2026_01_01_900000_create_staff_table']);
+    } finally {
+        Schema::dropIfExists($table);
+    }
+});
+
 it('does not insert baseline rows for migrations the app cannot load', function () {
     Config::set('lunar.upgrade.ledger', [
         'v1_match' => [],
@@ -195,4 +251,57 @@ it('skips when no ledger config is set', function () {
     app(LedgerRewriteStep::class)->run($context);
 
     expect($report->rows()[0]['status'])->toBe(StepReport::STATUS_SKIPPED);
+});
+
+it('does not mark create_permission_tables as run when the permission tables are missing', function () {
+    Schema::dropIfExists(config('permission.table_names.roles', 'roles'));
+
+    touch($this->migrationPath.'/2026_01_01_900002_create_permission_tables.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => ['2026_01_01_900002_create_permission_tables'],
+    ]);
+
+    app(LedgerRewriteStep::class)->run(new StepContext(
+        dryRun: false,
+        paths: [],
+        output: new OutputStyle(new StringInput(''), new BufferedOutput),
+        report: new StepReport,
+    ));
+
+    assertDatabaseMissing('migrations', ['migration' => '2026_01_01_900002_create_permission_tables']);
+});
+
+it('marks create_permission_tables as run when the permission tables already exist', function () {
+    $table = config('permission.table_names.roles', 'roles');
+    $created = ! Schema::hasTable($table);
+
+    if ($created) {
+        Schema::create($table, function ($blueprint) {
+            $blueprint->id();
+        });
+    }
+
+    touch($this->migrationPath.'/2026_01_01_900002_create_permission_tables.php');
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => [],
+        'v2_baseline' => ['2026_01_01_900002_create_permission_tables'],
+    ]);
+
+    try {
+        app(LedgerRewriteStep::class)->run(new StepContext(
+            dryRun: false,
+            paths: [],
+            output: new OutputStyle(new StringInput(''), new BufferedOutput),
+            report: new StepReport,
+        ));
+
+        assertDatabaseHas('migrations', ['migration' => '2026_01_01_900002_create_permission_tables']);
+    } finally {
+        if ($created) {
+            Schema::dropIfExists($table);
+        }
+    }
 });

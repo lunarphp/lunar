@@ -116,6 +116,8 @@ The bundled Rector configuration (`vendor/lunarphp/upgrade/config/rector.php`) a
 - **`Order::refund()` call sites** rewrite from three positional arguments to a `Lunar\Core\DataObjects\RefundRequest`: `$order->refund($transactionId, $amount, $notes)` becomes `$order->refund(new RefundRequest(transactionId: $transactionId, adjustment: $amount, notes: $notes))`.
 - **Action call sites.** `SomeAction::run(...$args)` rewrites to `app(SomeContract::class)->execute(...$args)`, following the move to constructor-injected action classes bound to a contract.
 - **Translated catalogue field access.** `$product->translateAttribute('name')` / `$product->attr('name')` rewrite to `$product->translate('name')` for `name` and `description`, now dedicated translatable columns instead of `attribute_data` entries.
+- **`ShippingOption` pickup flag.** `$option->collect` and the `collect:` named argument rewrite to `$option->pickup` and `pickup:`.
+- **`getThumbnailImage()` returns `?string`.** `HasThumbnailImage::getThumbnailImage()` now returns `null` when a record has no thumbnail, as `Product`, `ProductVariant`, and `Collection` do, instead of an empty string. Rector retypes a consumer's `getThumbnailImage(): string` to `?string` and replaces a `''` fallback in it with `null`. Code that passes the result into a `string` parameter should accept `null`.
 - **Custom price formatter signatures.** A consumer's own `PriceFormatterInterface` implementation has its `$formatterStyle` parameter retyped from `string` to `int` on `formatted()`, `unitFormatted()`, and `formatValue()`, matching the `NumberFormatter::*` constants it receives.
 
 ## What the data migrations do
@@ -141,6 +143,9 @@ The package ships one data migration per v1 to v2 schema change, run in dependen
 - **`AmountOff` discount type split** — converts stored `AmountOff` discount rows into `PercentageOff` or `FixedAmountOff` based on the discount's `data.fixed_value` flag (see the manual action above).
 - **Product association `sort` column backfill.**
 - **Cart `remember_token` column** — adds the nullable column used to [remember guest carts](/reference/carts#remembering-guest-carts). Existing carts get a token the next time they become a session's cart, so no backfill is needed.
+- **Table-rate shipping `collection` driver** — renames the stored `shipping_methods.driver` key from `collection` to `pickup`, following the driver's rename to `Lunar\Shipping\Drivers\ShippingMethods\Pickup`. A no-op on stores without the table-rate-shipping package.
+- **Order line `refunded_quantity` column** — adds the rollup of refunded quantity that line-item refunds increment. Existing lines default to `0`, since v1 recorded no line-item refunds.
+- **Cart totals columns** — adds the persisted totals snapshot columns (`sub_total`, `total`, `revision`, `calculated_at`, and the rest) to `carts` and `cart_lines`. No backfill: every upgraded cart reads as not yet calculated and is filled in by its next `calculate()`.
 
 ### Order status mapping
 
@@ -239,6 +244,16 @@ public function boot(): void
 
 Run `php artisan lunar:steps` afterwards to confirm what runs. See [Registering calculation steps](/extending/carts#registering-calculation-steps).
 
+### Cart totals are persisted
+
+v2 writes a cart's totals to the `carts` and `cart_lines` rows after each calculation, and `calculate()` serves them from the row for up to `lunar.cart.totals.ttl` seconds (default 300) while nothing on the cart has changed. Modifiers do not run when the snapshot is served. Three kinds of code need checking:
+
+- Code that needs a guaranteed-fresh total, such as a payment amount check, calls `recalculate()`.
+- Code that writes cart, line or address rows through the query builder calls `$cart->invalidateTotals()` afterwards.
+- A modifier that sets a custom property on the cart or a line moves that data to the model's `meta`. A served snapshot restores the standard totals only.
+
+See [Persisted totals](/reference/carts#persisted-totals).
+
 ## Manual checklist
 
 Rector and the data migrations cover most of the mechanical work. Start with the three changes above: the storefront context middleware, registered modifiers, and published step-list config. The following also need a manual pass because they cannot be inferred automatically or depend on how the application used the feature.
@@ -267,6 +282,7 @@ Rector rewrites `Model::modelClass()` calls to `Model::class`, but a subclass re
 - **Removed config keys and Filament v3/v4 customizations.** Any published `config/lunar/*` files, Filament resources, or Blade views customized against v1 need reviewing against the v2 shape of the equivalent file — the upgrade package does not rewrite published assets. The `lunar.admin.order_count_statuses` key is removed with no replacement (the order navigation badge now counts open orders directly); override `OrderResource::getNavigationBadge()` for a different count.
 - **Replaced extension hooks.** Two v1 admin extension hooks are removed rather than renamed, so Rector cannot rewrite them. A resource extension's `extendTable()` is replaced by a `configureTable(Table $table): Table` hook targeting the bridge table class (for example `Lunar\Filament\Tables\Currency\CurrencyTable`) instead of the resource. A list-page extension's `relationManagers()` is replaced by `getRelations()` on an extension targeting the resource itself. `extendTable()` still works when targeting a relation manager or relation page.
 - **Subclasses of `CartSessionManager`.** `Lunar\Core\Managers\CartSessionManager`'s constructor takes an `Illuminate\Contracts\Cookie\QueueingFactory` and an `Illuminate\Http\Request` before the optional `$cart`. A subclass that calls `parent::__construct()` with positional arguments needs updating. Subclasses resolved from the container are unaffected.
+- **Customer notifications now send by default.** v1 only sent the mailers listed under `lunar.orders.notifications` when an admin changed an order's status. v2 removes that config key and ships a default set of lifecycle emails (order confirmation, payment received, shipped, ready for pickup, provisioned, return received, cancelled, refund issued) that fire automatically on every install. Review the defaults against the store's existing emails: re-register a key to swap in the store's own notification class, or `OrderNotifications::forget()` any that should not send. A storefront that already sends its own order confirmation will now send two until it forgets `order-confirmation` or re-registers it. Any v1 mailer the store wants to keep becomes a Laravel `Notification` constructed with `(Order $order, ?string $message = null)` and is registered on the manifest from a service provider. A data import that creates placed orders should run inside `OrderNotifications::withoutSending()`. A notification meant for the refund action registers `on: ['refund-issued']`, not `on: ['refunded']` (which is the payment-status rollup). See [Notifications](/reference/notifications).
 - **`lunar:migrate:getcandy`.** Removed in v2 with no replacement. Applications still on GetCandy-era data must run it on v1.x before upgrading further.
 
 ## Reference

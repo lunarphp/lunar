@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Függőben',
         'in-progress' => 'Folyamatban',
-        'ready-for-collection' => 'Átvételre kész',
+        'ready-for-pickup' => 'Átvételre kész',
         'shipped' => 'Kiszállítva',
-        'collected' => 'Átvéve',
+        'picked-up' => 'Átvéve',
         'provisioned' => 'Hozzáférhetővé téve',
         'cancelled' => 'Visszavonva',
         'returned' => 'Visszaküldve',

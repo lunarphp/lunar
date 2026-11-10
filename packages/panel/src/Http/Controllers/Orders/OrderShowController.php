@@ -32,6 +32,7 @@ use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Panel\Support\FulfilmentTransitions;
 use Lunar\Panel\Support\TimelineActivity;
@@ -39,6 +40,14 @@ use Spatie\Activitylog\Models\Activity;
 
 class OrderShowController
 {
+    /**
+     * The `payment_method` handle, stamped into the order meta by whatever
+     * placed the order, for an order invoiced on account. Such an order sits
+     * in `Pending` by design, so the panel reads it as on account rather than
+     * unpaid.
+     */
+    public const ON_ACCOUNT = 'on-account';
+
     public function show(Order $order): Response
     {
         $order->load([
@@ -69,6 +78,7 @@ class OrderShowController
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
         $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
+        $onAccount = $this->onAccount($order);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -83,8 +93,11 @@ class OrderShowController
                 'id' => $order->id,
                 'reference' => $order->reference ?: '#'.$order->id,
                 'customer_reference' => $order->customer_reference,
+                'on_account' => $onAccount,
                 'payment_status' => $order->payment_status::$name,
-                'payment_status_label' => $order->payment_status->label(),
+                'payment_status_label' => $onAccount
+                    ? __('panel::orders.payment_on_account')
+                    : $order->payment_status->label(),
                 'fulfilment_status' => $order->fulfilment_status::$name,
                 'fulfilment_status_label' => $order->fulfilment_status->label(),
                 'lifecycle' => $order->lifecycleStatus(),
@@ -440,13 +453,36 @@ class OrderShowController
     }
 
     /**
-     * The delivery method chosen at checkout — the shipping-breakdown snapshot,
-     * falling back to the shipping line for orders without a breakdown.
+     * Whether the order was invoiced on account and is still awaiting payment
+     * under that arrangement: placed with the on-account payment method and
+     * still `Pending`. Once payment is taken, or the status otherwise moves
+     * on, the order reads like any other.
+     */
+    protected function onAccount(Order $order): bool
+    {
+        return ($order->meta['payment_method'] ?? null) === self::ON_ACCOUNT
+            && $order->payment_status instanceof Pending;
+    }
+
+    /**
+     * The delivery method chosen at checkout: the shipping-breakdown snapshot,
+     * falling back to the shipping line for orders without a breakdown. The
+     * pickup flag comes from {@see Order::isPickup()}. The pickup point
+     * comes from the shipping line's meta, written there by the checkout, and
+     * is only returned for a pickup.
      *
-     * @return array{name: string, identifier: ?string, price: ?string}|null
+     * @return array{name: string, identifier: ?string, price: ?string, pickup: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
      */
     protected function shippingOption(Order $order, callable $money): ?array
     {
+        $line = $order->lines->firstWhere('type', 'shipping');
+        $isPickup = $order->isPickup();
+
+        $pickup = [
+            'pickup' => $isPickup,
+            'pickup_point' => $isPickup ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
+        ];
+
         $item = $order->shipping_breakdown?->items?->first();
 
         if ($item) {
@@ -454,10 +490,9 @@ class OrderShowController
                 'name' => $item->name,
                 'identifier' => $item->identifier,
                 'price' => $item->price->format(),
+                ...$pickup,
             ];
         }
-
-        $line = $order->lines->firstWhere('type', 'shipping');
 
         if (! $line) {
             return null;
@@ -467,6 +502,31 @@ class OrderShowController
             'name' => $line->description,
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
+            ...$pickup,
+        ];
+    }
+
+    /**
+     * Normalise the pickup point the checkout stored on the shipping line.
+     * The panel does not own that meta, so anything malformed is dropped
+     * rather than trusted.
+     *
+     * @return array{handle: string, name: string, lines: list<string>}|null
+     */
+    protected function pickupPoint(mixed $point): ?array
+    {
+        if (! is_array($point) || ! is_scalar($point['handle'] ?? null)) {
+            return null;
+        }
+
+        $name = $point['name'] ?? null;
+
+        return [
+            'handle' => (string) $point['handle'],
+            'name' => (string) (is_scalar($name) ? $name : $point['handle']),
+            'lines' => is_array($point['lines'] ?? null)
+                ? array_values(array_map('strval', array_filter($point['lines'], 'is_scalar')))
+                : [],
         ];
     }
 
