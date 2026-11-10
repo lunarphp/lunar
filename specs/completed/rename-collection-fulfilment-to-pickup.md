@@ -1,6 +1,6 @@
 # Rename the collection fulfilment method to pickup
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-07
 - TODO item: Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec rename-collection-fulfilment-to-pickup)
@@ -65,8 +65,8 @@ vocabulary exactly.
   `orderPicksUp()` and reads `meta['pickup']`. Registration in
   `FulfilmentMethodManifest::registerCoreMethods()` drops its alias.
 - Rename the states: `ReadyForPickup` (`$name = 'ready-for-pickup'`, label
-  "Ready for pickup") and `PickedUp` (`$name = 'picked-up'`, label
-  "Picked up"). Transition tables, `defaultState()`, and `fulfilledState()`
+  "Ready for Pickup") and `PickedUp` (`$name = 'picked-up'`, label
+  "Picked Up"). Transition tables, `defaultState()`, and `fulfilledState()`
   update mechanically.
 - `ShippingOption` constructor property `collect` → `pickup`;
   `CreateShippingLine` stamps `meta['pickup']`.
@@ -87,8 +87,9 @@ Key renames in four file families, values retranslated where the term changes:
 - admin `order.php`: `columns.handed_over.pickup`,
   `actions.fulfil.labels.pickup`.
 
-English values change to "Pickup", "Ready for pickup", "Picked up",
-"Mark picked up", "Picked up at". Most other locales already translate the
+English values change to "Pickup", "Ready for Pickup" and "Picked Up" (state
+labels, title-cased like the other states), "Picked up", "Mark picked up",
+"Picked up at". Most other locales already translate the
 concept as pickup (de `Abholung`, es `Recogida`, fr `Retrait`, ro `Ridicare`)
 so only their keys move; each value is checked against the locale's existing
 fulfilment terminology while touching the file (e.g. mn's literal
@@ -167,12 +168,13 @@ it should match the `Очиж авах` used by mn `fulfilment.php`).
 
 ## Open questions
 
-- Does any v1 order-creation path persist the shipping option's `collect`
-  flag into data the upgrade package carries over? Current understanding is
-  no — `meta['collect']` is stamped by v2's `CreateShippingLine`, and the
-  upgrade backfill (`2026_06_01_000009`) creates only `shipping`/`shipped`
-  fulfilments — but verify against v1 during implementation; if v1 does
-  persist it anywhere, the upgrade migration also rewrites that key.
+- ~~Does any v1 order-creation path persist the shipping option's `collect`
+  flag into data the upgrade package carries over?~~ **Resolved: no.** v1's
+  `CreateShippingLine` writes `'meta' => $shippingOption->meta` verbatim and
+  never stamps the flag (verified against `1.x`); the stamp is introduced by
+  v2's `CreateShippingLine`, and the upgrade backfill (`2026_06_01_000009`)
+  creates only `shipping`/`shipped` fulfilments. No order-line meta rewrite
+  ships in the upgrade migration.
 
 ## References
 
@@ -186,5 +188,5 @@ it should match the `Очиж авах` used by mn `fulfilment.php`).
 
 ## Implementation plan
 
-- [ ] Slice 1 — The rename across core, panel, admin, demo data, and table-rate-shipping: classes, persisted keys, the `pickup` flag, lang files in every locale, tests and fixtures, docblocks.
-- [ ] Slice 2 — Upgrade path: `shipping_methods.driver` data migration, `LunarSetList` entry update, `ShippingOption` flag Rector rule, upgrade-suite tests.
+- [x] Slice 1 — The rename across core, panel, admin, demo data, and table-rate-shipping: classes, persisted keys, the `pickup` flag, lang files in every locale, tests and fixtures, docblocks.
+- [x] Slice 2 — Upgrade path: `shipping_methods.driver` data migration, `LunarSetList` entry update, `ShippingOption` flag Rector rule, upgrade-suite tests.

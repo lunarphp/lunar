@@ -8,7 +8,7 @@ The Table Rate Shipping add-on provides a flexible, zone-based shipping system f
 Key concepts:
 
 - **Shipping Zones** define geographic regions (unrestricted, by country, state, or postcode).
-- **Shipping Methods** represent the types of delivery available (e.g., standard, express, collection).
+- **Shipping Methods** represent the types of delivery available (e.g., standard, express, pickup).
 - **Shipping Rates** link a method to a zone with tiered pricing.
 - **Shipping Exclusion Lists** prevent specific products from being shipped to certain zones.
 
@@ -100,7 +100,7 @@ A shipping zone represents a geographic area that shipping rates apply to. Zones
 Lunar\Shipping\Models\ShippingMethod
 ```
 
-A shipping method represents a type of delivery, such as flat rate, weight-based, free shipping, or in-store collection. Each method uses a driver that determines how pricing is resolved.
+A shipping method represents a type of delivery, such as flat rate, weight-based, free shipping, or in-store pickup. Each method uses a driver that determines how pricing is resolved.
 
 | Field | Type | Description |
 |:------|:-----|:------------|
@@ -114,7 +114,7 @@ A shipping method represents a type of delivery, such as flat rate, weight-based
 | max_weight | `decimal` `nullable` | Maximum cart weight allowed for the method to be offered |
 | weight_unit | `string` `nullable` | Unit used by `min_weight` and `max_weight` (e.g., `kg`, `g`) |
 | data | `json` `nullable` | Driver-specific configuration and the availability schedule (cast to `AsArrayObject`; stored as `jsonb` on PostgreSQL) |
-| driver | `string` | Driver identifier (e.g., `ship-by`, `flat-rate`, `free-shipping`, `collection`) |
+| driver | `string` | Driver identifier (e.g., `ship-by`, `flat-rate`, `free-shipping`, `pickup`) |
 | created_at | `timestamp` | |
 | updated_at | `timestamp` | |
 
@@ -285,11 +285,11 @@ Offers free shipping when the cart meets a minimum spend requirement.
 | `minimum_spend` | `array` or `number` | Minimum cart subtotal required. Can be a single value or an array keyed by currency code (e.g., `{"GBP": 5000, "USD": 6000}`). Values are in minor units. |
 | `use_discount_amount` | `boolean` | When `true`, discount amounts are subtracted from the cart subtotal before checking the minimum spend. |
 
-### Collection
+### Pickup
 
-**Driver identifier:** `collection`
+**Driver identifier:** `pickup`
 
-Allows customers to collect their order in store. Returns a shipping option with a price of zero and sets `collect: true` on the shipping option, which can be used to identify collection orders in the storefront.
+Allows customers to pick up their order in store. Returns a shipping option with a price of zero and sets `pickup: true` on the shipping option, which can be used to identify pickup orders in the storefront.
 
 Every driver also checks the cart's products against any exclusion list attached to the shipping zone, returning `null` (no option) if a product in the cart is excluded.
 

@@ -9,7 +9,7 @@ use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 use Lunar\Shipping\Models\ShippingRate;
 
-class Collection implements ShippingRateInterface
+class Pickup implements ShippingRateInterface
 {
     /**
      * The shipping rate for context.
@@ -21,7 +21,7 @@ class Collection implements ShippingRateInterface
      */
     public function name(): string
     {
-        return 'Collection';
+        return 'Pickup';
     }
 
     /**
@@ -64,7 +64,7 @@ class Collection implements ShippingRateInterface
             taxClass: $shippingRate->getTaxClass(),
             taxReference: $shippingRate->getTaxReference(),
             option: $shippingZone->name,
-            collect: true,
+            pickup: true,
             meta: ['shipping_zone' => $shippingZone->name]
         );
     }

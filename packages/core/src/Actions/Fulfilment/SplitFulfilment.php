@@ -49,7 +49,7 @@ class SplitFulfilment implements SplitsFulfilment
             // The split-off fulfilment inherits the source's method and state —
             // splitting only reorganises outstanding quantities, so a fulfilment
             // already being prepared shouldn't drop back to its default state,
-            // and a collection/digital fulfilment must stay that method.
+            // and a pickup/digital fulfilment must stay that method.
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
                 'location_id' => $fulfilment->location_id,
