@@ -377,7 +377,7 @@ The full config, merged under `lunar.search_relevance`:
 | `ranker` | `Lunar\SearchRelevance\Rankers\BucketedRanker::class` | The `Ranker` implementation |
 | `signals` | `[QueryAffinitySignal::class => 1.0]` | Signal class to weight; combined scores are clamped to 0..1 |
 | `scoring.*` | | See [Scoring](#scoring) |
-| `retention_days` | `400` | Raw queries and events older than this are pruned weekly |
+| `retention_days` | `400` | Raw queries and events older than this are pruned weekly. Deleting a customer removes their id from their logged searches straight away; the searches stay for learning, with no link back to the person. |
 | `guards.events_rate_limit` | `'60,1'` | Events endpoint rate limit as `attempts,minutes`, per shopper and per IP |
 | `guards.max_searches_per_minute` | `30` | Sessions searching faster than this are ignored by scoring |
 | `guards.event_window_minutes` | `120` | Clicks are only accepted this long after the search they belong to |
