@@ -1,0 +1,132 @@
+---
+title: "Installation"
+description: "Installing the lunarphp/admin Filament panel, or plugging lunarphp/filament into an existing Filament v5 panel."
+---
+
+## Requirements
+
+- PHP 8.4+
+- Laravel 12 or 13
+- Filament v5
+- Lunar core installed and migrated — see [Installation](/getting-started/setup/installation)
+
+## The turnkey panel: `lunarphp/admin`
+
+```sh
+composer require lunarphp/admin
+```
+
+The package's service provider is auto-discovered, but the panel itself is not registered automatically. Register it from the `register()` method of a service provider:
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+}
+```
+
+By default the panel is served at `/admin`, registered as the application's default Filament panel with the id `lunar`, and authenticates against Lunar's staff guard (`lunar.staff.guard`, default `staff`).
+
+The Filament admin uses `Lunar\Filament\Models\Staff`, which adds Filament's panel access and two-factor contracts to core's `Lunar\Core\Models\Staff`. It replaces the configured staff model only while `lunar.staff.model` is still core's default. To use your own staff model, extend `Lunar\Filament\Models\Staff` rather than the core model, and set it as `lunar.staff.model`:
+
+```php
+// config/lunar/staff.php
+'model' => App\Models\Staff::class, // extends Lunar\Filament\Models\Staff
+```
+
+A model that extends core's `Staff` instead does not implement `Filament\Models\Contracts\FilamentUser`, so Filament refuses it panel access outside the local environment.
+
+Publish the panel's compiled assets:
+
+```sh
+php artisan filament:assets
+```
+
+<Note>
+Running the core installer, `php artisan lunar:install`, performs these steps automatically — it publishes assets and creates the first admin account when none exists.
+</Note>
+
+### Creating a staff account
+
+```sh
+php artisan lunar:create-admin
+```
+
+This prompts for a name, email, and password, and creates a staff member with full admin rights. The command also accepts `--firstname`, `--lastname`, `--email`, and `--password` options for non-interactive use. It ships with Lunar core, so the same command works whichever panel package is installed.
+
+### Customizing the panel
+
+`LunarPanel::panel()` accepts a closure that receives the underlying `Filament\Panel`, so any standard Filament panel configuration applies. Chain it — and every other configuration call — **before** `register()`, and always return the panel from the closure:
+
+```php
+use Filament\Panel;
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+LunarPanel::panel(
+    fn (Panel $panel) => $panel->path('backoffice')
+)->register();
+```
+
+### Two-factor authentication
+
+App-based (TOTP) two-factor authentication with recovery codes is enabled by default, as an optional feature each staff member can set up on their profile. To require it for every staff member:
+
+```php
+LunarPanel::forceTwoFactorAuth()->register();
+```
+
+To remove two-factor authentication entirely (not recommended for production):
+
+```php
+LunarPanel::disableTwoFactorAuth()->register();
+```
+
+### Branding
+
+Publish the panel's public assets and replace the logo files to rebrand without any code:
+
+```sh
+php artisan vendor:publish --tag=public
+```
+
+This copies `lunar-logo.svg`, `lunar-logo-dark.svg`, and `lunar-icon.png` into `public/vendor/lunarpanel/`, where the panel picks them up in place of the bundled defaults. Colors, fonts, and the brand name are changed through the `panel()` closure using Filament's standard `colors()`, `font()`, and `brandName()` methods.
+
+<Warning>
+`LunarPanel::register()` applies some Filament defaults globally — table pagination options, full-width layout sections, and trimmed text inputs via `configureUsing()`. If the application runs a second, unrelated Filament panel, those defaults apply there too.
+</Warning>
+
+## The bridge in an existing panel: `lunarphp/filament`
+
+An application that already has its own Filament v5 panel does not need `lunarphp/admin`. The bridge package plugs Lunar's building blocks into any panel:
+
+```sh
+composer require lunarphp/filament
+```
+
+```php
+use Lunar\Filament\LunarPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugin(LunarPlugin::make()->fullPreset());
+}
+```
+
+`fullPreset()` enables every feature group. They can also be toggled individually:
+
+```php
+LunarPlugin::make()
+    ->widgets()             // the seven order/customer dashboard widgets
+    ->livewireComponents(); // the collection tree view component
+```
+
+`widgets()` registers Lunar's dashboard widgets (order stats, order totals, sales, average order value, new vs. returning customers, popular products, and latest orders) onto the panel; `widgets(false)` skips them, and passing an array of widget classes appends extras alongside the defaults. `livewireComponents()` does the same for the bridge's Livewire components, currently the collection tree view.
+
+The rest of the bridge — entity selectors, form schemas, tables, relation managers, actions, and global-search descriptors — is a class library rather than something the plugin switches on. Panels use those classes directly; see [Extending](/addons/filament/extending) for the catalog.

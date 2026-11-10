@@ -2,5 +2,5 @@ Please describe your Pull Request as best as possible, explaining what it provid
 
 Try to include the following in your Pull Request, where applicable...
 
-- Documentation updates
+- Documentation updates in `docs/` (see `docs/README.md`)
 - Automated tests

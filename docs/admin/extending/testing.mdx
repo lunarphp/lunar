@@ -1,0 +1,123 @@
+---
+title: "Testing an Add-on"
+sidebarTitle: "Testing"
+description: "How to test an add-on against the panel's real Testbench harness."
+---
+
+An [add-on](/admin/extending/addons)'s extension points are only proven by exercising them against the panel's real routes, not by asserting against the add-on's classes in isolation. The panel's own test suite does this for its reference add-on, `panel-addon-example`, and the same pattern applies to any add-on.
+
+## The test case
+
+Extend the panel's base `TestCase` and add two things: the add-on's service provider, so its `Section` actually registers, and the add-on's Inertia page directory, so `assertInertia()` can resolve its page components.
+
+```php
+namespace Lunar\Tests\Panel\Fixtures;
+
+use Lunar\Tests\Panel\TestCase;
+use LunarPanelExample\ExampleAddonServiceProvider;
+
+class ExampleAddonTestCase extends TestCase
+{
+    protected function getPackageProviders($app): array
+    {
+        return [
+            ...parent::getPackageProviders($app),
+            ExampleAddonServiceProvider::class,
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+
+        $app['config']->set('inertia.pages.paths', [
+            ...$app['config']->get('inertia.pages.paths', []),
+            dirname(__DIR__, 3).'/packages/panel-addon-example/resources/js/pages',
+        ]);
+    }
+}
+```
+
+Registering the provider through `getPackageProviders()` (rather than relying on auto-discovery) means the test boots the add-on exactly as a host app's Composer autoloading would, with no shortcuts. Adding the page path is what lets `assertInertia()->component('example-addon::Widgets/Index', false)` resolve the add-on's own Vue file for a "does this component exist on disk" check — pass `false` as the second argument where a component is registered at runtime via `window.LunarPanel.registerPages()` rather than served from a namespaced Blade view, since Inertia's testing view-finder has no matching on-disk path to check for those.
+
+## A feature test
+
+Use the fixture test case with Pest's `uses()`, then hit both the add-on's own routes and the real first-party routes it extends:
+
+```php
+use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Staff;
+use Lunar\Tests\Panel\Fixtures\ExampleAddonTestCase;
+
+uses(ExampleAddonTestCase::class);
+
+it('renders the example add-on own page for an authenticated admin', function () {
+    $this->get('/panel/example-addon')->assertRedirect(route('panel.login'));
+
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->get('/panel/example-addon')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('example-addon::Widgets/Index', false)
+            ->has('widgets', 3));
+});
+
+it('merges the example add-on table extension column onto the real customer index', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Customer::factory()->create();
+
+    $this->get(route('panel.customers.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('columns', fn ($columns) => collect($columns)->pluck('key')->contains('id')));
+});
+
+it('shares the example add-on slot entry on the real customer edit page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            // The zone key contains dots ("customers.edit:main:after"), so it
+            // can't be reached via dot-notation where()/has() path assertions.
+            ->where('slots', function ($slots) {
+                $zone = $slots->get('customers.edit:main:after');
+
+                return $zone !== null
+                    && collect($zone)->contains(fn ($entry) => $entry['component'] === 'example-addon::InfoBanner');
+            }));
+});
+```
+
+The first test proves the add-on's own page renders and is permission-gated; the second and third prove the add-on's table extension and slot actually appear on the *real* Customers pages, not merely in an isolated fixture — the same guarantee to check for a table column, a row action, a bulk action, a page action, a dashboard widget, or a search source.
+
+Non-Inertia surface (dashboard widgets, the search endpoint) is asserted the same way — through the real routes and `PanelManager`:
+
+```php
+it('contributes a dashboard widget with deferred data', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('widgets.9.key', 'example-addon-customers')
+            ->where('widgets.9.component', 'example-addon::CustomerCountWidget')
+            ->loadDeferredProps(fn (Assert $props) => $props->missing('widgetData.example-addon-customers')));
+});
+```
+
+## Running it
+
+These tests live in the monorepo's own `panel` test suite and run the same way any panel test does:
+
+```bash
+vendor/bin/pest --testsuite panel --parallel
+```
+
+An add-on maintained outside the monorepo runs its own Testbench-based suite the same way, depending on `lunarphp/panel` and following the same `TestCase` pattern shown above.

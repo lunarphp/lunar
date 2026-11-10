@@ -1,0 +1,236 @@
+---
+title: "Associations"
+description: "Relate products to each other as cross-sells, up-sells, alternates, or custom types."
+---
+
+Associations define relationships between products, such as cross-sells, up-sells, and alternates.
+
+## Overview
+
+Associations allow products to be related to each other. The type of association defines how the relationship should be presented on a storefront and how Lunar interprets it. Lunar ships with three built-in types (cross-sell, up-sell, and alternate), but custom types can also be created.
+
+## Model
+
+Associations are stored as `Lunar\Core\Models\ProductAssociation` models.
+
+### Fields
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `id` | Primary key |
+| `product_parent_id` | `foreignId` | The owning product |
+| `product_target_id` | `foreignId` | The associated product |
+| `type` | `string` | The association type (e.g. `cross-sell`, `up-sell`, `alternate`) |
+| `sort` | `unsignedInteger` | Sort order within the parent product's associations of the same type. Default: `0` |
+| `created_at` | `timestamp` | |
+| `updated_at` | `timestamp` | |
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `parent` | BelongsTo | `Lunar\Core\Models\Product` | The owning product |
+| `target` | BelongsTo | `Lunar\Core\Models\Product` | The associated product |
+
+### Scopes
+
+| Scope | Description |
+|:------|:------------|
+| `crossSell()` | Filter to cross-sell associations |
+| `upSell()` | Filter to up-sell associations |
+| `alternate()` | Filter to alternate associations |
+| `type(ProvidesProductAssociationType\|string $type)` | Filter by a specific type |
+
+### Association Types Enum
+
+The built-in association types are defined using the `Lunar\Core\Enums\ProductAssociation` enum, which implements `Lunar\Core\Enums\Concerns\ProvidesProductAssociationType`:
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+ProductAssociation::CROSS_SELL; // 'cross-sell'
+ProductAssociation::UP_SELL;    // 'up-sell'
+ProductAssociation::ALTERNATE;  // 'alternate'
+```
+
+Each case has a translated `label()`. The full set of available types (respecting any custom enum configured via `lunar.products.association_types_enum`) can be retrieved as a value-to-label array:
+
+```php
+use Lunar\Core\Models\ProductAssociation;
+
+ProductAssociation::getTypes();
+```
+
+<Warning>
+The `Lunar\Core\Models\ProductAssociation` model also defines `CROSS_SELL`, `UP_SELL`, and `ALTERNATE` as class constants, but these are deprecated. Use the `Lunar\Core\Enums\ProductAssociation` enum instead.
+</Warning>
+
+## Loading Associations
+
+```php
+$product->associations;
+```
+
+This returns a collection of `Lunar\Core\Models\ProductAssociation` models, ordered by `sort` then `id`:
+
+```php
+use Lunar\Core\Models\ProductAssociation;
+
+$association->parent; // The owning product
+$association->target; // The associated product
+$association->type;   // The association type string
+$association->sort;   // The association's sort order for its type
+```
+
+### Inverse Associations
+
+To find products that associate _to_ a given product (i.e. where the product is the target), use the `inverseAssociations` relationship:
+
+```php
+$product->inverseAssociations;
+```
+
+## Types of Association
+
+### Cross-Sell
+
+Cross-selling encourages customers to purchase complementary products in addition to the item they intended to buy.
+
+For example, if a store sells a phone, cross-sell associations could include headphones or a case that works with that phone.
+
+**Adding a cross-sell association**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+$product->associate($crossSellProduct, ProductAssociation::CROSS_SELL);
+
+// Or associate multiple products at once
+$product->associate([$productA, $productB], ProductAssociation::CROSS_SELL);
+```
+
+**Fetching cross-sell associations**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+// Using the convenience scope
+$product->associations()->crossSell()->get();
+
+// Using the type scope
+$product->associations()->type(ProductAssociation::CROSS_SELL)->get();
+```
+
+### Up-Sell
+
+Up-selling encourages customers to upgrade or include add-ons to the product they are buying, typically to a higher-value option.
+
+For example, given two phones:
+
+- Phone 16GB 5" Screen
+- Phone 32GB 6" Screen
+
+The 32GB version could be added as an up-sell association on the 16GB product, allowing it to be presented as an upgrade when a customer views the 16GB version.
+
+**Adding an up-sell association**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+$product->associate($upSellProduct, ProductAssociation::UP_SELL);
+
+// Or associate multiple products at once
+$product->associate([$productA, $productB], ProductAssociation::UP_SELL);
+```
+
+**Fetching up-sell associations**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+// Using the convenience scope
+$product->associations()->upSell()->get();
+
+// Using the type scope
+$product->associations()->type(ProductAssociation::UP_SELL)->get();
+```
+
+### Alternate
+
+Alternate products are alternatives to the current product. This is useful when a product is out of stock or not quite the right fit, allowing the storefront to suggest similar options.
+
+**Adding an alternate association**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+$product->associate($alternateProduct, ProductAssociation::ALTERNATE);
+
+// Or associate multiple products at once
+$product->associate([$productA, $productB], ProductAssociation::ALTERNATE);
+```
+
+**Fetching alternate associations**
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+// Using the convenience scope
+$product->associations()->alternate()->get();
+
+// Using the type scope
+$product->associations()->type(ProductAssociation::ALTERNATE)->get();
+```
+
+### Custom Types
+
+In addition to the built-in types, custom association types can be defined by passing any string as the type. No registration or configuration is required since the `type` column is a plain string in the database.
+
+```php
+$product->associate($relatedProduct, 'my-custom-type');
+```
+
+Custom types can be queried using the `type` scope:
+
+```php
+$product->associations()->type('my-custom-type')->get();
+```
+
+<Tip>
+The set of types offered in the admin panel's association type dropdown is driven by the `lunar.products.association_types_enum` config value, which defaults to `Lunar\Core\Enums\ProductAssociation`. Swapping in a custom enum that implements `Lunar\Core\Enums\Concerns\ProvidesProductAssociationType` adds custom types to the dropdown.
+</Tip>
+
+## Ordering Associations
+
+Associations are ordered by the `sort` column, scoped per parent product and type. `associate()` appends new associations to the end of the existing set for that type — the sort value is calculated as `max(sort) + 1` for each target, in the order the targets are given. Associations of different types on the same product sort independently.
+
+```php
+// Appends after any existing cross-sell associations for $product
+$product->associate([$productA, $productB], ProductAssociation::CROSS_SELL);
+
+// Ordered by sort, then id
+$product->associations()->crossSell()->get();
+```
+
+## Removing Associations
+
+The `dissociate` method removes associations between products. It accepts a single product, an array, or a collection. If no type is specified, all association types for the given product(s) are removed.
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+// Remove all associations with a product, regardless of type
+$product->dissociate($associatedProduct);
+
+// Also accepts an array or collection of products
+$product->dissociate([$productA, $productB]);
+
+// Remove only a specific association type
+$product->dissociate($associatedProduct, ProductAssociation::CROSS_SELL);
+```
+
+## Queued Operations
+
+<Info>
+Both `associate()` and `dissociate()` dispatch queued jobs (`Lunar\Core\Jobs\Products\Associations\Associate` and `Lunar\Core\Jobs\Products\Associations\Dissociate`). This means the changes may not be reflected immediately if using an asynchronous queue driver.
+</Info>

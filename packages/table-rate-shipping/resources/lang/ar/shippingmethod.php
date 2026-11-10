@@ -45,7 +45,7 @@ return [
             'label' => 'النوع',
             'options' => [
                 'ship-by' => 'قياسي',
-                'collection' => 'استلام من المتجر',
+                'pickup' => 'استلام من المتجر',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'النوع',
             'options' => [
                 'ship-by' => 'قياسي',
-                'collection' => 'استلام من المتجر',
+                'pickup' => 'استلام من المتجر',
             ],
         ],
     ],

@@ -9,28 +9,17 @@ handle contributions so you don't waste effort on work we can't merge.
 - **Bug reports** — a [new issue](https://github.com/lunarphp/lunar/issues/new/choose) using the bug form.
 - **Usage questions and support** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose) or [Discord](https://lunarphp.com/discord). Support questions filed as issues will be redirected.
 - **Feature requests and enhancements** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose), not issues.
+- **Documentation** — a pull request changing `docs/` on the version branch it documents. See [`docs/README.md`](docs/README.md).
 
 ## Before you open a pull request
 
-### Non-trivial changes need acceptance first
+### Talk to us before larger changes
 
-If your change is anything more than a typo, a doc fix, or a small isolated bug
-fix, get it accepted before you write the code:
+You don't need an issue or Discussion to open a pull request. For a larger change,
+starting one first is still the quickest way to check we'd take the approach
+before you spend a weekend on it.
 
-- **Bug fixes** — open an issue with the bug form and wait for a maintainer to
-  confirm it.
-- **Features and enhancements** — open a
-  [Discussion](https://github.com/lunarphp/lunar/discussions/new/choose) and wait
-  for a maintainer to accept the direction. Feature requests are not tracked as
-  issues in this repo.
-
-Link the issue or Discussion in your PR description.
-
-PRs that arrive without an accepted issue or Discussion may be closed without a
-full review.
-This isn't gatekeeping — it exists so you don't spend a weekend on an approach we
-were always going to say no to. A short issue costs you ten minutes and can save
-you a lot more than that.
+If there is a related issue or Discussion, link it in your PR description.
 
 ### Target the right branch
 

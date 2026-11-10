@@ -154,12 +154,12 @@ test('can validate collection with partial shipping address', function () {
     ]);
 
     $shippingOption = new ShippingOption(
-        name: 'Collection',
-        description: 'Collection',
-        identifier: 'COLLECT',
+        name: 'Pickup',
+        description: 'Pickup',
+        identifier: 'PICKUP',
         price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
-        collect: true
+        pickup: true
     );
 
     ShippingManifest::addOption($shippingOption);

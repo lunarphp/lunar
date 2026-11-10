@@ -17,7 +17,9 @@ class ExampleAddonServiceProvider extends ServiceProvider
         Panel::section(new ExampleSection);
 
         $this->app->make(PanelManager::class)->vite('example-addon', [
-            'input' => 'resources/js/addon.ts',
+            // The IIFE build writes the add-on's CSS as its own `style.css`
+            // manifest entry, so it is a second entry point beside the script.
+            'input' => ['resources/js/addon.ts', 'style.css'],
             'hotFile' => null,
             'buildDirectory' => 'vendor/lunar-panel/example-addon',
             // Lets `php artisan lunar:panel:link` symlink this package's
