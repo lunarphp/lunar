@@ -74,7 +74,11 @@ class RecordEvent implements ShouldQueue
             return;
         }
 
-        $window = (int) $config->get('lunar.search_relevance.guards.event_window_minutes', 120);
+        // A basket or purchase can come long after the search: the attribution
+        // rides on the cart line until the order is placed.
+        $window = $this->type === 'click'
+            ? (int) $config->get('lunar.search_relevance.guards.event_window_minutes', 120)
+            : (int) $config->get('lunar.search_relevance.guards.conversion_window_days', 30) * 24 * 60;
 
         if (! self::accepts($search, $this->productId, $this->position, $window)) {
             return;

@@ -289,7 +289,7 @@ The aggregation is a single SQL query on MySQL 8 and Postgres (`Lunar\SearchRele
 Learned ranking is a feedback loop, so bots and bad actors can try to feed it. The add-on limits the damage in layers:
 
 - **Structural.** The ranker only reorders within buckets of `bucket_size` hits, and learned products the engine did not return are inserted at the head of the second bucket. Nothing can be pushed into the first bucket unless the engine already put it there, whatever the event volume.
-- **Event validation.** An event needs a real search id, a product from that search's shown list, a position inside it, and must arrive within `guards.event_window_minutes` of the search. Repeats of an event already recorded for the search, product, and type are dropped, and the endpoint is rate limited per shopper and per IP.
+- **Event validation.** An event needs a real search id and the product at exactly that position in the search's shown list, and must arrive within `guards.event_window_minutes` of the search, or `guards.conversion_window_days` for a basket or purchase. Repeats of an event already recorded for the search, product, and type are dropped, and the endpoint is rate limited per shopper and per IP.
 - **Scoring.** Each session contributes one event of each type per query and product. With `guards.trusted_sessions_only`, an event counts only when its search belonged to a known customer, its own session holds a cart, or it is a basket or purchase, which are only recorded server-side from a real cart line or order. A first-time guest searches before they have a cart, so their journey counts through its basket and purchase, and a bot minting fresh sessions to post clicks gains nothing. Sessions searching faster than `guards.max_searches_per_minute` are excluded.
 - **Crawlers.** Searches from user agents matching `guards.ignored_user_agents` are neither logged nor ranked, so reporting stays honest and the tables stay small. Headless API clients without a session are still logged; they identify the shopper explicitly on the events endpoint.
 - **Refunds and cancellations.** `Lunar\SearchRelevance\Listeners\ForgetPurchases` removes the purchase events an order's attributed lines produced when `Lunar\Core\Events\Orders\OrderCancelled` or `OrderRefunded` fires.
@@ -380,7 +380,8 @@ The full config, merged under `lunar.search_relevance`:
 | `retention_days` | `400` | Raw queries and events older than this are pruned weekly |
 | `guards.events_rate_limit` | `'60,1'` | Events endpoint rate limit as `attempts,minutes`, per shopper and per IP |
 | `guards.max_searches_per_minute` | `30` | Sessions searching faster than this are ignored by scoring |
-| `guards.event_window_minutes` | `120` | Events are only accepted this long after the search they belong to |
+| `guards.event_window_minutes` | `120` | Clicks are only accepted this long after the search they belong to |
+| `guards.conversion_window_days` | `30` | Basket and purchase events are only accepted this long after the search. They are recorded server-side when the attributed cart line or order is created, which can be well after the click. |
 | `guards.trusted_sessions_only` | `true` | Only events from a known customer, from a session holding a cart, or of type basket or purchase count towards learning |
 | `guards.ignored_user_agents` | bot, crawl, spider, ... | Searches from user agents containing any of these substrings are neither logged nor ranked |
 

@@ -98,8 +98,11 @@ return [
         'events_rate_limit' => '60,1',
         // Sessions searching faster than this are ignored by scoring.
         'max_searches_per_minute' => 30,
-        // Events are only accepted this long after the search they belong to.
+        // Clicks are only accepted this long after the search they belong to.
         'event_window_minutes' => 120,
+        // Basket and purchase events, recorded server-side when the attributed
+        // cart line or order is created, are accepted this long after it.
+        'conversion_window_days' => 30,
         // Only sessions that hold a cart or belong to a known customer count
         // towards learning, so a bot minting fresh sessions gains nothing.
         'trusted_sessions_only' => true,

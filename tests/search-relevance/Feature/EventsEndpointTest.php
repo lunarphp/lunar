@@ -155,3 +155,14 @@ it('takes events without a CSRF token, so headless storefronts can post them', f
 
     expect($route->excludedMiddleware())->toContain(ValidateCsrfToken::class);
 });
+
+it('records a purchase long after the search, but not a click', function () {
+    // An order is placed when the shopper is ready, often well past the click window.
+    $search = SearchQuery::factory()->create(['shown' => [10, 20], 'created_at' => now()->subHours(5)]);
+
+    foreach (['purchase', 'click'] as $type) {
+        (new RecordEvent($search->id, 10, 1, $type, 'organic', $search->session_id))->handle(app('config'));
+    }
+
+    expect(SearchEvent::query()->pluck('type')->all())->toBe(['purchase']);
+});
