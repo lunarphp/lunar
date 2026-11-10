@@ -1,0 +1,221 @@
+---
+title: "Global Search"
+sidebarTitle: "Search"
+description: "How to contribute record sources and quick actions to the panel's command palette."
+---
+
+The panel ships a command palette (`Cmd+K` / `Ctrl+K`, or the sidebar search button) that searches records across the panel and offers quick actions alongside the results. An [add-on](/admin/extending/addons) contributes to both without touching any panel source: a `SearchSource` makes its own entities findable, and a `SearchCommand` adds a static verb to the palette.
+
+## Search sources
+
+A search source describes one entity the palette can find records in: `Lunar\Panel\Search\SearchSource`.
+
+```php
+namespace Lunar\Panel\Search;
+
+abstract class SearchSource
+{
+    abstract public function key(): string;
+
+    abstract public function label(): string;
+
+    /** @return Builder<covariant Model> */
+    abstract public function query(): Builder;
+
+    /** @param Builder<covariant Model> $query */
+    abstract public function applyTerm(Builder $query, string $token): void;
+
+    /** @return array{id: int|string, label: string, hint: ?string, url: string} */
+    abstract public function row(Model $model): array;
+
+    public function permission(): ?string { return null; }
+    public function icon(): string { return 'search'; }
+    public function position(): Position { return Position::last(); }
+}
+```
+
+- `key()` — the source's stable identifier. It doubles as the `kinds[]` filter value and the result group's key.
+- `label()` — the group heading shown above this source's results (e.g. "Products").
+- `query()` — the base query: model, eager loads, scopes. Both matching paths (see below) start from here, so a constraint added here (a soft-delete scope, a store filter) always applies.
+- `applyTerm(Builder $query, string $token)` — narrows the query by one search token. The resolver splits the search term on whitespace and calls this once per token, ANDing them together, so word order in the query does not matter.
+- `row(Model $model)` — shapes a matched record into a result row. `hint` is the disambiguating detail shown under the label (an order's customer name, a product's SKU); return `null` when there is none.
+- `permission()` — a manifest permission handle. Declare the **same** handle that gates this entity's own routes and navigation, so search can never surface a record the user could not otherwise reach. `null` makes the source visible to every panel user.
+- `icon()` — a name from the panel's built-in icon set, shown next to each result row.
+- `position()` — a `Position`, ordering this source's result group relative to others.
+
+### Worked example
+
+`src/Search/CustomerEmailSearchSource.php` in `panel-addon-example` searches customers by account reference:
+
+```php
+namespace LunarPanelExample\Search;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\Customer;
+use Lunar\Panel\Search\SearchSource;
+use Lunar\Panel\Support\Position;
+
+class CustomerEmailSearchSource extends SearchSource
+{
+    public function key(): string
+    {
+        return 'example-accounts';
+    }
+
+    public function label(): string
+    {
+        return __('example-addon::example.search_source');
+    }
+
+    public function icon(): string
+    {
+        return 'building';
+    }
+
+    /** The same handle gating this add-on's routes, so search cannot leak past it. */
+    public function permission(): string
+    {
+        return 'sales:manage-customers';
+    }
+
+    public function position(): Position
+    {
+        return Position::last();
+    }
+
+    /** @return Builder<Customer> */
+    public function query(): Builder
+    {
+        return Customer::query()->whereNotNull('account_ref');
+    }
+
+    public function applyTerm(Builder $query, string $token): void
+    {
+        $query->where('account_ref', 'like', "%{$token}%");
+    }
+
+    /** @param Customer $model */
+    public function row(Model $model): array
+    {
+        return [
+            'id' => $model->id,
+            'label' => (string) $model->account_ref,
+            'hint' => trim($model->first_name.' '.$model->last_name) ?: null,
+            'url' => route('panel.customers.edit', $model),
+        ];
+    }
+}
+```
+
+### Registering a source
+
+Return `SearchSource` classes from `Section::searchSources()`:
+
+```php
+public function searchSources(): array
+{
+    return [CustomerEmailSearchSource::class];
+}
+```
+
+## Search commands
+
+A search command is a static, always-available verb the palette lists alongside record results — typically a create shortcut: `Lunar\Panel\Search\SearchCommand`.
+
+```php
+namespace Lunar\Panel\Search;
+
+abstract class SearchCommand
+{
+    abstract public function key(): string;
+
+    abstract public function label(): string;
+
+    abstract public function url(): string;
+
+    public function icon(): string { return 'plus'; }
+    public function permission(): ?string { return null; }
+    public function position(): Position { return Position::last(); }
+}
+```
+
+Commands are resolved once per request, filtered by permission, and shared to the frontend as an Inertia prop — the palette filters them against the translated label client-side, with no round trip.
+
+### Worked example
+
+`src/Search/PingWidgetsCommand.php`:
+
+```php
+namespace LunarPanelExample\Search;
+
+use Lunar\Panel\Search\SearchCommand;
+use Lunar\Panel\Support\Position;
+
+class PingWidgetsCommand extends SearchCommand
+{
+    public function key(): string
+    {
+        return 'example-addon.widgets';
+    }
+
+    public function label(): string
+    {
+        return __('example-addon::example.search_command');
+    }
+
+    public function icon(): string
+    {
+        return 'tag';
+    }
+
+    public function url(): string
+    {
+        return route('panel.example-addon.index');
+    }
+
+    public function permission(): string
+    {
+        return 'sales:manage-customers';
+    }
+
+    public function position(): Position
+    {
+        return Position::last();
+    }
+}
+```
+
+### Registering a command
+
+Return `SearchCommand` classes from `Section::searchCommands()`:
+
+```php
+public function searchCommands(): array
+{
+    return [PingWidgetsCommand::class];
+}
+```
+
+## How matching works
+
+The palette's endpoint (`GET /{panel path}/search`, route name `panel.search`) fans a query out across every source the current staff member is allowed to see, each contributing at most five rows so no single source crowds out the rest. Request params: `q` (the search term) and an optional `kinds[]` array narrowing the fan-out to selected source keys (the palette's filter chips). The response shape is uniform across sources:
+
+```json
+{
+  "data": [
+    { "kind": "example-accounts", "kind_label": "Account references", "id": 42, "label": "ACC-5521", "hint": "Ada Lovelace", "url": "/panel/customers/42/edit", "icon": "building" }
+  ]
+}
+```
+
+Matching happens one of two ways, chosen per source automatically:
+
+- **SQL `LIKE` (the default)** — the term is tokenised and every token must match one of `applyTerm()`'s clauses. This is what a source gets with no further configuration, and it forgives word order and partial words, but not misspellings.
+- **Scout, opt-in** — enable `lunar.panel.search.scout_enabled` (config key `search.scout_enabled` in `config/lunar/panel.php`, default `false`, also settable via the `LUNAR_PANEL_SEARCH_SCOUT` environment variable) to route matching through Laravel Scout for any source whose model uses the core `Searchable` concern. Typo tolerance then comes from whichever search engine backs Scout (Meilisearch and Typesense both tolerate typos out of the box; Scout's `database` driver does not, so it behaves like the `LIKE` path). A source whose model is not Scout-indexed falls back to `LIKE` automatically, so a store can mix indexed and unindexed sources.
+
+A source only ever declares its base query and its `applyTerm()` clauses — it gets the Scout path for free when its model is indexed, with no extra code.
+
+<Info>
+Sources and commands both declare a `permission()` handle. Gate it identically to the routes and navigation for the same entity — the search endpoint enforces this per source, so a staff member without the permission never sees the source's results, even if they know the exact term.
+</Info>

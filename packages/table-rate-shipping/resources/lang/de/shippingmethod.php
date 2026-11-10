@@ -45,7 +45,7 @@ return [
             'label' => 'Typ',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Abholung',
+                'pickup' => 'Abholung',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Typ',
             'options' => [
                 'ship-by' => 'Standard',
-                'collection' => 'Abholung',
+                'pickup' => 'Abholung',
             ],
         ],
     ],

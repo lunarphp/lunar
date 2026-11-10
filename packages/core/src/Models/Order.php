@@ -59,6 +59,7 @@ use Spatie\ModelStates\HasStates;
  * @property int $tax_total
  * @property int $total
  * @property ?string $notes
+ * @property ?string $internal_notes
  * @property string $currency_code
  * @property ?string $compare_currency_code
  * @property float $exchange_rate
@@ -159,6 +160,21 @@ class Order extends Base implements HasCurrency
     public function isCancelled(): bool
     {
         return ! blank($this->cancelled_at);
+    }
+
+    /**
+     * Whether the customer picks the order up rather than having it shipped,
+     * read from the `pickup` flag stamped onto the shipping line's meta at
+     * order creation. Uses the loaded `lines` relation when present so
+     * callers that eager load lines don't pay for another query.
+     */
+    public function isPickup(): bool
+    {
+        $line = $this->relationLoaded('lines')
+            ? $this->lines->firstWhere('type', 'shipping')
+            : $this->shippingLines()->first();
+
+        return ($line?->meta['pickup'] ?? false) === true;
     }
 
     /**

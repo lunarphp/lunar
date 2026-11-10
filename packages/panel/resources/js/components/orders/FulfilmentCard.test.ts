@@ -45,17 +45,17 @@ describe('FulfilmentCard', () => {
     it('offers the per-method fulfil label on a non-tracking method', async () => {
         mountCard(
             makeFulfilment({
-                method: 'collection',
-                method_label: 'Collection',
-                fulfil_label: 'Mark collected',
+                method: 'pickup',
+                method_label: 'Pickup',
+                fulfil_label: 'Mark picked up',
                 transitions: [
-                    { state: 'ready-for-collection', label: 'Ready for collection', via: 'transition', notify: true },
-                    { state: 'collected', label: 'Collected', via: 'fulfil', notify: false },
+                    { state: 'ready-for-pickup', label: 'Ready for pickup', via: 'transition', notify: true },
+                    { state: 'picked-up', label: 'Picked up', via: 'fulfil', notify: false },
                 ],
             }),
         );
 
-        const primary = buttonByText('Mark collected');
+        const primary = buttonByText('Mark picked up');
         expect(primary).toBeDefined();
 
         await primary!.trigger('click');

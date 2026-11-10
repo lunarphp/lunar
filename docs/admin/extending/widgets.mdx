@@ -1,0 +1,197 @@
+---
+title: "Dashboard Widgets"
+sidebarTitle: "Widgets"
+description: "How to contribute a widget to the panel dashboard from an add-on."
+---
+
+The panel dashboard is a per-staff grid of widgets. An [add-on](/admin/extending/addons) contributes a card to it by registering a `Widget` class, without touching any panel source.
+
+## The widget contract
+
+A widget extends `Lunar\Panel\Dashboard\Widget`:
+
+```php
+namespace Lunar\Panel\Dashboard;
+
+abstract class Widget
+{
+    abstract public function key(): string;
+
+    abstract public function component(): string;
+
+    abstract public function label(): string;
+
+    /** @return array<string, mixed> */
+    abstract public function data(DashboardRange $range): array;
+
+    public function description(): ?string { return null; }
+    public function icon(): ?string { return null; }
+    public function span(): WidgetSpan { return WidgetSpan::Half; }
+    public function flat(): bool { return false; }
+    public function permission(): ?string { return null; }
+    public function position(): Position { return Position::priority(50); }
+    public function visibleByDefault(): bool { return true; }
+}
+```
+
+- `key()` — the widget's stable identity. Staff order and visibility preferences are stored against it, so it must not change once shipped.
+- `component()` — the Vue component name, resolved the same way as a slot component: a bare name for a first-party widget, a namespaced name (`example-addon::CustomerCountWidget`) for an add-on.
+- `label()` / `description()` — shown in the card header and the dashboard's "Add a widget" dialog. Resolve them through `__()` so they translate.
+- `icon()` — a name from the panel's built-in icon set (see `Icon.vue`); add-ons cannot register their own SVGs.
+- `span()` — `Lunar\Panel\Dashboard\WidgetSpan::Half` (default, one grid column) or `WidgetSpan::Full` (spans both columns).
+- `flat()` — `true` renders the widget with no card chrome at all, for a KPI-row style widget. Most widgets leave this `false`.
+- `permission()` — a manifest permission handle. A staff member lacking it never receives the widget: it is excluded from the dashboard props entirely, not merely hidden client-side.
+- `position()` — the shared `Lunar\Panel\Support\Position` primitive, used only to seed the *default* order; staff reordering overrides it per user (see [Ordering with Position](#ordering-with-position) below).
+- `visibleByDefault()` — `false` ships the widget hidden until a staff member adds it from the customise dialog. Useful for a widget that is not universally relevant.
+
+The dashboard grid owns the card chrome — header (icon, label, description), drag handle, and hide button. A widget's Vue component renders only the body.
+
+## Registering a widget
+
+Return `Widget` classes from `Section::widgets()`:
+
+```php
+public function widgets(): array
+{
+    return [CustomerCountWidget::class];
+}
+```
+
+## Worked example
+
+`src/Dashboard/CustomerCountWidget.php` in `panel-addon-example`:
+
+```php
+namespace LunarPanelExample\Dashboard;
+
+use Lunar\Core\Models\Customer;
+use Lunar\Panel\Dashboard\DashboardRange;
+use Lunar\Panel\Dashboard\Widget;
+use Lunar\Panel\Support\Position;
+
+class CustomerCountWidget extends Widget
+{
+    public function key(): string
+    {
+        return 'example-addon-customers';
+    }
+
+    public function component(): string
+    {
+        return 'example-addon::CustomerCountWidget';
+    }
+
+    public function label(): string
+    {
+        return __('example-addon::example.widget_label');
+    }
+
+    public function description(): ?string
+    {
+        return __('example-addon::example.widget_description');
+    }
+
+    public function icon(): ?string
+    {
+        return 'users';
+    }
+
+    public function permission(): ?string
+    {
+        return 'sales:manage-customers';
+    }
+
+    public function position(): Position
+    {
+        return Position::last();
+    }
+
+    public function visibleByDefault(): bool
+    {
+        return false;
+    }
+
+    public function data(DashboardRange $range): array
+    {
+        return [
+            'total' => Customer::query()->count(),
+            'recent' => Customer::query()->where('created_at', '>=', $range->start())->count(),
+        ];
+    }
+}
+```
+
+This widget ships hidden by default (`visibleByDefault(): false`), so it appears in the "Add a widget" dialog rather than on the dashboard immediately, and it is gated on the same `sales:manage-customers` permission the add-on's other Customers-area extensions use.
+
+## Deferred data
+
+`data(DashboardRange $range)` is computed server-side against the currently selected range and ships as a deferred Inertia prop, keyed by the widget: `widgetData.{key}` (`widgetData.example-addon-customers` here). This means:
+
+- A slow widget's query never blocks the rest of the dashboard from rendering.
+- Nothing is computed for a widget the staff member has hidden — an unregistered or invisible widget's `data()` is never called.
+
+`DashboardRange` (`Lunar\Panel\Dashboard\DashboardRange`) is a string-backed enum: `Today` (`today`), `SevenDays` (`7d`), `ThirtyDays` (`30d`), `NinetyDays` (`90d`). It exposes `start()` / `end()` (the current window) and `previousStart()` / `previousEnd()` (the equivalent prior window, for delta comparisons), plus `buckets()`, which returns hourly buckets for `Today` and daily buckets otherwise — use it so a chart widget aggregates on the same boundaries as every first-party chart.
+
+## The Vue component
+
+The component registered against `component()` receives two props: `data` (whatever `data()` returned) and `range` (the current range's string value). It renders body content only — no card wrapper, no header.
+
+`resources/js/components/CustomerCountWidget.vue`:
+
+```vue
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+defineProps<{
+    data: { total: number; recent: number };
+    range: string;
+}>();
+
+const { t } = useI18n();
+</script>
+
+<template>
+    <div class="flex items-end gap-6">
+        <div>
+            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900">
+                {{ data.total }}
+            </div>
+            <div class="text-[11px] text-ink-500 mt-1">{{ t('example-addon::example.widget_total') }}</div>
+        </div>
+        <div>
+            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900">
+                {{ data.recent }}
+            </div>
+            <div class="text-[11px] text-ink-500 mt-1">{{ t('example-addon::example.widget_recent') }}</div>
+        </div>
+    </div>
+</template>
+```
+
+Register the component at the top level of the add-on's bundle, alongside pages and slot components, never inside `window.LunarPanel.booting()` (its callbacks run after the panel's first render, too late for a component the dashboard needs immediately):
+
+```ts
+window.LunarPanel.registerComponents('example-addon', {
+    CustomerCountWidget: CustomerCountWidgetComponent,
+});
+```
+
+Optionally, build the widget's body with the panel's chart primitives exported from `@lunarphp/panel` — `TimeSeriesChart`, `Sparkline`, `DonutChart`, `KpiCard`.
+
+## Ordering with Position
+
+`position()` returns a `Lunar\Panel\Support\Position` — `Position::priority(int)` for coarse ordering, or `Position::before('key')` / `Position::after('key')` to anchor next to another widget, first-party or add-on. This only sets the *default* order a newly-registered widget appears in: staff drag-reorder their own dashboard afterward, and that per-staff order takes over from registration order once set.
+
+## Per-staff visibility and layout
+
+The dashboard is per-staff, not global. Each staff member can:
+
+- Reorder widgets by dragging (customise mode).
+- Hide a visible widget.
+- Re-add a hidden widget from the "Add a widget" dialog (label, icon, and description come from the widget's registration).
+
+This layout persists server-side per staff member, so it follows them across devices. A widget whose `permission()` the current staff member lacks is never included in the dashboard's widget list at all — it cannot be added, hidden, or discovered by a user without the permission.
+
+<Info>
+Widget component names are resolved through `window.LunarPanel.resolveExtensionComponent()`, the same mechanism `PanelSlot` and component-rendered table columns use. An unresolvable component name is skipped with a console warning rather than breaking the dashboard.
+</Info>

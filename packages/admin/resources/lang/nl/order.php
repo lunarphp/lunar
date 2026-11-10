@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Verzonden op',
             'handed_over' => [
                 'shipping' => 'Verzonden op',
-                'collection' => 'Afgehaald op',
+                'pickup' => 'Afgehaald op',
                 'digital' => 'Beschikbaar gesteld op',
             ],
             'handed_over_default' => 'Afgehandeld op',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Markeren als afgehandeld',
                 'modal_heading' => 'Fulfilment markeren als afgehandeld',
                 'labels' => [
-                    'collection' => 'Markeren als afgehaald',
+                    'pickup' => 'Markeren als afgehaald',
                 ],
                 'notification' => [
                     'success' => 'Fulfilment gemarkeerd als afgehandeld.',

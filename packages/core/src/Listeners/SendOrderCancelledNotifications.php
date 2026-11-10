@@ -5,6 +5,7 @@ namespace Lunar\Core\Listeners;
 use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderCancelled;
+use Lunar\Core\Listeners\Concerns\SendsCustomerNotifications;
 
 /**
  * Dispatch any notifications registered for a cancelled order, when the
@@ -13,6 +14,8 @@ use Lunar\Core\Events\Orders\OrderCancelled;
  */
 class SendOrderCancelledNotifications
 {
+    use SendsCustomerNotifications;
+
     public function __construct(
         protected OrderNotificationManifest $notifications,
     ) {}
@@ -23,8 +26,6 @@ class SendOrderCancelledNotifications
             return;
         }
 
-        foreach ($this->notifications->triggeredBy('cancelled', NotificationScope::Order) as $class) {
-            $event->order->notify(new $class($event->order));
-        }
+        $this->sendAfterCommit($event->order, $this->notifications->triggeredBy('cancelled', NotificationScope::Order));
     }
 }

@@ -1,0 +1,70 @@
+---
+title: "Access Control"
+description: "The staff guard, mandatory two-factor authentication, and permissions in Lunar's Inertia and Vue admin panel."
+---
+
+## The staff guard
+
+The panel authenticates against Lunar core's staff guard, backed by `Lunar\Core\Models\Staff`. Core registers the guard and its provider automatically unless `lunar.staff.register_guard` is disabled, using `lunar.staff.guard` (default `staff`) and `lunar.staff.model` (default `Lunar\Core\Models\Staff`).
+
+The panel's own `guard` config key (`lunar.panel.guard`) overrides the guard the panel authenticates against, for a host application that wants the panel on a different guard than the rest of Lunar. Left `null` (the default), the panel follows `lunar.staff.guard`. See [Configuration](/admin/configuration).
+
+## Two-factor authentication is mandatory
+
+There is no password-only login path. Every staff login is a two-step challenge:
+
+1. Email and password, at `/panel/login`.
+2. A second factor: a time-based one-time password (TOTP) from an authenticator app if the staff member has enrolled one, or an emailed six-digit code otherwise.
+
+The email code is the automatic fallback, so a staff member can always sign in even before setting up an authenticator app.
+
+### Enrolling an authenticator app
+
+Staff enroll their own second factor under **Account > Security** (`panel.account.security`). Enrollment generates a TOTP secret, shown as a QR code for scanning into an authenticator app, and a set of recovery codes to store somewhere safe. Confirming the enrollment with a valid code from the app activates it; from that point, login prompts for a code from the app instead of an emailed one.
+
+Recovery codes let a staff member sign in if they lose access to their authenticator app. Each code is single-use; staff can regenerate the full set from the same Security screen.
+
+### Password reset
+
+Password reset follows the standard Laravel flow, themed to the panel, starting at `/panel/forgot-password`.
+
+## Permissions
+
+Access within the panel is controlled by permission handles, defined in Lunar core's access control manifest (`Lunar\Core\Auth\Manifest`):
+
+| Handle | Grants access to |
+| --- | --- |
+| `settings:core` | Core settings areas (channels, countries, currencies, languages, locations, regions, tax). |
+| `settings:manage-staff` | Managing staff accounts and roles. |
+| `settings:manage-attributes` | Managing attributes, attribute groups, and product options. |
+| `catalog:manage-products` | Managing products, variants, and product types. |
+| `catalog:manage-collections` | Managing collections and brands. |
+| `sales:manage-orders` | Managing orders and fulfilment. |
+| `sales:manage-customers` | Managing customers and customer groups. |
+| `sales:manage-discounts` | Managing discounts. |
+
+`settings` itself is also registered as a base permission, acting as the parent grouping for the `settings:*` handles.
+
+### The admin bypass
+
+A staff member with `admin` set to `true` on their record passes every permission check, regardless of assigned roles. Everyone else is checked per-permission through `hasPermissionTo()` (from `spatie/laravel-permission`).
+
+Both checks are wired through a single `Gate::after` hook, registered by the panel's service provider:
+
+```php
+Gate::after(function ($user, string $ability) {
+    $permission = app('lunar-access-control')
+        ->getPermissions()
+        ->first(fn ($permission) => $permission->handle === $ability);
+
+    if ($permission) {
+        return $user->admin || $user->hasPermissionTo($ability);
+    }
+});
+```
+
+The same hook is registered by `lunarphp/admin`, so the two panels apply identical rules to the same staff account — a permission granted in one panel behaves the same way in the other.
+
+### Navigation and routes stay in sync
+
+Panel routes are gated with Laravel's `can:{handle}` middleware, and navigation items carry the same permission handle. Because both read from the same handle, a staff member never sees a navigation entry they cannot reach, and never hits a route for a feature that is hidden from their navigation. Add-on sections follow the same convention when they register their own navigation items, routes, and actions — see [Extending the panel](/admin/extending/overview).

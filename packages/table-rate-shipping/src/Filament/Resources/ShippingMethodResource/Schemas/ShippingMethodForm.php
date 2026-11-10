@@ -168,7 +168,7 @@ class ShippingMethodForm
             ->label(__('shipping::shippingmethod.form.driver.label'))
             ->options([
                 'ship-by' => __('shipping::shippingmethod.form.driver.options.ship-by'),
-                'collection' => __('shipping::shippingmethod.form.driver.options.collection'),
+                'pickup' => __('shipping::shippingmethod.form.driver.options.pickup'),
             ])
             ->default('ship-by')
             ->required();

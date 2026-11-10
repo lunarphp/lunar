@@ -1,0 +1,257 @@
+---
+title: "Extending Taxation"
+sidebarTitle: "Taxation"
+---
+
+Taxation in Lunar is driver-based, so a custom driver can replace the shipped system driver, for example to delegate tax calculation to a third-party service.
+
+## Overview
+
+By default, Lunar calculates tax using `Lunar\Core\Drivers\SystemTaxDriver`, which relies on Lunar's own tax zones, tax classes, and tax rates. Day-to-day configuration of those models is covered in the [Taxation reference](/reference/taxation) and is not repeated here.
+
+This page covers writing a custom tax driver, useful when tax calculation needs to be delegated to an external service instead of Lunar's own rules.
+
+The active driver is set in `config/lunar/taxes.php`:
+
+```php
+<?php
+
+return [
+    'driver' => 'system',
+];
+```
+
+## The TaxDriver contract
+
+A custom driver must implement `Lunar\Core\Drivers\TaxDriver`:
+
+```php
+<?php
+
+namespace Lunar\Core\Drivers;
+
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
+
+interface TaxDriver
+{
+    public function setShippingAddress(?Addressable $address = null): self;
+
+    public function setCurrency(Currency $currency): self;
+
+    public function setBillingAddress(?Addressable $address = null): self;
+
+    public function setPurchasable(Purchasable $purchasable): self;
+
+    public function setCartLine(CartLine $cartLine): self;
+
+    public function setTaxZone(?TaxZone $taxZone = null): self;
+
+    public function getBreakdown($subTotal): TaxBreakdown;
+}
+```
+
+Lunar calls the setter methods to populate the driver's context, then calls `getBreakdown()`, which must return a `Lunar\Core\ValueObjects\Cart\TaxBreakdown`.
+
+| Method | Purpose |
+|:-|:-|
+| `setShippingAddress()` | The address tax is typically resolved against. May be `null` if the cart has no shipping address yet. |
+| `setCurrency()` | The `Lunar\Core\Models\Currency` the breakdown amounts must be expressed in. |
+| `setBillingAddress()` | The billing address, for drivers that base tax rules on billing rather than shipping location. |
+| `setPurchasable()` | The `Lunar\Core\Contracts\Purchasable` item being taxed, exposing `getTaxClass()` and `getTaxReference()`. |
+| `setCartLine()` | The `Lunar\Core\Models\CartLine` currently being calculated, when line-level context is needed. |
+| `setTaxZone()` | An optional tax zone override supplied at the cart level. |
+| `getBreakdown()` | Given a sub total (an integer, in the currency's minor unit), returns the resulting `TaxBreakdown`. |
+
+<Tip>
+`setTaxZone()` lets a caller hand the driver a resolved `Lunar\Core\Models\TaxZone` directly, bypassing address-based resolution. This is useful for taxation determined by something other than the shipping address, for example an IP address lookup. When a tax zone is set this way, a custom driver should prefer it over deriving a zone from the shipping address.
+</Tip>
+
+## Building the tax breakdown
+
+`getBreakdown()` must return a `Lunar\Core\ValueObjects\Cart\TaxBreakdown`. Its constructor accepts an optional `Illuminate\Support\Collection` of amounts, and defaults to an empty collection when omitted:
+
+```php
+public function __construct(
+    public ?Collection $amounts = null
+)
+```
+
+Amounts are added one at a time with `addAmount()`, which accepts a `Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount`:
+
+```php
+public function addAmount(TaxBreakdownAmount $taxBreakdownAmount): void
+```
+
+Each `TaxBreakdownAmount` represents a single tax line (for example, "VAT" or "State Tax") and is constructed with:
+
+```php
+public function __construct(
+    public PriceValue $price,
+    public string $identifier,
+    public string $description,
+    public float $percentage,
+)
+```
+
+| Argument | Type | Description |
+|:-|:-|:-|
+| `price` | `Lunar\Core\DataObjects\PriceValue` | The tax amount, in the cart's currency. |
+| `identifier` | `string` | A unique key for this line, e.g. `tax_rate_3`. |
+| `description` | `string` | A human-readable label, e.g. `VAT`. |
+| `percentage` | `float` | The percentage rate applied, e.g. `20.0`. |
+
+A `PriceValue` wraps an integer amount (in the currency's minor unit) together with the `Lunar\Core\Models\Currency` it belongs to:
+
+```php
+use Lunar\Core\DataObjects\PriceValue;
+
+new PriceValue(value: 200, currency: $currency);
+```
+
+## Registering a custom driver
+
+Register the driver by extending the tax manager, typically from a service provider's `boot()` method:
+
+```php
+use Lunar\Core\Facades\Taxes;
+
+Taxes::extend('acme-tax', function ($app) {
+    return $app->make(\App\Drivers\AcmeTaxDriver::class);
+});
+```
+
+Then set the driver name in `config/lunar/taxes.php`:
+
+```php
+<?php
+
+return [
+    'driver' => 'acme-tax',
+];
+```
+
+## Full example
+
+The following example wraps a fictional third-party tax API:
+
+```php
+<?php
+
+namespace App\Drivers;
+
+use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Drivers\TaxDriver;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
+
+class AcmeTaxDriver implements TaxDriver
+{
+    protected ?Addressable $shippingAddress = null;
+
+    protected ?Addressable $billingAddress = null;
+
+    protected Currency $currency;
+
+    protected Purchasable $purchasable;
+
+    protected ?CartLine $cartLine = null;
+
+    protected ?TaxZone $taxZone = null;
+
+    public function __construct(
+        protected AcmeTaxClient $client,
+    ) {}
+
+    public function setShippingAddress(?Addressable $address = null): self
+    {
+        $this->shippingAddress = $address;
+
+        return $this;
+    }
+
+    public function setCurrency(Currency $currency): self
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function setBillingAddress(?Addressable $address = null): self
+    {
+        $this->billingAddress = $address;
+
+        return $this;
+    }
+
+    public function setPurchasable(Purchasable $purchasable): self
+    {
+        $this->purchasable = $purchasable;
+
+        return $this;
+    }
+
+    public function setCartLine(CartLine $cartLine): self
+    {
+        $this->cartLine = $cartLine;
+
+        return $this;
+    }
+
+    public function setTaxZone(?TaxZone $taxZone = null): self
+    {
+        $this->taxZone = $taxZone;
+
+        return $this;
+    }
+
+    public function getBreakdown($subTotal): TaxBreakdown
+    {
+        $address = $this->shippingAddress ?? $this->billingAddress;
+
+        $response = $this->client->calculate(
+            amount: (int) $subTotal,
+            currency: $this->currency->code,
+            taxReference: $this->purchasable->getTaxReference(),
+            postcode: $address?->only(['postcode'])['postcode'] ?? null,
+        );
+
+        $breakdown = new TaxBreakdown;
+
+        foreach ($response->lines as $line) {
+            $breakdown->addAmount(new TaxBreakdownAmount(
+                price: new PriceValue($line->amount, $this->currency),
+                identifier: $line->identifier,
+                description: $line->description,
+                percentage: $line->percentage,
+            ));
+        }
+
+        return $breakdown;
+    }
+}
+```
+
+<Info>
+`AcmeTaxClient` in this example stands in for whatever SDK or HTTP client wraps the third-party tax API. It can be injected through the constructor like any other collaborator, since the driver is resolved through the container.
+</Info>
+
+<Warning>
+`getBreakdown()` may be called once per cart line, and often once per candidate tax zone during checkout. Avoid making an external API call inside a tight loop without caching; `SystemTaxDriver` uses [`Spatie\Blink\Blink`](https://github.com/spatie/blink) to memoize tax rate lookups within a request for this reason.
+</Warning>
+
+## Reference implementation
+
+`Lunar\Core\Drivers\SystemTaxDriver` is the shipped default driver and the best reference for how a driver fits together, including how it resolves a `TaxZone` when `setTaxZone()` has not been called, and how it distributes rounding remainders across multiple tax rates. Its constructor collaborators are resolved through the container and are not part of the public contract, so a custom driver is free to depend on whatever it needs.
+
+For configuring tax zones, tax classes, and tax rates that `SystemTaxDriver` uses out of the box, see the [Taxation reference](/reference/taxation).

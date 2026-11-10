@@ -35,12 +35,12 @@
         "spatie/laravel-data": "^4.23",
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-model-states": "^2.11",
-        "spatie/laravel-permission": "^6.12",
+        "spatie/laravel-permission": "^8.3",
         "spatie/php-structure-discoverer": "^2.3.1",
         "spatie/typescript-transformer": "^3.3",
         "stripe/stripe-php": "^16.0",
         "mallardduck/blade-lucide-icons": "^1.26",
-        "typesense/typesense-php": "^4.9"
+        "typesense/typesense-php": "^5.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",

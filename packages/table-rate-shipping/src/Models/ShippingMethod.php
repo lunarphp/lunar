@@ -4,6 +4,7 @@ namespace Lunar\Shipping\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,6 +18,9 @@ use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
+/**
+ * @property ArrayObject<string, mixed>|null $data
+ */
 class ShippingMethod extends Base
 {
     use HasCustomerGroups;

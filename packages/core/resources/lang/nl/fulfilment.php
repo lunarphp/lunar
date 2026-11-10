@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'Verzending',
-        'collection' => 'Afhalen',
+        'pickup' => 'Afhalen',
         'digital' => 'Digitaal',
     ],
 

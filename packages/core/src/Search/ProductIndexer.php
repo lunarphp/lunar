@@ -59,7 +59,7 @@ class ProductIndexer extends ScoutIndexer
             $data['thumbnail'] = $thumbnail->getUrl('small');
         }
 
-        $data['skus'] = $model->variants->pluck('sku')->toArray();
+        $data['skus'] = $model->variants->pluck('sku')->filter(fn ($sku) => filled($sku))->values()->toArray();
 
         return $data;
     }

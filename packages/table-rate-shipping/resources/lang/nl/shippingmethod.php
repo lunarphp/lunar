@@ -45,7 +45,7 @@ return [
             'label' => 'Type',
             'options' => [
                 'ship-by' => 'Standaard',
-                'collection' => 'Afhalen',
+                'pickup' => 'Afhalen',
             ],
         ],
         'stock_available' => [
@@ -73,7 +73,7 @@ return [
             'label' => 'Type',
             'options' => [
                 'ship-by' => 'Standaard',
-                'collection' => 'Afhalen',
+                'pickup' => 'Afhalen',
             ],
         ],
     ],

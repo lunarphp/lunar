@@ -9,7 +9,6 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
@@ -29,9 +28,6 @@ class CustomerTable
                         ->relationship(
                             name: 'customerGroups',
                             titleAttribute: 'name',
-                            modifyQueryUsing: fn (Builder $query) => $query->distinct(
-                                ['id', 'name', 'handle', 'default']
-                            )
                         )
                         ->multiple()
                         ->searchable()

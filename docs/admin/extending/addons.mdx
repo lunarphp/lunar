@@ -1,0 +1,179 @@
+---
+title: "Building an Add-on"
+sidebarTitle: "Add-ons"
+description: "How to scaffold, compile, and ship a distributable package that extends Lunar's admin panel at runtime."
+---
+
+An add-on for the panel is a normal Composer package with a Laravel service provider, plus a small npm package that compiles to a single JavaScript bundle. Nothing about it requires recompiling the panel itself — the panel loads the add-on's bundle at runtime and calls back into it.
+
+`lunarphp/panel-addon-example` is the reference implementation everything on this page is drawn from: fork it with `composer create-project lunarphp/panel-addon-example my-addon` and replace the example page, slot, and table column with the add-on's own. `tests/panel/Feature/ExampleAddonTest.php` in the monorepo exercises this package's real, unmodified source against the panel's real Customers routes, so every snippet below is proven to integrate, not just to work in isolation.
+
+## Scaffolding the package
+
+This package's own `composer.json` looks like this:
+
+```json
+{
+    "name": "lunarphp/panel-addon-example",
+    "description": "Starter template and reference add-on for lunarphp/panel: a page, a nav item, a slot, and a table extension registered at runtime without recompiling the panel. Fork it with `composer create-project lunarphp/panel-addon-example`.",
+    "license": "MIT",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "LunarPanelExample\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "lunarphp/panel": "self.version"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LunarPanelExample\\ExampleAddonServiceProvider"
+            ]
+        }
+    }
+}
+```
+
+The `extra.laravel.providers` entry lets Laravel's package auto-discovery register the provider without the host app touching `config/app.php`. The provider itself (`src/ExampleAddonServiceProvider.php`) registers a `Section` with the panel, and a Vite module for the compiled bundle:
+
+```php
+use Illuminate\Support\ServiceProvider;
+use Lunar\Panel\Facades\Panel;
+use Lunar\Panel\PanelManager;
+
+class ExampleAddonServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Panel::section(new ExampleSection);
+
+        $this->app->make(PanelManager::class)->vite('example-addon', [
+            'input' => 'resources/js/addon.ts',
+            'hotFile' => null,
+            'buildDirectory' => 'vendor/lunar-panel/example-addon',
+            // Lets `php artisan lunar:panel:link` symlink this package's
+            // compiled build/ into public/vendor/lunar-panel/example-addon.
+            '__buildSourcePath' => dirname(__DIR__).'/build',
+        ]);
+    }
+}
+```
+
+`PanelManager::vite()` is what makes the panel's Blade entry emit a `<script>` tag for the add-on's compiled bundle automatically — no panel changes required for a new add-on to ship its own JS. See [Extending the Admin Panel](/admin/extending/overview) for what a `Section` can register beyond the page and Vite module shown here.
+
+## The npm setup
+
+Two packages are published to npm with each tagged Lunar release, and an add-on depends on them **by version**, never a `file:` path:
+
+- `@lunarphp/panel` — the panel's layout and page components (`PageHeader`, `DataTable`, form inputs, overlays, and so on), plus their types.
+- `@lunarphp/panel-vite-plugin` — the build preset that compiles an add-on to a single IIFE bundle sharing the panel's own Vue instance instead of bundling a second copy.
+
+```json
+{
+    "name": "@lunarphp/panel-addon-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@inertiajs/vue3": "^2.0.0",
+        "@lunarphp/panel": "^0.1.0",
+        "@lunarphp/panel-vite-plugin": "^0.1.0",
+        "@vitejs/plugin-vue": "^5.2.0",
+        "vite": "^6.0.0",
+        "vue": "^3.5.13"
+    }
+}
+```
+
+### `vite.config.js`
+
+```js
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import lunarPanelPlugin from '@lunarphp/panel-vite-plugin';
+
+// Compiles resources/js/addon.ts to a single IIFE bundle that shares the
+// panel's Vue instance (window.Vue) instead of bundling its own copy.
+export default defineConfig({
+    plugins: [
+        vue(),
+        lunarPanelPlugin({ name: 'LunarPanelExampleAddon' }),
+    ],
+    build: {
+        outDir: 'build',
+        rollupOptions: {
+            input: 'resources/js/addon.ts',
+        },
+    },
+});
+```
+
+`@lunarphp/panel-vite-plugin` forces `output.format: 'iife'` and externalizes `vue` (to the `window.Vue` global), `@inertiajs/vue3` (to `window.InertiaVue3`), and `@lunarphp/panel` (to `window.LunarPanelUI`) — each published by the panel's own frontend entry at startup. That is what lets the add-on's bundle call into the panel's Vue and Inertia runtimes and reuse its layout and page components instead of shipping second copies.
+
+## The add-on entry point
+
+`resources/js/addon.ts` registers the add-on's pages and slot components:
+
+```ts
+import WidgetsIndexPage from './pages/Widgets/Index.vue';
+import InfoBannerComponent from './components/InfoBanner.vue';
+
+// Register eagerly. The panel's frontend entry publishes window.LunarPanel and
+// is emitted before any add-on script, so it is always present here.
+window.LunarPanel.registerPages({
+    'example-addon::Widgets/Index': WidgetsIndexPage,
+});
+
+window.LunarPanel.registerComponents('example-addon', {
+    InfoBanner: InfoBannerComponent,
+});
+```
+
+Pages are named `{key}::Path/Name`, matching the folder structure under `resources/js/pages/` and the Inertia component name the add-on's routes render — see [Pages and navigation](/admin/extending/pages) for how the two sides line up.
+
+<Warning>
+Register pages, components, layouts, and translations at the **top level** of the bundle — never inside `window.LunarPanel.booting()`. `booting()` callbacks run after the panel has mounted, which is too late: a page or slot component registered there is missing when Inertia resolves and first renders it on a hard load, and because registration is not reactive the slot never recovers. The panel holds its initial mount until `DOMContentLoaded`, by which point every add-on script has already run, so anything registered at the top level of a bundle is guaranteed to be in place in time. Reserve `booting()` for work that genuinely needs the mounted app.
+</Warning>
+
+Beyond `registerPages()`, `registerComponents()`, and `booting()`, the runtime exposes `registerLayout(name, component)` (a persistent layout an add-on page can opt into), `registerTranslations(locale, namespace, messages)` (push vue-i18n messages directly at runtime), and `resolveExtensionComponent(name)` (look up a namespaced component registered by any bundle). The typed contract for all of this is the `LunarPanelRuntime` interface, shipped as `dist/runtime.d.ts` in the `@lunarphp/panel` package.
+
+## Compiling the bundle
+
+```sh
+npm install
+npm run build
+```
+
+This produces a compiled IIFE plus a manifest in `build/`. Commit this directory — the host app's `public/` never runs a JS build step for the panel or its add-ons, so the compiled `build/` is what gets published or symlinked into place.
+
+## Shipping the compiled assets
+
+The `__buildSourcePath` passed to `PanelManager::vite()` in the service provider is what lets the panel manage the add-on's assets without any panel-side configuration:
+
+- **Production**: `php artisan vendor:publish --tag=example-addon-panel-assets --force` copies the add-on's `build/` into `public/vendor/lunar-panel/example-addon/`. The panel registers a `{key}-panel-assets` publish tag for every module's `__buildSourcePath` automatically; `--tag=panel-all-assets` publishes the panel's own build plus every add-on in one pass.
+- **Local development**: `php artisan lunar:panel:link` symlinks the `build/` directory instead, so a rebuild is picked up without re-publishing.
+
+The panel's Blade entry loops every registered Vite module and emits a `<script>`/`<link>` tag for each automatically — no panel changes are required for a new add-on to appear.
+
+## Installing the example add-on
+
+1. `composer require lunarphp/panel-addon-example` to install it as-is, or `composer create-project lunarphp/panel-addon-example my-addon` to fork it as the starting point for a new add-on.
+2. Register the provider — auto-discovered via `composer.json`'s `extra.laravel.providers`, or added manually.
+3. `npm install` inside the package, then `npm run build`.
+4. Publish or symlink the compiled build as described above.
+
+## Troubleshooting
+
+A registered page, slot, or column that doesn't appear is almost always one of:
+
+- **A slot never renders** because its zone prefix doesn't match the target page's actual route name (with the `panel.` prefix stripped) — not a name guessed from what the page conceptually does.
+- **A page component is "not found"** client-side because the `Inertia::render()` name in the route doesn't exactly match the key passed to `window.LunarPanel.registerPages()`, including the `namespace::` prefix.
+- **Registration never runs** because it happened inside `booting()` instead of at the bundle's top level.
+
+See [Troubleshooting](/admin/extending/troubleshooting) for the full list, including the table-extension and settings-layout gotchas.
