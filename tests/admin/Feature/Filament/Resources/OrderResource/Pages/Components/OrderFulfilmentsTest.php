@@ -361,6 +361,7 @@ it('shows the notify toggle on the ship modal only when a shipped notification i
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
     // Nothing registered for the shipped state — progressive disclosure hides it.
+    OrderNotifications::forget('order-shipped');
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
         ->assertSchemaComponentDoesNotExist('notify');
@@ -375,6 +376,9 @@ it('shows the notify toggle on the ship modal only when a shipped notification i
 it('sends the per-parcel notification when shipping with the notify toggle on', function () {
     OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     NotificationFacade::fake();
+
+    // Draft orders never email; place it quietly so the setup sends nothing.
+    $this->order->updateQuietly(['placed_at' => now()]);
 
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 

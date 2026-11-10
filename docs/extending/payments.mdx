@@ -52,7 +52,7 @@ interface PaymentType
 | `withData()` | Passes provider-specific data to the driver, such as a payment intent ID submitted from the frontend. |
 | `setConfig()` | Passes the driver's configuration block from `config/lunar/payments.php`. Lunar calls this automatically when the driver is resolved. |
 | `allowPartialPayment()` | Toggles whether the driver should accept a payment for less than the full cart or order total, for example a deposit. Defaults to `false`. |
-| `authorize()` | Authorizes the payment, creates the order if one does not already exist, and records the resulting transaction. Returns `null` when nothing could be done, or a `PaymentAuthorize` object describing the outcome. |
+| `authorize()` | Authorizes the payment, creates the order if one does not already exist, and records the resulting transaction. A driver that places the order here records its capture before stamping `placed_at`, which sends the order confirmation (see [Recording transactions](#recording-transactions)). Returns `null` when nothing could be done, or a `PaymentAuthorize` object describing the outcome. |
 | `refund()` | Refunds a captured transaction for the given amount and returns a `PaymentRefund` object. |
 | `capture()` | Captures an amount against an `intent` transaction and returns a `PaymentCapture` object. |
 
@@ -228,6 +228,10 @@ $order->transactions()->create([
 ```
 
 If the payment is captured straight away, record it directly with type `capture` instead.
+
+<Warning>
+Record the transaction **before** stamping `placed_at` on the order. Lunar's customer-notification listeners skip payment-status changes on an unplaced order and let the order confirmation carry the payment state, so a checkout that captures immediately sends one email. A driver that places the order first and records the capture second sends the confirmation and a separate "payment received" email for every checkout. See [Notifications](/reference/notifications#trigger-rules).
+</Warning>
 
 ### Capturing
 

@@ -146,6 +146,17 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     /**
      * {@inheritDoc}
      */
+    public function dispatchedStateNames(): array
+    {
+        return array_merge(
+            $this->stateNamesIn(FulfilmentStateCategory::Fulfilled),
+            $this->stateNamesIn(FulfilmentStateCategory::Returned),
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function stateNamesIn(FulfilmentStateCategory $category): array
     {
         return collect($this->categoryMap())

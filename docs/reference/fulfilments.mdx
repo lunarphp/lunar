@@ -9,7 +9,7 @@ A fulfilment is a unit of "getting the order's goods to the customer" — a ship
 
 An order's [`fulfillableLines`](/reference/orders#order-model) (lines where `requires_fulfilment` is `true`) are covered by one or more `Fulfilment` records. When an order is placed, Lunar automatically creates its initial fulfilments: each registered [fulfilment method](#fulfilment-methods) claims the lines it covers, in priority order, and a method that claims at least one line gets one fulfilment covering them. A basket of a shippable product, a licence key, and a click-and-collect item ends up with three fulfilments — one per method. A merchant does not create the initial fulfilment by hand; they split, merge, or move lines between the fulfilments that already exist.
 
-Each fulfilment progresses through a state graph owned by its method — a shipping fulfilment ships and can be returned, a digital one is provisioned, a collection one is marked collected. The order's own [`fulfilment_status`](/reference/orders#fulfilment-status) is a rollup over all of an order's fulfilments and is method-agnostic.
+Each fulfilment progresses through a state graph owned by its method — a shipping fulfilment ships and can be returned, a digital one is provisioned, a pickup one is marked picked up. The order's own [`fulfilment_status`](/reference/orders#fulfilment-status) is a rollup over all of an order's fulfilments and is method-agnostic.
 
 ## Fulfilment model
 
@@ -183,13 +183,18 @@ Methods claim lines in ascending priority order over a shrinking pool of unclaim
 Manage the registry via the `FulfilmentMethods` facade:
 
 ```php
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Facades\FulfilmentMethods;
 
 FulfilmentMethods::register(App\Fulfilment\Methods\PrescriptionMethod::class);
 FulfilmentMethods::forget('pickup');
 FulfilmentMethods::all(); // Collection<string, FulfilmentMethod>, priority order
 FulfilmentMethods::get('shipping');
+FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled); // state $names in a category, across every method
+FulfilmentMethods::dispatchedStateNames(); // Fulfilled and Returned categories: goods that reached the customer
 ```
+
+A custom `Lunar\Core\Contracts\FulfilmentMethodManifest` implements both. The order's `fulfilment_status` rollup and the partial fulfilment update email count a line as dispatched through `dispatchedStateNames()`.
 
 ## Creating fulfilments
 
@@ -367,4 +372,6 @@ HoldReasons::add('address-query', 'Address query');
 
 ## Notifications on fulfilment events
 
-`ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job). See the [Notifications](/reference/notifications) reference for how to register a notification against a fulfilment state.
+`ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job).
+
+Lunar registers a default email for four of these states: `shipped` (`Lunar\Core\Notifications\OrderShipped`, with the fulfilment's lines and tracking), `ready-for-pickup` (`OrderReadyForPickup`), `provisioned` (`OrderProvisioned`), and `returned` (`ReturnReceived`). `picked-up`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing. See the [Notifications](/reference/notifications#default-notifications) reference for what each contains, how to customize the templates, and how to register a notification against a custom fulfilment state.

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
 use Lunar\Core\Contracts\OrderNotificationManifest;
+use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderCustomerNotified;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
@@ -32,7 +33,11 @@ class NotifyCustomer implements NotifiesCustomer
     public function execute(Order $order, string $notification, ?string $message = null, array $recipients = []): Order
     {
         /** @var Order $order */
-        $class = $this->catalogue->get($notification);
+        // Only manual, order-scoped entries: a fulfilment-scoped class is
+        // constructed with a Fulfilment, not this Order.
+        $class = array_key_exists($notification, $this->catalogue->sendable(NotificationScope::Order))
+            ? $this->catalogue->get($notification)
+            : null;
 
         if ($class === null) {
             throw new OrderActionException(
