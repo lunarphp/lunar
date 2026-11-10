@@ -156,13 +156,16 @@ or swap it, forget or re-register its key in a service provider:
 
 ```php
 OrderNotifications::forget('payment-received');
-OrderNotifications::register('order-confirmation', MyConfirmation::class, on: ['placed']);
+OrderNotifications::register('order-confirmation', MyConfirmation::class, label: 'Order confirmation', on: ['placed']);
 ```
 
-Two trigger rules come with the defaults. Payment and fulfilment rollup emails
-only fire for placed orders, so a card checkout sends one confirmation (which
-carries the payment state) rather than a confirmation plus a "paid" email; a
-driver must record its capture before stamping `placed_at`. And the refund
+A few trigger rules come with the defaults. Only placed orders are emailed, so a
+draft is never told it shipped or was cancelled, and a card checkout sends one
+confirmation (which carries the payment state) rather than a confirmation plus a
+"paid" email; a driver must record its capture before stamping `placed_at`.
+Emails send once the change that fired them commits, built from freshly loaded
+models, so a rolled-back checkout sends nothing and a shipped email carries its
+tracking. `OrderNotifications::withoutSending()` mutes them for imports. And the refund
 event now resolves the `refund-issued` key, not `refunded` (which stays the
 payment-status rollup's key) — a notification registered `on: ['refunded']` for
 the refund event should move to `on: ['refund-issued']`.

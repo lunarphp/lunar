@@ -183,13 +183,18 @@ Methods claim lines in ascending priority order over a shrinking pool of unclaim
 Manage the registry via the `FulfilmentMethods` facade:
 
 ```php
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Facades\FulfilmentMethods;
 
 FulfilmentMethods::register(App\Fulfilment\Methods\PrescriptionMethod::class);
 FulfilmentMethods::forget('pickup');
 FulfilmentMethods::all(); // Collection<string, FulfilmentMethod>, priority order
 FulfilmentMethods::get('shipping');
+FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled); // state $names in a category, across every method
+FulfilmentMethods::dispatchedStateNames(); // Fulfilled and Returned categories: goods that reached the customer
 ```
+
+A custom `Lunar\Core\Contracts\FulfilmentMethodManifest` implements both. The order's `fulfilment_status` rollup and the partial fulfilment update email count a line as dispatched through `dispatchedStateNames()`.
 
 ## Creating fulfilments
 
@@ -369,4 +374,4 @@ HoldReasons::add('address-query', 'Address query');
 
 `ship()`, `fulfil()`, `markReturned()`, and `transition()` fire a `FulfilmentStatusUpdated` event when the state actually changes, which sends any notifications registered against the new state's key — unless the verb's `notify` argument is `false`, or the transition was `cancel()` (fulfilment cancellation never notifies the customer; that is the order-level `cancel()` notification's job).
 
-Lunar registers a default email for four of these states: `shipped` (`Lunar\Core\Notifications\OrderShipped`, with the fulfilment's lines and tracking), `ready-for-pickup` (`OrderReadyForPickup`), `provisioned` (`OrderProvisioned`), and `returned` (`ReturnReceived`). `collected`, `in-progress`, and `pending` send nothing. See the [Notifications](/reference/notifications#default-notifications) reference for what each contains, how to customize the templates, and how to register a notification against a custom fulfilment state.
+Lunar registers a default email for four of these states: `shipped` (`Lunar\Core\Notifications\OrderShipped`, with the fulfilment's lines and tracking), `ready-for-pickup` (`OrderReadyForPickup`), `provisioned` (`OrderProvisioned`), and `returned` (`ReturnReceived`). `picked-up`, `in-progress`, `pending`, and the fulfilment-level `cancelled` state send nothing. See the [Notifications](/reference/notifications#default-notifications) reference for what each contains, how to customize the templates, and how to register a notification against a custom fulfilment state.
