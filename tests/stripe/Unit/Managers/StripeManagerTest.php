@@ -14,6 +14,7 @@ use Lunar\Stripe\Models\StripePaymentIntent;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Stripe\ApiRequestor;
 use Stripe\PaymentIntent;
 
@@ -736,4 +737,25 @@ it('authorises again after a short hold is voided, under a new key', function ()
     $key = collect($create['headers'])->first(fn ($header) => str_starts_with($header, 'Idempotency-Key: '));
 
     expect($key)->toContain("lunar-cart-{$cart->public_id}-hold-1-");
+});
+
+it('creates an intent for the calculated total, not a stale persisted one', function () {
+    $cart = CartBuilder::build()->refresh()->calculate();
+
+    // A fresh-looking snapshot that no longer matches what the pipeline produces.
+    Cart::query()->whereKey($cart->id)->toBase()->update(['total' => 100]);
+    Blink::flush();
+
+    $stale = Cart::query()->find($cart->id)->calculate();
+
+    expect($stale->total->value)->toBe(100);
+
+    $mock = Stripe::fake();
+
+    paymentDriver()->createIntent($stale);
+
+    $create = collect($mock->requests)->first(fn ($request) => $request['method'] === 'post' && str_ends_with($request['url'], '/payment_intents'));
+
+    expect($create['params']['amount'])->toBe(StripeManager::toStripeAmount($cart->total->value, $cart->currency))
+        ->and($cart->total->value)->not->toBe(100);
 });

@@ -32,7 +32,7 @@ class ShippingExclusionListForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel.shipping::shippingexclusionlist.form.name.label'))
+            ->label(__('shipping::shippingexclusionlist.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();

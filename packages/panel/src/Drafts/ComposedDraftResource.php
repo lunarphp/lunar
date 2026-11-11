@@ -85,17 +85,30 @@ class ComposedDraftResource implements DraftableResource
 
     /**
      * The resource commits first with its own keys, then each slice with its
-     * unprefixed values in registration order. DraftManager wraps the whole
-     * call in one transaction, so a failing slice rolls the resource back.
+     * unprefixed values in registration order, skipping a slice whose values
+     * match its current ones so an untouched slice never re-saves the record.
+     * DraftManager wraps the whole call in one transaction, so a failing
+     * slice rolls the resource back.
      */
     public function commit(Model $record, array $values): void
     {
         $partitioned = $this->set->partition($values);
 
+        // Read before the resource commits, which may change what a slice reports.
+        $unchanged = [];
+
+        foreach ($this->set->slices() as $namespace => $slice) {
+            $sliceValues = $partitioned['slices'][$namespace] ?? [];
+
+            $unchanged[$namespace] = $slice->normalize($sliceValues) === $slice->normalize($slice->currentValues($record));
+        }
+
         $this->resource->commit($record, $partitioned['rest']);
 
         foreach ($this->set->slices() as $namespace => $slice) {
-            $slice->commit($record, $partitioned['slices'][$namespace] ?? []);
+            if (! $unchanged[$namespace]) {
+                $slice->commit($record, $partitioned['slices'][$namespace] ?? []);
+            }
         }
     }
 

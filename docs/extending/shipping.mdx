@@ -84,8 +84,8 @@ class CustomShippingModifier extends ShippingModifier
                 identifier: 'PICKUP',
                 price: new PriceValue(0, $cart->currency),
                 taxClass: $taxClass,
-                // Reference flag, useful for identifying a collection order later.
-                collect: true,
+                // Routes the order's lines to the pickup fulfilment method.
+                pickup: true,
             )
         );
 
@@ -124,7 +124,7 @@ class CustomShippingModifier extends ShippingModifier
 | `taxClass` | `Lunar\Core\Models\TaxClass` | |
 | `taxReference` | `?string` | |
 | `option` | `?string` | |
-| `collect` | `bool` | Marks the option as an in-store collection, defaults to `false`. |
+| `pickup` | `bool` | Marks the option as an in-store pickup, defaults to `false`. |
 | `meta` | `?array` | |
 
 Register the modifier from a service provider's `boot()` method:

@@ -76,7 +76,8 @@ interface FormSlice
      * leave ordering and atomicity to chance. Receives every field,
      * unprefixed, current values overlaid with the submitted ones; runs after
      * the form's own commit inside the same transaction, so throwing rolls
-     * the record's changes back too. Delegate to core actions.
+     * the record's changes back too. Skipped when none of the slice's values
+     * changed. Delegate to core actions.
      *
      * @param  array<string, mixed>  $values
      */

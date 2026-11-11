@@ -520,6 +520,32 @@ it('converts capture and refund amounts to stripe scale and stores refunds in lu
     expect($refund->amount)->toBe(500);
 });
 
+it('rejects an intent that matches a stale persisted total but not the pipeline result', function () {
+    // Persist a snapshot, then tamper with it so the row reads a lower total
+    // than the pipeline produces, while still looking fresh.
+    $cart = CartBuilder::build()->refresh()->calculate();
+
+    expect($cart->totalsAreFresh())->toBeTrue();
+
+    Cart::query()->whereKey($cart->id)->toBase()->update(['total' => 100]);
+
+    $stale = StripeManager::toStripeAmount(100, $cart->currency);
+
+    Stripe::fake([
+        'amount' => $stale,
+        'amount_received' => $stale,
+        'currency' => strtolower($cart->currency->code),
+    ]);
+
+    $response = (new StripePaymentType)->cart(Cart::query()->find($cart->id))->withData([
+        'reference' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull();
+});
+
 it('places from the gateway-neutral reference key', function () {
     $cart = CartBuilder::build();
     StripeFake::forCart($cart);

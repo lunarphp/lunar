@@ -68,6 +68,8 @@ return [
     'section_totals' => 'Totals',
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
+    'section_pickup' => 'Recogida',
+    'pickup_from' => 'Recoger en {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -95,6 +97,7 @@ return [
     'side_status' => 'Status',
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
+    'side_customer_address' => 'Dirección del cliente',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Notas internas',
@@ -150,6 +153,9 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
+    'payment_on_account' => 'A cuenta',
+    'payment_on_account_sub' => 'Facturado a cuenta, no se cobró ningún pago al finalizar la compra',
+
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',
     'no_reason' => 'No reason given',
@@ -177,13 +183,13 @@ return [
     'update_status' => 'Update status',
 
     'handed_over_shipping' => 'Shipped',
-    'handed_over_collection' => 'Collected',
+    'handed_over_pickup' => 'Picked up',
     'handed_over_digital' => 'Provisioned',
     'handed_over_default' => 'Fulfilled',
 
     'mark_shipped' => 'Mark shipped',
     'fulfil_label' => 'Mark fulfilled',
-    'fulfil_label_collection' => 'Mark collected',
+    'fulfil_label_pickup' => 'Mark picked up',
 
     'action_split' => 'Split…',
     'action_merge' => 'Merge into…',

@@ -314,7 +314,7 @@ use Lunar\Core\Facades\Discounts;
 $isValid = Discounts::validateCoupon('20OFF');
 ```
 
-The default validator, `Lunar\Core\Validation\CouponValidator`, checks that the coupon matches an active discount under its `max_uses` and, if the discount sets `max_uses_per_user`, that the authenticated user has not exceeded it. Bind a different implementation of `Lunar\Core\Contracts\CouponValidator` in your own service provider to customize this.
+The default validator, `Lunar\Core\Validation\CouponValidator`, checks that the coupon matches an active discount under its `max_uses` and, if the discount sets `max_uses_per_user`, that the authenticated user has not exceeded it. A per-user-limited coupon is rejected for a guest, since per-user usage is recorded against a user and the discount would not apply to their cart. Bind a different implementation of `Lunar\Core\Contracts\CouponValidator` in your own service provider to customize this.
 
 ## How discounts apply in the cart pipeline
 

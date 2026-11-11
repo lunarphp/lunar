@@ -81,7 +81,7 @@ Extend the abstract `Lunar\Panel\Forms\FormSlice` rather than implementing the i
 | `currentValues(Model $record)` | The current stored value of every field, keyed by bare name and normalized the same way `normalize()` shapes incoming data. Seeds the form, and on a drafted page is the baseline conflict detection compares against. |
 | `normalize(array $data)` | Shapes incoming values so equality against `currentValues()` holds. Receives only this slice's keys. |
 | `rules(Model $record)` | Validation rules keyed by bare field, `.*` entries included. The composer prefixes the keys; rule parameters pass through verbatim. |
-| `commit(Model $record, array $values)` | Persists the slice's values: every field present, current values overlaid with the submitted ones, unprefixed. Runs after the form's own action inside the same transaction, so a slice that throws rolls the record's changes back too. Delegate to a core action. |
+| `commit(Model $record, array $values)` | Persists the slice's values: every field present, current values overlaid with the submitted ones, unprefixed. Runs after the form's own action inside the same transaction, so a slice that throws rolls the record's changes back too. On a drafted page, skipped when none of the slice's values changed. Delegate to a core action. |
 | `labels()` | Bare field to lang key, for the conflict dialog and validation messages. |
 
 The slice persists its own values because it is the only thing that knows where its data lives. The panel never writes an add-on's storage, and a post-save hook outside the transaction would leave ordering and atomicity to chance. `commit()` is that hook, typed, ordered after the record's own commit, and inside the same transaction.
@@ -169,7 +169,7 @@ The customer form now carries `addon:example-addon:tier`, on the edit page and t
 
 ## The JS side
 
-The add-on edits its slice from a component placed on the page through a [slot](/admin/extending/slots). `useFormSlice` and `usePanelForm` ship in `@lunarphp/panel` 0.2.0 and later, so an add-on that uses them depends on `"@lunarphp/panel": "^0.2.0"`. Every zone on a form page sits inside the page's form, so the component binds with `useFormSlice`, exported from `@lunarphp/panel`, passing the slice's `key()`:
+The add-on edits its slice from a component placed on the page through a [slot](/admin/extending/slots). `useFormSlice` and `usePanelForm` ship in `@lunarphp/panel` 0.2.1 and later, so an add-on that uses them depends on `"@lunarphp/panel": "^0.2.1"`. Every zone on a form page sits inside the page's form, so the component binds with `useFormSlice`, exported from `@lunarphp/panel`, passing the slice's `key()`:
 
 ```vue
 <script setup lang="ts">

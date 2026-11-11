@@ -5,6 +5,7 @@ namespace Lunar\Panel;
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -450,6 +451,12 @@ class PanelManager
      */
     public function draftDiscarded(EditDraft $draft): void
     {
+        $model = Relation::getMorphedModel($draft->draftable_type) ?? $draft->draftable_type;
+
+        if (! $this->formSlicesFor($model)) {
+            return;
+        }
+
         $record = $draft->draftable;
 
         if (! $record instanceof Model) {

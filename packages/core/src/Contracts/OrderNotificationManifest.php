@@ -71,4 +71,22 @@ interface OrderNotificationManifest
      * @return array<int, class-string>
      */
     public function triggeredBy(string $status, NotificationScope $scope = NotificationScope::Order): array;
+
+    /**
+     * Run the callback with automatic customer notifications switched off, for
+     * imports and back-office tooling. Order events still fire; only the
+     * emails are skipped, including those that would send when an enclosing
+     * transaction commits.
+     *
+     * @template TReturn
+     *
+     * @param  callable(): TReturn  $callback
+     * @return TReturn
+     */
+    public function withoutSending(callable $callback): mixed;
+
+    /**
+     * Whether automatic customer notifications are currently muted.
+     */
+    public function isMuted(): bool;
 }

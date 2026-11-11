@@ -100,7 +100,7 @@ every id to belong to the parent product.
 ### Components
 
 The affected components keep their markup and interaction design and swap their
-persistence: instead of posting, each binds to its slice through `useDraftSlice()` and
+persistence: instead of posting, each binds to its slice through `useFormSlice()` and
 mutates the values object. Reordering associations, editing a slug, typing a price, or
 dragging an image now dirties the form, shows in the save cluster, survives navigation
 through the restore banner, and lands atomically with the rest of the record.
@@ -203,6 +203,14 @@ the staging upload endpoint. The draft trio, `options.generate`, `variants.bulk`
 
 ## Open questions
 
+- **Staged media orphaned by a partial revert.** `discard()` fires only when the whole
+  draft row is deleted, and commit skips a slice whose values are unchanged. If staff
+  revert every media field while other fields stay drafted, autosave rewrites the draft
+  without the media keys and neither path reaches the media slice again, so its staged
+  files are orphaned. Options: a slice hook on autosave, or a sweep (alongside draft
+  pruning) of staged media whose draft no longer holds media keys. Owner: Glenn. Lean:
+  the sweep; it keeps the 0086 contract unchanged.
+
 - **Staged media and the media manager.** A draft's staged uploads appear only on the
   page where they were uploaded. Should the media manager, if it grows a library view,
   show staged items with a "pending" state, or hide them? Owner: Glenn. Lean: hide;
@@ -219,8 +227,8 @@ the staging upload endpoint. The draft trio, `options.generate`, `variants.bulk`
 
 ## References
 
-- [[0086-panel-draft-slices]] — the `DraftSlice` contract, composer, seeding,
-  `useDraftSlice`, and the discard hook this spec relies on.
+- [[0086-panel-draft-slices]] — the `FormSlice` and `DraftSlice` contracts, composer,
+  seeding, `useFormSlice`, and the discard hook this spec relies on.
 - [[0051-panel-edit-drafts]] — the draft layer, key scheme, conflict and rebase protocol.
 - [[0057-panel-products-section]] — the products page and the original reasoning for
   immediate sub-resources, revisited here.
@@ -236,19 +244,19 @@ the staging upload endpoint. The draft trio, `options.generate`, `variants.bulk`
   on bulk set-price, flash on every operation; 16-locale copy; page tests asserting each
   operation carries the marker. Lands first so the page is honest before any surface
   moves.
-- [ ] Slice 2 — `association` slice, the associations card on `useDraftSlice`, removal
+- [ ] Slice 2 — `association` slice, the associations card on `useFormSlice`, removal
   of the association routes and controller; draft feature tests (autosave, per-type
   conflict, commit ordering) and a vitest pass over the card.
-- [ ] Slice 3 — `url` slice on every `HasUrls` draftable, `UrlSlugs` on `useDraftSlice`,
+- [ ] Slice 3 — `url` slice on every `HasUrls` draftable, `UrlSlugs` on `useFormSlice`,
   removal of the URL routes; uniqueness and one-default rules; tests across products,
   variants, brands, collections, product types.
 - [ ] Slice 4 — `price` slice on the variant resource and under `variant:` on the
-  product resource, `PricingEditor` on `useDraftSlice`, removal of the price routes;
+  product resource, `PricingEditor` on `useFormSlice`, removal of the price routes;
   tuple-key round-trip, base-row rules, minor-unit normalisation, conflict per tuple.
 - [ ] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
   the `media` slice on every `HasMedia` draftable with move-on-commit and
   delete-on-discard, `variant_media` slice, `MediaGroups` and the variant picker on
-  `useDraftSlice`, removal of the media update/reorder/destroy and variant sync routes;
+  `useFormSlice`, removal of the media update/reorder/destroy and variant sync routes;
   tests for staging visibility, commit move, discard and prune cleanup, conflict per
   collection.
 - [ ] Slice 6 — Conflict dialog summary presentation for the four first-party slices;

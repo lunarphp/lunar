@@ -35,13 +35,13 @@ class ShippingMethodTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel.shipping::shippingmethod.table.name.label')),
+                ->label(__('shipping::shippingmethod.table.name.label')),
             TextColumn::make('code')
-                ->label(__('lunarpanel.shipping::shippingmethod.table.code.label')),
+                ->label(__('shipping::shippingmethod.table.code.label')),
             TextColumn::make('driver')
-                ->label(__('lunarpanel.shipping::shippingmethod.table.driver.label'))
+                ->label(__('shipping::shippingmethod.table.driver.label'))
                 ->formatStateUsing(
-                    fn ($state) => __("lunarpanel.shipping::shippingmethod.table.driver.options.{$state}")
+                    fn ($state) => __("shipping::shippingmethod.table.driver.options.{$state}")
                 ),
         ];
     }

@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Изчакващо',
         'in-progress' => 'В процес',
-        'ready-for-collection' => 'Готово за получаване',
+        'ready-for-pickup' => 'Готово за получаване',
         'shipped' => 'Изпратено',
-        'collected' => 'Получено',
+        'picked-up' => 'Получено',
         'provisioned' => 'Предоставено',
         'cancelled' => 'Отменено',
         'returned' => 'Върнато',

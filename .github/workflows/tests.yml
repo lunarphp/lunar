@@ -155,7 +155,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -196,6 +196,14 @@ jobs:
       # preset (IIFE output, externalised vue/inertia/panel globals) still works.
       - name: Build example add-on bundle
         run: npm run build --workspace @lunarphp/panel-addon-example
+
+      # The table-rate-shipping add-on ships its panel pages prebuilt; type-check
+      # them against the freshly built @lunarphp/panel types and build the bundle.
+      - name: Typecheck table-rate-shipping panel pages
+        run: npm run type-check --workspace @lunarphp/table-rate-shipping-panel
+
+      - name: Build table-rate-shipping panel bundle
+        run: npm run build --workspace @lunarphp/table-rate-shipping-panel
 
       - name: Build bundles add-on bundle
         run: npm run build --workspace @lunarphp/bundles-addon

@@ -35,11 +35,11 @@ class ShippingZoneTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel.shipping::shippingzone.table.name.label')),
+                ->label(__('shipping::shippingzone.table.name.label')),
             TextColumn::make('type')
-                ->label(__('lunarpanel.shipping::shippingzone.table.type.label'))
+                ->label(__('shipping::shippingzone.table.type.label'))
                 ->formatStateUsing(
-                    fn ($state) => __("lunarpanel.shipping::shippingzone.table.type.options.{$state}")
+                    fn ($state) => __("shipping::shippingzone.table.type.options.{$state}")
                 ),
         ];
     }
