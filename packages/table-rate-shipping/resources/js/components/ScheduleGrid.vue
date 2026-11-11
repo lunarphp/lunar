@@ -48,11 +48,14 @@ const errorFor = (day: string, field: string): string | undefined => props.error
                 <div>{{ t('shipping::methods.schedule_to') }}</div>
             </div>
             <div v-for="day in days" :key="day" class="grid items-start gap-3 px-3.5 py-2 border-b border-line last:border-b-0 min-w-max" style="grid-template-columns: minmax(0, 1fr) 140px 140px">
-                <label class="flex items-center gap-2 cursor-pointer text-[12.5px] text-ink-900 min-h-[30px]">
+                <label class="flex items-center gap-2 cursor-pointer text-[12.5px] text-ink-900 min-h-[34px]">
                     <Checkbox :model-value="modelValue[day].enabled" @update:model-value="update(day, { enabled: $event })" />
                     {{ t(`shipping::methods.day_${day}`) }}
                 </label>
-                <TextInput :model-value="modelValue[day].from ?? ''" type="time" :disabled="!modelValue[day].enabled" @update:model-value="update(day, { from: $event || null })" />
+                <div>
+                    <TextInput :model-value="modelValue[day].from ?? ''" type="time" :disabled="!modelValue[day].enabled" :invalid="!!errorFor(day, 'from')" @update:model-value="update(day, { from: $event || null })" />
+                    <div v-if="errorFor(day, 'from')" class="mt-1 text-[11px] text-danger">{{ errorFor(day, 'from') }}</div>
+                </div>
                 <div>
                     <TextInput :model-value="modelValue[day].to ?? ''" type="time" :disabled="!modelValue[day].enabled" :invalid="!!errorFor(day, 'to')" @update:model-value="update(day, { to: $event || null })" />
                     <div v-if="errorFor(day, 'to')" class="mt-1 text-[11px] text-danger">{{ errorFor(day, 'to') }}</div>

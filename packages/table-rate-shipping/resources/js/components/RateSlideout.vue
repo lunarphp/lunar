@@ -87,7 +87,7 @@ const submit = (): void => {
                 {{ pricesIncludeTax ? t('shipping::zones.prices_incl_tax') : t('shipping::zones.prices_excl_tax') }}
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-3">
+            <div class="grid sm:grid-cols-2 gap-3 items-end">
                 <div>
                     <FieldLabel required>{{ t('shipping::zones.field_method') }}</FieldLabel>
                     <Select v-model="form.shipping_method_id" :invalid="!!form.errors.shipping_method_id">
@@ -95,7 +95,7 @@ const submit = (): void => {
                     </Select>
                     <div v-if="form.errors.shipping_method_id" class="mt-1 text-[11px] text-danger">{{ form.errors.shipping_method_id }}</div>
                 </div>
-                <label class="flex items-center gap-3 cursor-pointer sm:mt-6">
+                <label class="flex items-center gap-3 cursor-pointer">
                     <Toggle :on="form.enabled" @toggle="form.enabled = !form.enabled" />
                     <div>
                         <div class="text-[12.5px] text-ink-900 font-medium">{{ t('shipping::zones.field_enabled') }}</div>

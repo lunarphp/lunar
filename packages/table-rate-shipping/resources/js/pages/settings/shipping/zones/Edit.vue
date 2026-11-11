@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Button, Combobox, ConfirmDialog, FieldLabel, Section, Select, SettingsShell, StatusBadge, TextInput } from '@lunarphp/panel';
+import { Button, Combobox, ConfirmDialog, FieldLabel, Section, Select, SettingsShell, StatusBadge, TextInput, useToasts } from '@lunarphp/panel';
 import ChipList, { type Chip } from '../../../../components/ChipList.vue';
 import PostcodeListInput from '../../../../components/PostcodeListInput.vue';
 import RateSlideout, { type MethodOption, type RateRow } from '../../../../components/RateSlideout.vue';
@@ -30,6 +30,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const toasts = useToasts();
 
 const breadcrumbs = computed(() => [
     { label: t('nav.settings') },
@@ -44,6 +45,20 @@ const form = useForm({
     states: [...props.coverage.states],
     postcodes: [...props.coverage.postcodes],
     exclusion_lists: [...props.exclusionLists],
+});
+
+// Errors for list fields arrive keyed per item (`states.2`); show the first.
+const listError = (field: string): string | undefined => {
+    const errors = form.errors as Record<string, string | undefined>;
+
+    return errors[field] ?? Object.entries(errors).find(([key]) => key.startsWith(`${field}.`))?.[1];
+};
+
+// State and postcode zones read a single parent country.
+watch(() => form.type, (type) => {
+    if ((type === 'states' || type === 'postcodes') && form.countries.length > 1) {
+        form.countries = form.countries.slice(0, 1);
+    }
 });
 
 const submit = (): void => {
@@ -105,7 +120,16 @@ const toggleRate = (rate: RateRow): void => {
         enabled: !rate.enabled,
         base_prices: rate.base_prices,
         tiers: rate.tiers as unknown as Record<string, string | number | null>[],
-    }, { preserveScroll: true });
+    }, {
+        preserveScroll: true,
+        onError: (errors) => {
+            const message = Object.values(errors)[0];
+
+            if (message) {
+                toasts.error(message);
+            }
+        },
+    });
 };
 
 const removingRate = ref<RateRow | null>(null);
@@ -165,6 +189,7 @@ const confirmDestroy = (): void => {
                 </div>
                 <div class="max-w-[340px]">
                     <Combobox :options="availableCountries" :placeholder="t('shipping::zones.add_country_placeholder')" @change="form.countries.push(Number($event))" />
+                    <div v-if="listError('countries')" class="mt-1 text-[11px] text-danger">{{ listError('countries') }}</div>
                 </div>
             </Section>
 
@@ -173,6 +198,7 @@ const confirmDestroy = (): void => {
                 <div class="max-w-[340px] mb-3">
                     <FieldLabel>{{ t('shipping::zones.field_country') }}</FieldLabel>
                     <Combobox v-model="parentCountry" :options="countryOptions" :placeholder="t('shipping::zones.add_country_placeholder')" />
+                    <div v-if="listError('countries')" class="mt-1 text-[11px] text-danger">{{ listError('countries') }}</div>
                 </div>
                 <template v-if="parentCountry">
                     <div class="mb-3">
@@ -180,6 +206,7 @@ const confirmDestroy = (): void => {
                     </div>
                     <div class="max-w-[340px]">
                         <Combobox :options="availableStates" :placeholder="t('shipping::zones.add_state_placeholder')" @change="form.states.push(Number($event))" />
+                        <div v-if="listError('states')" class="mt-1 text-[11px] text-danger">{{ listError('states') }}</div>
                     </div>
                 </template>
                 <div v-else class="text-xs text-ink-500">{{ t('shipping::zones.choose_country_first') }}</div>
@@ -190,10 +217,11 @@ const confirmDestroy = (): void => {
                 <div class="max-w-[340px] mb-3">
                     <FieldLabel>{{ t('shipping::zones.field_country') }}</FieldLabel>
                     <Combobox v-model="parentCountry" :options="countryOptions" :placeholder="t('shipping::zones.add_country_placeholder')" />
+                    <div v-if="listError('countries')" class="mt-1 text-[11px] text-danger">{{ listError('countries') }}</div>
                 </div>
                 <div class="max-w-[340px]">
-                    <PostcodeListInput v-model="form.postcodes" :invalid="!!form.errors.postcodes" />
-                    <div v-if="form.errors.postcodes" class="mt-1 text-[11px] text-danger">{{ form.errors.postcodes }}</div>
+                    <PostcodeListInput v-model="form.postcodes" :invalid="!!listError('postcodes')" />
+                    <div v-if="listError('postcodes')" class="mt-1 text-[11px] text-danger">{{ listError('postcodes') }}</div>
                 </div>
             </Section>
 
@@ -204,6 +232,7 @@ const confirmDestroy = (): void => {
                 </div>
                 <div class="max-w-[340px]">
                     <Combobox :options="availableLists" :placeholder="t('shipping::zones.add_exclusion_list_placeholder')" @change="form.exclusion_lists.push(Number($event))" />
+                    <div v-if="listError('exclusion_lists')" class="mt-1 text-[11px] text-danger">{{ listError('exclusion_lists') }}</div>
                 </div>
             </Section>
 

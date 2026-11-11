@@ -42,9 +42,9 @@ const gridStyle = { gridTemplateColumns: 'minmax(0, 1.4fr) 90px 90px 170px 170px
                 <div>{{ t('shipping::methods.column_ends_at') }}</div>
             </div>
             <div v-for="(row, index) in modelValue" :key="row.id" class="grid items-start gap-3 px-3.5 py-2 border-b border-line last:border-b-0 min-w-max" :style="gridStyle">
-                <div class="text-[12.5px] text-ink-900 min-h-[30px] flex items-center">{{ row.name }}</div>
-                <div class="min-h-[30px] flex items-center"><Checkbox :model-value="row.enabled" :aria-label="t('shipping::methods.column_enabled')" @update:model-value="update(index, { enabled: $event })" /></div>
-                <div class="min-h-[30px] flex items-center"><Checkbox :model-value="row.visible" :aria-label="t('shipping::methods.column_visible')" @update:model-value="update(index, { visible: $event })" /></div>
+                <div class="text-[12.5px] text-ink-900 min-h-[34px] flex items-center">{{ row.name }}</div>
+                <div class="min-h-[34px] flex items-center"><Checkbox :model-value="row.enabled" :aria-label="t('shipping::methods.column_enabled')" @update:model-value="update(index, { enabled: $event })" /></div>
+                <div class="min-h-[34px] flex items-center"><Checkbox :model-value="row.visible" :aria-label="t('shipping::methods.column_visible')" @update:model-value="update(index, { visible: $event })" /></div>
                 <DatePicker :model-value="row.starts_at ?? ''" @update:model-value="update(index, { starts_at: $event || null })" />
                 <div>
                     <DatePicker :model-value="row.ends_at ?? ''" :invalid="!!errors?.[`customer_groups.${index}.ends_at`]" @update:model-value="update(index, { ends_at: $event || null })" />

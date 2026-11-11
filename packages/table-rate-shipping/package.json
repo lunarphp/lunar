@@ -10,7 +10,7 @@
     },
     "devDependencies": {
         "@inertiajs/vue3": "^3.0.0",
-        "@lunarphp/panel": "^0.2.0",
+        "@lunarphp/panel": "^0.2.1",
         "@lunarphp/panel-vite-plugin": "^0.1.0",
         "@vitejs/plugin-vue": "^5.2.0",
         "typescript": "^5.6.0",

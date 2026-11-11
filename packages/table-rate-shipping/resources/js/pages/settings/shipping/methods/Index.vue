@@ -114,6 +114,7 @@ const submitCreate = (): void => {
                     <Select v-model="createForm.driver" :invalid="!!createForm.errors.driver">
                         <option v-for="driver in drivers" :key="driver.key" :value="driver.key">{{ driver.label }}</option>
                     </Select>
+                    <div v-if="createForm.errors.driver" class="mt-1 text-[11px] text-danger">{{ createForm.errors.driver }}</div>
                 </div>
                 <div v-if="createForm.driver === 'ship-by'">
                     <FieldLabel>{{ t('shipping::methods.field_charge_by') }}</FieldLabel>

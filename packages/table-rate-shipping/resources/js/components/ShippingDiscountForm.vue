@@ -84,7 +84,7 @@ const errorFor = (index: number, field: string): string | undefined => props.err
                 </div>
             </div>
 
-            <div v-if="rule.type === 'percentage'" class="mt-3 max-w-[200px]">
+            <div v-if="rule.type === 'percentage'" class="mt-3 max-w-[220px]">
                 <FieldLabel required>{{ t('shipping::discounts.shipping_discount.panel.percentage') }}</FieldLabel>
                 <TextInput :model-value="rule.percentage ?? ''" type="number" min="0" max="100" step="0.01" :invalid="!!errorFor(index, 'percentage')" @update:model-value="update(index, { percentage: $event })">
                     <template #suffix><span class="text-[11px] text-ink-500">%</span></template>

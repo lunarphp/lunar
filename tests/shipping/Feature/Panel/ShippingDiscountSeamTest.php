@@ -52,10 +52,10 @@ it('decodes the stored rules for editing and encodes them on update', function (
         'data' => ['methods' => [['shipping_method_id' => null, 'type' => 'fixed', 'prices' => ['GBP' => '0']]]],
     ])->assertRedirect()->assertSessionHasNoErrors();
 
-    expect($discount->refresh()->data['methods'])->toBe([['shipping_method_id' => null, 'type' => 'fixed', 'prices' => ['GBP' => 0]]]);
+    expect($discount->refresh()->data['methods'])->toEqual([['shipping_method_id' => null, 'type' => 'fixed', 'prices' => ['GBP' => 0]]]);
 });
 
 it('does not share the method list outside the discount pages', function () {
     $this->get(route('panel.dashboard'))
-        ->assertInertia(fn (Assert $page) => $page->where('shippingMethods', null));
+        ->assertInertia(fn (Assert $page) => $page->missing('shippingMethods'));
 });

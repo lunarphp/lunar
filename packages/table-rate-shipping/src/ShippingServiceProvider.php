@@ -3,6 +3,8 @@
 namespace Lunar\Shipping;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Lunar\Core\Facades\Discounts;
@@ -135,11 +137,13 @@ class ShippingServiceProvider extends ServiceProvider
             Panel::section(new ShippingSection);
 
             // The ShippingDiscount type form needs the method list, and a type
-            // form has no endpoint of its own; share it on the discount pages
-            // only, so every other panel response stays free of the query.
-            Inertia::share('shippingMethods', fn () => request()->routeIs('panel.discounts.*')
-                ? ShippingMethod::query()->orderBy('name')->get(['id', 'name'])
-                : null);
+            // form has no endpoint of its own. Share it from the discount pages
+            // only: Inertia::share is global, so the host app's pages would get it too.
+            Event::listen(RouteMatched::class, function (RouteMatched $event): void {
+                if ($event->route->named('panel.discounts.*')) {
+                    Inertia::share('shippingMethods', fn () => ShippingMethod::query()->orderBy('name')->get(['id', 'name']));
+                }
+            });
         }
 
         Relation::morphMap([
