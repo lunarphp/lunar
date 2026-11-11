@@ -7,8 +7,8 @@ uses(TestCase::class);
 /**
  * These guard the "every page carries the extension seams" guarantee: content
  * pages must go through the shared scaffold, and the scaffold must actually
- * render the page-action ellipsis and a main slot zone. Auth and account pages
- * are standalone (no sectioned nav, no extension surface) and are exempt.
+ * render the page-action ellipsis and a main slot zone. Auth pages are
+ * standalone (no sectioned nav, no extension surface) and are exempt.
  */
 function panelJsPath(string $relative): string
 {
@@ -17,7 +17,7 @@ function panelJsPath(string $relative): string
 
 it('builds every content page through the shared scaffold', function () {
     $pagesDir = panelJsPath('pages');
-    $exemptTopLevel = ['auth', 'account'];
+    $exemptTopLevel = ['auth'];
 
     $offenders = [];
 
@@ -50,9 +50,8 @@ it('sets a browser-tab title on every page', function () {
     $pagesDir = panelJsPath('pages');
 
     // Content pages inherit <Head> from PageHeader/SettingsShell (asserted in
-    // the scaffold test below); the exempt auth and account pages must render
-    // their own.
-    $exemptTopLevel = ['auth', 'account'];
+    // the scaffold test above); the exempt auth pages must render their own.
+    $exemptTopLevel = ['auth'];
 
     $offenders = [];
 
