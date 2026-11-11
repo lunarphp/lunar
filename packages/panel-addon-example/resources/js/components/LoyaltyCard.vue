@@ -4,9 +4,11 @@ import { useI18n } from 'vue-i18n';
 
 // Binds to the LoyaltyTierSlice registered in ExampleSection::formExtensions().
 // The key given here is the slice's key(); the panel resolves it to the
-// `addon:example-addon:` namespace on the customer page's draft, so `tier`
-// autosaves, restores, conflicts and commits alongside the customer's own
-// fields without this component ever touching them.
+// `addon:example-addon:` namespace on the page's form. On the edit page that
+// is the customer's draft, so `tier` autosaves, restores, conflicts and
+// commits alongside the customer's own fields; on the create page it posts
+// with the form and commits once the customer exists. Either way this
+// component never touches the customer's own fields.
 const { t } = useI18n();
 
 const slice = useFormSlice<{ tier: string | null }>('example-addon');

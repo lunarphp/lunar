@@ -3,10 +3,17 @@
 namespace Lunar\Panel\Http\Requests\Settings;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the tax class store and update endpoints, whose rules are identical. */
 class TaxClassRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<TaxClass> */
+    protected string $sliceModel = TaxClass::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

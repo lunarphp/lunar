@@ -20,7 +20,7 @@ Two staff members editing *different* fields on the same record never see a conf
 
 ## Adding to a draft the add-on does not own
 
-Registering a `DraftableResource` is for a record the add-on owns outright. To add fields to a first-party record's existing draft, such as a loyalty tier on the customer edit page, register a [draft slice](/admin/extending/draft-slices) instead. A slice joins the record's draft under a namespace of its own and gets the same autosave, conflict detection, and atomic commit, without being able to touch the record's own fields.
+Registering a `DraftableResource` is for a record the add-on owns outright. To add fields to a first-party form, such as a loyalty tier on the customer pages, register a [form slice](/admin/extending/form-slices) instead. On a drafted edit page a slice joins the record's draft under a namespace of its own and gets the same autosave, conflict detection, and atomic commit; on a create or settings form it posts with the form. Either way it cannot touch the record's own fields.
 
 ## Opting a resource in
 
@@ -212,7 +212,7 @@ const form = useEditDraft({
 - `resolve(resolutions, rebase)` — re-commits after the staff member resolves conflicts, pinning each resolved field's `rebase` value to the current database value they were shown (so a further change to the same field between resolving and re-committing conflicts again, rather than being silently overwritten).
 - `discard()` — reverts local values to pristine and deletes the draft.
 
-`initial` is merged with the page's shared `formSliceValues` prop, so any [draft slices](/admin/extending/draft-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
+`initial` is merged with the page's shared `formSliceValues` prop, so any [form slices](/admin/extending/form-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
 
 Autosave watches `values` with a debounce (roughly 750ms by default), sends only the changed fields, and serialises requests so a slower, older response can never clobber a newer one. A diff that empties back out (the user undid their own change) triggers a `DELETE` instead of a `PATCH`.
 

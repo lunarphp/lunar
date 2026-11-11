@@ -6,10 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the customer group store and update endpoints, whose rules are identical bar the handle unique scope. */
 class CustomerGroupRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<CustomerGroup> */
+    protected string $sliceModel = CustomerGroup::class;
+
     /** Handles are stored slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

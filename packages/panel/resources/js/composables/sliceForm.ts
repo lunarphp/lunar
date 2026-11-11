@@ -11,6 +11,12 @@ export interface SliceForm {
     dirtyKeys: ComputedRef<string[]>;
     saving: Ref<boolean>;
     committing: Ref<boolean>;
+    /**
+     * Offered by plain page forms: seed a namespace's keys into the form on
+     * first bind, so a page posts only the slices a component actually uses.
+     * Drafted pages seed every slice up front and omit it.
+     */
+    claim?: (namespace: string) => void;
 }
 
 export const sliceFormKey: InjectionKey<SliceForm> = Symbol('lunar-panel:slice-form');

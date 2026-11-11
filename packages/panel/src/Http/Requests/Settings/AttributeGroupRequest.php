@@ -6,10 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\AttributeGroup;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the attribute group store and update endpoints, whose rules are identical bar the handle unique scope. */
 class AttributeGroupRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<AttributeGroup> */
+    protected string $sliceModel = AttributeGroup::class;
+
     /** Handles are stored snake-slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
+import { usePanelForm } from '../../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -37,7 +38,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: props.currency.code, current: true },
 ]);
 
-const form = useForm({
+const form = usePanelForm({
     code: props.currency.code,
     name: props.currency.name,
     exchange_rate: String(props.currency.exchange_rate),

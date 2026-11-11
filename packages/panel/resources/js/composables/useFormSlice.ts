@@ -25,6 +25,8 @@ export interface FormSlice<T extends Record<string, unknown> = Record<string, un
  * code goes through useFormSlice() / useAddonFormSlice().
  */
 export function bindFormSlice<T extends Record<string, unknown>>(form: SliceForm, namespace: string): FormSlice<T> {
+    form.claim?.(namespace);
+
     const prefix = `${namespace}:`;
     const target = form.values;
 

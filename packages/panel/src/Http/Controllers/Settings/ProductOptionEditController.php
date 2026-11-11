@@ -11,6 +11,7 @@ use Lunar\Core\Exceptions\ProductOptionActionException;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\ProductOption;
 use Lunar\Core\Models\ProductOptionValue;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\ProductOptionRequest;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
@@ -73,7 +74,7 @@ class ProductOptionEditController
         ]);
     }
 
-    public function update(ProductOptionRequest $request, ProductOption $productOption, UpdatesProductOption $updatesProductOption): RedirectResponse
+    public function update(ProductOptionRequest $request, ProductOption $productOption, UpdatesProductOption $updatesProductOption, FormSlices $formSlices): RedirectResponse
     {
         $attributes = $request->productOptionAttributes();
 
@@ -84,7 +85,7 @@ class ProductOptionEditController
         }
 
         try {
-            $updatesProductOption->execute($productOption, $attributes);
+            $formSlices->save($request->sliceInput(), fn () => $updatesProductOption->execute($productOption, $attributes));
         } catch (ProductOptionActionException) {
             return back()->with('error', __('panel::product_options.value_delete_blocked'));
         }
