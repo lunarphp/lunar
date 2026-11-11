@@ -48,7 +48,7 @@ const remove = (index: number): void => {
 
 const errorFor = (index: number, field: string): string | undefined => props.errors?.[`tiers.${index}.${field}`];
 
-const gridStyle = { gridTemplateColumns: 'minmax(0, 1.2fr) 110px minmax(0, 1fr) minmax(0, 1fr) 36px' };
+const gridStyle = { gridTemplateColumns: 'minmax(0, 1.3fr) 96px minmax(0, 1fr) minmax(0, 1fr) 32px' };
 </script>
 
 <template>
@@ -57,9 +57,9 @@ const gridStyle = { gridTemplateColumns: 'minmax(0, 1.2fr) 110px minmax(0, 1fr) 
             {{ t('shipping::zones.no_tiers') }}
         </div>
 
-        <div v-else class="bg-surface border border-line rounded-xl shadow-sm overflow-x-auto">
+        <div v-else class="bg-surface border border-line rounded-xl shadow-sm">
             <div
-                class="grid items-center gap-3 px-3.5 py-2.5 bg-surface-2 border-b border-line text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium min-w-max"
+                class="grid items-center gap-3 px-3.5 py-2.5 bg-surface-2 border-b border-line text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium"
                 :style="gridStyle"
             >
                 <div>{{ t('shipping::zones.tier_customer_group') }}</div>
@@ -71,17 +71,17 @@ const gridStyle = { gridTemplateColumns: 'minmax(0, 1.2fr) 110px minmax(0, 1fr) 
             <div
                 v-for="(tier, index) in modelValue"
                 :key="index"
-                class="grid items-start gap-3 px-3.5 py-2 border-b border-line last:border-b-0 min-w-max"
+                class="grid items-start gap-3 px-3.5 py-2 border-b border-line last:border-b-0"
                 :style="gridStyle"
             >
-                <Select :model-value="tier.customer_group_id ?? ''" @update:model-value="update(index, { customer_group_id: $event === '' || $event === null ? null : Number($event) })">
+                <Select class="min-w-0" :model-value="tier.customer_group_id ?? ''" @update:model-value="update(index, { customer_group_id: $event === '' || $event === null ? null : Number($event) })">
                     <option value="">{{ t('shipping::zones.tier_any_group') }}</option>
                     <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
                 </Select>
-                <Select :model-value="tier.currency_code" @update:model-value="update(index, { currency_code: String($event) })">
+                <Select class="min-w-0" :model-value="tier.currency_code" @update:model-value="update(index, { currency_code: String($event) })">
                     <option v-for="currency in currencies" :key="currency.code" :value="currency.code">{{ currency.code }}</option>
                 </Select>
-                <div>
+                <div class="min-w-0">
                     <TextInput
                         :model-value="tier.min_quantity"
                         type="number"
@@ -94,7 +94,7 @@ const gridStyle = { gridTemplateColumns: 'minmax(0, 1.2fr) 110px minmax(0, 1fr) 
                     </TextInput>
                     <div v-if="errorFor(index, 'min_quantity')" class="mt-1 text-[11px] text-danger">{{ errorFor(index, 'min_quantity') }}</div>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <TextInput
                         :model-value="tier.price"
                         type="number"

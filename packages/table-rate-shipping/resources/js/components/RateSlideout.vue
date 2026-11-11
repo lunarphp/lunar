@@ -81,8 +81,8 @@ const submit = (): void => {
 </script>
 
 <template>
-    <Slideout :open="open" :title="rate ? t('shipping::zones.edit_rate') : t('shipping::zones.add_rate')" size="lg" @update:open="emit('update:open', $event)">
-        <div class="flex flex-col gap-6">
+    <Slideout :open="open" :title="rate ? t('shipping::zones.edit_rate') : t('shipping::zones.add_rate')" size="xl" @update:open="emit('update:open', $event)">
+        <div class="flex flex-col gap-6 px-5 py-5">
             <div class="text-xs text-ink-500">
                 {{ pricesIncludeTax ? t('shipping::zones.prices_incl_tax') : t('shipping::zones.prices_excl_tax') }}
             </div>
