@@ -88,9 +88,10 @@ New tables, added to the baseline migrations while v2 is in alpha.
 | `order_id` | `foreignId` `nullable` | Constrained to `orders`, null on delete. Null only for rows carried over from v1 |
 | `cart_id` | `foreignId` `nullable` | Constrained to `carts`, null on delete |
 | `user_id` | `userForeignKey` `nullable` | The signed-in user, for `max_uses_per_user` |
+| `email` | `string` `nullable` | The customer's email, normalized. Written and counted by [[guest-discount-usage-limits]]; null until then, and for rows carried over from v1 |
 | `redeemed_at` | `timestamp` `index` | When the order was placed |
 
-A unique index on `(discount_id, order_id)` means an order redeems a discount at most once, however many times `OrderPlaced` fires for it.
+A unique index on `(discount_id, order_id)` means an order redeems a discount at most once, however many times `OrderPlaced` fires for it. An index on `(discount_id, email)` serves per-customer counts.
 
 `discount_user` is dropped. `discount_redemptions.user_id` records the same thing, and `Discount::users()` keeps working as a `BelongsToMany` through `discount_redemptions`.
 
@@ -101,7 +102,7 @@ Changes to `{prefix}discounts`:
 
 `redemption` is explicit rather than derived from "has any coupons". Deriving it means deleting the last code of a coupon discount silently turns it into an automatic discount that applies to every cart.
 
-`discounts.uses` and `discounts.max_uses` stay, and keep meaning the total across the discount: a campaign of 5,000 single-use codes can still be capped at 1,000 redemptions. Both `uses` columns are counters for fast eligibility checks; `discount_redemptions` is the record. `max_uses_per_user` stays a limit for signed-in users, and the docs point guest-checkout stores at single-use codes instead.
+`discounts.uses` and `discounts.max_uses` stay, and keep meaning the total across the discount: a campaign of 5,000 single-use codes can still be capped at 1,000 redemptions. Both `uses` columns are counters for fast eligibility checks; `discount_redemptions` is the record. `max_uses_per_user` stays, and [[guest-discount-usage-limits]] extends it to guests by email.
 
 ### Models
 
@@ -131,7 +132,7 @@ Every place that matches a cart's code goes through `$cart->coupon`, and none of
 
 - `DiscountManager::getDiscounts()` selects usable discounts where `redemption = automatic`, or `id = $cart->coupon->discount_id` when the cart's code resolves.
 - `AbstractDiscountType::checkDiscountConditions()` passes a coupon discount only when `$cart->coupon?->discount_id` is this discount and `$cart->coupon->isUsable()`.
-- `Validation\CouponValidator` finds the coupon by code and checks it is usable and that its discount is active and usable. The `max_uses_per_user` check stays, and still applies only when a user is signed in. `Contracts\CouponValidator` and `Rules\ValidCoupon` keep their signatures.
+- `Validation\CouponValidator` finds the coupon by code and checks it is usable and that its discount is active and usable. The `max_uses_per_user` check stays as it is; [[guest-discount-usage-limits]] changes how it identifies the customer. `Contracts\CouponValidator` and `Rules\ValidCoupon` keep their signatures.
 
 A draft order no longer uses anything, so a retry on the same cart, or a new cart after a declined card, re-prices with the code with no exemption needed.
 
@@ -187,7 +188,7 @@ The index's redemption filter reads `redemption`, and the coupon column shows th
 - **Keep counting at draft order creation and release unplaced uses later.** A scheduled release runs too late for a shopper retrying within minutes, and it keeps the `consumedDiscountIds()` workaround. Counting at placement removes the need to release anything.
 - **Reserve the code when payment starts, and confirm it at placement.** It closes the remaining race completely, but there is no driver-independent "payment started" point in core. It belongs with the cart-phase payment hooks in [[0077-payment-intent-capabilities]] if the event proves not to be enough.
 - **Reserve the code when it is applied to the cart.** A guest who moves from phone to laptop would be locked out of their own code until the reservation expires.
-- **Extend `max_uses_per_user` to guests by matching the cart's contact email.** The email is only known once the shopper reaches the address step, so the discount can't be shown on the cart page. A shopper can also type a different address. A single-use code needs neither.
+- **Use `max_uses_per_user` on one shared code for a campaign.** A per-customer limit stops each customer reusing the code, but anyone who sees the code can still use it once, so it can't restrict an offer to the people it was sent to. A code per recipient can. Per-customer limits for guests are a separate change, [[guest-discount-usage-limits]].
 - **Keep one code per discount and duplicate the discount per code.** It works today with no change, but 5,000 discounts per campaign floods the discount index, every cart calculation loads them, and editing the campaign means editing every copy.
 - **Leave it to an add-on, and make core extensible with a `CouponResolver` contract.** It is the smallest core change, but the add-on still has to replace usage counting and the order record, as the community implementation shows. Codes as rows is the general model, and a single shared code is the one-row case of it.
 - **`cart_id` and `redeemed_at` on the coupon, as in the community implementation.** It fits single-use codes, but a multi-use code has many redemptions, and automatic discounts need a record too for counting at placement to be idempotent.
@@ -212,7 +213,7 @@ The index's redemption filter reads `redemption`, and the coupon column shows th
 - **Config:** `lunar.discounts.coupons.queue_threshold` in `packages/core/config/discounts.php`.
 - **Translations:** new keys in `packages/panel/resources/lang/*/discounts.php` for the redemption choice, the Coupons section, generation and export, and in `packages/panel/resources/lang/*/orders.php` for the `discount-limit-exceeded` timeline entry, in all 16 locales. `field_coupon_hint` is removed.
 - **Panel:** the discount edit page and index as described above.
-- **Docs:** `docs/reference/discounts.mdx` (the `Coupon` and `DiscountRedemption` models, `redemption`, generation, usage counted at placement, `DiscountLimitExceeded`, and `max_uses_per_user` being for signed-in users), `docs/extending/discounts.mdx` (custom types, `$cart->coupon`, and the removal of `markAsUsed()`), and a guide for running a single-use code campaign with guest checkout.
+- **Docs:** `docs/reference/discounts.mdx` (the `Coupon` and `DiscountRedemption` models, `redemption`, generation, usage counted at placement, and `DiscountLimitExceeded`), `docs/extending/discounts.mdx` (custom types, `$cart->coupon`, and the removal of `markAsUsed()`), and a guide for running a single-use code campaign with guest checkout.
 
 ## Open questions
 
@@ -224,10 +225,11 @@ None.
 - [[0072-panel-discounts-section]], the panel discount screens this extends.
 - [[0073-split-amount-off-discount-type]], the previous discount schema change and its upgrade step.
 - [[0077-payment-intent-capabilities]], where reserving a code at payment start would live.
+- [[guest-discount-usage-limits]], which extends `max_uses_per_user` to guests using `discount_redemptions.email`.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Count usage at placement: `discount_redemptions` replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded` and the order activity, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event and logs the activity.
+- [ ] Slice 1 — Count usage at placement: `discount_redemptions` (including the nullable `email` column) replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded` and the order activity, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event and logs the activity.
 - [ ] Slice 2 — Coupons: `coupons` table, `redemption` column, `Coupon` model and factory, `Cart::coupon()`, matching in `DiscountManager`, `AbstractDiscountType` and `CouponValidator`, and the coupon on the order breakdown. Existing behavior covered by moving each single-code test to a one-row coupon, plus guest-cart tests.
 - [ ] Slice 3 — Upgrade: v1 `discounts.coupon` → `coupons` and `discount_user` → `discount_redemptions` in the data migration step, and upgrade notes.
 - [ ] Slice 4 — Generation: `CouponCodeGenerator`, `CouponBatch`, `GenerateCoupons` action and job, `Discount::generateCoupons()`, and the timing test that sets the `queue_threshold` default.
