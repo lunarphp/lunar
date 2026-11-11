@@ -3,92 +3,97 @@
 - Status: draft
 - Author: Glenn Jacobs
 - Created: 2026-11-10
-- TODO item: Per-customer discount limits for guest checkout — count `max_uses_per_user` by contact email as well as user, so guests can use limited coupons without bypassing the limit (spec guest-discount-usage-limits)
+- TODO item: Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
 
 ## Problem
 
 `max_uses_per_user` only works for signed-in customers, because usage is recorded against a user and nothing else:
 
-- `CreateOrder` calls `AbstractDiscountType::markAsUsed()`, which attaches `$cart->user` to `discount_user` (`user_id` only). A guest order records nothing.
+- `AbstractDiscountType::markAsUsed()` attaches `$cart->user` to `discount_user` (`user_id` only). A guest order records nothing.
 - `AbstractDiscountType::checkDiscountConditions()` rejects a per-user-limited discount when the cart has no user.
 - Since #2470 / #2844, `CouponValidator` rejects a per-user-limited coupon for a guest, so the customer is told at entry rather than seeing a coupon that does nothing (#2442).
 
-So a store that sells to guests can't offer a "one per customer" code to them at all. The alternative of skipping the check for guests would make the limit meaningless, because every guest order would be a fresh use. WooCommerce ("Usage limit per user", checked against the billing email) and Shopify ("Limit to one use per customer", checked against the customer's email or phone at checkout) both identify a guest by contact details.
+So a store that sells to guests can't offer a public "one per customer" code to them at all. Skipping the check for guests would make the limit meaningless, because every guest order would be a fresh use. WooCommerce ("Usage limit per user", checked against the billing email) and Shopify ("Limit to one use per customer", checked against the customer's email or phone) both identify a guest by contact details.
+
+Per-recipient codes ([[discount-coupons]]) solve a different problem: restricting an offer to the people it was sent to. They don't help a single code published to everyone.
 
 ## Proposal
 
-Identify the customer for a per-customer limit by user when there is one, and by normalised contact email otherwise, and record every redemption against both.
+Identify the customer by user when there is one, and by email otherwise, and count a customer's redemptions by either.
 
-### Redemptions
+This builds on [[discount-coupons]]: usage is recorded when the order is placed, in `discount_redemptions`, which already carries a nullable `email` column. Nothing here changes that table.
 
-Replace `discount_user` with `discount_redemptions`:
+### The customer's email
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | `id` | |
-| `discount_id` | `foreignId` | cascade on delete |
-| `order_id` | `foreignId` nullable | the order that consumed the discount; null for rows migrated from `discount_user` |
-| `user_id` | user foreign key, nullable | the cart's user, when signed in |
-| `email` | `string` nullable, indexed with `discount_id` | the order's contact email, normalised |
-| `timestamps` | | |
-
-`markAsUsed()` writes one row with whichever of `user_id` and `email` are known. Recording the email for a signed-in customer too means their earlier guest orders and later signed-in orders count against the same limit.
-
-`Discount::users()` stays as a relation through the new table (`whereNotNull('user_id')`) so existing reads keep working; `Discount::redemptions()` is the new primary relation.
-
-### Counting uses
-
-A new action, `Lunar\Core\Actions\Discounts\CountCustomerRedemptions` (contract `CountsCustomerRedemptions`), owns the question "how many times has this customer used this discount":
+A new action, `Lunar\Core\Actions\Discounts\ResolveCustomerEmail` (contract `Contracts\Discounts\ResolvesCustomerEmail`), owns the question "which email identifies this cart's customer":
 
 ```php
-public function execute(Discount $discount, ?Authenticatable $user, ?string $email): int;
+public function execute(Cart $cart): ?string;
 ```
 
-It counts rows matching `user_id = $user` **or** `email = normalise($email)`, so a customer can't reset the limit by signing out. `checkDiscountConditions()` and `CouponValidator` both call it, which removes their current disagreement (`$cart->user` versus `auth()->user()`).
+It returns the first of:
 
-The contact email is the cart's billing address `contact_email`, falling back to the shipping address, matching order mail routing. Normalisation is lower-case and trimmed (see open questions).
+1. the signed-in user's email (`$cart->user`);
+2. the billing address `contact_email`;
+3. the shipping address `contact_email`.
 
-### When the email isn't known yet
+The result is lower-cased and trimmed. A store that wants stricter matching (stripping `+tags`, Gmail dots) binds its own implementation.
 
-A guest often enters a coupon before giving an address. The coupon is accepted provisionally: the discount applies while no identity is known, and is checked again at order creation, once the contact email is on the cart.
+The billing address is the one that identifies the customer for discount limits. A shipping address `contact_email` is for contact about that delivery, and is used only when the billing address has none. Lunar adds no new email field to carts or orders; the redemption row records the email that was counted.
 
-- `CouponValidator` accepts a per-user-limited coupon for a guest with no contact email yet, and rejects it once the email is known and over the limit.
-- `checkDiscountConditions()` applies the discount when no identity is known, and enforces the limit once one is.
-- A new order-creation validator (`StepList::OrderCreateValidation`) fails with a translated message when a per-customer limit is exceeded at that point, so the checkout can show "this code has already been used" instead of quietly re-pricing the order.
+### Recording
 
-### Contracts
+`RecordDiscountRedemptions` ([[discount-coupons]]) writes `email` from `ResolvesCustomerEmail` on the order's cart, alongside `user_id`. Recording the email for a signed-in customer too means their earlier guest orders count against the same limit when they used the same email.
 
-`CouponValidator::validate(string $coupon)` gains an optional cart: `validate(string $coupon, ?Cart $cart = null): bool`, defaulting to `CartSession::current()`, so the validator can read the contact email. A custom validator that keeps the old signature still satisfies the contract.
+### Counting
+
+A new action, `Lunar\Core\Actions\Discounts\CountCustomerRedemptions` (contract `Contracts\Discounts\CountsCustomerRedemptions`), owns the question "how many times has this customer used this discount":
+
+```php
+public function execute(Discount $discount, Cart $cart): int;
+```
+
+It counts `discount_redemptions` rows for the discount matching `user_id = $cart->user` **or** `email = ResolvesCustomerEmail($cart)`, so a customer can't reset the limit by signing out. It returns `0` when the cart has neither.
+
+### Enforcing the limit
+
+- **Discount conditions.** `checkDiscountConditions()` fails a per-customer-limited discount when `CountsCustomerRedemptions` reaches `max_uses_per_user`. It no longer fails a guest cart for having no user. Because conditions run on every cart calculation, the discount drops off the cart as soon as an email that has used it is known, and the total the customer pays reflects that.
+- **Coupon entry.** `CouponValidator::validate(string $coupon, ?Cart $cart = null): bool` takes the cart, defaulting to `CartSession::current()`, and checks the limit through `CountsCustomerRedemptions`. It replaces the guest rejection from #2470 / #2844. A storefront calls it again once the customer gives an email, to tell them the code has already been used. A custom validator with the old signature still satisfies the contract.
+- **Order creation.** A new validator in `StepList::OrderCreateValidation`, `Validation\Cart\ValidateCustomerForDiscounts`, fails when a per-customer-limited discount is applied and the cart has neither a user nor a resolvable email. It does not count redemptions; that is the discount conditions' job. `Cart::canCreateOrder()` runs it, so a storefront learns before taking payment that it needs an email for this discount.
+- **Races.** Two orders from the same customer placed at the same moment can both pass the check. `RecordDiscountRedemptions` already dispatches `DiscountLimitExceeded` for the discount-wide and coupon limits; it does the same when a placement takes a customer over `max_uses_per_user`, and never rejects an order that has been paid.
 
 ## Alternatives considered
 
 - **Skip the limit for guests.** Rejected: a "one per customer" code becomes unlimited for anyone checking out as a guest.
 - **Reject guests (the #2470 / #2844 behaviour).** Correct, and the current behaviour, but excludes guests from limited promotions entirely.
-- **Count by customer record (`customer_id`).** Guests don't have one, and a signed-in user's customer link is optional, so it doesn't solve the guest case.
-- **Keep `discount_user` and add a second `discount_guest` table.** Two tables to count and keep in step; a single redemptions table is simpler and also gives the admin an order-linked usage history.
+- **A cart-level email column.** It covers a guest who has given an email before any address, but it adds a third email to keep in step with the billing and shipping address emails, and an order has no use for it. The billing address is required to create an order, so the email is known by the time the limit has to hold.
+- **Reject an over-limit order at creation.** Some payment drivers create the order after payment has been taken, so throwing there charges the customer and gives them no order. Dropping the discount at calculation and dispatching `DiscountLimitExceeded` at placement avoid that.
+- **Count by customer record (`customer_id`).** Guests don't have one, and a signed-in user's customer link is optional.
+- **Match on phone as well.** Shopify does. Out of scope until a store asks for it.
 
 ## Migration impact
 
-- Database: a new `discount_redemptions` table replacing `discount_user`. While v2 is in alpha this folds into the existing baseline (rename the create-table migration); `upgrade` gains a data migration copying v1 `discount_user` rows into `discount_redemptions` with `order_id` and `email` null.
-- Public contract: `Discount::users()` keeps working for reads; code that writes `discount_user` directly must move to `redemptions()`. `CouponValidator::validate()` gains an optional parameter. Upgrade guide entry for both.
-- Translations: one new validation message, in all 16 locales.
-- Admin: the discount's usage view lists redemptions with their order and customer. Panel and Filament.
+- Database: none beyond [[discount-coupons]], which adds `discount_redemptions.email`.
+- Public contract: `CouponValidator::validate()` gains an optional `?Cart` parameter (additive). `checkDiscountConditions()` now passes guest carts that are within the limit. Two new action contracts in `ActionServiceProvider`. Upgrade guide entry.
+- Validators: `ValidateCustomerForDiscounts` is added to the default `lunar.cart.validators.order_create` list.
+- Translations: one validation message for `ValidateCustomerForDiscounts`, in all 16 locales.
+- Docs: `docs/reference/discounts.mdx` (how a customer is identified for `max_uses_per_user`, and which email counts), and the storefront guidance to re-validate the coupon once an email is known.
 
 ## Open questions
 
-- **Email normalisation.** Lower-case and trim only, or also strip `+tags` and Gmail dots? Stripping catches more reuse but can merge distinct addresses. Proposed: lower-case and trim, with the normaliser bound in the container so a store can tighten it.
-- **Phone numbers.** Shopify also matches on phone. Out of scope unless a store asks.
 - **Cancelled and refunded orders.** Should a redemption on a cancelled order still count? `uses` doesn't decrement today. Proposed: keep counting, matching `uses`, and decide separately.
-- **Provisional acceptance.** Is applying the discount before the email is known, then failing order creation, acceptable UX, or should storefronts be guided to collect the email before coupons? The checkout guide needs a recommendation either way.
 
 ## References
 
+- [[discount-coupons]]: `discount_redemptions`, counting at placement, `RecordDiscountRedemptions` and `DiscountLimitExceeded`.
 - #2442: the coupon accepted with no effect.
 - #2470 (1.x) and #2844 (2.x): reject per-user-limited coupons for guests.
-- `packages/core/src/DiscountTypes/AbstractDiscountType.php` (`markAsUsed`, `checkDiscountConditions`, `usesByUser`), `packages/core/src/Validation/CouponValidator.php`, `packages/core/src/Actions/Carts/CreateOrder.php`.
+- `packages/core/src/DiscountTypes/AbstractDiscountType.php` (`checkDiscountConditions`, `usesByUser`), `packages/core/src/Validation/CouponValidator.php`, `packages/core/src/Validation/Cart/ValidateCartForOrderCreation.php`.
 
 ## Implementation plan
 
-- [ ] Slice 1 — `discount_redemptions` table, `Discount::redemptions()`, `markAsUsed()` writes user and email, `Discount::users()` reads through it; upgrade data migration from `discount_user`.
-- [ ] Slice 2 — `CountsCustomerRedemptions`, used by `checkDiscountConditions()` and `CouponValidator`; provisional acceptance for guests without an email; the order-creation validator.
-- [ ] Slice 3 — admin usage view (panel, Filament), docs and upgrade guide.
+Starts after [[discount-coupons]] slice 1.
+
+- [ ] Slice 1 — `ResolvesCustomerEmail` and `CountsCustomerRedemptions`; `RecordDiscountRedemptions` writes `email`; `checkDiscountConditions()` counts through it. Tests: a guest within the limit gets the discount, a guest whose email has used it does not, a signed-in customer's earlier guest order with the same email counts, billing email wins over shipping email.
+- [ ] Slice 2 — `CouponValidator` takes the cart; `ValidateCustomerForDiscounts` with its translations; `DiscountLimitExceeded` for per-customer limits at placement.
+- [ ] Slice 3 — Docs and upgrade guide.
