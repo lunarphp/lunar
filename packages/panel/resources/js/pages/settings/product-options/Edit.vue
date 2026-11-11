@@ -12,6 +12,7 @@ import FieldLabel from '../../../components/FieldLabel.vue';
 import Icon from '../../../components/Icon.vue';
 import Section from '../../../components/Section.vue';
 import SideCard from '../../../components/SideCard.vue';
+import StickySidebar from '../../../components/StickySidebar.vue';
 import StatusBadge from '../../../components/StatusBadge.vue';
 import SwatchInput from '../../../components/SwatchInput.vue';
 import TextInput from '../../../components/TextInput.vue';
@@ -353,7 +354,7 @@ const formatDate = (iso: string): string => (iso ? new Date(iso).toLocaleDateStr
             </div>
 
             <aside>
-                <div class="lg:sticky lg:top-[60px] flex flex-col gap-4">
+                <StickySidebar class="flex flex-col gap-4">
                     <SideCard :title="t('product_options.side_usage')">
                         <div class="flex items-baseline gap-1.5">
                             <span class="text-2xl font-semibold tracking-[-0.02em] text-ink-900 [font-variant-numeric:tabular-nums]">{{ productOption.products_count }}</span>
@@ -385,7 +386,7 @@ const formatDate = (iso: string): string => (iso ? new Date(iso).toLocaleDateStr
                         <ActivityTimeline v-if="activities.length" :events="timelineEvents" :reverse="false" />
                         <div v-else class="text-[11.5px] text-ink-500">{{ t('product_options.side_activity_empty') }}</div>
                     </SideCard>
-                </div>
+                </StickySidebar>
             </aside>
         </div>
     </SettingsShell>

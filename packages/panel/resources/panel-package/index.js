@@ -49,6 +49,7 @@ export const Slideout = ui().Slideout;
 export const ConfirmDialog = ui().ConfirmDialog;
 export const Tooltip = ui().Tooltip;
 export const SideCard = ui().SideCard;
+export const StickySidebar = ui().StickySidebar;
 export const Section = ui().Section;
 export const Tabs = ui().Tabs;
 export const Flag = ui().Flag;
