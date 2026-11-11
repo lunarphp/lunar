@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Fulfilment;
@@ -37,6 +38,15 @@ test('a small seed produces every derived state and all three methods', function
 
     expect(Fulfilment::query()->pluck('method')->unique()->values()->all())
         ->toContain('shipping', 'pickup', 'digital');
+});
+
+test('seeding sends no customer notifications', function () {
+    Notification::fake();
+
+    seedStore();
+
+    expect(Order::count())->toBeGreaterThan(0);
+    Notification::assertNothingSent();
 });
 
 test('--fresh wipes and rebuilds without duplicating', function () {

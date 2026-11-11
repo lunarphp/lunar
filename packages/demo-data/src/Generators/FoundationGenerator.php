@@ -62,9 +62,11 @@ class FoundationGenerator implements Generator
 
     protected function language(): Language
     {
+        // Never take the default from an existing store: its content is
+        // keyed by that language, and the panel edits the default.
         return Language::query()->firstOrCreate(
             ['code' => 'en'],
-            ['name' => 'English', 'default' => true],
+            ['name' => 'English', 'default' => ! Language::query()->where('default', true)->exists()],
         );
     }
 
