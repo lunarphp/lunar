@@ -2,26 +2,44 @@
 
 return [
     'shipping_discount' => [
-        'name' => 'Shipping Price',
+        'name' => 'قیمت ارسال',
         'form' => [
             'methods' => [
-                'label' => 'Shipping Methods',
-                'add_label' => 'Add Rule',
+                'label' => 'روش‌های ارسال',
+                'add_label' => 'افزودن قاعده',
             ],
             'shipping_method_id' => [
-                'label' => 'Shipping Method',
-                'placeholder' => 'Any shipping method',
+                'label' => 'روش ارسال',
+                'placeholder' => 'هر روش ارسال',
             ],
             'type' => [
-                'label' => 'Discount Type',
+                'label' => 'نوع تخفیف',
                 'options' => [
-                    'fixed' => 'Fixed Price',
-                    'percentage' => 'Percentage Off',
+                    'fixed' => 'قیمت ثابت',
+                    'percentage' => 'تخفیف درصدی',
                 ],
             ],
             'percentage' => [
-                'label' => 'Percentage Off (%)',
+                'label' => 'درصد تخفیف (%)',
             ],
         ],
+        'panel' => [
+            'rules' => 'قواعد',
+            'rules_description' => 'هر قاعده برای یک روش ارسال اعمال می‌شود، یا در صورت انتخاب نشدن هیچ روشی برای همه روش‌ها. روش مشخص بر قاعده عمومی اولویت دارد.',
+            'add_rule' => 'افزودن قاعده',
+            'remove_rule' => 'حذف قاعده',
+            'no_rules' => 'هنوز قاعده‌ای وجود ندارد. برای تغییر هزینه ارسال یک قاعده اضافه کنید.',
+            'method' => 'روش ارسال',
+            'method_any' => 'هر روش ارسال',
+            'type' => 'اثر',
+            'type_fixed' => 'تعیین قیمت ارسال',
+            'type_percentage' => 'اعمال تخفیف درصدی',
+            'percentage' => 'درصد تخفیف (%)',
+            'prices' => 'قیمت ارسال می‌شود',
+            'prices_hint' => 'مشتری این مبلغ را برای ارسال می‌پردازد. برای بدون تغییر ماندن قیمت یک ارز، آن را خالی بگذارید؛ برای ارسال رایگان 0 وارد کنید.',
+        ],
+        'summary_free' => 'ارسال رایگان',
+        'summary_percentage' => ':percentage% تخفیف ارسال',
+        'summary_from' => 'ارسال از :amount',
     ],
 ];

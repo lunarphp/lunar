@@ -1,6 +1,7 @@
 <?php
 
 use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\CustomerGroup;
@@ -78,6 +79,27 @@ it('commits a draft through the update action', function () {
         ->and((string) $this->product->status)->toBe('published')
         ->and($this->product->tags->pluck('value')->all())->toBe(['SALE'])
         ->and(EditDraft::count())->toBe(0);
+});
+
+it('saves the product once when only its own fields changed', function () {
+    $attribute = Attribute::factory()->modelType('product')->create(['handle' => 'material', 'type' => 'text']);
+    $this->product->productType->attributeMapping()->sync([$attribute->id]);
+    Channel::factory()->create();
+    CustomerGroup::factory()->create();
+
+    $saves = 0;
+    Product::saved(function () use (&$saves): void {
+        $saves++;
+    });
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['name' => ['en' => 'Renamed Widget']],
+    ])->assertOk();
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), ['data' => [], 'rebase' => []])
+        ->assertOk();
+
+    expect($saves)->toBe(1);
 });
 
 it('commits product attribute values into attribute data', function () {

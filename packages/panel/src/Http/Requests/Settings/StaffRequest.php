@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Support\Facades\LunarAccessControl;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /**
  * Shared by the staff store and update endpoints. The password is required
@@ -14,6 +15,11 @@ use Lunar\Core\Support\Facades\LunarAccessControl;
  */
 class StaffRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Staff> */
+    protected string $sliceModel = Staff::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

@@ -6,10 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Location;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the location store and update endpoints, whose rules are identical bar the handle unique scope. */
 class LocationRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Location> */
+    protected string $sliceModel = Location::class;
+
     /** Handles are stored slugged, so normalise first and validate the stored form. */
     protected function prepareForValidation(): void
     {

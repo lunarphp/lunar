@@ -20,7 +20,10 @@ Install via Composer:
 composer require lunarphp/table-rate-shipping
 ```
 
-Then register the admin panel plugin in a service provider:
+The add-on works with either admin, and needs neither: `lunarphp/core` is its only hard dependency.
+
+- **Lunar panel** (`lunarphp/panel`): nothing to register. When the panel is installed, the add-on adds a **Settings > Shipping** group with Zones, Methods and Exclusion Lists, and a form for the Shipping Price discount type.
+- **Filament admin** (`lunarphp/admin`): register the plugin in a service provider:
 
 ```php
 use Filament\Panel;
@@ -58,7 +61,7 @@ This config is merged, not published — there is no `vendor:publish` tag for it
 
 ## Permissions
 
-The add-on registers a `shipping:manage` permission and enforces it on the Shipping Methods, Shipping Zones, and Shipping Exclusion Lists resources in the admin panel. Staff members need this permission (either directly or via a role) to view or manage shipping configuration.
+The add-on registers a `shipping:manage` permission and enforces it on every shipping screen, in the Lunar panel and in the Filament admin. Staff members need this permission (either directly or via a role) to view or manage shipping configuration.
 
 The permission is created automatically by a migration when the add-on is installed. See [Access Control](/admin/access-control) for guidance on assigning permissions to roles and staff.
 
@@ -265,6 +268,8 @@ The most flexible driver. Pricing is based on either the cart total or the total
 When `charge_by` is set to `weight`, tiers are evaluated in the unit configured as the shipping method's `weight_unit`, defaulting to `kg` when it is empty. Each cart line's weight is converted from its own purchasable unit first, so a cart mixing items measured in grams and kilograms is totaled correctly.
 
 Tier thresholds are stored as whole numbers. To express a threshold below one kilogram, configure the method in a smaller unit: a method with a `weight_unit` of `g` can use tiers of `500` and `1000` where kilograms would have required `0.5` and `1`. The admin panel shows the configured unit alongside the tier field and rejects decimal values rather than truncating them.
+
+A tier without a customer group must start above the base price: above `1` in the method's unit when charging by weight, or above the currency's smallest unit (`0.01` in GBP) when charging by cart total. A price row with no customer group and a `min_quantity` of `1` or less is the rate's base price, so a tier stored there would replace it. A customer group's tiers can start at `0`.
 
 ### Flat Rate
 

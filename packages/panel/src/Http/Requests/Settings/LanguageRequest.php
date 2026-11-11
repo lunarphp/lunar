@@ -5,10 +5,16 @@ namespace Lunar\Panel\Http\Requests\Settings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Language;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the language store and update endpoints, whose rules are identical bar the code unique scope. */
 class LanguageRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Language> */
+    protected string $sliceModel = Language::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

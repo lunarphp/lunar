@@ -5,6 +5,7 @@ namespace Lunar\Panel\Sections\Catalog;
 use Closure;
 use Illuminate\Support\Facades\Route;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Contracts\FormSlice;
 use Lunar\Panel\Http\Controllers\Brands\BrandBulkStatusController;
 use Lunar\Panel\Http\Controllers\Brands\BrandCreateController;
 use Lunar\Panel\Http\Controllers\Brands\BrandEditController;
@@ -53,6 +54,10 @@ use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Search\Sources\BrandSearchSource;
 use Lunar\Panel\Search\Sources\CollectionSearchSource;
 use Lunar\Panel\Search\Sources\ProductSearchSource;
+use Lunar\Panel\Sections\Catalog\Slices\ProductAttributeSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductChannelSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductCustomerGroupSlice;
+use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\ProductsTableExtension;
@@ -151,6 +156,17 @@ class CatalogSection extends Section
             ProductDraftResource::class,
             ProductVariantDraftResource::class,
             ProductTypeDraftResource::class,
+        ];
+    }
+
+    /** @return array<int, class-string<FormSlice>> */
+    public function formSlices(): array
+    {
+        return [
+            ProductAttributeSlice::class,
+            ProductChannelSlice::class,
+            ProductCustomerGroupSlice::class,
+            SoleVariantSlice::class,
         ];
     }
 

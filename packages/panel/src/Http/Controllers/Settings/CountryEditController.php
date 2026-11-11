@@ -11,6 +11,7 @@ use Lunar\Core\Exceptions\CountryActionException;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
 use Lunar\Core\Models\TaxZoneState;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\CountryRequest;
 
 class CountryEditController
@@ -52,9 +53,9 @@ class CountryEditController
         ]);
     }
 
-    public function update(CountryRequest $request, Country $country, UpdatesCountry $updatesCountry): RedirectResponse
+    public function update(CountryRequest $request, Country $country, UpdatesCountry $updatesCountry, FormSlices $formSlices): RedirectResponse
     {
-        $updatesCountry->execute($country, $request->countryAttributes());
+        $formSlices->save($request->sliceInput(), fn () => $updatesCountry->execute($country, $request->countryAttributes()));
 
         return redirect()->route('panel.settings.countries.index')->with('success', __('panel::countries.flash_updated'));
     }

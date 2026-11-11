@@ -4,7 +4,7 @@ namespace Lunar\Panel\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Core\Models\Base;
@@ -19,7 +19,7 @@ use Lunar\Panel\Database\Factories\EditDraftFactory;
 class EditDraft extends Base
 {
     use HasFactory;
-    use MassPrunable;
+    use Prunable;
 
     /** @var array<int, string> */
     protected $guarded = [];
@@ -48,7 +48,8 @@ class EditDraft extends Base
     /**
      * Drafts untouched beyond the configured TTL: their base snapshots are too
      * stale for trustworthy conflict comparison, so they prune rather than
-     * resume.
+     * resume. Pruned one model at a time so each fires its deleting event and
+     * the slice discard fan-out runs.
      *
      * @return Builder<static>
      */

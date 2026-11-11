@@ -5,7 +5,7 @@ namespace Lunar\Shipping\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Core\Models\Base;
-use Lunar\Shipping\Factories\ShippingZonePostcodeFactory;
+use Lunar\Shipping\Database\Factories\ShippingZonePostcodeFactory;
 
 class ShippingZonePostcode extends Base
 {

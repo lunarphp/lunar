@@ -8,6 +8,9 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
+- Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)
+- Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate say so (spec 0087)
+- Panel form slices on plain forms — the create pages and settings forms compose the same `FormSlice` contract the drafted edit pages do (spec 0088)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)

@@ -5,10 +5,16 @@ namespace Lunar\Panel\Http\Requests\Settings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Currency;
+use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
 /** Shared by the currency store and update endpoints, whose rules are identical bar the code unique scope. */
 class CurrencyRequest extends FormRequest
 {
+    use ValidatesFormSlices;
+
+    /** @var class-string<Currency> */
+    protected string $sliceModel = Currency::class;
+
     /**
      * @return array<string, array<int, mixed>>
      */

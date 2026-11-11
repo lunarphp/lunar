@@ -8,6 +8,7 @@ node_modules
 /vendor
 /packages/bundles/build
 /packages/panel/public/build
+/packages/table-rate-shipping/build
 .phpunit.result.cache
 composer.lock
 package-lock.json

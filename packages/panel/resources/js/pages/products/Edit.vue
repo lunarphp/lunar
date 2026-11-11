@@ -91,7 +91,6 @@ const props = defineProps<{
         stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
         urls: { pricesStore: string; stockAdjust: string };
     } | null;
-    variantValues: Record<string, unknown>;
     variantAttributeGroups: AttributeGroup[];
     currencies: CurrencyOption[];
     customerGroups: { id: number; name: string }[];
@@ -102,9 +101,7 @@ const props = defineProps<{
     mediaGroups: MediaGroup[];
     productUrls: UrlRow[];
     attributeGroups: AttributeGroup[];
-    attributeValues: Record<string, unknown>;
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
-    availabilityValues: Record<string, unknown>;
     brandOptions: { value: number; label: string }[];
     typeOptions: { value: number; label: string }[];
     collections: CollectionOption[];
@@ -153,9 +150,8 @@ const draftForm = useEditDraft({
         // Mapped attribute values ride the same draft under attribute:{handle}
         // keys; availability rows under channel:{id} / customer_group:{id};
         // on the simple shape the sole variant's fields under variant:{field}.
-        ...props.attributeValues,
-        ...props.availabilityValues,
-        ...props.variantValues,
+        // All three are form slices, seeded from the shared formSliceValues
+        // prop by useEditDraft.
     },
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
