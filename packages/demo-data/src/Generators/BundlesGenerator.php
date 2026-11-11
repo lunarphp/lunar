@@ -90,7 +90,7 @@ class BundlesGenerator implements Generator
         $bundle = app(DefinesBundle::class)->execute($variant, BundlePricing::Fixed);
 
         $bundle->syncGroups([
-            ['name' => ['en' => 'Choose your extra'], 'min_selections' => 1, 'max_selections' => 1, 'position' => 0],
+            ['name' => $context->text('Choose your extra')->all(), 'min_selections' => 1, 'max_selections' => 1, 'position' => 0],
         ]);
 
         $group = $bundle->groups()->first();
@@ -114,9 +114,9 @@ class BundlesGenerator implements Generator
         $product = Product::create([
             'product_type_id' => $context->get('products')->first()->product_type_id,
             'status' => 'published',
-            'name' => collect(['en' => $name]),
-            'description' => collect(['en' => $description]),
-            'short_description' => collect(['en' => $description]),
+            'name' => $context->text($name),
+            'description' => $context->text($description),
+            'short_description' => $context->text($description),
             'attribute_data' => collect(),
         ]);
 

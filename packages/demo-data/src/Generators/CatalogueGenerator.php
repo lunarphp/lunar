@@ -23,9 +23,13 @@ use Lunar\DemoData\Support\DemoContext;
  */
 class CatalogueGenerator implements Generator
 {
+    protected DemoContext $context;
+
     public function generate(DemoContext $context): void
     {
         $context->reseed();
+
+        $this->context = $context;
 
         $productType = $this->productType();
         $group = $this->collectionGroup();
@@ -72,9 +76,9 @@ class CatalogueGenerator implements Generator
                 'product_type_id' => $productType->id,
                 'brand_id' => $brand->id,
                 'status' => 'published',
-                'name' => collect(['en' => $fixture['name'].$suffix]),
-                'description' => collect(['en' => $fixture['description']]),
-                'short_description' => collect(['en' => $fixture['short_description']]),
+                'name' => $context->text($fixture['name'].$suffix),
+                'description' => $context->text($fixture['description']),
+                'short_description' => $context->text($fixture['short_description']),
                 'attribute_data' => collect(),
             ]);
 
@@ -122,7 +126,7 @@ class CatalogueGenerator implements Generator
             ->first()
             ?? ProductCollection::create([
                 'collection_group_id' => $group->id,
-                'name' => collect(['en' => $name]),
+                'name' => $this->context->text($name),
                 'status' => 'published',
                 'attribute_data' => collect(),
             ]);
@@ -145,7 +149,7 @@ class CatalogueGenerator implements Generator
 
         $child = ProductCollection::create([
             'collection_group_id' => $parent->collection_group_id,
-            'name' => collect(['en' => $name]),
+            'name' => $this->context->text($name),
             'status' => 'published',
             'attribute_data' => collect(),
         ]);

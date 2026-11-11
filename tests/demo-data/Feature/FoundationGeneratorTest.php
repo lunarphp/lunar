@@ -36,6 +36,21 @@ test('it seeds the store foundation', function () {
     expect($context->get('location'))->toBeInstanceOf(Location::class);
 });
 
+test('it keeps an existing default language as the default', function () {
+    $existing = Language::factory()->create(['code' => 'en-US', 'default' => true]);
+
+    generateFoundation();
+
+    expect($existing->refresh()->default)->toBeTrue()
+        ->and(Language::whereCode('en')->sole()->default)->toBeFalse();
+});
+
+test('it makes english the default on a store without one', function () {
+    generateFoundation();
+
+    expect(Language::whereCode('en')->sole()->default)->toBeTrue();
+});
+
 test('it seeds the configured currencies with a single default', function () {
     generateFoundation();
 
