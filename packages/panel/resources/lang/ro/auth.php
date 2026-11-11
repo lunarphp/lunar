@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Acest cod expiră în :count minute. Dacă nu ai solicitat acest lucru, poți ignora acest e-mail în siguranță.',
 
     'security_title' => 'Securitate',
+
+    'security_subtitle' => 'Gestionați parola și autentificarea în doi pași.',
     'password_section_title' => 'Parolă',
     'password_section_subtitle' => 'Folosește o parolă lungă și unică pe care nu o folosești nicăieri altundeva.',
     'current_password' => 'Parola actuală',

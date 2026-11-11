@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Deze code verloopt over :count minuten. Als je dit niet hebt aangevraagd, kun je deze e-mail veilig negeren.',
 
     'security_title' => 'Beveiliging',
+
+    'security_subtitle' => 'Beheer je wachtwoord en tweestapsverificatie.',
     'password_section_title' => 'Wachtwoord',
     'password_section_subtitle' => 'Gebruik een lang, uniek wachtwoord dat je nergens anders gebruikt.',
     'current_password' => 'Huidig wachtwoord',

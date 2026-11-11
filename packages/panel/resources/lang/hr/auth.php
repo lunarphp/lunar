@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Ovaj kod istječe za :count minuta. Ako niste zatražili ovo, možete sigurno zanemariti ovu e-poštu.',
 
     'security_title' => 'Sigurnost',
+
+    'security_subtitle' => 'Upravljajte lozinkom i dvofaktorskom autentifikacijom.',
     'password_section_title' => 'Lozinka',
     'password_section_subtitle' => 'Upotrijebite dugu, jedinstvenu lozinku koju ne upotrebljavate nigdje drugdje.',
     'current_password' => 'Trenutna lozinka',
