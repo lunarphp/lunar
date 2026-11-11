@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Ten kod wygaśnie za :count minut. Jeśli nie prosiłeś o to, możesz bezpiecznie zignorować tę wiadomość.',
 
     'security_title' => 'Bezpieczeństwo',
+
+    'security_subtitle' => 'Zarządzaj hasłem i uwierzytelnianiem dwuskładnikowym.',
     'password_section_title' => 'Hasło',
     'password_section_subtitle' => 'Używaj długiego, unikalnego hasła, którego nie używasz nigdzie indziej.',
     'current_password' => 'Obecne hasło',

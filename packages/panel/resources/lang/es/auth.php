@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Este código caduca en :count minutos. Si no lo solicitaste, puedes ignorar este correo de forma segura.',
 
     'security_title' => 'Seguridad',
+
+    'security_subtitle' => 'Gestiona tu contraseña y la autenticación en dos pasos.',
     'password_section_title' => 'Contraseña',
     'password_section_subtitle' => 'Usa una contraseña larga y única que no utilices en ningún otro sitio.',
     'current_password' => 'Contraseña actual',

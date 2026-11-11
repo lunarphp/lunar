@@ -40,6 +40,15 @@ describe('attribute data test', function () {
         [FieldTypeEnum::Number->value, TextInput::class],
     ]);
 
+    test('form components carry the attribute handle as metadata', function () {
+        $attribute = Attribute::factory()->create([
+            'type' => FieldTypeEnum::Text->value,
+            'handle' => 'material',
+        ]);
+
+        expect(AttributeData::getFilamentComponent($attribute)->getMeta('handle'))->toBe('material');
+    });
+
     test('can extend converters', function () {
         $attribute = Attribute::factory()->create([
             'type' => 'test_field',

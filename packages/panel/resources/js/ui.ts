@@ -43,6 +43,7 @@ export { default as Toggle } from './components/Toggle.vue';
 export { default as FieldLabel } from './components/FieldLabel.vue';
 export { default as ColorPicker } from './components/ColorPicker.vue';
 export { default as DatePicker } from './components/DatePicker.vue';
+export { default as RichTextEditor } from './components/RichTextEditor.vue';
 export { default as ValuePreviewChip } from './components/ValuePreviewChip.vue';
 export type { PreviewValue } from './components/ValuePreviewChip.vue';
 
@@ -55,12 +56,18 @@ export { default as SideCard } from './components/SideCard.vue';
 export { default as StickySidebar } from './components/StickySidebar.vue';
 export { default as Section } from './components/Section.vue';
 export { default as Tabs } from './components/Tabs.vue';
+export { default as Flag } from './components/Flag.vue';
 
 // Edit drafts
 export { default as DraftActions } from './components/DraftActions.vue';
 export { default as DraftConflictDialog } from './components/DraftConflictDialog.vue';
 export { useEditDraft } from './composables/useEditDraft';
 export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';
+// Form slices: add-on slices live under `addon:{key}`; the exported
+// composable applies that prefix so a slot component only ever names its own key.
+export { useAddonFormSlice as useFormSlice } from './composables/useFormSlice';
+export type { FormSlice } from './composables/useFormSlice';
+export { usePanelForm } from './composables/usePanelForm';
 export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
 export type { DraftConflict } from './lib/http';
 

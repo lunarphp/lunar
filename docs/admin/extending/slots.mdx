@@ -86,7 +86,7 @@ See [Building an Add-on](/admin/extending/addons) for the full bundle setup.
 
 ## Worked example: an SEO card
 
-`src/ExampleSection.php` in `lunarphp/panel-addon-example` registers two slots — a plain banner on the Customers edit page, and the canonical SEO card on the product edit page:
+`src/ExampleSection.php` in `lunarphp/panel-addon-example` registers three slots: a plain banner on the Customers edit page, a loyalty card on the same page that takes part in the customer's save through a [form slice](/admin/extending/form-slices), and the canonical SEO card on the product edit page:
 
 ```php
 public function slots(SlotRegistry $registry): void
@@ -99,6 +99,15 @@ public function slots(SlotRegistry $registry): void
         zone: 'customers.edit:main:after',
         component: 'example-addon::InfoBanner',
         props: ['message' => 'This banner was injected by the example add-on via a slot.'],
+    ));
+
+    // A slot component that takes part in the page's save: LoyaltyCard binds
+    // to the LoyaltyTierSlice registered in formExtensions() through
+    // useFormSlice('example-addon'), so its field autosaves and commits
+    // with the customer's own.
+    $registry->add(new Slot(
+        zone: 'customers.edit:main:after',
+        component: 'example-addon::LoyaltyCard',
     ));
 
     // The product edit page deliberately ships no SEO section: an add-on
@@ -121,7 +130,7 @@ const props = defineProps<{
 </script>
 ```
 
-A real SEO add-on would persist its fields through its own registered routes; the example card keeps its state local to stay a pure slot demonstration.
+The example card keeps its state local to stay a pure slot demonstration. A real SEO add-on would join the product's edit draft with a [form slice](/admin/extending/form-slices), as the loyalty card does on the customer page, so its fields save with the product.
 
 ## Known first-party zones
 
@@ -158,4 +167,5 @@ The product edit page's `content:after` zone (between the Basics/Media/Attribute
 
 - [Extending Tables](/admin/extending/tables) — the equivalent mechanism for adding columns, filters, and actions to a table instead of injecting a component into a page.
 - [Page Actions](/admin/extending/page-actions) — adding a header action rather than body content.
+- [Form Slices](/admin/extending/form-slices) — letting a slot component's fields autosave and commit with the page's record.
 - [Ordering with Position](/admin/extending/ordering) — the shared placement primitive used elsewhere in the panel (not slots, which use a plain `priority` integer).

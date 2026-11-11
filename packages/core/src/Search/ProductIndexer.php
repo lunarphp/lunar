@@ -21,6 +21,8 @@ class ProductIndexer extends ScoutIndexer
     {
         return [
             '__soft_deleted',
+            // Lets a search fetch known products by id, e.g. a reranking stage.
+            'id',
             'skus',
             'status',
         ];
@@ -61,6 +63,20 @@ class ProductIndexer extends ScoutIndexer
 
         $data['skus'] = $model->variants->pluck('sku')->filter(fn ($sku) => filled($sku))->values()->toArray();
 
+        // Uppercased with separators stripped, so a partial code typed without
+        // the printed hyphens (HAGMB) still prefix-matches HAG-MB-32A.
+        $data['skus_normalised'] = $model->variants->pluck('sku')
+            ->filter()
+            ->map(fn (string $sku) => strtoupper(preg_replace('/[^A-Za-z0-9]+/', '', $sku)))
+            ->filter()
+            ->values()
+            ->toArray();
+
         return $data;
+    }
+
+    public function getExactMatchFields(): array
+    {
+        return ['skus', 'skus_normalised'];
     }
 }

@@ -11,6 +11,7 @@ use Lunar\Core\Exceptions\LocationActionException;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\StockMovement;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\LocationRequest;
 
 class LocationEditController
@@ -35,10 +36,10 @@ class LocationEditController
         ]);
     }
 
-    public function update(LocationRequest $request, Location $location, UpdatesLocation $updatesLocation): RedirectResponse
+    public function update(LocationRequest $request, Location $location, UpdatesLocation $updatesLocation, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesLocation->execute($location, $request->locationAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesLocation->execute($location, $request->locationAttributes()));
         } catch (LocationActionException) {
             return back()->with('error', __('panel::locations.default_unset_blocked'));
         }

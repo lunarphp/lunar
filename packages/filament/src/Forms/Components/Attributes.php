@@ -132,8 +132,8 @@ class Attributes extends Group
                 }
 
                 if ($morphMap == ProductVariant::morphName()) {
-                    if ($record::class === Product::class) {
-                        $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
+                    if ($record instanceof Product) {
+                        $productTypeId = $record->product_type_id ?: ProductType::first()->id;
                     } else {
                         $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
                     }
@@ -165,6 +165,7 @@ class Attributes extends Group
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
                     $groupComponents[] = Section::make($group['model']->name)
+                        ->meta('handle', $group['model']->handle ?? null)
                         ->schema($sectionFields);
                 }
 

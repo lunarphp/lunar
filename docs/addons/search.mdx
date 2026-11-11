@@ -35,6 +35,21 @@ The add-on ships its own `facets` configuration, merged under the same `lunar.se
 use Lunar\Core\Models\Product;
 
 return [
+    'pipelines' => [
+        'request' => [],
+        'results' => [],
+    ],
+
+    'typesense' => [
+        'vector_distance_threshold' => 0.6,
+    ],
+
+    'meilisearch' => [
+        'embedder' => null,
+        'semantic_ratio' => 0.5,
+        'ranking_score_threshold' => null,
+    ],
+
     'facets' => [
         Product::class => [
             'brand' => [],
@@ -44,6 +59,15 @@ return [
 ```
 
 This config is merged, not published — there is no `vendor:publish` tag for it. To override or extend it, create `config/lunar/search.php` in the host application; any keys not present there fall back to the add-on's defaults. The `engine_map` and `models` keys read by the core search config (see the [Search reference](/reference/search)) live in the same file.
+
+| Key | Default | Description |
+|---|---|---|
+| `pipelines.request` | `[]` | Stages run before the engine queries; see [Pipelines](#pipelines) |
+| `pipelines.results` | `[]` | Stages run after the results are built; see [Pipelines](#pipelines) |
+| `typesense.vector_distance_threshold` | `0.6` | Maximum vector distance for hybrid matches; `0` sends the bare `k: 200` vector query. See [Typesense](#typesense). |
+| `meilisearch.embedder` | `null` | Name of a configured Meilisearch embedder to enable hybrid search; `null` keeps keyword-only retrieval |
+| `meilisearch.semantic_ratio` | `0.5` | Semantic ratio for hybrid search, when an embedder is set |
+| `meilisearch.ranking_score_threshold` | `null` | Drops hits below this ranking score (0..1) when hybrid search is on; the counterpart of the Typesense distance threshold |
 
 Each key under a model's `facets` entry corresponds to a field in that model's searchable index. The value is an array of per-facet-value configuration, used to attach extra data (such as a hex color) to a specific value:
 
@@ -206,6 +230,125 @@ $results = Search::query('Hoodies')
     ->get();
 ```
 
+## Pipelines
+
+Every engine runs two config-driven pipelines around its query, mirroring the cart and order pipelines in core. Stages are class names listed in `lunar.search.pipelines`, resolved from the container and run top to bottom through `Illuminate\Pipeline\Pipeline`:
+
+```php
+// config/lunar/search.php
+return [
+    'pipelines' => [
+        // Run before the engine queries. Stages may change page, perPage,
+        // sort, filters or engine parameters.
+        'request' => [
+            App\Search\Pipelines\BoostInStock::class,
+        ],
+        // Run after SearchResults is built. Stages may reorder, annotate or
+        // replace hits.
+        'results' => [],
+    ],
+];
+```
+
+The request pipeline receives a `Lunar\Search\Pipelines\SearchRequest`:
+
+| Property | Type | Description |
+|---|---|---|
+| `engine` | `AbstractEngine` | The engine about to query; call its fluent methods to change the request |
+| `requestedPage` | `int` | The page the caller asked for, before any stage changed it |
+| `requestedPerPage` | `int` | The page size the caller asked for |
+| `context` | `array` | A free-form bag for stages to hand state to the results pipeline |
+
+The results pipeline receives a `Lunar\Search\Pipelines\SearchResponse`:
+
+| Property | Type | Description |
+|---|---|---|
+| `request` | `SearchRequest` | The request passable, including anything stages put in `context` |
+| `results` | `SearchResults` | The built results; a stage may mutate it or assign a replacement |
+
+### Page and per-page
+
+`AbstractEngine::page(int $page)` sets the page the engine fetches, alongside the existing `perPage()`. Until it is called, the page resolves from the request's `page` query parameter as it always has; `getPage()` returns whichever applies, and `getPerPage()` the page size. A request stage can fetch a wider window than the caller asked for (set `page(1)` and a larger `perPage()`), then a results stage slices back to `requestedPage` and `requestedPerPage` from the request passable.
+
+```php
+use Lunar\Search\Facades\Search;
+
+$results = Search::query('Hoodies')
+    ->perPage(24)
+    ->page(3)
+    ->get();
+```
+
+### Engine parameters
+
+`withParams(array $params)` merges extra engine-specific request parameters on top of everything the engine builds itself, so a request stage can change retrieval without the engine knowing about it. Keys are the engine's own parameter names: Typesense search parameters (`query_by`, `num_typos`, `infix`, ...) for `TypesenseEngine`, Meilisearch request parameters (`attributesToSearchOn`, `matchingStrategy`, `hybrid`, ...) for `MeilisearchEngine`. A `null` value removes a parameter the engine would otherwise send:
+
+```php
+$request->engine->withParams([
+    'query_by' => 'skus,skus_normalised',
+    'num_typos' => 0,
+    'vector_query' => null, // drop the hybrid vector query for this request
+]);
+```
+
+`getParams()` returns the merged overrides.
+
+### Meta fields
+
+Both data objects carry a free-form `meta` array for engines and stages to annotate:
+
+- `SearchHit::$meta` holds the engine's own score under `score` where the engine provides one: Typesense `text_match`, Meilisearch `_rankingScore` (the engine requests it with `showRankingScore`). Stages add their own keys.
+- `SearchResults::$meta` is empty by default; results stages annotate it, for example with a search id.
+
+Both default to `[]`, so existing calls to `SearchResults::from()` and `SearchHit::from()` are unaffected.
+
+### A custom stage
+
+A stage is any class with a `handle($passable, \Closure $next)` method. This request stage restricts a search to in-stock products when the storefront asks for it through the context bag:
+
+```php
+namespace App\Search\Pipelines;
+
+use Closure;
+use Lunar\Search\Pipelines\SearchRequest;
+
+class BoostInStock
+{
+    public function handle(SearchRequest $request, Closure $next): SearchRequest
+    {
+        $request->engine->addFilter('in_stock', true);
+        $request->context['in_stock_only'] = true;
+
+        return $next($request);
+    }
+}
+```
+
+And this results stage annotates every hit with its display position:
+
+```php
+namespace App\Search\Pipelines;
+
+use Closure;
+use Lunar\Search\Pipelines\SearchResponse;
+
+class NumberHits
+{
+    public function handle(SearchResponse $response, Closure $next): SearchResponse
+    {
+        foreach ($response->results->hits as $index => $hit) {
+            $hit->meta['position'] = $index + 1;
+        }
+
+        return $next($response);
+    }
+}
+```
+
+<Info>
+The three built-in engines call `pipeRequest()` at the top of `get()` and wrap their return value in `pipeResults()`. A custom engine extending `Lunar\Search\Engines\AbstractEngine` opts in by doing the same; an engine that does not call them keeps working, but stages never run for it.
+</Info>
+
 ## Response Format
 
 All search engines return a `Lunar\Search\Data\SearchResults` object with a consistent structure:
@@ -222,6 +365,7 @@ All search engines return a `Lunar\Search\Data\SearchResults` object with a cons
 | `links` | `View` | Pagination links (Laravel paginator view) |
 | `sortField` | `?string` | The field the results are sorted by, if any |
 | `sortDirection` | `?string` | `asc`, `desc`, or `null` |
+| `meta` | `array` | Annotations from results-pipeline stages; empty by default |
 
 ### SearchHit
 
@@ -231,6 +375,7 @@ Each hit contains the indexed document data and any highlights (Typesense only):
 |---|---|---|
 | `highlights` | `SearchHitHighlight[]` | Matched field highlights |
 | `document` | `array` | The raw indexed document data |
+| `meta` | `array` | The engine score under `score` where available (Typesense and Meilisearch), plus any keys added by pipeline stages |
 
 ### SearchHitHighlight
 
@@ -340,6 +485,10 @@ php artisan lunar:meilisearch:setup
 
 It reads `config('lunar.search.models')`, creates any missing Meilisearch indexes, and applies each model's filterable and sortable attributes (as defined by its indexer — see the [Search reference](/reference/search)) to the corresponding index.
 
+It also disables typo tolerance on the fields an indexer returns from `getExactMatchFields()`, by setting `typoTolerance.disableOnAttributes` on the index. `Lunar\Core\Search\ProductIndexer` returns `['skus', 'skus_normalised']`, so product codes only match exactly or by prefix rather than matching random tokens one or two typos away. Re-run the command after changing an indexer's exact-match fields.
+
+To enable hybrid (semantic) search on Meilisearch, configure an embedder on the index and set its name in `lunar.search.meilisearch.embedder`; `semantic_ratio` and `ranking_score_threshold` then apply. Lunar does not configure the embedder itself.
+
 <Info>
 The Meilisearch and Typesense engines used to query results live in the `lunarphp/search` package installed above. The `lunarphp/meilisearch` add-on only configures Meilisearch's index settings; it is not required to run Meilisearch queries through the `Search` facade.
 </Info>
@@ -347,3 +496,82 @@ The Meilisearch and Typesense engines used to query results live in the `lunarph
 ## Typesense
 
 Typesense is available as a driver (`Lunar\Search\Engines\TypesenseEngine`) once `lunarphp/search` is installed, with no separate add-on package required. Configure Typesense's own collection schema and search parameters through Scout's `config/scout.php` (the `typesense.model-settings` key), which controls field types for filtering, highlight and hybrid search settings, and query defaults.
+
+When the collection schema declares an auto-embedding `embedding` field, the engine adds a hybrid vector query to every search with a term. The query carries `distance_threshold` from `lunar.search.typesense.vector_distance_threshold` (default `0.6`) so that a term with no semantic neighbours cannot pad the result set with its 200 nearest vectors; set it to `0` to send the bare `k: 200` query. A `vector_query` search parameter in `config/scout.php` overrides the generated one entirely.
+
+<Tip>
+With a threshold in place, a nonsense query can return zero results instead of 200 padded ones. Render a zero-results state in the storefront rather than loosening the threshold to fill the page.
+</Tip>
+
+For product code search, declare `skus` and `skus_normalised` as `string[]` fields with `infix: true` and list both in `query_by`; see [Product code search](#product-code-search) below for the full entries.
+
+## Product code search
+
+### The `skus_normalised` field
+
+`Lunar\Core\Search\ProductIndexer` indexes variant SKUs twice: `skus` as printed, and `skus_normalised` uppercased with every non-alphanumeric character stripped. That is what lets `HAGMB` prefix-match `HAG-MB-32A`. Both fields are part of core and are indexed whatever engine is in use. With the settings below, a shopper typing a partial code gets the whole family of that code. A request pipeline stage can go further by detecting code-like queries and restricting retrieval to these fields with `withParams()`.
+
+### Typesense setup
+
+Typesense needs both fields declared in the collection schema and listed in `query_by`, together with the position-aligned `infix` and `num_typos` lists. Both live in the host application's `config/scout.php`, under `typesense.model-settings`:
+
+```php
+// config/scout.php
+'typesense' => [
+    // ...
+    'model-settings' => [
+        Lunar\Core\Models\Product::class => [
+            'collection-schema' => [
+                'fields' => [
+                    ['name' => 'id', 'type' => 'string'],
+                    ['name' => 'name_en', 'type' => 'string'],
+                    ['name' => 'description_en', 'type' => 'string', 'optional' => true],
+                    ['name' => 'skus', 'type' => 'string[]', 'infix' => true],
+                    ['name' => 'skus_normalised', 'type' => 'string[]', 'infix' => true],
+                    ['name' => 'brand', 'type' => 'string', 'facet' => true, 'optional' => true],
+                    ['name' => 'status', 'type' => 'string', 'facet' => true],
+                    ['name' => 'created_at', 'type' => 'int64'],
+                    // ...
+                ],
+            ],
+            'search-parameters' => [
+                'query_by' => 'name_en,description_en,skus,skus_normalised',
+                'query_by_weights' => '4,1,3,3',
+                'infix' => 'off,off,always,always',
+                'num_typos' => '2,2,0,0',
+                'prefix' => 'true,true,true,true',
+            ],
+        ],
+    ],
+],
+```
+
+Every entry in `infix`, `num_typos`, `prefix`, and `query_by_weights` is positional and must have exactly as many values as `query_by`, or Typesense rejects the request. Only `infix: true` in the schema enables infix search for a field; `always` in the search parameters then uses it.
+
+Changing the collection schema requires a reindex:
+
+```bash
+php artisan lunar:search:index "Lunar\Core\Models\Product" --refresh
+```
+
+<Tip>
+The `--refresh` flag drops and recreates the collection, which is what a schema change needs. Without it, Typesense keeps the old field list and the new fields are silently ignored.
+</Tip>
+
+### Meilisearch setup
+
+Meilisearch already prefix-matches the last word of a query, so recall of a SKU family is complete out of the box. Typo tolerance is the defect: under default settings an eight-character code returns several unrelated products per page, and none once typos are disabled on the SKU attributes. That is an index setting, not something a request can change, so the [`lunar:meilisearch:setup`](/addons/search#meilisearch) command applies it:
+
+```bash
+php artisan lunar:meilisearch:setup
+```
+
+Re-run it after upgrading to a version of Lunar with `skus_normalised`, then reindex so the new field is populated:
+
+```bash
+php artisan lunar:search:index "Lunar\Core\Models\Product" --refresh
+```
+
+### Meilisearch page padding
+
+Meilisearch's default `last` matching strategy lists every document matching all query terms first, then fills the rest of the page with documents matching fewer terms. For a letter-only prefix such as `HAG-MB`, page one is the whole family followed by partial matches. This is not a ranking error, but a storefront that shows a result count will show an inflated total. Sending `matchingStrategy: all`, for example from a request pipeline stage through `withParams()`, avoids the padding.

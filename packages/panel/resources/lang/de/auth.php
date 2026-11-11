@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Dieser Code läuft in :count Minuten ab. Wenn Sie dies nicht angefordert haben, können Sie diese E-Mail ignorieren.',
 
     'security_title' => 'Sicherheit',
+
+    'security_subtitle' => 'Verwalten Sie Ihr Passwort und die Zwei-Faktor-Authentifizierung.',
     'password_section_title' => 'Passwort',
     'password_section_subtitle' => 'Verwenden Sie ein langes, einzigartiges Passwort, das Sie nirgendwo sonst verwenden.',
     'current_password' => 'Aktuelles Passwort',

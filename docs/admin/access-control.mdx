@@ -20,7 +20,7 @@ The email code is the automatic fallback, so a staff member can always sign in e
 
 ### Enrolling an authenticator app
 
-Staff enroll their own second factor under **Account > Security** (`panel.account.security`). Enrollment generates a TOTP secret, shown as a QR code for scanning into an authenticator app, and a set of recovery codes to store somewhere safe. Confirming the enrollment with a valid code from the app activates it; from that point, login prompts for a code from the app instead of an emailed one.
+Staff enroll their own second factor on the Security page (`panel.account.security`, served at `/{lunar.panel.path}/account/security`). Open it from the user menu at the bottom of the sidebar by choosing **Security**. Enrollment generates a TOTP secret, shown as a QR code for scanning into an authenticator app, and a set of recovery codes to store somewhere safe. Confirming the enrollment with a valid code from the app activates it; from that point, login prompts for a code from the app instead of an emailed one.
 
 Recovery codes let a staff member sign in if they lose access to their authenticator app. Each code is single-use; staff can regenerate the full set from the same Security screen.
 

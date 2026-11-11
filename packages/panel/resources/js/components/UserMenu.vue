@@ -93,6 +93,8 @@ function changeLocale(next: string): void {
 
 const panelPath = computed(() => (usePage().props.panel as { path: string }).path);
 const logoutUrl = computed(() => `/${panelPath.value}/logout`);
+const securityUrl = computed(() => `/${panelPath.value}/account/security`);
+const openSecurity = () => router.visit(securityUrl.value);
 const signOut = () => router.post(logoutUrl.value);
 
 const itemBase =
@@ -202,6 +204,13 @@ const radioBase =
                 </DropdownMenuSub>
 
                 <DropdownMenuSeparator v-if="availableLocales.length > 1" class="h-px bg-line my-1 -mx-1" />
+
+                <DropdownMenuItem :class="itemBase" @select="openSecurity">
+                    <Icon name="shield" cls="sm" class="text-ink-500" />
+                    {{ t('auth.security_title') }}
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator class="h-px bg-line my-1 -mx-1" />
 
                 <DropdownMenuItem
                     :class="[itemBase, 'text-danger data-[highlighted]:bg-danger-soft data-[highlighted]:text-danger']"

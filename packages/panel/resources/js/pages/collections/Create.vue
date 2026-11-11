@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
+import { usePanelForm } from '../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
@@ -24,7 +25,7 @@ const { t } = useI18n();
 
 const parent = ref<ParentOption | null>(props.preselected.parent);
 
-const form = useForm<{
+const form = usePanelForm<{
     name: string;
     collection_group_id: number | null;
     parent_id: number | null;

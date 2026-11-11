@@ -3,7 +3,9 @@
 namespace Lunar\Core\Listeners;
 
 use Lunar\Core\Contracts\FulfilmentStateConfig;
+use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Events\Fulfilment\FulfilmentStatusUpdated;
+use Lunar\Core\Listeners\Concerns\SendsCustomerNotifications;
 
 /**
  * Dispatch the per-fulfilment notifications configured for a fulfilment's new
@@ -18,8 +20,11 @@ use Lunar\Core\Events\Fulfilment\FulfilmentStatusUpdated;
  */
 class SendFulfilmentStatusNotifications
 {
+    use SendsCustomerNotifications;
+
     public function __construct(
         protected FulfilmentStateConfig $config,
+        protected OrderNotificationManifest $notifications,
     ) {}
 
     public function handle(FulfilmentStatusUpdated $event): void
@@ -28,8 +33,6 @@ class SendFulfilmentStatusNotifications
             return;
         }
 
-        foreach ($this->config->notificationsFor($event->newStatus) as $class) {
-            $event->fulfilment->order->notify(new $class($event->fulfilment));
-        }
+        $this->sendAfterCommit($event->fulfilment->order, $this->config->notificationsFor($event->newStatus), $event->fulfilment);
     }
 }

@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -35,6 +35,9 @@ jobs:
       - name: Build bundles add-on bundle
         run: npm run build --workspace @lunarphp/bundles-addon
 
+      - name: Build table-rate-shipping panel bundle
+        run: npm run build --workspace @lunarphp/table-rate-shipping-panel
+
       - uses: actions/upload-artifact@v4
         with:
           name: compiled-assets
@@ -42,6 +45,7 @@ jobs:
           path: |
             packages/panel/public/build
             packages/bundles/build
+            packages/table-rate-shipping/build
 
   split-monorepo:
     needs: build-assets
@@ -67,7 +71,7 @@ jobs:
       - uses: actions/checkout@v6
 
       # Gitignored only at the repo root, which the split doesn't carry, so the
-      # action's `git add .` commits these into lunarphp/panel and lunarphp/bundles.
+      # action's `git add .` commits these into each split package.
       - uses: actions/download-artifact@v4
         with:
           name: compiled-assets

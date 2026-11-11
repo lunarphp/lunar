@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'تنتهي صلاحية هذا الرمز خلال :count دقيقة. إذا لم تطلب هذا، يمكنك تجاهل هذه الرسالة بأمان.',
 
     'security_title' => 'الأمان',
+
+    'security_subtitle' => 'إدارة كلمة المرور والمصادقة الثنائية.',
     'password_section_title' => 'كلمة المرور',
     'password_section_subtitle' => 'استخدم كلمة مرور طويلة وفريدة لا تستخدمها في أي مكان آخر.',
     'current_password' => 'كلمة المرور الحالية',

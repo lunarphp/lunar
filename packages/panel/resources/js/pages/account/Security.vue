@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import CodeInput from '../../components/CodeInput.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
+import PageHeader from '../../components/PageHeader.vue';
 import TextInput from '../../components/TextInput.vue';
+import PanelLayout from '../../layouts/PanelLayout.vue';
 
 const props = defineProps<{
     twoFactorEnabled: boolean;
@@ -67,10 +69,10 @@ const copyCodes = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-canvas font-sans py-10">
-        <div class="mx-auto flex max-w-xl flex-col gap-6 px-6">
-            <Head :title="t('auth.security_title')" />
-            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.security_title') }}</h1>
+    <PanelLayout>
+        <PageHeader :title="t('auth.security_title')" :description="t('auth.security_subtitle')" icon="shield" />
+
+        <div class="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 sm:px-5 lg:px-7 pt-5 pb-7">
 
             <!-- Password -->
             <section class="rounded-lg border border-line bg-paper p-6">
@@ -221,5 +223,5 @@ const copyCodes = () => {
                 </div>
             </section>
         </div>
-    </div>
+    </PanelLayout>
 </template>

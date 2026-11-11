@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Este código expira em :count minutos. Se você não solicitou isso, pode ignorar este e-mail com segurança.',
 
     'security_title' => 'Segurança',
+
+    'security_subtitle' => 'Gerencie sua senha e a autenticação em dois fatores.',
     'password_section_title' => 'Senha',
     'password_section_subtitle' => 'Use uma senha longa e exclusiva que você não usa em nenhum outro lugar.',
     'current_password' => 'Senha atual',

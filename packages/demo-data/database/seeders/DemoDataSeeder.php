@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\DemoData\Generators\BundlesGenerator;
 use Lunar\DemoData\Generators\CatalogueGenerator;
 use Lunar\DemoData\Generators\CustomersGenerator;
@@ -69,11 +70,15 @@ class DemoDataSeeder extends Seeder
             $this->fresh();
         }
 
-        foreach ($this->generators as $generator) {
-            $this->command?->getOutput()->writeln("  <fg=gray>-</> {$generator}");
+        // Demo orders are placed, paid and fulfilled through the real actions;
+        // muted so seeding never emails the generated customers.
+        app(OrderNotificationManifest::class)->withoutSending(function () use ($context): void {
+            foreach ($this->generators as $generator) {
+                $this->command?->getOutput()->writeln("  <fg=gray>-</> {$generator}");
 
-            app($generator)->generate($context);
-        }
+                app($generator)->generate($context);
+            }
+        });
     }
 
     /**

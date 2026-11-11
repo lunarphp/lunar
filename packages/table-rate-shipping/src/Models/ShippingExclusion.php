@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Core\Models\Base;
-use Lunar\Shipping\Factories\ShippingExclusionFactory;
+use Lunar\Shipping\Database\Factories\ShippingExclusionFactory;
 
 class ShippingExclusion extends Base
 {
@@ -31,11 +31,11 @@ class ShippingExclusion extends Base
     }
 
     /**
-     * Return the shipping zone relationship.
+     * Return the exclusion list relationship.
      */
     public function list(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::class);
+        return $this->belongsTo(ShippingExclusionList::class, 'shipping_exclusion_list_id');
     }
 
     /**

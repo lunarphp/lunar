@@ -9,6 +9,7 @@ use Lunar\Core\Contracts\Actions\CustomerGroups\DeletesCustomerGroup;
 use Lunar\Core\Contracts\Actions\CustomerGroups\UpdatesCustomerGroup;
 use Lunar\Core\Exceptions\CustomerGroupActionException;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Settings\CustomerGroupRequest;
 
 class CustomerGroupEditController
@@ -31,10 +32,10 @@ class CustomerGroupEditController
         ]);
     }
 
-    public function update(CustomerGroupRequest $request, CustomerGroup $customerGroup, UpdatesCustomerGroup $updatesCustomerGroup): RedirectResponse
+    public function update(CustomerGroupRequest $request, CustomerGroup $customerGroup, UpdatesCustomerGroup $updatesCustomerGroup, FormSlices $formSlices): RedirectResponse
     {
         try {
-            $updatesCustomerGroup->execute($customerGroup, $request->customerGroupAttributes());
+            $formSlices->save($request->sliceInput(), fn () => $updatesCustomerGroup->execute($customerGroup, $request->customerGroupAttributes()));
         } catch (CustomerGroupActionException) {
             return back()->with('error', __('panel::customer_groups.default_unset_blocked'));
         }
