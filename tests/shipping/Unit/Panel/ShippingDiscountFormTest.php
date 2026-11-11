@@ -58,3 +58,13 @@ test('the summary reads the stored rules', function () {
         ->and($this->form->summary(['methods' => [['type' => 'percentage', 'percentage' => 12.5]]], $this->gbp))->toBe('12.5% off shipping')
         ->and($this->form->summary(['methods' => [['type' => 'percentage', 'percentage' => 10], ['type' => 'fixed', 'prices' => ['GBP' => 0]]]], $this->gbp))->toBeNull();
 });
+
+test('prices in a disabled currency survive an edit', function () {
+    Currency::factory()->create(['code' => 'EUR', 'decimal_places' => 2, 'default' => false, 'enabled' => false]);
+
+    $form = $this->form->toForm(['methods' => [
+        ['shipping_method_id' => null, 'type' => 'fixed', 'prices' => ['GBP' => 250, 'EUR' => 300]],
+    ]]);
+
+    expect($this->form->toStorage($form)['methods'][0]['prices'])->toBe(['GBP' => 250, 'EUR' => 300]);
+});

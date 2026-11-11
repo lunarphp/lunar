@@ -27,21 +27,23 @@ class MethodData
         $currencies = $this->currencies();
         $minimum = $stored['minimum_spend'] ?? null;
 
-        // A pre-panel install may hold a scalar minimum; treat it as the
-        // default currency's value so it stays visible and editable.
+        // FreeShipping applies a scalar minimum to every currency.
         if (is_scalar($minimum)) {
-            $default = $currencies->firstWhere('default', true);
-            $minimum = $default ? [$default->code => $minimum] : [];
+            $minimum = $currencies->mapWithKeys(fn (Currency $currency) => [$currency->code => $minimum])->all();
         }
+
+        $minimum = (array) $minimum;
 
         return [
             'charge_by' => $stored['charge_by'] ?? 'cart_total',
             'use_discount_amount' => (bool) ($stored['use_discount_amount'] ?? false),
-            'minimum_spend' => $currencies->mapWithKeys(fn (Currency $currency) => [
-                $currency->code => isset($minimum[$currency->code])
-                    ? $this->priceCalculator->toMajor((int) $minimum[$currency->code], $currency)
-                    : null,
-            ])->all(),
+            'minimum_spend' => $currencies
+                ->filter(fn (Currency $currency) => $currency->enabled || isset($minimum[$currency->code]))
+                ->mapWithKeys(fn (Currency $currency) => [
+                    $currency->code => isset($minimum[$currency->code])
+                        ? $this->priceCalculator->toMajor((int) $minimum[$currency->code], $currency)
+                        : null,
+                ])->all(),
             'schedule' => $this->scheduleToForm($stored['schedule'] ?? null),
         ];
     }
@@ -135,9 +137,14 @@ class MethodData
         return $rows;
     }
 
-    /** @return Collection<int, Currency> */
+    /**
+     * Every currency, not only the enabled ones the form shows, so a value
+     * stored for a disabled currency round-trips through an edit.
+     *
+     * @return Collection<int, Currency>
+     */
     protected function currencies(): Collection
     {
-        return Currency::query()->whereEnabled(true)->orderByDesc('default')->orderBy('code')->get();
+        return Currency::query()->orderByDesc('default')->orderBy('code')->get();
     }
 }

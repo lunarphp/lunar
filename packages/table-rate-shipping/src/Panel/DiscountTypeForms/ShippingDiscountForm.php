@@ -42,11 +42,13 @@ class ShippingDiscountForm implements DiscountTypeForm
                     'shipping_method_id' => isset($rule['shipping_method_id']) ? (int) $rule['shipping_method_id'] : null,
                     'type' => $rule['type'] ?? 'fixed',
                     'percentage' => $rule['percentage'] ?? null,
-                    'prices' => $currencies->mapWithKeys(fn (Currency $currency) => [
-                        $currency->code => isset($prices[$currency->code])
-                            ? $this->priceCalculator->toMajor((int) $prices[$currency->code], $currency)
-                            : null,
-                    ])->all(),
+                    'prices' => $currencies
+                        ->filter(fn (Currency $currency) => $currency->enabled || isset($prices[$currency->code]))
+                        ->mapWithKeys(fn (Currency $currency) => [
+                            $currency->code => isset($prices[$currency->code])
+                                ? $this->priceCalculator->toMajor((int) $prices[$currency->code], $currency)
+                                : null,
+                        ])->all(),
                 ];
             })->all(),
         ];
@@ -92,7 +94,7 @@ class ShippingDiscountForm implements DiscountTypeForm
             'methods.*.prices' => ['nullable', 'array'],
         ];
 
-        foreach ($this->currencies() as $currency) {
+        foreach ($this->currencies()->where('enabled', true) as $currency) {
             $rules["methods.*.prices.{$currency->code}"] = ['nullable', 'numeric', 'min:0'];
         }
 
@@ -143,9 +145,14 @@ class ShippingDiscountForm implements DiscountTypeForm
         ]);
     }
 
-    /** @return Collection<int, Currency> */
+    /**
+     * Every currency, not only the enabled ones the form shows, so a price
+     * stored for a disabled currency round-trips through an edit.
+     *
+     * @return Collection<int, Currency>
+     */
     protected function currencies(): Collection
     {
-        return Currency::query()->whereEnabled(true)->orderByDesc('default')->orderBy('code')->get();
+        return Currency::query()->orderByDesc('default')->orderBy('code')->get();
     }
 }

@@ -153,3 +153,22 @@ test('a method can be deleted', function () {
 
     expect(ShippingMethod::find($method->id))->toBeNull();
 });
+
+test('an end date covers the whole of its last day', function () {
+    $group = CustomerGroup::factory()->create();
+    $method = ShippingMethod::factory()->create(['driver' => 'ship-by']);
+
+    $this->put(route('panel.settings.shipping.methods.update', $method), [
+        'name' => $method->name,
+        'code' => $method->code,
+        'driver' => 'ship-by',
+        'customer_groups' => [
+            ['id' => $group->id, 'enabled' => true, 'visible' => true, 'starts_at' => '2026-11-01', 'ends_at' => '2026-11-30'],
+        ],
+    ])->assertSessionHasNoErrors();
+
+    $pivot = $method->customerGroups()->first()->pivot;
+
+    expect((string) $pivot->starts_at)->toStartWith('2026-11-01 00:00:00')
+        ->and((string) $pivot->ends_at)->toStartWith('2026-11-30 23:59:59');
+});

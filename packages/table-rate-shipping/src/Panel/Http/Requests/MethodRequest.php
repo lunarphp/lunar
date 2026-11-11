@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Panel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Lunar\Core\Facades\Converter;
@@ -139,8 +140,20 @@ class MethodRequest extends FormRequest
             'id' => (int) $row['id'],
             'enabled' => (bool) $row['enabled'],
             'visible' => (bool) $row['visible'],
-            'starts_at' => $row['starts_at'] ?? null,
-            'ends_at' => $row['ends_at'] ?? null,
+            'starts_at' => $this->dateBoundary($row['starts_at'] ?? null, endOfDay: false),
+            'ends_at' => $this->dateBoundary($row['ends_at'] ?? null, endOfDay: true),
         ])->values()->all();
+    }
+
+    /** The form edits dates only; an end date runs to the end of its day. */
+    protected function dateBoundary(?string $value, bool $endOfDay): ?string
+    {
+        if (blank($value)) {
+            return null;
+        }
+
+        $date = Carbon::parse($value);
+
+        return ($endOfDay ? $date->endOfDay() : $date->startOfDay())->toDateTimeString();
     }
 }
