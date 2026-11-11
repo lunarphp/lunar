@@ -11,7 +11,7 @@ use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\Drafts\ComposedDraftResource;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Sections\Catalog\BrandDraftResource;
@@ -23,7 +23,7 @@ uses(TestCase::class);
 
 class RivalMemoSlice extends MemoSlice {}
 
-class AddonReservedSlice extends DraftSlice
+class AddonReservedSlice extends FormSlice
 {
     public function model(): string
     {

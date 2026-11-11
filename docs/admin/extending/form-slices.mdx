@@ -92,7 +92,7 @@ A rule parameter that names one of the slice's own fields needs the full key, be
 
 ### `DraftSlice` for draft-only state
 
-`Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds one method, `discard(Model $record, EditDraft $draft)`, called when a draft holding the slice's keys is discarded, pruned, or orphaned by its record's deletion. Only a slice that keeps state outside the draft's JSON columns (staged uploads, for instance) needs it. Extend the abstract `Lunar\Panel\Drafts\DraftSlice` to get a no-op default. A plain `FormSlice` composes into a draft unchanged, so most slices never need this.
+`Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds one method, `discard(Model $record, EditDraft $draft)`, called when a draft holding the slice's keys is discarded, pruned, or orphaned by its record's deletion. Only a slice that keeps state outside the draft's JSON columns (staged uploads, for instance) needs it. There is no abstract for it: the slice extends `Lunar\Panel\Forms\FormSlice` and implements the contract, `class StagedMediaSlice extends FormSlice implements DraftSlice`. A plain `FormSlice` composes into a draft unchanged, so most slices never need this.
 
 ### Worked example
 
