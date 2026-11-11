@@ -406,9 +406,9 @@ class OrdersGenerator implements Generator
             'product_type_id' => $this->variants->first()->product->product_type_id,
             'brand_id' => $this->variants->first()->product->brand_id,
             'status' => 'published',
-            'name' => collect(['en' => 'Digital Gift Card']),
-            'description' => collect(['en' => 'A digital gift card delivered by email.']),
-            'short_description' => collect(['en' => 'Delivered by email.']),
+            'name' => $this->context->text('Digital Gift Card'),
+            'description' => $this->context->text('A digital gift card delivered by email.'),
+            'short_description' => $this->context->text('Delivered by email.'),
             'attribute_data' => collect(),
         ]);
 

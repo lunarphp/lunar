@@ -39,6 +39,10 @@ class FoundationGenerator implements Generator
     public function generate(DemoContext $context): void
     {
         $context->set('language', $this->language());
+        $context->set('locales', array_values(array_unique([
+            'en',
+            Language::query()->where('default', true)->value('code') ?? 'en',
+        ])));
         $context->set('channel', $this->channel());
         $context->set('customerGroup', $this->customerGroup());
         $context->set('location', $this->location());
@@ -62,9 +66,11 @@ class FoundationGenerator implements Generator
 
     protected function language(): Language
     {
+        // Never take the default from an existing store: its content is
+        // keyed by that language, and the panel edits the default.
         return Language::query()->firstOrCreate(
             ['code' => 'en'],
-            ['name' => 'English', 'default' => true],
+            ['name' => 'English', 'default' => ! Language::query()->where('default', true)->exists()],
         );
     }
 

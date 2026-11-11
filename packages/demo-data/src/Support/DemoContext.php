@@ -4,6 +4,7 @@ namespace Lunar\DemoData\Support;
 
 use Faker\Factory;
 use Faker\Generator;
+use Illuminate\Support\Collection;
 
 /**
  * Shared state threaded through the generators: the chosen scale, the
@@ -61,6 +62,18 @@ class DemoContext
     public function count(string $key, int $default = 0): int
     {
         return (int) ($this->counts()[$key] ?? $default);
+    }
+
+    /**
+     * A translated value for demo copy: English, plus the store's default
+     * language when that differs, so the panel and storefront (which read
+     * the default) show it while `name->en` lookups keep working.
+     *
+     * @return Collection<string, string>
+     */
+    public function text(string $value): Collection
+    {
+        return collect(array_fill_keys((array) $this->get('locales', ['en']), $value));
     }
 
     public function set(string $key, mixed $value): mixed
