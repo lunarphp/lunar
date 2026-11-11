@@ -39,6 +39,10 @@ class FoundationGenerator implements Generator
     public function generate(DemoContext $context): void
     {
         $context->set('language', $this->language());
+        $context->set('locales', array_values(array_unique([
+            'en',
+            Language::query()->where('default', true)->value('code') ?? 'en',
+        ])));
         $context->set('channel', $this->channel());
         $context->set('customerGroup', $this->customerGroup());
         $context->set('location', $this->location());

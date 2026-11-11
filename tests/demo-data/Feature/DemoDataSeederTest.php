@@ -4,8 +4,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Lunar\Core\Models\Collection as ProductCollection;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -47,6 +49,22 @@ test('seeding sends no customer notifications', function () {
 
     expect(Order::count())->toBeGreaterThan(0);
     Notification::assertNothingSent();
+});
+
+test('demo text is written under the store default language too', function () {
+    Language::factory()->create(['code' => 'en-US', 'default' => true]);
+
+    seedStore();
+    $collections = ProductCollection::count();
+
+    seedStore();
+
+    // Raw JSON, because translate() falls back to another locale when one is missing.
+    $names = Product::all()->map(fn (Product $product) => json_decode($product->getRawOriginal('name'), true));
+
+    expect($names)->not->toBeEmpty()
+        ->and($names->every(fn (array $name) => isset($name['en-US'], $name['en']) && $name['en-US'] === $name['en']))->toBeTrue()
+        ->and(ProductCollection::count())->toBe($collections);
 });
 
 test('--fresh wipes and rebuilds without duplicating', function () {
