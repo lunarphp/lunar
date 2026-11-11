@@ -1,0 +1,252 @@
+---
+title: "Draft Slices"
+sidebarTitle: "Draft Slices"
+description: "How an add-on adds its own fields to a first-party edit draft, so they autosave, conflict-check, and commit with the record."
+---
+
+A draft slice is a namespaced contribution to an existing [edit draft](/admin/extending/edit-drafts): an add-on declares fields, rules, and a commit for a record it does not own, and the panel composes them into that record's draft under a namespace of the add-on's own.
+
+## Why slices exist
+
+A [slot](/admin/extending/slots) can put an add-on's component on the customer or product edit page, but on its own that component cannot take part in the page's save. Anything staff type into it is lost on navigation, cannot be committed alongside the record, and gets none of the conflict detection the draft layer gives first-party fields.
+
+A slice fixes that without opening first-party forms to modification. The add-on's fields autosave, restore, conflict-check, validate, and commit exactly as the record's own columns do, but the add-on can only ever add fields. It cannot hide, disable, relax, or replace a field the panel owns, and it cannot reach another add-on's fields. That is the rule the whole extension surface follows: add-ons add, only the host subtracts, so two add-ons installed together cannot break each other.
+
+## The key scheme
+
+Every drafted field has a key. A slice's fields live under `{namespace}:{field}`:
+
+- First-party slices, registered by the panel's own sections, own a bare namespace such as `attribute` or `channel`.
+- Slices registered by an add-on through `Section::formExtensions()` are placed under `addon:{key}`, where `{key}` is the slice's `key()`. Their full keys are `addon:{key}:{field}`.
+
+The slice never sees the prefix. It declares `tier`, the panel stores `addon:example-addon:tier`, and the slice's `commit()` receives `tier` again. Because prefixing happens in the composer rather than in the slice, there is no API through which a slice could name a key outside its namespace. The `addon` namespace is reserved and cannot be claimed as a bare namespace.
+
+## Registering a slice
+
+Return slice classes from a `Section` or `SectionExtension`'s `formExtensions()` hook:
+
+```php
+use LunarPanelExample\Drafts\LoyaltyTierSlice;
+
+public function formExtensions(): array
+{
+    return [LoyaltyTierSlice::class];
+}
+```
+
+`Lunar\Panel\PanelManager` resolves each class from the container and indexes it by the model it declares, then by namespace. Registration rejects a malformed key (it must match `[a-z0-9_-]+`), a first-party slice claiming `addon`, and a second class claiming a namespace another class already holds on the same model. Each throws an `InvalidArgumentException` at boot naming the classes involved, so a clash between two add-ons surfaces immediately rather than as a silent overwrite.
+
+The model must already have a `DraftableResource` registered through `draftables()`. A slice on a model without one is never composed, because there is no draft to join.
+
+<Info>
+`formSlices()` is the sibling hook the panel's own sections use to register slices under a bare namespace. It exists on `Section` and `SectionExtension` too, but an add-on should use `formExtensions()`. Nothing stops a service provider calling the first-party hook, since it runs with the same privileges as the panel's own; the public hook simply does not offer a bare namespace.
+</Info>
+
+## The `FormSlice` contract
+
+```php
+namespace Lunar\Panel\Contracts;
+
+interface FormSlice
+{
+    /** @return class-string<Model> */
+    public function model(): string;
+
+    public function key(): string;
+
+    /** @return array<int, string> */
+    public function fields(Model $record): array;
+
+    /** @return array<string, mixed> */
+    public function currentValues(Model $record): array;
+
+    /** @return array<string, mixed> */
+    public function normalize(array $data): array;
+
+    /** @return array<string, mixed> */
+    public function rules(Model $record): array;
+
+    public function commit(Model $record, array $values): void;
+
+    /** @return array<string, string> */
+    public function labels(): array;
+}
+
+interface DraftSlice extends FormSlice
+{
+    public function discard(Model $record, EditDraft $draft): void;
+}
+```
+
+Extend the abstract `Lunar\Panel\Forms\FormSlice` rather than implementing the interface directly. It supplies a passthrough `normalize()` and an empty `labels()`. A slice that keeps state outside the draft's JSON columns also implements `Lunar\Panel\Contracts\DraftSlice` and its `discard()`: `class StagedMediaSlice extends FormSlice implements DraftSlice`.
+
+| Method | Purpose |
+|:-------|:--------|
+| `model()` | The Eloquent model whose draft this slice joins. |
+| `key()` | The namespace, `[a-z0-9_-]+`, unique per model. An add-on's key is placed under `addon:`. |
+| `fields(Model $record)` | The bare field names for this record. Takes the record because a row-shaped slice derives its field set from data (which channels exist, which currencies are enabled). |
+| `currentValues(Model $record)` | The current stored value of every field, keyed by bare name and normalized the same way `normalize()` shapes incoming data. This is the baseline conflict detection compares against. |
+| `normalize(array $data)` | Shapes incoming values so equality against `currentValues()` holds. Receives only this slice's keys. |
+| `rules(Model $record)` | Validation rules keyed by bare field, `.*` entries included. The composer prefixes the keys; rule parameters pass through verbatim. |
+| `commit(Model $record, array $values)` | Persists the slice's values: every field present, current values overlaid with the draft, unprefixed. Runs after the resource's own commit inside the same transaction, so a slice that throws rolls the record's changes back too. Skipped when none of the slice's values changed. Delegate to a core action. |
+| `labels()` | Bare field to lang key, for the conflict dialog and validation messages. |
+| `discard(Model $record, EditDraft $draft)` | `DraftSlice` only. Called when a draft holding this slice's keys is discarded, pruned, or orphaned by its record's deletion. Only needed by a slice that keeps state outside the draft's JSON columns. |
+
+<Tip>
+A rule parameter that names one of the slice's own fields needs the full key, because the validator sees the composed payload. The abstract class provides `$this->field('other')` for exactly that, returning `addon:{key}:other` for an add-on slice.
+</Tip>
+
+### Worked example
+
+`LoyaltyTierSlice` in `lunarphp/panel-addon-example` adds a loyalty tier to the customer edit draft. The tier is kept in the customer's `meta` column so the example stays schema-free; a real add-on would persist to its own table through its own action.
+
+```php
+namespace LunarPanelExample\Drafts;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
+use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomer;
+use Lunar\Core\Models\Customer;
+use Lunar\Panel\Forms\FormSlice;
+
+class LoyaltyTierSlice extends FormSlice
+{
+    public const TIERS = ['bronze', 'silver', 'gold'];
+
+    public function __construct(protected UpdatesCustomer $updatesCustomer) {}
+
+    public function model(): string
+    {
+        return Customer::class;
+    }
+
+    public function key(): string
+    {
+        return 'example-addon';
+    }
+
+    public function fields(Model $record): array
+    {
+        return ['tier'];
+    }
+
+    public function currentValues(Model $record): array
+    {
+        /** @var Customer $record */
+        return ['tier' => $record->meta['loyalty_tier'] ?? null];
+    }
+
+    public function normalize(array $data): array
+    {
+        // The select submits '' for "no tier"; the stored value is null.
+        if (array_key_exists('tier', $data) && $data['tier'] === '') {
+            $data['tier'] = null;
+        }
+
+        return $data;
+    }
+
+    public function rules(Model $record): array
+    {
+        return ['tier' => ['nullable', Rule::in(self::TIERS)]];
+    }
+
+    public function commit(Model $record, array $values): void
+    {
+        /** @var Customer $record */
+        $meta = $record->meta?->getArrayCopy() ?? [];
+        $meta['loyalty_tier'] = $values['tier'] ?? null;
+
+        $this->updatesCustomer->execute($record, ['meta' => $meta]);
+    }
+
+    public function labels(): array
+    {
+        return ['tier' => 'example-addon::example.loyalty_tier'];
+    }
+}
+```
+
+The customer draft now carries `addon:example-addon:tier`. Nothing in the slice knows that.
+
+## The JS side
+
+The add-on edits its slice from a component placed on the page through a [slot](/admin/extending/slots). Every zone on an edit page sits inside the page's form, so the component binds with `useFormSlice`, exported from `@lunarphp/panel`, passing the slice's `key()`:
+
+```vue
+<script setup lang="ts">
+import { FieldLabel, Select, useFormSlice } from '@lunarphp/panel';
+
+const slice = useFormSlice<{ tier: string | null }>('example-addon');
+</script>
+
+<template>
+    <FieldLabel for="loyalty-tier">Loyalty tier</FieldLabel>
+    <Select id="loyalty-tier" v-model="slice.values.tier" :invalid="!!slice.errors.value.tier">
+        <option :value="null">No tier</option>
+        <option value="bronze">Bronze</option>
+        <option value="silver">Silver</option>
+        <option value="gold">Gold</option>
+    </Select>
+    <p v-if="slice.errors.value.tier">{{ slice.errors.value.tier }}</p>
+</template>
+```
+
+The composable resolves the key to the `addon:example-addon:` namespace on the page's draft, finds the page's form above it in the component tree, and returns a view scoped to that namespace. It throws a descriptive error when called outside a page driven by `useEditDraft`, such as on a listing page or a create page.
+
+`useFormSlice` returns:
+
+| Property | Purpose |
+|:---------|:--------|
+| `values` | A reactive object holding only this slice's fields, by bare name. `v-model="slice.values.tier"` reads and writes `addon:example-addon:tier` on the page's form. Writing to a field the slice did not declare throws. |
+| `errors` | Commit-time validation errors for this namespace, keyed by bare field. |
+| `field(name)` | A writable ref for one field, for components that prefer a ref to a property path. |
+| `isDirty` | Whether any of the namespace's fields differ from their pristine value. Changes elsewhere on the page leave it `false`. |
+| `saving` / `committing` | The page form's status refs, passed through for a local indicator. |
+
+The composable never exposes the underlying form, so a component has no path to another namespace's keys or to the record's own fields. The server enforces the same boundary independently: an autosave carrying `example-addon:tier` without the `addon:` prefix is rejected as an unknown field.
+
+## What the slice gets for free
+
+Once registered and bound, the slice's fields behave exactly like the record's own:
+
+- **Autosave and restore.** Values persist as staff type and come back when they return to the record, with the same restored-draft banner and **Discard** action.
+- **Dirty guard.** Leaving the page with an unsaved tier prompts first.
+- **Conflict detection.** If another staff member changes the tier before this draft commits, the page's conflict dialog lists it under the label from `labels()`, with keep-mine and take-theirs choices, and nothing commits until it is resolved.
+- **Validation.** A failed rule maps to `errors.tier` on the bound component, and the whole commit is refused.
+- **Atomic commit.** The slice's `commit()` runs after the customer's own inside one transaction. If it throws, the customer's changes roll back.
+
+## How values reach the page
+
+`Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests` shares a `formSliceValues` prop on every panel response: the prefixed current values of every slice on the page's record, or an empty object when the page has no record or no slices apply. The record is the deepest model bound to the route, matching what the draft endpoints target, so a product variant's edit page seeds the variant's slices rather than the product's.
+
+`useEditDraft` merges that prop into its `initial` values automatically, which is how the slice's keys come to exist on the form before any component binds to them. A page that drafts some record other than the route's deepest binding can opt out with `slices: false`.
+
+## First-party slices
+
+The panel uses the same contract for its own sub-surfaces on the product edit page, registered through `formSlices()` under bare namespaces:
+
+| Slice | Namespace | Fields |
+|:------|:----------|:-------|
+| `ProductAttributeSlice` | `attribute` | One per mapped attribute handle. |
+| `ProductChannelSlice` | `channel` | One per channel id, each an availability row. |
+| `ProductCustomerGroupSlice` | `customer_group` | One per customer group id, each an availability row with the purchasable flag. |
+| `SoleVariantSlice` | `variant` | The sole variant's fields on a simple-shape product, refused outright once the product has several variants. |
+
+These are the proof that the add-on surface is complete: a first-party card and an add-on's slot component take the same path.
+
+## Stale keys
+
+A stored draft can carry keys whose slice is no longer registered, for example after an add-on is uninstalled or a channel is deleted. Such keys are dropped when the draft commits rather than blocking it, so a record never becomes unsavable because of a package that is no longer there.
+
+## Limits
+
+- Slices apply to edit pages only. Create pages post a plain form and redirect; there is no draft and no record until the store succeeds.
+- A slice cannot hide, disable, relax, or replace a first-party field. Per-store hiding of first-party fields is a host-level concern and is not part of the extension surface.
+- Slices are composed per model, not per page. A slice on `Customer` appears wherever the customer draft does.
+
+## See also
+
+- [Edit Drafts](/admin/extending/edit-drafts) — the draft layer a slice composes into, and how to draft a resource the add-on owns outright.
+- [Slots](/admin/extending/slots) — placing the component that edits the slice.
+- [Testing an add-on](/admin/extending/testing) — `tests/panel/Feature/ExampleAddonTest.php` in the monorepo exercises the loyalty tier through the real customer draft routes: autosave, conflict, and commit.

@@ -63,10 +63,15 @@ class DraftManager implements DraftManagerContract
 
         // Overlay the request's final diff onto the stored draft — unlike
         // autosave's wholesale replace, commit must not drop fields another
-        // tab may have drafted since this client last loaded.
-        $merged = [...($draft?->data ?? []), ...$data];
+        // tab may have drafted since this client last loaded. Stored keys the
+        // resource no longer declares (a removed add-on, a deleted channel
+        // row) are dropped rather than left to block the commit.
+        $merged = [...$this->knownFields($resource, $draft?->data ?? []), ...$data];
 
         if ($merged === []) {
+            // Nothing left to commit; a draft of only stale keys is consumed.
+            $draft?->deleteQuietly();
+
             return CommitResult::committed();
         }
 
@@ -106,7 +111,10 @@ class DraftManager implements DraftManagerContract
 
         $this->db->connection()->transaction(function () use ($resource, $draftable, $current, $merged, $draft): void {
             $resource->commit($draftable, [...$current, ...$merged]);
-            $draft->delete();
+
+            // Quietly: a committed draft is consumed, not discarded, so the
+            // slice discard hooks wired to the deleting event must not fire.
+            $draft->deleteQuietly();
         });
 
         return CommitResult::committed();
@@ -212,6 +220,15 @@ class DraftManager implements DraftManagerContract
         }
 
         return $value;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function knownFields(DraftableResource $resource, array $data): array
+    {
+        return array_intersect_key($data, array_flip($resource->fields()));
     }
 
     /**

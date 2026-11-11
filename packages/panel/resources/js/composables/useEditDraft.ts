@@ -1,5 +1,17 @@
-import { computed, getCurrentInstance, getCurrentScope, onScopeDispose, reactive, ref, watch, type ComputedRef, type Ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import {
+    computed,
+    getCurrentInstance,
+    getCurrentScope,
+    onScopeDispose,
+    provide,
+    reactive,
+    ref,
+    watch,
+    type ComputedRef,
+    type Ref,
+} from 'vue';
+import { router, usePage } from '@inertiajs/vue3';
+import { sliceFormKey } from './sliceForm';
 import { useI18n } from 'vue-i18n';
 import { DraftConflictError, ValidationError, http, type DraftConflict } from '../lib/http';
 
@@ -16,6 +28,12 @@ export interface EditDraftOptions<T extends Record<string, unknown>> {
         commit: string;
     };
     debounceMs?: number;
+    /**
+     * Seed the form with the page's shared `formSliceValues` prop (the
+     * prefixed current values of every form slice on the route's deepest
+     * record). Off for a page that drafts some other record.
+     */
+    slices?: boolean;
 }
 
 export interface EditDraftForm<T extends Record<string, unknown>> {
@@ -23,6 +41,8 @@ export interface EditDraftForm<T extends Record<string, unknown>> {
     errors: Ref<Record<string, string>>;
     conflicts: Ref<DraftConflict[]>;
     isDirty: ComputedRef<boolean>;
+    /** The keys whose value differs from pristine. */
+    dirtyKeys: ComputedRef<string[]>;
     saving: Ref<boolean>;
     committing: Ref<boolean>;
     savedAt: Ref<string | null>;
@@ -31,6 +51,15 @@ export interface EditDraftForm<T extends Record<string, unknown>> {
     commit: () => Promise<boolean>;
     resolve: (resolutions: Record<string, unknown>, rebase: Record<string, unknown>) => Promise<boolean>;
     discard: () => Promise<void>;
+}
+
+// The shared prop is absent outside an Inertia page (unit tests, tooling).
+function sharedSliceValues(): Record<string, unknown> {
+    try {
+        return (usePage().props.formSliceValues as Record<string, unknown> | undefined) ?? {};
+    } catch {
+        return {};
+    }
 }
 
 // JSON round-trip rather than structuredClone: draft values are JSON-shaped
@@ -76,11 +105,16 @@ function encode(value: unknown): string {
 export function useEditDraft<T extends Record<string, unknown>>(options: EditDraftOptions<T>): EditDraftForm<T> {
     const debounceMs = options.debounceMs ?? 750;
 
+    // Slice values seed alongside the page's own initial values so their
+    // keys autosave, restore, diff and guard like any other; the page's
+    // explicit initial wins where both name a key.
+    const initial = { ...(options.slices === false ? {} : sharedSliceValues()), ...options.initial } as T;
+
     // Reactive so isDirty recomputes when a successful commit re-baselines
     // pristine to the committed values — a plain object would leave the stale
     // dirty state cached until the next keystroke.
-    const pristine = reactive<Record<string, unknown>>(clone(options.initial));
-    const values = reactive(clone(options.initial)) as T;
+    const pristine = reactive<Record<string, unknown>>(clone(initial));
+    const values = reactive(clone(initial)) as T;
 
     for (const [key, value] of Object.entries(options.draft?.data ?? {})) {
         if (key in values) {
@@ -110,7 +144,8 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
         return changed;
     };
 
-    const isDirty = computed(() => Object.keys(diff()).length > 0);
+    const dirtyKeys = computed(() => Object.keys(diff()));
+    const isDirty = computed(() => dirtyKeys.value.length > 0);
 
     // Leaving the page with uncommitted changes prompts first — the edits
     // survive as a draft, but staff shouldn't navigate away believing they
@@ -284,11 +319,12 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
         conflicts.value = [];
     };
 
-    return {
+    const form: EditDraftForm<T> = {
         values,
         errors,
         conflicts,
         isDirty,
+        dirtyKeys,
         saving,
         committing,
         savedAt,
@@ -298,4 +334,12 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
         resolve,
         discard,
     };
+
+    // Components further down the tree (first-party cards, add-on slot
+    // components) bind form slices to this form through useFormSlice().
+    if (getCurrentInstance()) {
+        provide(sliceFormKey, form);
+    }
+
+    return form;
 }

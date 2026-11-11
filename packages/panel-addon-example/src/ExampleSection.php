@@ -15,6 +15,7 @@ use Lunar\Panel\Slots\SlotRegistry;
 use LunarPanelExample\Actions\AuditPageAction;
 use LunarPanelExample\Actions\ImportPageAction;
 use LunarPanelExample\Dashboard\CustomerCountWidget;
+use LunarPanelExample\Drafts\LoyaltyTierSlice;
 use LunarPanelExample\Search\CustomerEmailSearchSource;
 use LunarPanelExample\Search\PingWidgetsCommand;
 use LunarPanelExample\Tables\ExampleTableExtension;
@@ -159,6 +160,14 @@ class ExampleSection extends Section
             props: ['message' => 'This banner was injected by the example add-on via a slot.'],
         ));
 
+        // A slot component that takes part in the page's save: LoyaltyCard binds
+        // to the LoyaltyTierSlice below through useFormSlice('example-addon'),
+        // so its field autosaves and commits with the customer's own.
+        $registry->add(new Slot(
+            zone: 'customers.edit:main:after',
+            component: 'example-addon::LoyaltyCard',
+        ));
+
         // The canonical slot example (spec 0049/0057): the product edit page
         // deliberately ships no SEO section — an add-on injects one into the
         // content-adjacent zone between the content cluster and the variants
@@ -172,6 +181,17 @@ class ExampleSection extends Section
     public function tableExtensions(): array
     {
         return ['customers.index' => ExampleTableExtension::class];
+    }
+
+    /**
+     * Contribute fields to a first-party form. The panel places each slice
+     * under `addon:{key}` (here `addon:example-addon:`), so it can add to the
+     * customer form but never reach the customer's own fields or another
+     * add-on's.
+     */
+    public function formExtensions(): array
+    {
+        return [LoyaltyTierSlice::class];
     }
 
     /**
