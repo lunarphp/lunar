@@ -8,6 +8,7 @@ use Lunar\Search\Data\SearchFacet;
 use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchResults;
+use Meilisearch\Contracts\HybridSearchOptions;
 use Meilisearch\Contracts\SearchQuery;
 use Meilisearch\Endpoints\Indexes;
 
@@ -15,6 +16,8 @@ class MeilisearchEngine extends AbstractEngine
 {
     public function get(): SearchResults
     {
+        $request = $this->pipeRequest();
+
         $paginator = $this->getRawResults(function (Indexes $indexes, string $query, array $options) {
             $engine = app(EngineManager::class)->engine('meilisearch');
 
@@ -48,7 +51,7 @@ class MeilisearchEngine extends AbstractEngine
 
         [$sortField, $sortDirection] = $this->getSortParts();
 
-        return SearchResults::from([
+        return $this->pipeResults($request, SearchResults::from([
             'query' => $results['query'],
             'totalPages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
@@ -56,17 +59,21 @@ class MeilisearchEngine extends AbstractEngine
             'perPage' => $paginator->perPage(),
             'sortField' => $sortField,
             'sortDirection' => $sortDirection,
-            'hits' => collect($results['hits'])->map(fn ($hit) => SearchHit::from([
-                'highlights' => collect(),
-                'document' => $hit,
-            ])),
+            'hits' => collect($results['hits'])->map(function ($hit) {
+                $score = $hit['_rankingScore'] ?? null;
+                unset($hit['_rankingScore']);
+
+                return SearchHit::from([
+                    'highlights' => collect(),
+                    'document' => $hit,
+                    'meta' => $score === null ? [] : ['score' => (float) $score],
+                ]);
+            }),
             'facets' => $this->mapFacets($results),
             'links' => (clone $paginator)->setCollection(
                 collect($results['hits'])
-            )->appends([
-                'facets' => $this->facets,
-            ])->links(),
-        ]);
+            )->appends($this->paginationQuery())->links(),
+        ]));
     }
 
     protected function buildSearch(array $options, Indexes $indexes): array
@@ -84,7 +91,7 @@ class MeilisearchEngine extends AbstractEngine
                 $filters->push('__soft_deleted = 0');
             }
 
-            $msQuery = new SearchQuery;
+            $msQuery = $this->newSearchQuery();
             $msQuery->setIndexUid($indexes->getUid());
             $msQuery->setQuery($searchQuery->query);
             $msQuery->setFacets(array_keys($facets));
@@ -105,10 +112,90 @@ class MeilisearchEngine extends AbstractEngine
             }
 
             $msQuery->setFilter($filters->toArray());
+            $msQuery->setShowRankingScore(true);
+
+            $this->applyHybrid($msQuery, $searchQuery->query);
+            $this->applyParams($msQuery);
+
             $requests[] = $msQuery;
         }
 
         return $requests;
+    }
+
+    /**
+     * Hybrid retrieval when an embedder is configured. Only applies alongside
+     * a search term; browse mode has nothing to embed.
+     */
+    protected function applyHybrid(SearchQuery $msQuery, string $query): void
+    {
+        $embedder = config('lunar.search.meilisearch.embedder');
+
+        if (! $embedder || $query === '') {
+            return;
+        }
+
+        $msQuery->setHybrid(
+            (new HybridSearchOptions)
+                ->setEmbedder($embedder)
+                ->setSemanticRatio((float) config('lunar.search.meilisearch.semantic_ratio', 0.5))
+        );
+
+        if ($threshold = config('lunar.search.meilisearch.ranking_score_threshold')) {
+            $msQuery->setRankingScoreThreshold((float) $threshold);
+        }
+    }
+
+    /**
+     * A query that drops the keys withParams() set to null when serialised:
+     * the SDK's setters don't accept null, so removal happens in toArray().
+     */
+    protected function newSearchQuery(): SearchQuery
+    {
+        $removed = array_keys(array_filter($this->getParams(), fn (mixed $value) => $value === null));
+
+        return new class($removed) extends SearchQuery
+        {
+            /** @param  array<int, string>  $removed */
+            public function __construct(private array $removed) {}
+
+            public function toArray(): array
+            {
+                return array_diff_key(parent::toArray(), array_flip($this->removed));
+            }
+        };
+    }
+
+    /**
+     * Map withParams() overrides onto the query object. Keys are Meilisearch
+     * request parameter names (`attributesToSearchOn`, `matchingStrategy`,
+     * `rankingScoreThreshold`, `hybrid`, ...) and resolve to the matching
+     * setter. `hybrid` accepts an array with `embedder` and `semanticRatio`.
+     * Null values are removed by newSearchQuery().
+     */
+    protected function applyParams(SearchQuery $msQuery): void
+    {
+        foreach ($this->getParams() as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
+
+            if ($key === 'hybrid') {
+                $msQuery->setHybrid(
+                    (new HybridSearchOptions)
+                        ->setEmbedder($value['embedder'] ?? config('lunar.search.meilisearch.embedder', ''))
+                        ->setSemanticRatio((float) ($value['semanticRatio'] ?? 0))
+                );
+
+                continue;
+            }
+
+            $setter = 'set'.ucfirst($key);
+
+            if (method_exists($msQuery, $setter)) {
+                $msQuery->{$setter}($value);
+            }
+        }
     }
 
     public function mapFacets(array $results): Collection
@@ -139,6 +226,11 @@ class MeilisearchEngine extends AbstractEngine
         }
 
         return $facets;
+    }
+
+    public function paginationQuery(): array
+    {
+        return ['facets' => $this->facets];
     }
 
     protected function mapFilter(string $field, mixed $value): string

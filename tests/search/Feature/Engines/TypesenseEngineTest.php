@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Exceptions;
 use Laravel\Scout\EngineManager;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Search\ProductIndexer;
 use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\TypesenseEngine;
 use Lunar\Search\Facades\Search;
@@ -391,6 +392,12 @@ it('requests a vector query only when searching a schema with an embedding field
     );
 
     expect(typesenseTestEngine()->query('shoes')->exposedBuildSearch($options)[0]['vector_query'])
+        ->toBe('embedding:([], k: 200, distance_threshold: 0.6)');
+
+    // A zero threshold sends the bare vector query.
+    Config::set('lunar.search.typesense.vector_distance_threshold', 0);
+
+    expect(typesenseTestEngine()->query('shoes')->exposedBuildSearch($options)[0]['vector_query'])
         ->toBe('embedding:([], k: 200)');
 
     // No term to embed — browse requests never carry a vector query.
@@ -573,6 +580,44 @@ it('quotes facet filter values for fields the schema does not declare', function
         ->toContain('colour:=`Red`');
 });
 
+it('merges withParams() overrides into the request last and drops null keys', function () {
+    $options = ['query_by' => 'name, embedding', 'filter_by' => []];
+
+    Config::set(
+        'scout.typesense.model-settings.'.Product::class.'.collection-schema.fields',
+        [['name' => 'name', 'type' => 'string'], ['name' => 'embedding', 'type' => 'float[]']]
+    );
+
+    $request = typesenseTestEngine()
+        ->query('HAGMB32A')
+        ->withParams([
+            'query_by' => 'skus,skus_normalised',
+            'num_typos' => 0,
+            'vector_query' => null,
+        ])
+        ->exposedBuildSearch($options)[0];
+
+    expect($request['query_by'])->toBe('skus,skus_normalised')
+        ->and($request['num_typos'])->toBe(0)
+        ->and($request)->not->toHaveKey('vector_query');
+});
+
+it('exposes the text match score on each hit', function () {
+    mockTypesenseWithResponse([
+        'hits' => [
+            ['document' => ['id' => '1', 'name' => 'Foo'], 'text_match' => 578730123365711993],
+            ['document' => ['id' => '2', 'name' => 'Bar']],
+        ],
+        'facet_counts' => [],
+    ]);
+
+    $results = Search::model(Product::class)->get();
+
+    expect($results->hits[0]->meta)->toBe(['score' => 578730123365711993.0])
+        ->and($results->hits[1]->meta)->toBe([])
+        ->and($results->meta)->toBe([]);
+});
+
 it('reports a failed search and returns empty results', function () {
     Exceptions::fake();
 
@@ -682,4 +727,15 @@ it('resolves the collections index when scout has no prefix', function () {
     expect($index)->toBe('collections')
         ->and(app(EngineManager::class)->engine('typesense')->getCollections()->{$index})
         ->toBeInstanceOf(TypesenseCollection::class);
+});
+
+it('filters on several values with the bracket syntax Typesense matches all of', function () {
+    // `id:9,42` silently matches only the first value; `id:[9,42]` matches both.
+    $params = typesenseTestEngine()->filter(['id' => [9, 42], 'status' => 'published'])->exposedBuildSearch(['query_by' => 'name', 'filter_by' => []])[0];
+
+    expect($params['filter_by'])->toBe('id:[9,42] && status:published');
+});
+
+it('makes the product id filterable, so a search can fetch products by id', function () {
+    expect((new ProductIndexer)->getFilterableFields())->toContain('id');
 });

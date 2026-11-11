@@ -125,6 +125,7 @@ Translatable attribute values (`Lunar\Core\FieldTypes\TranslatedText`) are explo
 | `name`, `description`, `short_description` | Translatable columns, exploded per locale (e.g. `name_en`) |
 | `thumbnail` | Thumbnail URL (`small` variant), if present |
 | `skus` | Array of variant SKUs |
+| `skus_normalised` | The same SKUs uppercased with separators stripped, so a partial code typed without hyphens still matches |
 | Attribute handles | Values from searchable custom attributes |
 
 **Sortable fields:** `created_at`, `updated_at`, `skus`, `status`

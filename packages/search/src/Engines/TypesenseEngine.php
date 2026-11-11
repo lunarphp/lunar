@@ -33,6 +33,8 @@ class TypesenseEngine extends AbstractEngine
 
     public function get(): SearchResults
     {
+        $request = $this->pipeRequest();
+
         try {
             $paginator = $this->getRawResults(function (Documents $documents, string $query, array $options) {
                 $engine = app(EngineManager::class)->engine('typesense');
@@ -120,6 +122,7 @@ class TypesenseEngine extends AbstractEngine
                 ])];
             }),
             'document' => $hit['document'],
+            'meta' => isset($hit['text_match']) ? ['score' => (float) $hit['text_match']] : [],
         ]));
 
         // The raw facet_counts are keyed by field name (the multi-search merge
@@ -161,7 +164,7 @@ class TypesenseEngine extends AbstractEngine
 
         [$sortField, $sortDirection] = $this->getSortParts();
 
-        return SearchResults::from([
+        return $this->pipeResults($request, SearchResults::from([
             'query' => $this->query,
             'totalPages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
@@ -173,10 +176,13 @@ class TypesenseEngine extends AbstractEngine
             'facets' => $facets,
             'links' => $newPaginator->setCollection(
                 collect($results['hits'])
-            )->appends([
-                'facets' => http_build_query($this->facets),
-            ])->links(),
-        ]);
+            )->appends($this->paginationQuery())->links(),
+        ]));
+    }
+
+    public function paginationQuery(): array
+    {
+        return ['facets' => http_build_query($this->facets)];
     }
 
     protected function buildSearch(array $options): array
@@ -194,7 +200,10 @@ class TypesenseEngine extends AbstractEngine
             $filters = collect($options['filter_by'])->filter(fn ($filter) => filled($filter));
 
             foreach ($this->filters as $key => $value) {
-                $filters->push($key.':'.collect($value)->join(','));
+                $values = collect($value);
+
+                // `field:a,b` silently matches only `a`; several values need brackets.
+                $filters->push($values->count() > 1 ? $key.':['.$values->join(',').']' : $key.':'.$values->first());
             }
 
             $facetQuery = collect();
@@ -305,7 +314,7 @@ class TypesenseEngine extends AbstractEngine
             // pin k/alpha with a `vector_query` search parameter; it only
             // applies alongside a search term, so browse mode drops it.
             if ($this->query && $this->schemaHasEmbeddingField()) {
-                $params['vector_query'] ??= 'embedding:([], k: 200)';
+                $params['vector_query'] ??= $this->defaultVectorQuery();
             } else {
                 unset($params['vector_query']);
             }
@@ -314,7 +323,7 @@ class TypesenseEngine extends AbstractEngine
                 $params['filter_by'] = $filters->join(' && ');
             }
 
-            $requests[] = $params;
+            $requests[] = $this->applyParamOverrides($params);
         }
 
         return $requests;
@@ -345,6 +354,20 @@ class TypesenseEngine extends AbstractEngine
         unset($values[$index]);
 
         return implode(',', $values);
+    }
+
+    /**
+     * The hybrid vector query with the configured distance threshold, so a
+     * token with no meaning cannot pad the result set with its nearest
+     * neighbours. A threshold of 0 sends the bare k: 200 query.
+     */
+    protected function defaultVectorQuery(): string
+    {
+        $threshold = (float) config('lunar.search.typesense.vector_distance_threshold', 0);
+
+        return $threshold > 0
+            ? "embedding:([], k: 200, distance_threshold: {$threshold})"
+            : 'embedding:([], k: 200)';
     }
 
     protected function schemaHasEmbeddingField(): bool

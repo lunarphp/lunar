@@ -89,8 +89,9 @@ Lunar's own models are mapped to dedicated indexers that extend `ScoutIndexer` t
 - Any searchable custom attributes
 - `thumbnail` (the small variant's URL, if a thumbnail is set)
 - `skus`, an array of the product's variant SKUs
+- `skus_normalised`, the same SKUs uppercased with every non-alphanumeric character stripped, so a code typed without its printed hyphens (`HAGMB`) still prefix-matches `HAG-MB-32A`
 
-Its sortable fields are `created_at`, `updated_at`, `skus`, and `status`; its filterable fields are `__soft_deleted`, `skus`, and `status`.
+Its sortable fields are `created_at`, `updated_at`, `skus`, and `status`; its filterable fields are `__soft_deleted`, `skus`, and `status`. It also returns `['skus', 'skus_normalised']` from `getExactMatchFields()`: fields that must match exactly or by prefix, never through typo tolerance. `ScoutIndexer::getExactMatchFields()` returns `[]` by default; the `lunar:meilisearch:setup` command disables typo tolerance on whatever a custom indexer returns from it (see the [Search add-on](/addons/search#meilisearch)).
 
 Lunar ships similar dedicated indexers for `BrandIndexer`, `CollectionIndexer`, `CustomerIndexer`, `OrderIndexer`, and `ProductOptionIndexer`. See the [Search reference](/reference/search) for what each one indexes.
 
@@ -235,7 +236,3 @@ Once registered, map the desired model to the new driver name in `engine_map`:
     Lunar\Core\Models\Product::class => 'custom',
 ],
 ```
-
-<Info>
-The storefront search package (namespace `Lunar\Search\...`) is a separate package from the indexing pieces described on this page. It provides the storefront-facing query layer: faceted filtering, sorting, and instant search, built on top of the Scout search results that Lunar's core indexers produce. Indexers control *what* gets indexed; `Lunar\Search\...` controls how the storefront *queries* it. See the [Search reference](/reference/search) for details.
-</Info>

@@ -7,6 +7,7 @@ use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Facades\Search;
 use Lunar\Tests\Search\TestCase;
+use Meilisearch\Endpoints\Indexes;
 use Mockery\MockInterface;
 
 use function Pest\Laravel\partialMock;
@@ -93,4 +94,35 @@ it('can search complete results', function () {
         ->toHaveCount(3)
         ->and($results->facets[0]->values[0]->label)
         ->toBe('Nike');
+});
+
+it('removes the request parameters withParams() sets to null', function () {
+    Config::set('lunar.search.meilisearch.embedder', 'default');
+    Config::set('lunar.search.meilisearch.ranking_score_threshold', 0.4);
+
+    $indexes = Mockery::mock(Indexes::class);
+    $indexes->shouldReceive('getUid')->andReturn('products');
+
+    $engine = app(MeilisearchEngine::class)->query('drill')->withParams([
+        'hybrid' => null,
+        'rankingScoreThreshold' => null,
+        'matchingStrategy' => null,
+    ]);
+
+    $queries = (fn () => $this->buildSearch(['hitsPerPage' => 24, 'page' => 1], $indexes))->call($engine);
+    $request = $queries[0]->toArray();
+
+    expect($request)->not->toHaveKeys(['hybrid', 'rankingScoreThreshold', 'matchingStrategy'])
+        ->and($request['q'])->toBe('drill');
+});
+
+it('applies withParams() overrides over the query it builds', function () {
+    $indexes = Mockery::mock(Indexes::class);
+    $indexes->shouldReceive('getUid')->andReturn('products');
+
+    $engine = app(MeilisearchEngine::class)->query('HAG-MB')->withParams(['matchingStrategy' => 'all']);
+
+    $queries = (fn () => $this->buildSearch(['hitsPerPage' => 24, 'page' => 1], $indexes))->call($engine);
+
+    expect($queries[0]->toArray()['matchingStrategy'])->toBe('all');
 });
