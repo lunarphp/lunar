@@ -41,6 +41,7 @@ export const Toggle = ui().Toggle;
 export const FieldLabel = ui().FieldLabel;
 export const ColorPicker = ui().ColorPicker;
 export const DatePicker = ui().DatePicker;
+export const RichTextEditor = ui().RichTextEditor;
 
 // Overlays / display
 export const Dialog = ui().Dialog;
@@ -50,6 +51,7 @@ export const Tooltip = ui().Tooltip;
 export const SideCard = ui().SideCard;
 export const Section = ui().Section;
 export const Tabs = ui().Tabs;
+export const Flag = ui().Flag;
 export const ValuePreviewChip = ui().ValuePreviewChip;
 
 // Discounts

@@ -295,7 +295,7 @@ return [
             'shipped_at' => 'Versendet am',
             'handed_over' => [
                 'shipping' => 'Versendet am',
-                'collection' => 'Abgeholt am',
+                'pickup' => 'Abgeholt am',
                 'digital' => 'Bereitgestellt am',
             ],
             'handed_over_default' => 'Erfüllt am',
@@ -339,7 +339,7 @@ return [
                 'label' => 'Als erfüllt markieren',
                 'modal_heading' => 'Fulfillment als erfüllt markieren',
                 'labels' => [
-                    'collection' => 'Als abgeholt markieren',
+                    'pickup' => 'Als abgeholt markieren',
                 ],
                 'notification' => [
                     'success' => 'Fulfillment als erfüllt markiert.',

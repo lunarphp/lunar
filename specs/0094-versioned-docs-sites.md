@@ -1,6 +1,6 @@
 # 0094 — Versioned docs written in the monorepo and published from releases
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-10-28
 - Revised: 2026-11-06 — one site assembled by Mintlify's multirepo Action from each version's latest release, replacing separate per-version sites
@@ -36,7 +36,7 @@ docs/
   README.md        contributor guide (see Documentation)
 ```
 
-The contents are the current `lunarphp/docs` version directory with the version prefix dropped: `2.x/reference/carts.mdx` becomes `docs/reference/carts.mdx` on the `2.x` branch. Page paths in `docs.json` and root-relative links in pages drop the prefix too (`/reference/carts`, not `/2.x/reference/carts`); the Action adds it back when it publishes. A link to another version keeps that version's prefix (`/1.x/...`), and the Action leaves it unchanged.
+The contents are the current `lunarphp/docs` version directory with the version prefix dropped: `2.x/reference/carts.mdx` becomes `docs/reference/carts.mdx` on the `2.x` branch. Page paths in `docs.json` and root-relative links in pages drop the prefix too (`/reference/carts`, not `/2.x/reference/carts`); the Action adds it back when it publishes. A link to another version, or to the shared Support, Flight Plan and v0 pages, is a full `https://docs.lunarphp.com/...` URL, because the Action prefixes every other root-relative link. The `Docs` workflow checks this on every PR that changes `docs/`.
 
 `docs/docs.json` is a complete Mintlify config so that `mint dev` previews the version on its own. The Action reads only its `navigation` (a `tabs` array) and `redirects`; theme, colours, logo and every other setting come from the docs repository, so differences in the branch copy affect only local previews.
 
@@ -114,7 +114,7 @@ Changing the default version, for example making v2 the default at beta, is a on
 | `docs.base.json`, `.github/`, `support/`, `logs/`, `0.x/`, shared assets (`logo/`, `favicon.svg`, `style.css`, `tally-embed.js`) | Edited by maintainers |
 | `1.x/`, `2.x/`, `docs.json`, `.mintlify-multirepo.json` | Written by the Action; overwritten on every sync |
 
-`lunarphp/docs` becomes private once both versions publish through the Action and its open community PRs are resolved. Its README says where the docs are written and that the generated paths are never edited by hand. Mintlify's web editor and its agent commit to `main`, where the next sync overwrites a change to a version folder, so both are turned off.
+`lunarphp/docs` becomes private once both versions publish through the Action and its open community PRs are resolved. Its README says where the docs are written and that the generated paths are never edited by hand. Mintlify's web editor and its agent can still commit to `main`; the next sync overwrites any change they make to a version folder, so they are only for the paths edited in `lunarphp/docs`.
 
 ### No early publishing
 
@@ -147,7 +147,7 @@ Docs publish with releases and only with releases. There is no hotfix path: a do
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none. The panel's docs links keep pointing at `docs.lunarphp.com`.
 - **Contributors:** v1 and v2 docs contributions move from `lunarphp/docs` to the version branches in the monorepo.
-- **Manual setup outside the repository:** the dispatch token as a monorepo secret, the Mintlify web editor and agent turned off, and `lunarphp/docs` made private.
+- **Manual setup outside the repository:** the dispatch GitHub App (`DOCS_APP_ID` and `DOCS_APP_PRIVATE_KEY` on the monorepo), `main` as the default branch of `lunarphp/docs`, and `lunarphp/docs` made private.
 
 ## Decisions
 
@@ -171,8 +171,8 @@ Docs publish with releases and only with releases. There is no hotfix path: a do
 
 Ordered so nothing in `lunarphp/docs` is removed until both versions publish through the Action.
 
-- [ ] Slice 1 — Content. Move `2.x/` from `lunarphp/docs` into `docs/` on `2.x`, and `1.x/` into `docs/` on `1.x` (one PR each), with prefix-free page paths and links, a standalone `docs.json` per branch, and `docs/**` added to `paths-ignore` in `tests.yml` and `static-analysis.yml`. Done by a re-runnable script so docs merged into `lunarphp/docs` meanwhile can be imported again. Checked with `mint dev` and `mint broken-links`. `2.x/` in `lunarphp/docs` is read-only from this point; its open docs PRs move into their code PRs.
-- [ ] Slice 2 — Assembly. In `lunarphp/docs`: `docs.base.json`, `.github/mintlify-multirepo.yml` with each version's starting ref, and `sync.yml` (release resolution, the Action pinned to the `sourceRef` change). Proven by a sync whose version folders and navigation match today's site, checked with `mint broken-links`.
-- [ ] Slice 3 — Release trigger. `publish-docs.yml` on `2.x` and `1.x`, and the dispatch token. Proven by the next 2.x pre-release publishing through it.
-- [ ] Slice 4 — Documentation. `docs/README.md` on each version branch (writing docs alongside code, prefix-free links, docs publishing at the next release, previewing with `mint dev`); a short section in the monorepo `CLAUDE.md` for agents; a docs checkbox in the PR template.
-- [ ] Slice 5 — Switch. Mintlify web editor and agent off; the community PRs in `lunarphp/docs` merged or moved to the monorepo; the `next` branch retired (default branch set to `main`, `next` merged into `main`, every PR targeting `next` retargeted or closed, then `next` deleted); `lunarphp/docs` README updated and the repository made private.
+- [x] Slice 1 — Content. Move `2.x/` from `lunarphp/docs` into `docs/` on `2.x`, and `1.x/` into `docs/` on `1.x` (one PR each), with prefix-free page paths and links, a standalone `docs.json` per branch, and `docs/**` added to `paths-ignore` in `tests.yml` and `static-analysis.yml`. Done by a re-runnable script so docs merged into `lunarphp/docs` meanwhile can be imported again. Checked with `mint dev` and `mint broken-links`. `2.x/` in `lunarphp/docs` is read-only from this point; its open docs PRs move into their code PRs.
+- [x] Slice 2 — Assembly. In `lunarphp/docs`: `docs.base.json`, `.github/mintlify-multirepo.yml` with each version's starting ref, and `sync.yml` (release resolution, the Action pinned to the `sourceRef` change). Proven by a sync whose version folders and navigation match today's site, checked with `mint broken-links`.
+- [x] Slice 3 — Release trigger. `publish-docs.yml` on `2.x` and `1.x`, and the dispatch token. Proven by the next 2.x pre-release publishing through it.
+- [x] Slice 4 — Documentation. `docs/README.md` on each version branch (writing docs alongside code, prefix-free links, docs publishing at the next release, previewing with `mint dev`); a short section in the monorepo `CLAUDE.md` for agents; a docs checkbox in the PR template.
+- [x] Slice 5 — Switch. The open PRs in `lunarphp/docs` merged, or closed to be rewritten in their code PRs, and pull requests turned off; the `next` branch retired (default branch set to `main`, `next` merged into `main`, every PR targeting `next` retargeted or closed, then `next` deleted); `lunarphp/docs` README updated and the repository made private.

@@ -165,6 +165,7 @@ return [
             '2026_01_01_000068_create_country_region_table',
             '2026_01_01_000069_add_region_id_to_carts_and_orders',
             '2026_01_01_000059_add_orders_cart_id_foreign_key',
+            '2026_01_01_000071_add_product_types_default_tax_class_foreign_key',
             '2026_01_01_900000_create_staff_table',
             '2026_01_01_900001_create_activity_log_table',
             '2026_01_01_900002_create_permission_tables',

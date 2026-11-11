@@ -4,7 +4,7 @@ return [
 
     'methods' => [
         'shipping' => 'ارسال',
-        'collection' => 'تحویل حضوری',
+        'pickup' => 'تحویل حضوری',
         'digital' => 'دیجیتال',
     ],
 

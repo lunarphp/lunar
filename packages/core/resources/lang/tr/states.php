@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'Beklemede',
         'in-progress' => 'Devam Ediyor',
-        'ready-for-collection' => 'Teslim Almaya Hazır',
+        'ready-for-pickup' => 'Teslim Almaya Hazır',
         'shipped' => 'Gönderildi',
-        'collected' => 'Teslim Alındı',
+        'picked-up' => 'Teslim Alındı',
         'provisioned' => 'Sağlandı',
         'cancelled' => 'İptal Edildi',
         'returned' => 'İade Edildi',

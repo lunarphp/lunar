@@ -55,9 +55,9 @@ return [
     'fulfilment' => [
         'pending' => 'In afwachting',
         'in-progress' => 'In behandeling',
-        'ready-for-collection' => 'Klaar om af te halen',
+        'ready-for-pickup' => 'Klaar om af te halen',
         'shipped' => 'Verzonden',
-        'collected' => 'Afgehaald',
+        'picked-up' => 'Afgehaald',
         'provisioned' => 'Beschikbaar gesteld',
         'cancelled' => 'Geannuleerd',
         'returned' => 'Geretourneerd',

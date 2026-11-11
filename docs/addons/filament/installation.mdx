@@ -32,6 +32,15 @@ class AppServiceProvider extends ServiceProvider
 
 By default the panel is served at `/admin`, registered as the application's default Filament panel with the id `lunar`, and authenticates against Lunar's staff guard (`lunar.staff.guard`, default `staff`).
 
+The Filament admin uses `Lunar\Filament\Models\Staff`, which adds Filament's panel access and two-factor contracts to core's `Lunar\Core\Models\Staff`. It replaces the configured staff model only while `lunar.staff.model` is still core's default. To use your own staff model, extend `Lunar\Filament\Models\Staff` rather than the core model, and set it as `lunar.staff.model`:
+
+```php
+// config/lunar/staff.php
+'model' => App\Models\Staff::class, // extends Lunar\Filament\Models\Staff
+```
+
+A model that extends core's `Staff` instead does not implement `Filament\Models\Contracts\FilamentUser`, so Filament refuses it panel access outside the local environment.
+
 Publish the panel's compiled assets:
 
 ```sh

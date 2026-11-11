@@ -17,6 +17,7 @@ use Lunar\Core\Manifests\FulfilmentMethodManifest;
  * @method static array states()
  * @method static array transitions()
  * @method static array stateNamesIn(FulfilmentStateCategory $category)
+ * @method static array<int, string> dispatchedStateNames()
  *
  * @see FulfilmentMethodManifest
  */

@@ -89,7 +89,7 @@ class ProductVariantController
                 'label' => $label($variant),
                 'sku' => $productVariant->sku,
                 'enabled' => $productVariant->enabled,
-                'thumbnail' => $productVariant->getThumbnailImage() ?: null,
+                'thumbnail' => $productVariant->getThumbnailImage(),
                 'axes' => $variant->values->map(fn (ProductOptionValue $value) => [
                     'option' => $value->option->translate('name'),
                     'value' => $value->translate('name'),

@@ -6,6 +6,9 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentIcon;
+use Lunar\Filament\Support\Facades\LunarFilament;
+use Lunar\Shipping\DiscountTypes\ShippingDiscount;
+use Lunar\Shipping\Filament\DiscountForms\ShippingDiscountForm;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
@@ -31,13 +34,15 @@ class ShippingPlugin implements Plugin
         $panel->navigationGroups([
             NavigationGroup::make('shipping')
                 ->label(
-                    fn () => __('lunarpanel.shipping::plugin.navigation.group')
+                    fn () => __('shipping::plugin.navigation.group')
                 ),
         ])->resources([
             ShippingMethodResource::class,
             ShippingZoneResource::class,
             ShippingExclusionListResource::class,
         ]);
+
+        LunarFilament::discountForm(ShippingDiscount::class, ShippingDiscountForm::class);
 
         FilamentIcon::register([
             'lunar::shipping-rates' => 'lucide-coins',

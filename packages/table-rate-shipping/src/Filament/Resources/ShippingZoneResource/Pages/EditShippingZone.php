@@ -20,7 +20,7 @@ class EditShippingZone extends BaseEditRecord
     public static function getNavigationLabel(): string
     {
         return __('filament-panels::resources/pages/edit-record.title', [
-            'label' => __('lunarpanel.shipping::shippingzone.label'),
+            'label' => __('shipping::shippingzone.label'),
         ]);
     }
 

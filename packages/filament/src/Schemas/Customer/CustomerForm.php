@@ -8,7 +8,6 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
 use Lunar\Filament\Forms\Components\Attributes;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
@@ -124,9 +123,6 @@ class CustomerForm
             ->relationship(
                 name: 'customerGroups',
                 titleAttribute: 'name',
-                modifyQueryUsing: fn (Builder $query) => $query->distinct(
-                    ['id', 'name', 'handle', 'default']
-                )
             );
     }
 }

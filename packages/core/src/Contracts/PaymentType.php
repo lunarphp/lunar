@@ -40,6 +40,12 @@ interface PaymentType
 
     /**
      * Authorize the payment.
+     *
+     * A driver that places the order here must record its capture transactions
+     * before stamping `placed_at`. The customer-notification listeners rely on
+     * that ordering: the `paid` rollup on an unplaced order is skipped and the
+     * order confirmation carries the payment state, so a card checkout sends
+     * one email, not two.
      */
     public function authorize(): ?PaymentAuthorize;
 
