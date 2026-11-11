@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Brak progów. Cena podstawowa obowiązuje dla każdego zamówienia.',
     'rate_default_price_required' => 'Cena podstawowa w :currency jest wymagana.',
     'rate_weight_tier_integer' => 'Progi wagowe muszą być liczbami całkowitymi.',
+    'rate_tier_above_base' => 'Próg bez grupy klientów musi zaczynać się powyżej :min, które obejmuje cena podstawowa.',
+    'rate_method_taken' => 'Ta strefa ma już stawkę dla tej metody wysyłki.',
+    'zone_single_country' => 'Wybierz jeden kraj dla tej strefy.',
+    'zone_state_country' => 'Ten stan nie należy do kraju strefy.',
 
     'confirm_delete' => 'Usunąć ten obszar dostawy? Jego stawki zostaną usunięte razem z nim.',
     'confirm_delete_title' => 'Usuń obszar dostawy',

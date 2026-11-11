@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Sin tramos. El precio base se aplica a todos los pedidos.',
     'rate_default_price_required' => 'Se requiere un precio base en :currency.',
     'rate_weight_tier_integer' => 'Los tramos de peso deben ser números enteros.',
+    'rate_tier_above_base' => 'Un tramo sin grupo de clientes debe empezar por encima de :min, que cubre el precio base.',
+    'rate_method_taken' => 'Esta zona ya tiene una tarifa para ese método de envío.',
+    'zone_single_country' => 'Elige un país para esta zona.',
+    'zone_state_country' => 'Este estado no pertenece al país de la zona.',
 
     'confirm_delete' => '¿Eliminar esta zona de envío? Sus tarifas se eliminarán con ella.',
     'confirm_delete_title' => 'Eliminar zona de envío',

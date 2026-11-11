@@ -1,11 +1,15 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
 use Lunar\Shipping\Contracts\Actions\ShippingMethods\CreatesShippingMethod;
 use Lunar\Shipping\Contracts\Actions\ShippingMethods\DeletesShippingMethod;
 use Lunar\Shipping\Contracts\Actions\ShippingMethods\UpdatesShippingMethod;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
+use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class)->group('shipping', 'shipping-actions');
@@ -62,11 +66,15 @@ test('customer group availability rows replace the pivot', function () {
         ->and($rows->first()->pivot->starts_at)->toStartWith('2026-01-01');
 });
 
-test('deleting a method detaches its groups', function () {
+test('deleting a method detaches its groups and removes its rates and their prices', function () {
     $method = ShippingMethod::factory()->create();
     $method->customerGroups()->sync([CustomerGroup::factory()->create()->id]);
+    $rate = ShippingRate::factory()->create(['shipping_zone_id' => ShippingZone::factory()->create()->id, 'shipping_method_id' => $method->id]);
+    $rate->prices()->create(['price' => 100, 'currency_id' => Currency::factory()->create()->id, 'min_quantity' => 1]);
 
     app(DeletesShippingMethod::class)->execute($method);
 
-    expect(ShippingMethod::find($method->id))->toBeNull();
+    expect(ShippingMethod::find($method->id))->toBeNull()
+        ->and(ShippingRate::find($rate->id))->toBeNull()
+        ->and(Price::where('priceable_type', $rate->getMorphClass())->where('priceable_id', $rate->id)->count())->toBe(0);
 });

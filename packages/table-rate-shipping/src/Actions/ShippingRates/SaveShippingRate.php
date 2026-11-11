@@ -12,7 +12,8 @@ use Lunar\Shipping\Models\ShippingZone;
 
 /**
  * Create or update a shipping rate on a zone, replacing its base prices and
- * tiers.
+ * tiers. A base price is a row with no customer group at a min_quantity of 1
+ * or less; every other row is a tier.
  *
  * Money arrives in major units keyed by currency code and is scaled through
  * the currency's own decimal places. A tier's `min_quantity` is a minimum
@@ -45,7 +46,7 @@ class SaveShippingRate implements SavesShippingRate
             $currencies = $this->currencies();
 
             if ($basePrices !== null) {
-                $shippingRate->basePrices()->delete();
+                $shippingRate->prices()->whereNull('customer_group_id')->where('min_quantity', '<=', 1)->delete();
 
                 foreach ($basePrices as $code => $amount) {
                     $currency = $currencies->get($code);
@@ -64,7 +65,9 @@ class SaveShippingRate implements SavesShippingRate
             }
 
             if ($tiers !== null) {
-                $shippingRate->priceBreaks()->delete();
+                $shippingRate->prices()
+                    ->where(fn ($query) => $query->whereNotNull('customer_group_id')->orWhere('min_quantity', '>', 1))
+                    ->delete();
 
                 $chargeBy = $shippingRate->shippingMethod?->data['charge_by'] ?? 'cart_total';
 

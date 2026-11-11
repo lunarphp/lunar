@@ -44,7 +44,7 @@ class ShippingMethod extends Base
         static::deleting(function (self $shippingMethod) {
             DB::beginTransaction();
             $shippingMethod->customerGroups()->detach();
-            $shippingMethod->shippingRates()->delete();
+            $shippingMethod->shippingRates()->get()->each->delete();
             DB::commit();
         });
     }

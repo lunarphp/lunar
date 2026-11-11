@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\State;
 use Lunar\Shipping\Contracts\Actions\ShippingZones\CreatesShippingZone;
 use Lunar\Shipping\Contracts\Actions\ShippingZones\DeletesShippingZone;
@@ -83,10 +85,12 @@ test('deleting a zone removes its rates and coverage', function () {
     $zone = ShippingZone::factory()->create(['type' => 'countries']);
     $zone->countries()->sync([Country::factory()->create()->id]);
     $method = ShippingMethod::factory()->create();
-    ShippingRate::factory()->create(['shipping_zone_id' => $zone->id, 'shipping_method_id' => $method->id]);
+    $rate = ShippingRate::factory()->create(['shipping_zone_id' => $zone->id, 'shipping_method_id' => $method->id]);
+    $rate->prices()->create(['price' => 100, 'currency_id' => Currency::factory()->create()->id, 'min_quantity' => 1]);
 
     app(DeletesShippingZone::class)->execute($zone);
 
     expect(ShippingZone::find($zone->id))->toBeNull()
-        ->and(ShippingRate::where('shipping_zone_id', $zone->id)->count())->toBe(0);
+        ->and(ShippingRate::where('shipping_zone_id', $zone->id)->count())->toBe(0)
+        ->and(Price::where('priceable_type', $rate->getMorphClass())->where('priceable_id', $rate->id)->count())->toBe(0);
 });

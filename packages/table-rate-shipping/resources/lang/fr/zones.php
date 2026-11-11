@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Aucun palier. Le prix de base s\'applique à chaque commande.',
     'rate_default_price_required' => 'Un prix de base en :currency est obligatoire.',
     'rate_weight_tier_integer' => 'Les paliers de poids doivent être des nombres entiers.',
+    'rate_tier_above_base' => 'Un palier sans groupe de clients doit commencer au-delà de :min, couvert par le prix de base.',
+    'rate_method_taken' => 'Cette zone a déjà un tarif pour ce mode de livraison.',
+    'zone_single_country' => 'Choisissez un pays pour cette zone.',
+    'zone_state_country' => 'Cet État n\'appartient pas au pays de la zone.',
 
     'confirm_delete' => 'Supprimer cette zone d\'expédition ? Ses tarifs seront supprimés avec elle.',
     'confirm_delete_title' => 'Supprimer la zone d\'expédition',

@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Nema razreda. Osnovna cijena primjenjuje se na svaku narudžbu.',
     'rate_default_price_required' => 'Potrebna je osnovna cijena u :currency.',
     'rate_weight_tier_integer' => 'Razredi po težini moraju biti cijeli brojevi.',
+    'rate_tier_above_base' => 'Razred bez grupe kupaca mora počinjati iznad :min, što pokriva osnovna cijena.',
+    'rate_method_taken' => 'Ova zona već ima tarifu za taj način dostave.',
+    'zone_single_country' => 'Odaberite jednu državu za ovu zonu.',
+    'zone_state_country' => 'Ova pokrajina nije u državi zone.',
 
     'confirm_delete' => 'Izbrisati ovu zonu dostave? Njezine stope uklanjaju se zajedno s njom.',
     'confirm_delete_title' => 'Izbriši zonu dostave',

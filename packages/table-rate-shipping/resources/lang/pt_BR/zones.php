@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Nenhuma faixa. O preço base se aplica a todos os pedidos.',
     'rate_default_price_required' => 'É obrigatório um preço base em :currency.',
     'rate_weight_tier_integer' => 'As faixas de peso devem ser números inteiros.',
+    'rate_tier_above_base' => 'Uma faixa sem grupo de clientes deve começar acima de :min, coberto pelo preço base.',
+    'rate_method_taken' => 'Esta zona já tem uma tarifa para esse método de envio.',
+    'zone_single_country' => 'Escolha um país para esta zona.',
+    'zone_state_country' => 'Este estado não pertence ao país da zona.',
 
     'confirm_delete' => 'Excluir esta zona de envio? Suas taxas serão removidas junto com ela.',
     'confirm_delete_title' => 'Excluir zona de envio',

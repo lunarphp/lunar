@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Không có bậc giá. Giá cơ bản áp dụng cho mọi đơn hàng.',
     'rate_default_price_required' => 'Cần có giá cơ bản bằng :currency.',
     'rate_weight_tier_integer' => 'Bậc trọng lượng phải là số nguyên.',
+    'rate_tier_above_base' => 'Bậc không có nhóm khách hàng phải bắt đầu trên :min, mức mà giá cơ bản đã bao gồm.',
+    'rate_method_taken' => 'Khu vực này đã có mức phí cho phương thức vận chuyển đó.',
+    'zone_single_country' => 'Chọn một quốc gia cho khu vực này.',
+    'zone_state_country' => 'Tỉnh/bang này không thuộc quốc gia của khu vực.',
 
     'confirm_delete' => 'Xóa khu vực vận chuyển này? Các mức phí của nó sẽ bị xóa cùng với nó.',
     'confirm_delete_title' => 'Xóa khu vực vận chuyển',

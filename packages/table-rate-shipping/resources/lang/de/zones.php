@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Keine Staffeln. Der Grundpreis gilt für jede Bestellung.',
     'rate_default_price_required' => 'Ein Grundpreis in :currency ist erforderlich.',
     'rate_weight_tier_integer' => 'Gewichtsstaffeln müssen ganze Zahlen sein.',
+    'rate_tier_above_base' => 'Eine Staffel ohne Kundengruppe muss über :min beginnen; darunter gilt der Grundpreis.',
+    'rate_method_taken' => 'Diese Zone hat bereits einen Tarif für diese Versandart.',
+    'zone_single_country' => 'Wählen Sie ein Land für diese Zone.',
+    'zone_state_country' => 'Dieses Bundesland liegt nicht im Land der Zone.',
 
     'confirm_delete' => 'Diese Versandzone löschen? Ihre Tarife werden mit ihr entfernt.',
     'confirm_delete_title' => 'Versandzone löschen',

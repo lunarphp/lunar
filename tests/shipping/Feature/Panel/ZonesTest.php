@@ -189,3 +189,114 @@ test('a zone can be deleted', function () {
 
     expect(ShippingZone::find($zone->id))->toBeNull();
 });
+
+test('a tier without a customer group must start above the base price', function () {
+    $zone = ShippingZone::factory()->create();
+    $bySpend = ShippingMethod::factory()->create(['data' => ['charge_by' => 'cart_total']]);
+    $byWeight = ShippingMethod::factory()->create(['data' => ['charge_by' => 'weight'], 'weight_unit' => 'kg']);
+
+    $this->post(route('panel.settings.shipping.zones.rates.store', $zone), [
+        'shipping_method_id' => $bySpend->id,
+        'base_prices' => ['GBP' => '5'],
+        'tiers' => [
+            ['customer_group_id' => null, 'currency_code' => 'GBP', 'min_quantity' => '0.01', 'price' => '1'],
+            ['customer_group_id' => null, 'currency_code' => 'GBP', 'min_quantity' => '0.02', 'price' => '1'],
+        ],
+    ])->assertSessionHasErrors('tiers.0.min_quantity')->assertSessionDoesntHaveErrors('tiers.1.min_quantity');
+
+    $this->post(route('panel.settings.shipping.zones.rates.store', $zone), [
+        'shipping_method_id' => $byWeight->id,
+        'base_prices' => ['GBP' => '5'],
+        'tiers' => [['customer_group_id' => null, 'currency_code' => 'GBP', 'min_quantity' => '1', 'price' => '1']],
+    ])->assertSessionHasErrors('tiers.0.min_quantity');
+});
+
+test('a customer group tier from zero is shown on the edit screen and removed with the tier', function () {
+    $group = CustomerGroup::factory()->create();
+    $zone = ShippingZone::factory()->create();
+    $method = ShippingMethod::factory()->create(['data' => ['charge_by' => 'weight'], 'weight_unit' => 'kg']);
+
+    $this->post(route('panel.settings.shipping.zones.rates.store', $zone), [
+        'shipping_method_id' => $method->id,
+        'base_prices' => ['GBP' => '5'],
+        'tiers' => [['customer_group_id' => $group->id, 'currency_code' => 'GBP', 'min_quantity' => '0', 'price' => '3']],
+    ])->assertSessionHasNoErrors();
+
+    $rate = $zone->rates()->first();
+
+    $this->get(route('panel.settings.shipping.zones.edit', $zone))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('rates.0.base_prices', ['GBP' => 5])
+            ->where('rates.0.tiers_count', 1)
+            ->where('rates.0.tiers.0.customer_group_id', $group->id)
+            ->where('rates.0.tiers.0.min_quantity', 0)
+        );
+
+    $this->put(route('panel.settings.shipping.zones.rates.update', [$zone, $rate]), [
+        'shipping_method_id' => $method->id,
+        'base_prices' => ['GBP' => '5'],
+        'tiers' => [],
+    ])->assertSessionHasNoErrors();
+
+    expect($rate->prices()->count())->toBe(1)
+        ->and($rate->prices()->first()->customer_group_id)->toBeNull();
+});
+
+test('a zone has one rate per shipping method', function () {
+    $zone = ShippingZone::factory()->create();
+    $method = ShippingMethod::factory()->create(['data' => ['charge_by' => 'cart_total']]);
+    $rate = ShippingRate::factory()->create(['shipping_zone_id' => $zone->id, 'shipping_method_id' => $method->id]);
+    ShippingRate::factory()->create(['shipping_zone_id' => ShippingZone::factory()->create()->id, 'shipping_method_id' => $method->id]);
+
+    $payload = ['shipping_method_id' => $method->id, 'base_prices' => ['GBP' => '5'], 'tiers' => []];
+
+    $this->post(route('panel.settings.shipping.zones.rates.store', $zone), $payload)
+        ->assertSessionHasErrors('shipping_method_id');
+
+    $this->put(route('panel.settings.shipping.zones.rates.update', [$zone, $rate]), $payload)
+        ->assertSessionHasNoErrors();
+});
+
+test('blank postcode lines are ignored', function () {
+    $zone = ShippingZone::factory()->create(['type' => 'postcodes']);
+    $country = Country::factory()->create();
+
+    $this->put(route('panel.settings.shipping.zones.update', $zone), [
+        'name' => $zone->name,
+        'type' => 'postcodes',
+        'countries' => [$country->id],
+        'postcodes' => ['AB1', '', 'CD2', ''],
+    ])->assertSessionHasNoErrors();
+
+    expect($zone->postcodes()->pluck('postcode')->sort()->values()->all())->toBe(['AB1', 'CD2']);
+});
+
+test('state and postcode zones take exactly one country, and states must belong to it', function (string $type) {
+    $zone = ShippingZone::factory()->create(['type' => $type]);
+    [$uk, $us] = Country::factory()->count(2)->create();
+
+    $this->put(route('panel.settings.shipping.zones.update', $zone), [
+        'name' => $zone->name,
+        'type' => $type,
+        'countries' => [$uk->id, $us->id],
+    ])->assertSessionHasErrors('countries');
+
+    $this->put(route('panel.settings.shipping.zones.update', $zone), [
+        'name' => $zone->name,
+        'type' => $type,
+        'countries' => [],
+    ])->assertSessionHasErrors('countries');
+})->with(['states', 'postcodes']);
+
+test('a state zone rejects states from another country', function () {
+    $zone = ShippingZone::factory()->create(['type' => 'states']);
+    [$uk, $us] = Country::factory()->count(2)->create();
+    $texas = State::factory()->create(['country_id' => $us->id]);
+
+    $this->put(route('panel.settings.shipping.zones.update', $zone), [
+        'name' => $zone->name,
+        'type' => 'states',
+        'countries' => [$uk->id],
+        'states' => [$texas->id],
+    ])->assertSessionHasErrors('states.0');
+});

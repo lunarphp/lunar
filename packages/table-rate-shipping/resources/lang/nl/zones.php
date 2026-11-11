@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Geen prijsbreuken. De basisprijs geldt voor elke bestelling.',
     'rate_default_price_required' => 'Een basisprijs in :currency is verplicht.',
     'rate_weight_tier_integer' => 'Gewichtsbreuken moeten hele getallen zijn.',
+    'rate_tier_above_base' => 'Een staffel zonder klantgroep moet boven :min beginnen; daaronder geldt de basisprijs.',
+    'rate_method_taken' => 'Deze zone heeft al een tarief voor die verzendmethode.',
+    'zone_single_country' => 'Kies één land voor deze zone.',
+    'zone_state_country' => 'Deze staat ligt niet in het land van de zone.',
 
     'confirm_delete' => 'Deze verzendzone verwijderen? De bijbehorende tarieven worden ook verwijderd.',
     'confirm_delete_title' => 'Verzendzone verwijderen',

@@ -34,12 +34,10 @@ class RateRows
             ->map(function (ShippingRate $rate) use ($currencies, $default, $zone): array {
                 $chargeBy = $rate->shippingMethod?->data['charge_by'] ?? 'cart_total';
 
-                $basePrices = $rate->prices
-                    ->filter(fn (Price $price) => $price->min_quantity === 1 && $price->customer_group_id === null);
+                [$basePrices, $tiers] = $rate->prices
+                    ->partition(fn (Price $price) => $price->customer_group_id === null && $price->min_quantity <= 1);
 
-                $tiers = $rate->prices
-                    ->filter(fn (Price $price) => $price->min_quantity > 1)
-                    ->values();
+                $tiers = $tiers->values();
 
                 $defaultBase = $default ? $basePrices->firstWhere('currency_id', $default->id) : null;
 

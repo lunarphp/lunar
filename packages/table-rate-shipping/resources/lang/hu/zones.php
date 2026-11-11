@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Nincsenek árlépcsők. Minden rendelésre az alapár érvényes.',
     'rate_default_price_required' => ':currency pénznemben megadott alapár kötelező.',
     'rate_weight_tier_integer' => 'A súly árlépcsőknek egész számoknak kell lenniük.',
+    'rate_tier_above_base' => 'A vásárlói csoport nélküli árlépcsőnek :min felett kell kezdődnie, azt az alapár fedi le.',
+    'rate_method_taken' => 'Ennek a zónának már van díja ehhez a szállítási módhoz.',
+    'zone_single_country' => 'Válasszon egy országot ehhez a zónához.',
+    'zone_state_country' => 'Ez az állam nem a zóna országában van.',
 
     'confirm_delete' => 'Törlöd ezt a szállítási zónát? A díjai is törlődnek vele.',
     'confirm_delete_title' => 'Szállítási zóna törlése',

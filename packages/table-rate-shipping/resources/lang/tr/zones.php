@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Kademe yok. Temel fiyat her siparişe uygulanır.',
     'rate_default_price_required' => ':currency cinsinden bir temel fiyat zorunludur.',
     'rate_weight_tier_integer' => 'Ağırlık kademeleri tam sayı olmalıdır.',
+    'rate_tier_above_base' => 'Müşteri grubu olmayan bir kademe :min üzerinden başlamalıdır; altını temel fiyat karşılar.',
+    'rate_method_taken' => 'Bu bölgede bu gönderim yöntemi için zaten bir ücret var.',
+    'zone_single_country' => 'Bu bölge için bir ülke seçin.',
+    'zone_state_country' => 'Bu eyalet bölgenin ülkesinde değil.',
 
     'confirm_delete' => 'Bu kargo bölgesi silinsin mi? Tarifeleri de onunla birlikte kaldırılır.',
     'confirm_delete_title' => 'Kargo bölgesini sil',

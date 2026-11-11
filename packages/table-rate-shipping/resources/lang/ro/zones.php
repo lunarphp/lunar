@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'Nicio tranșă. Prețul de bază se aplică fiecărei comenzi.',
     'rate_default_price_required' => 'Este necesar un preț de bază în :currency.',
     'rate_weight_tier_integer' => 'Tranșele de greutate trebuie să fie numere întregi.',
+    'rate_tier_above_base' => 'O tranșă fără grup de clienți trebuie să înceapă peste :min, acoperit de prețul de bază.',
+    'rate_method_taken' => 'Această zonă are deja un tarif pentru această metodă de livrare.',
+    'zone_single_country' => 'Alegeți o țară pentru această zonă.',
+    'zone_state_country' => 'Acest stat nu se află în țara zonei.',
 
     'confirm_delete' => 'Ștergeți această zonă de livrare? Tarifele ei vor fi eliminate împreună cu ea.',
     'confirm_delete_title' => 'Șterge zona de livrare',

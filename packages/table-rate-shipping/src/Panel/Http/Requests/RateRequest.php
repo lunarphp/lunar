@@ -7,7 +7,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 
 /**
  * A shipping rate as the slideout submits it: the method, an enabled flag,
@@ -22,7 +24,13 @@ class RateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'shipping_method_id' => ['required', Rule::exists(ShippingMethod::class, 'id')],
+            'shipping_method_id' => [
+                'required',
+                Rule::exists(ShippingMethod::class, 'id'),
+                Rule::unique(ShippingRate::class)
+                    ->where('shipping_zone_id', $this->route('shippingZone')?->id)
+                    ->ignore($this->route('shippingRate')),
+            ],
             'enabled' => ['sometimes', 'boolean'],
             'base_prices' => ['present', 'array'],
             'base_prices.*' => ['nullable', 'numeric', 'min:0'],
@@ -31,6 +39,16 @@ class RateRequest extends FormRequest
             'tiers.*.currency_code' => ['required', Rule::exists(Currency::class, 'code')],
             'tiers.*.min_quantity' => ['required', 'numeric', 'min:0'],
             'tiers.*.price' => ['required', 'numeric', 'min:0'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'shipping_method_id.unique' => __('shipping::zones.rate_method_taken'),
         ];
     }
 
@@ -44,18 +62,33 @@ class RateRequest extends FormRequest
             }
 
             $method = ShippingMethod::find($this->input('shipping_method_id'));
+            $byWeight = ($method?->data['charge_by'] ?? 'cart_total') === 'weight';
+            $currencies = Currency::query()->get()->keyBy('code');
+            $calculator = app(PriceCalculatorInterface::class);
 
-            if (($method?->data['charge_by'] ?? 'cart_total') !== 'weight') {
-                return;
-            }
-
-            // Weight tiers are stored as raw integers in the method's unit;
-            // reject decimals rather than truncating them.
             foreach ((array) $this->input('tiers', []) as $index => $tier) {
                 $minQuantity = $tier['min_quantity'] ?? null;
+                $currency = $currencies->get($tier['currency_code'] ?? null);
 
-                if (is_numeric($minQuantity) && (float) $minQuantity !== floor((float) $minQuantity)) {
+                if (! is_numeric($minQuantity) || ! $currency) {
+                    continue;
+                }
+
+                // Weight tiers are stored as raw integers in the method's unit;
+                // reject decimals rather than truncating them.
+                if ($byWeight && (float) $minQuantity !== floor((float) $minQuantity)) {
                     $validator->errors()->add("tiers.{$index}.min_quantity", __('shipping::zones.rate_weight_tier_integer'));
+
+                    continue;
+                }
+
+                // A group-less row at a min_quantity of 1 or less is the base price.
+                $stored = $byWeight ? (int) $minQuantity : $calculator->toMinor($minQuantity, $currency);
+
+                if (blank($tier['customer_group_id'] ?? null) && $stored <= 1) {
+                    $validator->errors()->add("tiers.{$index}.min_quantity", __('shipping::zones.rate_tier_above_base', [
+                        'min' => $byWeight ? '1' : $calculator->toMajor(1, $currency),
+                    ]));
                 }
             }
         });

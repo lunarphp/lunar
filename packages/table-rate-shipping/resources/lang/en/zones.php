@@ -82,6 +82,10 @@ return [
     'no_tiers' => 'No tiers. The base price applies to every order.',
     'rate_default_price_required' => 'A base price in :currency is required.',
     'rate_weight_tier_integer' => 'Weight tiers must be whole numbers.',
+    'rate_tier_above_base' => 'A tier without a customer group must start above :min, which the base price covers.',
+    'rate_method_taken' => 'This zone already has a rate for that shipping method.',
+    'zone_single_country' => 'Choose one country for this zone.',
+    'zone_state_country' => 'This state is not in the zone\'s country.',
 
     'confirm_delete' => 'Delete this shipping zone? Its rates are removed with it.',
     'confirm_delete_title' => 'Delete shipping zone',
