@@ -78,7 +78,7 @@ interface DraftSlice extends FormSlice
 }
 ```
 
-Extend the abstract `Lunar\Panel\Forms\FormSlice` rather than implementing the interface directly. It supplies a passthrough `normalize()` and an empty `labels()`. A slice that keeps state outside the draft's JSON columns extends `Lunar\Panel\Drafts\DraftSlice` instead, which adds a no-op `discard()` to override.
+Extend the abstract `Lunar\Panel\Forms\FormSlice` rather than implementing the interface directly. It supplies a passthrough `normalize()` and an empty `labels()`. A slice that keeps state outside the draft's JSON columns also implements `Lunar\Panel\Contracts\DraftSlice` and its `discard()`: `class StagedMediaSlice extends FormSlice implements DraftSlice`.
 
 | Method | Purpose |
 |:-------|:--------|

@@ -481,8 +481,8 @@ conflict dialog under the label from `labels()`), 422 mapping, and an atomic
 commit with the customer's own fields. If the slice's `commit()` throws, the
 customer's changes roll back too.
 
-Optional: extend `Lunar\Panel\Drafts\DraftSlice` instead and implement
-`discard(Model $record, EditDraft $draft)` when a slice holds state outside the
+Optional: also implement `Lunar\Panel\Contracts\DraftSlice`, which adds
+`discard(Model $record, EditDraft $draft)`, when a slice holds state outside the
 draft's JSON columns (staged uploads, for instance). It is called when a draft
 holding the slice's keys is discarded or pruned. A plain `FormSlice` needs no
 such hook and works on drafted and plain forms alike.

@@ -89,7 +89,9 @@ container bindings and page overrides.
 New `Lunar\Panel\Contracts\FormSlice`, with an abstract `Lunar\Panel\Forms\FormSlice`
 supplying `normalize()` and `labels()` no-op defaults as `Drafts\DraftableResource` does.
 `Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds the one draft-specific hook,
-`discard()`, with an abstract `Lunar\Panel\Drafts\DraftSlice` defaulting it to a no-op.
+`discard()`. There is no abstract for it: a slice that needs the hook extends
+`Forms\FormSlice` and implements `Contracts\DraftSlice`, so there is one base class and
+one way to opt in.
 A plain `FormSlice` composes into a draft unchanged; the split exists so the same slice
 class serves a drafted edit page and a plain form without a second contract:
 
@@ -114,8 +116,7 @@ class serves a drafted edit page and a plain form without a second contract:
   slice's values differ from its current values. Persists through core actions.
 - `labels(): array<string, string>` — unprefixed field to lang key for the conflict
   dialog and validation messages.
-- `discard(Model $record, EditDraft $draft): void` — on `DraftSlice` only, default
-  no-op, called when a draft holding this slice's keys is discarded or pruned. Exists for
+- `discard(Model $record, EditDraft $draft): void` — on `DraftSlice` only, called when a draft holding this slice's keys is discarded or pruned. Exists for
   slices that hold state outside the JSON columns (staged media uploads in
   [[0087-product-editing-through-the-draft]]).
 
@@ -277,7 +278,7 @@ first-party fields.
   groups gain the loyalty-tier label.
 - **Filament / admin impact**: none.
 - **Public contract surface** (treated as contract from first release): the
-  `FormSlice` and `DraftSlice` contracts and abstracts, `Section::formSlices()` and
+  `FormSlice` and `DraftSlice` contracts, the `FormSlice` abstract, `Section::formSlices()` and
   `Section::formExtensions()`, the `{namespace}:{field}` and `addon:{key}:{field}` key
   schemes, the `formSliceValues` shared prop, `useFormSlice` and its return shape, the
   `SliceForm` shape and `sliceFormKey`, and the `slices` option on `useEditDraft`.
@@ -317,7 +318,7 @@ first-party fields.
 
 ## Implementation plan
 
-- [x] Slice 1 — Server composition: `FormSlice` and `DraftSlice` contracts and abstracts,
+- [x] Slice 1 — Server composition: `FormSlice` and `DraftSlice` contracts, the `FormSlice` abstract,
   `ComposedDraftResource` (prefixing, routing, stale-key pruning, ordered commit,
   discard fan-out), `Section::formSlices()` / `formExtensions()` and
   `PanelManager::formSlice()` with lazy composition in `draftableFor()`, namespace and

@@ -5,7 +5,8 @@ namespace Lunar\Tests\Panel\Fixtures\Drafts;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomer;
 use Lunar\Core\Models\Customer;
-use Lunar\Panel\Drafts\DraftSlice;
+use Lunar\Panel\Contracts\DraftSlice;
+use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Models\EditDraft;
 use RuntimeException;
 
@@ -14,7 +15,7 @@ use RuntimeException;
  * `memo` field stored under the customer's meta column, with a commit that
  * can be made to fail and a discard hook that records its calls.
  */
-class MemoSlice extends DraftSlice
+class MemoSlice extends FormSlice implements DraftSlice
 {
     /** @var array<int, string> */
     public static array $committed = [];
