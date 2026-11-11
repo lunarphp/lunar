@@ -22,7 +22,7 @@ class ManageShippingExclusions extends ManageRelatedRecords
 
     public function getTitle(): string|Htmlable
     {
-        return __('lunarpanel.shipping::relationmanagers.exclusions.title_plural');
+        return __('shipping::relationmanagers.exclusions.title_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -32,7 +32,7 @@ class ManageShippingExclusions extends ManageRelatedRecords
 
     public static function getNavigationLabel(): string
     {
-        return __('lunarpanel.shipping::relationmanagers.exclusions.title_plural');
+        return __('shipping::relationmanagers.exclusions.title_plural');
     }
 
     public function form(Schema $schema): Schema
@@ -48,14 +48,14 @@ class ManageShippingExclusions extends ManageRelatedRecords
             AttachAction::make()
                 ->color('primary')
                 ->label(
-                    __('lunarpanel.shipping::relationmanagers.exclusions.actions.attach.label')
+                    __('shipping::relationmanagers.exclusions.actions.attach.label')
                 )
                 ->preloadRecordSelect()
                 ->recordTitleAttribute('name'),
         ])->actions([
             DetachAction::make('detach')
                 ->label(
-                    __('lunarpanel.shipping::relationmanagers.exclusions.actions.detach.label')
+                    __('shipping::relationmanagers.exclusions.actions.detach.label')
                 ),
 
         ]);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Shipping\Factories;
+namespace Lunar\Shipping\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Shipping\Models\ShippingExclusionList;
