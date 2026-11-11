@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Mã này sẽ hết hạn sau :count phút. Nếu bạn không yêu cầu điều này, bạn có thể bỏ qua email này một cách an toàn.',
 
     'security_title' => 'Bảo mật',
+
+    'security_subtitle' => 'Quản lý mật khẩu và xác thực hai yếu tố của bạn.',
     'password_section_title' => 'Mật khẩu',
     'password_section_subtitle' => 'Sử dụng một mật khẩu dài, duy nhất mà bạn không dùng ở bất kỳ nơi nào khác.',
     'current_password' => 'Mật khẩu hiện tại',

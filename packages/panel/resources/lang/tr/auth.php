@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Bu kodun süresi :count dakika içinde dolacak. Bunu siz talep etmediyseniz bu e-postayı güvenle yok sayabilirsiniz.',
 
     'security_title' => 'Güvenlik',
+
+    'security_subtitle' => 'Parolanızı ve iki adımlı doğrulamayı yönetin.',
     'password_section_title' => 'Parola',
     'password_section_subtitle' => 'Başka hiçbir yerde kullanmadığınız uzun ve benzersiz bir parola kullanın.',
     'current_password' => 'Mevcut parola',

@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => 'Ez a kód :count perc múlva lejár. Ha nem ön kérte ezt, nyugodtan hagyja figyelmen kívül ezt az e-mailt.',
 
     'security_title' => 'Biztonság',
+
+    'security_subtitle' => 'Kezelje jelszavát és a kétlépcsős azonosítást.',
     'password_section_title' => 'Jelszó',
     'password_section_subtitle' => 'Használjon hosszú, egyedi jelszót, amelyet máshol nem használ.',
     'current_password' => 'Jelenlegi jelszó',

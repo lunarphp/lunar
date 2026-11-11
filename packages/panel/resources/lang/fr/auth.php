@@ -55,6 +55,8 @@ return [
     'two_factor_email_line2' => "Ce code expire dans :count minutes. Si vous n'avez pas demandé ce code, vous pouvez ignorer cet e-mail en toute sécurité.",
 
     'security_title' => 'Sécurité',
+
+    'security_subtitle' => 'Gérez votre mot de passe et l\'authentification à deux facteurs.',
     'password_section_title' => 'Mot de passe',
     'password_section_subtitle' => "Utilisez un mot de passe long et unique que vous n'utilisez nulle part ailleurs.",
     'current_password' => 'Mot de passe actuel',
