@@ -212,7 +212,7 @@ const form = useEditDraft({
 - `resolve(resolutions, rebase)` — re-commits after the staff member resolves conflicts, pinning each resolved field's `rebase` value to the current database value they were shown (so a further change to the same field between resolving and re-committing conflicts again, rather than being silently overwritten).
 - `discard()` — reverts local values to pristine and deletes the draft.
 
-`initial` is merged with the page's shared `draftSliceValues` prop, so any [draft slices](/admin/extending/draft-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
+`initial` is merged with the page's shared `formSliceValues` prop, so any [draft slices](/admin/extending/draft-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
 
 Autosave watches `values` with a debounce (roughly 750ms by default), sends only the changed fields, and serialises requests so a slower, older response can never clobber a newer one. A diff that empties back out (the user undid their own change) triggers a `DELETE` instead of a `PATCH`.
 

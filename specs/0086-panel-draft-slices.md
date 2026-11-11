@@ -110,7 +110,8 @@ class serves a drafted edit page and a plain form without a second contract:
   needs the full key; `FormSlice::field(string $name): string` returns it.
 - `commit(Model $record, array $values): void` — receives the slice's own values,
   unprefixed, every field present (current values overlaid with the draft), after the
-  resource's own commit, inside the same transaction. Persists through core actions.
+  resource's own commit, inside the same transaction. Skipped when none of the
+  slice's values differ from its current values. Persists through core actions.
 - `labels(): array<string, string>` — unprefixed field to lang key for the conflict
   dialog and validation messages.
 - `discard(Model $record, EditDraft $draft): void` — on `DraftSlice` only, default
@@ -140,7 +141,8 @@ class serves a drafted edit page and a plain form without a second contract:
   - `normalize()` — routes each namespace's keys to its slice, everything else to the
     resource.
   - `commit()` — the resource's `commit()` with its own keys, then each slice's
-    `commit()` with its unprefixed values, in registration order. `DraftManager::commit()`
+    `commit()` with its unprefixed values, in registration order, skipping a slice whose
+    values are unchanged so an untouched slice never re-saves the record. `DraftManager::commit()`
     already wraps the resource commit in a transaction, so the composed commit is atomic
     with no change to the manager.
 - Discard fans out through the `EditDraft` model's `deleting` event, wired in the panel's

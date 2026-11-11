@@ -203,6 +203,14 @@ the staging upload endpoint. The draft trio, `options.generate`, `variants.bulk`
 
 ## Open questions
 
+- **Staged media orphaned by a partial revert.** `discard()` fires only when the whole
+  draft row is deleted, and commit skips a slice whose values are unchanged. If staff
+  revert every media field while other fields stay drafted, autosave rewrites the draft
+  without the media keys and neither path reaches the media slice again, so its staged
+  files are orphaned. Options: a slice hook on autosave, or a sweep (alongside draft
+  pruning) of staged media whose draft no longer holds media keys. Owner: Glenn. Lean:
+  the sweep; it keeps the 0086 contract unchanged.
+
 - **Staged media and the media manager.** A draft's staged uploads appear only on the
   page where they were uploaded. Should the media manager, if it grows a library view,
   show staged items with a "pending" state, or hide them? Owner: Glenn. Lean: hide;
@@ -219,8 +227,8 @@ the staging upload endpoint. The draft trio, `options.generate`, `variants.bulk`
 
 ## References
 
-- [[0086-panel-draft-slices]] — the `DraftSlice` contract, composer, seeding,
-  `useDraftSlice`, and the discard hook this spec relies on.
+- [[0086-panel-draft-slices]] — the `FormSlice` and `DraftSlice` contracts, composer,
+  seeding, `useFormSlice`, and the discard hook this spec relies on.
 - [[0051-panel-edit-drafts]] — the draft layer, key scheme, conflict and rebase protocol.
 - [[0057-panel-products-section]] — the products page and the original reasoning for
   immediate sub-resources, revisited here.

@@ -69,6 +69,9 @@ class DraftManager implements DraftManagerContract
         $merged = [...$this->knownFields($resource, $draft?->data ?? []), ...$data];
 
         if ($merged === []) {
+            // Nothing left to commit; a draft of only stale keys is consumed.
+            $draft?->deleteQuietly();
+
             return CommitResult::committed();
         }
 

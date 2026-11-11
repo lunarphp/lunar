@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Channel;
@@ -193,6 +194,52 @@ it('drops stored keys the resource no longer declares instead of blocking the co
         ->assertOk();
 
     expect($this->customer->refresh()->first_name)->toBe('Grace');
+});
+
+it('skips a slice commit when none of its values changed', function () {
+    $this->patchJson(route('panel.customers.draft.update', $this->customer), [
+        'data' => ['first_name' => 'Grace'],
+    ])->assertOk();
+
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+        ->assertOk();
+
+    expect($this->customer->refresh()->first_name)->toBe('Grace')
+        ->and(MemoSlice::$committed)->toBe([]);
+});
+
+it('clears a draft that holds only keys the resource no longer declares', function () {
+    EditDraft::factory()->create([
+        'draftable_type' => $this->customer->getMorphClass(),
+        'draftable_id' => $this->customer->id,
+        'staff_id' => $this->staff->id,
+        'data' => ['addon:removed:field' => 'orphan'],
+        'base_snapshot' => ['addon:removed:field' => 'old'],
+    ]);
+
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+        ->assertOk();
+
+    expect(EditDraft::count())->toBe(0);
+});
+
+it('does not load the record of a discarded draft whose model has no slices', function () {
+    Language::factory()->create(['default' => true]);
+    $brand = Brand::factory()->create();
+
+    $this->patchJson(route('panel.brands.draft.update', $brand), [
+        'data' => ['name' => 'Renamed'],
+    ])->assertOk();
+
+    $draft = EditDraft::sole();
+    $queries = [];
+    DB::listen(function ($query) use (&$queries): void {
+        $queries[] = $query->sql;
+    });
+
+    $draft->delete();
+
+    expect(collect($queries)->filter(fn (string $sql) => str_contains($sql, 'brands'))->all())->toBe([]);
 });
 
 it('fans a discard out to the slices whose keys the draft held', function () {

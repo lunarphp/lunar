@@ -102,8 +102,8 @@ public function slots(SlotRegistry $registry): void
     ));
 
     // A slot component that takes part in the page's save: LoyaltyCard binds
-    // to the LoyaltyTierSlice registered in draftExtensions() through
-    // useDraftSlice('example-addon'), so its field autosaves and commits
+    // to the LoyaltyTierSlice registered in formExtensions() through
+    // useFormSlice('example-addon'), so its field autosaves and commits
     // with the customer's own.
     $registry->add(new Slot(
         zone: 'customers.edit:main:after',
