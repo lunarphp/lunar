@@ -97,3 +97,25 @@ it('is a no-op when discount_user does not exist', function () {
 
     expect(Schema::hasTable(DISCOUNT_REDEMPTION_UPG_PREFIX.'discount_redemptions'))->toBeFalse();
 });
+
+it('copies each row once when an earlier run stopped before dropping discount_user', function () {
+    $rows = [
+        ['discount_id' => 1, 'user_id' => 11, 'created_at' => '2025-03-01 10:00:00', 'updated_at' => '2025-03-01 10:00:00'],
+        ['discount_id' => 2, 'user_id' => 12, 'created_at' => '2025-04-01 10:00:00', 'updated_at' => '2025-04-01 10:00:00'],
+    ];
+
+    simulateV1DiscountUsers($rows);
+    discountRedemptionsMigration()->up();
+
+    Schema::create(DISCOUNT_REDEMPTION_UPG_PREFIX.'discount_user', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('discount_id');
+        $table->unsignedBigInteger('user_id');
+        $table->timestamps();
+    });
+    DB::table(DISCOUNT_REDEMPTION_UPG_PREFIX.'discount_user')->insert($rows);
+
+    discountRedemptionsMigration()->up();
+
+    expect(DB::table(DISCOUNT_REDEMPTION_UPG_PREFIX.'discount_redemptions')->count())->toBe(2);
+});
