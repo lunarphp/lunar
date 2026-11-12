@@ -23,7 +23,7 @@ Lunar\Core\Models\Discount
 | `type` | `string` | Fully qualified class name of the discount type |
 | `starts_at` | `dateTime` | When the discount becomes active |
 | `ends_at` | `dateTime` `nullable` | When the discount expires. No expiry if `null` |
-| `uses` | `unsignedInteger` | How many times the discount has been used |
+| `uses` | `unsignedInteger` | How many placed orders have used the discount |
 | `max_uses` | `unsignedMediumInteger` `nullable` | Maximum times this discount can be used storewide |
 | `priority` | `unsignedMediumInteger` | Order discounts are evaluated in, highest first (default: `1`) |
 | `stop` | `boolean` | Whether to stop evaluating further discounts once this one applies |
@@ -39,7 +39,8 @@ Lunar\Core\Models\Discount
 
 | Relationship | Type | Related Model | Description |
 |:-------------|:-----|:--------------|:------------|
-| `users` | Belongs to many | the app's user model | Users who have used this discount |
+| `redemptions` | Has many | `Lunar\Core\Models\DiscountRedemption` | One entry per placed order that used the discount |
+| `users` | Belongs to many | the app's user model | Signed-in users who have used this discount, through `discount_redemptions` |
 | `customers` | Belongs to many | `Lunar\Core\Models\Customer` | Customers the discount is restricted to. Empty means all customers |
 | `customerGroups` | Belongs to many | `Lunar\Core\Models\CustomerGroup` | Customer groups the discount is available to |
 | `channels` | Morph to many | `Lunar\Core\Models\Channel` | Channels the discount is available on |
@@ -59,7 +60,7 @@ Lunar\Core\Models\Discount
 | `expired()` | Discounts whose `ends_at` has passed |
 | `scheduled()` | Discounts whose `starts_at` is in the future |
 | `pending()` | Discounts with no `starts_at` set that have not ended |
-| `usable(iterable $exempt = [])` | Discounts under `max_uses`, or with no `max_uses`. `$exempt` lets already-consumed discount IDs stay usable for re-pricing |
+| `usable()` | Discounts under `max_uses`, or with no `max_uses` |
 | `products(iterable $productIds, array\|string $types = [])` | Filters by associated product IDs and discountable `type` |
 | `productVariants(iterable $variantIds, array\|string $types = [])` | Filters by associated variant IDs and discountable `type` |
 | `collections(iterable $collectionIds, array\|string $types = [])` | Filters by associated collection IDs and pivot `type` |
@@ -83,6 +84,55 @@ $discount->status; // 'active', 'pending', 'expired', or 'scheduled'
 | `pending` | `Discount::PENDING` | No `starts_at` is in the past, and it has not ended |
 | `expired` | `Discount::EXPIRED` | The discount's `ends_at` has passed |
 | `scheduled` | `Discount::SCHEDULED` | The discount's `starts_at` is in the future |
+
+## Usage: DiscountRedemption
+
+Lunar counts a use of a discount when an order is placed, not when its draft order is created. A draft order is not a sale: a declined card or an abandoned checkout uses nothing, and a shopper who retries on the same cart, or on a new one, still gets the discount.
+
+`Lunar\Core\Listeners\RecordDiscountRedemptions` handles `Lunar\Core\Events\Orders\OrderPlaced`. For each discount in the order's `discount_breakdown`, it records a `DiscountRedemption` and increments the discount's `uses` in a single database update. An order records each discount once, so the event firing again for the same order counts nothing.
+
+```php
+Lunar\Core\Models\DiscountRedemption
+```
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `id` | `bigIncrements` | Primary key |
+| `discount_id` | `foreignId` | |
+| `order_id` | `foreignId` `nullable` | The placed order. `null` only for rows carried over from v1 |
+| `cart_id` | `foreignId` `nullable` | The order's cart |
+| `user_id` | `foreignId` `nullable` | The signed-in user, counted by `max_uses_per_user` |
+| `email` | `string` `nullable` | Reserved for counting guest customers; not yet written |
+| `redeemed_at` | `timestamp` | When the order was placed |
+
+A unique index on `discount_id` and `order_id` keeps one row per discount per order.
+
+### Relationships
+
+| Relationship | Type | Related Model | Description |
+|:-------------|:-----|:--------------|:------------|
+| `discount` | Belongs to | `Lunar\Core\Models\Discount` | |
+| `order` | Belongs to | `Lunar\Core\Models\Order` | |
+| `cart` | Belongs to | `Lunar\Core\Models\Cart` | |
+| `user` | Belongs to | the app's user model | |
+
+### Going over a limit
+
+Eligibility is checked on every cart calculation, so a discount at its `max_uses` no longer applies to new carts. Two carts priced with the last use can still both be paid for before either order is placed. When a placement takes `uses` above `max_uses`, the listener keeps the order, because it has already been paid for, and reports it:
+
+- It dispatches `Lunar\Core\Events\Discounts\DiscountLimitExceeded`, with public `order`, `discount` and `coupon` properties. `coupon` is always `null` for now.
+- It logs an activity on the order with the event `discount-limit-exceeded` and the properties `discount_id`, `discount` (the discount name), `coupon`, `uses` and `max_uses`.
+
+To hold such orders, or to alert someone, listen for the event:
+
+```php
+use Illuminate\Support\Facades\Event;
+use Lunar\Core\Events\Discounts\DiscountLimitExceeded;
+
+Event::listen(DiscountLimitExceeded::class, function (DiscountLimitExceeded $event) {
+    // $event->order, $event->discount
+});
+```
 
 ## Targeting: Discountable
 
@@ -136,8 +186,7 @@ interface DiscountType
 
 `AbstractDiscountType` provides shared behavior every type relies on:
 
-- `checkDiscountConditions(Cart $cart): bool`: validates the discount against the cart before it applies anything, including a matching coupon code (if the discount requires one), the cart customer against `customers()` (if restricted), a `data.min_prices` minimum spend for the cart's currency, `max_uses`, and `max_uses_per_user`. Every shipped type calls this at the top of `apply()`.
-- `markAsUsed(Cart $cart)`: increments `uses` and attaches the cart's user.
+- `checkDiscountConditions(Cart $cart): bool`: validates the discount against the cart before it applies anything, including a matching coupon code (if the discount requires one), the cart customer against `customers()` (if restricted), a `data.min_prices` minimum spend for the cart's currency, `max_uses`, and `max_uses_per_user` (counted from the user's redemptions). Every shipped type calls this at the top of `apply()`.
 - `addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)`: records how much this discount took off, and which lines it affected, on `$cart->discountBreakdown`.
 
 `data.min_prices` is keyed by currency code and stored in minor units, and applies regardless of which type is used:
