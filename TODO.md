@@ -8,15 +8,10 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-- Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)
 - Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate say so (spec 0087)
-- Panel form slices on plain forms — the create pages and settings forms compose the same `FormSlice` contract the drafted edit pages do (spec 0088)
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
-- Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
-- Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
-- Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
 - Add Boost guidelines to packages
 - Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
@@ -40,6 +35,11 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)
+- Panel form slices on plain forms — the create pages and settings forms compose the same `FormSlice` contract the drafted edit pages do (spec 0088)
+- Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
+- Run cart and order modifiers — `CartLineModifier` and `CartModifier` hooks fire from `$cart->calculate()`, `OrderModifier` hooks from order creation, and the unused line actions go (spec 0092)
+- Registrable calculation steps — add-ons register cart, pricing, order-creation and validator steps from code, with an explicit position, instead of rewriting config (spec 0093)
 - Cart totals caching in the database — persisted totals snapshot with revision-guarded freshness (spec cart-totals-caching)
 - Versioned docs — v1 and v2 docs are written in `docs/` on their version branch and published to docs.lunarphp.com from each version's latest release by Mintlify's multirepo Action (spec 0094)
 - Rename the collection fulfilment method and states to pickup — Shopify/Woo/Magento-aligned terminology (spec rename-collection-fulfilment-to-pickup)

@@ -1,6 +1,6 @@
 # 0086 — Panel draft slices: namespaced contributions to first-party edit drafts
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-15
 - TODO item: Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)

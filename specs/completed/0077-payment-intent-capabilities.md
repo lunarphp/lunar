@@ -1,6 +1,6 @@
 # 0077 — Pre-order payment intent capabilities
 
-- Status: proposed
+- Status: implemented
 - Author: Alec Ritson
 - Created: 2026-09-22
 - TODO item: Pre-order payment intent capabilities for cart-phase gateway flows
@@ -280,8 +280,8 @@ gateway failures, and drivers beyond Stripe. Each is a follow-up spec.
 
 ## Implementation plan
 
-- [ ] Slice 1: the four contracts, `PaymentIntentDescriptor`,
+- [x] Slice 1: the four contracts, `PaymentIntentDescriptor`,
       `PaymentIntentSnapshot`, both enums, `PaymentIntentException`, and the
       two `PaymentRefund` fields.
-- [ ] Slice 2: Stripe implements all four, with a test per table cell it
+- [x] Slice 2: Stripe implements all four, with a test per table cell it
       reaches, and `authorize()` accepts `reference` and is idempotent.
