@@ -20,13 +20,23 @@ class ResolveCustomerEmail implements ResolvesCustomerEmail
         ];
 
         foreach ($candidates as $email) {
-            $email = strtolower(trim((string) $email));
+            $email = static::normalize($email);
 
-            if ($email !== '') {
+            if ($email !== null) {
                 return $email;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Lower-cased and trimmed, or null when blank.
+     */
+    public static function normalize(?string $email): ?string
+    {
+        $email = strtolower(trim((string) $email));
+
+        return $email === '' ? null : $email;
     }
 }

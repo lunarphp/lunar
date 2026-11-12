@@ -61,6 +61,7 @@ use Lunar\Core\Actions\Discounts\CreateCoupon;
 use Lunar\Core\Actions\Discounts\CreateDiscount;
 use Lunar\Core\Actions\Discounts\DeleteCoupon;
 use Lunar\Core\Actions\Discounts\DeleteDiscount;
+use Lunar\Core\Actions\Discounts\GenerateCoupons;
 use Lunar\Core\Actions\Discounts\ResolveCustomerEmail;
 use Lunar\Core\Actions\Discounts\UpdateDiscount;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
@@ -304,6 +305,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Discounts\CreatesDiscount::class => CreateDiscount::class,
         Contracts\Discounts\DeletesCoupon::class => DeleteCoupon::class,
         Contracts\Discounts\DeletesDiscount::class => DeleteDiscount::class,
+        Contracts\Discounts\GeneratesCoupons::class => GenerateCoupons::class,
         Contracts\Discounts\ResolvesCustomerEmail::class => ResolveCustomerEmail::class,
         Contracts\Discounts\UpdatesDiscount::class => UpdateDiscount::class,
 
