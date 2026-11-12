@@ -22,7 +22,7 @@ use Lunar\Core\Models\CustomerGroup;
  * @method static Collection getApplied()
  * @method static \Lunar\Core\Models\Cart apply(\Lunar\Core\Models\Cart $cart)
  * @method static \Lunar\Core\Managers\DiscountManager resetDiscounts()
- * @method static bool validateCoupon(string $coupon)
+ * @method static bool validateCoupon(string $coupon, Cart|null $cart = null)
  *
  * @see DiscountManager
  */

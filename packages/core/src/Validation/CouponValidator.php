@@ -2,12 +2,20 @@
 
 namespace Lunar\Core\Validation;
 
+use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
+use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator as CouponValidatorContract;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Discount;
 
 class CouponValidator implements CouponValidatorContract
 {
-    public function validate(string $coupon): bool
+    public function __construct(
+        protected CartSession $cartSession,
+        protected CountsCustomerRedemptions $countsCustomerRedemptions,
+    ) {}
+
+    public function validate(string $coupon, ?Cart $cart = null): bool
     {
         $discount = Discount::query()
             ->active()
@@ -20,25 +28,17 @@ class CouponValidator implements CouponValidatorContract
             return false;
         }
 
-        if ($discount->max_uses_per_user) {
-            $user = auth()->user();
-
-            // Per-user usage is recorded against a user, so the discount never
-            // applies to a guest; reject it here rather than accept a coupon
-            // that changes nothing.
-            if (! $user) {
-                return false;
-            }
-
-            $uses = $discount->users()
-                ->whereUserId($user->getKey())
-                ->count();
-
-            if ($uses >= $discount->max_uses_per_user) {
-                return false;
-            }
+        if (! $discount->max_uses_per_user) {
+            return true;
         }
 
-        return true;
+        $cart ??= $this->cartSession->current();
+
+        // With no cart there is no customer to count yet; the discount conditions hold the limit once there is.
+        if (! $cart) {
+            return true;
+        }
+
+        return $this->countsCustomerRedemptions->execute($discount, $cart) < $discount->max_uses_per_user;
     }
 }
