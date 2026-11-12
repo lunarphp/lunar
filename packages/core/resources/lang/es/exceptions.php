@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Opción de envío faltante.',
     'carts.line_unavailable' => 'Una línea de este carrito ya no está disponible (:identifier).',
     'carts.line_not_purchasable' => ':identifier no se puede comprar en este canal ni por tu grupo de clientes.',
+    'carts.customer_email_missing' => 'Se requiere una dirección de correo electrónico para usar el descuento ":discount".',
     'missing_currency_price' => 'No existe un precio para la moneda ":currency".',
     'minimum_quantity' => 'Debes agregar un mínimo de :quantity artículos.',
     'quantity_increment' => 'La cantidad :quantity debe ser en incrementos de :increment.',

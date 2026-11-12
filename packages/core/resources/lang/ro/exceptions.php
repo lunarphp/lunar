@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Opțiune de livrare lipsă',
     'carts.line_unavailable' => 'Un articol din acest coș nu mai este disponibil (:identifier)',
     'carts.line_not_purchasable' => ':identifier nu poate fi cumpărat în acest canal sau de grupul tău de clienți',
+    'carts.customer_email_missing' => 'Este necesară o adresă de e-mail pentru a folosi reducerea ":discount"',
     'missing_currency_price' => 'Nu există un preț pentru moneda ":currency"',
     'minimum_quantity' => 'Trebuie să adăugați cel puțin :quantity articole.',
     'quantity_increment' => 'Cantitatea :quantity trebuie să fie în multipli de :increment',

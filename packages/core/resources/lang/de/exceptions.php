@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Eine gültige Versandart fehlt',
     'carts.line_unavailable' => 'Eine Position in diesem Warenkorb ist nicht mehr verfügbar (:identifier)',
     'carts.line_not_purchasable' => ':identifier kann in diesem Kanal oder von Ihrer Kundengruppe nicht gekauft werden',
+    'carts.customer_email_missing' => 'Eine E-Mail-Adresse ist erforderlich, um den Rabatt ":discount" zu nutzen',
     'missing_currency_price' => 'Es existiert kein Preis für die Währung ":currency"',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',
