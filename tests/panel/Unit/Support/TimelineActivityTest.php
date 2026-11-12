@@ -64,3 +64,20 @@ it('reports no changed fields for create and delete events', function () {
     expect(TimelineActivity::toArray($created)['changes'])->toBe([])
         ->and(TimelineActivity::toArray($deleted)['changes'])->toBe([]);
 });
+
+it('describes a discount that went over a limit, by the limit it went over', function (string $limit, string $expected) {
+    $activity = makeActivity('discount-limit-exceeded', [
+        'discount_id' => 1,
+        'discount' => 'Spring sale',
+        'coupon' => 'SPRING10',
+        'limit' => $limit,
+        'uses' => 3,
+        'max_uses' => 2,
+    ]);
+
+    expect(TimelineActivity::toArray($activity)['description'])->toBe($expected);
+})->with([
+    'discount' => ['max_uses', 'Spring sale went over its usage limit (3 of 2)'],
+    'customer' => ['max_uses_per_user', 'A customer went over their limit for Spring sale (3 of 2)'],
+    'coupon' => ['coupon_max_uses', 'Coupon SPRING10 went over its usage limit on Spring sale (3 of 2)'],
+]);

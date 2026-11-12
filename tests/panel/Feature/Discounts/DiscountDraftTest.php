@@ -1,6 +1,7 @@
 <?php
 
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Staff;
@@ -33,12 +34,26 @@ it('autosaves changed fields to a draft', function () {
         ->and($draft->base_snapshot)->toHaveKey('name', 'Winter Sale');
 });
 
-it('upper-cases a drafted coupon so it matches the stored cast', function () {
+it('drafts and commits the redemption choice', function () {
     $this->patchJson(route('panel.discounts.draft.update', $this->discount), [
-        'data' => ['coupon' => 'winter10'],
+        'data' => ['redemption' => 'coupon'],
     ])->assertOk();
 
-    expect(EditDraft::sole()->data['coupon'])->toBe('WINTER10');
+    expect(EditDraft::sole()->base_snapshot)->toHaveKey('redemption', 'automatic');
+
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount))->assertSuccessful();
+
+    expect($this->discount->refresh()->redemption)->toBe(DiscountRedemptionMethod::Coupon);
+});
+
+it('rejects a redemption that is not a method', function () {
+    $this->patchJson(route('panel.discounts.draft.update', $this->discount), [
+        'data' => ['redemption' => 'sometimes'],
+    ])->assertOk();
+
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount))->assertUnprocessable();
+
+    expect($this->discount->refresh()->redemption)->toBe(DiscountRedemptionMethod::Automatic);
 });
 
 it('treats an empty numeric limit as no limit', function () {

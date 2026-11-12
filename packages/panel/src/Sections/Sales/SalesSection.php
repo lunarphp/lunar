@@ -16,6 +16,7 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountBulkController;
+use Lunar\Panel\Http\Controllers\Discounts\DiscountCouponController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountCreateController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountEditController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountIndexController;
@@ -224,6 +225,11 @@ class SalesSection extends Section
                 Route::get('/{discount}/edit', [DiscountEditController::class, 'edit'])->name('edit');
                 Route::put('/{discount}', [DiscountEditController::class, 'update'])->name('update');
                 Route::delete('/{discount}', [DiscountEditController::class, 'destroy'])->name('destroy');
+
+                Route::scopeBindings()->group(function (): void {
+                    Route::post('/{discount}/coupons', [DiscountCouponController::class, 'store'])->name('coupons.store');
+                    Route::delete('/{discount}/coupons/{coupon}', [DiscountCouponController::class, 'destroy'])->name('coupons.destroy');
+                });
 
                 Route::patch('/{discount}/draft', [EditDraftController::class, 'update'])->name('draft.update');
                 Route::delete('/{discount}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');

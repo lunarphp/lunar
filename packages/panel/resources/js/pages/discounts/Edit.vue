@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, type Component } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { computed, ref, watch, type Component } from 'vue';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
+import DataTable from '../../components/DataTable.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
+import Pagination from '../../components/Pagination.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import SideCard from '../../components/SideCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
+import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TargetChipList, { type TargetChip } from '../../components/TargetChipList.vue';
 import TargetPickerDialog, { type TargetOption } from '../../components/TargetPickerDialog.vue';
 import TextInput from '../../components/TextInput.vue';
@@ -42,7 +45,7 @@ interface DiscountProps {
     id: number;
     name: string;
     handle: string;
-    coupon: string | null;
+    redemption: 'automatic' | 'coupon';
     type: string;
     status: 'active' | 'scheduled' | 'expired' | 'pending';
     status_label: string;
@@ -58,6 +61,28 @@ interface DiscountProps {
     updated_at: string;
 }
 
+interface CouponRow {
+    id: number;
+    code: string;
+    uses: number;
+    max_uses: number | null;
+    email: string | null;
+    batch: string | null;
+    last_redeemed_at: string | null;
+    _actions: { delete: string };
+}
+
+interface CouponPage {
+    data: CouponRow[];
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    from: number | null;
+    to: number | null;
+    total: number;
+}
+
 const props = defineProps<{
     discount: DiscountProps;
     type: { class: string; label: string; component: string; buckets: string[] };
@@ -69,6 +94,8 @@ const props = defineProps<{
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
     availabilityValues: Record<string, unknown>;
     activities: ActivityEntry[];
+    coupons: CouponPage;
+    couponSearch: string;
     urls: {
         index: string;
         activityLog: string;
@@ -77,6 +104,7 @@ const props = defineProps<{
         draft: string;
         draftCommit: string;
         targetSearch: string;
+        couponStore: string;
     };
 }>();
 
@@ -93,7 +121,7 @@ const draftForm = useEditDraft({
     initial: {
         name: props.discount.name,
         handle: props.discount.handle,
-        coupon: props.discount.coupon ?? '',
+        redemption: props.discount.redemption,
         starts_at: toLocalInput(props.discount.starts_at),
         ends_at: toLocalInput(props.discount.ends_at),
         priority: props.discount.priority,
@@ -256,6 +284,68 @@ const statusTone = computed(() => {
     return props.discount.status === 'expired' ? ('danger' as const) : ('warn' as const);
 });
 
+const redemptionOptions = [
+    { value: 'automatic', label: t('discounts.redemption_automatic') },
+    { value: 'coupon', label: t('discounts.redemption_coupon') },
+];
+
+// Codes are saved straight away rather than drafted: each is its own row, and
+// a shopper may already be holding one.
+const couponColumns = [
+    { key: 'code', label: t('discounts.coupons_column_code'), width: 'minmax(0,1.2fr)' },
+    { key: 'uses', label: t('discounts.coupons_column_uses'), width: '70px', align: 'right' as const },
+    { key: 'max_uses', label: t('discounts.coupons_column_limit'), width: '90px', align: 'right' as const },
+    { key: 'email', label: t('discounts.coupons_column_email'), width: 'minmax(0,1.2fr)' },
+    { key: 'batch', label: t('discounts.coupons_column_batch'), width: 'minmax(0,0.8fr)' },
+    { key: 'last_redeemed_at', label: t('discounts.coupons_column_last_redeemed'), width: 'minmax(0,0.9fr)' },
+    { key: 'actions', label: '', width: '36px', align: 'right' as const },
+];
+
+const couponForm = useForm({ code: '', max_uses: '' as number | string });
+
+const addCoupon = (): void => {
+    couponForm.post(props.urls.couponStore, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => couponForm.reset(),
+    });
+};
+
+const couponQuery = ref(props.couponSearch ?? '');
+
+let couponSearchTimer: ReturnType<typeof setTimeout> | undefined;
+watch(couponQuery, () => {
+    clearTimeout(couponSearchTimer);
+    couponSearchTimer = setTimeout(() => {
+        router.get(
+            window.location.pathname,
+            { coupons_q: couponQuery.value || undefined },
+            { only: ['coupons', 'couponSearch'], preserveState: true, preserveScroll: true, replace: true },
+        );
+    }, 300);
+});
+
+const couponToDelete = ref<CouponRow | null>(null);
+const couponConfirmOpen = computed({
+    get: () => couponToDelete.value !== null,
+    set: (value: boolean) => {
+        if (!value) {
+            couponToDelete.value = null;
+        }
+    },
+});
+
+const deleteCoupon = (): void => {
+    if (!couponToDelete.value) {
+        return;
+    }
+
+    router.delete(couponToDelete.value._actions.delete, { preserveScroll: true, preserveState: true });
+    couponToDelete.value = null;
+};
+
+const formatDateTime = (value: string | null): string => (value ? new Date(value).toLocaleString() : '');
+
 const confirmOpen = ref(false);
 
 const confirmDestroy = (): void => {
@@ -357,6 +447,89 @@ const confirmDestroy = (): void => {
                             />
                         </section>
 
+                        <section v-if="details.redemption === 'coupon'" class="bg-surface border border-line rounded-xl shadow-sm p-5" data-testid="discount-coupons">
+                            <div class="pb-4 border-b border-line mb-4">
+                                <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_coupons') }}</h2>
+                                <div class="text-xs text-ink-500 leading-normal">{{ t('discounts.section_coupons_description') }}</div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_140px_auto] gap-3 items-start mb-4">
+                                <div>
+                                    <FieldLabel for="coupon-code" required>{{ t('discounts.coupon_field_code') }}</FieldLabel>
+                                    <TextInput
+                                        id="coupon-code"
+                                        v-model="couponForm.code"
+                                        class="font-mono uppercase"
+                                        :invalid="!!couponForm.errors.code"
+                                        @keydown.enter.prevent="addCoupon"
+                                    />
+                                    <div v-if="couponForm.errors.code" class="mt-1 text-[11px] text-danger">{{ couponForm.errors.code }}</div>
+                                </div>
+                                <div>
+                                    <FieldLabel for="coupon-max-uses">{{ t('discounts.coupon_field_max_uses') }}</FieldLabel>
+                                    <TextInput
+                                        id="coupon-max-uses"
+                                        v-model="couponForm.max_uses"
+                                        type="number"
+                                        min="1"
+                                        :invalid="!!couponForm.errors.max_uses"
+                                        @keydown.enter.prevent="addCoupon"
+                                    />
+                                    <div v-if="couponForm.errors.max_uses" class="mt-1 text-[11px] text-danger">{{ couponForm.errors.max_uses }}</div>
+                                    <div v-else class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.coupon_field_max_uses_hint') }}</div>
+                                </div>
+                                <Button type="button" icon="plus" class="sm:mt-[22px]" :disabled="couponForm.processing" @click="addCoupon">
+                                    {{ t('discounts.coupon_add') }}
+                                </Button>
+                            </div>
+
+                            <div class="max-w-[280px] mb-3">
+                                <TextInput v-model="couponQuery" clearable :placeholder="t('discounts.coupons_search_placeholder')" />
+                            </div>
+
+                            <DataTable
+                                :columns="couponColumns"
+                                :rows="coupons.data as unknown as Record<string, unknown>[]"
+                                :empty-text="couponQuery ? t('discounts.coupons_empty_search') : t('discounts.coupons_empty')"
+                            >
+                                <template #cell-code="{ row }">
+                                    <span class="text-[12px] font-mono text-ink-900 truncate block">{{ row.code }}</span>
+                                </template>
+                                <template #cell-uses="{ value }">
+                                    <span class="text-[12px] text-ink-900 [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                                </template>
+                                <template #cell-max_uses="{ value }">
+                                    <span v-if="value !== null" class="text-[12px] text-ink-900 [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                                    <span v-else class="text-[11.5px] text-ink-500">{{ t('discounts.coupons_unlimited') }}</span>
+                                </template>
+                                <template #cell-email="{ value }">
+                                    <span class="text-[12px] text-ink-700 truncate block">{{ value ?? '' }}</span>
+                                </template>
+                                <template #cell-batch="{ value }">
+                                    <span class="text-[11px] font-mono text-ink-500 truncate block">{{ value ?? '' }}</span>
+                                </template>
+                                <template #cell-last_redeemed_at="{ value }">
+                                    <span v-if="value" class="text-[11.5px] text-ink-700 whitespace-nowrap">{{ formatDateTime(value as string) }}</span>
+                                    <span v-else class="text-[11.5px] text-ink-500">{{ t('discounts.coupons_never_redeemed') }}</span>
+                                </template>
+                                <template #cell-actions="{ row }">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="trash"
+                                        class="!w-[26px] !h-[26px]"
+                                        :aria-label="t('discounts.coupon_delete')"
+                                        @click="couponToDelete = row as unknown as CouponRow"
+                                    />
+                                </template>
+                            </DataTable>
+
+                            <div class="mt-3">
+                                <Pagination :meta="coupons" />
+                            </div>
+                        </section>
+
                         <section v-if="visibleBuckets.length" class="bg-surface border border-line rounded-xl shadow-sm p-5">
                             <div class="pb-4 border-b border-line mb-4">
                                 <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_targets') }}</h2>
@@ -423,10 +596,14 @@ const confirmDestroy = (): void => {
                                         <UsageMeter :used="discount.uses" :max="discount.max_uses" />
                                     </div>
                                     <div>
-                                        <FieldLabel for="discount-coupon">{{ t('discounts.field_coupon') }}</FieldLabel>
-                                        <TextInput id="discount-coupon" v-model="details.coupon" :invalid="!!detailsErrors.coupon" />
-                                        <div v-if="detailsErrors.coupon" class="mt-1 text-[11px] text-danger">{{ detailsErrors.coupon }}</div>
-                                        <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_coupon_hint') }}</div>
+                                        <FieldLabel>{{ t('discounts.field_redemption') }}</FieldLabel>
+                                        <StatusSegmentedControl
+                                            v-model="details.redemption"
+                                            :options="redemptionOptions"
+                                            :aria-label="t('discounts.field_redemption')"
+                                        />
+                                        <div v-if="detailsErrors.redemption" class="mt-1 text-[11px] text-danger">{{ detailsErrors.redemption }}</div>
+                                        <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_redemption_hint') }}</div>
                                     </div>
                                     <div>
                                         <FieldLabel for="discount-max-uses">{{ t('discounts.field_max_uses') }}</FieldLabel>
@@ -481,6 +658,15 @@ const confirmDestroy = (): void => {
                 tone="danger"
                 :confirm-label="t('common.delete')"
                 @confirm="confirmDestroy"
+            />
+
+            <ConfirmDialog
+                v-model:open="couponConfirmOpen"
+                :title="t('discounts.coupon_delete')"
+                :description="t('discounts.coupon_confirm_delete')"
+                tone="danger"
+                :confirm-label="t('common.delete')"
+                @confirm="deleteCoupon"
             />
 
             <TargetPickerDialog

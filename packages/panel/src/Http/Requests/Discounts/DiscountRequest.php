@@ -5,6 +5,7 @@ namespace Lunar\Panel\Http\Requests\Discounts;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Contracts\DiscountType;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Support\DiscountDataSchema;
@@ -53,7 +54,7 @@ class DiscountRequest extends FormRequest
             // them uneditable in the panel. The create screen still generates a
             // clean handle — this only governs what is accepted.
             'handle' => ['required', 'string', 'max:255', $unique('handle')],
-            'coupon' => ['nullable', 'string', 'max:255', $unique('coupon')],
+            'redemption' => ['sometimes', 'required', Rule::enum(DiscountRedemptionMethod::class)],
             'type' => ['required', 'string', Rule::in(static::registeredTypes())],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
