@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Nedostaje opcija dostave',
     'carts.line_unavailable' => 'Stavka u ovoj košarici više nije dostupna (:identifier)',
     'carts.line_not_purchasable' => ':identifier se ne može kupiti u ovom kanalu ili od strane vaše grupe kupaca',
+    'carts.customer_email_missing' => 'Adresa e-pošte je obavezna za korištenje popusta ":discount"',
     'missing_currency_price' => 'Ne postoji cijena za valutu ":currency"',
     'minimum_quantity' => 'Morate dodati najmanje :quantity stavki.',
     'quantity_increment' => 'Količina :quantity mora biti u koracima od :increment',

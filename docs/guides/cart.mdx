@@ -262,6 +262,25 @@ class CartController extends Controller
 Checking `discountTotal` after recalculating is a heuristic, not a dedicated validation result: a code that matches a discount but yields no monetary reduction (for example, a free-item promotion) will look the same as an invalid code. Adjust the check to fit the discount types the store offers.
 </Info>
 
+### Re-validating a coupon once the email is known
+
+A discount with `max_uses_per_user` is limited per customer, and a guest is identified by email. When a guest applies a coupon before giving an email, Lunar can't yet tell whether they have used it, so the coupon is accepted. Once the customer gives an email, usually with the billing address at checkout, validate the coupon again with the cart and tell the customer if they have already used it:
+
+```php
+use Lunar\Core\Facades\Discounts;
+
+$cart->setBillingAddress($request->billing);
+
+if ($cart->coupon_code && ! Discounts::validateCoupon($cart->coupon_code, $cart)) {
+    $cart->update(['coupon_code' => null]);
+    $cart->recalculate();
+
+    return back()->withErrors(['coupon_code' => 'You have already used this coupon code.']);
+}
+```
+
+The discount drops off the cart on the next calculation in any case, so the customer never pays a discounted total they aren't entitled to. Re-validating explains why the total changed. If the cart still has no user and no email when an order is created, `ValidateCustomerForDiscounts` rejects it; see [Per-customer limits](/reference/discounts#per-customer-limits).
+
 ### Removing a Coupon
 
 ```php

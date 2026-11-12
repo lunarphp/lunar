@@ -36,7 +36,8 @@ interface DiscountManager
     public function apply(Cart $cart): Cart;
 
     /**
-     * Validate a given coupon against all system discounts.
+     * Validate a given coupon against all system discounts. The cart defaults
+     * to the current cart session.
      */
-    public function validateCoupon(string $coupon): bool;
+    public function validateCoupon(string $coupon, ?Cart $cart = null): bool;
 }

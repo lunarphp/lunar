@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'خيار الشحن مفقود.',
     'carts.line_unavailable' => 'أحد عناصر هذه السلة لم يعد متاحاً (:identifier).',
     'carts.line_not_purchasable' => 'العنصر :identifier لا يمكن شراؤه في هذه القناة أو من قبل مجموعة العملاء الخاصة بك.',
+    'carts.customer_email_missing' => 'يلزم إدخال بريد إلكتروني لاستخدام الخصم ":discount".',
     'missing_currency_price' => 'لا يوجد سعر للعملة ":currency".',
     'minimum_quantity' => 'يجب إضافة حد أدنى قدره :quantity من العناصر.',
     'quantity_increment' => 'يجب أن تكون الكمية :quantity بمضاعفات قدرها :increment.',

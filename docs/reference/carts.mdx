@@ -467,7 +467,7 @@ The write is guarded on the revision the cart was loaded at. If another request 
 $order = $cart->createOrder();
 ```
 
-`createOrder()` recalculates the cart, runs the `StepList::OrderCreateValidation` validators (`ValidateCartForOrderCreation` by default — quantity, stock, and address/shipping completeness), then delegates to the `CreatesOrder` action contract to create or update the draft order tied to the cart, mark any used discounts as consumed, and return the resulting `Lunar\Core\Models\Order`.
+`createOrder()` recalculates the cart, runs the `StepList::OrderCreateValidation` validators (by default `ValidateCartForOrderCreation` for quantity, stock, and address/shipping completeness, and `ValidateCustomerForDiscounts`, which requires a user or email when a per-customer-limited discount applies), then delegates to the `CreatesOrder` action contract to create or update the draft order tied to the cart and return the resulting `Lunar\Core\Models\Order`.
 
 ```php
 $cart->canCreateOrder();   // true/false, without throwing

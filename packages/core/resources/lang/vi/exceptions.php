@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Thiếu tùy chọn vận chuyển',
     'carts.line_unavailable' => 'Một mặt hàng trong giỏ hàng này không còn khả dụng (:identifier)',
     'carts.line_not_purchasable' => ':identifier không thể được mua trong kênh này hoặc bởi nhóm khách hàng của bạn',
+    'carts.customer_email_missing' => 'Cần có địa chỉ email để sử dụng chương trình giảm giá ":discount"',
     'missing_currency_price' => 'Không tồn tại giá cho đơn vị tiền tệ ":currency"',
     'minimum_quantity' => 'Bạn phải thêm tối thiểu :quantity sản phẩm.',
     'quantity_increment' => 'Số lượng :quantity phải là bội số của :increment',

@@ -122,7 +122,7 @@ $order = $cart->createOrder(
 - `allowMultipleOrders` — a cart generally has one draft order associated with it. Pass `true` to allow multiple orders per cart (for example, a declined payment followed by a new checkout attempt with a different order).
 - `orderIdToUpdate` — optionally pass the ID of an existing draft order (one with a null `placed_at`) belonging to the cart, to update it instead of creating a new one.
 
-Before creating, the cart is validated against the `Lunar\Core\Enums\StepList::OrderCreateValidation` step list (defaulting to `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation`), which throws a validation exception with a helpful message when the cart is not ready. Check readiness without throwing:
+Before creating, the cart is validated against the `Lunar\Core\Enums\StepList::OrderCreateValidation` step list (defaulting to `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation` and `Lunar\Core\Validation\Cart\ValidateCustomerForDiscounts`), which throws a validation exception with a helpful message when the cart is not ready. Check readiness without throwing:
 
 ```php
 $cart->canCreateOrder(); // bool

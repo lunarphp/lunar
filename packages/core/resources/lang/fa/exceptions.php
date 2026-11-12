@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'گزینه ارسال انتخاب نشده است.',
     'carts.line_unavailable' => 'یکی از اقلام این سبد دیگر در دسترس نیست (:identifier).',
     'carts.line_not_purchasable' => ':identifier در این کانال یا توسط گروه مشتری شما قابل خرید نیست.',
+    'carts.customer_email_missing' => 'برای استفاده از تخفیف ":discount" آدرس ایمیل الزامی است.',
     'missing_currency_price' => 'هیچ قیمتی برای ارز ":currency" وجود ندارد.',
     'minimum_quantity' => 'باید حداقل :quantity مورد اضافه کنید.',
     'quantity_increment' => 'تعداد :quantity باید مضربی از :increment باشد.',

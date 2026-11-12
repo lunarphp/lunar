@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lunar\Upgrade\Rector;
 
+use Lunar\Upgrade\Rector\Discounts\AddCartParamToCouponValidationRector;
 use Lunar\Upgrade\Rector\Media\RetypeGetThumbnailImageRector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
 use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
@@ -539,6 +540,7 @@ final class LunarSetList
         RetypeFormatterStyleParamRector::class,
         RetypeGetThumbnailImageRector::class,
         RenameShippingOptionCollectArgRector::class,
+        AddCartParamToCouponValidationRector::class,
     ];
 
     /**
