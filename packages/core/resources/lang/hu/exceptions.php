@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => 'A(z) ":identifier" nem teljesíthető ezzel: :method',
     'carts.fulfilment_method_none' => 'A(z) ":identifier" jelenleg nem teljesíthető',
     'carts.pickup_location_unavailable' => 'Ezen a helyszínen nincs személyes átvétel',
+    'carts.customer_email_missing' => 'A(z) ":discount" kedvezmény használatához e-mail-cím megadása kötelező.',
     'missing_currency_price' => 'A ":currency" pénznemhez nem létezik ár.',
     'minimum_quantity' => 'Legalább :quantity tételt kell hozzáadni.',
     'quantity_increment' => 'A mennyiségnek :increment lépésközzel adható meg.',

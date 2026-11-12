@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" no se puede entregar mediante :method',
     'carts.fulfilment_method_none' => '":identifier" no se puede entregar en este momento',
     'carts.pickup_location_unavailable' => 'Esta ubicación no admite recogida',
+    'carts.customer_email_missing' => 'Se requiere una dirección de correo electrónico para usar el descuento ":discount".',
     'missing_currency_price' => 'No existe un precio para la moneda ":currency".',
     'minimum_quantity' => 'Debes agregar un mínimo de :quantity artículos.',
     'quantity_increment' => 'La cantidad :quantity debe ser en incrementos de :increment.',

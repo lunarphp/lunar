@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" nu poate fi onorat prin :method',
     'carts.fulfilment_method_none' => '":identifier" nu poate fi onorat momentan',
     'carts.pickup_location_unavailable' => 'Această locație nu acceptă ridicarea personală',
+    'carts.customer_email_missing' => 'Este necesară o adresă de e-mail pentru a folosi reducerea ":discount"',
     'missing_currency_price' => 'Nu există un preț pentru moneda ":currency"',
     'minimum_quantity' => 'Trebuie să adăugați cel puțin :quantity articole.',
     'quantity_increment' => 'Cantitatea :quantity trebuie să fie în multipli de :increment',

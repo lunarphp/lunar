@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" не може да бъде изпълнен чрез :method',
     'carts.fulfilment_method_none' => '":identifier" не може да бъде изпълнен в момента',
     'carts.pickup_location_unavailable' => 'Това местоположение не приема вземане на място',
+    'carts.customer_email_missing' => 'Необходим е имейл адрес, за да използвате отстъпката ":discount"',
     'missing_currency_price' => 'Няма цена за валута ":currency"',
     'minimum_quantity' => 'Трябва да добавите минимум :quantity артикула.',
     'quantity_increment' => 'Количество :quantity трябва да бъде в стъпки от :increment',

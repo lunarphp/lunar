@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier", :method ile karşılanamaz',
     'carts.fulfilment_method_none' => '":identifier" şu anda karşılanamıyor',
     'carts.pickup_location_unavailable' => 'Bu konum mağazadan teslim almayı kabul etmiyor',
+    'carts.customer_email_missing' => '":discount" indirimini kullanmak için e-posta adresi gerekli',
     'missing_currency_price' => '":currency" para birimi için fiyat mevcut değil',
     'minimum_quantity' => 'En az :quantity adet eklemelisiniz.',
     'quantity_increment' => ':quantity miktarı :increment\'lik artışlarla olmalıdır',

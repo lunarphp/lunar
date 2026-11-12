@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" ne peut pas être traité par :method',
     'carts.fulfilment_method_none' => '":identifier" ne peut pas être traité pour le moment',
     'carts.pickup_location_unavailable' => 'Cet emplacement n\'accepte pas le retrait',
+    'carts.customer_email_missing' => 'Une adresse e-mail est requise pour utiliser la remise ":discount"',
     'missing_currency_price' => 'Aucun prix pour la devise ":currency" n\'existe',
     'minimum_quantity' => 'Vous devez ajouter un minimum de :quantity articles.',
     'quantity_increment' => 'La quantité :quantity doit être par incréments de :increment',

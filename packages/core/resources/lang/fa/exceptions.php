@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" را نمی‌توان با :method تحویل داد',
     'carts.fulfilment_method_none' => '":identifier" در حال حاضر قابل تحویل نیست',
     'carts.pickup_location_unavailable' => 'این مکان تحویل حضوری را نمی‌پذیرد',
+    'carts.customer_email_missing' => 'برای استفاده از تخفیف ":discount" آدرس ایمیل الزامی است.',
     'missing_currency_price' => 'هیچ قیمتی برای ارز ":currency" وجود ندارد.',
     'minimum_quantity' => 'باید حداقل :quantity مورد اضافه کنید.',
     'quantity_increment' => 'تعداد :quantity باید مضربی از :increment باشد.',

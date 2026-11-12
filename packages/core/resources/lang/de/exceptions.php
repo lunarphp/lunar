@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" kann nicht per :method erfüllt werden',
     'carts.fulfilment_method_none' => '":identifier" kann derzeit nicht erfüllt werden',
     'carts.pickup_location_unavailable' => 'An diesem Standort ist keine Abholung möglich',
+    'carts.customer_email_missing' => 'Eine E-Mail-Adresse ist erforderlich, um den Rabatt ":discount" zu nutzen',
     'missing_currency_price' => 'Es existiert kein Preis für die Währung ":currency"',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',
