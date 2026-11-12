@@ -22,10 +22,9 @@ function guestCartWithCoupon(array $discount = []): Cart
 
     $cart->addresses()->update(['contact_email' => null]);
 
-    Discount::factory()->create([
+    Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Ten percent',
-        'coupon' => '10OFF',
         'max_uses_per_user' => 1,
         'data' => ['percentage' => 10],
         ...$discount,

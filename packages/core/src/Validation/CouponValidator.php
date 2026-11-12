@@ -2,11 +2,12 @@
 
 namespace Lunar\Core\Validation;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator as CouponValidatorContract;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Coupon;
 
 class CouponValidator implements CouponValidatorContract
 {
@@ -17,16 +18,18 @@ class CouponValidator implements CouponValidatorContract
 
     public function validate(string $coupon, ?Cart $cart = null): bool
     {
-        $discount = Discount::query()
-            ->active()
-            ->where(function ($query) {
-                $query->whereNull('max_uses')
-                    ->orWhereRaw('uses < max_uses');
-            })->where('coupon', '=', strtoupper($coupon))->first();
+        $coupon = Coupon::query()
+            ->usable()
+            ->where('code', Str::upper($coupon))
+            ->whereHas('discount', fn ($query) => $query->active()->usable())
+            ->with('discount')
+            ->first();
 
-        if (! $discount) {
+        if (! $coupon) {
             return false;
         }
+
+        $discount = $coupon->discount;
 
         if (! $discount->max_uses_per_user) {
             return true;

@@ -12,6 +12,7 @@ use Lunar\Core\Database\Factories\DiscountRedemptionFactory;
  *
  * @property int $id
  * @property int $discount_id
+ * @property ?int $coupon_id
  * @property ?int $order_id
  * @property ?int $cart_id
  * @property int|string|null $user_id
@@ -50,6 +51,11 @@ class DiscountRedemption extends Base
     public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function order(): BelongsTo

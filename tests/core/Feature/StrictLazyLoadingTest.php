@@ -98,10 +98,9 @@ it('evaluates a coupon discount across a collection of carts without lazy-loadin
         return $cart->id;
     });
 
-    Discount::factory()->create([
+    Discount::factory()->coupon('STRICT10')->create([
         'type' => PercentageOff::class,
         'name' => 'Strict coupon',
-        'coupon' => 'STRICT10',
         'starts_at' => now()->subDay(),
         'data' => [
             'percentage' => 10,

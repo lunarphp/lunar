@@ -11,6 +11,7 @@ use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
@@ -46,10 +47,9 @@ function redeemableDiscount(array $attributes = []): Discount
 {
     $test = test();
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => ['amounts' => [$test->currency->code => 500]],
@@ -195,7 +195,7 @@ test('a placement over the limit keeps the order and reports it', function () {
         fn (DiscountLimitExceeded $event) => $event->order->is($second)
             && $event->discount->is($discount)
             && $event->limit === DiscountLimit::MaxUses
-            && $event->coupon === null,
+            && $event->coupon?->code === 'SAVE10',
     );
 
     $activity = Activity::query()->where('event', 'discount-limit-exceeded')->sole();
@@ -204,7 +204,7 @@ test('a placement over the limit keeps the order and reports it', function () {
         ->and($activity->properties->all())->toEqual([
             'discount_id' => $discount->id,
             'discount' => 'Ten off',
-            'coupon' => null,
+            'coupon' => 'SAVE10',
             'limit' => 'max_uses',
             'uses' => 2,
             'max_uses' => 1,
@@ -273,4 +273,93 @@ test('a guest at their per-customer limit no longer gets the discount', function
     expect(draftOrderFor(withBillingEmail(couponCart(), 'GUEST@example.com'))->discount_total)->toEqual(0)
         ->and(draftOrderFor(withBillingEmail(couponCart(), 'other@example.com'))->discount_total)->toEqual(500)
         ->and($discount->refresh()->uses)->toBe(1);
+});
+
+test('placing an order records the coupon and counts its use', function () {
+    $discount = redeemableDiscount(['max_uses' => null]);
+    $coupon = $discount->coupons()->sole();
+
+    draftOrderFor(couponCart())->update(['placed_at' => now()]);
+
+    expect($coupon->refresh()->uses)->toBe(1)
+        ->and($discount->refresh()->uses)->toBe(1)
+        ->and($discount->redemptions()->sole()->coupon_id)->toBe($coupon->id);
+});
+
+test('a guest redeems a single-use code once, and no other cart can', function () {
+    $discount = redeemableDiscount(['max_uses' => null]);
+    $discount->coupons()->sole()->update(['max_uses' => 1]);
+
+    $order = draftOrderFor(couponCart());
+
+    expect($order->discount_total)->toEqual(500);
+
+    $order->update(['placed_at' => now()]);
+
+    expect(draftOrderFor(couponCart())->discount_total)->toEqual(0);
+});
+
+test('a discount with several codes applies to each and counts each', function () {
+    $discount = redeemableDiscount(['max_uses' => null]);
+    Coupon::factory()->for($discount)->create(['code' => 'SAVE10-B']);
+
+    draftOrderFor(couponCart())->update(['placed_at' => now()]);
+    draftOrderFor(couponCart(['coupon_code' => 'save10-b']))->update(['placed_at' => now()]);
+
+    expect($discount->refresh()->uses)->toBe(2)
+        ->and($discount->coupons()->pluck('uses', 'code')->all())->toEqual(['SAVE10' => 1, 'SAVE10-B' => 1]);
+});
+
+test('a code without a use left no longer applies, though its discount has uses left', function () {
+    $discount = redeemableDiscount(['max_uses' => null]);
+    $discount->coupons()->sole()->update(['uses' => 3, 'max_uses' => 3]);
+
+    expect(draftOrderFor(couponCart())->discount_total)->toEqual(0);
+});
+
+test('a coupon over its own limit at placement keeps the order and reports it', function () {
+    Event::fake([DiscountLimitExceeded::class]);
+    activity()->enableLogging();
+
+    $discount = redeemableDiscount(['max_uses' => null]);
+    $coupon = $discount->coupons()->sole();
+    $coupon->update(['max_uses' => 1]);
+
+    $first = draftOrderFor(couponCart());
+    $second = draftOrderFor(couponCart());
+
+    $first->update(['placed_at' => now()]);
+    $second->update(['placed_at' => now()]);
+
+    expect($coupon->refresh()->uses)->toBe(2);
+
+    Event::assertDispatchedTimes(DiscountLimitExceeded::class, 1);
+    Event::assertDispatched(
+        DiscountLimitExceeded::class,
+        fn (DiscountLimitExceeded $event) => $event->order->is($second)
+            && $event->limit === DiscountLimit::CouponMaxUses
+            && $event->coupon->is($coupon),
+    );
+
+    expect(Activity::query()->where('event', 'discount-limit-exceeded')->sole()->properties->all())->toEqual([
+        'discount_id' => $discount->id,
+        'discount' => 'Ten off',
+        'coupon' => 'SAVE10',
+        'limit' => 'coupon_max_uses',
+        'uses' => 2,
+        'max_uses' => 1,
+    ]);
+});
+
+test('a coupon deleted before placement records the redemption without it', function () {
+    $discount = redeemableDiscount(['max_uses' => null]);
+
+    $order = draftOrderFor(couponCart());
+
+    $discount->coupons()->delete();
+
+    $order->update(['placed_at' => now()]);
+
+    expect($discount->refresh()->uses)->toBe(1)
+        ->and($discount->redemptions()->sole()->coupon_id)->toBeNull();
 });

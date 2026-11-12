@@ -5,6 +5,7 @@ namespace Lunar\Core\DiscountTypes;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
 use Lunar\Core\Contracts\DiscountType;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
@@ -63,10 +64,13 @@ abstract class AbstractDiscountType implements DiscountType
             return false;
         }
 
-        $cartCoupon = strtoupper($cart->coupon_code ?? '');
-        $conditionCoupon = strtoupper($this->discount->coupon ?? '');
+        $validCoupon = true;
 
-        $validCoupon = filled($conditionCoupon) ? ($cartCoupon === $conditionCoupon) : true;
+        if ($this->discount->redemption === DiscountRedemptionMethod::Coupon) {
+            $coupon = $cart->loadMissing('coupon')->coupon;
+
+            $validCoupon = $coupon?->discount_id === $this->discount->id && $coupon->isUsable();
+        }
 
         $minSpend = (int) ($data['min_prices'][$cart->currency->code] ?? 0) / (int) $cart->currency->factor;
         $minSpend = (int) bcmul($minSpend, $cart->currency->factor);

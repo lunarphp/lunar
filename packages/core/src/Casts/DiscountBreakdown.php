@@ -54,6 +54,10 @@ class DiscountBreakdown implements CastsAttributes
             $key => collect($value)->map(function ($discountLine) {
                 return [
                     'discount_id' => $discountLine->discount_id,
+                    ...isset($discountLine->coupon_id) ? [
+                        'coupon_id' => $discountLine->coupon_id,
+                        'coupon_code' => $discountLine->coupon_code,
+                    ] : [],
                     'lines' => $discountLine->lines->map(function ($orderLine) {
                         return [
                             'id' => $orderLine->line->id,

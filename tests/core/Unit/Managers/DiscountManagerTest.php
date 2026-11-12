@@ -6,11 +6,13 @@ use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
@@ -281,10 +283,9 @@ test('can add new types', function () {
 test('can validate coupons', function () {
     $manager = app(DiscountManager::class);
 
-    Discount::factory()->create([
+    Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -333,7 +334,6 @@ test('can get discount with coupon', function () {
     $discountA = Discount::factory()->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Discount A',
-        'coupon' => null,
         'starts_at' => now(),
         'data' => [
             'amounts' => [
@@ -359,7 +359,6 @@ test('can get discount with coupon', function () {
     $discountB = Discount::factory()->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Discount B',
-        'coupon' => null,
         'starts_at' => now(),
         'data' => [
             'amounts' => [
@@ -384,13 +383,11 @@ test('can get discount with coupon', function () {
 
     expect(Discounts::getDiscounts($cart))->toHaveCount(2);
 
-    $discountA->update([
-        'coupon' => 'ABCD',
-    ]);
+    $discountA->update(['redemption' => DiscountRedemptionMethod::Coupon]);
+    Coupon::factory()->for($discountA)->create(['code' => 'ABCD']);
 
-    $discountB->update([
-        'coupon' => 'ABCDEF',
-    ]);
+    $discountB->update(['redemption' => DiscountRedemptionMethod::Coupon]);
+    Coupon::factory()->for($discountB)->create(['code' => 'ABCDEF']);
 
     $cart->update([
         'coupon_code' => 'ABCDEF',
@@ -515,12 +512,11 @@ test('stop flag does not halt further discounts when conditions fail', function 
         'quantity' => 1,
     ]);
 
-    $couponed = Discount::factory()->create([
+    $couponed = Discount::factory()->coupon('WRONG')->create([
         'type' => PercentageOff::class,
         'name' => 'Coupon discount that wont match',
         'priority' => 10,
         'stop' => true,
-        'coupon' => 'WRONG',
         'data' => [
             'percentage' => 20,
         ],
