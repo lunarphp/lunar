@@ -6,12 +6,13 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Lunar\Core\Enums\DiscountLimit;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Order;
 
 /**
- * A placed order took a discount past its `max_uses`. The order stands, since
- * it has already been paid for; listen here to hold it or alert someone.
+ * A placed order took a discount past one of its limits. The order stands,
+ * since it has already been paid for; listen here to hold it or alert someone.
  */
 class DiscountLimitExceeded
 {
@@ -20,6 +21,7 @@ class DiscountLimitExceeded
     public function __construct(
         public Order $order,
         public Discount $discount,
+        public DiscountLimit $limit,
         public ?Model $coupon = null,
     ) {}
 }
