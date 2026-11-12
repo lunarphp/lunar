@@ -5,6 +5,7 @@ use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Staff;
@@ -33,7 +34,7 @@ it('renders the discounts index with rows', function () {
             ->has('discounts.data.0', fn (Assert $row) => $row
                 ->hasAll([
                     'id', 'name', 'handle', 'status', 'status_label', 'type', 'type_label',
-                    'coupon', 'starts_at', 'ends_at', 'uses', 'max_uses', 'priority',
+                    'redemption', 'coupon', 'coupons_count', 'starts_at', 'ends_at', 'uses', 'max_uses', 'priority',
                     'edit_url', '_actions',
                 ])
                 ->etc()
@@ -57,10 +58,10 @@ it('lists the registered discount types for the type filter', function () {
 });
 
 it('searches by name, handle and coupon', function () {
-    Discount::factory()->create(['name' => 'Winter Sale', 'handle' => 'winter-sale', 'coupon' => 'WINTER']);
-    Discount::factory()->create(['name' => 'Summer Sale', 'handle' => 'summer-sale', 'coupon' => 'SUMMER']);
+    Discount::factory()->coupon('WINTER')->create(['name' => 'Winter Sale', 'handle' => 'winter-sale']);
+    Discount::factory()->coupon('SUMMER')->create(['name' => 'Summer Sale', 'handle' => 'summer-sale']);
 
-    foreach (['Winter', 'winter-sale', 'WINTER'] as $term) {
+    foreach (['Winter', 'winter-sale', 'WINTER', 'winte'] as $term) {
         $this->get(route('panel.discounts.index', ['q' => $term]))
             ->assertInertia(fn (Assert $page) => $page->has('discounts.data', 1));
     }
@@ -86,14 +87,33 @@ it('filters by type', function () {
 });
 
 it('filters by whether a coupon is needed', function () {
-    Discount::factory()->create(['coupon' => 'SAVE10']);
-    Discount::factory()->count(2)->create(['coupon' => null]);
+    Discount::factory()->coupon()->create();
+    Discount::factory()->count(2)->create();
 
     $this->get(route('panel.discounts.index', ['redemption' => 'coupon']))
         ->assertInertia(fn (Assert $page) => $page->has('discounts.data', 1));
 
     $this->get(route('panel.discounts.index', ['redemption' => 'automatic']))
         ->assertInertia(fn (Assert $page) => $page->has('discounts.data', 2));
+});
+
+it('shows the code of a single-code discount and the count of a multi-code one', function () {
+    $single = Discount::factory()->coupon('WINTER')->create(['priority' => 1]);
+    $multi = Discount::factory()->coupon('SPRING-A')->create(['priority' => 2]);
+    Coupon::factory()->for($multi)->create(['code' => 'SPRING-B']);
+    $automatic = Discount::factory()->create(['priority' => 3]);
+
+    $this->get(route('panel.discounts.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('discounts.data.0.id', $single->id)
+            ->where('discounts.data.0.coupon', 'WINTER')
+            ->where('discounts.data.0.redemption', 'coupon')
+            ->where('discounts.data.1.id', $multi->id)
+            ->where('discounts.data.1.coupon', null)
+            ->where('discounts.data.1.coupons_count', 2)
+            ->where('discounts.data.2.id', $automatic->id)
+            ->where('discounts.data.2.redemption', 'automatic')
+        );
 });
 
 it('filters by channel and customer group availability', function () {

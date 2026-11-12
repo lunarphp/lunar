@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Support;
 
 use Illuminate\Support\Carbon;
+use Lunar\Core\Enums\DiscountLimit;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -35,6 +36,21 @@ class TimelineActivity
             $type = $activity->getExtraProperty('type') === 'billing' ? 'billing' : 'shipping';
 
             return __('panel::orders.activity_'.$type.'_address_updated');
+        }
+
+        if ($activity->event === 'discount-limit-exceeded') {
+            $key = match (DiscountLimit::tryFrom((string) $activity->getExtraProperty('limit'))) {
+                DiscountLimit::CouponMaxUses => 'coupon',
+                DiscountLimit::MaxUsesPerUser => 'customer',
+                default => 'discount',
+            };
+
+            return __("panel::orders.activity_{$key}_limit_exceeded", [
+                'discount' => $activity->getExtraProperty('discount'),
+                'coupon' => $activity->getExtraProperty('coupon'),
+                'uses' => $activity->getExtraProperty('uses'),
+                'max_uses' => $activity->getExtraProperty('max_uses'),
+            ]);
         }
 
         return (string) $activity->description;
