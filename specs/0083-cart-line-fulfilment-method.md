@@ -32,7 +32,7 @@ So:
 
 Two existing mechanics constrain the fix. Cart-line identity is the purchasable plus a `meta` diff (`GetExistingCartLine`, `CreateOrderLines`, `MergeCart`), so a per-line method must join that identity or lines with different methods merge. Order lines are snapshots ([[0030-fulfillable-order-lines]]), so the resolved method is stamped at order creation, not re-derived from the cart.
 
-Before release this is nullable baseline columns and two contract additions. After release it is a schema migration, a contract break on `FulfilmentMethod` and on the add-to-cart action, a deprecation, and a Rector cycle.
+While v2 is in alpha this is nullable baseline columns and contract changes made in place. After release it would be a schema migration and a contract break on `FulfilmentMethod` and on the add-to-cart action.
 
 ## Proposal
 
@@ -100,8 +100,8 @@ A collection-only variant sets `['pickup']`. A drop-shipped variant sets `['ship
 ### C. The pickup location on the shipping option
 
 - `ShippingOption` gains `public ?Location $pickupLocation = null`.
-- `$pickup` is deprecated. It stays as a constructor argument for now. The option gains `isPickup(): bool`, true when `$pickup` is true or a location is set, and core reads that instead of the property.
-- `shipping_methods` gains `pickup_location_id`, a nullable foreign key to `locations`, in the table-rate baseline migration. The table-rate `Pickup` driver returns options with that location. It is a typed column rather than a key in the method's `data` JSON, so a deleted location is caught by the foreign key and the value is never read untyped. The panel and Filament shipping method forms get a location select for the pickup driver.
+- `$pickup` is removed. An option is a pickup when it has a location: `isPickup(): bool` returns `$pickupLocation !== null`, and core reads that everywhere it read the flag (`CreateShippingLine`, `ValidateCartForOrderCreation`).
+- `shipping_methods` gains `pickup_location_id`, a nullable foreign key to `locations`, in the table-rate baseline migration. The table-rate `Pickup` driver returns options with that location, or the default location when the method has none, so every pickup option it returns has a location. It is a typed column rather than a key in the method's `data` JSON, so a deleted location is caught by the foreign key and the value is never read untyped. The panel and Filament shipping method forms get a location select for the pickup driver.
 
 ### D. Resolution
 
@@ -263,17 +263,17 @@ The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilme
 ## Migration impact
 
 - **Database** (baseline edits): `fulfilment_method` on `carts`, `cart_lines` and `order_lines`; `pickup_location_id` on `carts` and `orders`; address columns on `locations`; `fulfilment_methods` on `product_variants`; `pickup_location_id` on the table-rate `shipping_methods`. No backfill.
-- **Breaking changes:**
-  - `Contracts\FulfilmentMethod` gains `supports()` and `requiresDelivery()`. Implementations must add them; Rector note in `LunarSetList`.
-  - `AddsOrUpdatesPurchasable::execute()` gains a trailing `?string $fulfilmentMethod = null`. A custom implementation must add it; Rector note.
-  - `Contracts\Purchasable` gains `allowedFulfilmentMethods()`. A custom purchasable adds the `RestrictsFulfilmentMethods` trait or the method; Rector note.
-  - `ShippingOption::$pickup` is deprecated in favour of `$pickupLocation`. Rector can't choose a location, so the upgrade notes show both forms.
+- **Changes to v2 surface** (made in place while v2 is in alpha, with no deprecations):
+  - `Contracts\FulfilmentMethod` gains `supports()` and `requiresDelivery()`.
+  - `AddsOrUpdatesPurchasable::execute()` gains a trailing `?string $fulfilmentMethod = null`.
+  - `Contracts\Purchasable` gains `allowedFulfilmentMethods()`. A custom purchasable adds the `RestrictsFulfilmentMethods` trait or the method.
+  - `ShippingOption::$pickup` is removed in favour of `$pickupLocation`.
   - `meta['pickup']` is no longer written to the shipping line. Code reading it moves to `Order::isPickup()`.
   - `Cart::isShippable()` is based on delivery lines. It only behaves differently when an override or a restricted item is in the cart.
   - `Order::isPickup()` reads fulfilments when the order has them.
   - Line identity includes the method. Two lines with the same purchasable and `meta` stay separate when their methods differ.
 - **New surface** (additive): `Cart::fulfilmentMethod()`, `setFulfilmentMethod()`, `deliveryLines()`, `pickupLocation()`, `resolvedPickupLocation()`, `setPickupLocation()`; `CartLine::fulfilmentMethod()`, `setFulfilmentMethod()`; `Order::pickupLocation()`; `FulfilmentMethodManifest::supporting()`; `ChangeFulfilmentMethod` and its contract; the `RestrictsFulfilmentMethods` trait; the actions, contracts, validators and two validator config keys above; the `fulfilmentMethod` argument on `add()` and `addLines()`.
-- **Upgrade from v1:** no data step. v1 didn't store `$collect` on the order, so v1 pickup orders can't be identified and keep a null pickup location. Their lines keep inferring through `claim()`. The upgrade guide says so.
+- **Upgrade from v1:** no data step. v1 didn't store `$collect` on the order, so v1 pickup orders can't be identified and keep a null pickup location. Their lines keep inferring through `claim()`. The upgrade guide says so, and shows two code changes no Rector rule can make: a v1 `ShippingOption` built with `collect: true` passes `pickupLocation:` instead, because only the store knows which location; and a v1 custom purchasable adds `allowedFulfilmentMethods()` or the trait.
 - **Translations (16 locales):** the two cart exception messages and `fulfilment_change_address_missing` in `core`; the location address fields, the pickup driver's location select, the variant allowed-methods field and the change-method actions in `panel` and `admin`.
 - **Admin:** sections K and L, the location address forms, the variant allowed-methods field, and the pickup shipping method's location select.
 
@@ -308,4 +308,4 @@ The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilme
 - [ ] Slice 5 — Delivery lines: `deliveryLines()` including restricted items, `isShippable()`, `ValidateCartForOrderCreation`, table-rate drivers and resolver. Tests in `core` and `table-rate-shipping`. Settles open question 1.
 - [ ] Slice 6 — Changing a fulfilment's method: `ChangeFulfilmentMethod` and its contract, `isPickup()` reading fulfilments. Tests.
 - [ ] Slice 7 — Admin: panel and Filament order views read the typed fields and the #2749 meta reads go; the variant allowed-methods field; the change-method actions on fulfilment cards.
-- [ ] Slice 8 — Exception messages in 16 locales, Rector notes, upgrade guide, docs including the storefront guidance.
+- [ ] Slice 8 — Exception messages in 16 locales, upgrade guide, docs including the storefront guidance.
