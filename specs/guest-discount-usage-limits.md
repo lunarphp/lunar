@@ -1,6 +1,6 @@
 # Per-customer discount limits for guest checkout
 
-- Status: draft
+- Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-11-10
 - TODO item: Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
@@ -55,6 +55,8 @@ public function execute(Discount $discount, Cart $cart): int;
 
 It counts `discount_redemptions` rows for the discount matching `user_id = $cart->user` **or** `email = ResolvesCustomerEmail($cart)`, so a customer can't reset the limit by signing out. It returns `0` when the cart has neither.
 
+Redemptions on cancelled and refunded orders keep counting, as `uses` does. Lunar has no way to give a use back; that is a separate change, and it would need to decrement `uses` too so the counters and the rows stay in step.
+
 ### Enforcing the limit
 
 - **Discount conditions.** `checkDiscountConditions()` fails a per-customer-limited discount when `CountsCustomerRedemptions` reaches `max_uses_per_user`. It no longer fails a guest cart for having no user. Because conditions run on every cart calculation, the discount drops off the cart as soon as an email that has used it is known, and the total the customer pays reflects that.
@@ -70,6 +72,7 @@ It counts `discount_redemptions` rows for the discount matching `user_id = $cart
 - **Reject an over-limit order at creation.** Some payment drivers create the order after payment has been taken, so throwing there charges the customer and gives them no order. Dropping the discount at calculation and dispatching `DiscountLimitExceeded` at placement avoid that.
 - **Count by customer record (`customer_id`).** Guests don't have one, and a signed-in user's customer link is optional.
 - **Match on phone as well.** Shopify does. Out of scope until a store asks for it.
+- **Stop counting cancelled orders.** A merchant cancelling an out-of-stock order would no longer cost the customer their use, but eligibility would change with order status after the sale, a customer could cancel and use the code again, and the per-customer limit would disagree with `uses`, which never decrements.
 
 ## Migration impact
 
@@ -81,7 +84,7 @@ It counts `discount_redemptions` rows for the discount matching `user_id = $cart
 
 ## Open questions
 
-- **Cancelled and refunded orders.** Should a redemption on a cancelled order still count? `uses` doesn't decrement today. Proposed: keep counting, matching `uses`, and decide separately.
+None.
 
 ## References
 
