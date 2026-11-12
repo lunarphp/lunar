@@ -457,10 +457,13 @@ class ProductResource extends BaseResource
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return [
-            __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
-            __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
+        // a product can be found by its tags without having a (non-deleted) variant
+        $variant = $record->variants->first();
+
+        return array_filter([
+            __('lunarpanel::product.table.sku.label') => $variant?->getIdentifier(),
+            __('lunarpanel::product.table.stock.label') => $variant?->stock,
             __('lunarpanel::product.table.brand.label') => $record->brand?->name,
-        ];
+        ], fn ($value) => ! is_null($value));
     }
 }
