@@ -31,7 +31,7 @@ interface DiscountType
 Extend `Lunar\Core\DiscountTypes\AbstractDiscountType` rather than implementing the interface directly. It supplies the `Discount` model the type is running for (`$this->discount`, set via `with()`), plus helpers a discount type typically needs:
 
 - `getEligibleLines(Cart $cart)` — the cart lines the discount can apply to; defaults to every line.
-- `checkDiscountConditions(Cart $cart)` — validates the discount's customer restriction, coupon match, minimum spend, and use limits.
+- `checkDiscountConditions(Cart $cart)` — validates the discount's customer restriction, coupon, minimum spend, and use limits. For a discount whose `redemption` is `coupon`, it passes only when `$cart->coupon` belongs to the discount and is usable.
 - `addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)` — records the discount against the cart's breakdown, which is what makes it show up as applied.
 
 ```php

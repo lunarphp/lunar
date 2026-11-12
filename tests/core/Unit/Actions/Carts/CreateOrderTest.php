@@ -392,10 +392,9 @@ test('can keep the discount when the draft order is created again', function () 
     ]);
 
     // A single-use coupon, which is the ordinary shape of a promotional code.
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => [
@@ -463,10 +462,9 @@ test('can not reuse a discount another cart has exhausted', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => [
@@ -560,10 +558,9 @@ test('can still enforce other conditions when the draft order is created again',
     ]);
 
     // Spend at least 15.00 to qualify. Two units is 20.00, one is 10.00.
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => [
@@ -643,10 +640,9 @@ test('can keep the discount when one cart instance creates its order twice', fun
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => [
@@ -720,10 +716,9 @@ test('keeps its own discount when a cart is priced again after order creation', 
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('SAVE10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Ten off',
-        'coupon' => 'SAVE10',
         'uses' => 0,
         'max_uses' => 1,
         'data' => [

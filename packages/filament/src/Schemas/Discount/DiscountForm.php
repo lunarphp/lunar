@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Currency;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -89,7 +90,7 @@ class DiscountForm
     {
         return [
             Group::make([
-                static::getCouponComponent(),
+                static::getRedemptionComponent(),
                 static::getMaxUsesComponent(),
                 static::getMaxUsesPerUserComponent(),
             ])->columns(3),
@@ -165,12 +166,20 @@ class DiscountForm
             ->helperText(__('lunar-filament::discount.form.stop.helper_text'));
     }
 
-    public static function getCouponComponent(): Component
+    public static function getRedemptionComponent(): Component
     {
-        return TextInput::make('coupon')
-            ->label(__('lunar-filament::discount.form.coupon.label'))
-            ->helperText(__('lunar-filament::discount.form.coupon.helper_text'))
-            ->unique(ignoreRecord: true);
+        return Select::make('redemption')
+            ->label(__('lunar-filament::discount.form.redemption.label'))
+            ->options(
+                collect(DiscountRedemptionMethod::cases())->mapWithKeys(
+                    fn (DiscountRedemptionMethod $method) => [
+                        $method->value => __("lunar-filament::discount.form.redemption.options.{$method->value}"),
+                    ]
+                )->all()
+            )
+            ->default(DiscountRedemptionMethod::Automatic->value)
+            ->required()
+            ->selectablePlaceholder(false);
     }
 
     public static function getMaxUsesComponent(): Component

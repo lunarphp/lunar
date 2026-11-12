@@ -7,6 +7,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Discount;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
@@ -19,6 +21,7 @@ class DiscountTable
         return self::callStaticLunarHook(
             'configureTable',
             $table
+                ->modifyQueryUsing(fn (Builder $query) => $query->withCount('coupons')->withMin('coupons', 'code'))
                 ->columns(static::getColumns())
                 ->filters([])
                 ->recordActions([
@@ -72,10 +75,22 @@ class DiscountTable
                 ->date()
                 ->sortable()
                 ->toggleable(),
+            TextColumn::make('redemption')
+                ->formatStateUsing(fn (DiscountRedemptionMethod $state) => __("lunar-filament::discount.form.redemption.options.{$state->value}"))
+                ->label(__('lunar-filament::discount.table.redemption.label'))
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('coupon')
                 ->label(__('lunar-filament::discount.table.coupon.label'))
-                ->searchable()
-                ->sortable()
+                ->state(fn (Discount $record) => match (true) {
+                    $record->coupons_count === 1 => $record->coupons_min_code,
+                    $record->coupons_count > 1 => __('lunar-filament::discount.table.coupon.count', ['count' => $record->coupons_count]),
+                    default => null,
+                })
+                ->searchable(query: fn (Builder $query, string $search) => $query->whereHas(
+                    'coupons',
+                    fn (Builder $coupons) => $coupons->where('code', 'like', "%{$search}%")
+                ))
+                ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('coupons_count', $direction))
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('created_at')
                 ->label(__('lunar-filament::discount.table.created_at.label'))

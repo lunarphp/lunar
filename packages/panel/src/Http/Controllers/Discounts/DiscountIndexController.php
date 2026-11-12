@@ -4,10 +4,13 @@ namespace Lunar\Panel\Http\Controllers\Discounts;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
@@ -62,7 +65,7 @@ class DiscountIndexController
                 $query->where(function ($query) use ($like, $term, $resolver) {
                     $query->where('name', 'like', $like)
                         ->orWhere('handle', 'like', $like)
-                        ->orWhere('coupon', 'like', $like);
+                        ->orWhereHas('coupons', fn ($query) => $query->where('code', 'like', Str::upper($like)));
 
                     $resolver->applySearchQueries($query, $term);
                 });
@@ -86,8 +89,17 @@ class DiscountIndexController
                 fn ($query) => $query->where($query->getModel()->qualifyColumn('id'), $request->integer('customer_group_id'))
                     ->where($prefix.'customer_group_discount.enabled', true),
             ))
-            ->when($request->string('redemption')->value() === 'coupon', fn ($query) => $query->whereNotNull('coupon'))
-            ->when($request->string('redemption')->value() === 'automatic', fn ($query) => $query->whereNull('coupon'))
+            ->when(
+                DiscountRedemptionMethod::tryFrom($request->string('redemption')->value()),
+                fn ($query, DiscountRedemptionMethod $redemption) => $query->where('redemption', $redemption),
+            )
+            ->withCount('coupons')
+            // The code itself only when there is exactly one; several show as a count.
+            ->addSelect(['first_coupon_code' => Coupon::query()
+                ->select('code')
+                ->whereColumn('discount_id', (new Discount)->qualifyColumn('id'))
+                ->orderBy('id')
+                ->limit(1)])
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
             ->orderBy($sort, $direction)
@@ -110,7 +122,9 @@ class DiscountIndexController
                     // The type's own one-liner ("15% off"), or null when it cannot
                     // summarise itself — the column then shows the label alone.
                     'effect' => $dataSchema->summary($discount->type, $discount->data ?? [], $defaultCurrency),
-                    'coupon' => $discount->coupon,
+                    'redemption' => $discount->redemption->value,
+                    'coupon' => $discount->coupons_count === 1 ? $discount->getAttribute('first_coupon_code') : null,
+                    'coupons_count' => $discount->coupons_count,
                     'starts_at' => $discount->starts_at,
                     'ends_at' => $discount->ends_at,
                     'uses' => $discount->uses,

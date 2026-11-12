@@ -427,6 +427,28 @@ class Cart extends Base
         return $this->belongsTo(Customer::class);
     }
 
+    /**
+     * The coupon the cart's `coupon_code` resolves to. Both columns are
+     * uppercased by `CouponString`, so this is a plain indexed lookup.
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_code', 'code');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAttribute($key, $value)
+    {
+        // A loaded coupon belongs to the old code, so drop it rather than price with it.
+        if ($key === 'coupon_code') {
+            $this->unsetRelation('coupon');
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
     public function taxZone(): BelongsTo
     {
         return $this->belongsTo(TaxZone::class);

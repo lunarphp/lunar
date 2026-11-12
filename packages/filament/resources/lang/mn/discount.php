@@ -36,9 +36,12 @@ return [
             'label' => 'Энэ хөнгөлөлтийн дараа бусад хөнгөлөлтийг зогсоох',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Купон',
-            'helper_text' => 'Хөнгөлөлт хэрэгжихийн тулд шаардлагатай купоныг оруулна уу, хоосон орхивол автоматаар хэрэгжинэ.',
+        'redemption' => [
+            'label' => 'Хэрэгжүүлэх арга',
+            'options' => [
+                'automatic' => 'Автоматаар хэрэгжинэ',
+                'coupon' => 'Купон шаардана',
+            ],
         ],
         'max_uses' => [
             'label' => 'Хамгийн их ашиглалт',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Купон',
+            'count' => 'Кодууд: :count',
+        ],
+        'redemption' => [
+            'label' => 'Хэрэгжүүлэх арга',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Хасалт',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Купонууд',
+            'actions' => [
+                'create' => [
+                    'label' => 'Купон нэмэх',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Код',
+                ],
+                'uses' => [
+                    'label' => 'Ашиглалт',
+                ],
+                'limit' => [
+                    'label' => 'Хязгаар',
+                    'unlimited' => 'Хязгааргүй',
+                ],
+                'email' => [
+                    'label' => 'И-мэйл',
+                ],
+                'batch' => [
+                    'label' => 'Багц',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Сүүлд ашигласан',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Код',
+                ],
+                'max_uses' => [
+                    'label' => 'Хамгийн их ашиглалт',
                 ],
             ],
         ],

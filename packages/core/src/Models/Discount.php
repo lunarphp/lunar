@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Casts\CouponString;
 use Lunar\Core\Database\Factories\DiscountFactory;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\HasPublicId;
@@ -22,8 +22,8 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property string $public_id
  * @property string $name
  * @property string $handle
- * @property ?string $coupon
  * @property string $type
+ * @property DiscountRedemptionMethod $redemption
  * @property Carbon $starts_at
  * @property Carbon $ends_at
  * @property int $uses
@@ -44,6 +44,13 @@ class Discount extends Base
 
     protected $guarded = [];
 
+    /**
+     * {@inheritDoc}
+     */
+    protected $attributes = [
+        'redemption' => DiscountRedemptionMethod::Automatic->value,
+    ];
+
     const ACTIVE = 'active';
 
     const PENDING = 'pending';
@@ -61,7 +68,7 @@ class Discount extends Base
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'data' => 'array',
-        'coupon' => CouponString::class,
+        'redemption' => DiscountRedemptionMethod::class,
     ];
 
     /**
@@ -102,6 +109,11 @@ class Discount extends Base
     public function redemptions(): HasMany
     {
         return $this->hasMany(DiscountRedemption::class);
+    }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
     }
 
     public function discountables(): HasMany

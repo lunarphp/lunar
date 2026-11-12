@@ -4,7 +4,6 @@ namespace Lunar\Panel\Sections\Sales;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Lunar\Core\Contracts\Actions\Discounts\UpdatesDiscount;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Drafts\DraftableResource;
@@ -15,9 +14,6 @@ use Lunar\Panel\Support\DiscountTargetSchema;
 
 class DiscountDraftResource extends DraftableResource
 {
-    /** Text columns bound to inputs that submit an empty string for "unset". */
-    private const NULLABLE_TEXT_FIELDS = ['coupon'];
-
     /** Numeric columns that are nullable but bound to inputs submitting ''. */
     private const NULLABLE_INT_FIELDS = ['max_uses', 'max_uses_per_user'];
 
@@ -38,7 +34,7 @@ class DiscountDraftResource extends DraftableResource
         return [
             'name',
             'handle',
-            'coupon',
+            'redemption',
             'starts_at',
             'ends_at',
             'priority',
@@ -59,7 +55,7 @@ class DiscountDraftResource extends DraftableResource
         return [
             'name' => $record->name,
             'handle' => $record->handle,
-            'coupon' => $record->coupon,
+            'redemption' => $record->redemption->value,
             'starts_at' => $this->normalizeDate($record->starts_at),
             'ends_at' => $this->normalizeDate($record->ends_at),
             'priority' => (int) $record->priority,
@@ -74,22 +70,10 @@ class DiscountDraftResource extends DraftableResource
 
     public function normalize(array $data): array
     {
-        foreach (self::NULLABLE_TEXT_FIELDS as $field) {
-            if (array_key_exists($field, $data) && $data[$field] === '') {
-                $data[$field] = null;
-            }
-        }
-
         foreach (self::NULLABLE_INT_FIELDS as $field) {
             if (array_key_exists($field, $data)) {
                 $data[$field] = blank($data[$field]) ? null : (int) $data[$field];
             }
-        }
-
-        // The cast upper-cases on write, so the draft has to as well or every
-        // lower-case keystroke reads as a change against the stored value.
-        if (array_key_exists('coupon', $data) && is_string($data['coupon'])) {
-            $data['coupon'] = Str::upper($data['coupon']);
         }
 
         foreach (['starts_at', 'ends_at'] as $field) {
@@ -171,7 +155,7 @@ class DiscountDraftResource extends DraftableResource
         return [
             'name' => 'panel::discounts.field_name',
             'handle' => 'panel::discounts.field_handle',
-            'coupon' => 'panel::discounts.field_coupon',
+            'redemption' => 'panel::discounts.field_redemption',
             'starts_at' => 'panel::discounts.field_starts_at',
             'ends_at' => 'panel::discounts.field_ends_at',
             'priority' => 'panel::discounts.field_priority',

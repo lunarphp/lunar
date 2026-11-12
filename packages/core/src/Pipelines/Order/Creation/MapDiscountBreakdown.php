@@ -3,6 +3,7 @@
 namespace Lunar\Core\Pipelines\Order\Creation;
 
 use Closure;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Utils\Arr;
 
@@ -34,9 +35,17 @@ class MapDiscountBreakdown
             }
         }
 
-        $discountBreakdown = ($cart->discountBreakdown ?? collect())->map(function ($discount) use ($cartLinesMappedToOrderLines) {
+        $coupon = $cart->loadMissing('coupon')->coupon;
+
+        $discountBreakdown = ($cart->discountBreakdown ?? collect())->map(function ($discount) use ($cartLinesMappedToOrderLines, $coupon) {
+            // The code is copied so the order still shows it once the coupon is deleted.
+            $couponAttributes = $discount->discount->redemption === DiscountRedemptionMethod::Coupon && $coupon?->discount_id === $discount->discount->id
+                ? ['coupon_id' => $coupon->id, 'coupon_code' => $coupon->code]
+                : [];
+
             return (object) [
                 'discount_id' => $discount->discount->id,
+                ...$couponAttributes,
                 'lines' => $discount->lines->map(function ($discountLine) use ($cartLinesMappedToOrderLines) {
                     return (object) [
                         'quantity' => $discountLine->quantity,

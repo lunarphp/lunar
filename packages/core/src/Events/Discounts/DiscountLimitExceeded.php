@@ -3,10 +3,10 @@
 namespace Lunar\Core\Events\Discounts;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Lunar\Core\Enums\DiscountLimit;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Order;
 
@@ -22,6 +22,6 @@ class DiscountLimitExceeded
         public Order $order,
         public Discount $discount,
         public DiscountLimit $limit,
-        public ?Model $coupon = null,
+        public ?Coupon $coupon = null,
     ) {}
 }

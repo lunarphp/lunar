@@ -36,9 +36,12 @@ return [
             'label' => 'Weitere Rabatte nach diesem nicht anwenden',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Gutschein',
-            'helper_text' => 'Geben Sie den Gutschein ein, der erforderlich ist, damit der Rabatt angewendet wird. Wenn leer, wird der Rabatt automatisch angewendet.',
+        'redemption' => [
+            'label' => 'Einlösung',
+            'options' => [
+                'automatic' => 'Wird automatisch angewendet',
+                'coupon' => 'Erfordert einen Gutschein',
+            ],
         ],
         'max_uses' => [
             'label' => 'Maximale Verwendungen',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'Codes: :count',
+        ],
+        'redemption' => [
+            'label' => 'Einlösung',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Ausschluss',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Gutscheine',
+            'actions' => [
+                'create' => [
+                    'label' => 'Gutschein hinzufügen',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Code',
+                ],
+                'uses' => [
+                    'label' => 'Verwendungen',
+                ],
+                'limit' => [
+                    'label' => 'Limit',
+                    'unlimited' => 'Unbegrenzt',
+                ],
+                'email' => [
+                    'label' => 'E-Mail',
+                ],
+                'batch' => [
+                    'label' => 'Charge',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Zuletzt eingelöst',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Code',
+                ],
+                'max_uses' => [
+                    'label' => 'Maximale Verwendungen',
                 ],
             ],
         ],

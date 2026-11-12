@@ -6,6 +6,7 @@ use Lunar\Core\Facades\CartSession;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Validation\CouponValidator;
@@ -19,10 +20,9 @@ uses(RefreshDatabase::class);
 test('can validate coupons', function () {
     $validator = app(CouponValidator::class);
 
-    Discount::factory()->create([
+    Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -40,12 +40,11 @@ test('can validate coupons', function () {
 test('can validate based on uses', function () {
     $validator = app(CouponValidator::class);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'uses' => 10,
         'max_uses' => 20,
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -66,13 +65,31 @@ test('can validate based on uses', function () {
     expect($validator->validate('10OFF'))->toBeTrue();
 });
 
+test('validates a code against its own limit and its discount', function () {
+    $validator = app(CouponValidator::class);
+
+    $discount = Discount::factory()->coupon('SPRING-A', ['max_uses' => 1])->create();
+    Coupon::factory()->for($discount)->create(['code' => 'SPRING-B']);
+
+    expect($validator->validate('spring-a'))->toBeTrue()
+        ->and($validator->validate('spring-b'))->toBeTrue();
+
+    $discount->coupons()->where('code', 'SPRING-A')->update(['uses' => 1]);
+
+    expect($validator->validate('SPRING-A'))->toBeFalse()
+        ->and($validator->validate('SPRING-B'))->toBeTrue();
+
+    $discount->update(['ends_at' => now()->subMinute()]);
+
+    expect($validator->validate('SPRING-B'))->toBeFalse();
+});
+
 function perUserCoupon(): Discount
 {
-    return Discount::factory()->create([
+    return Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'max_uses_per_user' => 1,
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -164,14 +181,13 @@ test('allows another user when one is at the per-user limit', function () {
 test('can validate based on start and end dates', function () {
     $validator = app(CouponValidator::class);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
         'uses' => 0,
         'max_uses' => null,
         'starts_at' => now()->startOfDay(),
         'ends_at' => now()->endOfWeek(),
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],

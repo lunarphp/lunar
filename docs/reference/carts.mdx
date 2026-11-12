@@ -68,6 +68,7 @@ Lunar\Core\Models\Cart
 | `user` | BelongsTo | The authenticatable model from auth config | |
 | `customer` | BelongsTo | `Lunar\Core\Models\Customer` | |
 | `taxZone` | BelongsTo | `Lunar\Core\Models\TaxZone` | |
+| `coupon` | BelongsTo | `Lunar\Core\Models\Coupon` | The coupon `coupon_code` resolves to. See [Resolving a cart's code](/reference/discounts#resolving-a-carts-code) |
 | `addresses` | HasMany | `Lunar\Core\Models\CartAddress` | |
 | `shippingAddress` | HasOne | `Lunar\Core\Models\CartAddress` | Where `type` is `shipping` |
 | `billingAddress` | HasOne | `Lunar\Core\Models\CartAddress` | Where `type` is `billing` |

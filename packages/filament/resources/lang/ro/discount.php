@@ -36,9 +36,12 @@ return [
             'label' => 'Oprește aplicarea altor reduceri după aceasta',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Cupon',
-            'helper_text' => 'Introduceți cuponul necesar pentru aplicarea reducerii; dacă este lăsat gol, se aplică automat.',
+        'redemption' => [
+            'label' => 'Mod de aplicare',
+            'options' => [
+                'automatic' => 'Se aplică automat',
+                'coupon' => 'Necesită un cupon',
+            ],
         ],
         'max_uses' => [
             'label' => 'Utilizări maxime',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Cupon',
+            'count' => 'Coduri: :count',
+        ],
+        'redemption' => [
+            'label' => 'Mod de aplicare',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Excludere',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Cupoane',
+            'actions' => [
+                'create' => [
+                    'label' => 'Adaugă cupon',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Cod',
+                ],
+                'uses' => [
+                    'label' => 'Utilizări',
+                ],
+                'limit' => [
+                    'label' => 'Limită',
+                    'unlimited' => 'Nelimitat',
+                ],
+                'email' => [
+                    'label' => 'E-mail',
+                ],
+                'batch' => [
+                    'label' => 'Lot',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Ultima valorificare',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Cod',
+                ],
+                'max_uses' => [
+                    'label' => 'Utilizări maxime',
                 ],
             ],
         ],

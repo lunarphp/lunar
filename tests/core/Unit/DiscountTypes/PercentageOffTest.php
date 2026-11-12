@@ -97,10 +97,9 @@ test('will only apply to lines with correct brand', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -198,10 +197,9 @@ test('will not apply to lines with excluded brand', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -295,10 +293,9 @@ test('will only apply to lines with correct product', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -391,10 +388,9 @@ test('will only apply to lines with correct product variant', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -487,10 +483,9 @@ test('will not apply to lines with excluded product', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -583,10 +578,9 @@ test('will not apply to lines with excluded product variant', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -657,10 +651,9 @@ test('can apply percentage discount', function (
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon($coupon)->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => $coupon,
         'data' => [
             'percentage' => $percentage,
         ],
@@ -738,10 +731,9 @@ test('can only same discount to line once', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10PERCENTOFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10PERCENTOFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -814,10 +806,9 @@ test('can handle malformed discount', function () {
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [],
     ]);
 
