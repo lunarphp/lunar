@@ -36,9 +36,12 @@ return [
             'label' => 'إيقاف تطبيق الخصومات الأخرى بعد هذا الخصم',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'كوبون',
-            'helper_text' => 'أدخل الكوبون المطلوب لتطبيق الخصم، إذا تُرك فارغًا سيتم التطبيق تلقائيًا.',
+        'redemption' => [
+            'label' => 'الاسترداد',
+            'options' => [
+                'automatic' => 'يُطبَّق تلقائيًا',
+                'coupon' => 'يتطلب كوبونًا',
+            ],
         ],
         'max_uses' => [
             'label' => 'الحد الأقصى للاستخدام',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'كوبون',
+            'count' => 'الرموز: :count',
+        ],
+        'redemption' => [
+            'label' => 'الاسترداد',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'استبعاد',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'الكوبونات',
+            'actions' => [
+                'create' => [
+                    'label' => 'إضافة كوبون',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'الرمز',
+                ],
+                'uses' => [
+                    'label' => 'الاستخدامات',
+                ],
+                'limit' => [
+                    'label' => 'الحد',
+                    'unlimited' => 'غير محدود',
+                ],
+                'email' => [
+                    'label' => 'البريد الإلكتروني',
+                ],
+                'batch' => [
+                    'label' => 'الدفعة',
+                ],
+                'last_redeemed' => [
+                    'label' => 'آخر استرداد',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'الرمز',
+                ],
+                'max_uses' => [
+                    'label' => 'الحد الأقصى للاستخدام',
                 ],
             ],
         ],

@@ -36,9 +36,12 @@ return [
             'label' => 'Zatrzymaj inne rabaty po zastosowaniu tego',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Kupon',
-            'helper_text' => 'Wprowadź kupon wymagany do zastosowania rabatu. Pole puste oznacza, że zostanie on zastosowany automatycznie.',
+        'redemption' => [
+            'label' => 'Sposób zastosowania',
+            'options' => [
+                'automatic' => 'Stosowany automatycznie',
+                'coupon' => 'Wymaga kuponu',
+            ],
         ],
         'max_uses' => [
             'label' => 'Maksymalna liczba użyć',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'Kody: :count',
+        ],
+        'redemption' => [
+            'label' => 'Sposób zastosowania',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Wykluczenie',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Kupony',
+            'actions' => [
+                'create' => [
+                    'label' => 'Dodaj kupon',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'uses' => [
+                    'label' => 'Użycia',
+                ],
+                'limit' => [
+                    'label' => 'Limit',
+                    'unlimited' => 'Bez limitu',
+                ],
+                'email' => [
+                    'label' => 'E-mail',
+                ],
+                'batch' => [
+                    'label' => 'Partia',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Ostatnio zrealizowany',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'max_uses' => [
+                    'label' => 'Maksymalna liczba użyć',
                 ],
             ],
         ],

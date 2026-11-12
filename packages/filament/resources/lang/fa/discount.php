@@ -36,9 +36,12 @@ return [
             'label' => 'Stop other discounts applying after this one',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Coupon',
-            'helper_text' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
+        'redemption' => [
+            'label' => 'نحوه اعمال',
+            'options' => [
+                'automatic' => 'به‌صورت خودکار اعمال می‌شود',
+                'coupon' => 'نیاز به کوپن دارد',
+            ],
         ],
         'max_uses' => [
             'label' => 'Max uses',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'کدها: :count',
+        ],
+        'redemption' => [
+            'label' => 'نحوه اعمال',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Exclusion',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'کوپن‌ها',
+            'actions' => [
+                'create' => [
+                    'label' => 'افزودن کوپن',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'کد',
+                ],
+                'uses' => [
+                    'label' => 'تعداد استفاده',
+                ],
+                'limit' => [
+                    'label' => 'محدودیت',
+                    'unlimited' => 'نامحدود',
+                ],
+                'email' => [
+                    'label' => 'ایمیل',
+                ],
+                'batch' => [
+                    'label' => 'دسته',
+                ],
+                'last_redeemed' => [
+                    'label' => 'آخرین استفاده',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'کد',
+                ],
+                'max_uses' => [
+                    'label' => 'حداکثر استفاده',
                 ],
             ],
         ],

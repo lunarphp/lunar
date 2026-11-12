@@ -36,9 +36,12 @@ return [
             'label' => 'Ne primjenjuj daljnje popuste nakon ovoga',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Kupon',
-            'helper_text' => 'Unesite kupon koji je potreban kako bi se popust primijenio. Ako je prazno, popust se primjenjuje automatski.',
+        'redemption' => [
+            'label' => 'Način primjene',
+            'options' => [
+                'automatic' => 'Primjenjuje se automatski',
+                'coupon' => 'Zahtijeva kupon',
+            ],
         ],
         'max_uses' => [
             'label' => 'Maksimalan broj korištenja',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'Kodovi: :count',
+        ],
+        'redemption' => [
+            'label' => 'Način primjene',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Izuzetak',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Kuponi',
+            'actions' => [
+                'create' => [
+                    'label' => 'Dodaj kupon',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'uses' => [
+                    'label' => 'Korištenja',
+                ],
+                'limit' => [
+                    'label' => 'Ograničenje',
+                    'unlimited' => 'Neograničeno',
+                ],
+                'email' => [
+                    'label' => 'E-pošta',
+                ],
+                'batch' => [
+                    'label' => 'Serija',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Zadnje iskorišteno',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'max_uses' => [
+                    'label' => 'Maksimalan broj korištenja',
                 ],
             ],
         ],

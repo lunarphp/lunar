@@ -36,9 +36,12 @@ return [
             'label' => 'Más kedvezmények alkalmazásának megakadályozása ez után',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Kupon',
-            'helper_text' => 'Add meg a kuponkódot, amely szükséges a kedvezmény alkalmazásához; üresen hagyva automatikusan alkalmazódik.',
+        'redemption' => [
+            'label' => 'Alkalmazás módja',
+            'options' => [
+                'automatic' => 'Automatikusan alkalmazódik',
+                'coupon' => 'Kupon szükséges',
+            ],
         ],
         'max_uses' => [
             'label' => 'Max felhasználás',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Kupon',
+            'count' => 'Kódok: :count',
+        ],
+        'redemption' => [
+            'label' => 'Alkalmazás módja',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Kizárás',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Kuponok',
+            'actions' => [
+                'create' => [
+                    'label' => 'Kupon hozzáadása',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Kód',
+                ],
+                'uses' => [
+                    'label' => 'Felhasználások',
+                ],
+                'limit' => [
+                    'label' => 'Korlát',
+                    'unlimited' => 'Korlátlan',
+                ],
+                'email' => [
+                    'label' => 'E-mail',
+                ],
+                'batch' => [
+                    'label' => 'Köteg',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Utoljára beváltva',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Kód',
+                ],
+                'max_uses' => [
+                    'label' => 'Max felhasználás',
                 ],
             ],
         ],

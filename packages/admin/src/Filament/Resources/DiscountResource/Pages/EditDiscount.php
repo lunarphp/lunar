@@ -11,6 +11,7 @@ use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Filament\Contracts\DiscountFormType;
 use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CouponRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
 use Lunar\Filament\Support\Facades\LunarFilament;
@@ -91,6 +92,8 @@ class EditDiscount extends BaseEditRecord
             ]);
             $managers[] = ProductRewardRelationManager::class;
         }
+
+        $managers[] = CouponRelationManager::class;
 
         if ($form = LunarFilament::discountFormFor($this->record->getType())) {
             $managers = array_merge($managers, $form->lunarPanelRelationManagers());

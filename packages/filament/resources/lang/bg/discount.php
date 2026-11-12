@@ -36,9 +36,12 @@ return [
             'label' => 'Спиране на прилагането на други отстъпки след тази',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Купон',
-            'helper_text' => 'Въведете купон за прилагане на отстъпката. Ако е празно, отстъпката се прилага автоматично.',
+        'redemption' => [
+            'label' => 'Начин на прилагане',
+            'options' => [
+                'automatic' => 'Прилага се автоматично',
+                'coupon' => 'Изисква купон',
+            ],
         ],
         'max_uses' => [
             'label' => 'Максимален брой използвания',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Купон',
+            'count' => 'Кодове: :count',
+        ],
+        'redemption' => [
+            'label' => 'Начин на прилагане',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Изключение',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Купони',
+            'actions' => [
+                'create' => [
+                    'label' => 'Добавяне на купон',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Код',
+                ],
+                'uses' => [
+                    'label' => 'Използвания',
+                ],
+                'limit' => [
+                    'label' => 'Лимит',
+                    'unlimited' => 'Неограничено',
+                ],
+                'email' => [
+                    'label' => 'Имейл',
+                ],
+                'batch' => [
+                    'label' => 'Партида',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Последно използван',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Код',
+                ],
+                'max_uses' => [
+                    'label' => 'Максимален брой използвания',
                 ],
             ],
         ],
