@@ -418,7 +418,7 @@ test('can keep the discount when the draft order is created again', function () 
     $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
-    expect($discount->refresh()->uses)->toEqual(1);
+    expect($discount->refresh()->uses)->toEqual(0);
 
     // The card is declined and the shopper tries another one. That is a fresh
     // request, so nothing is memoised from the first attempt.
@@ -432,8 +432,8 @@ test('can keep the discount when the draft order is created again', function () 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);
 
-    // The retry must not consume a second use of a single-use coupon.
-    expect($discount->refresh()->uses)->toEqual(1);
+    // A draft order uses nothing; the use is counted when an order is placed.
+    expect($discount->refresh()->uses)->toEqual(0);
 });
 
 test('can not reuse a discount another cart has exhausted', function () {
@@ -503,6 +503,7 @@ test('can not reuse a discount another cart has exhausted', function () {
     $cartA = $makeCart();
     $cartA->calculate();
     $orderA = app(CreateOrder::class)->execute($cartA)->refresh();
+    $orderA->update(['placed_at' => now()]);
 
     expect($orderA->discount_total)->toEqual(500);
     expect($discount->refresh()->uses)->toEqual(1);
@@ -519,7 +520,7 @@ test('can not reuse a discount another cart has exhausted', function () {
     expect($discount->refresh()->uses)->toEqual(1);
 });
 
-test('can still enforce other conditions on a discount the cart consumed', function () {
+test('can still enforce other conditions when the draft order is created again', function () {
     TaxClass::factory()->create([
         'default' => true,
     ]);
@@ -589,8 +590,7 @@ test('can still enforce other conditions on a discount the cart consumed', funct
 
     expect($orderA->discount_total)->toEqual(500);
 
-    // The shopper drops a unit, taking the cart under the minimum spend. Being
-    // the cart that consumed the discount must not exempt it from that.
+    // The shopper drops a unit, taking the cart under the minimum spend.
     Discounts::resetDiscounts();
 
     $cart = Cart::find($cart->id);
@@ -604,7 +604,7 @@ test('can still enforce other conditions on a discount the cart consumed', funct
     expect($orderB->discount_total)->toEqual(0);
 });
 
-test('can not consume a discount twice on one cart instance', function () {
+test('can keep the discount when one cart instance creates its order twice', function () {
     TaxClass::factory()->create([
         'default' => true,
     ]);
@@ -664,16 +664,13 @@ test('can not consume a discount twice on one cart instance', function () {
         $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
     ]);
 
-    // The same instance throughout: no reload between the two attempts. This is
-    // what a checkout that retries in one request looks like, and it is the case
-    // any memoisation of consumedDiscountIds() has to survive - a set cached
-    // before the first order exists would still be empty for the second.
+    // The same instance throughout: a checkout that retries in one request.
     $cart->calculate();
 
     $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
-    expect($discount->refresh()->uses)->toEqual(1);
+    expect($discount->refresh()->uses)->toEqual(0);
 
     $cart->calculate();
 
@@ -681,7 +678,7 @@ test('can not consume a discount twice on one cart instance', function () {
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);
-    expect($discount->refresh()->uses)->toEqual(1);
+    expect($discount->refresh()->uses)->toEqual(0);
 });
 
 test('keeps its own discount when a cart is priced again after order creation', function () {
@@ -749,11 +746,9 @@ test('keeps its own discount when a cart is priced again after order creation', 
     $orderA = app(CreateOrder::class)->execute($cart)->refresh();
 
     expect($orderA->discount_total)->toEqual(500);
-    expect($discount->refresh()->uses)->toEqual(1);
+    expect($discount->refresh()->uses)->toEqual(0);
 
-    // Priced again on the same instance, with the discount set rebuilt: the
-    // cart's own use must not read as an exhausted coupon, or the retry is
-    // re-priced without the discount the shopper was quoted.
+    // Priced again on the same instance, with the discount set rebuilt.
     Discounts::resetDiscounts();
 
     $cart->recalculate();
@@ -762,5 +757,5 @@ test('keeps its own discount when a cart is priced again after order creation', 
 
     expect($orderB->id)->toEqual($orderA->id);
     expect($orderB->discount_total)->toEqual(500);
-    expect($discount->refresh()->uses)->toEqual(1);
+    expect($discount->refresh()->uses)->toEqual(0);
 });
