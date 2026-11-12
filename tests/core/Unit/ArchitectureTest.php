@@ -20,6 +20,7 @@ use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Discountable;
 use Lunar\Core\Models\DiscountCollection;
+use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\ProductAssociation;
 use Lunar\Core\Models\State;
@@ -92,6 +93,7 @@ test('every model carries a public_id except the documented exclusions', functio
         AttributeModel::class,
         Discountable::class,
         DiscountCollection::class,
+        DiscountRedemption::class,
         ProductAssociation::class,
         UserPermission::class,
         TaxZoneCountry::class,

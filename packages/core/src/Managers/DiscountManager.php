@@ -139,7 +139,7 @@ class DiscountManager implements DiscountManagerContract
         }
 
         return Discount::active()
-            ->usable($cart?->consumedDiscountIds() ?? [])
+            ->usable()
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
             ->with([

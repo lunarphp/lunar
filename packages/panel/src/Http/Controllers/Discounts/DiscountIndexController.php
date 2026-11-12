@@ -164,10 +164,8 @@ class DiscountIndexController
      * KPI strip values, cached briefly — they are whole-table aggregates and do
      * not need to be second-accurate.
      *
-     * Redemptions is a lifetime total rather than a 30-day window: `uses` is a
-     * bare counter with no per-redemption timestamp, and the one timestamped
-     * table (discount_user) only records signed-in redemptions, so a windowed
-     * figure would silently omit guest checkouts.
+     * Redemptions is the lifetime `uses` total. A windowed figure could count
+     * discount_redemptions by redeemed_at; that is a follow-on (spec discount-coupons).
      *
      * @return array{active: int, scheduled: int, endingSoon: int, redemptions: int}
      */
