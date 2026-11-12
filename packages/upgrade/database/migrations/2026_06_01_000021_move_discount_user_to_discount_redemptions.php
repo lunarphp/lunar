@@ -32,6 +32,7 @@ return new class extends Migration
             Schema::create($redemptions, function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('discount_id')->constrained($this->prefix.'discounts')->cascadeOnDelete();
+                $table->foreignId('coupon_id')->nullable()->constrained($this->prefix.'coupons')->nullOnDelete();
                 $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders')->nullOnDelete();
                 $table->foreignId('cart_id')->nullable()->constrained($this->prefix.'carts')->nullOnDelete();
                 $table->userForeignKey(nullable: true);
