@@ -1,9 +1,9 @@
-# 0083 — Fulfilment choice at checkout: a method per line and a pickup location
+# 0083 — Fulfilment choice: a method per line, a pickup location, and changes after placement
 
 - Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-09-10
-- TODO item: Fulfilment choice at checkout — a cart default and per-line fulfilment method, and a typed pickup location on the cart and order (spec 0083)
+- TODO item: Fulfilment choice at checkout — a cart default and per-line fulfilment method, per-variant allowed methods, a typed pickup location on the cart and order, and changing a fulfilment's method after placement (spec 0083)
 
 ## Problem
 
@@ -18,9 +18,11 @@ Which method a line lands in is decided after the order is placed, by `EnsureIni
 
 So:
 
-- **No per-line choice.** The `pickup` flag is all or nothing. A trade customer who wants the bulky item delivered and the small one held at the counter has to place two orders.
+- **No per-line choice at checkout.** The `pickup` flag is all or nothing. A trade customer who wants the bulky item delivered and the small one held at the counter has to check out twice.
+- **No way to restrict an item's methods.** A variant has one `shippable` flag, and `false` means digital. A collection-only item (cement, timber, anything the store won't courier) can't be expressed: marked not shippable, `Digital` claims it; left shippable, it is delivered with everything else. A drop-shipped item that can't be collected has the same problem the other way round. With one collection-only item in the basket, today's all-or-nothing choice forces the whole order to pickup, and a customer who wanted the rest delivered is likely to abandon it.
 - **Intent only travels through a shipping rate.** A digital-only cart has no shipping option and no way to express intent. A registered method (a prescription flow, a 3PL hand-off) can't be chosen by the customer, only inferred from the order afterwards.
 - **Nothing to read before the order exists.** A cart line has no accessor saying how it will be fulfilled.
+- **No change after placement.** `SplitFulfilment` keeps the source's method and location, and `MoveFulfilmentLines` refuses a method mismatch. A customer who paid for delivery and then wants to collect one item can't be accommodated, and neither can a pickup the customer can no longer make.
 
 ### Where a pickup happens
 
@@ -38,6 +40,8 @@ The customer's choice belongs on the cart, and is copied to the order when it is
 
 Lines with no explicit method keep today's claim-based inference, so a storefront that changes nothing behaves as it does now.
 
+Sections A to K cover what the customer chooses before the order is placed. Section L covers what staff can change afterwards. The two are separate: the customer's choice is recorded on the order as requested, and later changes act on fulfilments.
+
 ### A. Schema
 
 Baseline edits while v2 is in alpha:
@@ -50,8 +54,9 @@ Baseline edits while v2 is in alpha:
 | `carts` | `pickup_location_id`, nullable foreign key to `locations` | the pickup location, set explicitly |
 | `orders` | `pickup_location_id`, nullable foreign key to `locations` | where the order's pickup lines are collected; null when nothing is picked up |
 | `locations` | address columns (section I) | where the location is |
+| `product_variants` | `fulfilment_methods`, nullable JSON list of method keys | the methods this variant may use; null allows any method that supports it |
 
-Models gain the matching properties and relations: `Cart::pickupLocation()` and `Order::pickupLocation()` are `BelongsTo`. Factories default every new column to null.
+Models gain the matching properties and relations: `Cart::pickupLocation()` and `Order::pickupLocation()` are `BelongsTo`. Factories default every new column to null, so existing products allow every method.
 
 ### B. `FulfilmentMethod` contract additions
 
@@ -83,7 +88,11 @@ interface FulfilmentMethod
 
 `supports()` is each method's `claim()` rule asked of a single purchasable, before the order exists. `claim()` stays as the fallback (section F).
 
-`FulfilmentMethodManifest` gains `supporting(Purchasable $purchasable): Collection`, the registered methods that support the purchasable, keyed by method key in priority order, for storefront pickers and the validator.
+`Purchasable` gains `allowedFulfilmentMethods(): ?array`, the method keys the purchasable may use, or null for no restriction. `ProductVariant` reads `product_variants.fulfilment_methods`. A `RestrictsFulfilmentMethods` trait returns null for other purchasables, so a custom purchasable adds the trait or the method.
+
+`FulfilmentMethodManifest` gains `supporting(Purchasable $purchasable): Collection`: the registered methods that support the purchasable and that it allows, keyed by method key in priority order. The allow-list is applied here, once, rather than in every driver's `supports()`. Storefront pickers, the validator and resolution all go through it.
+
+A collection-only variant sets `['pickup']`. A drop-shipped variant sets `['shipping']`. The panel and Filament variant forms get a multi-select of the registered methods, empty meaning any.
 
 ### C. The pickup location on the shipping option
 
@@ -103,8 +112,9 @@ Cart::fulfilmentMethod(): ?FulfilmentMethod
 
 CartLine::fulfilmentMethod(): ?FulfilmentMethod
     // 1. the explicit cart_lines.fulfilment_method
-    // 2. else the cart default, if it supports($line->purchasable)
-    // 3. else null: inferred when fulfilments are created
+    // 2. else the cart default, if supporting($line->purchasable) includes it
+    // 3. else, if the purchasable restricts its methods, the first of supporting($line->purchasable)
+    // 4. else null: inferred when fulfilments are created
 
 Cart::resolvedPickupLocation(): ?Location
     // null when no line resolves to pickup; otherwise
@@ -114,6 +124,8 @@ Cart::resolvedPickupLocation(): ?Location
 ```
 
 The cart default is a preference, never a coercion. A cart whose default is `shipping` can hold a licence key: `shipping` doesn't support it, so the line resolves to null and `Digital::claim()` picks it up at order creation as it does today.
+
+Step 3 is what keeps a restricted item on an allowed method. A collection-only bag of cement in a cart whose default is `shipping` resolves to `pickup`, so the rest of the cart is delivered and the cement is collected. Without the step it would resolve to null, and `Shipping::claim()` would ship it. Step 3 only applies to restricted purchasables: for an unrestricted physical item, the first supporting method in priority order is `pickup` (priority 20, before `shipping` at 30), which would be the wrong default.
 
 The location falls back to the default location, which is what `CreateFulfilment` does for every pickup today. A store with one location sets nothing. A store with several sets the location through a pickup option or `setPickupLocation()`.
 
@@ -144,14 +156,14 @@ $cart->setPickupLocation(?Location $location, bool $refresh = true): Cart; // Se
 Null clears the value. Each runs a validator chain first, as `setShippingOption()` does:
 
 - `lunar.cart.validators.set_fulfilment_method`, default `Validation\Cart\CartFulfilmentMethod`: the key is null or registered.
-- `lunar.cart.validators.set_line_fulfilment_method`, default `Validation\CartLine\CartLineFulfilmentMethod`: the key is null, or registered and `supports($purchasable)`.
+- `lunar.cart.validators.set_line_fulfilment_method`, default `Validation\CartLine\CartLineFulfilmentMethod`: the key is null, or in `supporting($purchasable)`, which covers both the driver's `supports()` and the purchasable's allowed methods.
 - `add_to_cart` gains `CartLineFulfilmentMethod` after `CartLineAvailability`.
 
 Failures throw a `CartException` with `exceptions.carts.fulfilment_method_unknown` or `exceptions.carts.fulfilment_method_unsupported`.
 
 **Identity and fingerprint.** The method joins line identity wherever the `meta` diff is used: `GetExistingCartLine`, the existing-line match in `CreateOrderLines`, and `MergeCart`. The same variant for delivery and for pickup is two lines. `GenerateFingerprint` includes each line's method, the cart's method and the cart's pickup location, so changing them invalidates a checkout fingerprint.
 
-**Delivery lines.** `Cart::deliveryLines(): Collection<int, CartLine>` returns the lines that need delivering. A line is a delivery line when its explicit method (the line override, else the explicit cart default where supported) `requiresDelivery()`, or when it has no explicit method and `isShippable()`. The shipping option is deliberately not consulted: shipping rates are calculated over `deliveryLines()`, so the rate can't decide which lines it covers. `Cart::isShippable()` keeps its name and becomes `deliveryLines()->isNotEmpty()`. Its behaviour only changes when an override is set.
+**Delivery lines.** `Cart::deliveryLines(): Collection<int, CartLine>` returns the lines that need delivering. A line is a delivery line when its explicit method (the line override, else the explicit cart default where supported, else the restricted item's own method from step 3) `requiresDelivery()`, or when it has no explicit method and `isShippable()`. A collection-only item is therefore never a delivery line: it adds no weight to a parcel rate and doesn't on its own require a shipping address. The shipping option is deliberately not consulted: shipping rates are calculated over `deliveryLines()`, so the rate can't decide which lines it covers. `Cart::isShippable()` keeps its name and becomes `deliveryLines()->isNotEmpty()`. Its behaviour only changes when an override is set.
 
 ### F. Order side
 
@@ -177,6 +189,8 @@ A pickup fulfilment is created at `orders.pickup_location_id`; other methods kee
 
 A cart whose physical lines are all set to `pickup` needs neither a shipping option nor a shipping address, a case the current model can't express.
 
+**Storefront guidance (docs).** Offer the per-line choice on the cart page, before shipping rates are shown, and mark restricted items ("collection only") where they are listed. The customer then sees "collect this one, deliver the rest" before checkout rather than finding a dead end at the rates step.
+
 ### H. Shipping rates over delivery lines
 
 The table-rate drivers and resolver sum weight, subtotal, stock and exclusions over `$cart->lines`. They switch to `$cart->deliveryLines()`:
@@ -199,7 +213,34 @@ A locker or a carrier's parcel shop is not one of the store's locations, and the
 
 - The panel order view shows the pickup fulfilment's location, falling back to the order's pickup location, and replaces the #2749 reads of `meta['pickup_point']`. It shows a shipping address card whenever the order has delivery lines, so a mixed order shows both.
 - Filament's order page does the same.
-- `order_lines.fulfilment_method` can be shown as a line subline later. Only after staff move lines by hand does it differ from the fulfilment's method.
+- `order_lines.fulfilment_method` can be shown as a line subline later. It differs from the fulfilment's method only after staff change it (section L).
+- The panel and Filament variant forms get the allowed-methods multi-select (section B).
+
+### L. Changing a fulfilment's method after placement
+
+Once the order is placed, the customer's choice is a record of what was requested. Staff change how the goods are handed over by changing fulfilments.
+
+`Actions\Fulfilment\ChangeFulfilmentMethod` (contract `ChangesFulfilmentMethod`) moves some or all of a fulfilment's outstanding quantities into a new fulfilment with a different method and location:
+
+```php
+public function execute(Fulfilment $fulfilment, string $method, ?Location $location = null, ?array $moves = null): Fulfilment;
+```
+
+- Only a fulfilment in its method's `defaultState()` or another pre-handover state can change. A shipped or picked-up fulfilment can't.
+- `$moves` is `[order_line_id => quantity]`, as for `SplitFulfilment`. Null moves everything, and the source is deleted if it ends up empty.
+- The target method must be in `supporting()` for every moved line's purchasable, so a collection-only item can't be changed to shipping.
+- The new fulfilment starts in the target method's `defaultState()`.
+
+The two common directions aren't symmetric:
+
+- **Shipping to pickup** is always possible. It needs a location, defaulting to the order's pickup location and then the default location. Whether to refund part of the shipping charge is the staff's decision, through the existing refund composer.
+- **Pickup to shipping** needs a shipping address. The action fails with `exceptions.fulfilment_change_address_missing` unless the order has one; the panel lets staff enter it in the same step. Core never charges for the new delivery. Staff take any extra payment separately, for example with `recordPayment()` from [[payment-terms]].
+
+Customers can't make these changes themselves; an account area that wants to offer them calls the action with its own rules.
+
+`order_lines.fulfilment_method` and `orders.pickup_location_id` keep what the customer requested. `Order::isPickup()` reads the fulfilments when there are any (true when any fulfilment uses `pickup`), and falls back to `pickup_location_id` before fulfilments exist. Without this, an order changed from shipping to pickup would still report false.
+
+The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilment cards, with a location select and, for shipping, the address form. Filament's order page gets the same actions.
 
 ## Alternatives considered
 
@@ -209,35 +250,40 @@ A locker or a carrier's parcel shop is not one of the store's locations, and the
 - **Per-line shipping options (commercetools "multiple" shipping mode).** Each line targets an address and a rate. Much larger, and the wrong level: the customer's choice is how a line is fulfilled, and the rate stays a price for the cart. Shopify's delivery groups reach the same conclusion.
 - **Cart default only, no line override.** Covers the common case, but the default is already derivable from the shipping option. The value is in the override.
 - **Let the shipping option own the method.** Two writers for one value, the option and the setter, drifting apart. The option is a derived read instead (section D).
+- **Two flags on the variant, `deliverable` and `collectable`.** Simpler to read, but only covers the two built-in physical methods. An allow-list of method keys also covers methods a store registers, such as a 3PL hand-off.
+- **Restrict methods per location instead of per variant.** "Not collectable from this store" is stock routing, which belongs to the location-scoped availability item. "Never collectable" is a property of the product and belongs on the variant.
+- **Let customers change the method after placement.** Pickup to shipping can need an address and a payment the order doesn't have. Staff make the change, and a store can expose it to customers with its own rules (section L).
 - **Make the cart default apply to every line.** A `shipping` default would stamp `shipping` on a licence key and the order would need a parcel for it.
 - **Pickup points as `Location` records.** Locations are where stock is held and fulfilled from. A parcel shop isn't, and stock allocation and location pickers would offer it.
 
 ## Migration impact
 
-- **Database** (baseline edits): `fulfilment_method` on `carts`, `cart_lines` and `order_lines`; `pickup_location_id` on `carts` and `orders`; address columns on `locations`. No backfill.
+- **Database** (baseline edits): `fulfilment_method` on `carts`, `cart_lines` and `order_lines`; `pickup_location_id` on `carts` and `orders`; address columns on `locations`; `fulfilment_methods` on `product_variants`. No backfill.
 - **Breaking changes:**
   - `Contracts\FulfilmentMethod` gains `supports()` and `requiresDelivery()`. Implementations must add them; Rector note in `LunarSetList`.
   - `AddsOrUpdatesPurchasable::execute()` gains a trailing `?string $fulfilmentMethod = null`. A custom implementation must add it; Rector note.
+  - `Contracts\Purchasable` gains `allowedFulfilmentMethods()`. A custom purchasable adds the `RestrictsFulfilmentMethods` trait or the method; Rector note.
   - `ShippingOption::$pickup` is deprecated in favour of `$pickupLocation`. Rector can't choose a location, so the upgrade notes show both forms.
   - `meta['pickup']` is no longer written to the shipping line. Code reading it moves to `Order::isPickup()`.
-  - `Cart::isShippable()` is based on delivery lines. It only behaves differently when an override is set.
+  - `Cart::isShippable()` is based on delivery lines. It only behaves differently when an override or a restricted item is in the cart.
+  - `Order::isPickup()` reads fulfilments when the order has them.
   - Line identity includes the method. Two lines with the same purchasable and `meta` stay separate when their methods differ.
-- **New surface** (additive): `Cart::fulfilmentMethod()`, `setFulfilmentMethod()`, `deliveryLines()`, `pickupLocation()`, `resolvedPickupLocation()`, `setPickupLocation()`; `CartLine::fulfilmentMethod()`, `setFulfilmentMethod()`; `Order::pickupLocation()`; `FulfilmentMethodManifest::supporting()`; the actions, contracts, validators and two validator config keys above; the `fulfilmentMethod` argument on `add()` and `addLines()`.
+- **New surface** (additive): `Cart::fulfilmentMethod()`, `setFulfilmentMethod()`, `deliveryLines()`, `pickupLocation()`, `resolvedPickupLocation()`, `setPickupLocation()`; `CartLine::fulfilmentMethod()`, `setFulfilmentMethod()`; `Order::pickupLocation()`; `FulfilmentMethodManifest::supporting()`; `ChangeFulfilmentMethod` and its contract; the `RestrictsFulfilmentMethods` trait; the actions, contracts, validators and two validator config keys above; the `fulfilmentMethod` argument on `add()` and `addLines()`.
 - **Upgrade from v1:** no data step. v1 didn't store `$collect` on the order, so v1 pickup orders can't be identified and keep a null pickup location. Their lines keep inferring through `claim()`. The upgrade guide says so.
-- **Translations (16 locales):** the two cart exception messages in `core`; the location address fields and the pickup driver's location select in `panel` and `admin`.
-- **Admin:** section K, the location address forms, and the pickup shipping method's location select.
+- **Translations (16 locales):** the two cart exception messages and `fulfilment_change_address_missing` in `core`; the location address fields, the pickup driver's location select, the variant allowed-methods field and the change-method actions in `panel` and `admin`.
+- **Admin:** sections K and L, the location address forms, the variant allowed-methods field, and the pickup shipping method's location select.
 
 ## Open questions
 
 1. **A pickup option with a line overridden to `shipping`.** The override wins for that line: it becomes a delivery line, a shipping address is required, and the pickup rate still prices the cart. The storefront is expected to filter rates against `deliveryLines()`. Should order creation reject the combination instead? Owner: slice 5.
-2. **Changing a fulfilment's method.** Core has no action to turn a pickup fulfilment into a shipping one when the customer can't come in. Is it needed for beta, and does it belong here? Owner: Glenn.
-3. **Marking a shipping address as a pickup point.** A typed field on the address so the panel can show it is a locker, or out of scope?
-4. **Showing the probable inferred method.** When a line resolves to null, a storefront may want to show what `claim()` will probably do. `FulfilmentMethodManifest::supporting()` lists the candidates in priority order. Whether to add an accessor for the first is left to the storefront API spec.
+2. **Marking a shipping address as a pickup point.** A typed field on the address so the panel can show it is a locker, or out of scope?
+3. **Showing the probable inferred method.** When a line resolves to null, a storefront may want to show what `claim()` will probably do. `FulfilmentMethodManifest::supporting()` lists the candidates in priority order. Whether to add an accessor for the first is left to the storefront API spec.
 
 ## References
 
 - [[0031-fulfilment-methods]]: the method seam and `claim()`.
 - [[0030-fulfillable-order-lines]]: why the method is stamped on the order line.
+- [[0069-panel-order-screen-improvements]]: item 6, shipping-refund tracking, which a shipping-to-pickup change may use.
 - [[0045-optional-purchasables-and-shipping-de-morph]]: the shipping line and the `pickup` meta it carries today.
 - [[rename-collection-fulfilment-to-pickup]] (#2717): the method's current name.
 - [[0029-entry-point-conventions]]: model verbs delegating to action contracts.
@@ -251,10 +297,11 @@ A locker or a carrier's parcel shop is not one of the store's locations, and the
 
 ## Implementation plan
 
-- [ ] Slice 1 — `supports()` and `requiresDelivery()` on the contract and the three core drivers, `FulfilmentMethodManifest::supporting()`. Tests.
+- [ ] Slice 1 — `supports()` and `requiresDelivery()` on the contract and the three core drivers, `Purchasable::allowedFulfilmentMethods()` and the trait, `product_variants.fulfilment_methods`, `FulfilmentMethodManifest::supporting()` applying the allow-list. Tests.
 - [ ] Slice 2 — Location address: columns, model, panel and Filament location forms, translations.
-- [ ] Slice 3 — Cart side: the cart and cart-line columns, `ShippingOption::$pickupLocation`, the table-rate `Pickup` driver's location, `ResolveCartFulfilment` and the accessors, the `add()` argument, the three setters, validators and config keys, line identity, fingerprint. Tests.
+- [ ] Slice 3 — Cart side: the cart and cart-line columns, `ShippingOption::$pickupLocation`, the table-rate `Pickup` driver's location, `ResolveCartFulfilment` and the accessors including the restricted-item step, the `add()` argument, the three setters, validators and config keys, line identity, fingerprint. Tests.
 - [ ] Slice 4 — Order side: the order-line stamp and identity match, `orders.pickup_location_id`, `isPickup()` on the column, `CreateShippingLine` dropping `meta['pickup']`, the explicit pass and pickup fulfilments at the order's location. Tests.
-- [ ] Slice 5 — Delivery lines: `deliveryLines()`, `isShippable()`, `ValidateCartForOrderCreation`, table-rate drivers and resolver. Tests in `core` and `table-rate-shipping`. Settles open question 1.
-- [ ] Slice 6 — Admin: panel and Filament order views read the typed fields; the #2749 meta reads go.
-- [ ] Slice 7 — Exception messages in 16 locales, Rector notes, upgrade guide, docs.
+- [ ] Slice 5 — Delivery lines: `deliveryLines()` including restricted items, `isShippable()`, `ValidateCartForOrderCreation`, table-rate drivers and resolver. Tests in `core` and `table-rate-shipping`. Settles open question 1.
+- [ ] Slice 6 — Changing a fulfilment's method: `ChangeFulfilmentMethod` and its contract, `isPickup()` reading fulfilments. Tests.
+- [ ] Slice 7 — Admin: panel and Filament order views read the typed fields and the #2749 meta reads go; the variant allowed-methods field; the change-method actions on fulfilment cards.
+- [ ] Slice 8 — Exception messages in 16 locales, Rector notes, upgrade guide, docs including the storefront guidance.
