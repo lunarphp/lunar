@@ -26,7 +26,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    foreach (['discount_redemptions', 'discount_user', 'orders', 'carts', 'discounts', 'users'] as $table) {
+    foreach (['discount_redemptions', 'discount_user', 'coupons', 'orders', 'carts', 'discounts', 'users'] as $table) {
         Schema::dropIfExists(DISCOUNT_REDEMPTION_UPG_PREFIX.$table);
     }
 });
@@ -49,7 +49,7 @@ function discountRedemptionsMigration(): object
  */
 function simulateV1DiscountUsers(array $rows): void
 {
-    foreach (['discounts', 'orders', 'carts', 'users'] as $table) {
+    foreach (['discounts', 'coupons', 'orders', 'carts', 'users'] as $table) {
         Schema::create(DISCOUNT_REDEMPTION_UPG_PREFIX.$table, function (Blueprint $table) {
             $table->id();
         });
