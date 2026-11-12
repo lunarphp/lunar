@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping;
 
+use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Event;
@@ -91,7 +92,11 @@ class ShippingServiceProvider extends ServiceProvider
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
+        // The only view is the Filament widget for the shipping method availability schedule.
+        // A host app without Filament cannot compile it, which fails `php artisan view:cache`.
+        if (class_exists(Widget::class)) {
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
+        }
 
         $shippingModifiers->add(
             ShippingModifier::class,
