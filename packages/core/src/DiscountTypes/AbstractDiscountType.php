@@ -2,8 +2,8 @@
 
 namespace Lunar\Core\DiscountTypes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
 use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Discount;
@@ -79,7 +79,7 @@ abstract class AbstractDiscountType implements DiscountType
             : true;
 
         if ($validMaxUses && $this->discount->max_uses_per_user) {
-            $validMaxUses = $cart->user && ($this->usesByUser($cart->user) < $this->discount->max_uses_per_user);
+            $validMaxUses = app(CountsCustomerRedemptions::class)->execute($this->discount, $cart) < $this->discount->max_uses_per_user;
         }
 
         return $validCoupon && $validMinSpend && $validMaxUses;
@@ -99,17 +99,5 @@ abstract class AbstractDiscountType implements DiscountType
         $cart->discountBreakdown->push($breakdown);
 
         return $this;
-    }
-
-    /**
-     * Check how many times this discount has been used by the logged in user's customers
-     *
-     * @return int
-     */
-    protected function usesByUser(Authenticatable $user)
-    {
-        return $this->discount->users()
-            ->whereUserId($user->getKey())
-            ->count();
     }
 }
