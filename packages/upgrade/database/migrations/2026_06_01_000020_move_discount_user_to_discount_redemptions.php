@@ -43,6 +43,9 @@ return new class extends Migration
             });
         }
 
+        // Rows without an order can only come from an earlier run that stopped before the drop.
+        DB::table($redemptions)->whereNull('order_id')->delete();
+
         DB::table($redemptions)->insertUsing(
             ['discount_id', 'user_id', 'redeemed_at'],
             DB::table($discountUser)
