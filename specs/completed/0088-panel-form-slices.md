@@ -1,6 +1,6 @@
 # 0088 — Panel form slices on plain forms
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-09-16
 - TODO item: Panel form slices on plain forms — the create pages and settings forms compose the same `FormSlice` contract the drafted edit pages do (spec 0088)

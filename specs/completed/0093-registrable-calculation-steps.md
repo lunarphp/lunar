@@ -150,4 +150,4 @@ Modifiers stay. A modifier hooks a fixed, named point (before calculation, after
 - [x] Slice 2 — Move every caller in the table above onto the registry, remove the lists from the shipped config files, and add the config check. Existing cart, order and pruning tests pass unchanged; pricing tests that set the config key register through `Steps` instead. Tests: each removed key, when defined, throws `RemovedStepConfigException` naming it.
 - [x] Slice 3 — `lunar:upgrade` reporting (`StepListConfigStep`) for published list keys: safe to delete when they match v1's defaults, otherwise the equivalent `Steps::` calls, and the `WHATS-NEW.md` entry. The docs page on registering steps is outside this repo and still to write.
 - [x] Slice 4 — `lunar:steps` command listing the resolved lists.
-- [ ] Follow-up — Move the product bundles add-on (#2732) onto the registry and off config rewriting.
+- [x] Follow-up — Move the product bundles add-on (#2732) onto the registry and off config rewriting.
