@@ -31,7 +31,7 @@ Lunar\Core\Models\Discount
 | `data` | `jsonb` `nullable` | Discount-type-specific configuration |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
-| `max_uses_per_user` | `unsignedMediumInteger` `nullable` | Maximum times a single user can use this discount |
+| `max_uses_per_user` | `unsignedMediumInteger` `nullable` | Maximum times a single customer can use this discount. See [Per-customer limits](#per-customer-limits) |
 
 `coupon` is cast through `Lunar\Core\Casts\CouponString`, which normalizes the stored value to uppercase.
 
@@ -102,7 +102,7 @@ Lunar\Core\Models\DiscountRedemption
 | `order_id` | `foreignId` `nullable` | The placed order. `null` only for rows carried over from v1 |
 | `cart_id` | `foreignId` `nullable` | The order's cart |
 | `user_id` | `foreignId` `nullable` | The signed-in user, counted by `max_uses_per_user` |
-| `email` | `string` `nullable` | Reserved for counting guest customers; not yet written |
+| `email` | `string` `nullable` | The customer's email, lower-cased and trimmed, counted by `max_uses_per_user`. `null` when the order has no cart or no email |
 | `redeemed_at` | `timestamp` | When the order was placed |
 
 A unique index on `discount_id` and `order_id` keeps one row per discount per order.
@@ -116,12 +116,36 @@ A unique index on `discount_id` and `order_id` keeps one row per discount per or
 | `cart` | Belongs to | `Lunar\Core\Models\Cart` | |
 | `user` | Belongs to | the app's user model | |
 
+### Per-customer limits
+
+`max_uses_per_user` limits how many times one customer can use a discount. It applies to guests as well as signed-in customers. Lunar identifies the customer by user when there is one, and by email otherwise, and counts the redemptions that match either. A customer who has used a discount as a guest can't use it again by signing in, and a signed-in customer can't use it again by signing out, as long as the email is the same.
+
+`Lunar\Core\Contracts\Actions\Discounts\ResolvesCustomerEmail` (default `Lunar\Core\Actions\Discounts\ResolveCustomerEmail`) decides which email identifies a cart's customer. It returns the first of:
+
+1. the signed-in user's email;
+2. the billing address `contact_email`;
+3. the shipping address `contact_email`.
+
+The billing address identifies the customer. The shipping address `contact_email` is used only when the billing address has none. The result is lower-cased and trimmed. To match emails more strictly, for example by ignoring `+tags`, bind your own implementation of the contract in a service provider.
+
+`Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions` (default `Lunar\Core\Actions\Discounts\CountCustomerRedemptions`) counts a discount's redemptions whose `user_id` is the cart's user or whose `email` is the resolved email. It returns `0` when the cart has neither.
+
+The limit is enforced in three places:
+
+- **Discount conditions.** Each cart calculation drops the discount once the customer's count reaches `max_uses_per_user`. A guest cart with no email yet keeps the discount, and drops it as soon as an email that has used it is added.
+- **Coupon validation.** `Discounts::validateCoupon()` rejects a coupon the cart's customer has used up. See [Validating coupons](#validating-coupons).
+- **Order creation.** `Lunar\Core\Validation\Cart\ValidateCustomerForDiscounts` runs in the `OrderCreateValidation` step list. It fails when a discount with `max_uses_per_user` is applied to the cart and the cart has neither a user nor an email, so `$cart->canCreateOrder()` returns `false` until the customer gives one.
+
+Redemptions on cancelled and refunded orders keep counting, as `uses` does. Lunar does not give a use back when an order is cancelled.
+
 ### Going over a limit
 
-Eligibility is checked on every cart calculation, so a discount at its `max_uses` no longer applies to new carts. Two carts priced with the last use can still both be paid for before either order is placed. When a placement takes `uses` above `max_uses`, the listener keeps the order, because it has already been paid for, and reports it:
+Eligibility is checked on every cart calculation, so a discount at its `max_uses` no longer applies to new carts. Two carts priced with the last use can still both be paid for before either order is placed, and the same customer can pay for two carts at once. When a placement takes `uses` above `max_uses`, or takes the customer's redemptions above `max_uses_per_user`, the listener keeps the order, because it has already been paid for, and reports it:
 
-- It dispatches `Lunar\Core\Events\Discounts\DiscountLimitExceeded`, with public `order`, `discount` and `coupon` properties. `coupon` is always `null` for now.
-- It logs an activity on the order with the event `discount-limit-exceeded` and the properties `discount_id`, `discount` (the discount name), `coupon`, `uses` and `max_uses`.
+- It dispatches `Lunar\Core\Events\Discounts\DiscountLimitExceeded`, with public `order`, `discount`, `limit` and `coupon` properties. `limit` is a `Lunar\Core\Enums\DiscountLimit`: `DiscountLimit::MaxUses` for the discount-wide limit, or `DiscountLimit::MaxUsesPerUser` for the per-customer limit. `coupon` is always `null` for now.
+- It logs an activity on the order with the event `discount-limit-exceeded` and the properties `discount_id`, `discount` (the discount name), `coupon`, `limit` (`max_uses` or `max_uses_per_user`), `uses` (the count that went over) and `max_uses` (the value of that limit).
+
+A placement that goes over both limits dispatches the event twice, once for each.
 
 To hold such orders, or to alert someone, listen for the event:
 
@@ -130,7 +154,7 @@ use Illuminate\Support\Facades\Event;
 use Lunar\Core\Events\Discounts\DiscountLimitExceeded;
 
 Event::listen(DiscountLimitExceeded::class, function (DiscountLimitExceeded $event) {
-    // $event->order, $event->discount
+    // $event->order, $event->discount, $event->limit
 });
 ```
 
@@ -336,7 +360,7 @@ use Lunar\Core\Facades\Discounts;
 | `getApplied()` | `Collection` | The discounts recorded via `addApplied()` |
 | `apply(Cart $cart)` | `Cart` | Runs every eligible discount's `apply()` against the cart, in `priority` order (highest first), stopping early if an applied discount has `stop = true` |
 | `resetDiscounts()` | `DiscountManager` | Clears the memoized discount list, so the next `apply()`/`getDiscounts()` re-queries |
-| `validateCoupon(string $coupon)` | `bool` | Whether a coupon code matches an active, usable discount |
+| `validateCoupon(string $coupon, ?Cart $cart = null)` | `bool` | Whether a coupon code matches an active, usable discount the cart's customer has not used up. The cart defaults to `CartSession::current()` |
 
 `getDiscounts()` and `apply()` memoize the resolved discount list per cart state (cart ID, coupon code, customer, and line purchasables). Call `resetDiscounts()` after a change that should re-evaluate eligibility, for example after a coupon code is applied to the cart.
 
@@ -361,9 +385,13 @@ Typically called from a service provider's `boot()` method. See [Extending Disco
 use Lunar\Core\Facades\Discounts;
 
 $isValid = Discounts::validateCoupon('20OFF');
+
+$isValid = Discounts::validateCoupon('20OFF', $cart);
 ```
 
-The default validator, `Lunar\Core\Validation\CouponValidator`, checks that the coupon matches an active discount under its `max_uses` and, if the discount sets `max_uses_per_user`, that the authenticated user has not exceeded it. A per-user-limited coupon is rejected for a guest, since per-user usage is recorded against a user and the discount would not apply to their cart. Bind a different implementation of `Lunar\Core\Contracts\CouponValidator` in your own service provider to customize this.
+The default validator, `Lunar\Core\Validation\CouponValidator`, checks that the coupon matches an active discount under its `max_uses` and, if the discount sets `max_uses_per_user`, that the cart's customer has not reached it, counted through `CountsCustomerRedemptions` (see [Per-customer limits](#per-customer-limits)). Without a cart argument it checks the cart from `CartSession::current()`. A guest whose cart has no email yet passes, because there is nobody to count against. Validate the coupon again once the customer gives an email; see [Re-validating a coupon once the email is known](/guides/cart#re-validating-a-coupon-once-the-email-is-known).
+
+Bind a different implementation of `Lunar\Core\Contracts\CouponValidator` in your own service provider to customize this. The contract's signature is `validate(string $coupon, ?Cart $cart = null): bool`.
 
 ## How discounts apply in the cart pipeline
 
