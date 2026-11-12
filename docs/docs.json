@@ -92,6 +92,12 @@
               "guides/order-history",
               "guides/customer-addresses"
             ]
+          },
+          {
+            "group": "Promotions",
+            "pages": [
+              "guides/single-use-coupon-campaign"
+            ]
           }
         ]
       },

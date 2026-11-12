@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, type Component } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Link, router, useForm, usePoll } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
@@ -8,6 +8,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DataTable from '../../components/DataTable.vue';
+import Dialog from '../../components/Dialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
@@ -22,6 +23,7 @@ import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue'
 import TargetChipList, { type TargetChip } from '../../components/TargetChipList.vue';
 import TargetPickerDialog, { type TargetOption } from '../../components/TargetPickerDialog.vue';
 import TextInput from '../../components/TextInput.vue';
+import Textarea from '../../components/Textarea.vue';
 import Toggle from '../../components/Toggle.vue';
 import UsageMeter from '../../components/UsageMeter.vue';
 import BuyXGetYForm from '../../components/DiscountTypeForms/BuyXGetYForm.vue';
@@ -69,7 +71,14 @@ interface CouponRow {
     email: string | null;
     batch: string | null;
     last_redeemed_at: string | null;
-    _actions: { delete: string };
+    _actions: { delete: string; exportBatch: string | null };
+}
+
+interface CouponGeneration {
+    batch: string;
+    quantity: number;
+    generated: number;
+    failed: boolean;
 }
 
 interface CouponPage {
@@ -96,6 +105,8 @@ const props = defineProps<{
     activities: ActivityEntry[];
     coupons: CouponPage;
     couponSearch: string;
+    couponGenerations: CouponGeneration[];
+    couponQueueThreshold: number;
     urls: {
         index: string;
         activityLog: string;
@@ -105,6 +116,8 @@ const props = defineProps<{
         draftCommit: string;
         targetSearch: string;
         couponStore: string;
+        couponGenerate: string;
+        couponExport: string;
     };
 }>();
 
@@ -311,6 +324,45 @@ const addCoupon = (): void => {
     });
 };
 
+const generateOpen = ref(false);
+const generateSources = [
+    { value: 'quantity', label: t('discounts.coupons_generate_source_quantity') },
+    { value: 'emails', label: t('discounts.coupons_generate_source_emails') },
+];
+const generateForm = useForm({
+    source: 'quantity' as 'quantity' | 'emails',
+    quantity: 100 as number | string,
+    emails: '',
+    emails_file: null as File | null,
+    prefix: '',
+    length: 10 as number | string,
+    max_uses: 1 as number | string,
+});
+
+const onEmailsFile = (event: Event): void => {
+    generateForm.emails_file = (event.target as HTMLInputElement).files?.[0] ?? null;
+};
+
+const generateCoupons = (): void => {
+    generateForm.post(props.urls.couponGenerate, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            generateOpen.value = false;
+            generateForm.reset();
+        },
+    });
+};
+
+// A queued batch fills in behind the page, so poll until every run is done or failed.
+const generating = computed(() => props.couponGenerations.some((run) => !run.failed));
+const couponPoll = usePoll(3000, { only: ['coupons', 'couponGenerations'] }, { autoStart: false });
+watch(generating, (active) => (active ? couponPoll.start() : couponPoll.stop()), { immediate: true });
+
+const download = (url: string): void => {
+    window.location.assign(url);
+};
+
 const couponQuery = ref(props.couponSearch ?? '');
 
 let couponSearchTimer: ReturnType<typeof setTimeout> | undefined;
@@ -483,8 +535,39 @@ const confirmDestroy = (): void => {
                                 </Button>
                             </div>
 
-                            <div class="max-w-[280px] mb-3">
-                                <TextInput v-model="couponQuery" clearable :placeholder="t('discounts.coupons_search_placeholder')" />
+                            <div
+                                v-for="run in couponGenerations"
+                                :key="run.batch"
+                                :class="[
+                                    'flex items-center gap-2 mb-3 px-3 py-2 rounded-md text-[12px]',
+                                    run.failed ? 'bg-danger-soft text-danger' : 'bg-surface-2 text-ink-700',
+                                ]"
+                                data-testid="coupon-generation"
+                            >
+                                <Icon :name="run.failed ? 'alert' : 'clock'" cls="sm" />
+                                <span class="min-w-0">
+                                    {{
+                                        t(run.failed ? 'discounts.coupons_generation_failed' : 'discounts.coupons_generating', {
+                                            quantity: run.quantity.toLocaleString(),
+                                            generated: run.generated.toLocaleString(),
+                                        })
+                                    }}
+                                </span>
+                                <span class="ml-auto text-[11px] font-mono text-ink-500 truncate">{{ run.batch }}</span>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <div class="w-full max-w-[280px]">
+                                    <TextInput v-model="couponQuery" clearable :placeholder="t('discounts.coupons_search_placeholder')" />
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <Button type="button" icon="download" :disabled="coupons.total === 0" @click="download(urls.couponExport)">
+                                        {{ t('discounts.coupons_export') }}
+                                    </Button>
+                                    <Button type="button" icon="plus" @click="generateOpen = true">
+                                        {{ t('discounts.coupons_generate') }}
+                                    </Button>
+                                </div>
                             </div>
 
                             <DataTable
@@ -505,8 +588,18 @@ const confirmDestroy = (): void => {
                                 <template #cell-email="{ value }">
                                     <span class="text-[12px] text-ink-700 truncate block">{{ value ?? '' }}</span>
                                 </template>
-                                <template #cell-batch="{ value }">
-                                    <span class="text-[11px] font-mono text-ink-500 truncate block">{{ value ?? '' }}</span>
+                                <template #cell-batch="{ row, value }">
+                                    <button
+                                        v-if="value"
+                                        type="button"
+                                        class="flex items-center gap-1 min-w-0 text-[11px] font-mono text-ink-500 hover:text-ink-900"
+                                        :title="t('discounts.coupons_export_batch')"
+                                        :aria-label="t('discounts.coupons_export_batch')"
+                                        @click="download((row as unknown as CouponRow)._actions.exportBatch as string)"
+                                    >
+                                        <span class="truncate">{{ value }}</span>
+                                        <Icon name="download" cls="sm" class="shrink-0" />
+                                    </button>
                                 </template>
                                 <template #cell-last_redeemed_at="{ value }">
                                     <span v-if="value" class="text-[11.5px] text-ink-700 whitespace-nowrap">{{ formatDateTime(value as string) }}</span>
@@ -659,6 +752,93 @@ const confirmDestroy = (): void => {
                 :confirm-label="t('common.delete')"
                 @confirm="confirmDestroy"
             />
+
+            <Dialog v-model:open="generateOpen" :title="t('discounts.coupons_generate')" :description="t('discounts.coupons_generate_description')">
+                <div class="flex flex-col gap-3" data-testid="coupon-generate-form">
+                    <div>
+                        <FieldLabel>{{ t('discounts.coupons_generate_source') }}</FieldLabel>
+                        <StatusSegmentedControl
+                            v-model="generateForm.source"
+                            :options="generateSources"
+                            :aria-label="t('discounts.coupons_generate_source')"
+                        />
+                    </div>
+                    <div v-if="generateForm.source === 'quantity'">
+                        <FieldLabel for="coupon-generate-quantity" required>{{ t('discounts.coupons_generate_field_quantity') }}</FieldLabel>
+                        <TextInput
+                            id="coupon-generate-quantity"
+                            v-model="generateForm.quantity"
+                            type="number"
+                            min="1"
+                            :invalid="!!generateForm.errors.quantity"
+                        />
+                        <div v-if="generateForm.errors.quantity" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.quantity }}</div>
+                        <div v-else class="mt-1 text-[11.5px] text-ink-500">
+                            {{ t('discounts.coupons_generate_background_hint', { count: couponQueueThreshold.toLocaleString() }) }}
+                        </div>
+                    </div>
+                    <div v-else>
+                        <FieldLabel for="coupon-generate-emails" required>{{ t('discounts.coupons_generate_field_emails') }}</FieldLabel>
+                        <Textarea
+                            id="coupon-generate-emails"
+                            v-model="generateForm.emails"
+                            rows="5"
+                            :invalid="!!generateForm.errors.emails"
+                        />
+                        <div v-if="generateForm.errors.emails" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.emails }}</div>
+                        <div v-else class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.coupons_generate_field_emails_hint') }}</div>
+                        <label class="block mt-2 text-[12px] text-ink-700">
+                            <span class="block mb-1">{{ t('discounts.coupons_generate_field_emails_file') }}</span>
+                            <input type="file" accept=".csv,.txt,text/csv,text/plain" class="text-[12px]" @change="onEmailsFile" />
+                        </label>
+                        <div v-if="generateForm.errors.emails_file" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.emails_file }}</div>
+                    </div>
+                    <div class="grid sm:grid-cols-3 gap-3">
+                        <div>
+                            <FieldLabel for="coupon-generate-prefix">{{ t('discounts.coupons_generate_field_prefix') }}</FieldLabel>
+                            <TextInput
+                                id="coupon-generate-prefix"
+                                v-model="generateForm.prefix"
+                                class="font-mono uppercase"
+                                :invalid="!!generateForm.errors.prefix"
+                            />
+                            <div v-if="generateForm.errors.prefix" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.prefix }}</div>
+                            <div v-else class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.coupons_generate_field_prefix_hint') }}</div>
+                        </div>
+                        <div>
+                            <FieldLabel for="coupon-generate-length" required>{{ t('discounts.coupons_generate_field_length') }}</FieldLabel>
+                            <TextInput
+                                id="coupon-generate-length"
+                                v-model="generateForm.length"
+                                type="number"
+                                min="6"
+                                max="32"
+                                :invalid="!!generateForm.errors.length"
+                            />
+                            <div v-if="generateForm.errors.length" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.length }}</div>
+                            <div v-else class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.coupons_generate_field_length_hint') }}</div>
+                        </div>
+                        <div>
+                            <FieldLabel for="coupon-generate-max-uses">{{ t('discounts.coupons_generate_field_max_uses') }}</FieldLabel>
+                            <TextInput
+                                id="coupon-generate-max-uses"
+                                v-model="generateForm.max_uses"
+                                type="number"
+                                min="1"
+                                :invalid="!!generateForm.errors.max_uses"
+                            />
+                            <div v-if="generateForm.errors.max_uses" class="mt-1 text-[11px] text-danger">{{ generateForm.errors.max_uses }}</div>
+                            <div v-else class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.coupon_field_max_uses_hint') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <template #footer>
+                    <Button variant="ghost" @click="generateOpen = false">{{ t('common.cancel') }}</Button>
+                    <Button variant="primary" :disabled="generateForm.processing" @click="generateCoupons">
+                        {{ t('discounts.coupons_generate_submit') }}
+                    </Button>
+                </template>
+            </Dialog>
 
             <ConfirmDialog
                 v-model:open="couponConfirmOpen"
