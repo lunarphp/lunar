@@ -17,6 +17,7 @@ use Lunar\Core\Models\AttributeModel;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Discountable;
 use Lunar\Core\Models\DiscountCollection;
@@ -94,6 +95,8 @@ test('every model carries a public_id except the documented exclusions', functio
         Discountable::class,
         DiscountCollection::class,
         DiscountRedemption::class,
+        // Coupons are addressed by their unique code; bulk generation inserts them without model events.
+        Coupon::class,
         ProductAssociation::class,
         UserPermission::class,
         TaxZoneCountry::class,

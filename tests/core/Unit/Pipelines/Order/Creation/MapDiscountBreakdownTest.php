@@ -50,10 +50,9 @@ test('can map discount with same purchasable with different meta', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'percentage' => 10,
         ],
@@ -123,4 +122,11 @@ test('can map discount with same purchasable with different meta', function () {
 
     expect($appliedDiscountLines)->toHaveCount($orderLines->count());
     expect($appliedDiscountLines->toArray())->toEqual($orderLines->toArray());
+
+    $coupon = $discount->coupons()->sole();
+    $coupon->delete();
+
+    expect($order->refresh()->discount_breakdown->first())
+        ->coupon_id->toBe($coupon->id)
+        ->coupon_code->toBe('10OFF');
 });

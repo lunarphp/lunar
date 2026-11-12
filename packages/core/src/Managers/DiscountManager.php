@@ -10,6 +10,7 @@ use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\CustomerGroup;
@@ -138,6 +139,8 @@ class DiscountManager implements DiscountManagerContract
             $this->customerGroup($defaultGroup);
         }
 
+        $couponDiscountId = $cart?->loadMissing('coupon')->coupon?->discount_id;
+
         return Discount::active()
             ->usable()
             ->channel($this->channels)
@@ -173,17 +176,11 @@ class DiscountManager implements DiscountManagerContract
                     });
                 }
             )
-            ->when(
-                $cart?->coupon_code,
-                function ($query, $value) {
-                    return $query->where(function ($query) use ($value) {
-                        $query->where('coupon', $value)
-                            ->orWhereNull('coupon')
-                            ->orWhere('coupon', '');
-                    });
-                },
-                fn ($query, $value) => $query->whereNull('coupon')->orWhere('coupon', '')
-            )->orderBy('priority', 'desc')
+            ->where(function ($query) use ($couponDiscountId) {
+                $query->where('redemption', DiscountRedemptionMethod::Automatic)
+                    ->when($couponDiscountId, fn ($query, $id) => $query->orWhere('id', $id));
+            })
+            ->orderBy('priority', 'desc')
             ->orderBy('id')
             ->get();
     }

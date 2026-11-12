@@ -10,6 +10,7 @@ use Lunar\Core\Enums\DiscountLimit;
 use Lunar\Core\Events\Discounts\DiscountLimitExceeded;
 use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Coupon;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Order;
@@ -31,26 +32,32 @@ class RecordDiscountRedemptions
     {
         $order = $event->order;
 
-        $discountIds = $this->discountIds($order);
+        $entries = $this->breakdownEntries($order);
 
-        if ($discountIds->isEmpty()) {
+        if ($entries->isEmpty()) {
             return;
         }
 
         $cart = $order->cart;
         $email = $cart ? $this->resolvesCustomerEmail->execute($cart) : null;
 
-        $order->getConnection()->transaction(function () use ($order, $cart, $email, $discountIds) {
-            foreach (Discount::query()->whereIn('id', $discountIds)->get() as $discount) {
-                $this->record($order, $cart, $email, $discount);
+        $order->getConnection()->transaction(function () use ($order, $cart, $email, $entries) {
+            $discounts = Discount::query()->whereIn('id', $entries->keys())->get();
+            $coupons = Coupon::query()->whereIn('id', $entries->filter())->get()->keyBy('id');
+
+            foreach ($discounts as $discount) {
+                $couponId = $entries->get($discount->id);
+
+                $this->record($order, $cart, $email, $discount, $couponId ? $coupons->get($couponId) : null);
             }
         });
     }
 
-    protected function record(Order $order, ?Cart $cart, ?string $email, Discount $discount): void
+    protected function record(Order $order, ?Cart $cart, ?string $email, Discount $discount, ?Coupon $coupon): void
     {
         $inserted = DiscountRedemption::query()->insertOrIgnore([
             'discount_id' => $discount->id,
+            'coupon_id' => $coupon?->id,
             'order_id' => $order->id,
             'cart_id' => $order->cart_id,
             'user_id' => $order->user_id,
@@ -67,21 +74,31 @@ class RecordDiscountRedemptions
         $discount->refresh();
 
         if ($discount->max_uses !== null && $discount->uses > $discount->max_uses) {
-            $this->reportExceeded($order, $discount, DiscountLimit::MaxUses, $discount->uses, $discount->max_uses);
+            $this->reportExceeded($order, $discount, $coupon, DiscountLimit::MaxUses, $discount->uses, $discount->max_uses);
+        }
+
+        if ($coupon) {
+            Coupon::query()->whereKey($coupon->id)->increment('uses');
+
+            $coupon->refresh();
+
+            if ($coupon->max_uses !== null && $coupon->uses > $coupon->max_uses) {
+                $this->reportExceeded($order, $discount, $coupon, DiscountLimit::CouponMaxUses, $coupon->uses, $coupon->max_uses);
+            }
         }
 
         if ($cart && $discount->max_uses_per_user) {
             $customerUses = $this->countsCustomerRedemptions->execute($discount, $cart);
 
             if ($customerUses > $discount->max_uses_per_user) {
-                $this->reportExceeded($order, $discount, DiscountLimit::MaxUsesPerUser, $customerUses, $discount->max_uses_per_user);
+                $this->reportExceeded($order, $discount, $coupon, DiscountLimit::MaxUsesPerUser, $customerUses, $discount->max_uses_per_user);
             }
         }
     }
 
-    protected function reportExceeded(Order $order, Discount $discount, DiscountLimit $limit, int $uses, int $max): void
+    protected function reportExceeded(Order $order, Discount $discount, ?Coupon $coupon, DiscountLimit $limit, int $uses, int $max): void
     {
-        $this->events->dispatch(new DiscountLimitExceeded($order, $discount, $limit));
+        $this->events->dispatch(new DiscountLimitExceeded($order, $discount, $limit, $coupon));
 
         activity()
             ->performedOn($order)
@@ -89,7 +106,7 @@ class RecordDiscountRedemptions
             ->withProperties([
                 'discount_id' => $discount->id,
                 'discount' => $discount->name,
-                'coupon' => null,
+                'coupon' => $coupon?->code,
                 'limit' => $limit->value,
                 'uses' => $uses,
                 'max_uses' => $max,
@@ -98,17 +115,17 @@ class RecordDiscountRedemptions
     }
 
     /**
-     * @return Collection<int, int>
+     * The coupon id each discount on the order was redeemed with, keyed by discount id.
+     *
+     * @return Collection<int, ?int>
      */
-    protected function discountIds(Order $order): Collection
+    protected function breakdownEntries(Order $order): Collection
     {
         // The raw column: the cast hydrates an OrderLine per breakdown line just to reach an id.
         $breakdown = $order->getAttributes()['discount_breakdown'] ?? null;
 
         return collect(json_decode($breakdown ?: '[]', true) ?: [])
-            ->pluck('discount_id')
-            ->filter()
-            ->unique()
-            ->values();
+            ->filter(fn (array $entry) => filled($entry['discount_id'] ?? null))
+            ->mapWithKeys(fn (array $entry) => [(int) $entry['discount_id'] => $entry['coupon_id'] ?? null]);
     }
 }

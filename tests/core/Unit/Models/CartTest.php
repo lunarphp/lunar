@@ -78,10 +78,9 @@ test('can save coupon code', function () {
         'default' => true,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('valid-coupon')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => 'valid-coupon',
         'data' => [
             'percentage' => 10,
         ],
@@ -755,10 +754,9 @@ test('can create a discount breakdown', function () {
         'default' => true,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('valid-coupon')->create([
         'type' => PercentageOff::class,
         'name' => 'Test Coupon',
-        'coupon' => 'valid-coupon',
         'data' => [
             'percentage' => 10,
         ],

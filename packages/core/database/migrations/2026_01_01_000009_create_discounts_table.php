@@ -13,8 +13,8 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('handle')->unique();
-            $table->string('coupon')->nullable()->unique();
             $table->string('type')->index();
+            $table->string('redemption')->default('automatic')->index();
             $table->dateTime('starts_at')->index();
             $table->dateTime('ends_at')->nullable()->index();
             $table->integer('uses')->unsigned()->default(0)->index();
