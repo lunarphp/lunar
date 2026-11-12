@@ -228,6 +228,8 @@ class SalesSection extends Section
 
                 Route::scopeBindings()->group(function (): void {
                     Route::post('/{discount}/coupons', [DiscountCouponController::class, 'store'])->name('coupons.store');
+                    Route::post('/{discount}/coupons/generate', [DiscountCouponController::class, 'generate'])->name('coupons.generate');
+                    Route::get('/{discount}/coupons/export', [DiscountCouponController::class, 'export'])->name('coupons.export');
                     Route::delete('/{discount}/coupons/{coupon}', [DiscountCouponController::class, 'destroy'])->name('coupons.destroy');
                 });
 
