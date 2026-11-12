@@ -29,7 +29,8 @@ class CouponGenerations
         $batchId = $batch->id;
 
         Bus::chain([new GenerateCouponsJob($discount, $batch)])
-            ->catch(fn () => app(static::class)->markFailed($discountId, $batchId))
+            // Static, so the queued callback doesn't serialize this instance and its cache store.
+            ->catch(static fn () => app(self::class)->markFailed($discountId, $batchId))
             ->dispatch();
     }
 
