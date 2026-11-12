@@ -57,7 +57,9 @@ use Lunar\Core\Actions\Customers\UnlinkCustomerUser;
 use Lunar\Core\Actions\Customers\UpdateCustomer;
 use Lunar\Core\Actions\Customers\UpdateCustomerAddress;
 use Lunar\Core\Actions\Discounts\CountCustomerRedemptions;
+use Lunar\Core\Actions\Discounts\CreateCoupon;
 use Lunar\Core\Actions\Discounts\CreateDiscount;
+use Lunar\Core\Actions\Discounts\DeleteCoupon;
 use Lunar\Core\Actions\Discounts\DeleteDiscount;
 use Lunar\Core\Actions\Discounts\ResolveCustomerEmail;
 use Lunar\Core\Actions\Discounts\UpdateDiscount;
@@ -298,7 +300,9 @@ class ActionServiceProvider extends ServiceProvider
 
         // Discounts
         Contracts\Discounts\CountsCustomerRedemptions::class => CountCustomerRedemptions::class,
+        Contracts\Discounts\CreatesCoupon::class => CreateCoupon::class,
         Contracts\Discounts\CreatesDiscount::class => CreateDiscount::class,
+        Contracts\Discounts\DeletesCoupon::class => DeleteCoupon::class,
         Contracts\Discounts\DeletesDiscount::class => DeleteDiscount::class,
         Contracts\Discounts\ResolvesCustomerEmail::class => ResolveCustomerEmail::class,
         Contracts\Discounts\UpdatesDiscount::class => UpdateDiscount::class,
