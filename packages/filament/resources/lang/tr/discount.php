@@ -36,9 +36,12 @@ return [
             'label' => 'Bundan sonra diğer indirimlerin uygulanmasını durdur',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Kupon',
-            'helper_text' => 'İndirimin uygulanması için gerekli kuponu girin, boş bırakılırsa otomatik olarak uygulanır.',
+        'redemption' => [
+            'label' => 'Uygulama yöntemi',
+            'options' => [
+                'automatic' => 'Otomatik uygulanır',
+                'coupon' => 'Kupon gerektirir',
+            ],
         ],
         'max_uses' => [
             'label' => 'Maksimum kullanım',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Kupon',
+            'count' => 'Kodlar: :count',
+        ],
+        'redemption' => [
+            'label' => 'Uygulama yöntemi',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Hariç Tutma',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Kuponlar',
+            'actions' => [
+                'create' => [
+                    'label' => 'Kupon ekle',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'uses' => [
+                    'label' => 'Kullanım',
+                ],
+                'limit' => [
+                    'label' => 'Sınır',
+                    'unlimited' => 'Sınırsız',
+                ],
+                'email' => [
+                    'label' => 'E-posta',
+                ],
+                'batch' => [
+                    'label' => 'Parti',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Son kullanım',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Kod',
+                ],
+                'max_uses' => [
+                    'label' => 'Maksimum kullanım',
                 ],
             ],
         ],

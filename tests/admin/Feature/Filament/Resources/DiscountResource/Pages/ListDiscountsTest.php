@@ -47,3 +47,25 @@ it('lists a discount whose type class is not installed', function () {
 
     expect($discount->refresh()->type)->toBe('Acme\\Discounts\\UninstalledType');
 });
+
+it('shows the code for a single coupon and the count for several', function () {
+    $single = Discount::factory()->coupon('ONLYONE')->create(['name' => 'Single']);
+    $many = Discount::factory()->coupon('FIRST')->create(['name' => 'Many']);
+    $many->coupons()->create(['code' => 'SECOND']);
+
+    Livewire::test(ListDiscounts::class)
+        ->toggleAllTableColumns()
+        ->assertTableColumnStateSet('coupon', 'ONLYONE', $single)
+        ->assertTableColumnStateSet('coupon', __('lunar-filament::discount.table.coupon.count', ['count' => 2]), $many);
+});
+
+it('searches discounts by coupon code', function () {
+    $match = Discount::factory()->coupon('SUMMER25')->create();
+    $other = Discount::factory()->coupon('WINTER25')->create();
+
+    Livewire::test(ListDiscounts::class)
+        ->toggleAllTableColumns()
+        ->searchTable('SUMMER')
+        ->assertCanSeeTableRecords([$match])
+        ->assertCanNotSeeTableRecords([$other]);
+});

@@ -36,9 +36,12 @@ return [
             'label' => 'Stop andere kortingen na deze toe te passen',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Coupon',
-            'helper_text' => 'Voer de vereiste coupon in voor de korting, als deze leeg is, wordt deze automatisch toegepast.',
+        'redemption' => [
+            'label' => 'Toepassing',
+            'options' => [
+                'automatic' => 'Automatisch toegepast',
+                'coupon' => 'Vereist een coupon',
+            ],
         ],
         'max_uses' => [
             'label' => 'Maximaal gebruik',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'Codes: :count',
+        ],
+        'redemption' => [
+            'label' => 'Toepassing',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Uitsluiting',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Coupons',
+            'actions' => [
+                'create' => [
+                    'label' => 'Coupon toevoegen',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Code',
+                ],
+                'uses' => [
+                    'label' => 'Gebruik',
+                ],
+                'limit' => [
+                    'label' => 'Limiet',
+                    'unlimited' => 'Onbeperkt',
+                ],
+                'email' => [
+                    'label' => 'E-mail',
+                ],
+                'batch' => [
+                    'label' => 'Batch',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Laatst verzilverd',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Code',
+                ],
+                'max_uses' => [
+                    'label' => 'Maximaal gebruik',
                 ],
             ],
         ],

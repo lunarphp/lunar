@@ -15,6 +15,7 @@ use Lunar\Core\Models\Discount;
 use Lunar\Filament\RelationManagers\Discount\BrandLimitationRelationManager;
 use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\CollectionLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CouponRelationManager;
 use Lunar\Filament\RelationManagers\Discount\CustomerLimitationRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductLimitationRelationManager;
@@ -84,6 +85,7 @@ class DiscountResource extends BaseResource
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
             CollectionConditionRelationManager::class,
+            CouponRelationManager::class,
         ];
     }
 
