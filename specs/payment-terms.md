@@ -22,6 +22,8 @@ Settling this before beta avoids a breaking change and a data migration later.
 
 ## Proposal
 
+Core decides on the terms, so they are a typed column, not a key in `meta`. Core reads and writes none of its own keys in `meta`: `meta` belongs to the store and its add-ons. This spec removes the panel's read of `meta['payment_method']`.
+
 ### Terms
 
 An enum `Lunar\Core\Enums\PaymentTerms`:
@@ -84,7 +86,7 @@ The `payment-received` notification fires when the payment status reaches `paid`
 
 ## Alternatives considered
 
-- **Keep `meta['payment_method']` and document it.** It needs no code, but core keeps reading an untyped key and each surface has to know the handle.
+- **Keep `meta['payment_method']` and document it.** Core doesn't use `meta` for its own values, and each surface would still have to know the handle.
 - **New payment states (`AwaitingInvoice`, `AwaitingPickup`).** The payment status describes money, and is derived from transactions. A state that depends on an arrangement instead would need its own writers and would conflict with `ResolvePaymentStatus` the moment a part payment arrives.
 - **Put terms in [[0077-payment-intent-capabilities]].** That spec covers gateway intents before an order exists. Terms are about what payment an order expects, often with no gateway at all.
 - **Leave payment recording to the store.** Every store with on-account customers needs it, and a store that writes its own transaction has to know how to recompute the status.

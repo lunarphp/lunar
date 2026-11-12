@@ -40,6 +40,8 @@ The customer's choice belongs on the cart, and is copied to the order when it is
 
 Lines with no explicit method keep today's claim-based inference, so a storefront that changes nothing behaves as it does now.
 
+Every value core reads, writes or routes on is a typed column, cast or relation. Core reads and writes none of its own keys in `meta`: `meta` belongs to the store and its add-ons. Core may carry a store's `meta` through without interpreting it, as it does when copying cart-line `meta` to the order line and comparing it for line identity. This spec removes the two places the pickup choice currently lives in `meta`.
+
 Sections A to K cover what the customer chooses before the order is placed. Section L covers what staff can change afterwards. The two are separate: the customer's choice is recorded on the order as requested, and later changes act on fulfilments.
 
 ### A. Schema
@@ -54,7 +56,8 @@ Baseline edits while v2 is in alpha:
 | `carts` | `pickup_location_id`, nullable foreign key to `locations` | the pickup location, set explicitly |
 | `orders` | `pickup_location_id`, nullable foreign key to `locations` | where the order's pickup lines are collected; null when nothing is picked up |
 | `locations` | address columns (section I) | where the location is |
-| `product_variants` | `fulfilment_methods`, nullable JSON list of method keys | the methods this variant may use; null allows any method that supports it |
+| `product_variants` | `fulfilment_methods`, nullable JSON list of method keys, cast to an array | the methods this variant may use; null allows any method that supports it |
+| `shipping_methods` (table-rate) | `pickup_location_id`, nullable foreign key to `locations` | the location a pickup method's options collect from (section C) |
 
 Models gain the matching properties and relations: `Cart::pickupLocation()` and `Order::pickupLocation()` are `BelongsTo`. Factories default every new column to null, so existing products allow every method.
 
@@ -98,7 +101,7 @@ A collection-only variant sets `['pickup']`. A drop-shipped variant sets `['ship
 
 - `ShippingOption` gains `public ?Location $pickupLocation = null`.
 - `$pickup` is deprecated. It stays as a constructor argument for now. The option gains `isPickup(): bool`, true when `$pickup` is true or a location is set, and core reads that instead of the property.
-- The table-rate `Pickup` driver reads an optional `location_id` from its shipping method's `data` and returns options with that location. The panel and Filament shipping method forms get a location select for the pickup driver.
+- `shipping_methods` gains `pickup_location_id`, a nullable foreign key to `locations`, in the table-rate baseline migration. The table-rate `Pickup` driver returns options with that location. It is a typed column rather than a key in the method's `data` JSON, so a deleted location is caught by the foreign key and the value is never read untyped. The panel and Filament shipping method forms get a location select for the pickup driver.
 
 ### D. Resolution
 
@@ -244,7 +247,8 @@ The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilme
 
 ## Alternatives considered
 
-- **A `meta['fulfilment_method']` convention, no schema.** Untyped, unvalidated, invisible to `EnsureInitialFulfilment`, and squats a key in the consumer's `meta`. A store can already do this with a custom `claim()`, and that it is possible is why it is undiscoverable.
+- **A `meta['fulfilment_method']` convention, no schema.** Core doesn't use `meta` for its own values. It would also be unvalidated and invisible to `EnsureInitialFulfilment`.
+- **The pickup location in the shipping method's `data` JSON.** Untyped, with no foreign key to catch a deleted location. A typed column costs one nullable field.
 - **Keep the pickup location only on the order, set from the shipping option.** This was the pickup half of the typed-checkout-choices draft (#2846). It breaks on a mixed cart: the cart picks a delivery rate, so no location is recorded and the pickup lines have nowhere to be collected from. The location has to resolve from the cart, with the shipping option as one source.
 - **A pickup location per line.** Collecting different lines from different counters is stock routing, and belongs to the location-scoped availability item in the TODO ideas. One location per order covers checkout today, and a per-line column can be added beside `cart_lines.fulfilment_method` later.
 - **Per-line shipping options (commercetools "multiple" shipping mode).** Each line targets an address and a rate. Much larger, and the wrong level: the customer's choice is how a line is fulfilled, and the rate stays a price for the cart. Shopify's delivery groups reach the same conclusion.
@@ -258,7 +262,7 @@ The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilme
 
 ## Migration impact
 
-- **Database** (baseline edits): `fulfilment_method` on `carts`, `cart_lines` and `order_lines`; `pickup_location_id` on `carts` and `orders`; address columns on `locations`; `fulfilment_methods` on `product_variants`. No backfill.
+- **Database** (baseline edits): `fulfilment_method` on `carts`, `cart_lines` and `order_lines`; `pickup_location_id` on `carts` and `orders`; address columns on `locations`; `fulfilment_methods` on `product_variants`; `pickup_location_id` on the table-rate `shipping_methods`. No backfill.
 - **Breaking changes:**
   - `Contracts\FulfilmentMethod` gains `supports()` and `requiresDelivery()`. Implementations must add them; Rector note in `LunarSetList`.
   - `AddsOrUpdatesPurchasable::execute()` gains a trailing `?string $fulfilmentMethod = null`. A custom implementation must add it; Rector note.
