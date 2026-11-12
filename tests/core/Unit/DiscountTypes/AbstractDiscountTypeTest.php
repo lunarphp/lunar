@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
@@ -136,9 +137,60 @@ function perUserLimitedCart(?int $userId = null): Cart
     return $cart->refresh();
 }
 
-test('does not apply a per-user-limited discount to a guest cart', function () {
-    // Usage is recorded against a user, so a guest cannot be held to the limit.
-    expect(perUserLimitedCart()->calculate()->subTotalDiscounted->value)->toBe(1000);
+function withContactEmail(Cart $cart, string $type, string $email): Cart
+{
+    CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => $type,
+        'contact_email' => $email,
+    ]);
+
+    return $cart->refresh();
+}
+
+function redeemedBy(array $attributes): DiscountRedemption
+{
+    return DiscountRedemption::factory()->for(Discount::query()->sole())->create($attributes);
+}
+
+test('applies a per-user-limited discount to a guest within the limit', function () {
+    $cart = withContactEmail(perUserLimitedCart(), 'billing', 'guest@example.com');
+
+    redeemedBy(['email' => 'someone-else@example.com']);
+
+    expect($cart->calculate()->subTotalDiscounted->value)->toBe(900);
+});
+
+test('does not apply a per-user-limited discount to a guest whose email has used it', function () {
+    $cart = withContactEmail(perUserLimitedCart(), 'billing', 'Guest@Example.com ');
+
+    redeemedBy(['email' => 'guest@example.com']);
+
+    expect($cart->calculate()->subTotalDiscounted->value)->toBe(1000);
+});
+
+test('counts a signed-in customer\'s earlier guest order with the same email', function () {
+    setAuthUserConfig();
+
+    $user = User::factory()->create(['email' => 'customer@example.com']);
+    $cart = perUserLimitedCart($user->id);
+
+    redeemedBy(['user_id' => null, 'email' => 'customer@example.com']);
+
+    expect($cart->calculate()->subTotalDiscounted->value)->toBe(1000);
+});
+
+test('identifies a guest by the billing email over the shipping email', function () {
+    $cart = withContactEmail(perUserLimitedCart(), 'shipping', 'shipping@example.com');
+    $cart = withContactEmail($cart, 'billing', 'billing@example.com');
+
+    redeemedBy(['email' => 'shipping@example.com']);
+
+    expect($cart->calculate()->subTotalDiscounted->value)->toBe(900);
+
+    redeemedBy(['email' => 'billing@example.com']);
+
+    expect($cart->refresh()->recalculate()->subTotalDiscounted->value)->toBe(1000);
 });
 
 test('applies a per-user-limited discount to a user under the limit', function () {

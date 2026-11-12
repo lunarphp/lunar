@@ -60,8 +60,10 @@ use Lunar\Core\Actions\Customers\LinkCustomerUser;
 use Lunar\Core\Actions\Customers\UnlinkCustomerUser;
 use Lunar\Core\Actions\Customers\UpdateCustomer;
 use Lunar\Core\Actions\Customers\UpdateCustomerAddress;
+use Lunar\Core\Actions\Discounts\CountCustomerRedemptions;
 use Lunar\Core\Actions\Discounts\CreateDiscount;
 use Lunar\Core\Actions\Discounts\DeleteDiscount;
+use Lunar\Core\Actions\Discounts\ResolveCustomerEmail;
 use Lunar\Core\Actions\Discounts\UpdateDiscount;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
@@ -315,8 +317,10 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Customers\UpdatesCustomerAddress::class => UpdateCustomerAddress::class,
 
         // Discounts
+        Contracts\Discounts\CountsCustomerRedemptions::class => CountCustomerRedemptions::class,
         Contracts\Discounts\CreatesDiscount::class => CreateDiscount::class,
         Contracts\Discounts\DeletesDiscount::class => DeleteDiscount::class,
+        Contracts\Discounts\ResolvesCustomerEmail::class => ResolveCustomerEmail::class,
         Contracts\Discounts\UpdatesDiscount::class => UpdateDiscount::class,
 
         // Locations
