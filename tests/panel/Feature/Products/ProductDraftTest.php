@@ -173,6 +173,21 @@ it('commits simple-shape variant fields through the variant action', function ()
         ->and($variant->selling_policy->value)->toBe('in_stock');
 });
 
+it('drafts and commits the sole variant allowed fulfilment methods', function () {
+    $variant = $this->product->variants()->sole();
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['variant:fulfilment_methods' => ['pickup']],
+    ])->assertOk();
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => [],
+        'rebase' => [],
+    ])->assertOk();
+
+    expect($variant->refresh()->fulfilment_methods)->toBe(['pickup']);
+});
+
 it('refuses variant fields while the product has several variants', function () {
     ProductVariant::factory()->create(['product_id' => $this->product->id]);
 

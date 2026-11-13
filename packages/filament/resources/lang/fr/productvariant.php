@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Expédiable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Méthodes de traitement',
+            'helper_text' => 'Les méthodes de traitement possibles pour cette variante. Laissez tout décoché pour autoriser n\'importe quelle méthode.',
+        ],
         'length_value' => [
             'label' => 'Longueur',
         ],

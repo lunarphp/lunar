@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Recogida',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Punto de recogida',
+            'helper_text' => 'Déjalo vacío para usar la ubicación predeterminada.',
+        ],
         'stock_available' => [
             'label' => 'El stock de todos los artículos del carrito debe estar disponible',
         ],

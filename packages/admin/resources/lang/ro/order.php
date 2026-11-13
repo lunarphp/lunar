@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Adresă de livrare',
         ],
+        'pickup_location' => [
+            'label' => 'Locație de ridicare',
+        ],
         'billing_address' => [
             'label' => 'Adresă de facturare',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Locația onorării a fost actualizată.',
                     'error' => 'Nu s-a putut schimba locația onorării.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Schimbă în :method',
+                'address_hint' => 'Această comandă nu are adresă de livrare. Introdu adresa la care să fie trimise aceste articole.',
+                'notification' => [
+                    'success' => 'Metoda de onorare a fost schimbată.',
+                    'error' => 'Nu s-a putut schimba metoda de onorare.',
                 ],
             ],
             'return' => [

@@ -52,6 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?float $volume_value
  * @property ?string $volume_unit
  * @property bool $shippable
+ * @property ?list<string> $fulfilment_methods
  * @property int $backorder
  * @property SellingPolicy $selling_policy
  * @property int $stock_on_hand
@@ -89,6 +90,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
     protected $casts = [
         'enabled' => 'bool',
         'shippable' => 'bool',
+        'fulfilment_methods' => 'array',
         'selling_policy' => SellingPolicy::class,
         'stock_on_hand' => 'integer',
         'stock_incoming' => 'integer',
@@ -196,6 +198,14 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
     public function isShippable(): bool
     {
         return $this->shippable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function allowedFulfilmentMethods(): ?array
+    {
+        return $this->fulfilment_methods ?: null;
     }
 
     /**

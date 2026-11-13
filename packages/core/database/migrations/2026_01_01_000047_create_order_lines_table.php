@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('type')->index();
             $table->boolean('requires_shipping')->default(false)->index()->comment('Needs physical delivery; stamped from the purchasable isShippable()');
             $table->boolean('requires_fulfilment')->default(false)->index()->comment('Needs fulfilling at all; superset of requires_shipping, drives the fulfilment rollup');
+            $table->string('fulfilment_method')->nullable()->index()->comment('The method resolved at order creation; null is inferred when fulfilments are created');
             $table->string('description');
             $table->string('option')->nullable();
             $table->string('identifier')->index();

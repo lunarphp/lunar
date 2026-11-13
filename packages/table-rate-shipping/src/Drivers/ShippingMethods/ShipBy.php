@@ -41,11 +41,11 @@ class ShipBy implements ShippingRateInterface
         $shippingZone = $shippingRate->shippingZone;
         $data = $shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
-        $subTotal = $cart->lines->sum('subTotal.value');
+        $subTotal = $cart->deliveryLines()->sum('subTotal.value');
 
         // Do we have any products in our exclusions list?
         // If so, we do not want to return this option regardless.
-        $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
+        $productIds = $cart->deliveryLines()->load('purchasable')->pluck('purchasable.product_id');
 
         $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
@@ -70,7 +70,7 @@ class ShipBy implements ShippingRateInterface
             // weight converts from its own purchasable unit.
             $weightUnit = $shippingMethod->weight_unit ?: 'kg';
 
-            $tier = $cart->lines->sum(
+            $tier = $cart->deliveryLines()->sum(
                 fn ($line) => $line->purchasable->weight->to("weight.{$weightUnit}")->convert()->getValue() * $line->quantity
             );
         }

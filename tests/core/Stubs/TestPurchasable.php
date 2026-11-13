@@ -5,10 +5,13 @@ namespace Lunar\Tests\Core\Stubs;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\Concerns\RestrictsFulfilmentMethods;
 use Lunar\Core\Models\TaxClass;
 
 class TestPurchasable implements Purchasable
 {
+    use RestrictsFulfilmentMethods;
+
     public function __construct(
         public $name,
         public $description,

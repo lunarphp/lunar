@@ -53,6 +53,7 @@ export const makeFulfilment = (overrides: Partial<FulfilmentData> = {}): Fulfilm
         release: false,
         cancel: false,
     },
+    change_methods: [],
     merge_targets: [],
     urls: {
         ship: '/f/5/ship',
@@ -66,6 +67,7 @@ export const makeFulfilment = (overrides: Partial<FulfilmentData> = {}): Fulfilm
         release: '/f/5/release',
         cancel: '/f/5/cancel',
         location: '/f/5/location',
+        method: '/f/5/method',
         trackings: '/f/5/trackings',
     },
     ...overrides,

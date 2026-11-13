@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Enviable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Métodos de cumplimiento',
+            'helper_text' => 'Los métodos con los que se puede cumplir esta variante. Deja todos sin marcar para permitir cualquier método.',
+        ],
         'length_value' => [
             'label' => 'Longitud',
         ],

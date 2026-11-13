@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Możliwość wysyłki',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Metody realizacji',
+            'helper_text' => 'Metody, którymi można zrealizować ten wariant. Pozostaw wszystkie niezaznaczone, aby zezwolić na dowolną metodę.',
+        ],
         'length_value' => [
             'label' => 'Długość',
         ],

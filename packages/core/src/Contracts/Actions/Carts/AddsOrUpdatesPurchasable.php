@@ -11,6 +11,7 @@ interface AddsOrUpdatesPurchasable
         Cart $cart,
         Purchasable $purchasable,
         int $quantity = 1,
-        array $meta = []
+        array $meta = [],
+        ?string $fulfilmentMethod = null,
     ): void;
 }

@@ -60,6 +60,7 @@ const props = defineProps<{
     customerGroups: { id: number; name: string }[];
     taxClasses: { id: number; name: string }[];
     measurements: { length: string[]; weight: string[] };
+    fulfilmentMethods: { key: string; label: string }[];
     activities: ActivityEntry[];
     canDelete: boolean;
     deleteBlockedReason: 'order_history' | 'last_variant' | null;
@@ -237,6 +238,7 @@ const timelineEvents = computed(() =>
                         <ShippingCard
                             :values="details"
                             :measurements="measurements"
+                            :fulfilment-methods="fulfilmentMethods"
                             :errors="detailsErrors"
                         />
 

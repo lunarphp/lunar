@@ -133,6 +133,7 @@ class ManageOrder extends BaseViewRecord
         return self::callStaticLunarHook('extendInfolistAsideSchema', [
             static::getCustomerEntry(),
             static::getOrderSummaryInfolist(),
+            static::getPickupLocationInfolist(),
             static::getShippingAddressInfolist(),
             static::getBillingAddressInfoList(),
             static::getTagsSection(),

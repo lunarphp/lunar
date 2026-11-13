@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
             $table->string('coupon_code')->index()->nullable();
             $table->string('payment_terms')->nullable();
+            $table->string('fulfilment_method')->nullable()->index();
+            $table->unsignedBigInteger('pickup_location_id')->nullable()->index();
             $table->string('remember_token', 64)->nullable()->unique();
             $table->dateTime('completed_at')->nullable()->index();
             $table->jsonb('meta')->nullable();

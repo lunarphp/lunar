@@ -8,6 +8,7 @@ import Button from '../../../components/Button.vue';
 import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
 import Section from '../../../components/Section.vue';
+import Select from '../../../components/Select.vue';
 import TextInput from '../../../components/TextInput.vue';
 import Toggle from '../../../components/Toggle.vue';
 import Tooltip from '../../../components/Tooltip.vue';
@@ -18,12 +19,21 @@ type Location = {
     name: string;
     handle: string;
     default: boolean;
+    line_one: string | null;
+    line_two: string | null;
+    line_three: string | null;
+    city: string | null;
+    state: string | null;
+    postcode: string | null;
+    country_id: number | null;
+    contact_phone: string | null;
 };
 
 const props = defineProps<{
     location: Location;
     hasFulfilments: boolean;
     hasStock: boolean;
+    countries: { id: number; name: string }[];
     urls: { update: string; destroy: string; index: string };
 }>();
 
@@ -39,7 +49,17 @@ const form = usePanelForm({
     name: props.location.name,
     handle: props.location.handle,
     default: props.location.default,
+    line_one: props.location.line_one ?? '',
+    line_two: props.location.line_two ?? '',
+    line_three: props.location.line_three ?? '',
+    city: props.location.city ?? '',
+    state: props.location.state ?? '',
+    postcode: props.location.postcode ?? '',
+    country_id: (props.location.country_id ?? '') as number | string,
+    contact_phone: props.location.contact_phone ?? '',
 });
+
+const addressFields = ['line_one', 'line_two', 'line_three', 'city', 'state', 'postcode', 'contact_phone'] as const;
 
 const submit = (): void => {
     form.put(props.urls.update);
@@ -79,6 +99,29 @@ const confirmDestroy = (): void => {
                     <FieldLabel required :hint="t('locations.handle_hint')">{{ t('locations.field_handle') }}</FieldLabel>
                     <TextInput v-model="form.handle" mono :invalid="!!form.errors.handle" />
                     <div v-if="form.errors.handle" class="mt-1 text-[11px] text-danger">{{ form.errors.handle }}</div>
+                </div>
+            </div>
+        </Section>
+
+        <Section :title="t('locations.section_address')">
+            <div class="grid sm:grid-cols-2 gap-3">
+                <div v-for="field in addressFields" :key="field">
+                    <FieldLabel :for="`location-${field}`">{{ t(`customers.field_${field}`) }}</FieldLabel>
+                    <TextInput :id="`location-${field}`" v-model="form[field]" :invalid="!!form.errors[field]" />
+                    <div v-if="form.errors[field]" class="mt-1 text-[11px] text-danger">{{ form.errors[field] }}</div>
+                </div>
+                <div>
+                    <FieldLabel for="location-country">{{ t('customers.field_country') }}</FieldLabel>
+                    <Select
+                        id="location-country"
+                        :model-value="form.country_id"
+                        :invalid="!!form.errors.country_id"
+                        @update:model-value="(value) => (form.country_id = value ? Number(value) : '')"
+                    >
+                        <option value="">{{ t('customers.select_country') }}</option>
+                        <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
+                    </Select>
+                    <div v-if="form.errors.country_id" class="mt-1 text-[11px] text-danger">{{ form.errors.country_id }}</div>
                 </div>
             </div>
         </Section>

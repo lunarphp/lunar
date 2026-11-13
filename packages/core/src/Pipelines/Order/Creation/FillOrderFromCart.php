@@ -5,12 +5,17 @@ namespace Lunar\Core\Pipelines\Order\Creation;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Lunar\Core\Actions\Orders\GenerateOrderReference;
+use Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment;
 use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 
 class FillOrderFromCart
 {
+    public function __construct(
+        protected ResolvesCartFulfilment $resolveCartFulfilment,
+    ) {}
+
     /**
      * @param  Closure(Order):mixed  $next
      */
@@ -40,6 +45,7 @@ class FillOrderFromCart
             'exchange_rate' => $cart->currency->exchange_rate,
             'compare_currency_code' => App::make(Currency::class)::getDefault()?->code,
             'payment_terms' => $cart->payment_terms ?? PaymentTerms::Checkout,
+            'pickup_location_id' => $this->resolveCartFulfilment->execute($cart)->pickupLocation?->id,
             'meta' => $cart->meta,
         ])->save();
 

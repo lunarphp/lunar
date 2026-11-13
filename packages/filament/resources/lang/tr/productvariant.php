@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Kargo Edilebilir',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Karşılama yöntemleri',
+            'helper_text' => 'Bu varyantın karşılanabileceği yöntemler. Herhangi bir yönteme izin vermek için hiçbirini işaretlemeyin.',
+        ],
         'length_value' => [
             'label' => 'Uzunluk',
         ],

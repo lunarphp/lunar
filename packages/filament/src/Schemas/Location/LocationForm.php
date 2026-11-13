@@ -9,6 +9,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Lunar\Filament\Forms\Components\CountrySelect;
+use Lunar\Filament\Forms\Components\StateSelect;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class LocationForm
@@ -21,6 +23,9 @@ class LocationForm
             'configureForm',
             $schema->components([
                 Section::make()->schema(static::getMainComponents()),
+                Section::make(__('lunar-filament::location.form.address.label'))
+                    ->schema(static::getAddressComponents())
+                    ->columns(2),
             ]),
         );
     }
@@ -34,6 +39,29 @@ class LocationForm
             static::getNameComponent(),
             static::getHandleComponent(),
             static::getDefaultComponent(),
+        ];
+    }
+
+    /**
+     * Where the location is, so a pickup can tell the customer where to go.
+     *
+     * @return array<int, Component>
+     */
+    public static function getAddressComponents(): array
+    {
+        $text = fn (string $field): Component => TextInput::make($field)
+            ->label(__("lunar-filament::address.form.{$field}.label"))
+            ->maxLength(255);
+
+        return [
+            $text('line_one'),
+            $text('line_two'),
+            $text('line_three'),
+            $text('city'),
+            CountrySelect::make('country_id')->label(__('lunar-filament::address.form.country_id.label')),
+            StateSelect::make('state')->label(__('lunar-filament::address.form.state.label'))->dependsOn('country_id'),
+            $text('postcode'),
+            $text('contact_phone'),
         ];
     }
 

@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Nhận tại cửa hàng',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Địa điểm nhận hàng',
+            'helper_text' => 'Để trống để dùng địa điểm mặc định.',
+        ],
         'stock_available' => [
             'label' => 'Tất cả sản phẩm trong giỏ hàng phải có sẵn hàng',
         ],

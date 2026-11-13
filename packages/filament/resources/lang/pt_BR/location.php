@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Padrão',
         ],
+        'address' => [
+            'label' => 'Endereço',
+        ],
     ],
 
     'table' => [

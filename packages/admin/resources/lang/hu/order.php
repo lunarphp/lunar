@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Szállítási cím',
         ],
+        'pickup_location' => [
+            'label' => 'Átvételi hely',
+        ],
         'billing_address' => [
             'label' => 'Számlázási cím',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Teljesítés telephelye frissítve.',
                     'error' => 'A teljesítés telephelyét nem sikerült módosítani.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Váltás erre: :method',
+                'address_hint' => 'Ehhez a rendeléshez nincs szállítási cím. Adja meg a címet, ahová ezeket a tételeket küldeni kell.',
+                'notification' => [
+                    'success' => 'Teljesítési mód módosítva.',
+                    'error' => 'A teljesítési módot nem sikerült módosítani.',
                 ],
             ],
             'return' => [

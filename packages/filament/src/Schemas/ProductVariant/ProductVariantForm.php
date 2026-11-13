@@ -2,12 +2,15 @@
 
 namespace Lunar\Filament\Schemas\ProductVariant;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Facades\Converter;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Filament\Forms\Components\Attributes;
 use Lunar\Filament\Forms\Components\TextInputSelectAffix;
@@ -136,6 +139,17 @@ class ProductVariantForm
     {
         return Toggle::make('shippable')
             ->label(__('lunar-filament::productvariant.form.shippable.label'))
+            ->columnSpan(2);
+    }
+
+    public static function getFulfilmentMethodsComponent(): CheckboxList
+    {
+        return CheckboxList::make('fulfilment_methods')
+            ->label(__('lunar-filament::productvariant.form.fulfilment_methods.label'))
+            ->helperText(__('lunar-filament::productvariant.form.fulfilment_methods.helper_text'))
+            ->options(FulfilmentMethods::all()->map(fn (FulfilmentMethod $method) => $method->getLabel())->all())
+            ->dehydrateStateUsing(fn (?array $state) => $state ?: null)
+            ->columns(3)
             ->columnSpan(2);
     }
 

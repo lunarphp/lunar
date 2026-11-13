@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Retirada',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Local de retirada',
+            'helper_text' => 'Deixe vazio para usar o local padrão.',
+        ],
         'stock_available' => [
             'label' => 'Estoque de todos os itens do carrinho deve estar disponível',
         ],

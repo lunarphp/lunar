@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Implicit',
         ],
+        'address' => [
+            'label' => 'Adresă',
+        ],
     ],
 
     'table' => [

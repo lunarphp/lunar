@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Afhalen',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Afhaallocatie',
+            'helper_text' => 'Laat leeg om de standaardlocatie te gebruiken.',
+        ],
         'stock_available' => [
             'label' => 'De voorraad van alle artikelen in de winkelwagen moet beschikbaar zijn',
         ],

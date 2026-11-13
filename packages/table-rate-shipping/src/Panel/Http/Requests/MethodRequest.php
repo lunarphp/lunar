@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Location;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingMethod;
 
@@ -34,6 +35,7 @@ class MethodRequest extends FormRequest
             'weight_unit' => ['nullable', Rule::in($weightUnits)],
             'min_weight' => ['nullable', 'numeric', 'min:0', 'required_with:weight_unit'],
             'max_weight' => ['nullable', 'numeric', 'min:0', 'required_with:weight_unit'],
+            'pickup_location_id' => ['nullable', 'integer', Rule::exists(Location::class, 'id')],
 
             'data' => ['sometimes', 'array'],
             'data.charge_by' => ['nullable', Rule::in(['cart_total', 'weight'])],
@@ -92,7 +94,7 @@ class MethodRequest extends FormRequest
             'driver' => $validated['driver'],
         ];
 
-        foreach (['description', 'weight_unit', 'min_weight', 'max_weight'] as $nullable) {
+        foreach (['description', 'weight_unit', 'min_weight', 'max_weight', 'pickup_location_id'] as $nullable) {
             if (array_key_exists($nullable, $validated)) {
                 $attributes[$nullable] = $validated[$nullable];
             }
@@ -107,6 +109,11 @@ class MethodRequest extends FormRequest
             $attributes['weight_unit'] = null;
             $attributes['min_weight'] = null;
             $attributes['max_weight'] = null;
+        }
+
+        // Only the pickup driver collects from a location.
+        if (array_key_exists('pickup_location_id', $attributes) && $attributes['driver'] !== 'pickup') {
+            $attributes['pickup_location_id'] = null;
         }
 
         return $attributes;

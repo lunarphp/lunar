@@ -59,6 +59,7 @@ Lunar\Core\Models\Order
 | cart_id | `unsignedBigInteger` `nullable` | The cart used to create the order |
 | fingerprint | `string` `nullable` | A hash used to detect cart changes since the order was created |
 | region_id | `foreignId` `nullable` | The region resolved for the order |
+| pickup_location_id | `foreignId` `nullable` | Where the order's pickup lines are collected, as requested at checkout. `null` when nothing is picked up |
 
 ### Relationships
 
@@ -66,6 +67,7 @@ Lunar\Core\Models\Order
 |:-------------|:-----|:--------------|:------------|
 | `channel` | BelongsTo | `Lunar\Core\Models\Channel` | |
 | `region` | BelongsTo | `Lunar\Core\Models\Region` | |
+| `pickupLocation` | BelongsTo | `Lunar\Core\Models\Location` | |
 | `cart` | BelongsTo | `Lunar\Core\Models\Cart` | |
 | `lines` | HasMany | `Lunar\Core\Models\OrderLine` | Ordered by `id` |
 | `fulfilments` | HasMany | `Lunar\Core\Models\Fulfilment` | See [Fulfilments](/reference/fulfilments) |
@@ -101,7 +103,7 @@ Lunar\Core\Models\Order
 | `isPlaced(): bool` | `true` when `placed_at` is set |
 | `isOpen(): bool` / `isClosed(): bool` | Whether the order has been archived, see [Open and closed orders](#open-and-closed-orders) |
 | `isCancelled(): bool` | Whether the order has been cancelled |
-| `isPickup(): bool` | Whether the customer picks the order up rather than having it shipped: the shipping line's `meta['pickup']` is exactly `true` |
+| `isPickup(): bool` | Whether the order has lines the customer picks up. It may also have lines to deliver. Reads the fulfilments once there are any, so a [method changed](/reference/fulfilments#changing-a-fulfilments-method) after placement counts, and `pickup_location_id` before then |
 | `lifecycleStatus(): string` | Returns `'cancelled'`, `'closed'`, or `'open'` — cancelled takes precedence. Used for badges and search |
 | `cancelReasonLabel(): ?string` | The human-readable label for `cancel_reason` |
 | `isAwaitingPaymentByTerms(): bool` | `true` when the terms are not `Checkout` and the payment status is `Pending`, see [Payment terms](#payment-terms) |
@@ -312,6 +314,7 @@ There is no generic "fee" or "extra charge" line primitive. A line's `type` is w
 | type | `string` | The line type, from the purchasable's `getType()` (e.g. `physical`, `digital`); always `shipping` for the shipping line |
 | requires_shipping | `boolean` | Needs physical delivery, stamped from the purchasable's `isShippable()` |
 | requires_fulfilment | `boolean` | Needs fulfilling at all — a superset of `requires_shipping` that drives the fulfilment rollup |
+| fulfilment_method | `string` `nullable` | The method the customer requested, resolved at order creation. `null` means it is inferred when fulfilments are created. See [Fulfilment choice](/reference/carts#fulfilment-choice) |
 | description | `string` | A description of the line item |
 | option | `string` `nullable` | Option information if the item is a variant |
 | identifier | `string` | An identifier for the purchasable item, typically a SKU |

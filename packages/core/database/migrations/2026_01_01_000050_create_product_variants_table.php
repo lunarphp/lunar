@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('ean')->nullable()->index();
             $table->dimensions();
             $table->boolean('shippable')->default(true)->index();
+            $table->jsonb('fulfilment_methods')->nullable();
             $table->integer('backorder')->default(0)->index();
             $table->string('selling_policy')->default('always')->index();
             // Cached stock rollup, summed from the variant's stock levels (and the

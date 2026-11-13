@@ -3,12 +3,20 @@
 namespace Lunar\Core\Validation\Cart;
 
 use Illuminate\Support\Facades\Validator;
+use Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment;
+use Lunar\Core\Contracts\FulfilmentMethod;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Enums\PaymentTerms;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Validation\BaseValidator;
 
 class ValidateCartForOrderCreation extends BaseValidator
 {
+    public function __construct(
+        protected ResolvesCartFulfilment $resolveCartFulfilment,
+    ) {}
+
     /**
      * {@inheritDoc}
      */
@@ -51,8 +59,13 @@ class ValidateCartForOrderCreation extends BaseValidator
                 return $this->fail('cart', __('lunar::exceptions.carts.shipping_option_missing'));
             }
 
+            // A pickup option prices no delivery, so lines explicitly set to be delivered need a delivery option.
+            if ($shippingOption->isPickup() && $this->hasExplicitDeliveryLines($cart)) {
+                return $this->fail('cart', __('lunar::exceptions.carts.delivery_option_missing'));
+            }
+
             // Is this cart going to be shipped and if so, does it have a shipping address?
-            if (! $shippingOption->pickup) {
+            if (! $shippingOption->isPickup()) {
                 if (! $cart->shippingAddress) {
                     return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
                 }
@@ -68,15 +81,28 @@ class ValidateCartForOrderCreation extends BaseValidator
             }
         }
 
-        if ($cart->payment_terms === PaymentTerms::OnPickup && ! $cart->getShippingOption()?->pickup) {
+        $fulfilment = $this->resolveCartFulfilment->execute($cart);
+
+        $hasPickup = collect($fulfilment->lines)->contains(fn (?FulfilmentMethod $method) => $method?->getKey() === Pickup::KEY);
+
+        if ($cart->payment_terms === PaymentTerms::OnPickup && ! $hasPickup) {
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_pickup_missing'));
         }
 
-        if ($cart->payment_terms === PaymentTerms::OnDelivery && (! $cart->isShippable() || $cart->getShippingOption()?->pickup)) {
+        $hasDelivery = collect($fulfilment->lines)->contains(fn (?FulfilmentMethod $method) => $method?->requiresDelivery());
+
+        if ($cart->payment_terms === PaymentTerms::OnDelivery && ! $hasDelivery) {
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_delivery_missing'));
         }
 
         return $this->pass();
+    }
+
+    private function hasExplicitDeliveryLines(Cart $cart): bool
+    {
+        $explicit = $this->resolveCartFulfilment->execute($cart, withShippingOption: false);
+
+        return collect($explicit->lines)->contains(fn (?FulfilmentMethod $method) => $method?->requiresDelivery());
     }
 
     private function cartLineLabel(CartLine $line): string
