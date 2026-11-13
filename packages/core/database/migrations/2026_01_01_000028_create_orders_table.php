@@ -13,6 +13,7 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
+            $table->unsignedBigInteger('region_id')->nullable()->index();
             $table->string('payment_status')->default('pending')->index();
             $table->string('fulfilment_status')->default('unfulfilled')->index();
             $table->string('payment_terms')->default('checkout');
