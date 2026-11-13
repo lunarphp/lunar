@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Hiányzik a szállítási opció.',
     'carts.line_unavailable' => 'A kosár egyik tétele már nem elérhető (:identifier).',
     'carts.line_not_purchasable' => 'A(z) :identifier nem vásárolható meg ezen a csatornán vagy az Ön vásárlói csoportja által.',
+    'carts.payment_terms_pickup_missing' => 'Az átvételkori fizetéshez személyes átvételi szállítási mód szükséges',
     'missing_currency_price' => 'A ":currency" pénznemhez nem létezik ár.',
     'minimum_quantity' => 'Legalább :quantity tételt kell hozzáadni.',
     'quantity_increment' => 'A mennyiségnek :increment lépésközzel adható meg.',

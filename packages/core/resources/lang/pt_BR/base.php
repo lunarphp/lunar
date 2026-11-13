@@ -11,4 +11,9 @@ return [
         'up-sell' => 'Venda adicional',
         'alternate' => 'Alternativa',
     ],
+    'payment-terms' => [
+        'checkout' => 'No checkout',
+        'on-account' => 'Na conta',
+        'on-pickup' => 'Pagar na retirada',
+    ],
 ];

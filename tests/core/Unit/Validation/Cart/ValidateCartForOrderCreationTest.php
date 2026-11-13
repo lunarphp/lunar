@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -400,4 +401,80 @@ test('can validate delivery with populated shipping address', function () {
     );
 
     expect($validator->validate())->toBeTrue();
+});
+
+function cartWithShippingOption(bool $pickup): Cart
+{
+    $currency = Currency::factory()->create();
+    $taxClass = TaxClass::factory()->create();
+
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $purchasable = ProductVariant::factory()->create(['shippable' => true]);
+
+    Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $shippingOption = new ShippingOption(
+        name: 'Option',
+        description: 'Option',
+        identifier: $pickup ? 'PICKUP' : 'DELIVERY',
+        price: new PriceValue(0, $cart->currency),
+        taxClass: $taxClass,
+        pickup: $pickup,
+    );
+
+    ShippingManifest::addOption($shippingOption);
+
+    CartAddress::factory()->create([
+        'type' => 'shipping',
+        'cart_id' => $cart->id,
+        'shipping_option' => $shippingOption->getIdentifier(),
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+    ]);
+
+    return $cart->refresh();
+}
+
+test('can validate pickup terms with a pickup shipping option', function () {
+    $cart = cartWithShippingOption(pickup: true);
+    $cart->setPaymentTerms(PaymentTerms::OnPickup);
+
+    expect((new ValidateCartForOrderCreation)->using(cart: $cart)->validate())->toBeTrue();
+});
+
+test('rejects pickup terms with a delivery shipping option', function () {
+    $cart = cartWithShippingOption(pickup: false);
+    $cart->setPaymentTerms(PaymentTerms::OnPickup);
+
+    (new ValidateCartForOrderCreation)->using(cart: $cart)->validate();
+})->throws(CartException::class, 'Pay on pickup needs a pickup shipping option');
+
+test('rejects pickup terms on a cart with nothing to ship', function () {
+    $cart = Cart::factory()->create(['currency_id' => Currency::factory()->create()->id]);
+    CartAddress::factory()->create(['type' => 'billing', 'cart_id' => $cart->id]);
+    $cart->setPaymentTerms(PaymentTerms::OnPickup);
+
+    (new ValidateCartForOrderCreation)->using(cart: $cart->refresh())->validate();
+})->throws(CartException::class, 'Pay on pickup needs a pickup shipping option');
+
+test('allows on account terms with a delivery shipping option', function () {
+    $cart = cartWithShippingOption(pickup: false);
+    $cart->setPaymentTerms(PaymentTerms::OnAccount);
+
+    expect((new ValidateCartForOrderCreation)->using(cart: $cart)->validate())->toBeTrue();
 });

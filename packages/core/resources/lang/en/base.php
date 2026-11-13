@@ -11,4 +11,9 @@ return [
         'up-sell' => 'Up Sell',
         'alternate' => 'Alternate',
     ],
+    'payment-terms' => [
+        'checkout' => 'At checkout',
+        'on-account' => 'On account',
+        'on-pickup' => 'Pay on pickup',
+    ],
 ];

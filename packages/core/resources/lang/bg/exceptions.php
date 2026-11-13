@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Липсва опция за доставка',
     'carts.line_unavailable' => 'Артикул в тази количка вече не е наличен (:identifier)',
     'carts.line_not_purchasable' => ':identifier не може да бъде закупен в този канал или от вашата клиентска група',
+    'carts.payment_terms_pickup_missing' => 'Плащането при вземане изисква опция за доставка с вземане',
     'missing_currency_price' => 'Няма цена за валута ":currency"',
     'minimum_quantity' => 'Трябва да добавите минимум :quantity артикула.',
     'quantity_increment' => 'Количество :quantity трябва да бъде в стъпки от :increment',

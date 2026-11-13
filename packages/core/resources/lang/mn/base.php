@@ -11,4 +11,9 @@ return [
         'up-sell' => 'Дээд борлуулалт',
         'alternate' => 'Хувилбар',
     ],
+    'payment-terms' => [
+        'checkout' => 'Төлбөр төлөхөд',
+        'on-account' => 'Дансаар',
+        'on-pickup' => 'Авахдаа төлөх',
+    ],
 ];

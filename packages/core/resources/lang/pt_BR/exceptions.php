@@ -13,6 +13,7 @@ return [
     'carts.shipping_option_missing' => 'Opção de envio ausente',
     'carts.line_unavailable' => 'Um item deste carrinho não está mais disponível (:identifier)',
     'carts.line_not_purchasable' => ':identifier não pode ser comprado neste canal ou pelo seu grupo de clientes',
+    'carts.payment_terms_pickup_missing' => 'Pagar na retirada exige uma opção de envio com retirada',
     'missing_currency_price' => 'Não existe preço para a moeda ":currency"',
     'minimum_quantity' => 'Você deve adicionar no mínimo :quantity itens.',
     'quantity_increment' => 'A quantidade :quantity deve estar em incrementos de :increment',

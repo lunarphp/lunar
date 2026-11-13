@@ -3,6 +3,7 @@
 namespace Lunar\Core\Validation\Cart;
 
 use Illuminate\Support\Facades\Validator;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Validation\BaseValidator;
 
@@ -65,6 +66,10 @@ class ValidateCartForOrderCreation extends BaseValidator
                     return $this->fail('cart', $shippingValidator->errors()->getMessages());
                 }
             }
+        }
+
+        if ($cart->payment_terms === PaymentTerms::OnPickup && ! $cart->getShippingOption()?->pickup) {
+            return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_pickup_missing'));
         }
 
         return $this->pass();

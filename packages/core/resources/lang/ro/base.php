@@ -11,4 +11,9 @@ return [
         'up-sell' => 'Vânzare superioară',
         'alternate' => 'Alternativă',
     ],
+    'payment-terms' => [
+        'checkout' => 'La finalizarea comenzii',
+        'on-account' => 'Pe cont',
+        'on-pickup' => 'Plata la ridicare',
+    ],
 ];

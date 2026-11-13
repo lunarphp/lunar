@@ -5,6 +5,7 @@ namespace Lunar\Core\Pipelines\Order\Creation;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Lunar\Core\Actions\Orders\GenerateOrderReference;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 
@@ -38,6 +39,7 @@ class FillOrderFromCart
             'currency_code' => $cart->currency->code,
             'exchange_rate' => $cart->currency->exchange_rate,
             'compare_currency_code' => App::make(Currency::class)::getDefault()?->code,
+            'payment_terms' => $cart->payment_terms ?? PaymentTerms::Checkout,
             'meta' => $cart->meta,
         ])->save();
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->string('payment_status')->default('pending')->index();
             $table->string('fulfilment_status')->default('unfulfilled')->index();
+            $table->string('payment_terms')->default('checkout');
             $table->string('reference')->nullable()->unique();
             $table->string('customer_reference')->nullable();
             $table->unsignedBigInteger('sub_total');

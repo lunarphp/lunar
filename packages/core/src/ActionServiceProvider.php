@@ -23,6 +23,7 @@ use Lunar\Core\Actions\Carts\HydrateCartTotals;
 use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\PersistCartTotals;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetCartPaymentTerms;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Actions\Channels\CreateChannel;
@@ -182,6 +183,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\MergesCart::class => MergeCart::class,
         Contracts\Carts\PersistsCartTotals::class => PersistCartTotals::class,
         Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
+        Contracts\Carts\SetsCartPaymentTerms::class => SetCartPaymentTerms::class,
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
 
