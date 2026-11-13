@@ -23,6 +23,7 @@ return [
     'default_unset_blocked' => 'The default location cannot be unset. Make another location the default instead.',
 
     'section_details' => 'Details',
+    'section_address' => 'Dirección',
     'section_state' => 'State',
     'edit_title' => 'Edit location — {name}',
 

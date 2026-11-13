@@ -4,6 +4,7 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\LocationResource;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\CreateLocation;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\EditLocation;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Location;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
@@ -45,4 +46,25 @@ it('can edit a location', function () {
         ->assertHasNoFormErrors();
 
     expect($location->refresh()->name)->toBe('New name');
+});
+
+it('can edit a location address', function () {
+    $location = Location::factory()->create();
+    $country = Country::factory()->create();
+
+    Livewire::actingAs($this->makeStaff(admin: true), 'staff')
+        ->test(EditLocation::class, ['record' => $location->getRouteKey()])
+        ->fillForm([
+            'line_one' => '1 High Street',
+            'city' => 'Leeds',
+            'postcode' => 'LS1 1AA',
+            'country_id' => $country->id,
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($location->refresh())
+        ->line_one->toBe('1 High Street')
+        ->postcode->toBe('LS1 1AA')
+        ->country_id->toBe($country->id);
 });

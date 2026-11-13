@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Alapértelmezett',
         ],
+        'address' => [
+            'label' => 'Cím',
+        ],
     ],
 
     'table' => [

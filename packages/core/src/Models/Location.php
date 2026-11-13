@@ -4,6 +4,7 @@ namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -22,6 +23,14 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property string $name
  * @property string $handle
  * @property bool $default
+ * @property ?string $line_one
+ * @property ?string $line_two
+ * @property ?string $line_three
+ * @property ?string $city
+ * @property ?string $state
+ * @property ?string $postcode
+ * @property ?int $country_id
+ * @property ?string $contact_phone
  * @property ?array $meta
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -61,6 +70,11 @@ class Location extends Base
     public function setHandleAttribute(?string $val): void
     {
         $this->attributes['handle'] = Str::slug($val);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
     }
 
     /**

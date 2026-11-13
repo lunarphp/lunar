@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Mặc định',
         ],
+        'address' => [
+            'label' => 'Địa chỉ',
+        ],
     ],
 
     'table' => [
