@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Записване на плащане',
+            'modal_heading' => 'Записване на плащане, получено след поръчката',
+            'reference' => [
+                'label' => 'Референция',
+            ],
+            'notification' => [
+                'success' => 'Плащането е записано.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

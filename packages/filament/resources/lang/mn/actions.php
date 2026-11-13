@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Төлбөр бүртгэх',
+            'modal_heading' => 'Захиалгын дараа хүлээн авсан төлбөрийг бүртгэх',
+            'reference' => [
+                'label' => 'Лавлагаа',
+            ],
+            'notification' => [
+                'success' => 'Төлбөр бүртгэгдлээ.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

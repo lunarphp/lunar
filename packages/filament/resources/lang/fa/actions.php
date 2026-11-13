@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'ثبت پرداخت',
+            'modal_heading' => 'ثبت پرداختی که پس از تسویه دریافت شده است',
+            'reference' => [
+                'label' => 'مرجع',
+            ],
+            'notification' => [
+                'success' => 'پرداخت ثبت شد.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

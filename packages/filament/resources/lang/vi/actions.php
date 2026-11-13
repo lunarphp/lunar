@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Ghi nhận thanh toán',
+            'modal_heading' => 'Ghi nhận khoản thanh toán nhận được sau khi đặt hàng',
+            'reference' => [
+                'label' => 'Mã tham chiếu',
+            ],
+            'notification' => [
+                'success' => 'Đã ghi nhận thanh toán.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

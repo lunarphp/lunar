@@ -8,6 +8,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Facades\Pricing;
@@ -21,6 +22,7 @@ use Lunar\Core\Models\Price as ModelsPrice;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\RefundIssued;
+use Lunar\Core\States\Order\Payment\PartiallyPaid;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -312,3 +314,33 @@ it('refunds with or without emailing the customer, as the notify toggle says', f
         ? NotificationFacade::assertSentTo($this->order->fresh(), RefundIssued::class)
         : NotificationFacade::assertNotSentTo($this->order->fresh(), RefundIssued::class);
 })->with(['notify on' => [true], 'notify off' => [false]]);
+
+it('records a payment taken after checkout', function () {
+    $this->order->updateQuietly(['placed_at' => now(), 'total' => 5000, 'payment_terms' => PaymentTerms::OnAccount]);
+
+    Livewire::test(ManageOrder::class, ['record' => $this->order->getRouteKey()])
+        ->assertActionVisible('record_payment')
+        ->callAction('record_payment', data: [
+            'amount' => '20.00',
+            'reference' => 'INV-42',
+        ])
+        ->assertHasNoActionErrors();
+
+    $transaction = $this->order->transactions()->sole();
+
+    expect($transaction->amount)->toBe(2000)
+        ->and($transaction->driver)->toBe('offline')
+        ->and($transaction->reference)->toBe('INV-42')
+        ->and($this->order->refresh()->payment_status)->toBeInstanceOf(PartiallyPaid::class);
+});
+
+it('hides record payment once the order is settled', function () {
+    $this->order->updateQuietly(['placed_at' => now(), 'total' => 5000]);
+    $this->order->transactions()->create([
+        'type' => 'capture', 'success' => true, 'amount' => 5000,
+        'driver' => 'offline', 'reference' => 'CAP-1', 'status' => 'settled',
+    ]);
+
+    Livewire::test(ManageOrder::class, ['record' => $this->order->getRouteKey()])
+        ->assertActionHidden('record_payment');
+});
