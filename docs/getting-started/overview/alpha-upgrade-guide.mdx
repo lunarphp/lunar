@@ -1,0 +1,138 @@
+---
+title: "Upgrading from an Alpha"
+description: "Database changes made to the v2 baseline migrations during the 2.0 alpha, and how to bring an alpha install up to date."
+---
+
+This page lists every database change made during the 2.0 alpha releases, so an application installed on an alpha can catch up with the current schema.
+
+## Why alpha installs need this
+
+Lunar v2 ships a flat baseline: one migration per table, dated `2026_01_01_*`. While v2 was in alpha, schema changes were folded into those baseline migrations instead of being added as new migrations. An application that already ran a baseline migration does not run it again, so it never receives the columns that were added to that migration later.
+
+Alpha releases were not intended for production use. If an application was built on one anyway, it needs a migration of its own to add the missing columns. After 2.0.0 is released, every schema change ships as a new migration and this page no longer grows.
+
+<Note>
+New migration files are not a problem. `php artisan migrate` runs any Lunar migration that is not yet recorded in the `migrations` table, such as `create_refund_lines_table`. Only changes made to a migration the application has already run need the steps on this page.
+</Note>
+
+## Upgrading
+
+1. Find the alpha the application was installed on. Check `composer.lock` for the `lunarphp/core` version that was first installed, or look at the batch that recorded the `2026_01_01_000000_create_assets_table` row in the `migrations` table and compare its date with the release dates below.
+2. Create a migration in the application that adds every change listed under that release and each later one. Guard each change with `Schema::hasColumn()` or `Schema::hasTable()`, so the migration is safe to run on any alpha and on a fresh install.
+3. Give the migration a name that sorts before `2026_01_01_000071`, for example `2026_01_01_000070_catch_up_lunar_alpha_schema.php`. Lunar's `2026_01_01_000071_add_product_types_default_tax_class_foreign_key` migration needs `product_types.default_tax_class_id` to exist, and Laravel runs migrations from every path in filename order.
+4. Run `php artisan migrate`.
+
+The `lunarphp/upgrade` package already adds most of these columns to v1 databases, with guards and backfills. Its data migrations in `packages/upgrade/database/migrations` are a useful reference, but do not run them against an alpha database: they are written for a v1 schema. The reference column in each table below names the relevant file.
+
+### Using an AI assistant
+
+The tables on this page are written so an AI coding assistant can generate the catch-up migration. A prompt such as the following works well:
+
+```text
+My application was installed on Lunar 2.0.0-alpha.N. Read
+https://docs.lunarphp.com/2.x/getting-started/overview/alpha-upgrade-guide and
+write one migration that applies every change listed for alpha.N+1 and later.
+Guard each column with Schema::hasColumn() and each table with
+Schema::hasTable(). Prefix table names with config('lunar.database.table_prefix').
+Backfill unique, non-nullable columns before adding the unique index. Name the
+file 2026_01_01_000070_catch_up_lunar_alpha_schema.php.
+```
+
+Review the generated migration and run it against a copy of the production database first.
+
+## Changes by release
+
+Each section lists the changes that first appeared in that release. Apply the section for every release after the one the application was installed on. All table names below omit the configured table prefix (`lunar_` by default).
+
+### 2.0.0-alpha.1 to alpha.4
+
+Released July 1 to July 8, 2026. These releases made no changes to existing migrations.
+
+### 2.0.0-alpha.5
+
+Released August 29, 2026.
+
+| Table | Change | Reference |
+| --- | --- | --- |
+| `brands` | Add `handle` `string`, unique. Add `status` `string`, default `active`, indexed. | `2026_06_01_000009_add_brand_handle_and_status` |
+| `customers` | Add `admin_notes` `text` `nullable`. | |
+| `product_options` | Add `type` `string`, default `text`, indexed. | |
+| `product_types` | Add `handle` `string`, unique. Add `status` `string`, default `active`, indexed. Add `description` `text` `nullable`. Add `default_tax_class_id` `foreignId` `nullable`, without a constraint (`2026_01_01_000071` adds it). Add `attribute_data` `jsonb` `nullable`. | `2026_06_01_000011_add_product_type_columns` |
+| `attributes` | Add `validation_rules` `json` `nullable`. | `2026_06_01_000003_convert_attribute_data_keys_to_ids` |
+| `collections` | Add `handle` `string`, unique. | `2026_06_01_000010_add_collection_handle` |
+| `order_lines` | Add `refunded_quantity` `unsignedInteger`, default `0`. | `2026_06_01_000019_add_order_line_refunded_quantity` |
+| `product_associations` | Add `sort` `unsignedInteger`, default `0`. | `2026_06_01_000016_add_product_association_sort` |
+| `product_variants` | Add `enabled` `boolean`, default `true`, indexed. | `2026_06_01_000012_add_product_variant_enabled` |
+| `staff` | Add `preferred_locale` `string` `nullable`. | `2026_06_01_000021_add_staff_preferred_locale` |
+
+`brands.handle`, `collections.handle` and `product_types.handle` are unique and not nullable. Add each as nullable, fill it with a unique value for every existing row (for example a slug of the name, with a numeric suffix for duplicates), then make it non-nullable and add the unique index.
+
+New migrations in this release (run by `php artisan migrate`): `2026_01_01_000071_add_product_types_default_tax_class_foreign_key`, `2026_01_01_000072_create_refund_lines_table`, `2026_07_09_000000_create_staff_password_reset_tokens_table`, the panel's `create_edit_drafts_table` and `create_staff_preferences_table`, and PayPal's `create_paypal_orders_table`.
+
+<Note>
+`staff.preferred_locale` was originally added by a separate `2026_07_16_000000_add_preferred_locale_to_staff_table` migration, which has since been folded into `create_staff_table`. An application installed on alpha.5 or later already has the column.
+</Note>
+
+### 2.0.0-alpha.6
+
+Released September 1, 2026. This release made no changes to existing migrations.
+
+### 2.0.0-alpha.7
+
+Released November 6, 2026.
+
+| Table | Change | Reference |
+| --- | --- | --- |
+| `addresses` | Add `last_used_at` `timestamp` `nullable`. | |
+| `orders` | Add `internal_notes` `text` `nullable`. | `2026_06_01_000017_add_order_internal_notes` |
+| `carts` | Add `remember_token` `string(64)` `nullable`, unique. | `2026_06_01_000018_add_cart_remember_token` |
+| `order_lines` | Add `parent_line_id` `foreignId` `nullable`, indexed, constrained to `order_lines`, cascade on delete. | |
+| `stripe_payment_intents` | Add `flavour` `string`, default `standard`. | |
+
+New migrations in this release: the bundles package's `create_bundles_table`, `create_bundle_groups_table` and `create_bundle_components_table`.
+
+### 2.0.0-alpha.8
+
+Released November 10, 2026.
+
+| Table | Change | Reference |
+| --- | --- | --- |
+| `carts` | Add the totals snapshot, all `nullable`: `sub_total`, `sub_total_discounted`, `discount_total`, `shipping_sub_total`, `shipping_tax_total`, `shipping_total`, `tax_total` and `total` as `unsignedBigInteger`; `tax_breakdown`, `shipping_breakdown`, `shipping_tax_breakdown`, `discount_breakdown` and `free_items` as `jsonb`; `calculated_revision` `unsignedInteger`; `calculated_at` `timestamp`. Add `revision` `unsignedInteger`, default `0`. | `2026_06_01_000017_add_cart_totals_columns` |
+| `cart_lines` | Add the totals snapshot, all `nullable`: `unit_price`, `unit_price_incl_tax`, `sub_total`, `sub_total_discounted`, `discount_total`, `tax_total` and `total` as `unsignedBigInteger`; `tax_breakdown` `jsonb`; `promotion_description` `string`. | `2026_06_01_000017_add_cart_totals_columns` |
+
+A `NULL` totals column means the cart has not been calculated yet, so existing carts need no backfill.
+
+### 2.0.0-alpha.9
+
+Released November 11, 2026. This release made no changes to existing tables. It changed `2026_01_03_000013_add_can_manage_shipping_permission` to resolve the auth guard through core, which only matters for an application that has not run it yet.
+
+### Next release
+
+Changes made since 2.0.0-alpha.9.
+
+| Table | Change | Reference |
+| --- | --- | --- |
+| `carts` | Add `payment_terms` `string` `nullable`. | `2026_06_01_000022_add_payment_terms` |
+| `orders` | Add `payment_terms` `string`, default `checkout`. | `2026_06_01_000022_add_payment_terms` |
+
+## Folded migrations
+
+These migrations shipped in an alpha and were later folded into the baseline. Their files no longer exist, but an application that ran them still has their rows in the `migrations` table.
+
+| Migration | Folded into |
+| --- | --- |
+| `2026_01_01_000069_add_region_id_to_carts_and_orders` | `create_carts_table`, `create_orders_table` and `create_regions_table` |
+| `2026_01_01_000070_drop_price_display_from_tax_zones` | `create_tax_zones_table` |
+| `2026_07_16_000000_add_preferred_locale_to_staff_table` | `create_staff_table` |
+
+The schema these migrations produced is unchanged, so an application that ran them needs no schema change. The leftover rows are harmless, but `php artisan migrate:rollback` reports them as not found. Delete them once the catch-up migration has run:
+
+```php
+use Illuminate\Support\Facades\DB;
+
+DB::table('migrations')->whereIn('migration', [
+    '2026_01_01_000069_add_region_id_to_carts_and_orders',
+    '2026_01_01_000070_drop_price_display_from_tax_zones',
+    '2026_07_16_000000_add_preferred_locale_to_staff_table',
+])->delete();
+```
