@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping;
 
+use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Event;
@@ -91,7 +92,11 @@ class ShippingServiceProvider extends ServiceProvider
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
+        // The only views are Filament widget templates. Registering them without
+        // Filament installed breaks `view:cache` on the unknown components.
+        if (class_exists(Widget::class)) {
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
+        }
 
         $shippingModifiers->add(
             ShippingModifier::class,
