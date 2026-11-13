@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier se ne može kupiti u ovom kanalu ili od strane vaše grupe kupaca',
     'carts.payment_terms_pickup_missing' => 'Plaćanje pri preuzimanju zahtijeva opciju dostave s preuzimanjem',
     'carts.payment_terms_delivery_missing' => 'Plaćanje pouzećem zahtijeva opciju dostave na adresu',
+    'carts.fulfilment_method_unknown' => 'Način ispunjenja ":method" nije dostupan',
+    'carts.fulfilment_method_unsupported' => '":identifier" ne može se ispuniti putem :method',
     'missing_currency_price' => 'Ne postoji cijena za valutu ":currency"',
     'minimum_quantity' => 'Morate dodati najmanje :quantity stavki.',
     'quantity_increment' => 'Količina :quantity mora biti u koracima od :increment',

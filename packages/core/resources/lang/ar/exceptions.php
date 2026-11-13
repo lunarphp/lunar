@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => 'العنصر :identifier لا يمكن شراؤه في هذه القناة أو من قبل مجموعة العملاء الخاصة بك.',
     'carts.payment_terms_pickup_missing' => 'يتطلب الدفع عند الاستلام خيار شحن للاستلام',
     'carts.payment_terms_delivery_missing' => 'يتطلب الدفع عند التسليم خيار شحن للتوصيل',
+    'carts.fulfilment_method_unknown' => 'طريقة التنفيذ ":method" غير متاحة',
+    'carts.fulfilment_method_unsupported' => 'لا يمكن تنفيذ ":identifier" عبر :method',
     'missing_currency_price' => 'لا يوجد سعر للعملة ":currency".',
     'minimum_quantity' => 'يجب إضافة حد أدنى قدره :quantity من العناصر.',
     'quantity_increment' => 'يجب أن تكون الكمية :quantity بمضاعفات قدرها :increment.',

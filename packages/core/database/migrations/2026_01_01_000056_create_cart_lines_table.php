@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained($this->prefix.'carts');
             $table->morphs('purchasable');
             $table->unsignedInteger('quantity');
+            $table->string('fulfilment_method')->nullable()->index();
             $table->jsonb('meta')->nullable();
             $table->foreignId('added_by_discount_id')->nullable()->constrained($this->prefix.'discounts')->nullOnDelete()->comment('Set on a line core added for a discount reward; null on a line the shopper added');
             $table->timestamps();

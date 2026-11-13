@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier không thể được mua trong kênh này hoặc bởi nhóm khách hàng của bạn',
     'carts.payment_terms_pickup_missing' => 'Thanh toán khi nhận hàng tại cửa hàng cần tùy chọn vận chuyển nhận tại cửa hàng',
     'carts.payment_terms_delivery_missing' => 'Thanh toán khi giao hàng cần tùy chọn vận chuyển giao tận nơi',
+    'carts.fulfilment_method_unknown' => 'Phương thức thực hiện ":method" không khả dụng',
+    'carts.fulfilment_method_unsupported' => '":identifier" không thể được thực hiện bằng :method',
     'missing_currency_price' => 'Không tồn tại giá cho đơn vị tiền tệ ":currency"',
     'minimum_quantity' => 'Bạn phải thêm tối thiểu :quantity sản phẩm.',
     'quantity_increment' => 'Số lượng :quantity phải là bội số của :increment',

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
@@ -14,12 +15,14 @@ use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Location;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
 /**
  * @property ArrayObject<string, mixed>|null $data
+ * @property ?int $pickup_location_id
  */
 class ShippingMethod extends Base
 {
@@ -55,6 +58,15 @@ class ShippingMethod extends Base
     protected static function newFactory()
     {
         return ShippingMethodFactory::new();
+    }
+
+    /**
+     * The location a pickup method's options collect from. Unset falls back
+     * to the default location.
+     */
+    public function pickupLocation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function shippingRates(): HasMany

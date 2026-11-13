@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => 'A(z) :identifier nem vásárolható meg ezen a csatornán vagy az Ön vásárlói csoportja által.',
     'carts.payment_terms_pickup_missing' => 'Az átvételkori fizetéshez személyes átvételi szállítási mód szükséges',
     'carts.payment_terms_delivery_missing' => 'Az utánvétes fizetéshez házhozszállítási mód szükséges',
+    'carts.fulfilment_method_unknown' => 'A(z) ":method" teljesítési mód nem érhető el',
+    'carts.fulfilment_method_unsupported' => 'A(z) ":identifier" nem teljesíthető ezzel: :method',
     'missing_currency_price' => 'A ":currency" pénznemhez nem létezik ár.',
     'minimum_quantity' => 'Legalább :quantity tételt kell hozzáadni.',
     'quantity_increment' => 'A mennyiségnek :increment lépésközzel adható meg.',

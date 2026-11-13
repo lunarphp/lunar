@@ -16,13 +16,16 @@ enum StepList: string
     case RemoveFromCartValidation = 'cart.validation.remove_from_cart';
     case AddAddressValidation = 'cart.validation.add_address';
     case SetShippingOptionValidation = 'cart.validation.set_shipping_option';
+    case SetFulfilmentMethodValidation = 'cart.validation.set_fulfilment_method';
+    case SetLineFulfilmentMethodValidation = 'cart.validation.set_line_fulfilment_method';
     case OrderCreateValidation = 'cart.validation.order_create';
     case CartPruning = 'cart.pruning';
 
     /**
-     * The config key that defined this list before spec 0093.
+     * The config key that defined this list before spec 0093, or null for a
+     * list added since.
      */
-    public function legacyConfigKey(): string
+    public function legacyConfigKey(): ?string
     {
         return match ($this) {
             self::CartCalculation => 'lunar.cart.pipelines.cart',
@@ -36,6 +39,7 @@ enum StepList: string
             self::SetShippingOptionValidation => 'lunar.cart.validators.set_shipping_option',
             self::OrderCreateValidation => 'lunar.cart.validators.order_create',
             self::CartPruning => 'lunar.cart.prune_tables.pipelines',
+            self::SetFulfilmentMethodValidation, self::SetLineFulfilmentMethodValidation => null,
         };
     }
 }

@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier-г энэ суваг эсвэл таны хэрэглэгчийн бүлэг худалдан авах боломжгүй',
     'carts.payment_terms_pickup_missing' => 'Авахдаа төлөхөд очиж авах хүргэлтийн сонголт шаардлагатай',
     'carts.payment_terms_delivery_missing' => 'Хүргэлтээр төлөхөд хүргэлтийн сонголт шаардлагатай',
+    'carts.fulfilment_method_unknown' => '":method" биелүүлэх арга боломжгүй',
+    'carts.fulfilment_method_unsupported' => '":identifier"-г :method аргаар биелүүлэх боломжгүй',
     'missing_currency_price' => '":currency" валютын үнэ байхгүй байна',
     'minimum_quantity' => 'Та хамгийн багадаа :quantity ширхэгийг нэмэх ёстой.',
     'quantity_increment' => ':quantity тоо хэмжээ нь :increment-ын үржвэр байх ёстой',

@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier kan niet worden gekocht in dit kanaal of door uw klantgroep',
     'carts.payment_terms_pickup_missing' => 'Betalen bij afhalen vereist een verzendoptie met afhalen',
     'carts.payment_terms_delivery_missing' => 'Betalen bij levering vereist een verzendoptie met bezorging',
+    'carts.fulfilment_method_unknown' => 'De afhandelingsmethode ":method" is niet beschikbaar',
+    'carts.fulfilment_method_unsupported' => '":identifier" kan niet via :method worden afgehandeld',
     'missing_currency_price' => 'Er bestaat geen prijs voor valuta ":currency"',
     'minimum_quantity' => 'U moet minimaal :quantity items toevoegen.',
     'quantity_increment' => 'Hoeveelheid :quantity moet in stappen van :increment zijn',

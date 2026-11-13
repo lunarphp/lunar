@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier cannot be purchased in this channel or by your customer group',
     'carts.payment_terms_pickup_missing' => 'Pay on pickup needs a pickup shipping option',
     'carts.payment_terms_delivery_missing' => 'Pay on delivery needs a delivery shipping option',
+    'carts.fulfilment_method_unknown' => 'The fulfilment method ":method" is not available',
+    'carts.fulfilment_method_unsupported' => '":identifier" cannot be fulfilled by :method',
     'missing_currency_price' => 'No price for currency ":currency" exists',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',

@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Concerns\RestrictsFulfilmentMethods;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\TaxClass;
 
 class ShippingOption implements Purchasable
@@ -20,10 +21,19 @@ class ShippingOption implements Purchasable
         public TaxClass $taxClass,
         public ?string $taxReference = null,
         public ?string $option = null,
-        public bool $pickup = false,
+        public ?Location $pickupLocation = null,
         public ?array $meta = null,
     ) {
         //  ..
+    }
+
+    /**
+     * Whether the customer collects from a location rather than having the
+     * order delivered.
+     */
+    public function isPickup(): bool
+    {
+        return $this->pickupLocation !== null;
     }
 
     /**

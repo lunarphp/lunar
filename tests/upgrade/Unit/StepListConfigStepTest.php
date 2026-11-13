@@ -78,6 +78,23 @@ it('reports v1 default lists as safe to delete', function () {
         ->toBe(['These keys match the core defaults; delete them from your config: lunar.cart.pipelines.cart_lines.']);
 });
 
+it('does not remove validators v2 added from a v1 default add-to-cart list', function () {
+    publishConfig('cart', <<<'PHP'
+        return [
+            'validators' => [
+                'add_to_cart' => [
+                    Lunar\Validation\CartLine\CartLineQuantity::class,
+                    Lunar\Validation\CartLine\CartLineStock::class,
+                    Lunar\Validation\CartLine\CartLineAvailability::class,
+                ],
+            ],
+        ];
+        PHP);
+
+    expect(runStepListConfigStep()->manualActions())
+        ->toBe(['These keys match the core defaults; delete them from your config: lunar.cart.validators.add_to_cart.']);
+});
+
 it('reports a customised list with the equivalent Steps calls', function () {
     publishConfig('orders', <<<'PHP'
         return [

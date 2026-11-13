@@ -50,7 +50,7 @@ class CreateShippingLine
                 // snapshot so the `pickup` fulfilment method can claim its
                 // lines without re-resolving the option at order time.
                 'meta' => array_merge($shippingOption->meta ?? [], [
-                    'pickup' => $shippingOption->pickup,
+                    'pickup' => $shippingOption->isPickup(),
                 ]),
             ])->save();
         }

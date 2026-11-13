@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier nie może zostać kupiony w tym kanale ani przez Twoją grupę klientów',
     'carts.payment_terms_pickup_missing' => 'Płatność przy odbiorze wymaga opcji dostawy z odbiorem osobistym',
     'carts.payment_terms_delivery_missing' => 'Płatność przy odbiorze przesyłki wymaga opcji dostawy kurierskiej',
+    'carts.fulfilment_method_unknown' => 'Metoda realizacji ":method" jest niedostępna',
+    'carts.fulfilment_method_unsupported' => '":identifier" nie może zostać zrealizowany metodą :method',
     'missing_currency_price' => 'Nie istnieje cena dla waluty ":currency"',
     'minimum_quantity' => 'Musisz dodać co najmniej :quantity elementów.',
     'quantity_increment' => 'Ilość :quantity musi być wielokrotnością :increment',

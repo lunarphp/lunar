@@ -9,8 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\TaxBreakdown as TaxBreakdownCast;
+use Lunar\Core\Contracts\Actions\Carts\SetsCartLineFulfilmentMethod;
+use Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment;
+use Lunar\Core\Contracts\FulfilmentMethod;
+use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Database\Factories\CartLineFactory;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
@@ -26,6 +31,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property int $quantity
  * @property ?array $meta
  * @property ?int $added_by_discount_id
+ * @property ?string $fulfilment_method
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
@@ -179,6 +185,32 @@ class CartLine extends Base
     public function isAddedByDiscount(): bool
     {
         return $this->added_by_discount_id !== null;
+    }
+
+    /**
+     * How this line will be fulfilled, or null when it is inferred at order
+     * creation.
+     */
+    public function fulfilmentMethod(): ?FulfilmentMethod
+    {
+        return app(ResolvesCartFulfilment::class)->execute($this->cart)->forLine($this);
+    }
+
+    /**
+     * Override how this line is fulfilled by method key. Null inherits the
+     * cart default. A line that then matches another of the shopper's lines
+     * merges into it, and that line is returned.
+     */
+    public function setFulfilmentMethod(?string $fulfilmentMethod): CartLine
+    {
+        foreach (app(StepManifest::class)->for(StepList::SetLineFulfilmentMethodValidation)->all() as $action) {
+            app($action)->using(
+                cartLine: $this,
+                fulfilmentMethod: $fulfilmentMethod,
+            )->validate();
+        }
+
+        return app(SetsCartLineFulfilmentMethod::class)->execute($this, $fulfilmentMethod);
     }
 
     public function purchasable(): MorphTo
