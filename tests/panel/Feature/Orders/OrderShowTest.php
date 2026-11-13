@@ -10,6 +10,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Tag;
@@ -395,30 +396,72 @@ it('forbids staff without the manage-orders permission', function () {
     $this->get(route('panel.orders.show', $order))->assertForbidden();
 });
 
-it('exposes the pickup point from the shipping line meta', function () {
+it('shows the pickup location the customer chose before fulfilments exist', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $order = Order::factory()->placed()->create();
+    $counter = Location::factory()->create([
+        'name' => 'Dartford',
+        'line_one' => '1 High Street',
+        'city' => 'Dartford',
+        'postcode' => 'DA2 6EP',
+    ]);
+    $order = Order::factory()->placed()->create(['pickup_location_id' => $counter->id]);
     OrderLine::factory()->for($order)->create([
         'type' => 'shipping',
         'description' => 'Click & collect',
         'identifier' => 'collection',
         'unit_price' => 0,
         'total' => 0,
-        'meta' => [
-            'pickup' => true,
-            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP'], 'meta' => []],
-        ],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->where('shippingOption.pickup', true)
-            ->where('shippingOption.pickup_point.name', 'Dartford')
-            ->where('shippingOption.pickup_point.lines.0', 'DA2 6EP'));
+            ->where('delivers', false)
+            ->where('pickupLocation.id', $counter->id)
+            ->where('pickupLocation.name', 'Dartford')
+            ->where('pickupLocation.lines', ['1 High Street', 'Dartford', 'DA2 6EP']));
 });
 
-it('marks a courier line as not a pickup', function () {
+it('shows the pickup fulfilment location over the chosen one', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $chosen = Location::factory()->create(['name' => 'Dartford']);
+    $moved = Location::factory()->create(['name' => 'Gravesend']);
+    $order = Order::factory()->placed()->create(['pickup_location_id' => $chosen->id]);
+    Fulfilment::factory()->for($order)->pickup()->create(['state' => 'pending', 'location_id' => $moved->id]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('pickupLocation.name', 'Gravesend')
+            ->where('delivers', false));
+});
+
+it('shows both the pickup location and the shipping address on a mixed order', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $counter = Location::factory()->create(['name' => 'Dartford']);
+    $order = Order::factory()->placed()->create(['pickup_location_id' => $counter->id]);
+    $order->addresses()->create(['type' => 'shipping', 'first_name' => 'Ada', 'line_one' => '1 Road', 'city' => 'London']);
+    Fulfilment::factory()->for($order)->pickup()->create(['state' => 'pending', 'location_id' => $counter->id]);
+    Fulfilment::factory()->for($order)->create(['method' => 'shipping', 'state' => 'pending']);
+    OrderLine::factory()->for($order)->create([
+        'type' => 'shipping',
+        'description' => 'Standard Delivery',
+        'identifier' => 'standard',
+        'unit_price' => 500,
+        'total' => 500,
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shippingOption.pickup', false)
+            ->where('delivers', true)
+            ->where('pickupLocation.name', 'Dartford')
+            ->where('shippingAddress.city', 'London'));
+});
+
+it('marks a courier order as not a pickup', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create();
@@ -428,81 +471,57 @@ it('marks a courier line as not a pickup', function () {
         'identifier' => 'standard',
         'unit_price' => 500,
         'total' => 500,
-        'meta' => ['pickup' => false],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->where('shippingOption.pickup', false)
-            ->where('shippingOption.pickup_point', null));
+            ->where('delivers', true)
+            ->where('pickupLocation', null));
 });
 
-it('drops the pickup point when the order is not a pickup', function () {
+it('offers the other methods an outstanding fulfilment can change to', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
+    $warehouse = Location::factory()->create(['default' => true]);
     $order = Order::factory()->placed()->create();
-    OrderLine::factory()->for($order)->create([
-        'type' => 'shipping',
-        'description' => 'Standard Delivery',
-        'identifier' => 'standard',
-        'unit_price' => 500,
-        'total' => 500,
-        'meta' => [
-            'pickup' => false,
-            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP']],
-        ],
-    ]);
+    $line = OrderLine::factory()->for($order)->create(['type' => 'physical', 'quantity' => 1]);
+    $pending = $order->createFulfilment([$line->id => 1], ['method' => 'shipping']);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.pickup', false)
-            ->where('shippingOption.pickup_point', null));
+            ->has('fulfilments.0.change_methods', 1)
+            ->where('fulfilments.0.change_methods.0.key', 'pickup')
+            ->where('fulfilments.0.change_methods.0.requires_delivery', false)
+            ->where('fulfilments.0.change_methods.0.location_id', $warehouse->id)
+            ->where('fulfilments.0.urls.method', route('panel.orders.fulfilments.method.update', [$order, $pending])));
 });
 
-it('tolerates a malformed pickup point', function () {
+it('offers no method change once a fulfilment is handed over', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create();
-    OrderLine::factory()->for($order)->create([
-        'type' => 'shipping',
-        'description' => 'Click & collect',
-        'identifier' => 'collection',
-        'unit_price' => 0,
-        'total' => 0,
-        'meta' => [
-            'pickup' => true,
-            'pickup_point' => ['handle' => 'dartford', 'name' => ['nested'], 'lines' => 'DA2 6EP'],
-        ],
-    ]);
+    Fulfilment::factory()->for($order)->shipped()->create();
 
     $this->get(route('panel.orders.show', $order))
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.pickup', true)
-            ->where('shippingOption.pickup_point.name', 'dartford')
-            ->where('shippingOption.pickup_point.lines', []));
+        ->assertInertia(fn (Assert $page) => $page->where('fulfilments.0.change_methods', []));
 });
 
-it('drops non-scalar pickup point lines', function () {
+it('offers no method a restricted item cannot use', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create();
-    OrderLine::factory()->for($order)->create([
-        'type' => 'shipping',
-        'description' => 'Click & collect',
-        'identifier' => 'collection',
-        'unit_price' => 0,
-        'total' => 0,
-        'meta' => [
-            'pickup' => true,
-            'pickup_point' => ['handle' => 'dartford', 'name' => 'Dartford', 'lines' => ['DA2 6EP', ['nested'], 42]],
-        ],
+    $variant = ProductVariant::factory()->create(['fulfilment_methods' => ['shipping']]);
+    $line = OrderLine::factory()->for($order)->create([
+        'type' => 'physical',
+        'quantity' => 1,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
     ]);
+    $order->createFulfilment([$line->id => 1], ['method' => 'shipping']);
 
     $this->get(route('panel.orders.show', $order))
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->where('shippingOption.pickup_point.lines', ['DA2 6EP', '42']));
+        ->assertInertia(fn (Assert $page) => $page->where('fulfilments.0.change_methods', []));
 });
 
 it('shows a pending on-account order as on account', function () {

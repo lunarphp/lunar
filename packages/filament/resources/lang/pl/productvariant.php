@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Możliwość wysyłki',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Metody realizacji',
+            'helper_text' => 'Jak realizowany jest ten wariant. Zaznaczenie metody fizycznej, takiej jak wysyłka lub odbiór osobisty, czyni go wysyłkowym. Nie zaznaczaj niczego, gdy nie ma czego realizować, np. przy natychmiastowym pobraniu.',
+        ],
         'length_value' => [
             'label' => 'Długość',
         ],

@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Enviável',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Métodos de fulfillment',
+            'helper_text' => 'Como esta variante é atendida. Marcar um método físico, como envio ou retirada, a torna enviável. Não marque nenhum quando não houver nada a atender, como um download imediato.',
+        ],
         'length_value' => [
             'label' => 'Comprimento',
         ],

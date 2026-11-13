@@ -143,6 +143,7 @@ class ProductVariantController
                 'length' => array_keys($measurements['length'] ?? []),
                 'weight' => array_keys($measurements['weight'] ?? []),
             ],
+            'fulfilmentMethods' => $variantFields->fulfilmentMethodOptions(),
             'activities' => $activities,
             'canDelete' => $canDelete,
             // Why deletion is blocked, so the UI can explain the disabled button.

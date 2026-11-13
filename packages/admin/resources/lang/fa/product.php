@@ -118,7 +118,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Shipping',
+            'label' => 'تأمین سفارش',
         ],
         'variants' => [
             'label' => 'Variants',

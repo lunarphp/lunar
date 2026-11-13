@@ -29,7 +29,7 @@ return [
             'title' => 'Készlet',
         ],
         'shipping' => [
-            'title' => 'Szállítás',
+            'title' => 'Teljesítés',
         ],
     ],
     'form' => [

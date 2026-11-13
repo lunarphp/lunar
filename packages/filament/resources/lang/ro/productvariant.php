@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Expediabil',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Metode de onorare',
+            'helper_text' => 'Cum este onorată această variantă. Bifarea unei metode fizice, cum ar fi expedierea sau ridicarea, o face expediabilă. Nu bifa nimic când nu este nimic de onorat, de exemplu o descărcare imediată.',
+        ],
         'length_value' => [
             'label' => 'Lungime',
         ],

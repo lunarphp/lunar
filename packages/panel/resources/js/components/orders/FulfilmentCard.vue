@@ -12,12 +12,13 @@ import Button from '../Button.vue';
 import Icon from '../Icon.vue';
 import StatusBadge from '../StatusBadge.vue';
 import FulfilmentLineRow from './FulfilmentLineRow.vue';
-import type { FulfilmentData, FulfilmentStateCategory, FulfilmentTrackingData, FulfilmentTransitionData } from './types';
+import type { FulfilmentData, FulfilmentMethodTarget, FulfilmentStateCategory, FulfilmentTrackingData, FulfilmentTransitionData } from './types';
 
 export type FulfilmentCardAction =
     | { type: 'ship' | 'fulfil' | 'split' | 'merge' | 'hold' | 'release' | 'undo-return' | 'cancel' | 'add-tracking' | 'change-location' }
     | { type: 'transition' | 'return'; transition: FulfilmentTransitionData }
-    | { type: 'remove-tracking'; tracking: FulfilmentTrackingData };
+    | { type: 'remove-tracking'; tracking: FulfilmentTrackingData }
+    | { type: 'change-method'; method: FulfilmentMethodTarget };
 
 const props = defineProps<{ fulfilment: FulfilmentData }>();
 
@@ -72,6 +73,14 @@ const menuItems = computed<MenuItem[]>(() => {
 
     if (can.split) items.push({ key: 'split', label: t('orders.action_split'), icon: 'scissors', action: { type: 'split' } });
     if (can.merge) items.push({ key: 'merge', label: t('orders.action_merge'), icon: 'merge', action: { type: 'merge' } });
+    for (const method of props.fulfilment.change_methods) {
+        items.push({
+            key: `change-method-${method.key}`,
+            label: t('orders.action_change_method', { method: method.label }),
+            icon: method.requires_delivery ? 'truck' : 'mapPin',
+            action: { type: 'change-method', method },
+        });
+    }
     if (can.change_location) items.push({ key: 'change-location', label: t('orders.action_change_location'), icon: 'mapPin', action: { type: 'change-location' } });
     if (can.add_tracking) items.push({ key: 'add-tracking', label: t('orders.action_add_tracking'), icon: 'truck', action: { type: 'add-tracking' } });
     if (can.undo_return) items.push({ key: 'undo-return', label: t('orders.action_undo_return'), icon: 'redo', action: { type: 'undo-return' } });

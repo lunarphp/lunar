@@ -29,7 +29,7 @@ return [
             'title' => 'Envanter',
         ],
         'shipping' => [
-            'title' => 'Kargo',
+            'title' => 'Karşılama',
         ],
     ],
     'form' => [

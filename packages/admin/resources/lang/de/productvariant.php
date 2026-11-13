@@ -29,7 +29,7 @@ return [
             'title' => 'Inventar',
         ],
         'shipping' => [
-            'title' => 'Versand',
+            'title' => 'Fulfillment',
         ],
     ],
     'form' => [

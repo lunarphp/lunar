@@ -106,7 +106,6 @@ it('can update variant shipping', function () {
         ManageProductShipping::class, [
             'record' => $record->getRouteKey(),
         ])->fillForm([
-            'shippable' => true,
             'dimensions.length_value' => 100,
             'dimensions.length_unit' => 'cm',
             'dimensions.width_value' => 200,
@@ -167,4 +166,59 @@ it('can set shipping volume automatically', function () {
         'volume_value' => 1000,
         'volume_unit' => 'l',
     ]);
+});
+
+it('shows every fulfilment method allowed by default and stores a restriction', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
+
+    $record = Product::factory()->create();
+    $variant = ProductVariant::factory()->create(['product_id' => $record->id, 'shippable' => true]);
+
+    $this->asStaff();
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->assertSet('fulfilment_methods', ['pickup', 'shipping'])
+        ->set('fulfilment_methods', ['pickup'])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh()->fulfilment_methods)->toBe(['pickup']);
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->assertSet('fulfilment_methods', ['pickup'])
+        ->set('fulfilment_methods', ['pickup', 'shipping'])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh()->fulfilment_methods)->toBeNull();
+});
+
+it('stops shipping when every fulfilment method is unticked', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
+
+    $record = Product::factory()->create();
+    $variant = ProductVariant::factory()->create(['product_id' => $record->id, 'shippable' => true, 'fulfilment_methods' => ['pickup']]);
+
+    $this->asStaff();
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->set('fulfilment_methods', [])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh())
+        ->shippable->toBeFalse()
+        ->fulfilment_methods->toBeNull();
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->assertSet('fulfilment_methods', [])
+        ->set('fulfilment_methods', ['digital'])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh())
+        ->shippable->toBeFalse()
+        ->fulfilment_methods->toBe(['digital']);
 });

@@ -5,16 +5,22 @@ import ShippingCard from './ShippingCard.vue';
 
 const measurements = { length: ['mm', 'cm', 'm'], weight: ['kg', 'g'] };
 
+const fulfilmentMethods = [
+    { key: 'shipping', label: 'Shipping', physical: true },
+    { key: 'pickup', label: 'Pickup', physical: true },
+    { key: 'digital', label: 'Digital', physical: false },
+];
+
 const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
     mount(ShippingCard, {
         props: {
             values: reactive(values),
             fieldPrefix,
             measurements,
+            fulfilmentMethods,
         },
         global: {
             stubs: {
-                Toggle: { props: ['on'], emits: ['toggle'], template: '<button :aria-pressed="on" @click="$emit(\'toggle\')" />' },
                 Select: {
                     props: ['modelValue'],
                     emits: ['update:modelValue'],
@@ -29,7 +35,7 @@ describe('ShippingCard', () => {
         const wrapper = mountCard({ shippable: false });
 
         expect(wrapper.findAll('input[type="number"]')).toHaveLength(0);
-        expect(wrapper.text()).toContain('products.field_shippable_off_hint');
+        expect(wrapper.text()).toContain('products.field_fulfilment_none_hint');
     });
 
     it('shows dimension fields when shippable', () => {
@@ -37,15 +43,6 @@ describe('ShippingCard', () => {
 
         // weight, length, width, height.
         expect(wrapper.findAll('input[type="number"]')).toHaveLength(4);
-    });
-
-    it('toggles shippable on the prefixed key', async () => {
-        const values = { 'variant:shippable': true };
-        const wrapper = mountCard(values, 'variant:');
-
-        await wrapper.find('button[aria-pressed]').trigger('click');
-
-        expect(values['variant:shippable']).toBe(false);
     });
 
     it('writes a dimension value to the prefixed key as a number', async () => {
@@ -88,5 +85,50 @@ describe('ShippingCard', () => {
         });
 
         expect(wrapper.text()).toContain('24');
+    });
+
+    const boxes = (wrapper: ReturnType<typeof mountCard>) => wrapper.findAll('[role="checkbox"]');
+    const states = (wrapper: ReturnType<typeof mountCard>) => boxes(wrapper).map((box) => box.attributes('data-state'));
+
+    it('shows every physical method ticked for an unrestricted shippable variant', async () => {
+        const values: Record<string, unknown> = { 'variant:shippable': true, 'variant:fulfilment_methods': null };
+        const wrapper = mountCard(values, 'variant:');
+
+        expect(states(wrapper)).toEqual(['checked', 'checked', 'unchecked']);
+
+        await boxes(wrapper)[0].trigger('click');
+        expect(values['variant:fulfilment_methods']).toEqual(['pickup']);
+        expect(values['variant:shippable']).toBe(true);
+
+        // Ticking every physical method again stores null, which also allows methods registered later.
+        await boxes(wrapper)[0].trigger('click');
+        expect(values['variant:fulfilment_methods']).toBeNull();
+    });
+
+    it('stops shipping when the last physical method is unticked', async () => {
+        const values: Record<string, unknown> = { shippable: true, fulfilment_methods: ['pickup'] };
+        const wrapper = mountCard(values);
+
+        await boxes(wrapper)[1].trigger('click');
+
+        expect(values.shippable).toBe(false);
+        expect(values.fulfilment_methods).toBeNull();
+        expect(wrapper.findAll('input[type="number"]')).toHaveLength(0);
+        expect(states(wrapper)).toEqual(['unchecked', 'unchecked', 'unchecked']);
+    });
+
+    it('switches to a non-physical method and back without mixing them', async () => {
+        const values: Record<string, unknown> = { shippable: true, fulfilment_methods: null };
+        const wrapper = mountCard(values);
+
+        await boxes(wrapper)[2].trigger('click');
+        expect(values.shippable).toBe(false);
+        expect(values.fulfilment_methods).toEqual(['digital']);
+        expect(states(wrapper)).toEqual(['unchecked', 'unchecked', 'checked']);
+
+        await boxes(wrapper)[1].trigger('click');
+        expect(values.shippable).toBe(true);
+        expect(values.fulfilment_methods).toEqual(['pickup']);
+        expect(states(wrapper)).toEqual(['unchecked', 'checked', 'unchecked']);
     });
 });

@@ -32,6 +32,7 @@ use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
 use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
+use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
 
 class ProductEditController
@@ -42,6 +43,7 @@ class ProductEditController
         DraftManager $drafts,
         AttributeSchema $attributeSchema,
         AvailabilitySchema $availabilitySchema,
+        VariantFields $variantFields,
     ): Response {
         $availabilitySchema = $availabilitySchema->withPurchasable();
 
@@ -171,6 +173,7 @@ class ProductEditController
                 'length' => array_keys($measurements['length'] ?? []),
                 'weight' => array_keys($measurements['weight'] ?? []),
             ],
+            'fulfilmentMethods' => $variantFields->fulfilmentMethodOptions(),
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name?->all() ?: (object) [],

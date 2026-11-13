@@ -29,7 +29,7 @@ return [
             'title' => 'Inventario',
         ],
         'shipping' => [
-            'title' => 'Envío',
+            'title' => 'Cumplimiento',
         ],
     ],
     'form' => [

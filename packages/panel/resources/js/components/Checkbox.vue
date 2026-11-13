@@ -6,6 +6,7 @@ const props = defineProps<{
     modelValue?: boolean;
     indeterminate?: boolean;
     ariaLabel?: string;
+    disabled?: boolean;
 }>();
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
@@ -17,7 +18,8 @@ const state = computed(() => (props.indeterminate ? 'indeterminate' : !!props.mo
     <CheckboxRoot
         :model-value="state"
         :aria-label="ariaLabel"
-        class="relative inline-flex items-center justify-center w-[15px] h-[15px] shrink-0 cursor-pointer rounded-[4px] border border-line-strong bg-surface transition-[background-color,border-color] duration-100 hover:border-ink-400 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35 data-[state=checked]:bg-ink-900 data-[state=checked]:border-ink-900 data-[state=indeterminate]:bg-ink-900 data-[state=indeterminate]:border-ink-900"
+        :disabled="disabled"
+        class="relative inline-flex items-center justify-center w-[15px] h-[15px] shrink-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 rounded-[4px] border border-line-strong bg-surface transition-[background-color,border-color] duration-100 hover:border-ink-400 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35 data-[state=checked]:bg-ink-900 data-[state=checked]:border-ink-900 data-[state=indeterminate]:bg-ink-900 data-[state=indeterminate]:border-ink-900"
         @update:model-value="(v) => emit('update:modelValue', Boolean(v))"
     >
         <CheckboxIndicator class="pointer-events-none flex items-center justify-center text-white">

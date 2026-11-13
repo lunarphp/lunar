@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Szállítható',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Teljesítési módok',
+            'helper_text' => 'Hogyan teljesül ez a változat. Egy fizikai mód, például a szállítás vagy az átvétel bejelölése szállíthatóvá teszi. Ne jelöljön be semmit, ha nincs mit teljesíteni, például azonnali letöltésnél.',
+        ],
         'length_value' => [
             'label' => 'Hossz',
         ],

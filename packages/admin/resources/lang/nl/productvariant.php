@@ -29,7 +29,7 @@ return [
             'title' => 'Voorraad',
         ],
         'shipping' => [
-            'title' => 'Verzending',
+            'title' => 'Fulfilment',
         ],
     ],
     'form' => [

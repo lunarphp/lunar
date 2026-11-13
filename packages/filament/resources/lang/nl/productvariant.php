@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Verzendbaar',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfilmentmethoden',
+            'helper_text' => 'Hoe deze variant wordt afgehandeld. Een fysieke methode zoals verzending of afhalen aanvinken maakt hem verzendbaar. Vink niets aan als er niets af te handelen is, zoals bij een directe download.',
+        ],
         'length_value' => [
             'label' => 'Lengte',
         ],

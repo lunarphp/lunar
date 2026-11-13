@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Adresa dostave',
         ],
+        'pickup_location' => [
+            'label' => 'Lokacija preuzimanja',
+        ],
         'billing_address' => [
             'label' => 'Adresa naplate',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Lokacija ispunjenja ažurirana.',
                     'error' => 'Nije moguće promijeniti lokaciju ispunjenja.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Promijeni u :method',
+                'address_hint' => 'Ova narudžba nema adresu dostave. Unesite adresu na koju treba poslati ove artikle.',
+                'notification' => [
+                    'success' => 'Način ispunjenja promijenjen.',
+                    'error' => 'Nije moguće promijeniti način ispunjenja.',
                 ],
             ],
             'return' => [
