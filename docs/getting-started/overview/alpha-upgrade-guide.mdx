@@ -120,12 +120,21 @@ Changes made since 2.0.0-alpha.9.
 | `cart_lines` | Add `added_by_discount_id` `foreignId` `nullable`, constrained to `discounts`, null on delete. | `2026_06_01_000025_add_line_added_by_discount` |
 | `order_lines` | Add `added_by_discount_id` `foreignId` `nullable`, constrained to `discounts`, null on delete. | `2026_06_01_000025_add_line_added_by_discount` |
 | `cart_line_discount` | Drop the table if it is empty. Lunar never used it. | `2026_06_01_000025_add_line_added_by_discount` |
+| `locations` | Add `line_one`, `line_two`, `line_three`, `city`, `state`, `postcode` and `contact_phone` as `string` `nullable`. Add `country_id` `foreignId` `nullable`, constrained to `countries`, null on delete. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `carts` | Add `fulfilment_method` `string` `nullable`, indexed. Add `pickup_location_id` `foreignId` `nullable`, indexed, constrained to `locations`, null on delete. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `cart_lines` | Add `fulfilment_method` `string` `nullable`, indexed. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `orders` | Add `pickup_location_id` `foreignId` `nullable`, indexed, constrained to `locations`, null on delete. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `order_lines` | Add `fulfilment_method` `string` `nullable`, indexed. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `product_variants` | Add `fulfilment_methods` `jsonb` `nullable`. | `2026_06_01_000032_add_fulfilment_choice_columns` |
+| `shipping_methods` | Table-rate shipping only. Add `pickup_location_id` `foreignId` `nullable`, constrained to `locations`, null on delete. | `2026_06_01_000032_add_fulfilment_choice_columns` |
 
 `edit_drafts.version` counts writes to a staff member's draft, so the panel can refuse a save from a browser tab holding an older copy. Existing drafts need no backfill: each one starts at version `0`, and the edit page passes the stored version to the panel.
 
 `product_option_values.colour` holds the `#RRGGBB` colour of a value of a colour option, which alpha releases kept in `meta['colour']`. Lunar no longer reads the `meta` key, so copy it into the column, in upper case, for every value whose `meta` has one.
 
 `added_by_discount_id` marks the cart lines a Buy X Get Y discount added automatically, which alpha releases recorded in `meta['added_by_discount']`. A line left unmarked behaves as a line the shopper added. To keep reward lines already in carts and orders marked, set `added_by_discount_id` to the discount ID used as the key in `meta['added_by_discount']`, then remove that key.
+
+A null `fulfilment_method` or `pickup_location_id` means the choice is inferred as before, so carts, lines and variants need no backfill. Alpha releases recorded a pickup order with `meta['pickup']` (`meta['collect']` before alpha.8) on its shipping line, which Lunar no longer reads. `Order::isPickup()` now reads the order's fulfilments, so orders that already have fulfilments keep their pickup status. For an order with no fulfilments yet, set `orders.pickup_location_id` to the default location's ID where its shipping line's `meta->pickup` or `meta->collect` is `true`, so its lines are still picked up when the fulfilments are created.
 
 ## Folded migrations
 
