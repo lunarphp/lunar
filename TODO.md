@@ -16,7 +16,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Typed fields for the core values still kept in meta — option value colours and reward lines added by a discount (spec core-values-out-of-meta)
 - Remove reward lines the cart no longer earns — an automatically added `BuyXGetY` reward stays and is charged at full price once the cart stops earning it; builds on `added_by_discount_id` from spec core-values-out-of-meta (needs a spec)
 - Fulfilment choice — a cart default and per-line fulfilment method, per-variant allowed methods, a typed pickup location, and changing a fulfilment's method after placement (spec 0083)
-- Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)
 - Add Boost guidelines to packages
 - Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
 - Attribute descriptions — restore the v1 helper text staff write for an attribute and editors see under its field, in core, both admin UIs and the upgrade (spec attribute-descriptions)
@@ -40,6 +39,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)
 - Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)
 - Panel form slices on plain forms — the create pages and settings forms compose the same `FormSlice` contract the drafted edit pages do (spec 0088)
 - Pre-order payment intent capabilities — opt-in driver contracts for the cart-phase gateway lifecycle: create, sync, void, refund and hold (spec 0077)
