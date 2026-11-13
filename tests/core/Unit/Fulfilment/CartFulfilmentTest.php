@@ -216,3 +216,21 @@ test('merging carts keeps lines with different methods apart', function () {
     expect($this->cart->refresh()->lines->pluck('quantity', 'fulfilment_method')->all())
         ->toBe([Shipping::KEY => 1, Pickup::KEY => 2]);
 });
+
+test('delivery lines are shippable lines not set to a method that skips delivery', function () {
+    $this->cart->add(pricedVariant($this->currency), fulfilmentMethod: Pickup::KEY);
+    $this->cart->add(pricedVariant($this->currency, ['fulfilment_methods' => [Pickup::KEY]]));
+    $this->cart->add(pricedVariant($this->currency, ['shippable' => false]));
+    $this->cart->add($delivered = pricedVariant($this->currency));
+
+    $cart = $this->cart->refresh();
+
+    expect($cart->deliveryLines()->pluck('purchasable_id')->all())->toBe([$delivered->id])
+        ->and($cart->isShippable())->toBeTrue();
+});
+
+test('a cart with every line picked up is not shippable', function () {
+    $this->cart->add(pricedVariant($this->currency));
+
+    expect($this->cart->setFulfilmentMethod(Pickup::KEY)->isShippable())->toBeFalse();
+});

@@ -142,3 +142,23 @@ test('cant get free shipping if currency isnt met', function () {
 
     expect($shippingOption)->toBeNull();
 });
+
+test('a line picked up does not count towards the free shipping minimum', function () {
+    $currency = Currency::factory()->create(['default' => true]);
+    TaxClass::factory()->create(['default' => true]);
+
+    $shippingRate = ShippingRate::factory()->create([
+        'shipping_method_id' => ShippingMethod::factory()->create([
+            'driver' => 'free-shipping',
+            'data' => ['minimum_spend' => ["{$currency->code}" => 500]],
+        ])->id,
+        'shipping_zone_id' => ShippingZone::factory()->create(['type' => 'countries'])->id,
+    ]);
+
+    $cart = $this->createCart($currency, 500, calculate: false);
+    $cart->lines()->update(['fulfilment_method' => 'pickup']);
+
+    $request = new ShippingOptionRequest(cart: $cart->refresh()->calculate(), shippingRate: $shippingRate);
+
+    expect((new FreeShipping)->resolve($request))->toBeNull();
+});

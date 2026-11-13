@@ -195,7 +195,7 @@ class ShippingRate extends Base implements Purchasable
 
         $cart->loadMissing('lines.purchasable.taxClass.taxRateAmounts');
 
-        foreach ($cart->lines as $cartLine) {
+        foreach ($cart->deliveryLines() as $cartLine) {
             if ($cartLine->purchasable->taxClass) {
                 foreach ($cartLine->purchasable->taxClass->taxRateAmounts as $amount) {
                     if ($highestRate === false || $amount->percentage > $highestRate) {
