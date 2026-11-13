@@ -79,4 +79,16 @@ interface FulfilmentMethod
      * Whether fulfilments of this method carry carrier tracking.
      */
     public function usesTracking(): bool;
+
+    /**
+     * Whether this method can fulfil the purchasable, asked before the order
+     * exists. A cart default that can't fulfil a line is skipped, not forced.
+     */
+    public function supports(Purchasable $purchasable): bool;
+
+    /**
+     * Whether this method delivers to the customer, so its lines need a
+     * shipping option and address and count towards shipping rates.
+     */
+    public function requiresDelivery(): bool;
 }
