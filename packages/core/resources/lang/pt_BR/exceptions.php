@@ -47,6 +47,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'Um fulfillment não pode ser mesclado consigo mesmo.',
     'fulfilment_method_mismatch' => 'Os fulfillments devem usar o mesmo método de fulfillment para serem mesclados ou movidos juntos.',
     'fulfilment_method_no_tracking' => 'Não é possível adicionar rastreamento a um fulfillment do tipo :method.',
+    'fulfilment_method_not_changeable' => 'Somente atendimentos pendentes ou em andamento podem mudar de método.',
+    'fulfilment_change_address_missing' => 'O pedido precisa de um endereço de entrega antes que este atendimento possa ser entregue.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
     'product_option_invalid_colour' => '":colour" não é uma cor válida. Use # seguido de três ou seis dígitos hexadecimais.',
