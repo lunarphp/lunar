@@ -126,6 +126,7 @@ Every fulfilment operation is a verb on the `Fulfilment` model, delegating to an
 | `hold(?string $reason = null, ?string $note = null)` | `HoldsFulfilment` | Blocks a pre-ship fulfilment from shipping |
 | `release()` | `ReleasesFulfilment` | Releases a held fulfilment |
 | `changeLocation(int $locationId)` | `ChangesFulfilmentLocation` | Moves the fulfilment to another location |
+| `changeMethod(string $method, ?Location $location = null, ?array $moves = null)` | `ChangesFulfilmentMethod` | Moves outstanding quantities into a new fulfilment with another method. See [Changing a fulfilment's method](#changing-a-fulfilments-method) |
 | `addTracking(array $attributes)` | `AddsFulfilmentTracking` | Appends a tracking reference, returning the `FulfilmentTracking` |
 
 ```php
@@ -167,18 +168,30 @@ interface Lunar\Core\Contracts\FulfilmentMethod
     public function claim(Order $order, Collection $unclaimed): Collection;
     public function priority(): int;
     public function usesTracking(): bool;
+    public function supports(Purchasable $purchasable): bool;
+    public function requiresDelivery(): bool;
 }
 ```
+
+`supports()` asks the `claim()` rule of a single purchasable before the order exists, so a cart can offer only the methods that can fulfil a line. `requiresDelivery()` says whether the method delivers to the customer, so its lines need a shipping option and address and count towards shipping rates.
 
 Core registers three, in `packages/core/src/Drivers/FulfilmentMethods/`:
 
 | Method | Key | Priority | Claims | Tracking |
 |:-------|:----|:---------|:-------|:---------|
 | `Shipping` | `shipping` | 30 (runs last, catch-all) | Any remaining line with `requires_shipping` | Yes |
-| `Pickup` | `pickup` | 20 | `requires_shipping` lines, only when the order's chosen shipping option was a pickup | No |
+| `Pickup` | `pickup` | 20 | `requires_shipping` lines, only when the order has a `pickup_location_id` | No |
 | `Digital` | `digital` | 10 (runs first) | Lines with `requires_fulfilment` and not `requires_shipping` | No |
 
-Methods claim lines in ascending priority order over a shrinking pool of unclaimed lines, so `digital` and `pickup` get first pick and `shipping` claims whatever is left.
+`shipping` and `pickup` support shippable purchasables, and `digital` supports purchasables that need fulfilment but aren't shippable. Only `shipping` delivers.
+
+When an order is placed, lines stamped with a registered `fulfilment_method` at order creation get one fulfilment per method first, in that method's default state. A pickup fulfilment is created at the order's `pickup_location_id`, and other methods at the default location. The remaining lines go through `claim()`: methods claim lines in ascending priority order over a shrinking pool of unclaimed lines, so `digital` and `pickup` get first pick and `shipping` claims whatever is left.
+
+### Restricting a purchasable's methods
+
+`Lunar\Core\Contracts\Purchasable::allowedFulfilmentMethods()` returns the method keys a purchasable may use, or `null` for no restriction. A variant reads its `fulfilment_methods` column: `['pickup']` for a collection-only item, `['shipping']` for a drop-shipped one. A custom purchasable uses the `Lunar\Core\Models\Concerns\RestrictsFulfilmentMethods` trait, which returns `null`, or implements the method.
+
+`FulfilmentMethods::supporting($purchasable)` returns the registered methods that support the purchasable and that it allows, keyed by key in priority order. The allow-list never adds a method the driver doesn't support.
 
 Manage the registry via the `FulfilmentMethods` facade:
 
@@ -190,6 +203,7 @@ FulfilmentMethods::register(App\Fulfilment\Methods\PrescriptionMethod::class);
 FulfilmentMethods::forget('pickup');
 FulfilmentMethods::all(); // Collection<string, FulfilmentMethod>, priority order
 FulfilmentMethods::get('shipping');
+FulfilmentMethods::supporting($variant); // methods that support the purchasable and that it allows
 FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled); // state $names in a category, across every method
 FulfilmentMethods::dispatchedStateNames(); // Fulfilled and Returned categories: goods that reached the customer
 ```
@@ -214,6 +228,24 @@ $fulfilment = $order->createFulfilment(
 `lines` maps an order line ID to the quantity to cover. `attributes['method']` defaults to `shipping`; `location_id` defaults to the store's default location (creating one named `Default` if none exists yet).
 
 Before creating, the requested quantities are validated against how much of each line is still outstanding — a line's quantity minus what its existing (non-cancelled) fulfilments already cover. Requesting more than is outstanding, or against a line where `requires_fulfilment` is `false`, throws.
+
+## Changing a fulfilment's method
+
+Once the order is placed, staff change how the goods are handed over by changing fulfilments. The order lines keep the method the customer requested.
+
+```php
+$pickup = $fulfilment->changeMethod('pickup', $location);                    // everything
+$pickup = $fulfilment->changeMethod('pickup', moves: [$line->id => 1]);       // part
+$delivery = $fulfilment->changeMethod('shipping');
+```
+
+`changeMethod()` moves outstanding quantities into a new fulfilment in the target method's default state, and deletes the source if it ends up empty. `$moves` maps an order line ID to the quantity, as for `split()`, and `null` moves everything. It throws `Lunar\Core\Exceptions\FulfilmentException` when:
+
+- the fulfilment has been handed over. Only fulfilments in the `Outstanding` category can change.
+- the target method doesn't support a moved line's purchasable, so a collection-only item can't be changed to shipping.
+- the target method delivers and the order has no shipping address.
+
+A pickup defaults to the order's pickup location, then the default location. Core never charges or refunds the change. Refund part of the shipping charge with the refund composer, or take an extra payment with [`recordPayment()`](/reference/orders#recording-a-payment).
 
 ## Fulfilment lines
 

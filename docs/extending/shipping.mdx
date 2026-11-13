@@ -58,6 +58,7 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Modifiers\ShippingModifier;
 
@@ -84,8 +85,8 @@ class CustomShippingModifier extends ShippingModifier
                 identifier: 'PICKUP',
                 price: new PriceValue(0, $cart->currency),
                 taxClass: $taxClass,
-                // Routes the order's lines to the pickup fulfilment method.
-                pickup: true,
+                // A pickup option collects from a location.
+                pickupLocation: Location::getDefault(),
             )
         );
 
@@ -124,7 +125,7 @@ class CustomShippingModifier extends ShippingModifier
 | `taxClass` | `Lunar\Core\Models\TaxClass` | |
 | `taxReference` | `?string` | |
 | `option` | `?string` | |
-| `pickup` | `bool` | Marks the option as an in-store pickup, defaults to `false`. |
+| `pickupLocation` | `?Lunar\Core\Models\Location` | Where the customer collects. An option with a location is a pickup, and `isPickup()` returns `true`. Defaults to `null`. |
 | `meta` | `?array` | |
 
 Register the modifier from a service provider's `boot()` method:

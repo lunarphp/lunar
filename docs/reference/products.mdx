@@ -376,6 +376,7 @@ Lunar\Core\Models\ProductVariant
 | `volume_value` | `decimal(10,4)` `nullable` | Volume value |
 | `volume_unit` | `string` `nullable` | Volume unit of measure |
 | `shippable` | `boolean` | Whether the variant requires shipping, default: `true` |
+| `fulfilment_methods` | `jsonb` `nullable` | The fulfilment method keys the variant may use, for example `["pickup"]` for a collection-only item. `null` allows any method. See [Restricting a purchasable's methods](/reference/fulfilments#restricting-a-purchasables-methods) |
 | `backorder` | `integer` | Backorder allowance, default: `0` |
 | `selling_policy` | `string` | Selling policy: `always`, `in_stock`, or `in_stock_or_on_backorder`, default: `always` |
 | `stock_on_hand` | `integer` | Cached stock rollup. Default: `0` |

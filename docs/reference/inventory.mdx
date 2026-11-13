@@ -38,6 +38,14 @@ Lunar\Core\Models\Location
 | `name` | `string` | Display name |
 | `handle` | `string` | Unique slug, automatically slugified on save |
 | `default` | `boolean` | Whether this is the default location |
+| `line_one` | `string` `nullable` | Address, so a pickup can tell the customer where to go |
+| `line_two` | `string` `nullable` | |
+| `line_three` | `string` `nullable` | |
+| `city` | `string` `nullable` | |
+| `state` | `string` `nullable` | |
+| `postcode` | `string` `nullable` | |
+| `country_id` | `foreignId` `nullable` | |
+| `contact_phone` | `string` `nullable` | |
 | `meta` | `jsonb` `nullable` | Custom metadata |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
@@ -46,6 +54,7 @@ Lunar\Core\Models\Location
 
 | Relationship | Type | Related Model | Description |
 |:-|:-|:-|:-|
+| `country` | `BelongsTo` | `Lunar\Core\Models\Country` | |
 | `fulfilments` | `HasMany` | `Lunar\Core\Models\Fulfilment` | Fulfilments assigned to this location |
 
 ### Scopes
