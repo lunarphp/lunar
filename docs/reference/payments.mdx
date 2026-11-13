@@ -51,6 +51,25 @@ Each type entry requires a `driver` key naming the registered driver to resolve.
 ],
 ```
 
+### Payment terms
+
+A payment type can declare `terms`, the `Lunar\Core\Enums\PaymentTerms` value an order paid with it is placed on. Use it for a checkout option that takes no payment up front:
+
+```php
+'types' => [
+    'on-account' => [
+        'driver' => 'offline',
+        'terms' => 'on-account',
+    ],
+    'pay-on-pickup' => [
+        'driver' => 'offline',
+        'terms' => 'on-pickup',
+    ],
+],
+```
+
+`AbstractPayment::terms()` reads the key and returns `null` when it is absent. The `OfflinePayment` driver sets the terms on the cart before it creates the order, so order creation validates them, and writes them to the order when it places it. Terms from the payment type replace any terms set on the cart. A gateway driver declares no terms, so a card payment keeps `checkout`. See [Payment terms](/reference/orders#payment-terms) on the Orders reference, and [Recording a payment](/reference/orders#recording-a-payment) for settling the order later.
+
 Adding a new type does not register a driver: the driver named under `driver` must already be registered, either by a first-party add-on's service provider or by a custom `Payments::extend()` call. See [Registering a driver](/extending/payments#registering-a-driver).
 
 ## Taking a payment

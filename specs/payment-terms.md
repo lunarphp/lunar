@@ -123,8 +123,8 @@ The `payment-received` notification fires when the payment status reaches `paid`
 
 ## Implementation plan
 
-- [ ] Slice 1 — `PaymentTerms` enum and labels, `orders.payment_terms` and `carts.payment_terms`, `setPaymentTerms()` and its action, `CreateOrder` copying the terms, `AbstractPayment::terms()` and `OfflinePayment` writing them, `isAwaitingPaymentByTerms()` and `paymentStatusLabel()`, the `OnPickup` validation. Tests.
-- [ ] Slice 2 — `recordPayment()` and `RecordPayment`. Tests, including refunding a recorded payment.
-- [ ] Slice 3 — Panel: replace the meta reads with the order methods, the label on the index, the record-payment action. Translations.
-- [ ] Slice 4 — Filament: the label and the record-payment action. Translations.
-- [ ] Slice 5 — Docs and upgrade guide.
+- [x] Slice 1 — `PaymentTerms` enum and labels, `orders.payment_terms` and `carts.payment_terms`, `setPaymentTerms()` and its action, `CreateOrder` copying the terms, `AbstractPayment::terms()` and `OfflinePayment` writing them, `isAwaitingPaymentByTerms()` and `paymentStatusLabel()`, the `OnPickup` validation. Tests.
+- [x] Slice 2 — `recordPayment()` and `RecordPayment`. Tests, including refunding a recorded payment.
+- [x] Slice 3 — Panel: replace the meta reads with the order methods, the label on the index, the record-payment action. Translations.
+- [x] Slice 4 — Filament: the label and the record-payment action. Translations.
+- [x] Slice 5 — Docs and upgrade guide.

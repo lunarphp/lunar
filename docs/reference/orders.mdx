@@ -31,6 +31,7 @@ Lunar\Core\Models\Order
 | channel_id | `foreignId` | The channel the order was placed through |
 | payment_status | `string` | Derived rollup of the transaction ledger, see [Payment status](#payment-status) |
 | fulfilment_status | `string` | Derived rollup of the order's fulfilments, see [Fulfilment status](#fulfilment-status) |
+| payment_terms | `string` | When the order is meant to be paid, cast to `Lunar\Core\Enums\PaymentTerms` (default `checkout`), see [Payment terms](#payment-terms) |
 | reference | `string` `nullable` | The generated order reference |
 | customer_reference | `string` `nullable` | A reference provided by the customer |
 | sub_total | `unsignedBigInteger` | The subtotal minus any discounts, excluding tax |
@@ -103,6 +104,8 @@ Lunar\Core\Models\Order
 | `isPickup(): bool` | Whether the customer picks the order up rather than having it shipped: the shipping line's `meta['pickup']` is exactly `true` |
 | `lifecycleStatus(): string` | Returns `'cancelled'`, `'closed'`, or `'open'` — cancelled takes precedence. Used for badges and search |
 | `cancelReasonLabel(): ?string` | The human-readable label for `cancel_reason` |
+| `isAwaitingPaymentByTerms(): bool` | `true` when the terms are not `Checkout` and the payment status is `Pending`, see [Payment terms](#payment-terms) |
+| `paymentStatusLabel(): string` | The terms' label while the order is awaiting payment by terms, otherwise the payment status label |
 
 ## Creating an order from a cart
 
@@ -196,6 +199,28 @@ An order's lifecycle is read from three independent signals rather than one stat
 | `Paid` | `paid` | The full order total has been captured (or the order total is zero) |
 | `PartiallyRefunded` | `partially-refunded` | The order was paid in full and part of it has since been refunded |
 | `Refunded` | `refunded` | Everything captured has been refunded |
+
+### Payment terms
+
+`payment_terms` records when the order is meant to be paid. It is cast to the `Lunar\Core\Enums\PaymentTerms` enum:
+
+| Case | Value | Description |
+|:-|:-|:-|
+| `Checkout` | `checkout` | Paid at checkout. The default |
+| `OnAccount` | `on-account` | Invoiced and paid later |
+| `OnPickup` | `on-pickup` | Paid in store when the customer collects |
+
+An order placed on account or for payment on pickup has no transactions, so its payment status is `Pending`, the same as an order whose card payment failed. The terms tell the two apart. Terms never change `payment_status`. Once money is recorded, the status moves on as usual (`PartiallyPaid`, `Paid`), and the order reads like any other.
+
+```php
+$order->payment_terms;              // PaymentTerms::OnAccount
+$order->isAwaitingPaymentByTerms(); // true while the terms are not Checkout and the status is Pending
+$order->paymentStatusLabel();       // "On account" while awaiting payment, otherwise the status label
+```
+
+The terms come from the cart, through [`$cart->setPaymentTerms()`](/reference/carts#payment-terms), or from the payment type, through a `terms` key in its config (see [Payments](/reference/payments#payment-terms)). The payment type wins.
+
+A zero-total order is never `Pending`, because the payment status settles it as `Paid`. Its terms are stored as given, and `isAwaitingPaymentByTerms()` returns `false`. If the order is edited and its total rises, the status leaves `Paid` and the stored terms apply again.
 
 ### Fulfilment status
 
@@ -479,6 +504,29 @@ $capture->message; // string
 ```
 
 `$order->capture()` delegates to `Lunar\Core\Contracts\Actions\Orders\CapturesOrder`, guards that the amount does not exceed the intent, and dispatches the driver's `capture()` — which creates the `capture` `Transaction`. Recording the capture triggers a `payment_status` recompute automatically.
+
+### Recording a payment
+
+Record a payment taken after checkout, such as a settled invoice or cash at the counter, with `recordPayment()`. The amount is in minor units.
+
+```php
+$transaction = $order->recordPayment(
+    amount: 4550,
+    reference: 'INV-1001',
+    notes: 'Bank transfer',
+);
+```
+
+`$order->recordPayment()` delegates to `Lunar\Core\Contracts\Actions\Orders\RecordsPayment` (default `Lunar\Core\Actions\Orders\RecordPayment`). It writes a successful `capture` transaction with the `offline` driver, and recording it triggers a `payment_status` recompute. Without a reference, it generates one. It throws `Lunar\Core\Exceptions\OrderActionException` when the amount is not positive or exceeds the outstanding balance.
+
+```php
+use Lunar\Core\Actions\Orders\RecordPayment;
+
+RecordPayment::outstandingBalance($order); // the order total minus successful captures, in minor units
+RecordPayment::canRun($order);             // an outstanding balance on an order that is not cancelled
+```
+
+A recorded payment refunds like any other capture: `Order::refund()` refunds it through the `offline` driver.
 
 ## Refunds
 
