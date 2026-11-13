@@ -102,6 +102,10 @@ class StepListConfigStep implements UpgradeStep
      */
     protected function publishedList(StepList $list): ?array
     {
+        if ($list->legacyConfigKey() === null) {
+            return null;
+        }
+
         [, $file, $path] = explode('.', $list->legacyConfigKey(), 3);
 
         $config = $this->publishedConfig[$file] ??= $this->loadPublishedConfig($file);

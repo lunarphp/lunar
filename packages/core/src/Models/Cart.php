@@ -24,11 +24,15 @@ use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
 use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
 use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
 use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\SetsCartFulfilmentMethod;
 use Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms;
+use Lunar\Core\Contracts\Actions\Carts\SetsCartPickupLocation;
 use Lunar\Core\Contracts\Actions\Carts\SetsShippingOption;
 use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
+use Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Contracts\StepManifest;
@@ -70,6 +74,8 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $calculated_at
  * @property ?string $remember_token
  * @property ?PaymentTerms $payment_terms
+ * @property ?string $fulfilment_method
+ * @property ?int $pickup_location_id
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -375,6 +381,11 @@ class Cart extends Base
         return $this->belongsTo(Channel::class);
     }
 
+    public function pickupLocation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
+    }
+
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
@@ -662,7 +673,7 @@ class Cart extends Base
     /**
      * Add or update a purchasable item to the cart
      */
-    public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
+    public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true, ?string $fulfilmentMethod = null): Cart
     {
         foreach ($this->steps(StepList::AddToCartValidation) as $action) {
             // Throws a validation exception?
@@ -670,11 +681,12 @@ class Cart extends Base
                 cart: $this,
                 purchasable: $purchasable,
                 quantity: $quantity,
-                meta: $meta
+                meta: $meta,
+                fulfilmentMethod: $fulfilmentMethod,
             )->validate();
         }
 
-        app(AddsOrUpdatesPurchasable::class)->execute($this, $purchasable, $quantity, $meta);
+        app(AddsOrUpdatesPurchasable::class)->execute($this, $purchasable, $quantity, $meta, $fulfilmentMethod);
 
         return $refresh ? $this->refresh()->recalculate() : $this;
     }
@@ -687,7 +699,8 @@ class Cart extends Base
                     purchasable: $line['purchasable'],
                     quantity: $line['quantity'],
                     meta: (array) ($line['meta'] ?? null),
-                    refresh: false
+                    refresh: false,
+                    fulfilmentMethod: $line['fulfilment_method'] ?? null,
                 );
             });
         });
@@ -841,6 +854,51 @@ class Cart extends Base
         return app(SetsCartPaymentTerms::class)->execute($this, $terms);
     }
 
+    /**
+     * The cart-wide fulfilment method: the explicit choice, else read from the
+     * chosen shipping option.
+     */
+    public function fulfilmentMethod(): ?FulfilmentMethod
+    {
+        return app(ResolvesCartFulfilment::class)->execute($this)->method;
+    }
+
+    /**
+     * Where the cart's pickup lines are collected, or null when nothing is
+     * picked up.
+     */
+    public function resolvedPickupLocation(): ?Location
+    {
+        return app(ResolvesCartFulfilment::class)->execute($this)->pickupLocation;
+    }
+
+    /**
+     * Set the cart-wide default fulfilment method by key. Null clears it.
+     */
+    public function setFulfilmentMethod(?string $fulfilmentMethod, bool $refresh = true): Cart
+    {
+        foreach ($this->steps(StepList::SetFulfilmentMethodValidation) as $action) {
+            app($action)->using(
+                cart: $this,
+                fulfilmentMethod: $fulfilmentMethod,
+            )->validate();
+        }
+
+        app(SetsCartFulfilmentMethod::class)->execute($this, $fulfilmentMethod);
+
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
+    }
+
+    /**
+     * Set where pickup lines are collected. Null clears it.
+     */
+    public function setPickupLocation(?Location $location, bool $refresh = true): Cart
+    {
+        app(SetsCartPickupLocation::class)->execute($this, $location);
+
+        return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
+    }
+
     public function getShippingOption(): ?ShippingOption
     {
         return ShippingManifest::getShippingOption($this->calculate());
@@ -928,7 +986,7 @@ class Cart extends Base
         $this->shippingEstimateMeta = $params;
         $option = ShippingManifest::getOptions($this)
             ->filter(
-                fn ($option) => ! $option->pickup
+                fn ($option) => ! $option->isPickup()
             )->sortBy('price.value')->first();
 
         if ($setOverride && $option) {

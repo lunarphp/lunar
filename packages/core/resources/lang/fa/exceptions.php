@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier در این کانال یا توسط گروه مشتری شما قابل خرید نیست.',
     'carts.payment_terms_pickup_missing' => 'پرداخت هنگام تحویل حضوری به گزینه ارسال تحویل حضوری نیاز دارد',
     'carts.payment_terms_delivery_missing' => 'پرداخت هنگام تحویل به گزینه ارسال با تحویل در محل نیاز دارد',
+    'carts.fulfilment_method_unknown' => 'روش تحویل ":method" در دسترس نیست',
+    'carts.fulfilment_method_unsupported' => '":identifier" را نمی‌توان با :method تحویل داد',
     'missing_currency_price' => 'هیچ قیمتی برای ارز ":currency" وجود ندارد.',
     'minimum_quantity' => 'باید حداقل :quantity مورد اضافه کنید.',
     'quantity_increment' => 'تعداد :quantity باید مضربی از :increment باشد.',

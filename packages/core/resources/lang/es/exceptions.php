@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier no se puede comprar en este canal ni por tu grupo de clientes.',
     'carts.payment_terms_pickup_missing' => 'El pago al recoger requiere una opción de envío con recogida',
     'carts.payment_terms_delivery_missing' => 'El pago contra entrega requiere una opción de envío a domicilio',
+    'carts.fulfilment_method_unknown' => 'El método de entrega ":method" no está disponible',
+    'carts.fulfilment_method_unsupported' => '":identifier" no se puede entregar mediante :method',
     'missing_currency_price' => 'No existe un precio para la moneda ":currency".',
     'minimum_quantity' => 'Debes agregar un mínimo de :quantity artículos.',
     'quantity_increment' => 'La cantidad :quantity debe ser en incrementos de :increment.',

@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier bu kanaldan veya müşteri grubunuz tarafından satın alınamaz',
     'carts.payment_terms_pickup_missing' => 'Teslim alırken ödeme, mağazadan teslim alma gönderim seçeneği gerektirir',
     'carts.payment_terms_delivery_missing' => 'Kapıda ödeme, adrese teslim gönderim seçeneği gerektirir',
+    'carts.fulfilment_method_unknown' => '":method" karşılama yöntemi kullanılamıyor',
+    'carts.fulfilment_method_unsupported' => '":identifier", :method ile karşılanamaz',
     'missing_currency_price' => '":currency" para birimi için fiyat mevcut değil',
     'minimum_quantity' => 'En az :quantity adet eklemelisiniz.',
     'quantity_increment' => ':quantity miktarı :increment\'lik artışlarla olmalıdır',

@@ -17,10 +17,11 @@ class GenerateFingerprint implements GeneratesFingerprint
                 $line->purchasable_type.
                 $line->purchasable_id.
                 $line->quantity.
+                $line->fulfilment_method.
                 $line->subTotal?->value;
         });
 
-        $value .= $cart->user_id.$cart->currency_id.$cart->coupon_code;
+        $value .= $cart->user_id.$cart->currency_id.$cart->coupon_code.$cart->fulfilment_method.$cart->pickup_location_id;
 
         return sha1($value);
     }

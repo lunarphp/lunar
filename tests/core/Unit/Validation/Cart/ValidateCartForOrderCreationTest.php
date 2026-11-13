@@ -9,6 +9,7 @@ use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -160,7 +161,7 @@ test('can validate collection with partial shipping address', function () {
         identifier: 'PICKUP',
         price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
-        pickup: true
+        pickupLocation: Location::factory()->create(),
     );
 
     ShippingManifest::addOption($shippingOption);
@@ -431,7 +432,7 @@ function cartWithShippingOption(bool $pickup): Cart
         identifier: $pickup ? 'PICKUP' : 'DELIVERY',
         price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
-        pickup: $pickup,
+        pickupLocation: $pickup ? Location::factory()->create() : null,
     );
 
     ShippingManifest::addOption($shippingOption);

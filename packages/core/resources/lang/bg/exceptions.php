@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier не може да бъде закупен в този канал или от вашата клиентска група',
     'carts.payment_terms_pickup_missing' => 'Плащането при вземане изисква опция за доставка с вземане',
     'carts.payment_terms_delivery_missing' => 'Плащането при доставка изисква опция за доставка до адрес',
+    'carts.fulfilment_method_unknown' => 'Методът на изпълнение ":method" не е наличен',
+    'carts.fulfilment_method_unsupported' => '":identifier" не може да бъде изпълнен чрез :method',
     'missing_currency_price' => 'Няма цена за валута ":currency"',
     'minimum_quantity' => 'Трябва да добавите минимум :quantity артикула.',
     'quantity_increment' => 'Количество :quantity трябва да бъде в стъпки от :increment',

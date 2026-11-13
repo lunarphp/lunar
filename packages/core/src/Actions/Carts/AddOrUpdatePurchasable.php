@@ -21,14 +21,16 @@ class AddOrUpdatePurchasable implements AddsOrUpdatesPurchasable
         Cart $cart,
         Purchasable $purchasable,
         int $quantity = 1,
-        array $meta = []
+        array $meta = [],
+        ?string $fulfilmentMethod = null,
     ): void {
         throw_if(! $quantity, InvalidCartLineQuantityException::class);
 
         $existing = $this->getsExistingCartLine->execute(
             cart: $cart,
             purchasable: $purchasable,
-            meta: $meta
+            meta: $meta,
+            fulfilmentMethod: $fulfilmentMethod,
         );
 
         if ($existing) {
@@ -44,6 +46,7 @@ class AddOrUpdatePurchasable implements AddsOrUpdatesPurchasable
             'purchasable_type' => $purchasable->getMorphClass(),
             'quantity' => $quantity,
             'meta' => $meta,
+            'fulfilment_method' => $fulfilmentMethod,
         ]);
     }
 }

@@ -52,7 +52,7 @@ class ValidateCartForOrderCreation extends BaseValidator
             }
 
             // Is this cart going to be shipped and if so, does it have a shipping address?
-            if (! $shippingOption->pickup) {
+            if (! $shippingOption->isPickup()) {
                 if (! $cart->shippingAddress) {
                     return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
                 }
@@ -68,11 +68,11 @@ class ValidateCartForOrderCreation extends BaseValidator
             }
         }
 
-        if ($cart->payment_terms === PaymentTerms::OnPickup && ! $cart->getShippingOption()?->pickup) {
+        if ($cart->payment_terms === PaymentTerms::OnPickup && ! $cart->getShippingOption()?->isPickup()) {
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_pickup_missing'));
         }
 
-        if ($cart->payment_terms === PaymentTerms::OnDelivery && (! $cart->isShippable() || $cart->getShippingOption()?->pickup)) {
+        if ($cart->payment_terms === PaymentTerms::OnDelivery && (! $cart->isShippable() || $cart->getShippingOption()?->isPickup())) {
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_delivery_missing'));
         }
 

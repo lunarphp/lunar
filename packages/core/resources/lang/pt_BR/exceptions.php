@@ -15,6 +15,8 @@ return [
     'carts.line_not_purchasable' => ':identifier não pode ser comprado neste canal ou pelo seu grupo de clientes',
     'carts.payment_terms_pickup_missing' => 'Pagar na retirada exige uma opção de envio com retirada',
     'carts.payment_terms_delivery_missing' => 'Pagar na entrega exige uma opção de envio com entrega',
+    'carts.fulfilment_method_unknown' => 'O método de atendimento ":method" não está disponível',
+    'carts.fulfilment_method_unsupported' => '":identifier" não pode ser atendido por :method',
     'missing_currency_price' => 'Não existe preço para a moeda ":currency"',
     'minimum_quantity' => 'Você deve adicionar no mínimo :quantity itens.',
     'quantity_increment' => 'A quantidade :quantity deve estar em incrementos de :increment',
