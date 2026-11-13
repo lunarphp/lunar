@@ -29,6 +29,7 @@ use Lunar\Core\Pricing\PriceFormatterInterface;
  * @property string $type
  * @property bool $requires_shipping
  * @property bool $requires_fulfilment
+ * @property ?string $fulfilment_method
  * @property string $description
  * @property ?string $option
  * @property string $identifier

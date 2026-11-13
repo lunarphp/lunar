@@ -10,6 +10,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
@@ -137,27 +138,22 @@ test('can close and reopen an order', function () {
         ->and($order->fresh()->closed_at)->toBeNull();
 });
 
-test('is a pickup only when the shipping line meta sets pickup to true', function (mixed $pickup, bool $expected) {
-    $order = Order::factory()->create(['user_id' => null]);
-    OrderLine::factory()->create([
-        'order_id' => $order->id,
-        'type' => 'shipping',
-        'meta' => $pickup === null ? [] : ['pickup' => $pickup],
-    ]);
-
-    expect($order->fresh()->isPickup())->toBe($expected)
-        ->and($order->fresh()->load('lines')->isPickup())->toBe($expected);
-})->with([
-    'true' => [true, true],
-    'false' => [false, false],
-    'string false' => ['false', false],
-    'missing' => [null, false],
-]);
-
-test('is not a pickup without a shipping line', function () {
+test('is a pickup when it has a pickup location', function () {
     $order = Order::factory()->create(['user_id' => null]);
 
     expect($order->isPickup())->toBeFalse();
+
+    $order->update(['pickup_location_id' => Location::factory()->create()->id]);
+
+    expect($order->isPickup())->toBeTrue()
+        ->and($order->pickupLocation)->toBeInstanceOf(Location::class);
+});
+
+test('a shipping line pickup flag in meta does not make an order a pickup', function () {
+    $order = Order::factory()->create(['user_id' => null]);
+    OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'shipping', 'meta' => ['pickup' => true]]);
+
+    expect($order->fresh()->isPickup())->toBeFalse();
 });
 
 test('open and closed scopes filter by archive state', function () {
