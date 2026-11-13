@@ -118,6 +118,7 @@ A shipping method represents a type of delivery, such as flat rate, weight-based
 | weight_unit | `string` `nullable` | Unit used by `min_weight` and `max_weight` (e.g., `kg`, `g`) |
 | data | `json` `nullable` | Driver-specific configuration and the availability schedule (cast to `AsArrayObject`; stored as `jsonb` on PostgreSQL) |
 | driver | `string` | Driver identifier (e.g., `ship-by`, `flat-rate`, `free-shipping`, `pickup`) |
+| pickup_location_id | `foreignId` `nullable` | The location a `pickup` method's options collect from. Unset falls back to the default location |
 | created_at | `timestamp` | |
 | updated_at | `timestamp` | |
 
@@ -127,6 +128,7 @@ A shipping method represents a type of delivery, such as flat rate, weight-based
 |:-------------|:-----|:--------------|:------------|
 | shippingRates | HasMany | `ShippingRate` | Rates associated with this method |
 | customerGroups | BelongsToMany | `Lunar\Core\Models\CustomerGroup` | Customer groups that can see and use this method |
+| pickupLocation | BelongsTo | `Lunar\Core\Models\Location` | Where a `pickup` method's options collect from |
 
 ---
 
@@ -294,7 +296,9 @@ Offers free shipping when the cart meets a minimum spend requirement.
 
 **Driver identifier:** `pickup`
 
-Allows customers to pick up their order in store. Returns a shipping option with a price of zero and sets `pickup: true` on the shipping option, which can be used to identify pickup orders in the storefront.
+Allows customers to pick up their order in store. Returns a shipping option with a price of zero whose `pickupLocation` is the shipping method's `pickup_location_id`, or the default location when the method has none. `isPickup()` on the option identifies pickup options in the storefront.
+
+The table-rate drivers price weight, subtotal, stock and exclusions over the cart's [delivery lines](/reference/carts#delivery-lines), so a line the customer collects doesn't add to a parcel rate. The pickup driver checks every line, since it asks whether anything in the cart can't be picked up.
 
 Every driver also checks the cart's products against any exclusion list attached to the shipping zone, returning `null` (no option) if a product in the cart is excluded.
 
