@@ -68,6 +68,15 @@ This replaces the `meta['payment_method']` convention. A store moves its on-acco
 
 Terms never change the payment status itself. Once money is recorded the status moves on as it does today (`PartiallyPaid`, `Paid`), and the order reads like any other.
 
+### Zero-value orders
+
+A zero-value order needs no special case. `ResolvePaymentStatus` already settles a zero-total order as `Paid`, so it is never `Pending`:
+
+- Its terms are `checkout` unless the cart or payment type sets others.
+- If other terms are set, they are stored as given. `isAwaitingPaymentByTerms()` is false and `paymentStatusLabel()` shows the payment status.
+- `recordPayment()` has no outstanding balance to record against, and the panel doesn't offer the action.
+- If the order is edited and its total rises, the status leaves `Paid` and the stored terms apply from then on. This is why core doesn't reset the terms to `checkout` on a free order.
+
 ### Recording a payment taken later
 
 `Order::recordPayment(int $amount, ?string $reference = null, ?string $notes = null): Transaction`, delegating to `Actions\Orders\RecordPayment` (contract `RecordsPayment`). It writes a successful `capture` transaction with driver `offline`, then recomputes the order status through `RecomputesOrderStatus`. The amount can't exceed the outstanding balance.
