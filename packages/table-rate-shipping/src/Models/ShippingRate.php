@@ -12,6 +12,7 @@ use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Concerns\HasPrices;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\RestrictsFulfilmentMethods;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
@@ -21,6 +22,7 @@ class ShippingRate extends Base implements Purchasable
     use HasFactory;
     use HasPrices;
     use LogsActivity;
+    use RestrictsFulfilmentMethods;
 
     /**
      * Define which attributes should be

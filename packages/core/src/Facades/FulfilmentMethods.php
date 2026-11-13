@@ -14,6 +14,7 @@ use Lunar\Core\Manifests\FulfilmentMethodManifest;
  * @method static \Lunar\Core\Contracts\FulfilmentMethodManifest forget(string ...$keys)
  * @method static Collection all()
  * @method static FulfilmentMethod|null get(?string $key)
+ * @method static Collection supporting(\Lunar\Core\Contracts\Purchasable $purchasable)
  * @method static array states()
  * @method static array transitions()
  * @method static array stateNamesIn(FulfilmentStateCategory $category)

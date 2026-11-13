@@ -5,10 +5,13 @@ namespace Lunar\Core\DataTypes;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\Concerns\RestrictsFulfilmentMethods;
 use Lunar\Core\Models\TaxClass;
 
 class ShippingOption implements Purchasable
 {
+    use RestrictsFulfilmentMethods;
+
     public function __construct(
         public string $name,
         public ?string $description,

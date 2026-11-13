@@ -5,6 +5,7 @@ namespace Lunar\Core\Manifests;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\FulfilmentMethodManifest as FulfilmentMethodManifestContract;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Drivers\FulfilmentMethods\Digital;
 use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
@@ -109,6 +110,19 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
         }
 
         return $this->methods->get($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supporting(Purchasable $purchasable): Collection
+    {
+        $allowed = $purchasable->allowedFulfilmentMethods();
+
+        return $this->all()->filter(
+            fn (FulfilmentMethod $method) => ($allowed === null || in_array($method->getKey(), $allowed, true))
+                && $method->supports($purchasable)
+        );
     }
 
     /**
