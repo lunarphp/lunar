@@ -66,6 +66,7 @@ use Lunar\Core\Actions\Discounts\UpdateDiscount;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentMethod;
 use Lunar\Core\Actions\Fulfilment\CreateFulfilment;
 use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
 use Lunar\Core\Actions\Fulfilment\FulfilFulfilment;
@@ -222,6 +223,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Fulfilment\AddsFulfilmentTracking::class => AddFulfilmentTracking::class,
         Contracts\Fulfilment\CancelsFulfilment::class => CancelFulfilment::class,
         Contracts\Fulfilment\ChangesFulfilmentLocation::class => ChangeFulfilmentLocation::class,
+        Contracts\Fulfilment\ChangesFulfilmentMethod::class => ChangeFulfilmentMethod::class,
         Contracts\Fulfilment\CreatesFulfilment::class => CreateFulfilment::class,
         Contracts\Fulfilment\EnsuresInitialFulfilment::class => EnsureInitialFulfilment::class,
         Contracts\Fulfilment\FulfilsFulfilment::class => FulfilFulfilment::class,

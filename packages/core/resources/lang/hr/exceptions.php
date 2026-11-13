@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'Ispunjenje ne može biti spojeno samo sa sobom.',
     'fulfilment_method_mismatch' => 'Ispunjenja moraju koristiti isti način ispunjenja da bi se mogla spojiti ili premjestiti zajedno.',
     'fulfilment_method_no_tracking' => 'Praćenje se ne može dodati ispunjenju vrste :method.',
+    'fulfilment_method_not_changeable' => 'Samo ispunjenja na čekanju ili u tijeku mogu promijeniti način.',
+    'fulfilment_change_address_missing' => 'Narudžba treba adresu za dostavu prije nego što se ovo ispunjenje može dostaviti.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

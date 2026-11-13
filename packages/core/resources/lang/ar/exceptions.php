@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'لا يمكن دمج عملية تنفيذ مع نفسها.',
     'fulfilment_method_mismatch' => 'يجب أن تستخدم عمليات التنفيذ طريقة التنفيذ نفسها لدمجها أو نقلها معاً.',
     'fulfilment_method_no_tracking' => 'لا يمكن إضافة التتبّع إلى عملية تنفيذ من نوع :method.',
+    'fulfilment_method_not_changeable' => 'لا يمكن تغيير طريقة التنفيذ إلا لعمليات التنفيذ المعلقة أو قيد التنفيذ.',
+    'fulfilment_change_address_missing' => 'يحتاج الطلب إلى عنوان شحن قبل أن يمكن توصيل عملية التنفيذ هذه.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'Egy teljesítés nem vonható össze önmagával.',
     'fulfilment_method_mismatch' => 'A teljesítéseknek azonos teljesítési módot kell használniuk az összevonáshoz vagy együttes áthelyezéshez.',
     'fulfilment_method_no_tracking' => 'A(z) :method teljesítéshez nem adható nyomon követés.',
+    'fulfilment_method_not_changeable' => 'Csak függőben lévő vagy folyamatban lévő teljesítések módja módosítható.',
+    'fulfilment_change_address_missing' => 'A rendeléshez szállítási cím szükséges, mielőtt ez a teljesítés kiszállítható.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

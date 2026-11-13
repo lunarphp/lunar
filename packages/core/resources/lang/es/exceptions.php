@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'Un cumplimiento no se puede combinar consigo mismo.',
     'fulfilment_method_mismatch' => 'Los cumplimientos deben usar el mismo método de cumplimiento para poder combinarse o moverse juntos.',
     'fulfilment_method_no_tracking' => 'No se puede añadir seguimiento a un cumplimiento de tipo :method.',
+    'fulfilment_method_not_changeable' => 'Solo las entregas pendientes o en curso pueden cambiar de método.',
+    'fulfilment_change_address_missing' => 'El pedido necesita una dirección de envío antes de poder entregar este envío.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

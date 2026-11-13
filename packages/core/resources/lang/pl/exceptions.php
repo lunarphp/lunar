@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'Realizacji nie można scalić z samą sobą.',
     'fulfilment_method_mismatch' => 'Aby scalić lub przenieść realizacje razem, muszą one używać tej samej metody realizacji.',
     'fulfilment_method_no_tracking' => 'Nie można dodać śledzenia do realizacji typu :method.',
+    'fulfilment_method_not_changeable' => 'Tylko oczekujące lub realizowane realizacje mogą zmienić metodę.',
+    'fulfilment_change_address_missing' => 'Zamówienie wymaga adresu dostawy, zanim ta realizacja zostanie dostarczona.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

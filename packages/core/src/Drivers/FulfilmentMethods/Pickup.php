@@ -77,7 +77,7 @@ class Pickup implements FulfilmentMethod
      */
     public function claim(Order $order, Collection $unclaimed): Collection
     {
-        if (! $order->isPickup()) {
+        if ($order->pickup_location_id === null) {
             return $unclaimed->take(0);
         }
 

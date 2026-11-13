@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'O onorare nu poate fi îmbinată cu ea însăși.',
     'fulfilment_method_mismatch' => 'Onorările trebuie să folosească aceeași metodă de onorare pentru a fi îmbinate sau mutate împreună.',
     'fulfilment_method_no_tracking' => 'Urmărirea nu poate fi adăugată la o onorare de tip :method.',
+    'fulfilment_method_not_changeable' => 'Doar onorările în așteptare sau în curs își pot schimba metoda.',
+    'fulfilment_change_address_missing' => 'Comanda are nevoie de o adresă de livrare înainte ca această onorare să poată fi livrată.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

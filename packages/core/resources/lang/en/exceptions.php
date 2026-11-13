@@ -46,6 +46,8 @@ return [
     'fulfilment_merge_target_in_sources' => 'A fulfilment cannot be merged into itself.',
     'fulfilment_method_mismatch' => 'Fulfilments must use the same fulfilment method to be merged or moved together.',
     'fulfilment_method_no_tracking' => 'Tracking cannot be added to a :method fulfilment.',
+    'fulfilment_method_not_changeable' => 'Only pending or in-progress fulfilments can change method.',
+    'fulfilment_change_address_missing' => 'The order needs a shipping address before this fulfilment can be delivered.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

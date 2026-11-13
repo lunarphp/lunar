@@ -28,6 +28,7 @@ use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
@@ -177,11 +178,19 @@ class Order extends Base implements HasCurrency
 
     /**
      * Whether the order has lines the customer picks up. It may also have
-     * lines to deliver.
+     * lines to deliver. Read from the fulfilments once there are any, so a
+     * method changed after placement counts, and from the pickup location
+     * requested at checkout before then.
      */
     public function isPickup(): bool
     {
-        return $this->pickup_location_id !== null;
+        $fulfilments = $this->relationLoaded('fulfilments')
+            ? $this->fulfilments
+            : $this->fulfilments()->get(['id', 'method']);
+
+        return $fulfilments->isNotEmpty()
+            ? $fulfilments->contains('method', Pickup::KEY)
+            : $this->pickup_location_id !== null;
     }
 
     /**
