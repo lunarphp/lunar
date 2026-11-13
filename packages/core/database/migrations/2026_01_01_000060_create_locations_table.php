@@ -25,10 +25,23 @@ return new class extends Migration
             $table->jsonb('meta')->nullable();
             $table->timestamps();
         });
+
+        // Carts and orders are created before locations, so their pickup location keys are constrained here.
+        foreach (['carts', 'orders'] as $name) {
+            Schema::table($this->prefix.$name, function (Blueprint $table) {
+                $table->foreign('pickup_location_id')->references('id')->on($this->prefix.'locations')->nullOnDelete();
+            });
+        }
     }
 
     public function down(): void
     {
+        foreach (['carts', 'orders'] as $name) {
+            Schema::table($this->prefix.$name, function (Blueprint $table) {
+                $table->dropForeign(['pickup_location_id']);
+            });
+        }
+
         Schema::dropIfExists($this->prefix.'locations');
     }
 };
