@@ -26,13 +26,14 @@ import MergeFulfilmentDialog from '../../components/orders/MergeFulfilmentDialog
 import HoldFulfilmentDialog from '../../components/orders/HoldFulfilmentDialog.vue';
 import AddTrackingDialog from '../../components/orders/AddTrackingDialog.vue';
 import ChangeLocationDialog from '../../components/orders/ChangeLocationDialog.vue';
+import ChangeMethodDialog from '../../components/orders/ChangeMethodDialog.vue';
 import FulfilmentConfirmDialog, { type PendingFulfilmentAction } from '../../components/orders/FulfilmentConfirmDialog.vue';
 import OrderAddressDialog from '../../components/orders/OrderAddressDialog.vue';
 import OrderAddressDetails from '../../components/orders/OrderAddressDetails.vue';
 import RefundComposerDialog from '../../components/orders/RefundComposerDialog.vue';
 import SettlementBanner from '../../components/orders/SettlementBanner.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
-import type { CarrierData, FulfilmentData, FulfilmentLineData, LocationData, RefundableLineData, SettlementData, ShippingLineData } from '../../components/orders/types';
+import type { CarrierData, FulfilmentData, FulfilmentLineData, FulfilmentMethodTarget, LocationData, PickupLocationData, RefundableLineData, SettlementData, ShippingLineData } from '../../components/orders/types';
 
 interface Charge { id: number; reference: string | null; amount: number; amount_formatted: string | null }
 
@@ -116,8 +117,9 @@ const props = defineProps<{
         identifier: string | null;
         price: string | null;
         pickup: boolean;
-        pickup_point: { handle: string; name: string; lines: string[] } | null;
     } | null;
+    pickupLocation: PickupLocationData | null;
+    delivers: boolean;
     countries: { id: number; name: string }[];
     urls: { index: string; capture: string; refund: string; record_payment: string; cancel: string; notify: string; note: string; tags: string };
 }>();
@@ -206,15 +208,17 @@ const submitNotify = (): void => notifyForm.post(props.urls.notify, { preserveSc
 // Fulfilments — the card emits an action, this routes it to the right dialog
 // or confirm step. Form-bearing actions (ship, split, merge, hold, tracking,
 // location) get a dialog; the rest confirm and post.
-type FulfilmentDialog = 'ship' | 'split' | 'merge' | 'hold' | 'tracking' | 'location';
+type FulfilmentDialog = 'ship' | 'split' | 'merge' | 'hold' | 'tracking' | 'location' | 'method';
 
 const activeFulfilment = ref<FulfilmentData | null>(null);
 const fulfilmentDialog = ref<FulfilmentDialog | null>(null);
 const pendingAction = ref<PendingFulfilmentAction | null>(null);
+const changingMethod = ref<FulfilmentMethodTarget | null>(null);
 
 const closeFulfilmentDialog = (): void => {
     fulfilmentDialog.value = null;
     activeFulfilment.value = null;
+    changingMethod.value = null;
 };
 
 const shipNotify = computed(
@@ -240,6 +244,9 @@ const onFulfilmentAction = (fulfilment: FulfilmentData, action: FulfilmentCardAc
             return openFulfilmentDialog(fulfilment, 'tracking');
         case 'change-location':
             return openFulfilmentDialog(fulfilment, 'location');
+        case 'change-method':
+            changingMethod.value = action.method;
+            return openFulfilmentDialog(fulfilment, 'method');
         case 'fulfil':
             pendingAction.value = {
                 title: fulfilment.fulfil_label,
@@ -485,10 +492,6 @@ const formatDateTime = (value: string): string =>
                                         <span v-if="shippingOption.identifier && shippingOption.price"> · </span>
                                         <span v-if="shippingOption.price" class="[font-variant-numeric:tabular-nums]">{{ shippingOption.price }}</span>
                                     </div>
-                                    <div v-if="shippingOption.pickup && shippingOption.pickup_point" class="mt-1.5 text-[12px] text-ink-700">
-                                        <div class="font-medium">{{ t('orders.pickup_from', { name: shippingOption.pickup_point.name }) }}</div>
-                                        <div v-for="line in shippingOption.pickup_point.lines" :key="line" class="text-ink-500">{{ line }}</div>
-                                    </div>
                                 </div>
                             </div>
                         </Section>
@@ -548,7 +551,14 @@ const formatDateTime = (value: string): string =>
                             </div>
                         </SideCard>
 
-                        <SideCard v-if="shippingAddress" :title="shippingOption?.pickup ? t('orders.side_customer_address') : t('orders.side_shipping_address')">
+                        <SideCard v-if="pickupLocation" :title="t('orders.side_pickup_location')">
+                            <div class="text-[12.5px] text-ink-700">
+                                <div class="text-ink-900 font-medium">{{ pickupLocation.name }}</div>
+                                <div v-for="line in pickupLocation.lines" :key="line" class="text-ink-500">{{ line }}</div>
+                            </div>
+                        </SideCard>
+
+                        <SideCard v-if="shippingAddress" :title="delivers ? t('orders.side_shipping_address') : t('orders.side_customer_address')">
                             <template #actions>
                                 <button type="button" class="text-[11.5px] text-ink-500 hover:text-ink-900" @click="editingAddress = shippingAddress">
                                     {{ t('common.edit') }}
@@ -769,6 +779,15 @@ const formatDateTime = (value: string): string =>
                 :open="fulfilmentDialog === 'location'"
                 :fulfilment="activeFulfilment"
                 :locations="locations"
+                @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
+            />
+            <ChangeMethodDialog
+                :open="fulfilmentDialog === 'method'"
+                :fulfilment="activeFulfilment"
+                :method="changingMethod"
+                :locations="locations"
+                :has-shipping-address="!!shippingAddress"
+                :countries="countries"
                 @update:open="(v: boolean) => !v && closeFulfilmentDialog()"
             />
             <FulfilmentConfirmDialog :action="pendingAction" @close="pendingAction = null" />

@@ -78,6 +78,7 @@ export interface FulfilmentData {
         release: boolean;
         cancel: boolean;
     };
+    change_methods: FulfilmentMethodTarget[];
     merge_targets: { id: number; reference: string; quantity: number }[];
     urls: {
         ship: string;
@@ -91,8 +92,22 @@ export interface FulfilmentData {
         release: string;
         cancel: string;
         location: string;
+        method: string;
         trackings: string;
     };
+}
+
+export interface FulfilmentMethodTarget {
+    key: string;
+    label: string;
+    requires_delivery: boolean;
+    location_id: number | null;
+}
+
+export interface PickupLocationData {
+    id: number;
+    name: string;
+    lines: string[];
 }
 
 export interface RefundableLineData extends FulfilmentLineData {

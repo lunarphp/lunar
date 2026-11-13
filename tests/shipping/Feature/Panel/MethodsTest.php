@@ -3,6 +3,7 @@
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Staff;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Tests\Shipping\PanelTestCase;
@@ -171,4 +172,38 @@ test('an end date covers the whole of its last day', function () {
 
     expect((string) $pivot->starts_at)->toStartWith('2026-11-01 00:00:00')
         ->and((string) $pivot->ends_at)->toStartWith('2026-11-30 23:59:59');
+});
+
+test('a pickup method collects from the chosen location', function () {
+    $counter = Location::factory()->create(['name' => 'Dartford']);
+    $method = ShippingMethod::factory()->create(['driver' => 'pickup']);
+
+    $this->get(route('panel.settings.shipping.methods.edit', $method))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('method.pickup_location_id', null)
+            ->where('locations', fn ($locations) => collect($locations)->pluck('name')->contains('Dartford'))
+        );
+
+    $this->put(route('panel.settings.shipping.methods.update', $method), [
+        'name' => $method->name,
+        'code' => $method->code,
+        'driver' => 'pickup',
+        'pickup_location_id' => $counter->id,
+    ])->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($method->refresh()->pickup_location_id)->toBe($counter->id);
+});
+
+test('a method that stops being a pickup drops its location', function () {
+    $counter = Location::factory()->create();
+    $method = ShippingMethod::factory()->create(['driver' => 'pickup', 'pickup_location_id' => $counter->id]);
+
+    $this->put(route('panel.settings.shipping.methods.update', $method), [
+        'name' => $method->name,
+        'code' => $method->code,
+        'driver' => 'ship-by',
+        'pickup_location_id' => $counter->id,
+    ])->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($method->refresh()->pickup_location_id)->toBeNull();
 });

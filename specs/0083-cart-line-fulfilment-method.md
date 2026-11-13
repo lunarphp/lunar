@@ -312,5 +312,5 @@ The panel adds "Change to pickup" and "Change to shipping" to unshipped fulfilme
 - [x] Slice 4 — Order side: the order-line stamp and identity match, `orders.pickup_location_id`, `isPickup()` on the column, `CreateShippingLine` dropping `meta['pickup']`, the explicit pass and pickup fulfilments at the order's location. Tests.
 - [x] Slice 5 — Delivery lines: `deliveryLines()` including restricted items, `isShippable()`, `ValidateCartForOrderCreation`, table-rate drivers and resolver. Tests in `core` and `table-rate-shipping`. Settles open question 1.
 - [x] Slice 6 — Changing a fulfilment's method: `ChangeFulfilmentMethod` and its contract, `isPickup()` reading fulfilments. Tests.
-- [ ] Slice 7 — Admin: panel and Filament order views read the typed fields and the #2749 meta reads go; the variant allowed-methods field; the change-method actions on fulfilment cards.
+- [x] Slice 7 — Admin: panel and Filament order views read the typed fields and the #2749 meta reads go; the variant allowed-methods field; the change-method actions on fulfilment cards.
 - [x] Slice 8 — Exception messages in 16 locales, upgrade guide, docs including the storefront guidance.

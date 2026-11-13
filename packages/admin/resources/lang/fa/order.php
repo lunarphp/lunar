@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Shipping Address',
         ],
+        'pickup_location' => [
+            'label' => 'محل تحویل حضوری',
+        ],
         'billing_address' => [
             'label' => 'Billing Address',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'موقعیت مکانی تأمین سفارش به‌روزرسانی شد.',
                     'error' => 'تغییر موقعیت مکانی تأمین سفارش ممکن نشد.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'تغییر به :method',
+                'address_hint' => 'این سفارش آدرس ارسال ندارد. آدرسی را که این اقلام باید به آن ارسال شوند وارد کنید.',
+                'notification' => [
+                    'success' => 'روش تأمین سفارش تغییر کرد.',
+                    'error' => 'تغییر روش تأمین سفارش ممکن نشد.',
                 ],
             ],
             'return' => [

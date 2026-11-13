@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Verzendadres',
         ],
+        'pickup_location' => [
+            'label' => 'Afhaallocatie',
+        ],
         'billing_address' => [
             'label' => 'Factuuradres',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Fulfilment-locatie bijgewerkt.',
                     'error' => 'De fulfilment-locatie kon niet worden gewijzigd.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Wijzigen naar :method',
+                'address_hint' => 'Deze bestelling heeft geen verzendadres. Vul het adres in waar deze artikelen naartoe gaan.',
+                'notification' => [
+                    'success' => 'Fulfilmentmethode gewijzigd.',
+                    'error' => 'De fulfilmentmethode kon niet worden gewijzigd.',
                 ],
             ],
             'return' => [

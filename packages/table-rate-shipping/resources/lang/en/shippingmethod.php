@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Pickup',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Pickup location',
+            'helper_text' => 'Leave empty to use the default location.',
+        ],
         'stock_available' => [
             'label' => 'Stock of all basket items must be available',
         ],

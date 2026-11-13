@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Preuzimanje',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Lokacija preuzimanja',
+            'helper_text' => 'Ostavite prazno za korištenje zadane lokacije.',
+        ],
         'stock_available' => [
             'label' => 'Sve stavke u košarici moraju biti na zalihi',
         ],

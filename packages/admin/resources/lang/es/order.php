@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Dirección de Envío',
         ],
+        'pickup_location' => [
+            'label' => 'Punto de recogida',
+        ],
         'billing_address' => [
             'label' => 'Dirección de Facturación',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Ubicación del cumplimiento actualizada.',
                     'error' => 'No se pudo cambiar la ubicación del cumplimiento.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Cambiar a :method',
+                'address_hint' => 'Este pedido no tiene dirección de envío. Introduce la dirección a la que enviar estos artículos.',
+                'notification' => [
+                    'success' => 'Método de cumplimiento cambiado.',
+                    'error' => 'No se pudo cambiar el método de cumplimiento.',
                 ],
             ],
             'return' => [

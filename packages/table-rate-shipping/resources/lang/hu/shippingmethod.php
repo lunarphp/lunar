@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Személyes átvétel',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Átvételi hely',
+            'helper_text' => 'Hagyja üresen az alapértelmezett telephely használatához.',
+        ],
         'stock_available' => [
             'label' => 'A kosárban lévő összes terméknek raktáron kell lennie',
         ],

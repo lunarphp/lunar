@@ -54,7 +54,7 @@ class ChangeFulfilmentMethod implements ChangesFulfilmentMethod
 
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
-                'location_id' => $location?->id,
+                'location_id' => $location->id ?? $fulfilment->location_id,
                 'method' => $target->getKey(),
                 'state' => $target->defaultState()::$name,
             ]);

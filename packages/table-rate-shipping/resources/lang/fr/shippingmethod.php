@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Retrait',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Point de retrait',
+            'helper_text' => 'Laissez vide pour utiliser l\'emplacement par défaut.',
+        ],
         'stock_available' => [
             'label' => 'Le stock de tous les articles du panier doit être disponible',
         ],

@@ -168,3 +168,28 @@ it('can set shipping volume automatically', function () {
         'volume_unit' => 'l',
     ]);
 });
+
+it('stores the allowed fulfilment methods, an empty selection as null', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
+
+    $record = Product::factory()->create();
+    $variant = ProductVariant::factory()->create(['product_id' => $record->id]);
+
+    $this->asStaff();
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->fillForm(['fulfilment_methods' => ['pickup']])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh()->fulfilment_methods)->toBe(['pickup']);
+
+    Livewire::test(ManageProductShipping::class, ['record' => $record->getRouteKey()])
+        ->assertSet('fulfilment_methods', ['pickup'])
+        ->fillForm(['fulfilment_methods' => []])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($variant->refresh()->fulfilment_methods)->toBeNull();
+});

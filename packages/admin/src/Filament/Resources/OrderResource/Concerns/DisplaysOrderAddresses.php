@@ -12,6 +12,9 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
+use Lunar\Core\Models\Location;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderAddress;
 use Lunar\Filament\Forms\Components\CountrySelect;
 use Lunar\Filament\Forms\Components\StateSelect;
@@ -36,6 +39,52 @@ trait DisplaysOrderAddresses
     public static function getBillingAddressInfoList(): Component
     {
         return self::callStaticLunarHook('extendBillingAddressInfolist', static::getDefaultBillingAddressInfoList());
+    }
+
+    public static function getDefaultPickupLocationInfolist(): Component
+    {
+        return Section::make(__('lunarpanel::order.infolist.pickup_location.label'))
+            ->compact()
+            ->visible(fn (?Order $record) => (bool) ($record ? static::pickupLocation($record) : null))
+            ->schema([
+                TextEntry::make('pickup_location')
+                    ->hiddenLabel()
+                    ->listWithLineBreaks()
+                    ->getStateUsing(function (Order $record) {
+                        $location = static::pickupLocation($record);
+
+                        return collect([
+                            $location?->name,
+                            $location?->line_one,
+                            $location?->line_two,
+                            $location?->line_three,
+                            $location?->city,
+                            $location?->state,
+                            $location?->postcode,
+                            $location?->country?->name,
+                            $location?->contact_phone,
+                        ])->filter(fn (?string $value) => filled($value))->values()->all();
+                    }),
+            ]);
+    }
+
+    public static function getPickupLocationInfolist(): Component
+    {
+        return self::callStaticLunarHook('extendPickupLocationInfolist', static::getDefaultPickupLocationInfolist());
+    }
+
+    /**
+     * Where the order's pickup lines are collected: the pickup fulfilment's
+     * location, falling back to the location the customer chose.
+     */
+    protected static function pickupLocation(Order $order): ?Location
+    {
+        if (! $order->isPickup()) {
+            return null;
+        }
+
+        return $order->fulfilments()->where('method', Pickup::KEY)->with('location.country')->first()?->location
+            ?? $order->pickupLocation;
     }
 
     public static function getAddressEditSchema(): array

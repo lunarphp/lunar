@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Checkbox from './Checkbox.vue';
 import FieldLabel from './FieldLabel.vue';
 import Section from './Section.vue';
 import Select from './Select.vue';
@@ -11,6 +12,7 @@ const props = defineProps<{
     values: Record<string, unknown>;
     fieldPrefix?: string;
     measurements: { length: string[]; weight: string[] };
+    fulfilmentMethods?: { key: string; label: string }[];
     errors?: Record<string, string>;
 }>();
 
@@ -28,6 +30,17 @@ const write = (field: string, value: unknown): void => {
 const shippable = computed(() => Boolean(read('shippable')));
 
 const toggleShippable = (): void => write('shippable', !shippable.value);
+
+// No selection allows every method that supports the variant, so an emptied list is stored as null.
+const allowedMethods = computed<string[]>(() => (read('fulfilment_methods') as string[] | null) ?? []);
+
+const toggleMethod = (method: string, allowed: boolean): void => {
+    const methods = allowed
+        ? [...allowedMethods.value, method]
+        : allowedMethods.value.filter((key) => key !== method);
+
+    write('fulfilment_methods', methods.length ? methods : null);
+};
 
 // Length, width and height share a single unit so their product is a coherent
 // volume; the select mirrors the chosen unit onto all three stored fields.
@@ -82,6 +95,24 @@ const volumeDisplay = computed(() => String(Math.round(volume.value * 100) / 100
                 <span class="text-[11.5px] text-ink-500">{{ t('products.field_shippable_hint') }}</span>
             </span>
         </label>
+
+        <div v-if="fulfilmentMethods?.length" class="mb-4">
+            <FieldLabel :hint="t('products.field_fulfilment_methods_hint')">{{ t('products.field_fulfilment_methods') }}</FieldLabel>
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
+                <label
+                    v-for="method in fulfilmentMethods"
+                    :key="method.key"
+                    class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer"
+                >
+                    <Checkbox
+                        :model-value="allowedMethods.includes(method.key)"
+                        @update:model-value="(allowed: boolean) => toggleMethod(method.key, allowed)"
+                    />
+                    {{ method.label }}
+                </label>
+            </div>
+            <div v-if="(errors ?? {})[key('fulfilment_methods')]" class="mt-1 text-[11px] text-danger">{{ (errors ?? {})[key('fulfilment_methods')] }}</div>
+        </div>
 
         <template v-if="shippable">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-3.5 gap-y-3 mb-3">

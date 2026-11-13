@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Mağazadan Teslim Alma',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Teslim alma konumu',
+            'helper_text' => 'Varsayılan konumu kullanmak için boş bırakın.',
+        ],
         'stock_available' => [
             'label' => 'Tüm sepet öğelerinin stoku mevcut olmalı',
         ],

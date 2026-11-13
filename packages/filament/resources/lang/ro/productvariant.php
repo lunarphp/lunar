@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Expediabil',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Metode de onorare',
+            'helper_text' => 'Metodele prin care poate fi onorată această variantă. Lasă totul nebifat pentru a permite orice metodă.',
+        ],
         'length_value' => [
             'label' => 'Lungime',
         ],

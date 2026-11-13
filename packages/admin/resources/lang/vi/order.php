@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Địa chỉ giao hàng',
         ],
+        'pickup_location' => [
+            'label' => 'Địa điểm nhận hàng',
+        ],
         'billing_address' => [
             'label' => 'Địa chỉ thanh toán',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Đã cập nhật địa điểm đơn giao hàng.',
                     'error' => 'Không thể đổi địa điểm đơn giao hàng.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Đổi sang :method',
+                'address_hint' => 'Đơn hàng này chưa có địa chỉ giao hàng. Nhập địa chỉ để gửi các mặt hàng này.',
+                'notification' => [
+                    'success' => 'Đã đổi phương thức thực hiện đơn.',
+                    'error' => 'Không thể đổi phương thức thực hiện đơn.',
                 ],
             ],
             'return' => [

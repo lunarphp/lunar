@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Có thể vận chuyển',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Phương thức thực hiện đơn',
+            'helper_text' => 'Các phương thức có thể dùng để thực hiện biến thể này. Bỏ trống tất cả để cho phép mọi phương thức.',
+        ],
         'length_value' => [
             'label' => 'Chiều dài',
         ],

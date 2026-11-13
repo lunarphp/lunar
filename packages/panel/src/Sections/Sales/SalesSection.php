@@ -184,6 +184,7 @@ class SalesSection extends Section
                     Route::post('/release', [OrderFulfilmentController::class, 'release'])->name('release');
                     Route::post('/cancel', [OrderFulfilmentController::class, 'cancel'])->name('cancel');
                     Route::put('/location', [OrderFulfilmentController::class, 'updateLocation'])->name('location.update');
+                    Route::put('/method', [OrderFulfilmentController::class, 'updateMethod'])->name('method.update');
                     Route::post('/trackings', [OrderFulfilmentController::class, 'storeTracking'])->name('trackings.store');
                     Route::delete('/trackings/{tracking}', [OrderFulfilmentController::class, 'destroyTracking'])->name('trackings.destroy');
                 });

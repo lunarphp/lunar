@@ -14,22 +14,29 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentMethod;
 use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
@@ -457,6 +464,90 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ));
     }
 
+    /**
+     * Hand an outstanding fulfilment over another way. Pickup takes a location;
+     * a delivery method on an order with no shipping address takes the address
+     * in the same step.
+     */
+    public function changeMethodAction(): Action
+    {
+        return Action::make('changeMethod')
+            ->label(fn (array $arguments) => $this->changeMethodLabel($arguments))
+            ->modalHeading(fn (array $arguments) => $this->changeMethodLabel($arguments))
+            ->modalWidth(Width::Large)
+            ->icon('heroicon-o-arrows-right-left')
+            ->schema(function (array $arguments) {
+                $method = FulfilmentMethods::get($arguments['method'] ?? null);
+
+                if (! $method?->requiresDelivery()) {
+                    return [
+                        Select::make('location')
+                            ->label(__('lunarpanel::order.fulfilments.actions.change_location.field'))
+                            ->options($this->locations->mapWithKeys(fn (Location $location) => [$location->id => $location->name])->all())
+                            ->default($this->record->pickup_location_id ?? $this->locations->firstWhere('default', true)?->id)
+                            ->selectablePlaceholder(false)
+                            ->required(),
+                    ];
+                }
+
+                if ($this->record->shippingAddress()->exists()) {
+                    return [];
+                }
+
+                return [
+                    Text::make(__('lunarpanel::order.fulfilments.actions.change_method.address_hint')),
+                    Group::make(ManageOrder::getAddressEditSchema())->statePath('address'),
+                ];
+            })
+            ->action(function (array $arguments, array $data) {
+                $fulfilment = $this->findFulfilment($arguments);
+                $method = (string) ($arguments['method'] ?? '');
+
+                abort_unless($this->changeMethodTargets($fulfilment->load('lines.orderLine.purchasable'))->has($method), 403);
+
+                $this->run(
+                    fn () => DB::transaction(function () use ($fulfilment, $method, $data) {
+                        if (filled($data['address'] ?? null) && ! $this->record->shippingAddress()->exists()) {
+                            $this->record->addresses()->create([...$data['address'], 'type' => 'shipping']);
+                        }
+
+                        return $fulfilment->changeMethod(
+                            $method,
+                            filled($data['location'] ?? null) ? Location::find($data['location']) : null,
+                        );
+                    }),
+                    'change_method',
+                );
+            });
+    }
+
+    protected function changeMethodLabel(array $arguments): string
+    {
+        return __('lunarpanel::order.fulfilments.actions.change_method.label', [
+            'method' => FulfilmentMethods::get($arguments['method'] ?? null)?->getLabel() ?? '',
+        ]);
+    }
+
+    /**
+     * The methods an outstanding fulfilment can change to: every other
+     * registered method that supports each of its lines.
+     *
+     * @return \Illuminate\Support\Collection<string, FulfilmentMethod>
+     */
+    public function changeMethodTargets(Fulfilment $fulfilment): \Illuminate\Support\Collection
+    {
+        if (! ChangeFulfilmentMethod::canRun($fulfilment)) {
+            return collect();
+        }
+
+        return FulfilmentMethods::all()
+            ->reject(fn (FulfilmentMethod $method) => $method->getKey() === $fulfilment->method)
+            ->filter(fn (FulfilmentMethod $method) => $fulfilment->lines->every(
+                fn (FulfilmentLine $line) => ! $line->orderLine?->purchasable
+                    || FulfilmentMethods::supporting($line->orderLine->purchasable)->has($method->getKey())
+            ));
+    }
+
     public function returnAction(): Action
     {
         return Action::make('return')
@@ -637,6 +728,15 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 'icon' => 'heroicon-m-map-pin',
                 'color' => null,
                 'wire' => "mountAction('changeLocation', { fulfilment: {$id} })",
+            ];
+        }
+
+        foreach ($this->changeMethodTargets($fulfilment) as $key => $target) {
+            $actions['changeMethod.'.$key] = [
+                'label' => $this->changeMethodLabel(['method' => $key]),
+                'icon' => $target->requiresDelivery() ? 'heroicon-m-truck' : 'heroicon-m-map-pin',
+                'color' => null,
+                'wire' => "mountAction('changeMethod', { fulfilment: {$id}, method: '{$key}' })",
             ];
         }
 
