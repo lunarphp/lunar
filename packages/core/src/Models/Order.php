@@ -18,6 +18,7 @@ use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
 use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
+use Lunar\Core\Contracts\Actions\Orders\RecordsPayment;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Contracts\HasCurrency;
@@ -449,6 +450,15 @@ class Order extends Base implements HasCurrency
     public function capture(int|string $transactionId, float|int|string $amount): PaymentCapture
     {
         return app(CapturesOrder::class)->execute($this, $transactionId, $amount);
+    }
+
+    /**
+     * Record a payment taken after checkout, in minor units, as a successful
+     * offline capture. The amount can't exceed the outstanding balance.
+     */
+    public function recordPayment(int $amount, ?string $reference = null, ?string $notes = null): Transaction
+    {
+        return app(RecordsPayment::class)->execute($this, $amount, $reference, $notes);
     }
 
     /**

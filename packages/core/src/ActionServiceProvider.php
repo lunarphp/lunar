@@ -91,6 +91,7 @@ use Lunar\Core\Actions\Orders\CloseOrder;
 use Lunar\Core\Actions\Orders\GenerateOrderReference;
 use Lunar\Core\Actions\Orders\NotifyCustomer;
 use Lunar\Core\Actions\Orders\RecomputeOrderStatus;
+use Lunar\Core\Actions\Orders\RecordPayment;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Actions\Orders\ReopenOrder;
 use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
@@ -204,6 +205,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Orders\GeneratesOrderReference::class => GenerateOrderReference::class,
         Contracts\Orders\NotifiesCustomer::class => NotifyCustomer::class,
         Contracts\Orders\RecomputesOrderStatus::class => RecomputeOrderStatus::class,
+        Contracts\Orders\RecordsPayment::class => RecordPayment::class,
         Contracts\Orders\RefundsOrder::class => RefundOrder::class,
         Contracts\Orders\ReopensOrder::class => ReopenOrder::class,
         Contracts\Orders\ResolvesFulfilmentStatus::class => ResolveFulfilmentStatus::class,
