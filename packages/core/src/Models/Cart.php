@@ -904,11 +904,27 @@ class Cart extends Base
         return ShippingManifest::getShippingOption($this->calculate());
     }
 
+    /**
+     * The lines that need delivering: an explicit method that delivers, or a
+     * shippable item with no explicit method. The shipping option is not
+     * consulted, since shipping rates are calculated over these lines.
+     *
+     * @return Collection<int, CartLine>
+     */
+    public function deliveryLines(): Collection
+    {
+        $fulfilment = app(ResolvesCartFulfilment::class)->execute($this, withShippingOption: false);
+
+        return $this->lines->filter(function (CartLine $line) use ($fulfilment) {
+            $method = $fulfilment->forLine($line);
+
+            return $method ? $method->requiresDelivery() : (bool) $line->purchasable?->isShippable();
+        })->values();
+    }
+
     public function isShippable(): bool
     {
-        return (bool) $this->lines->filter(function ($line) {
-            return $line->purchasable->isShippable();
-        })->count();
+        return $this->deliveryLines()->isNotEmpty();
     }
 
     public function createOrder(

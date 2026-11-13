@@ -361,3 +361,34 @@ test('sums weight across multiple lines with mixed units', function () {
     expect($rates)->toHaveCount(1)
         ->and($rates->first()->id)->toBe($rate->id);
 });
+
+test('a line picked up does not count towards the maximum weight', function () {
+    // 1 × 4 kg delivered; max = 5 kg. A 10 kg line collected from the store stays out of the parcel.
+    ['cart' => $cart, 'rate' => $rate] = makeWeightScenario(
+        lineWeight: 4.0,
+        lineWeightUnit: 'kg',
+        lineQuantity: 1,
+        minWeight: null,
+        maxWeight: 5.0,
+        methodWeightUnit: 'kg',
+    );
+
+    $heavy = ProductVariant::factory()->create(['weight_value' => 10.0, 'weight_unit' => 'kg']);
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $cart->currency_id,
+        'priceable_type' => $heavy->getMorphClass(),
+        'priceable_id' => $heavy->id,
+    ]);
+    $cart->lines()->create([
+        'purchasable_type' => $heavy->getMorphClass(),
+        'purchasable_id' => $heavy->id,
+        'quantity' => 1,
+        'fulfilment_method' => 'pickup',
+    ]);
+
+    $rates = Shipping::shippingRates($cart->refresh()->calculate())->get();
+
+    expect($rates->pluck('id')->all())->toBe([$rate->id]);
+});

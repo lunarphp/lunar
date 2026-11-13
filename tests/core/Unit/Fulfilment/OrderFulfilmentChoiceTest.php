@@ -157,7 +157,7 @@ test('lines stamped with an unregistered method fall back to the claim pass', fu
 
 test('creating the order again keeps the same line for the same method', function () {
     $this->cart->add(orderVariant($this->currency), fulfilmentMethod: Pickup::KEY);
-    $cart = readyForOrder($this->cart);
+    $cart = readyForOrder($this->cart, $this->warehouse);
 
     $first = $cart->createOrder();
     $again = $cart->refresh()->createOrder(allowMultipleOrders: true, orderIdToUpdate: $first->id);

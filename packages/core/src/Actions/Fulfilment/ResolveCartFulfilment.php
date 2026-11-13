@@ -34,7 +34,7 @@ class ResolveCartFulfilment implements ResolvesCartFulfilment
                 default => $this->fulfilmentMethods->get(Shipping::KEY),
             };
 
-        $lines = $cart->lines->mapWithKeys(
+        $lines = $cart->lines->loadMissing('purchasable')->mapWithKeys(
             fn (CartLine $line) => [$line->id => $this->resolveLine($line, $default)]
         )->all();
 
