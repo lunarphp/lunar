@@ -153,8 +153,15 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'По сметка',
-    'payment_on_account_sub' => 'Фактурира се по сметка, не е взето плащане при поръчката',
+    'payment_on_account_note' => 'Фактурира се по сметка, не е взето плащане при поръчката',
+    'payment_on_pickup_note' => 'Плаща се в магазина, когато клиентът вземе поръчката',
+    'payment_on_delivery_note' => 'Плаща се на куриера при доставката на поръчката',
+    'action_record_payment' => 'Записване на плащане',
+    'record_payment_outstanding' => 'Дължима сума: {amount}',
+    'record_payment_amount' => 'Получена сума',
+    'record_payment_reference' => 'Референция',
+    'record_payment_notes' => 'Бележки',
+    'flash_payment_recorded' => 'Плащането е записано',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

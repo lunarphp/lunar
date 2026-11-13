@@ -13,10 +13,12 @@ use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Actions\Orders\CancelOrder;
 use Lunar\Core\Actions\Orders\CaptureOrder;
+use Lunar\Core\Actions\Orders\RecordPayment;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Enums\FulfilmentStateCategory;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\HoldReasons;
@@ -32,7 +34,6 @@ use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Transaction;
-use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Panel\Support\FulfilmentTransitions;
 use Lunar\Panel\Support\TimelineActivity;
@@ -40,14 +41,6 @@ use Spatie\Activitylog\Models\Activity;
 
 class OrderShowController
 {
-    /**
-     * The `payment_method` handle, stamped into the order meta by whatever
-     * placed the order, for an order invoiced on account. Such an order sits
-     * in `Pending` by design, so the panel reads it as on account rather than
-     * unpaid.
-     */
-    public const ON_ACCOUNT = 'on-account';
-
     public function show(Order $order): Response
     {
         $order->load([
@@ -78,7 +71,7 @@ class OrderShowController
         $refunded = (int) $order->transactions->where('type', 'refund')->where('success', true)->sum('amount');
         $availableToRefund = RefundOrder::availableToRefund($order);
         $settlement = $this->settlement($order, $captured, $refunded, $money, $toMajor);
-        $onAccount = $this->onAccount($order);
+        $outstanding = RecordPayment::outstandingBalance($order);
 
         $billing = $order->billingAddress;
         $customerName = $billing
@@ -93,11 +86,11 @@ class OrderShowController
                 'id' => $order->id,
                 'reference' => $order->reference ?: '#'.$order->id,
                 'customer_reference' => $order->customer_reference,
-                'on_account' => $onAccount,
+                'awaiting_payment_by_terms' => $order->isAwaitingPaymentByTerms(),
+                'payment_terms' => $order->payment_terms->value,
+                'payment_terms_note' => $this->paymentTermsNote($order),
                 'payment_status' => $order->payment_status::$name,
-                'payment_status_label' => $onAccount
-                    ? __('panel::orders.payment_on_account')
-                    : $order->payment_status->label(),
+                'payment_status_label' => $order->paymentStatusLabel(),
                 'fulfilment_status' => $order->fulfilment_status::$name,
                 'fulfilment_status_label' => $order->fulfilment_status->label(),
                 'lifecycle' => $order->lifecycleStatus(),
@@ -183,6 +176,7 @@ class OrderShowController
                 'can_capture' => CaptureOrder::canRun($order),
                 'can_refund' => RefundOrder::canRun($order),
                 'can_cancel' => CancelOrder::canRun($order),
+                'can_record_payment' => RecordPayment::canRun($order),
                 'is_open' => $order->isOpen(),
             ],
             'intents' => CaptureOrder::intents($order)->map(fn (Transaction $t) => [
@@ -197,6 +191,8 @@ class OrderShowController
                 'amount' => $toMajor($t->amount),
                 'amount_formatted' => $money($t->amount),
             ])->values(),
+            'outstanding' => $toMajor($outstanding),
+            'outstandingFormatted' => $money($outstanding),
             'availableToRefund' => $toMajor($availableToRefund),
             'availableToRefundFormatted' => $money($availableToRefund),
             'cancelReasons' => CancelReasons::all(),
@@ -221,6 +217,7 @@ class OrderShowController
                 'index' => route('panel.orders.index'),
                 'capture' => route('panel.orders.capture', $order),
                 'refund' => route('panel.orders.refund', $order),
+                'record_payment' => route('panel.orders.payments.store', $order),
                 'cancel' => route('panel.orders.cancel', $order),
                 'notify' => route('panel.orders.notify', $order),
                 'note' => route('panel.orders.note.update', $order),
@@ -453,15 +450,21 @@ class OrderShowController
     }
 
     /**
-     * Whether the order was invoiced on account and is still awaiting payment
-     * under that arrangement: placed with the on-account payment method and
-     * still `Pending`. Once payment is taken, or the status otherwise moves
-     * on, the order reads like any other.
+     * A line under the payment status explaining why an order awaiting
+     * payment by its terms has nothing captured.
      */
-    protected function onAccount(Order $order): bool
+    protected function paymentTermsNote(Order $order): ?string
     {
-        return ($order->meta['payment_method'] ?? null) === self::ON_ACCOUNT
-            && $order->payment_status instanceof Pending;
+        if (! $order->isAwaitingPaymentByTerms()) {
+            return null;
+        }
+
+        return match ($order->payment_terms) {
+            PaymentTerms::OnAccount => __('panel::orders.payment_on_account_note'),
+            PaymentTerms::OnPickup => __('panel::orders.payment_on_pickup_note'),
+            PaymentTerms::OnDelivery => __('panel::orders.payment_on_delivery_note'),
+            PaymentTerms::Checkout => null,
+        };
     }
 
     /**

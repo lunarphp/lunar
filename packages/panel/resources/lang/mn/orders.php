@@ -153,8 +153,15 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Дансаар',
-    'payment_on_account_sub' => 'Дансаар нэхэмжилсэн, төлбөр тооцооны үед төлбөр аваагүй',
+    'payment_on_account_note' => 'Дансаар нэхэмжилсэн, төлбөр тооцооны үед төлбөр аваагүй',
+    'payment_on_pickup_note' => 'Хэрэглэгч захиалгаа авахдаа дэлгүүрт төлнө',
+    'payment_on_delivery_note' => 'Захиалгыг хүргэх үед хүргэгчид төлнө',
+    'action_record_payment' => 'Төлбөр бүртгэх',
+    'record_payment_outstanding' => 'Үлдэгдэл: {amount}',
+    'record_payment_amount' => 'Хүлээн авсан дүн',
+    'record_payment_reference' => 'Лавлагаа',
+    'record_payment_notes' => 'Тэмдэглэл',
+    'flash_payment_recorded' => 'Төлбөр бүртгэгдлээ',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

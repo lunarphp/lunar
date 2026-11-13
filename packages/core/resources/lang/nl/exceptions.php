@@ -13,6 +13,8 @@ return [
     'carts.shipping_option_missing' => 'Ontbrekende verzendoptie',
     'carts.line_unavailable' => 'Een regel in deze winkelwagen is niet meer beschikbaar (:identifier)',
     'carts.line_not_purchasable' => ':identifier kan niet worden gekocht in dit kanaal of door uw klantgroep',
+    'carts.payment_terms_pickup_missing' => 'Betalen bij afhalen vereist een verzendoptie met afhalen',
+    'carts.payment_terms_delivery_missing' => 'Betalen bij levering vereist een verzendoptie met bezorging',
     'missing_currency_price' => 'Er bestaat geen prijs voor valuta ":currency"',
     'minimum_quantity' => 'U moet minimaal :quantity items toevoegen.',
     'quantity_increment' => 'Hoeveelheid :quantity moet in stappen van :increment zijn',

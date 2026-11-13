@@ -153,8 +153,15 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Auf Rechnung',
-    'payment_on_account_sub' => 'Wird auf Rechnung gestellt, beim Checkout wurde keine Zahlung erhoben',
+    'payment_on_account_note' => 'Wird auf Rechnung gestellt, beim Checkout wurde keine Zahlung erhoben',
+    'payment_on_pickup_note' => 'Wird im Geschäft bezahlt, wenn der Kunde die Bestellung abholt',
+    'payment_on_delivery_note' => 'Wird bei Lieferung der Bestellung an den Zusteller bezahlt',
+    'action_record_payment' => 'Zahlung erfassen',
+    'record_payment_outstanding' => 'Offen: {amount}',
+    'record_payment_amount' => 'Erhaltener Betrag',
+    'record_payment_reference' => 'Referenz',
+    'record_payment_notes' => 'Notizen',
+    'flash_payment_recorded' => 'Zahlung erfasst',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

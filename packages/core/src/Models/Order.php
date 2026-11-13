@@ -18,6 +18,7 @@ use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
 use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
+use Lunar\Core\Contracts\Actions\Orders\RecordsPayment;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Contracts\HasCurrency;
@@ -27,6 +28,7 @@ use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -36,6 +38,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\Payment\PaymentStatus;
+use Lunar\Core\States\Order\Payment\Pending;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -48,6 +51,7 @@ use Spatie\ModelStates\HasStates;
  * @property bool $new_customer
  * @property PaymentStatus $payment_status
  * @property FulfilmentStatus $fulfilment_status
+ * @property PaymentTerms $payment_terms
  * @property ?string $reference
  * @property ?string $customer_reference
  * @property int $sub_total
@@ -103,6 +107,14 @@ class Order extends Base implements HasCurrency
         'new_customer' => 'boolean',
         'payment_status' => PaymentStatus::class,
         'fulfilment_status' => FulfilmentStatus::class,
+        'payment_terms' => PaymentTerms::class,
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $attributes = [
+        'payment_terms' => 'checkout',
     ];
 
     public function resolveCurrency(): Currency
@@ -175,6 +187,27 @@ class Order extends Base implements HasCurrency
             : $this->shippingLines()->first();
 
         return ($line?->meta['pickup'] ?? false) === true;
+    }
+
+    /**
+     * Whether the order is unpaid because its terms say it is paid later, not
+     * because a payment failed or is still to come at checkout.
+     */
+    public function isAwaitingPaymentByTerms(): bool
+    {
+        return $this->payment_terms !== PaymentTerms::Checkout
+            && $this->payment_status instanceof Pending;
+    }
+
+    /**
+     * The payment status for display: the terms' label while the order is
+     * awaiting payment by terms, otherwise the payment status label.
+     */
+    public function paymentStatusLabel(): string
+    {
+        return $this->isAwaitingPaymentByTerms()
+            ? $this->payment_terms->label()
+            : $this->payment_status->label();
     }
 
     /**
@@ -417,6 +450,15 @@ class Order extends Base implements HasCurrency
     public function capture(int|string $transactionId, float|int|string $amount): PaymentCapture
     {
         return app(CapturesOrder::class)->execute($this, $transactionId, $amount);
+    }
+
+    /**
+     * Record a payment taken after checkout, in minor units, as a successful
+     * offline capture. The amount can't exceed the outstanding balance.
+     */
+    public function recordPayment(int $amount, ?string $reference = null, ?string $notes = null): Transaction
+    {
+        return app(RecordsPayment::class)->execute($this, $amount, $reference, $notes);
     }
 
     /**

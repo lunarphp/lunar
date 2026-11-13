@@ -23,6 +23,7 @@ use Lunar\Core\Actions\Carts\HydrateCartTotals;
 use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\PersistCartTotals;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetCartPaymentTerms;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Actions\Channels\CreateChannel;
@@ -90,6 +91,7 @@ use Lunar\Core\Actions\Orders\CloseOrder;
 use Lunar\Core\Actions\Orders\GenerateOrderReference;
 use Lunar\Core\Actions\Orders\NotifyCustomer;
 use Lunar\Core\Actions\Orders\RecomputeOrderStatus;
+use Lunar\Core\Actions\Orders\RecordPayment;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Actions\Orders\ReopenOrder;
 use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
@@ -182,6 +184,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\MergesCart::class => MergeCart::class,
         Contracts\Carts\PersistsCartTotals::class => PersistCartTotals::class,
         Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
+        Contracts\Carts\SetsCartPaymentTerms::class => SetCartPaymentTerms::class,
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
 
@@ -202,6 +205,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Orders\GeneratesOrderReference::class => GenerateOrderReference::class,
         Contracts\Orders\NotifiesCustomer::class => NotifyCustomer::class,
         Contracts\Orders\RecomputesOrderStatus::class => RecomputeOrderStatus::class,
+        Contracts\Orders\RecordsPayment::class => RecordPayment::class,
         Contracts\Orders\RefundsOrder::class => RefundOrder::class,
         Contracts\Orders\ReopensOrder::class => ReopenOrder::class,
         Contracts\Orders\ResolvesFulfilmentStatus::class => ResolveFulfilmentStatus::class,

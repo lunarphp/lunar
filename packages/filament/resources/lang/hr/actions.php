@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Evidentiraj plaćanje',
+            'modal_heading' => 'Evidentiraj plaćanje primljeno nakon narudžbe',
+            'reference' => [
+                'label' => 'Referenca',
+            ],
+            'notification' => [
+                'success' => 'Plaćanje je evidentirano.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
@@ -11,6 +12,7 @@ use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\OrderUpdate;
+use Lunar\Core\States\Order\Payment\PartiallyPaid;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -198,4 +200,36 @@ it('forbids order actions for staff without permission', function () {
     $order = Order::factory()->placed()->create();
 
     $this->post(route('panel.orders.close', $order))->assertForbidden();
+});
+
+it('records a payment taken after checkout', function () {
+    $order = Order::factory()->placed()->create(['total' => 12000, 'currency_code' => 'GBP', 'payment_terms' => PaymentTerms::OnAccount]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.payments.store', $order), ['amount' => '45.50', 'reference' => 'INV-1', 'notes' => 'BACS'])
+        ->assertSessionHas('success', __('panel::orders.flash_payment_recorded'));
+
+    $transaction = $order->transactions()->sole();
+
+    expect($transaction->amount)->toBe(4550)
+        ->and($transaction->type)->toBe('capture')
+        ->and($transaction->reference)->toBe('INV-1')
+        ->and($order->refresh()->payment_status)->toBeInstanceOf(PartiallyPaid::class);
+});
+
+it('flashes an error when the payment exceeds the outstanding balance', function () {
+    $order = Order::factory()->placed()->create(['total' => 12000, 'currency_code' => 'GBP']);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.payments.store', $order), ['amount' => 121])
+        ->assertSessionHas('error');
+
+    expect($order->transactions()->count())->toBe(0);
+});
+
+it('forbids recording a payment on a settled order', function () {
+    $order = Order::factory()->placed()->create(['total' => 12000, 'currency_code' => 'GBP']);
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
+
+    $this->post(route('panel.orders.payments.store', $order), ['amount' => 10])->assertForbidden();
 });

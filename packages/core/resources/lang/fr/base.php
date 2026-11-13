@@ -11,4 +11,10 @@ return [
         'up-sell' => 'Montée en gamme',
         'alternate' => 'Alternative',
     ],
+    'payment-terms' => [
+        'checkout' => 'Au paiement',
+        'on-account' => 'Sur compte',
+        'on-pickup' => 'Paiement au retrait',
+        'on-delivery' => 'Paiement à la livraison',
+    ],
 ];

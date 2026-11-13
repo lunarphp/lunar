@@ -153,8 +153,15 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Na račun',
-    'payment_on_account_sub' => 'Fakturirano na račun, plaćanje nije naplaćeno pri naplati',
+    'payment_on_account_note' => 'Fakturirano na račun, plaćanje nije naplaćeno pri naplati',
+    'payment_on_pickup_note' => 'Plaća se u trgovini kada kupac preuzme narudžbu',
+    'payment_on_delivery_note' => 'Plaća se dostavljaču pri isporuci narudžbe',
+    'action_record_payment' => 'Evidentiraj plaćanje',
+    'record_payment_outstanding' => 'Preostalo: {amount}',
+    'record_payment_amount' => 'Primljeni iznos',
+    'record_payment_reference' => 'Referenca',
+    'record_payment_notes' => 'Bilješke',
+    'flash_payment_recorded' => 'Plaćanje je evidentirano',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',
