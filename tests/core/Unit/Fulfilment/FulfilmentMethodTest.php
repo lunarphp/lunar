@@ -11,6 +11,7 @@ use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\Pending;
@@ -91,16 +92,11 @@ test('a mixed basket is split into one parcel per claiming method', function () 
         ->and($byMethod['digital']->lines()->pluck('order_line_id')->all())->toBe([$digital->id]);
 });
 
-test('a pickup shipping option routes physical lines to the pickup method', function () {
-    $order = Order::factory()->create(['placed_at' => null]);
+test('an order with a pickup location routes unstamped physical lines to the pickup method', function () {
+    $location = Location::factory()->create();
+    $order = Order::factory()->create(['placed_at' => null, 'pickup_location_id' => $location->id]);
     $physical = OrderLine::factory()->create([
         'order_id' => $order->id, 'type' => 'physical', 'quantity' => 2,
-    ]);
-    // The chosen shipping option is a pickup — stamped onto the line.
-    OrderLine::factory()->create([
-        'order_id' => $order->id, 'type' => 'shipping',
-        'requires_shipping' => false, 'requires_fulfilment' => false,
-        'meta' => ['pickup' => true],
     ]);
 
     $order->update(['placed_at' => now()]);
@@ -108,18 +104,14 @@ test('a pickup shipping option routes physical lines to the pickup method', func
     $fulfilment = $order->fulfilments()->sole();
 
     expect($fulfilment->method)->toBe('pickup')
+        ->and($fulfilment->location_id)->toBe($location->id)
         ->and($fulfilment->state)->toBeInstanceOf(Pending::class)
         ->and($fulfilment->lines()->pluck('order_line_id')->all())->toBe([$physical->id]);
 });
 
-test('a plain shipping option keeps physical lines on the shipping method', function () {
+test('an order without a pickup location keeps physical lines on the shipping method', function () {
     $order = Order::factory()->create(['placed_at' => null]);
     OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 1]);
-    OrderLine::factory()->create([
-        'order_id' => $order->id, 'type' => 'shipping',
-        'requires_shipping' => false, 'requires_fulfilment' => false,
-        'meta' => ['pickup' => false],
-    ]);
 
     $order->update(['placed_at' => now()]);
 

@@ -13,10 +13,10 @@ use Lunar\Core\States\Fulfilment\ReadyForPickup;
 use Lunar\Core\States\Fulfilment\Returned;
 
 /**
- * Click-and-collect / trade-counter pickup. Claims physical lines when the
- * order's chosen shipping option is a pickup (`pickup === true`, persisted
- * onto the shipping line at order creation), so the fulfilment presents "ready
- * for pickup → picked up" instead of ship-and-track. No tracking.
+ * Click-and-collect / trade-counter pickup, so the fulfilment presents "ready
+ * for pickup → picked up" instead of ship-and-track. Lines are normally
+ * stamped `pickup` at order creation; claim() covers unstamped physical lines
+ * on an order with a pickup location. No tracking.
  */
 class Pickup implements FulfilmentMethod
 {
