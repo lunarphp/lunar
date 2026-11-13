@@ -10,6 +10,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -691,9 +692,7 @@ test('can apply discount with max user uses', function () {
         ],
     ]);
 
-    $discount->users()->sync([
-        $user->id,
-    ]);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $user->id]);
 
     $discount->customerGroups()->sync([
         $customerGroup->id => [
@@ -768,9 +767,7 @@ test('cannot apply discount with max user uses', function () {
         ],
     ]);
 
-    $discount->users()->sync([
-        $user->id,
-    ]);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $user->id]);
 
     $discount->customerGroups()->sync([
         $customerGroup->id => [

@@ -34,11 +34,6 @@ class CreateOrder implements CreatesOrder
             /** @var Cart $cart */
             $order = $cart->draftOrder($orderIdToUpdate)->first() ?: App::make(Order::class);
 
-            // Read before the creation pipeline runs: MapDiscountBreakdown
-            // rewrites the order's breakdown, so afterwards every discount would
-            // look as though it had already been consumed.
-            $alreadyConsumed = $cart->consumedDiscountIds();
-
             if ($cart->hasCompletedOrders() && ! $allowMultipleOrders) {
                 throw new DisallowMultipleCartOrdersException;
             }
@@ -59,20 +54,6 @@ class CreateOrder implements CreatesOrder
                 ->thenReturn(function ($order) {
                     return $order;
                 });
-
-            // Creating the order again for the same cart — a declined card and a
-            // retry — must not consume a second use of the same discount.
-            $cart->discounts?->each(function ($discount) use ($cart, $alreadyConsumed) {
-                if ($alreadyConsumed->contains($discount->discount->id)) {
-                    return;
-                }
-
-                $discount->markAsUsed($cart)->discount->save();
-            });
-
-            // The breakdown has been rewritten, so anything still holding this
-            // cart must not read a set memoised before the order existed.
-            $cart->forgetConsumedDiscountIds();
 
             $cart->save();
 

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Validation\CouponValidator;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
@@ -82,7 +83,7 @@ test('enforces max uses per user for the authenticated user', function () {
 
     expect($validator->validate('10OFF'))->toBeTrue();
 
-    $discount->users()->attach($user->id);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $user->id]);
 
     expect($validator->validate('10OFF'))->toBeFalse();
 });
@@ -104,7 +105,7 @@ test('rejects a per-user-limited coupon for a guest', function () {
         ],
     ]);
 
-    $discount->users()->attach($user->id);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $user->id]);
 
     // The discount only applies to a known user, so accepting it here would
     // leave the coupon on the cart with no effect.
@@ -129,7 +130,7 @@ test('allows another user when one is at the per-user limit', function () {
         ],
     ]);
 
-    $discount->users()->attach($userA->id);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $userA->id]);
 
     $this->actingAs($userB);
 

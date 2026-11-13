@@ -30,7 +30,6 @@ interface DiscountType
 
 Extend `Lunar\Core\DiscountTypes\AbstractDiscountType` rather than implementing the interface directly. It supplies the `Discount` model the type is running for (`$this->discount`, set via `with()`), plus helpers a discount type typically needs:
 
-- `markAsUsed(Cart $cart)` — increments the discount's use count and records the cart's user against it.
 - `getEligibleLines(Cart $cart)` — the cart lines the discount can apply to; defaults to every line.
 - `checkDiscountConditions(Cart $cart)` — validates the discount's customer restriction, coupon match, minimum spend, and use limits.
 - `addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)` — records the discount against the cart's breakdown, which is what makes it show up as applied.
@@ -58,12 +57,17 @@ class MyCustomDiscountType extends AbstractDiscountType
 
         // Apply the discount to $cart, then:
         $this->addDiscountBreakdown($cart, $breakdown);
-        $this->markAsUsed($cart);
 
         return $cart;
     }
 }
 ```
+
+A discount type does not record its own usage. Lunar counts a use for every discount in an order's breakdown when the order is placed, so adding the breakdown is all a type needs to do. See [Usage: DiscountRedemption](/reference/discounts#usage-discountredemption).
+
+<Info>
+Prior to v2, a type called `markAsUsed()` itself, and `uses` was counted when the draft order was created. `markAsUsed()` has been removed. Delete any call to it, or any override of it, from a custom type.
+</Info>
 
 Lunar's own built-in types follow the same shape: `Lunar\Core\DiscountTypes\PercentageOff`, `Lunar\Core\DiscountTypes\FixedAmountOff`, and `Lunar\Core\DiscountTypes\BuyXGetY`. `PercentageOff` and `FixedAmountOff` also use `Lunar\Core\DiscountTypes\Concerns\TargetsCartLines`, a trait that narrows `getEligibleLines()` to the discount's collection, brand, product, or variant limitations — reach for it when a discount type should target specific lines rather than the whole cart.
 

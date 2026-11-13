@@ -79,6 +79,7 @@ use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\CloseSettledOrder;
 use Lunar\Core\Listeners\EnsureInitialFulfilmentForOrder;
+use Lunar\Core\Listeners\RecordDiscountRedemptions;
 use Lunar\Core\Listeners\ReindexOnCacheInvalidation;
 use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
@@ -336,6 +337,9 @@ class LunarServiceProvider extends ServiceProvider
         Event::listen(OrderCancelled::class, SyncStockForOrder::class);
         Event::listen(FulfilmentCreated::class, AllocateStockForFulfilment::class);
         Event::listen(FulfilmentStatusUpdated::class, ApplyStockForFulfilmentTransition::class);
+
+        // Discount usage counts placed orders, not drafts.
+        Event::listen(OrderPlaced::class, RecordDiscountRedemptions::class);
 
         // Reindex searchable models on cascade invalidations (the cases Scout's
         // own model observer cannot see); direct saves reindex through Scout.
