@@ -8,6 +8,7 @@ use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Locations\DeletesLocation;
 use Lunar\Core\Contracts\Actions\Locations\UpdatesLocation;
 use Lunar\Core\Exceptions\LocationActionException;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\StockMovement;
@@ -24,7 +25,9 @@ class LocationEditController
                 'name' => $location->name,
                 'handle' => $location->handle,
                 'default' => $location->default,
+                ...$location->only(LocationRequest::ADDRESS_FIELDS),
             ],
+            'countries' => Country::orderBy('name')->get(['id', 'name']),
             'hasFulfilments' => $location->fulfilments()->exists(),
             'hasStock' => StockLevel::query()->where('location_id', $location->id)->exists()
                 || StockMovement::query()->where('location_id', $location->id)->exists(),

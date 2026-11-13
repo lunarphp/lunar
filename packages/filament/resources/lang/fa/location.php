@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'پیش‌فرض',
         ],
+        'address' => [
+            'label' => 'نشانی',
+        ],
     ],
 
     'table' => [
