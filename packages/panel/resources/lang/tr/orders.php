@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Cari hesaba faturalandı, ödeme adımında tahsilat yapılmadı',
     'payment_on_pickup_note' => 'Müşteri siparişi teslim aldığında mağazada ödenir',
+    'payment_on_delivery_note' => 'Sipariş teslim edildiğinde kuryeye ödenir',
     'action_record_payment' => 'Ödeme kaydet',
     'record_payment_outstanding' => 'Kalan: {amount}',
     'record_payment_amount' => 'Alınan tutar',

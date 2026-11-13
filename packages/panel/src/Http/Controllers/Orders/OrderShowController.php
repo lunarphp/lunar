@@ -462,6 +462,7 @@ class OrderShowController
         return match ($order->payment_terms) {
             PaymentTerms::OnAccount => __('panel::orders.payment_on_account_note'),
             PaymentTerms::OnPickup => __('panel::orders.payment_on_pickup_note'),
+            PaymentTerms::OnDelivery => __('panel::orders.payment_on_delivery_note'),
             PaymentTerms::Checkout => null,
         };
     }

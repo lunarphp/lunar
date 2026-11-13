@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Facturado a cuenta, no se cobró ningún pago al finalizar la compra',
     'payment_on_pickup_note' => 'Se paga en la tienda cuando el cliente recoge el pedido',
+    'payment_on_delivery_note' => 'Se paga al repartidor cuando se entrega el pedido',
     'action_record_payment' => 'Registrar pago',
     'record_payment_outstanding' => 'Pendiente: {amount}',
     'record_payment_amount' => 'Importe recibido',

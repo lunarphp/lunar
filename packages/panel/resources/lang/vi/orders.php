@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Xuất hóa đơn ghi nợ, không thu tiền khi thanh toán',
     'payment_on_pickup_note' => 'Thanh toán tại cửa hàng khi khách hàng nhận hàng',
+    'payment_on_delivery_note' => 'Thanh toán cho người giao hàng khi đơn hàng được giao',
     'action_record_payment' => 'Ghi nhận thanh toán',
     'record_payment_outstanding' => 'Còn nợ: {amount}',
     'record_payment_amount' => 'Số tiền đã nhận',

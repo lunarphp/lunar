@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Faturado em conta, nenhum pagamento cobrado na finalização',
     'payment_on_pickup_note' => 'Pago na loja quando o cliente retira o pedido',
+    'payment_on_delivery_note' => 'Pago ao entregador quando o pedido é entregue',
     'action_record_payment' => 'Registrar pagamento',
     'record_payment_outstanding' => 'Em aberto: {amount}',
     'record_payment_amount' => 'Valor recebido',

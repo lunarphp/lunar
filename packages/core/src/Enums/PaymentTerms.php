@@ -14,6 +14,8 @@ enum PaymentTerms: string
 
     case OnPickup = 'on-pickup';
 
+    case OnDelivery = 'on-delivery';
+
     public function label(): string
     {
         return __("lunar::base.payment-terms.{$this->value}");

@@ -366,7 +366,7 @@ $cart->setPaymentTerms(PaymentTerms::OnAccount);
 $cart->setPaymentTerms(null); // paid at checkout
 ```
 
-`setPaymentTerms()` delegates to `Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms`. A payment type can also declare terms in its config, and those terms win. Order creation rejects a cart with `OnPickup` terms when the chosen shipping option is not a pickup. See [Payment terms](/reference/orders#payment-terms) on the Orders reference.
+`setPaymentTerms()` delegates to `Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms`. A payment type can also declare terms in its config, and those terms win. Order creation rejects a cart with `OnPickup` terms when the chosen shipping option is not a pickup, and a cart with `OnDelivery` terms when there is nothing to ship or the chosen option is a pickup. See [Payment terms](/reference/orders#payment-terms) on the Orders reference.
 
 ## Discounts
 

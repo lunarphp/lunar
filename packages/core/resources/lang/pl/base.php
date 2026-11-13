@@ -15,5 +15,6 @@ return [
         'checkout' => 'Przy kasie',
         'on-account' => 'Na konto',
         'on-pickup' => 'Płatność przy odbiorze',
+        'on-delivery' => 'Płatność przy odbiorze przesyłki',
     ],
 ];

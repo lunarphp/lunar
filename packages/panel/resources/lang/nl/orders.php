@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Op rekening gefactureerd, bij het afrekenen is geen betaling geïnd',
     'payment_on_pickup_note' => 'Wordt in de winkel betaald wanneer de klant de bestelling afhaalt',
+    'payment_on_delivery_note' => 'Wordt bij levering van de bestelling aan de bezorger betaald',
     'action_record_payment' => 'Betaling registreren',
     'record_payment_outstanding' => 'Openstaand: {amount}',
     'record_payment_amount' => 'Ontvangen bedrag',

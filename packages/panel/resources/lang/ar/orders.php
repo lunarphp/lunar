@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'تمت الفوترة على الحساب، ولم يتم تحصيل أي دفعة عند إتمام الطلب',
     'payment_on_pickup_note' => 'يُدفع في المتجر عند استلام العميل للطلب',
+    'payment_on_delivery_note' => 'يُدفع لشركة التوصيل عند تسليم الطلب',
     'action_record_payment' => 'تسجيل دفعة',
     'record_payment_outstanding' => 'المبلغ المستحق: {amount}',
     'record_payment_amount' => 'المبلغ المستلم',

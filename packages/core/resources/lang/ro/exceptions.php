@@ -14,6 +14,7 @@ return [
     'carts.line_unavailable' => 'Un articol din acest coș nu mai este disponibil (:identifier)',
     'carts.line_not_purchasable' => ':identifier nu poate fi cumpărat în acest canal sau de grupul tău de clienți',
     'carts.payment_terms_pickup_missing' => 'Plata la ridicare necesită o opțiune de livrare cu ridicare',
+    'carts.payment_terms_delivery_missing' => 'Plata la livrare necesită o opțiune de livrare la adresă',
     'missing_currency_price' => 'Nu există un preț pentru moneda ":currency"',
     'minimum_quantity' => 'Trebuie să adăugați cel puțin :quantity articole.',
     'quantity_increment' => 'Cantitatea :quantity trebuie să fie în multipli de :increment',

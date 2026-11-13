@@ -175,3 +175,12 @@ test('pickup terms from the payment type are validated against the cart', functi
 
     Payments::driver('pay-on-pickup')->cart(offlineCartWithAddresses())->authorize();
 })->throws(CartException::class, 'Pay on pickup needs a pickup shipping option');
+
+test('delivery terms from the payment type are validated against the cart', function () {
+    Config::set('lunar.payments.types.cash-on-delivery', [
+        'driver' => 'offline',
+        'terms' => 'on-delivery',
+    ]);
+
+    Payments::driver('cash-on-delivery')->cart(offlineCartWithAddresses())->authorize();
+})->throws(CartException::class, 'Pay on delivery needs a delivery shipping option');

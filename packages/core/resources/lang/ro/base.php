@@ -15,5 +15,6 @@ return [
         'checkout' => 'La finalizarea comenzii',
         'on-account' => 'Pe cont',
         'on-pickup' => 'Plata la ridicare',
+        'on-delivery' => 'Plata la livrare',
     ],
 ];

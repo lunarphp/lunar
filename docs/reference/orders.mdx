@@ -209,8 +209,9 @@ An order's lifecycle is read from three independent signals rather than one stat
 | `Checkout` | `checkout` | Paid at checkout. The default |
 | `OnAccount` | `on-account` | Invoiced and paid later |
 | `OnPickup` | `on-pickup` | Paid in store when the customer collects |
+| `OnDelivery` | `on-delivery` | Paid to the courier when the order is delivered (cash on delivery) |
 
-An order placed on account or for payment on pickup has no transactions, so its payment status is `Pending`, the same as an order whose card payment failed. The terms tell the two apart. Terms never change `payment_status`. Once money is recorded, the status moves on as usual (`PartiallyPaid`, `Paid`), and the order reads like any other.
+An order placed on account, or for payment on pickup or on delivery, has no transactions, so its payment status is `Pending`, the same as an order whose card payment failed. The terms tell the two apart. Terms never change `payment_status`. Once money is recorded, the status moves on as usual (`PartiallyPaid`, `Paid`), and the order reads like any other.
 
 ```php
 $order->payment_terms;              // PaymentTerms::OnAccount

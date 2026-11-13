@@ -15,5 +15,6 @@ return [
         'checkout' => 'Fizetéskor',
         'on-account' => 'Számlára',
         'on-pickup' => 'Fizetés átvételkor',
+        'on-delivery' => 'Utánvét',
     ],
 ];

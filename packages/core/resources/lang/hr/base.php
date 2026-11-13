@@ -15,5 +15,6 @@ return [
         'checkout' => 'Pri plaćanju',
         'on-account' => 'Na račun',
         'on-pickup' => 'Plaćanje pri preuzimanju',
+        'on-delivery' => 'Plaćanje pouzećem',
     ],
 ];

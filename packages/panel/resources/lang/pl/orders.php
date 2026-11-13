@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Rozliczane na konto, przy składaniu zamówienia nie pobrano płatności',
     'payment_on_pickup_note' => 'Płatne w sklepie przy odbiorze zamówienia przez klienta',
+    'payment_on_delivery_note' => 'Płatne kurierowi przy doręczeniu zamówienia',
     'action_record_payment' => 'Zarejestruj płatność',
     'record_payment_outstanding' => 'Do zapłaty: {amount}',
     'record_payment_amount' => 'Otrzymana kwota',

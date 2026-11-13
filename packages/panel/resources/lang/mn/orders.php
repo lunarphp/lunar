@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Дансаар нэхэмжилсэн, төлбөр тооцооны үед төлбөр аваагүй',
     'payment_on_pickup_note' => 'Хэрэглэгч захиалгаа авахдаа дэлгүүрт төлнө',
+    'payment_on_delivery_note' => 'Захиалгыг хүргэх үед хүргэгчид төлнө',
     'action_record_payment' => 'Төлбөр бүртгэх',
     'record_payment_outstanding' => 'Үлдэгдэл: {amount}',
     'record_payment_amount' => 'Хүлээн авсан дүн',

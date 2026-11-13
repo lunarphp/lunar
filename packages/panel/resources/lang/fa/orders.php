@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'به حساب صورت‌حساب شد، هنگام تسویه پرداختی دریافت نشد',
     'payment_on_pickup_note' => 'هنگام تحویل گرفتن سفارش توسط مشتری در فروشگاه پرداخت می‌شود',
+    'payment_on_delivery_note' => 'هنگام تحویل سفارش به پیک پرداخت می‌شود',
     'action_record_payment' => 'ثبت پرداخت',
     'record_payment_outstanding' => 'مانده: {amount}',
     'record_payment_amount' => 'مبلغ دریافت‌شده',

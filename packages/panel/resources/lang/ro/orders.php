@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Facturat în cont, nu s-a încasat nicio plată la finalizare',
     'payment_on_pickup_note' => 'Se plătește în magazin când clientul ridică comanda',
+    'payment_on_delivery_note' => 'Se plătește curierului la livrarea comenzii',
     'action_record_payment' => 'Înregistrează plata',
     'record_payment_outstanding' => 'Rest de plată: {amount}',
     'record_payment_amount' => 'Suma primită',

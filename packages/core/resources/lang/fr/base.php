@@ -15,5 +15,6 @@ return [
         'checkout' => 'Au paiement',
         'on-account' => 'Sur compte',
         'on-pickup' => 'Paiement au retrait',
+        'on-delivery' => 'Paiement à la livraison',
     ],
 ];

@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Számlára kiszámlázva, a pénztárnál nem történt fizetés',
     'payment_on_pickup_note' => 'Az üzletben fizeti ki a vásárló, amikor átveszi a rendelést',
+    'payment_on_delivery_note' => 'A futárnak fizetik ki a rendelés kézbesítésekor',
     'action_record_payment' => 'Fizetés rögzítése',
     'record_payment_outstanding' => 'Fennálló: {amount}',
     'record_payment_amount' => 'Beérkezett összeg',

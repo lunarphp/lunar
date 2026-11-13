@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Wird auf Rechnung gestellt, beim Checkout wurde keine Zahlung erhoben',
     'payment_on_pickup_note' => 'Wird im Geschäft bezahlt, wenn der Kunde die Bestellung abholt',
+    'payment_on_delivery_note' => 'Wird bei Lieferung der Bestellung an den Zusteller bezahlt',
     'action_record_payment' => 'Zahlung erfassen',
     'record_payment_outstanding' => 'Offen: {amount}',
     'record_payment_amount' => 'Erhaltener Betrag',

@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Фактурира се по сметка, не е взето плащане при поръчката',
     'payment_on_pickup_note' => 'Плаща се в магазина, когато клиентът вземе поръчката',
+    'payment_on_delivery_note' => 'Плаща се на куриера при доставката на поръчката',
     'action_record_payment' => 'Записване на плащане',
     'record_payment_outstanding' => 'Дължима сума: {amount}',
     'record_payment_amount' => 'Получена сума',

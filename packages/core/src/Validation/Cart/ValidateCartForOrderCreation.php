@@ -72,6 +72,10 @@ class ValidateCartForOrderCreation extends BaseValidator
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_pickup_missing'));
         }
 
+        if ($cart->payment_terms === PaymentTerms::OnDelivery && (! $cart->isShippable() || $cart->getShippingOption()?->pickup)) {
+            return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_delivery_missing'));
+        }
+
         return $this->pass();
     }
 

@@ -15,5 +15,6 @@ return [
         'checkout' => 'Bij het afrekenen',
         'on-account' => 'Op rekening',
         'on-pickup' => 'Betalen bij afhalen',
+        'on-delivery' => 'Betalen bij levering',
     ],
 ];

@@ -3,7 +3,7 @@
 - Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-11-12
-- TODO item: Payment terms — record when an order is meant to be paid (at checkout, on account, or on pickup) as a typed order field, and record a payment taken later (spec payment-terms)
+- TODO item: Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)
 
 ## Problem
 
@@ -11,6 +11,7 @@ An order's payment status is derived from its transactions (`ResolvePaymentStatu
 
 - **On account.** A trade customer is invoiced and pays later.
 - **On pickup.** The customer pays at the counter when they collect.
+- **On delivery.** The customer pays the courier when the order arrives (cash on delivery).
 
 These orders have no transactions, so they read as `Pending`, the same as an order whose card payment failed. Core has no record that they are expected to be unpaid.
 
@@ -33,6 +34,7 @@ An enum `Lunar\Core\Enums\PaymentTerms`:
 | `Checkout` | `checkout` | Paid at checkout. The default, and every order today. |
 | `OnAccount` | `on-account` | Invoiced and paid later. |
 | `OnPickup` | `on-pickup` | Paid in store when the customer collects. |
+| `OnDelivery` | `on-delivery` | Paid to the courier when the order is delivered. |
 
 The enum has a `label()` for display, translated in all 16 locales.
 
@@ -64,7 +66,7 @@ This replaces the `meta['payment_method']` convention. A store moves its on-acco
 ### Reading the terms
 
 - `Order::isAwaitingPaymentByTerms(): bool` is true when the terms are not `Checkout` and the payment status is `Pending`. Core, the panel and Filament use it, instead of each matching a handle.
-- `Order::paymentStatusLabel(): string` returns the terms' label ("On account", "Pay on pickup") while the order is awaiting payment by terms, and the payment status label otherwise. The panel order screen, the orders index, the Filament order resource and notifications use it.
+- `Order::paymentStatusLabel(): string` returns the terms' label ("On account", "Pay on pickup", "Pay on delivery") while the order is awaiting payment by terms, and the payment status label otherwise. The panel order screen, the orders index, the Filament order resource and notifications use it.
 
 Terms never change the payment status itself. Once money is recorded the status moves on as it does today (`PartiallyPaid`, `Paid`), and the order reads like any other.
 
@@ -88,6 +90,8 @@ The panel gets a "Record payment" action on an order with an outstanding balance
 ### Validation
 
 `ValidateCartForOrderCreation` rejects `OnPickup` terms on a cart with nothing to pick up, with a new translated message `exceptions.carts.payment_terms_pickup_missing`. Until [[0083-cart-line-fulfilment-method]] lands, "nothing to pick up" means the chosen shipping option is not a pickup. After it lands, it means no line resolves to the `pickup` method.
+
+It also rejects `OnDelivery` terms on a cart with nothing to deliver, with `exceptions.carts.payment_terms_delivery_missing`. Until [[0083-cart-line-fulfilment-method]] lands, that means the cart isn't shippable or the chosen shipping option is a pickup. After it lands, it means no line resolves to a delivery method.
 
 ### Notifications and the settlement banner
 
@@ -123,7 +127,7 @@ The `payment-received` notification fires when the payment status reaches `paid`
 
 ## Implementation plan
 
-- [x] Slice 1 — `PaymentTerms` enum and labels, `orders.payment_terms` and `carts.payment_terms`, `setPaymentTerms()` and its action, `CreateOrder` copying the terms, `AbstractPayment::terms()` and `OfflinePayment` writing them, `isAwaitingPaymentByTerms()` and `paymentStatusLabel()`, the `OnPickup` validation. Tests.
+- [x] Slice 1 — `PaymentTerms` enum and labels, `orders.payment_terms` and `carts.payment_terms`, `setPaymentTerms()` and its action, `CreateOrder` copying the terms, `AbstractPayment::terms()` and `OfflinePayment` writing them, `isAwaitingPaymentByTerms()` and `paymentStatusLabel()`, the `OnPickup` and `OnDelivery` validation. Tests.
 - [x] Slice 2 — `recordPayment()` and `RecordPayment`. Tests, including refunding a recorded payment.
 - [x] Slice 3 — Panel: replace the meta reads with the order methods, the label on the index, the record-payment action. Translations.
 - [x] Slice 4 — Filament: the label and the record-payment action. Translations.

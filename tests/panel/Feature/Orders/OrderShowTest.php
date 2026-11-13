@@ -641,3 +641,20 @@ it('shows a pending pay-on-pickup order with its terms', function () {
             ->where('order.payment_terms_note', __('panel::orders.payment_on_pickup_note'))
         );
 });
+
+it('shows a pending pay-on-delivery order with its terms', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'total' => 10000,
+        'payment_status' => Pending::class,
+        'payment_terms' => PaymentTerms::OnDelivery,
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('order.awaiting_payment_by_terms', true)
+            ->where('order.payment_status_label', 'Pay on delivery')
+            ->where('order.payment_terms_note', __('panel::orders.payment_on_delivery_note'))
+        );
+});

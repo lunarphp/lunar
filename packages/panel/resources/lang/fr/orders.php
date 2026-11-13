@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Facturé sur compte, aucun paiement encaissé lors de la commande',
     'payment_on_pickup_note' => 'Payé en magasin lorsque le client retire la commande',
+    'payment_on_delivery_note' => 'Payé au livreur à la livraison de la commande',
     'action_record_payment' => 'Enregistrer un paiement',
     'record_payment_outstanding' => 'Restant dû : {amount}',
     'record_payment_amount' => 'Montant reçu',

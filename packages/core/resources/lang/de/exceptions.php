@@ -14,6 +14,7 @@ return [
     'carts.line_unavailable' => 'Eine Position in diesem Warenkorb ist nicht mehr verfügbar (:identifier)',
     'carts.line_not_purchasable' => ':identifier kann in diesem Kanal oder von Ihrer Kundengruppe nicht gekauft werden',
     'carts.payment_terms_pickup_missing' => 'Zahlung bei Abholung erfordert eine Abhol-Versandoption',
+    'carts.payment_terms_delivery_missing' => 'Zahlung bei Lieferung erfordert eine Liefer-Versandoption',
     'missing_currency_price' => 'Es existiert kein Preis für die Währung ":currency"',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',

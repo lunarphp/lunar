@@ -478,3 +478,25 @@ test('allows on account terms with a delivery shipping option', function () {
 
     expect((new ValidateCartForOrderCreation)->using(cart: $cart)->validate())->toBeTrue();
 });
+
+test('can validate delivery terms with a delivery shipping option', function () {
+    $cart = cartWithShippingOption(pickup: false);
+    $cart->setPaymentTerms(PaymentTerms::OnDelivery);
+
+    expect((new ValidateCartForOrderCreation)->using(cart: $cart)->validate())->toBeTrue();
+});
+
+test('rejects delivery terms with a pickup shipping option', function () {
+    $cart = cartWithShippingOption(pickup: true);
+    $cart->setPaymentTerms(PaymentTerms::OnDelivery);
+
+    (new ValidateCartForOrderCreation)->using(cart: $cart)->validate();
+})->throws(CartException::class, 'Pay on delivery needs a delivery shipping option');
+
+test('rejects delivery terms on a cart with nothing to ship', function () {
+    $cart = Cart::factory()->create(['currency_id' => Currency::factory()->create()->id]);
+    CartAddress::factory()->create(['type' => 'billing', 'cart_id' => $cart->id]);
+    $cart->setPaymentTerms(PaymentTerms::OnDelivery);
+
+    (new ValidateCartForOrderCreation)->using(cart: $cart->refresh())->validate();
+})->throws(CartException::class, 'Pay on delivery needs a delivery shipping option');

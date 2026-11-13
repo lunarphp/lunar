@@ -15,5 +15,6 @@ return [
         'checkout' => 'At checkout',
         'on-account' => 'On account',
         'on-pickup' => 'Pay on pickup',
+        'on-delivery' => 'Pay on delivery',
     ],
 ];

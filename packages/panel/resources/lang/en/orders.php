@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Invoiced on account, no payment taken at checkout',
     'payment_on_pickup_note' => 'Paid in store when the customer collects',
+    'payment_on_delivery_note' => 'Paid to the courier when the order is delivered',
     'action_record_payment' => 'Record payment',
     'record_payment_outstanding' => 'Outstanding: {amount}',
     'record_payment_amount' => 'Amount received',

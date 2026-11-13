@@ -15,5 +15,6 @@ return [
         'checkout' => 'Ödeme sırasında',
         'on-account' => 'Cari hesaba',
         'on-pickup' => 'Teslim alırken öde',
+        'on-delivery' => 'Kapıda ödeme',
     ],
 ];

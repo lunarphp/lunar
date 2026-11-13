@@ -155,6 +155,7 @@ return [
 
     'payment_on_account_note' => 'Fakturirano na račun, plaćanje nije naplaćeno pri naplati',
     'payment_on_pickup_note' => 'Plaća se u trgovini kada kupac preuzme narudžbu',
+    'payment_on_delivery_note' => 'Plaća se dostavljaču pri isporuci narudžbe',
     'action_record_payment' => 'Evidentiraj plaćanje',
     'record_payment_outstanding' => 'Preostalo: {amount}',
     'record_payment_amount' => 'Primljeni iznos',

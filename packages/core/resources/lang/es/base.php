@@ -15,5 +15,6 @@ return [
         'checkout' => 'En el pago',
         'on-account' => 'A cuenta',
         'on-pickup' => 'Pago al recoger',
+        'on-delivery' => 'Pago contra entrega',
     ],
 ];
