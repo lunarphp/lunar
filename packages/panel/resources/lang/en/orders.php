@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'On account',
-    'payment_on_account_sub' => 'Invoiced on account, no payment taken at checkout',
+    'payment_on_account_note' => 'Invoiced on account, no payment taken at checkout',
+    'payment_on_pickup_note' => 'Paid in store when the customer collects',
+    'action_record_payment' => 'Record payment',
+    'record_payment_outstanding' => 'Outstanding: {amount}',
+    'record_payment_amount' => 'Amount received',
+    'record_payment_reference' => 'Reference',
+    'record_payment_notes' => 'Notes',
+    'flash_payment_recorded' => 'Payment recorded',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

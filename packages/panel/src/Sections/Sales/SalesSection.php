@@ -161,6 +161,7 @@ class SalesSection extends Section
                 Route::get('/{order}', [OrderShowController::class, 'show'])->name('show');
                 Route::post('/{order}/capture', [OrderActionController::class, 'capture'])->name('capture');
                 Route::post('/{order}/refund', [OrderActionController::class, 'refund'])->name('refund');
+                Route::post('/{order}/payments', [OrderActionController::class, 'recordPayment'])->name('payments.store');
                 Route::post('/{order}/cancel', [OrderActionController::class, 'cancel'])->name('cancel');
                 Route::post('/{order}/close', [OrderActionController::class, 'close'])->name('close');
                 Route::post('/{order}/reopen', [OrderActionController::class, 'reopen'])->name('reopen');

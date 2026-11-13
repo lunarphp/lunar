@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'A cuenta',
-    'payment_on_account_sub' => 'Facturado a cuenta, no se cobró ningún pago al finalizar la compra',
+    'payment_on_account_note' => 'Facturado a cuenta, no se cobró ningún pago al finalizar la compra',
+    'payment_on_pickup_note' => 'Se paga en la tienda cuando el cliente recoge el pedido',
+    'action_record_payment' => 'Registrar pago',
+    'record_payment_outstanding' => 'Pendiente: {amount}',
+    'record_payment_amount' => 'Importe recibido',
+    'record_payment_reference' => 'Referencia',
+    'record_payment_notes' => 'Notas',
+    'flash_payment_recorded' => 'Pago registrado',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

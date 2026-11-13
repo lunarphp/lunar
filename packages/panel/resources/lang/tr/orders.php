@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Cari hesaba',
-    'payment_on_account_sub' => 'Cari hesaba faturalandı, ödeme adımında tahsilat yapılmadı',
+    'payment_on_account_note' => 'Cari hesaba faturalandı, ödeme adımında tahsilat yapılmadı',
+    'payment_on_pickup_note' => 'Müşteri siparişi teslim aldığında mağazada ödenir',
+    'action_record_payment' => 'Ödeme kaydet',
+    'record_payment_outstanding' => 'Kalan: {amount}',
+    'record_payment_amount' => 'Alınan tutar',
+    'record_payment_reference' => 'Referans',
+    'record_payment_notes' => 'Notlar',
+    'flash_payment_recorded' => 'Ödeme kaydedildi',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

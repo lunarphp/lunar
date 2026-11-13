@@ -2,6 +2,7 @@
 
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
@@ -17,7 +18,6 @@ use Lunar\Core\States\Order\Payment\Paid;
 use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -511,13 +511,16 @@ it('shows a pending on-account order as on account', function () {
     $order = Order::factory()->placed()->create([
         'total' => 10000,
         'payment_status' => Pending::class,
-        'meta' => ['payment_method' => OrderShowController::ON_ACCOUNT, 'account_ref' => 'ACC-1234'],
+        'payment_terms' => PaymentTerms::OnAccount,
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->component('orders/Show')
-            ->where('order.on_account', true)
+            ->where('order.awaiting_payment_by_terms', true)
+            ->where('order.payment_terms_note', __('panel::orders.payment_on_account_note'))
+            ->where('actions.can_record_payment', true)
+            ->where('outstanding', 100)
             ->where('order.payment_status_label', 'On account')
             ->where('settlement.status', 'balanced')
             ->where('settlement.captured', null)
@@ -530,30 +533,29 @@ it('reads an on-account order normally once it has been paid', function () {
     $order = Order::factory()->placed()->create([
         'total' => 10000,
         'payment_status' => Paid::class,
-        'meta' => ['payment_method' => OrderShowController::ON_ACCOUNT],
+        'payment_terms' => PaymentTerms::OnAccount,
     ]);
     Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 10000]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('order.on_account', false)
+            ->where('order.awaiting_payment_by_terms', false)
             ->where('order.payment_status', 'paid')
             ->where('order.payment_status_label', 'Paid')
         );
 });
 
-it('does not treat an order paid any other way as on account', function () {
+it('does not treat a pending checkout order as awaiting payment by terms', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $order = Order::factory()->placed()->create([
         'total' => 10000,
         'payment_status' => Pending::class,
-        'meta' => ['payment_method' => 'card'],
     ]);
 
     $this->get(route('panel.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('order.on_account', false)
+            ->where('order.awaiting_payment_by_terms', false)
             ->where('order.payment_status_label', 'Pending')
             ->where('settlement.status', 'balanced')
         );
@@ -620,5 +622,22 @@ it('nests component lines under their parent and marks them in fulfilments', fun
             // Component lines carry no money, so only the parent can be refunded.
             ->has('refundableLines', 1)
             ->where('refundableLines.0.id', $parent->id)
+        );
+});
+
+it('shows a pending pay-on-pickup order with its terms', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create([
+        'total' => 10000,
+        'payment_status' => Pending::class,
+        'payment_terms' => PaymentTerms::OnPickup,
+    ]);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('order.awaiting_payment_by_terms', true)
+            ->where('order.payment_status_label', 'Pay on pickup')
+            ->where('order.payment_terms_note', __('panel::orders.payment_on_pickup_note'))
         );
 });

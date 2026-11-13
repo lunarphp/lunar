@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Ghi nợ',
-    'payment_on_account_sub' => 'Xuất hóa đơn ghi nợ, không thu tiền khi thanh toán',
+    'payment_on_account_note' => 'Xuất hóa đơn ghi nợ, không thu tiền khi thanh toán',
+    'payment_on_pickup_note' => 'Thanh toán tại cửa hàng khi khách hàng nhận hàng',
+    'action_record_payment' => 'Ghi nhận thanh toán',
+    'record_payment_outstanding' => 'Còn nợ: {amount}',
+    'record_payment_amount' => 'Số tiền đã nhận',
+    'record_payment_reference' => 'Mã tham chiếu',
+    'record_payment_notes' => 'Ghi chú',
+    'flash_payment_recorded' => 'Đã ghi nhận thanh toán',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

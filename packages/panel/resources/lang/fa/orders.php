@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'به حساب',
-    'payment_on_account_sub' => 'به حساب صورت‌حساب شد، هنگام تسویه پرداختی دریافت نشد',
+    'payment_on_account_note' => 'به حساب صورت‌حساب شد، هنگام تسویه پرداختی دریافت نشد',
+    'payment_on_pickup_note' => 'هنگام تحویل گرفتن سفارش توسط مشتری در فروشگاه پرداخت می‌شود',
+    'action_record_payment' => 'ثبت پرداخت',
+    'record_payment_outstanding' => 'مانده: {amount}',
+    'record_payment_amount' => 'مبلغ دریافت‌شده',
+    'record_payment_reference' => 'مرجع',
+    'record_payment_notes' => 'یادداشت‌ها',
+    'flash_payment_recorded' => 'پرداخت ثبت شد',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

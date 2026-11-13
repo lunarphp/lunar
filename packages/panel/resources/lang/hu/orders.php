@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'Számlára',
-    'payment_on_account_sub' => 'Számlára kiszámlázva, a pénztárnál nem történt fizetés',
+    'payment_on_account_note' => 'Számlára kiszámlázva, a pénztárnál nem történt fizetés',
+    'payment_on_pickup_note' => 'Az üzletben fizeti ki a vásárló, amikor átveszi a rendelést',
+    'action_record_payment' => 'Fizetés rögzítése',
+    'record_payment_outstanding' => 'Fennálló: {amount}',
+    'record_payment_amount' => 'Beérkezett összeg',
+    'record_payment_reference' => 'Hivatkozás',
+    'record_payment_notes' => 'Megjegyzések',
+    'flash_payment_recorded' => 'Fizetés rögzítve',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

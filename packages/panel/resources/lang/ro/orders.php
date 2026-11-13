@@ -153,8 +153,14 @@ return [
     'settlement_detail' => 'Captured {captured} · Refunded {refunded} · Order total {total}',
     'settlement_take_payment' => 'Take payment',
 
-    'payment_on_account' => 'În cont',
-    'payment_on_account_sub' => 'Facturat în cont, nu s-a încasat nicio plată la finalizare',
+    'payment_on_account_note' => 'Facturat în cont, nu s-a încasat nicio plată la finalizare',
+    'payment_on_pickup_note' => 'Se plătește în magazin când clientul ridică comanda',
+    'action_record_payment' => 'Înregistrează plata',
+    'record_payment_outstanding' => 'Rest de plată: {amount}',
+    'record_payment_amount' => 'Suma primită',
+    'record_payment_reference' => 'Referință',
+    'record_payment_notes' => 'Note',
+    'flash_payment_recorded' => 'Plata a fost înregistrată',
 
     'cancel_note' => 'Note',
     'cancel_notify' => 'Notify the customer',

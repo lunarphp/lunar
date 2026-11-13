@@ -42,6 +42,7 @@ interface OrderRow {
     items: number;
     payment_status: string;
     payment_status_label: string;
+    awaiting_payment_by_terms: boolean;
     fulfilment_status: string;
     fulfilment_status_label: string;
     cancelled: boolean;
@@ -258,7 +259,8 @@ const FULFILMENT_TONES: Record<string, Tone> = {
     'partially-returned': 'warn',
     returned: 'danger',
 };
-const paymentTone = (key: string): Tone => PAYMENT_TONES[key] ?? 'neutral';
+// An order awaiting payment by its terms is unpaid by arrangement, not a problem.
+const paymentTone = (key: string, awaitingByTerms = false): Tone => (awaitingByTerms ? 'neutral' : (PAYMENT_TONES[key] ?? 'neutral'));
 const fulfilmentTone = (key: string): Tone => FULFILMENT_TONES[key] ?? 'neutral';
 
 const formatShortDate = (value: string): string =>
@@ -395,7 +397,7 @@ const formatShortDate = (value: string): string =>
                     </template>
 
                     <template #cell-payment_status="{ row }">
-                        <StatusBadge :tone="paymentTone(row.payment_status as string)" size="sm" dot>{{ row.payment_status_label }}</StatusBadge>
+                        <StatusBadge :tone="paymentTone(row.payment_status as string, row.awaiting_payment_by_terms as boolean)" size="sm" dot>{{ row.payment_status_label }}</StatusBadge>
                     </template>
 
                     <template #cell-fulfilment_status="{ row }">
