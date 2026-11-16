@@ -34,11 +34,16 @@ class GetTaxZonePostcode
         })->sort(fn ($current, $next) => $current['matches'] < $next['matches'])->first();
 
         // Give up, use default...
-        if (! $match) {
+        //
+        // $match is an array, so it is truthy even when nothing matched - the
+        // score inside it is what says whether this zone applies at all. Without
+        // checking it, a zone sharing only the postcode's first character wins,
+        // and GetTaxZone returns before it ever reaches state or country.
+        if (! $match || ! $match['matches']) {
             return null;
         }
 
-        return $match ? $match['postcode'] : null;
+        return $match['postcode'];
     }
 
     /**

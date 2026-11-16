@@ -94,3 +94,29 @@ test('can match using wildcards', function () {
         }
     }
 });
+
+test('can not match a postcode that only shares a first character', function () {
+    TaxZonePostcode::factory()->create([
+        'postcode' => 'S1 2AB',
+    ]);
+
+    // Shares the letter S and nothing else. The candidate list is built from the
+    // first character alone, so this zone is considered and scores zero.
+    $postcode = app(GetTaxZonePostcode::class)->execute('SW1A 0AA');
+
+    expect($postcode)->toBeNull();
+});
+
+test('can still match a wildcard when a non-matching zone shares the first character', function () {
+    TaxZonePostcode::factory()->create([
+        'postcode' => 'S1 2AB',
+    ]);
+
+    $wildcard = TaxZonePostcode::factory()->create([
+        'postcode' => 'SW*',
+    ]);
+
+    $postcode = app(GetTaxZonePostcode::class)->execute('SW1A 0AA');
+
+    expect($postcode?->id)->toEqual($wildcard->id);
+});
