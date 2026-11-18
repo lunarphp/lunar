@@ -10,7 +10,17 @@ class Authenticate extends Middleware
 {
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('panel.login');
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        // A login waiting on its second factor resumes at the challenge rather
+        // than starting over, so reopening the panel mid-login (another tab, a
+        // reload) does not discard the pending login. The login screen itself
+        // stays reachable for "Use a different account".
+        return $request->hasSession() && $request->session()->has('panel.login.id')
+            ? route('panel.two-factor.challenge')
+            : route('panel.login');
     }
 
     /** @param  string[]  $guards */
