@@ -47,6 +47,32 @@ test('the challenge screen redirects to login when nothing is pending', function
         ->assertRedirect(route('panel.login'));
 });
 
+test('a guest visiting a panel page goes to login when nothing is pending', function () {
+    $this->get(route('panel.products.index'))
+        ->assertRedirect(route('panel.login'));
+});
+
+test('a panel page sends a pending login back to the challenge and then on to that page', function () {
+    $staff = Staff::factory()->withTwoFactor()->create();
+    submitCredentials($staff);
+
+    $this->get(route('panel.products.index'))
+        ->assertRedirect(route('panel.two-factor.challenge'));
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => currentOtp()])
+        ->assertRedirect(route('panel.products.index'));
+});
+
+test('the login screen stays reachable while a login is pending', function () {
+    $staff = Staff::factory()->withTwoFactor()->create();
+    submitCredentials($staff);
+
+    // "Use a different account" on the challenge links here.
+    $this->get(route('panel.login'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('auth/Login'));
+});
+
 test('the challenge submit redirects to login when nothing is pending', function () {
     $this->post(route('panel.two-factor.challenge.store'), ['code' => '123456'])
         ->assertRedirect(route('panel.login'));
