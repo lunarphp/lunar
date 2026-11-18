@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('first_name')->index();
             $table->string('last_name')->index();
             $table->string('email')->unique();
+            $table->string('preferred_locale')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text('app_authentication_secret')->nullable();
