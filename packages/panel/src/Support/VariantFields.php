@@ -5,12 +5,13 @@ namespace Lunar\Panel\Support;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Facades\Converter;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 
 /**
  * The draftable field surface of a single variant — identifiers, tax,
- * shipping, ordering quantities, selling policy, enabled flag, and the
+ * shipping, allowed fulfilment methods, ordering quantities, selling policy, enabled flag, and the
  * variant-morph attribute values. Shared by the variant edit page's draft
  * resource and the product page's simple shape, where the same keys ride the
  * product draft under a `variant:` prefix.
@@ -26,6 +27,7 @@ class VariantFields
         'tax_class_id',
         'tax_ref',
         'shippable',
+        'fulfilment_methods',
         'length_value',
         'length_unit',
         'width_value',
@@ -74,6 +76,7 @@ class VariantFields
             'tax_class_id' => $variant->tax_class_id,
             'tax_ref' => $variant->tax_ref,
             'shippable' => $variant->shippable,
+            'fulfilment_methods' => $variant->fulfilment_methods,
             'length_value' => $variant->length_value,
             'length_unit' => $variant->length_unit,
             'width_value' => $variant->width_value,
@@ -117,6 +120,7 @@ class VariantFields
             'tax_class_id' => ['required', Rule::exists((new TaxClass)->getTable(), 'id')],
             'tax_ref' => ['nullable', 'string', 'max:255'],
             'shippable' => ['boolean'],
+            'fulfilment_methods' => ['nullable', 'array', Rule::in(FulfilmentMethods::all()->keys()->all())],
             'length_value' => ['nullable', 'numeric', 'min:0'],
             'length_unit' => ['nullable', Rule::in($lengthUnits)],
             'width_value' => ['nullable', 'numeric', 'min:0'],
@@ -160,9 +164,24 @@ class VariantFields
             in_array($field, ['shippable', 'enabled'], true) => (bool) $value,
             in_array($field, ['unit_quantity', 'min_quantity', 'quantity_increment', 'backorder'], true) => (int) $value,
             in_array($field, ['tax_class_id'], true) => $value === null || $value === '' ? null : (int) $value,
+            $field === 'fulfilment_methods' => $this->normalizeMethods($value),
             str_ends_with($field, '_value') => $value === null || $value === '' ? null : (float) $value,
             default => $value === '' ? null : $value,
         };
+    }
+
+    /**
+     * An empty selection allows any method, stored as null; a selection is
+     * sorted so the same set always compares equal.
+     *
+     * @return list<string>|null
+     */
+    protected function normalizeMethods(mixed $value): ?array
+    {
+        $methods = array_values(array_unique(array_filter((array) $value, 'is_string')));
+        sort($methods);
+
+        return $methods ?: null;
     }
 
     /**

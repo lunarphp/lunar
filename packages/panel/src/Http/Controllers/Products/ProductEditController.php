@@ -8,8 +8,10 @@ use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Products\DeletesProduct;
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\Converter;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Currency;
@@ -191,6 +193,9 @@ class ProductEditController
                 'length' => array_keys($measurements['length'] ?? []),
                 'weight' => array_keys($measurements['weight'] ?? []),
             ],
+            'fulfilmentMethods' => FulfilmentMethods::all()
+                ->map(fn (FulfilmentMethod $method) => ['key' => $method->getKey(), 'label' => $method->getLabel()])
+                ->values(),
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name?->all() ?: (object) [],

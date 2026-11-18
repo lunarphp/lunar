@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Shippable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'روش‌های تأمین سفارش',
+            'helper_text' => 'روش‌هایی که این تنوع می‌تواند با آن‌ها تأمین شود. برای مجاز کردن هر روشی، همه را بدون انتخاب بگذارید.',
+        ],
         'length_value' => [
             'label' => 'Length',
         ],

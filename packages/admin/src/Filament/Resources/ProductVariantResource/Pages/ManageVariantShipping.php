@@ -118,6 +118,7 @@ class ManageVariantShipping extends BaseEditRecord
         return $schema->components([
             Section::make()->schema([
                 ProductVariantForm::getShippableComponent(),
+                ProductVariantForm::getFulfilmentMethodsComponent(),
                 ProductVariantForm::getLengthComponent(),
                 ProductVariantForm::getWidthComponent(),
                 ProductVariantForm::getHeightComponent(),

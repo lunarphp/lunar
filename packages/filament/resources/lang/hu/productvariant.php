@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Szállítható',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Teljesítési módok',
+            'helper_text' => 'Azok a módok, amelyekkel ez a változat teljesíthető. Hagyja mindet üresen, ha bármely mód engedélyezett.',
+        ],
         'length_value' => [
             'label' => 'Hossz',
         ],

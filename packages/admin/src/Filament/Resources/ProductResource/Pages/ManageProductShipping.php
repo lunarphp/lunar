@@ -15,12 +15,18 @@ use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\TextInputSelectAffix;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 
 class ManageProductShipping extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
 
     public bool $shippable = true;
+
+    /**
+     * @var list<string>
+     */
+    public array $fulfilment_methods = [];
 
     public ?array $dimensions = [
         'length_value' => 0,
@@ -74,6 +80,7 @@ class ManageProductShipping extends BaseEditRecord
             ...$variant->only(array_keys($this->dimensions)),
         ];
         $this->shippable = $variant->shippable;
+        $this->fulfilment_methods = $variant->fulfilment_methods ?? [];
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
@@ -83,6 +90,7 @@ class ManageProductShipping extends BaseEditRecord
         $variant->update([
             ...[
                 'shippable' => $this->shippable,
+                'fulfilment_methods' => $this->fulfilment_methods ?: null,
                 'volume_unit' => 'l',
                 'volume_value' => ManageVariantShipping::getVolume(
                     [
@@ -138,6 +146,8 @@ class ManageProductShipping extends BaseEditRecord
                 Toggle::make('shippable')->label(
                     __('lunarpanel::productvariant.form.shippable.label')
                 )->columnSpan(2),
+
+                ProductVariantForm::getFulfilmentMethodsComponent(),
 
                 TextInputSelectAffix::make('dimensions.length_value')
                     ->label(

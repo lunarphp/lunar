@@ -8,7 +8,7 @@ use Lunar\Upgrade\Rector\Media\RetypeGetThumbnailImageRector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
 use Lunar\Upgrade\Rector\Orders\RewriteOrderRefundCallRector;
 use Lunar\Upgrade\Rector\Pricing\RetypeFormatterStyleParamRector;
-use Lunar\Upgrade\Rector\Shipping\RenameShippingOptionCollectArgRector;
+use Lunar\Upgrade\Rector\Shipping\RewriteShippingOptionCollectRector;
 
 /**
  * Catalog of Rector renames contributed by v2 breaking specs.
@@ -538,7 +538,7 @@ final class LunarSetList
         RewriteOrderRefundCallRector::class,
         RetypeFormatterStyleParamRector::class,
         RetypeGetThumbnailImageRector::class,
-        RenameShippingOptionCollectArgRector::class,
+        RewriteShippingOptionCollectRector::class,
     ];
 
     /**
@@ -689,9 +689,8 @@ final class LunarSetList
      * `V1_TO_V2_METHOD_RENAMES`); the property fetch form
      * (`$type->mappedAttributes`) is covered here.
      *
-     * Spec rename-collection-fulfilment-to-pickup renamed `ShippingOption::$collect` to `$pickup`. This covers
-     * the property fetch (`$option->collect`); the `collect:` named argument
-     * on construction is rewritten by `RenameShippingOptionCollectArgRector`.
+     * `ShippingOption::$collect` is not renamed here: spec 0083 replaced it
+     * with a pickup location, rewritten by `RewriteShippingOptionCollectRector`.
      *
      * @var array<int, array{0: class-string, 1: string, 2: string}>
      */
@@ -702,8 +701,6 @@ final class LunarSetList
         ['Lunar\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
         ['Lunar\\Core\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
         ['Lunar\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
-        ['Lunar\\Core\\DataTypes\\ShippingOption', 'collect', 'pickup'],
-        ['Lunar\\DataTypes\\ShippingOption', 'collect', 'pickup'],
     ];
 
     /**

@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Verzendbaar',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfilmentmethoden',
+            'helper_text' => 'De methoden waarmee deze variant kan worden afgehandeld. Laat alles leeg om elke methode toe te staan.',
+        ],
         'length_value' => [
             'label' => 'Lengte',
         ],

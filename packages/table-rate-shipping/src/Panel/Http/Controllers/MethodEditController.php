@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Location;
 use Lunar\Shipping\Contracts\Actions\ShippingMethods\DeletesShippingMethod;
 use Lunar\Shipping\Contracts\Actions\ShippingMethods\UpdatesShippingMethod;
 use Lunar\Shipping\Models\ShippingMethod;
@@ -38,9 +39,11 @@ class MethodEditController
                 'weight_unit' => $shippingMethod->weight_unit,
                 'min_weight' => $shippingMethod->min_weight,
                 'max_weight' => $shippingMethod->max_weight,
+                'pickup_location_id' => $shippingMethod->pickup_location_id,
                 'data' => $this->methodData->toForm((array) $shippingMethod->data),
             ],
             'drivers' => $this->driverOptions->all(),
+            'locations' => Location::query()->orderBy('name')->get(['id', 'name']),
             'weightUnits' => array_keys(Converter::getMeasurements()['weight'] ?? []),
             'currencies' => $this->currencyOptions->all(),
             'customerGroups' => CustomerGroup::query()->orderBy('name')->get()->map(function (CustomerGroup $group) use ($groups) {

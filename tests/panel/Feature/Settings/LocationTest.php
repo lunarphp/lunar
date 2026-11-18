@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductVariant;
@@ -137,4 +138,40 @@ test('an unused location can be deleted', function () {
         ->assertSessionHas('success');
 
     expect(Location::find($location->id))->toBeNull();
+});
+
+test('a location address can be updated and is shown on the edit page', function () {
+    $location = Location::factory()->create(['name' => 'Store', 'default' => false]);
+    $country = Country::factory()->create();
+
+    $this->put(route('panel.settings.locations.update', $location), [
+        'name' => 'Store',
+        'handle' => $location->handle,
+        'line_one' => '1 High Street',
+        'city' => 'Leeds',
+        'postcode' => 'LS1 1AA',
+        'country_id' => $country->id,
+        'contact_phone' => '0113 000000',
+    ])->assertSessionHas('success');
+
+    expect($location->fresh())
+        ->line_one->toBe('1 High Street')
+        ->city->toBe('Leeds')
+        ->country->id->toBe($country->id);
+
+    $this->get(route('panel.settings.locations.edit', $location))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('location.line_one', '1 High Street')
+            ->where('location.country_id', $country->id)
+            ->has('countries', 1));
+});
+
+test('a location address rejects an unknown country', function () {
+    $location = Location::factory()->create();
+
+    $this->put(route('panel.settings.locations.update', $location), [
+        'name' => $location->name,
+        'handle' => $location->handle,
+        'country_id' => 999999,
+    ])->assertSessionHasErrors('country_id');
 });

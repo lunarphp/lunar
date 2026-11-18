@@ -42,7 +42,7 @@ class FreeShipping implements ShippingRateInterface
 
         // Do we have any products in our exclusions list?
         // If so, we do not want to return this option regardless.
-        $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
+        $productIds = $cart->deliveryLines()->load('purchasable')->pluck('purchasable.product_id');
 
         $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
@@ -54,7 +54,7 @@ class FreeShipping implements ShippingRateInterface
             return null;
         }
 
-        $subTotal = $cart->lines->sum('subTotal.value');
+        $subTotal = $cart->deliveryLines()->sum('subTotal.value');
 
         if ($data['use_discount_amount'] ?? false) {
             $subTotal -= $cart->discountTotal->value;

@@ -69,7 +69,6 @@ return [
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
     'section_pickup' => 'Ridicare',
-    'pickup_from' => 'Ridicare de la {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -98,6 +97,7 @@ return [
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
     'side_customer_address' => 'Adresa clientului',
+    'side_pickup_location' => 'Locație de ridicare',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Note interne',
@@ -201,6 +201,7 @@ return [
     'action_split' => 'Split…',
     'action_merge' => 'Merge into…',
     'action_change_location' => 'Change location…',
+    'action_change_method' => 'Schimbă în {method}',
     'action_add_tracking' => 'Add tracking…',
     'action_undo_return' => 'Undo return',
     'action_hold' => 'Hold…',
@@ -248,6 +249,8 @@ return [
     'location_title' => 'Change location',
     'location_field' => 'Location',
     'location_confirm' => 'Change location',
+    'change_method_address_hint' => 'Această comandă nu are adresă de livrare. Introdu adresa la care să fie trimise aceste articole.',
+    'change_method_ships_to_address' => 'Aceste articole vor fi trimise la adresa de livrare a comenzii.',
 
     'line_unit_price' => 'Unit price',
     'line_quantity' => 'Quantity',
@@ -267,6 +270,7 @@ return [
     'flash_fulfilment_released' => 'Fulfilment released from hold.',
     'flash_fulfilment_cancelled' => 'Fulfilment cancelled.',
     'flash_fulfilment_location_changed' => 'Fulfilment location updated.',
+    'flash_fulfilment_method_changed' => 'Metoda de onorare a fost schimbată.',
     'flash_tracking_added' => 'Tracking reference added.',
     'flash_tracking_removed' => 'Tracking reference removed.',
 ];

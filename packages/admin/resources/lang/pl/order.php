@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Adres dostawy',
         ],
+        'pickup_location' => [
+            'label' => 'Miejsce odbioru',
+        ],
         'billing_address' => [
             'label' => 'Adres rozliczeniowy',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Lokalizacja realizacji zaktualizowana.',
                     'error' => 'Nie udało się zmienić lokalizacji realizacji.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Zmień na :method',
+                'address_hint' => 'To zamówienie nie ma adresu dostawy. Wprowadź adres, na który mają zostać wysłane te produkty.',
+                'notification' => [
+                    'success' => 'Metoda realizacji zmieniona.',
+                    'error' => 'Nie udało się zmienić metody realizacji.',
                 ],
             ],
             'return' => [

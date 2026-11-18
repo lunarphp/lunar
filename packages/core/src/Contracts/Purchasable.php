@@ -84,6 +84,14 @@ interface Purchasable
     public function requiresFulfilment(): bool;
 
     /**
+     * The fulfilment method keys the purchasable may use, or null for no
+     * restriction. A collection-only item returns `['pickup']`.
+     *
+     * @return list<string>|null
+     */
+    public function allowedFulfilmentMethods(): ?array;
+
+    /**
      * Return the thumbnail for the purchasable item.
      *
      * @return string

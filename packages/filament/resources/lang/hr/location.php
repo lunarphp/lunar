@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Zadano',
         ],
+        'address' => [
+            'label' => 'Adresa',
+        ],
     ],
 
     'table' => [

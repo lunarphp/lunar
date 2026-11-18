@@ -16,6 +16,7 @@ use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\Price as ModelsPrice;
@@ -205,6 +206,25 @@ it('renders the order page when an address has no country', function () {
     Livewire::test(ManageOrder::class, [
         'record' => $order->getRouteKey(),
     ])->assertSuccessful();
+});
+
+it('shows the pickup location alongside the shipping address', function () {
+    $counter = Location::factory()->create(['name' => 'Dartford Counter', 'line_one' => '1 High Street']);
+    $this->order->update(['pickup_location_id' => $counter->id]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertSee(__('lunarpanel::order.infolist.pickup_location.label'))
+        ->assertSee('Dartford Counter')
+        ->assertSee('1 High Street')
+        ->assertSee(__('lunarpanel::order.infolist.shipping_address.label'));
+});
+
+it('hides the pickup location when nothing is picked up', function () {
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])->assertDontSee(__('lunarpanel::order.infolist.pickup_location.label'));
 });
 
 it('hides the notify customer action while no notifications are registered', function () {

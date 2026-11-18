@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Үндсэн',
         ],
+        'address' => [
+            'label' => 'Хаяг',
+        ],
     ],
 
     'table' => [

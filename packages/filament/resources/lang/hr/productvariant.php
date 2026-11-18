@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Moguća dostava',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Načini ispunjenja',
+            'helper_text' => 'Načini kojima se ova varijanta može ispuniti. Ostavite sve neoznačeno kako biste dopustili bilo koji način.',
+        ],
         'length_value' => [
             'label' => 'Duljina',
         ],

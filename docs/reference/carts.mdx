@@ -31,6 +31,8 @@ Lunar\Core\Models\Cart
 | `channel_id` | `foreignId` | |
 | `order_id` | `foreignId` `nullable` | References the order created from this cart |
 | `coupon_code` | `string` `nullable` | |
+| `fulfilment_method` | `string` `nullable` | The cart-wide default fulfilment method key, see [Fulfilment choice](#fulfilment-choice) |
+| `pickup_location_id` | `foreignId` `nullable` | Where pickup lines are collected, set explicitly |
 | `payment_terms` | `string` `nullable` | When the order is meant to be paid, cast to `Lunar\Core\Enums\PaymentTerms`. `null` means at checkout. See [Payment terms](#payment-terms) |
 | `remember_token` | `string` `nullable` | SHA-256 hash of the guest cart's remember cookie token, hidden from serialization. See [Remembering guest carts](#remembering-guest-carts) |
 | `completed_at` | `dateTime` `nullable` | |
@@ -66,6 +68,7 @@ Lunar\Core\Models\Cart
 | `currency` | BelongsTo | `Lunar\Core\Models\Currency` | |
 | `channel` | BelongsTo | `Lunar\Core\Models\Channel` | |
 | `region` | BelongsTo | `Lunar\Core\Models\Region` | |
+| `pickupLocation` | BelongsTo | `Lunar\Core\Models\Location` | The explicit pickup location |
 | `user` | BelongsTo | The authenticatable model from auth config | |
 | `customer` | BelongsTo | `Lunar\Core\Models\Customer` | |
 | `taxZone` | BelongsTo | `Lunar\Core\Models\TaxZone` | |
@@ -104,6 +107,7 @@ Lunar\Core\Models\CartLine
 | `purchasable_type` | `string` | Morph type of the purchasable item |
 | `purchasable_id` | `unsignedBigInteger` | Morph ID of the purchasable item |
 | `quantity` | `unsignedInteger` | |
+| `fulfilment_method` | `string` `nullable` | Overrides the cart default for this line. `null` inherits it |
 | `meta` | `jsonb` `nullable` | |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
@@ -355,6 +359,50 @@ $current = $cart->getShippingOption();               // the option currently app
 
 Shipping options are resolved through `Lunar\Core\Facades\ShippingManifest` — see [Extending Shipping](/extending/shipping) for how carriers register options. `CartSession::getShippingOptions()` returns the options available for the session's current cart.
 
+## Fulfilment choice
+
+The customer chooses how each line is fulfilled before the order exists. A cart has a default method, each line can override it, and the cart records where pickup lines are collected. Order creation copies the resolved choice onto the order lines and the order.
+
+```php
+$cart->add($variant, quantity: 2, fulfilmentMethod: 'pickup');
+$cart->addLines([['purchasable' => $variant, 'quantity' => 2, 'fulfilment_method' => 'pickup']]);
+
+$cart->setFulfilmentMethod('shipping');    // the cart default; null clears it
+$cartLine->setFulfilmentMethod('pickup');  // a line override; null inherits the cart default
+$cart->setPickupLocation($location);       // null clears it
+```
+
+The verbs delegate to `Lunar\Core\Contracts\Actions\Carts\SetsCartFulfilmentMethod`, `SetsCartLineFulfilmentMethod` and `SetsCartPickupLocation`. Before they run, the `StepList::SetFulfilmentMethodValidation` list checks that the key is registered, and `StepList::SetLineFulfilmentMethodValidation` checks that the line's purchasable supports it. Adding a line runs the same line check from `StepList::AddToCartValidation`. A failure throws `Lunar\Core\Exceptions\Carts\CartException`.
+
+The same purchasable for delivery and for pickup is two lines. The method joins line identity, cart merging and the cart fingerprint.
+
+### Resolving the method
+
+```php
+$cart->fulfilmentMethod();       // ?FulfilmentMethod, the cart default
+$cartLine->fulfilmentMethod();   // ?FulfilmentMethod, null when inferred at order creation
+$cart->resolvedPickupLocation(); // ?Location, null when nothing is picked up
+```
+
+The cart default is the explicit `fulfilment_method`, else `pickup` when the chosen shipping option is a pickup, else `shipping` when an option is chosen. A line resolves in this order:
+
+1. Its own `fulfilment_method`.
+2. The cart default, when the line's purchasable supports it. A default the line can't use is skipped, never forced, so a `shipping` default leaves a licence key to the digital method.
+3. When the purchasable restricts its methods, the first method it allows. A collection-only item in a cart delivered by default resolves to `pickup`.
+4. Otherwise `null`. The line's method is inferred when fulfilments are created.
+
+The pickup location is the cart's `pickup_location_id`, else the chosen shipping option's `pickupLocation`, else the default location. All three accessors delegate to `Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment`. A method key that is no longer registered resolves to `null` at that step and falls through.
+
+### Delivery lines
+
+`$cart->deliveryLines()` returns the lines that need delivering: a line whose explicit method delivers, or a shippable line with no explicit method. A collection-only item is never a delivery line. `isShippable()` is true when the cart has delivery lines. Shipping rates are calculated over them, so a line the customer collects adds no weight to a parcel rate and doesn't count towards a free-shipping threshold.
+
+Order creation needs a shipping option when the cart has delivery lines, and a shipping address unless the option is a pickup. It rejects a pickup option when a line is explicitly set to be delivered, because the pickup rate doesn't price that delivery. A cart whose physical lines are all set to `pickup` needs neither an option nor an address.
+
+<Tip>
+Offer the per-line choice on the cart page, before shipping rates are shown, and mark restricted items ("collection only") where they are listed. The customer then sees "collect this one, deliver the rest" before checkout. Filter the rates you show against `deliveryLines()`.
+</Tip>
+
 ## Payment terms
 
 A cart can record when its order is meant to be paid. `setPaymentTerms()` takes a `Lunar\Core\Enums\PaymentTerms` case, or `null` to clear it. Order creation copies the terms onto the order.
@@ -366,7 +414,7 @@ $cart->setPaymentTerms(PaymentTerms::OnAccount);
 $cart->setPaymentTerms(null); // paid at checkout
 ```
 
-`setPaymentTerms()` delegates to `Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms`. A payment type can also declare terms in its config, and those terms win. Order creation rejects a cart with `OnPickup` terms when the chosen shipping option is not a pickup, and a cart with `OnDelivery` terms when there is nothing to ship or the chosen option is a pickup. See [Payment terms](/reference/orders#payment-terms) on the Orders reference.
+`setPaymentTerms()` delegates to `Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms`. A payment type can also declare terms in its config, and those terms win. Order creation rejects a cart with `OnPickup` terms when no line resolves to `pickup`, and a cart with `OnDelivery` terms when no line resolves to a method that delivers. See [Payment terms](/reference/orders#payment-terms) on the Orders reference.
 
 ## Discounts
 

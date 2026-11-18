@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Versandfähig',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfillment-Methoden',
+            'helper_text' => 'Die Methoden, mit denen diese Variante erfüllt werden kann. Ohne Auswahl ist jede Methode erlaubt.',
+        ],
         'length_value' => [
             'label' => 'Länge',
         ],

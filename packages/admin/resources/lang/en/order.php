@@ -203,6 +203,9 @@ return [
         'shipping_address' => [
             'label' => 'Shipping Address',
         ],
+        'pickup_location' => [
+            'label' => 'Pickup location',
+        ],
         'billing_address' => [
             'label' => 'Billing Address',
         ],
@@ -380,6 +383,14 @@ return [
                 'notification' => [
                     'success' => 'Fulfilment location updated.',
                     'error' => 'Could not change the fulfilment location.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Change to :method',
+                'address_hint' => 'This order has no shipping address. Enter the address to send these items to.',
+                'notification' => [
+                    'success' => 'Fulfilment method changed.',
+                    'error' => 'Could not change the fulfilment method.',
                 ],
             ],
             'return' => [

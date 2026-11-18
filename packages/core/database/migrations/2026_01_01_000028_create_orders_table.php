@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('payment_status')->default('pending')->index();
             $table->string('fulfilment_status')->default('unfulfilled')->index();
             $table->string('payment_terms')->default('checkout');
+            $table->unsignedBigInteger('pickup_location_id')->nullable()->index();
             $table->string('reference')->nullable()->unique();
             $table->string('customer_reference')->nullable();
             $table->unsignedBigInteger('sub_total');

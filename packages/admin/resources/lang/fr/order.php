@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Adresse de livraison',
         ],
+        'pickup_location' => [
+            'label' => 'Point de retrait',
+        ],
         'billing_address' => [
             'label' => 'Adresse de facturation',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Emplacement du traitement mis à jour.',
                     'error' => 'Impossible de changer l\'emplacement du traitement.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Passer en :method',
+                'address_hint' => 'Cette commande n\'a pas d\'adresse de livraison. Saisissez l\'adresse à laquelle envoyer ces articles.',
+                'notification' => [
+                    'success' => 'Méthode de traitement modifiée.',
+                    'error' => 'Impossible de changer la méthode de traitement.',
                 ],
             ],
             'return' => [

@@ -22,9 +22,11 @@ const props = defineProps<{
         weight_unit: string | null;
         min_weight: number | string | null;
         max_weight: number | string | null;
+        pickup_location_id: number | null;
         data: DriverData & { schedule: Schedule | null };
     };
     drivers: { key: string; label: string }[];
+    locations: { id: number; name: string }[];
     weightUnits: string[];
     currencies: CurrencyOption[];
     customerGroups: GroupRow[];
@@ -48,6 +50,7 @@ const form = useForm({
     weight_unit: props.method.weight_unit ?? '',
     min_weight: props.method.min_weight ?? '',
     max_weight: props.method.max_weight ?? '',
+    pickup_location_id: props.method.pickup_location_id ?? '',
     // `data` is reserved by useForm; renamed back to data on submit.
     driver_data: {
         charge_by: props.method.data.charge_by,
@@ -68,7 +71,7 @@ const driverData = computed<DriverData>({
 const driverDescriptionKey = computed(() => {
     const key = `shipping::methods.driver_desc_${form.driver}`;
 
-    return ['ship-by', 'free-shipping'].includes(form.driver) ? key : 'shipping::methods.driver_desc_none';
+    return ['ship-by', 'free-shipping', 'pickup'].includes(form.driver) ? key : 'shipping::methods.driver_desc_none';
 });
 
 const submit = (): void => {
@@ -78,6 +81,7 @@ const submit = (): void => {
         weight_unit: rest.weight_unit || null,
         min_weight: rest.weight_unit ? rest.min_weight : null,
         max_weight: rest.weight_unit ? rest.max_weight : null,
+        pickup_location_id: rest.driver === 'pickup' && rest.pickup_location_id ? rest.pickup_location_id : null,
     })).put(props.urls.update, { preserveScroll: true });
 };
 
@@ -126,7 +130,15 @@ const confirmDestroy = (): void => {
 
             <Section :title="t('shipping::methods.section_driver')">
                 <template #desc>{{ t(driverDescriptionKey) }}</template>
-                <DriverSettings v-model="driverData" :driver="form.driver" :currencies="currencies" :errors="form.errors" />
+                <div v-if="form.driver === 'pickup'" class="max-w-[340px]">
+                    <FieldLabel>{{ t('shipping::methods.field_pickup_location') }}</FieldLabel>
+                    <Select v-model="form.pickup_location_id" :invalid="!!form.errors.pickup_location_id">
+                        <option value="">{{ t('shipping::methods.pickup_location_default') }}</option>
+                        <option v-for="location in locations" :key="location.id" :value="location.id">{{ location.name }}</option>
+                    </Select>
+                    <div v-if="form.errors.pickup_location_id" class="mt-1 text-[11px] text-danger">{{ form.errors.pickup_location_id }}</div>
+                </div>
+                <DriverSettings v-else v-model="driverData" :driver="form.driver" :currencies="currencies" :errors="form.errors" />
             </Section>
 
             <Section :title="t('shipping::methods.section_constraints')">

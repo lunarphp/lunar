@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
+use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentMethod;
 use Lunar\Core\Contracts\Actions\Fulfilment\FulfilsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\HoldsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
@@ -260,6 +261,17 @@ class Fulfilment extends Base
     /**
      * Move the fulfilment to another location.
      */
+    /**
+     * Move outstanding quantities to a new fulfilment with a different
+     * method. Null moves everything. Returns the new fulfilment.
+     *
+     * @param  array<int|string, int>|null  $moves  [order_line_id => quantity]
+     */
+    public function changeMethod(string $method, ?Location $location = null, ?array $moves = null): Fulfilment
+    {
+        return app(ChangesFulfilmentMethod::class)->execute($this, $method, $location, $moves);
+    }
+
     public function changeLocation(int $locationId): Fulfilment
     {
         return app(ChangesFulfilmentLocation::class)->execute($this, $locationId);

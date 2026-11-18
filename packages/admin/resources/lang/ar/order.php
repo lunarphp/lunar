@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'عنوان الشحن',
         ],
+        'pickup_location' => [
+            'label' => 'موقع الاستلام',
+        ],
         'billing_address' => [
             'label' => 'عنوان الفاتورة',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'تم تحديث موقع عملية التنفيذ.',
                     'error' => 'تعذّر تغيير موقع عملية التنفيذ.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'التغيير إلى :method',
+                'address_hint' => 'لا يحتوي هذا الطلب على عنوان شحن. أدخل العنوان الذي ستُرسل إليه هذه العناصر.',
+                'notification' => [
+                    'success' => 'تم تغيير طريقة التنفيذ.',
+                    'error' => 'تعذّر تغيير طريقة التنفيذ.',
                 ],
             ],
             'return' => [

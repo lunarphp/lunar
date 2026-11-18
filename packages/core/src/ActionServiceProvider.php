@@ -23,7 +23,10 @@ use Lunar\Core\Actions\Carts\HydrateCartTotals;
 use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\PersistCartTotals;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetCartFulfilmentMethod;
+use Lunar\Core\Actions\Carts\SetCartLineFulfilmentMethod;
 use Lunar\Core\Actions\Carts\SetCartPaymentTerms;
+use Lunar\Core\Actions\Carts\SetCartPickupLocation;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Actions\Channels\CreateChannel;
@@ -63,6 +66,7 @@ use Lunar\Core\Actions\Discounts\UpdateDiscount;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentMethod;
 use Lunar\Core\Actions\Fulfilment\CreateFulfilment;
 use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
 use Lunar\Core\Actions\Fulfilment\FulfilFulfilment;
@@ -71,6 +75,7 @@ use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\MoveFulfilmentLines;
 use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
 use Lunar\Core\Actions\Fulfilment\RemoveFulfilmentTracking;
+use Lunar\Core\Actions\Fulfilment\ResolveCartFulfilment;
 use Lunar\Core\Actions\Fulfilment\ReturnFulfilment;
 use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
@@ -184,7 +189,10 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\MergesCart::class => MergeCart::class,
         Contracts\Carts\PersistsCartTotals::class => PersistCartTotals::class,
         Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
+        Contracts\Carts\SetsCartFulfilmentMethod::class => SetCartFulfilmentMethod::class,
+        Contracts\Carts\SetsCartLineFulfilmentMethod::class => SetCartLineFulfilmentMethod::class,
         Contracts\Carts\SetsCartPaymentTerms::class => SetCartPaymentTerms::class,
+        Contracts\Carts\SetsCartPickupLocation::class => SetCartPickupLocation::class,
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
 
@@ -215,6 +223,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Fulfilment\AddsFulfilmentTracking::class => AddFulfilmentTracking::class,
         Contracts\Fulfilment\CancelsFulfilment::class => CancelFulfilment::class,
         Contracts\Fulfilment\ChangesFulfilmentLocation::class => ChangeFulfilmentLocation::class,
+        Contracts\Fulfilment\ChangesFulfilmentMethod::class => ChangeFulfilmentMethod::class,
         Contracts\Fulfilment\CreatesFulfilment::class => CreateFulfilment::class,
         Contracts\Fulfilment\EnsuresInitialFulfilment::class => EnsureInitialFulfilment::class,
         Contracts\Fulfilment\FulfilsFulfilment::class => FulfilFulfilment::class,
@@ -222,6 +231,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Fulfilment\MergesFulfilments::class => MergeFulfilments::class,
         Contracts\Fulfilment\MovesFulfilmentLines::class => MoveFulfilmentLines::class,
         Contracts\Fulfilment\ReleasesFulfilment::class => ReleaseFulfilment::class,
+        Contracts\Fulfilment\ResolvesCartFulfilment::class => ResolveCartFulfilment::class,
         Contracts\Fulfilment\RemovesFulfilmentTracking::class => RemoveFulfilmentTracking::class,
         Contracts\Fulfilment\ReturnsFulfilment::class => ReturnFulfilment::class,
         Contracts\Fulfilment\ShipsFulfilment::class => ShipFulfilment::class,

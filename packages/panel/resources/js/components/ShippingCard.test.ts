@@ -5,12 +5,18 @@ import ShippingCard from './ShippingCard.vue';
 
 const measurements = { length: ['mm', 'cm', 'm'], weight: ['kg', 'g'] };
 
+const fulfilmentMethods = [
+    { key: 'shipping', label: 'Shipping' },
+    { key: 'pickup', label: 'Pickup' },
+];
+
 const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
     mount(ShippingCard, {
         props: {
             values: reactive(values),
             fieldPrefix,
             measurements,
+            fulfilmentMethods,
         },
         global: {
             stubs: {
@@ -88,5 +94,17 @@ describe('ShippingCard', () => {
         });
 
         expect(wrapper.text()).toContain('24');
+    });
+
+    it('stores the ticked fulfilment methods, and none as null', async () => {
+        const values: Record<string, unknown> = { 'variant:fulfilment_methods': null };
+        const wrapper = mountCard(values, 'variant:');
+        const pickupBox = () => wrapper.findAll('[role="checkbox"]')[1];
+
+        await pickupBox().trigger('click');
+        expect(values['variant:fulfilment_methods']).toEqual(['pickup']);
+
+        await pickupBox().trigger('click');
+        expect(values['variant:fulfilment_methods']).toBeNull();
     });
 });

@@ -4,6 +4,7 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
@@ -64,7 +65,7 @@ class Pickup implements ShippingRateInterface
             taxClass: $shippingRate->getTaxClass(),
             taxReference: $shippingRate->getTaxReference(),
             option: $shippingZone->name,
-            pickup: true,
+            pickupLocation: $shippingMethod->pickupLocation ?? Location::getDefault(),
             meta: ['shipping_zone' => $shippingZone->name]
         );
     }

@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'Varsayılan',
         ],
+        'address' => [
+            'label' => 'Adres',
+        ],
     ],
 
     'table' => [

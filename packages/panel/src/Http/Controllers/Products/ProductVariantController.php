@@ -7,8 +7,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Products\DeletesProductVariant;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProductVariant;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\Converter;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
@@ -159,6 +161,9 @@ class ProductVariantController
                 'length' => array_keys($measurements['length'] ?? []),
                 'weight' => array_keys($measurements['weight'] ?? []),
             ],
+            'fulfilmentMethods' => FulfilmentMethods::all()
+                ->map(fn (FulfilmentMethod $method) => ['key' => $method->getKey(), 'label' => $method->getLabel()])
+                ->values(),
             'activities' => $activities,
             'canDelete' => $canDelete,
             // Why deletion is blocked, so the UI can explain the disabled button.

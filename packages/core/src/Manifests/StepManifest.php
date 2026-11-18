@@ -21,9 +21,11 @@ use Lunar\Core\Pipelines\Order\Creation\CreateOrderLines;
 use Lunar\Core\Pipelines\Order\Creation\CreateShippingLine;
 use Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart;
 use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
+use Lunar\Core\Validation\Cart\CartFulfilmentMethod;
 use Lunar\Core\Validation\Cart\ShippingOptionValidator;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\CartLine\CartLineAvailability;
+use Lunar\Core\Validation\CartLine\CartLineFulfilmentMethod;
 use Lunar\Core\Validation\CartLine\CartLineQuantity;
 use Lunar\Core\Validation\CartLine\CartLineStock;
 
@@ -83,7 +85,13 @@ class StepManifest implements StepManifestContract
                 CleanUpOrderLines::class,
                 MapDiscountBreakdown::class,
             ],
-            StepList::AddToCartValidation, StepList::UpdateCartLineValidation => [
+            StepList::AddToCartValidation => [
+                CartLineQuantity::class,
+                CartLineStock::class,
+                CartLineAvailability::class,
+                CartLineFulfilmentMethod::class,
+            ],
+            StepList::UpdateCartLineValidation => [
                 CartLineQuantity::class,
                 CartLineStock::class,
                 CartLineAvailability::class,
@@ -91,6 +99,12 @@ class StepManifest implements StepManifestContract
             StepList::RemoveFromCartValidation, StepList::AddAddressValidation => [],
             StepList::SetShippingOptionValidation => [
                 ShippingOptionValidator::class,
+            ],
+            StepList::SetFulfilmentMethodValidation => [
+                CartFulfilmentMethod::class,
+            ],
+            StepList::SetLineFulfilmentMethodValidation => [
+                CartLineFulfilmentMethod::class,
             ],
             StepList::OrderCreateValidation => [
                 ValidateCartForOrderCreation::class,
@@ -119,7 +133,7 @@ class StepManifest implements StepManifestContract
             if (config()->has($key)) {
                 throw new RemovedStepConfigException($key, array_values(array_filter(
                     StepList::cases(),
-                    fn (StepList $list): bool => str_starts_with($list->legacyConfigKey(), $key),
+                    fn (StepList $list): bool => str_starts_with((string) $list->legacyConfigKey(), $key),
                 )));
             }
         }

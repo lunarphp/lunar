@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Kargo Adresi',
         ],
+        'pickup_location' => [
+            'label' => 'Teslim alma konumu',
+        ],
         'billing_address' => [
             'label' => 'Fatura Adresi',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Karşılama konumu güncellendi.',
                     'error' => 'Karşılama konumu değiştirilemedi.',
+                ],
+            ],
+            'change_method' => [
+                'label' => ':method olarak değiştir',
+                'address_hint' => 'Bu siparişin kargo adresi yok. Bu ürünlerin gönderileceği adresi girin.',
+                'notification' => [
+                    'success' => 'Karşılama yöntemi değiştirildi.',
+                    'error' => 'Karşılama yöntemi değiştirilemedi.',
                 ],
             ],
             'return' => [

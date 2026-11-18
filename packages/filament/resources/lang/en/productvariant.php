@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Shippable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfilment methods',
+            'helper_text' => 'The methods this variant can be fulfilled by. Leave all unticked to allow any method.',
+        ],
         'length_value' => [
             'label' => 'Length',
         ],

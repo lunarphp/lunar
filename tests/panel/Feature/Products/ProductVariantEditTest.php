@@ -88,6 +88,49 @@ it('updates the variant through the update endpoint', function () {
         ->and($this->variant->min_quantity)->toBe(3);
 });
 
+it('lists the registered fulfilment methods for the allowed-methods field', function () {
+    $this->variant->update(['fulfilment_methods' => ['pickup']]);
+
+    $this->get(route('panel.products.variants.edit', [$this->product, $this->variant]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('variantValues.fulfilment_methods', ['pickup'])
+            ->where('fulfilmentMethods', fn ($methods) => collect($methods)->pluck('key')->sort()->values()->all() === ['digital', 'pickup', 'shipping'])
+        );
+});
+
+it('stores the allowed fulfilment methods, an empty selection as null', function () {
+    $payload = [
+        'tax_class_id' => $this->variant->tax_class_id,
+        'shippable' => true,
+        'unit_quantity' => 1,
+        'min_quantity' => 1,
+        'quantity_increment' => 1,
+        'backorder' => 0,
+        'selling_policy' => 'in_stock',
+    ];
+
+    $this->put(route('panel.products.variants.update', [$this->product, $this->variant]), [
+        ...$payload,
+        'fulfilment_methods' => ['shipping', 'pickup'],
+    ])->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($this->variant->refresh()->fulfilment_methods)->toBe(['pickup', 'shipping']);
+
+    $this->put(route('panel.products.variants.update', [$this->product, $this->variant]), [
+        ...$payload,
+        'fulfilment_methods' => [],
+    ])->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($this->variant->refresh()->fulfilment_methods)->toBeNull();
+});
+
+it('rejects an unregistered fulfilment method', function () {
+    $this->put(route('panel.products.variants.update', [$this->product, $this->variant]), [
+        'tax_class_id' => $this->variant->tax_class_id,
+        'fulfilment_methods' => ['teleport'],
+    ])->assertSessionHasErrors('fulfilment_methods');
+});
+
 it('drafts and commits variant fields including attribute values', function () {
     $attribute = Attribute::factory()->modelType('product_variant')->create([
         'handle' => 'finish',

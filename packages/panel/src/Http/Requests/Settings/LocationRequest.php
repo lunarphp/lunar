@@ -5,6 +5,7 @@ namespace Lunar\Panel\Http\Requests\Settings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Location;
 use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
@@ -12,6 +13,9 @@ use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 class LocationRequest extends FormRequest
 {
     use ValidatesFormSlices;
+
+    /** Sent by the edit page only; the create dialog leaves the address empty. */
+    public const ADDRESS_FIELDS = ['line_one', 'line_two', 'line_three', 'city', 'state', 'postcode', 'country_id', 'contact_phone'];
 
     /** @var class-string<Location> */
     protected string $sliceModel = Location::class;
@@ -40,6 +44,14 @@ class LocationRequest extends FormRequest
                 Rule::unique(Location::class, 'handle')->ignore($location?->id),
             ],
             'default' => ['sometimes', 'boolean'],
+            'line_one' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'line_two' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'line_three' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'city' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'state' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'postcode' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'country_id' => ['sometimes', 'nullable', 'integer', Rule::exists(Country::class, 'id')],
+            'contact_phone' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 
@@ -57,6 +69,8 @@ class LocationRequest extends FormRequest
             'name' => $validated['name'],
             'handle' => $validated['handle'],
         ];
+
+        $attributes += array_intersect_key($validated, array_flip(self::ADDRESS_FIELDS));
 
         if (array_key_exists('default', $validated)) {
             $attributes['default'] = (bool) $validated['default'];

@@ -24,6 +24,7 @@ class MergeCart implements MergesCart
                 return [
                     'target' => $target->lines->first(function ($targetLine) use ($line) {
                         return $targetLine->purchasable_id == $line->purchasable_id &&
+                        $targetLine->fulfilment_method === $line->fulfilment_method &&
                         json_encode($targetLine->meta) == json_encode($line->meta);
                     }),
                     'source' => $line,
@@ -36,6 +37,7 @@ class MergeCart implements MergesCart
                         'purchasable_type' => $lines['source']->purchasable_type,
                         'quantity' => $lines['source']->quantity,
                         'meta' => $lines['source']->meta,
+                        'fulfilment_method' => $lines['source']->fulfilment_method,
                     ]);
 
                     return;
