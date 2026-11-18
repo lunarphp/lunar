@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Brand;
+use Lunar\Tests\Core\Stubs\NonLunarMediaOwner;
 use Lunar\Tests\Core\TestCase;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -256,4 +257,34 @@ test('can delete last media', function () {
     $image->delete();
     expect(Media::count())->toEqual(0);
     $this->assertModelMissing($image);
+});
+
+test('media owned by a non-Lunar model is left alone', function () {
+    $owner = NonLunarMediaOwner::create([
+        'name' => 'Reviewer',
+        'email' => 'reviewer@example.com',
+        'password' => 'secret',
+    ]);
+
+    $image = UploadedFile::fake()->image('foobar.jpg');
+
+    $first = $owner
+        ->addMedia($image)
+        ->preservingOriginal()
+        ->toMediaCollection('images');
+
+    $second = $owner
+        ->addMedia($image)
+        ->preservingOriginal()
+        ->withCustomProperties([
+            'primary' => true,
+        ])
+        ->toMediaCollection('images');
+
+    expect($first->refresh()->custom_properties)->toBe([])
+        ->and($second->refresh()->custom_properties)->toBe(['primary' => true]);
+
+    $second->delete();
+
+    expect($first->refresh()->custom_properties)->toBe([]);
 });

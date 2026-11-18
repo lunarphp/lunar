@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Observers;
 
+use Lunar\Core\Models\Concerns\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaObserver
@@ -29,7 +30,9 @@ class MediaObserver
 
         $owner = $media->model()->first();
 
-        if (blank($owner)) {
+        // The observer is registered on the media model that every HasMedia
+        // model in the app shares, so leave media owned by non-Lunar models alone.
+        if (blank($owner) || ! in_array(HasMedia::class, class_uses_recursive($owner), true)) {
             return;
         }
 
