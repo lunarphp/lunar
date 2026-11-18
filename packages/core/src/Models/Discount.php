@@ -95,8 +95,13 @@ class Discount extends Base
 
         return $this->belongsToMany(
             config('auth.providers.users.model'),
-            "{$prefix}discount_user"
-        )->withTimestamps();
+            "{$prefix}discount_redemptions"
+        )->withPivot('redeemed_at');
+    }
+
+    public function redemptions(): HasMany
+    {
+        return $this->hasMany(DiscountRedemption::class);
     }
 
     public function discountables(): HasMany
@@ -306,22 +311,11 @@ class Discount extends Base
         );
     }
 
-    /**
-     * @param  iterable  $exempt  Discount ids that stay usable whatever their
-     *                            use count — a cart that already consumed a
-     *                            discount must still be able to re-price with it.
-     */
-    public function scopeUsable(Builder $query, iterable $exempt = []): Builder
+    public function scopeUsable(Builder $query): Builder
     {
-        $exempt = collect($exempt)->filter()->values();
-
-        return $query->where(function ($subQuery) use ($exempt) {
+        return $query->where(function ($subQuery) {
             $subQuery->whereRaw('uses < max_uses')
-                ->orWhereNull('max_uses')
-                ->when(
-                    $exempt->isNotEmpty(),
-                    fn ($subQuery) => $subQuery->orWhereIn('id', $exempt)
-                );
+                ->orWhereNull('max_uses');
         });
     }
 }
