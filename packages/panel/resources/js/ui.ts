@@ -61,6 +61,7 @@ export { default as Flag } from './components/Flag.vue';
 // Edit drafts
 export { default as DraftActions } from './components/DraftActions.vue';
 export { default as DraftConflictDialog } from './components/DraftConflictDialog.vue';
+export { default as DraftRestoredBanner } from './components/DraftRestoredBanner.vue';
 export { useEditDraft } from './composables/useEditDraft';
 export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';
 // Form slices: add-on slices live under `addon:{key}`; the exported

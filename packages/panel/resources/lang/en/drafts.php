@@ -16,4 +16,9 @@ return [
     'base_note' => 'Was {value} when you started editing',
     'empty' => 'Empty',
     'apply' => 'Apply and save',
+    'stale_confirm' => 'This draft was changed in another tab. Reload the page to continue from the latest draft? Unsaved edits in this tab will be replaced.',
+    'autosave_failed' => 'Your draft could not be saved. Your edits are still on this page; they will be saved with your next change.',
+    'save_failed' => 'Your changes could not be saved. Please try again.',
+    'discard_failed' => 'The draft could not be discarded. Please try again.',
+    'variant_fields_drop_confirm' => 'Generating variants removes the single variant\'s fields from this page, and your unsaved changes to them will be dropped. Continue?',
 ];

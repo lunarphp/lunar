@@ -16,4 +16,9 @@ return [
     'base_note' => 'Était {value} au début de votre édition',
     'empty' => 'Vide',
     'apply' => 'Appliquer et enregistrer',
+    'stale_confirm' => 'Ce brouillon a été modifié dans un autre onglet. Recharger la page pour reprendre à partir du dernier brouillon ? Les modifications non enregistrées dans cet onglet seront remplacées.',
+    'autosave_failed' => "Votre brouillon n'a pas pu être enregistré. Vos modifications sont toujours sur cette page ; elles seront enregistrées lors de votre prochaine modification.",
+    'save_failed' => "Vos modifications n'ont pas pu être enregistrées. Veuillez réessayer.",
+    'discard_failed' => "Le brouillon n'a pas pu être abandonné. Veuillez réessayer.",
+    'variant_fields_drop_confirm' => 'La génération des variantes retire de cette page les champs de la variante unique, et vos modifications non enregistrées sur ces champs seront perdues. Continuer ?',
 ];

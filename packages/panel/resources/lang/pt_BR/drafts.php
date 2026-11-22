@@ -16,4 +16,9 @@ return [
     'base_note' => 'Era {value} quando você começou a editar',
     'empty' => 'Vazio',
     'apply' => 'Aplicar e salvar',
+    'stale_confirm' => 'Este rascunho foi alterado em outra aba. Recarregar a página para continuar a partir do rascunho mais recente? As edições não salvas nesta aba serão substituídas.',
+    'autosave_failed' => 'Não foi possível salvar seu rascunho. Suas edições ainda estão nesta página; elas serão salvas com sua próxima alteração.',
+    'save_failed' => 'Não foi possível salvar suas alterações. Tente novamente.',
+    'discard_failed' => 'Não foi possível descartar o rascunho. Tente novamente.',
+    'variant_fields_drop_confirm' => 'Gerar variantes remove desta página os campos da variante única, e suas alterações não salvas neles serão perdidas. Continuar?',
 ];

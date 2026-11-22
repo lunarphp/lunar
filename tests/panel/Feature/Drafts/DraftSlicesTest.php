@@ -127,7 +127,7 @@ it('validates slice fields under their prefixed key', function () {
         'data' => ['notes:memo' => str_repeat('x', 21)],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['notes:memo' => str_repeat('x', 21)], 'rebase' => []])
         ->assertUnprocessable()
         ->assertJsonValidationErrorFor('notes:memo');
 });
@@ -137,7 +137,7 @@ it('commits the resource then the slice inside one transaction', function () {
         'data' => ['first_name' => 'Grace', 'notes:memo' => 'updated'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace', 'notes:memo' => 'updated'], 'rebase' => []])
         ->assertOk();
 
     $this->customer->refresh();
@@ -158,7 +158,7 @@ it('rolls the resource commit back when a slice commit fails', function () {
     $this->withoutExceptionHandling();
 
     try {
-        $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []]);
+        $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace', 'notes:memo' => 'boom'], 'rebase' => []]);
     } catch (RuntimeException $exception) {
         expect($exception->getMessage())->toBe('Memo slice commit failed.');
     }
@@ -174,26 +174,36 @@ it('reports a slice conflict with the slice label', function () {
 
     $this->customer->update(['meta' => ['memo' => 'theirs']]);
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['notes:memo' => 'mine'], 'rebase' => []])
         ->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'notes:memo')
         ->assertJsonPath('conflicts.0.label', 'Memo')
         ->assertJsonPath('conflicts.0.theirs', 'theirs');
 });
 
-it('drops stored keys the resource no longer declares instead of blocking the commit', function () {
+it('commits only the request diff, ignoring keys left in the stored draft', function () {
     EditDraft::factory()->create([
         'draftable_type' => $this->customer->getMorphClass(),
         'draftable_id' => $this->customer->id,
         'staff_id' => $this->staff->id,
-        'data' => ['first_name' => 'Grace', 'addon:removed:field' => 'orphan'],
-        'base_snapshot' => ['first_name' => 'Ada', 'addon:removed:field' => 'old'],
+        'data' => ['first_name' => 'Grace', 'notes:memo' => 'stale', 'addon:removed:field' => 'orphan'],
+        'base_snapshot' => ['first_name' => 'Ada', 'notes:memo' => 'hello', 'addon:removed:field' => 'old'],
     ]);
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    // The client reverted the memo (and never knew the orphan key), so only
+    // first_name is in its diff; the stored leftovers must not ride along.
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), [
+        'data' => ['first_name' => 'Grace'],
+        'rebase' => [],
+    ])
         ->assertOk();
 
-    expect($this->customer->refresh()->first_name)->toBe('Grace');
+    $this->customer->refresh();
+
+    expect($this->customer->first_name)->toBe('Grace')
+        ->and($this->customer->meta['memo'])->toBe('hello')
+        ->and(MemoSlice::$committed)->toBe([])
+        ->and(EditDraft::count())->toBe(0);
 });
 
 it('skips a slice commit when none of its values changed', function () {
@@ -201,7 +211,7 @@ it('skips a slice commit when none of its values changed', function () {
         'data' => ['first_name' => 'Grace'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace'], 'rebase' => []])
         ->assertOk();
 
     expect($this->customer->refresh()->first_name)->toBe('Grace')

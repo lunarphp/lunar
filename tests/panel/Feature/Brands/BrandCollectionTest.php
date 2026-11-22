@@ -71,7 +71,7 @@ it('drafts and commits collection membership', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['collection_ids' => [$add->id, $keep->id]],
         'rebase' => [],
     ])->assertOk();
 
@@ -97,7 +97,7 @@ it('detects conflicts on collection membership', function () {
     $this->brand->collections()->sync([$theirs->id]);
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['collection_ids' => [$mine->id]],
         'rebase' => [],
     ])->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'collection_ids');

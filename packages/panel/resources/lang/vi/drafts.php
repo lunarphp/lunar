@@ -16,4 +16,9 @@ return [
     'base_note' => 'Là {value} khi bạn bắt đầu chỉnh sửa',
     'empty' => 'Trống',
     'apply' => 'Áp dụng và lưu',
+    'stale_confirm' => 'Bản nháp này đã được thay đổi ở một tab khác. Tải lại trang để tiếp tục từ bản nháp mới nhất? Các chỉnh sửa chưa lưu trong tab này sẽ bị thay thế.',
+    'autosave_failed' => 'Không thể lưu bản nháp của bạn. Các chỉnh sửa của bạn vẫn còn trên trang này; chúng sẽ được lưu cùng với thay đổi tiếp theo của bạn.',
+    'save_failed' => 'Không thể lưu các thay đổi của bạn. Vui lòng thử lại.',
+    'discard_failed' => 'Không thể hủy bỏ bản nháp. Vui lòng thử lại.',
+    'variant_fields_drop_confirm' => 'Việc tạo biến thể sẽ xóa các trường của biến thể duy nhất khỏi trang này và các thay đổi chưa lưu của bạn đối với chúng sẽ bị loại bỏ. Tiếp tục?',
 ];

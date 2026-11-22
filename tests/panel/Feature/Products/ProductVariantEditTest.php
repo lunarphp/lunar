@@ -103,7 +103,7 @@ it('drafts and commits variant fields including attribute values', function () {
     expect(EditDraft::sole()->data['sku'])->toBe('DRAFTED');
 
     $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
-        'data' => [],
+        'data' => ['sku' => 'DRAFTED', 'attribute:finish' => 'Matte'],
         'rebase' => [],
     ])->assertOk();
 

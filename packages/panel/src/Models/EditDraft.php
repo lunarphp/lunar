@@ -14,7 +14,9 @@ use Lunar\Panel\Database\Factories\EditDraftFactory;
 /**
  * A staff member's in-progress edit of one record: `data` holds the changed
  * field values, `base_snapshot` the database value each field had when it
- * first entered the draft. One draft per staff member per record.
+ * first entered the draft, and `version` counts its writes so a tab holding
+ * an older copy is refused rather than overwriting it. One draft per staff
+ * member per record.
  */
 class EditDraft extends Base
 {
@@ -28,6 +30,7 @@ class EditDraft extends Base
     protected $casts = [
         'data' => 'array',
         'base_snapshot' => 'array',
+        'version' => 'integer',
     ];
 
     protected static function newFactory(): EditDraftFactory

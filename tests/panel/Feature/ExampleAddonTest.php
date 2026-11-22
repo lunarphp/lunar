@@ -430,7 +430,10 @@ it('drafts, conflicts and commits the loyalty tier with the customer through the
     // add-on's own lang key, and nothing commits.
     $customer->update(['meta' => ['loyalty_tier' => 'silver']]);
 
-    $this->postJson(route('panel.customers.draft.commit', $customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => 'Grace', 'addon:example-addon:tier' => 'gold'],
+        'rebase' => [],
+    ])
         ->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'addon:example-addon:tier')
         ->assertJsonPath('conflicts.0.label', 'Loyalty tier')
@@ -441,7 +444,7 @@ it('drafts, conflicts and commits the loyalty tier with the customer through the
     // Resolved against the current value, the commit lands both the
     // customer's own field and the add-on's in one go.
     $this->postJson(route('panel.customers.draft.commit', $customer), [
-        'data' => ['addon:example-addon:tier' => 'gold'],
+        'data' => ['first_name' => 'Grace', 'addon:example-addon:tier' => 'gold'],
         'rebase' => ['addon:example-addon:tier' => 'silver'],
     ])->assertOk();
 
@@ -461,7 +464,10 @@ it('validates the loyalty tier under its prefixed key', function () {
         'data' => ['addon:example-addon:tier' => 'platinum'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['addon:example-addon:tier' => 'platinum'],
+        'rebase' => [],
+    ])
         ->assertUnprocessable()
         ->assertJsonValidationErrorFor('addon:example-addon:tier');
 });

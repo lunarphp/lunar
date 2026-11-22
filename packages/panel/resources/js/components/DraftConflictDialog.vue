@@ -62,7 +62,27 @@ const display = (value: unknown): string => {
         return t('drafts.empty');
     }
 
-    return Array.isArray(value) ? value.join(', ') : String(value);
+    if (Array.isArray(value)) {
+        return value.every((item) => item === null || typeof item !== 'object') ? value.join(', ') : JSON.stringify(value);
+    }
+
+    if (typeof value === 'object') {
+        const entries = Object.entries(value as Record<string, unknown>).filter(([, text]) => text !== null && text !== '');
+
+        // A translated field: its text per language, the language shown only
+        // when there is more than one.
+        if (entries.every(([, text]) => typeof text === 'string')) {
+            return entries.length === 0
+                ? t('drafts.empty')
+                : entries.length === 1
+                    ? String(entries[0][1])
+                    : entries.map(([language, text]) => `${language}: ${text}`).join(' · ');
+        }
+
+        return JSON.stringify(value);
+    }
+
+    return String(value);
 };
 
 const editableValue = (key: string): string => {
@@ -71,9 +91,27 @@ const editableValue = (key: string): string => {
     return value === null || value === undefined ? '' : String(value);
 };
 
-const onManualEdit = (key: string, value: string | number): void => {
-    if (resolutions[key]) {
-        resolutions[key].value = String(value);
+// The input is text; a merged value keeps the type the field's values have,
+// so a number or boolean field is not committed as a string.
+const typedValue = (conflict: DraftConflict, text: string): unknown => {
+    const sample = [conflict.mine, conflict.theirs, conflict.base].find((value) => value !== null && value !== undefined);
+
+    if (typeof sample === 'number') {
+        const parsed = Number(text);
+
+        return text.trim() === '' ? null : Number.isFinite(parsed) ? parsed : text;
+    }
+
+    if (typeof sample === 'boolean') {
+        return text.trim().toLowerCase() === 'true' ? true : text.trim().toLowerCase() === 'false' ? false : text;
+    }
+
+    return text;
+};
+
+const onManualEdit = (conflict: DraftConflict, value: string | number): void => {
+    if (resolutions[conflict.key]) {
+        resolutions[conflict.key].value = typedValue(conflict, String(value));
     }
 };
 
@@ -124,7 +162,7 @@ const confirm = (): void => {
                         v-if="isEditable(conflict)"
                         :model-value="editableValue(conflict.key)"
                         :aria-label="conflict.label"
-                        @update:model-value="onManualEdit(conflict.key, $event)"
+                        @update:model-value="onManualEdit(conflict, $event)"
                     />
                     <p class="m-0 text-[11px] text-ink-500">{{ t('drafts.base_note', { value: display(conflict.base) }) }}</p>
                 </div>

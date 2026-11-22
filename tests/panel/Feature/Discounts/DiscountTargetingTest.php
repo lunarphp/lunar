@@ -87,7 +87,12 @@ it('commits drafted targeting through the update action', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.discounts.draft.commit', $discount), [
-        'data' => [],
+        'data' => [
+            'target:limitation' => [
+                'products' => [$product->id],
+                'collections' => [$collection->id],
+            ],
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -108,7 +113,7 @@ it('leaves targeting alone when a draft never touches it', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.discounts.draft.commit', $discount), [
-        'data' => [],
+        'data' => ['name' => 'Renamed'],
         'rebase' => [],
     ])->assertOk();
 

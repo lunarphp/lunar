@@ -149,6 +149,7 @@ class CustomerEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at?->toJSON(),
+                'version' => (int) $draft->version,
             ] : null,
             'urls' => [
                 'index' => route('panel.customers.index'),

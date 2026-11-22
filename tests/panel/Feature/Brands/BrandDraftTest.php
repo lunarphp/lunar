@@ -55,7 +55,7 @@ it('commits a draft through the update action', function () {
     ]);
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['name' => 'Stark Industries Ltd', 'status' => 'draft'],
         'rebase' => [],
     ])->assertOk();
 
@@ -74,7 +74,7 @@ it('rejects an invalid merged payload at commit', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['handle' => 'taken'],
         'rebase' => [],
     ])->assertUnprocessable();
 });
@@ -87,7 +87,7 @@ it('detects a conflict when the same field changed underneath the draft', functi
     $this->brand->update(['name' => 'Theirs']);
 
     $response = $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['name' => 'Mine'],
         'rebase' => [],
     ]);
 

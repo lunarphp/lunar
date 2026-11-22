@@ -58,7 +58,11 @@ it('commits a draft through the update action', function () {
     ]);
 
     $this->postJson(route('panel.collections.draft.commit', $this->collection), [
-        'data' => [],
+        'data' => [
+            'name' => ['en' => 'Outerwear & Coats'],
+            'status' => 'published',
+            'sort' => 'sku:desc',
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -78,7 +82,7 @@ it('rejects a commit with an invalid drafted handle', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.collections.draft.commit', $this->collection), [
-        'data' => [],
+        'data' => ['handle' => 'taken'],
         'rebase' => [],
     ])->assertUnprocessable();
 
@@ -94,7 +98,7 @@ it('surfaces a conflict when the record moved under the draft', function () {
     $this->collection->update(['name' => ['en' => 'Theirs']]);
 
     $this->postJson(route('panel.collections.draft.commit', $this->collection), [
-        'data' => [],
+        'data' => ['name' => ['en' => 'Mine']],
         'rebase' => [],
     ])->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'name');
