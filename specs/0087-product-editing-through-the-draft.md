@@ -84,7 +84,9 @@ or overwrites a colleague without a conflict.
   `EditDraft` gains a `version` counter (baseline migration while v2 is in alpha). PATCH
   and commit send the version the client last saw; a mismatch returns 409 with
   `{stale_draft: true}`, and the page tells the staff member the draft changed in
-  another tab and offers to reload it. Same-tab requests are already serialised.
+  another tab and offers to reload it. Reloading replaces this tab's unsent edits with
+  the stored draft; there is no per-field merge between tabs. Same-tab requests are
+  already serialised.
 - **No conflict when both sides agree.** `detectConflicts()` reports a key whenever
   base and theirs differ. A key where mine equals theirs is not a conflict; its snapshot
   is rebased silently.
@@ -357,10 +359,6 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   Lean: ship in the plan's order below; each slice leaves the page consistent for the
   surfaces it covers, and the marker makes the remaining immediate ones explicit in the
   interim.
-- **Stale-draft recovery.** On a version mismatch the page offers to reload the draft,
-  which drops this tab's unsent edits. Offering a per-field merge between the two tabs
-  is possible with the conflict dialog but is more than the realistic case needs.
-  Owner: Glenn. Lean: reload only.
 
 ## References
 
