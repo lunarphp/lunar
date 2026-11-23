@@ -45,11 +45,13 @@ class CustomerIndexController
 
         $customerKey = (new Customer)->qualifyColumn('id');
 
-        // Per-row order stats as correlated subqueries; the same placed-order
-        // and default-currency basis as the edit page's lifetime stats.
+        // Per-row order stats as correlated subqueries; the same placed,
+        // not-cancelled and default-currency basis as the edit page's
+        // lifetime stats.
         $placedOrders = fn () => Order::query()
             ->whereColumn('customer_id', $customerKey)
-            ->whereNotNull('placed_at');
+            ->whereNotNull('placed_at')
+            ->whereNull('cancelled_at');
 
         $customers = Customer::query()
             ->select((new Customer)->qualifyColumn('*'))
@@ -141,8 +143,9 @@ class CustomerIndexController
      * the block is cached briefly: on stores with very large customer or order
      * tables these queries are the expensive part of the page, and the strip
      * does not need to be second-accurate. Average lifetime value is a single
-     * aggregate over placed orders (default-currency basis, like everywhere
-     * else); its delta compares against the average as it stood 30 days ago.
+     * aggregate over placed, not-cancelled orders (default-currency basis,
+     * like everywhere else); its delta compares against the average as it
+     * stood 30 days ago.
      *
      * @return array{total: int, newLast30Days: int, business: int, avgLifetimeValue: ?string, avgLifetimeValueDelta: ?int}
      */
@@ -151,6 +154,7 @@ class CustomerIndexController
         return Cache::remember('lunar.panel.customers.kpis', now()->addMinutes(5), function (): array {
             $lifetime = fn () => Order::query()
                 ->whereNotNull('placed_at')
+                ->whereNull('cancelled_at')
                 ->whereNotNull('customer_id')
                 ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS spend, COUNT(DISTINCT customer_id) AS customers');
 

@@ -85,12 +85,16 @@ class CustomerEditController
 
         $placedOrders = $customer->orders()->whereNotNull('placed_at');
 
-        $orderCount = (clone $placedOrders)->count();
+        // Lifetime stats leave cancelled orders out; the order history below
+        // still lists them.
+        $countedOrders = (clone $placedOrders)->whereNull('cancelled_at');
+
+        $orderCount = (clone $countedOrders)->count();
 
         // Lifetime spend reported in the default currency; per-order totals are
         // stored in the order's own currency, so divide by the exchange rate
         // captured when the order was placed.
-        $totalSpend = (int) round((float) (clone $placedOrders)
+        $totalSpend = (int) round((float) (clone $countedOrders)
             ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS spend')
             ->value('spend'));
 
@@ -98,7 +102,7 @@ class CustomerEditController
             'orders' => $orderCount,
             'totalSpend' => null,
             'avgOrder' => null,
-            'latestOrderAt' => (clone $placedOrders)->max('placed_at'),
+            'latestOrderAt' => (clone $countedOrders)->max('placed_at'),
         ];
 
         if ($orderCount && ($defaultCurrency = Currency::getDefault())) {
@@ -165,11 +169,11 @@ class CustomerEditController
     }
 
     /**
-     * Placed-order value bucketed over the requested chart range, zero-filled
-     * and valued in the default currency — the same basis as the lifetime
-     * stats, so the chart and the stats card always agree. Bucketing happens
-     * in PHP: a single customer's order count is small, and it avoids
-     * cross-database date-formatting SQL.
+     * Placed, not-cancelled order value bucketed over the requested chart
+     * range, zero-filled and valued in the default currency — the same basis
+     * as the lifetime stats, so the chart and the stats card always agree.
+     * Bucketing happens in PHP: a single customer's order count is small, and
+     * it avoids cross-database date-formatting SQL.
      *
      * @return array{range: string, buckets: array<int, array{label: string, value: float|int, display: string}>}
      */
@@ -207,6 +211,7 @@ class CustomerEditController
 
         $spendByBucket = $customer->orders()
             ->whereNotNull('placed_at')
+            ->whereNull('cancelled_at')
             ->where('placed_at', '>=', $start)
             ->get(['placed_at', 'total', 'exchange_rate'])
             ->groupBy(fn (Order $order) => $bucketKey($order->placed_at))
