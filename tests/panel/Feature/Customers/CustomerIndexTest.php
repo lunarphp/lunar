@@ -148,6 +148,26 @@ it('exposes real KPI counts', function () {
         );
 });
 
+it('reflects a new customer in the KPIs on the next load', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Customer::factory()->create(['company_name' => null]);
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.total', 1)
+            ->where('kpis.business', 0)
+        );
+
+    Customer::factory()->create(['company_name' => 'Acme Ltd']);
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.total', 2)
+            ->where('kpis.business', 1)
+        );
+});
+
 it('reports the average lifetime value across customers with orders', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

@@ -285,6 +285,28 @@ it('leaves cancelled orders out of the KPIs', function () {
         );
 });
 
+it('reflects a cancelled order in the KPIs on the next load', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $order = Order::factory()->placed()->create(['payment_status' => Authorized::class, 'total' => 5000, 'exchange_rate' => 1]);
+
+    $this->get(route('panel.orders.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.orders30d', 1)
+            ->where('kpis.awaitingPayment', 1)
+        );
+
+    $order->update(['cancelled_at' => now()]);
+
+    $this->get(route('panel.orders.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.orders30d', 0)
+            ->where('kpis.awaitingPayment', 0)
+        );
+});
+
 it('paginates the order index', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

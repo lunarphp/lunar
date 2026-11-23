@@ -4,7 +4,6 @@ namespace Lunar\Panel\Http\Controllers\Orders;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\DataObjects\PriceValue;
@@ -182,7 +181,8 @@ class OrderIndexController
     }
 
     /**
-     * KPI strip values, cached briefly since each is a whole-table aggregate.
+     * KPI strip values, read fresh on every load so they agree with the table
+     * straight after an order changes, like the dashboard's figures.
      * Every figure counts placed orders that were not cancelled, and revenue
      * uses the default-currency basis — the same basis as the dashboard's
      * OrderMetrics, so the two agree.
@@ -191,31 +191,29 @@ class OrderIndexController
      */
     protected function kpis(): array
     {
-        return Cache::remember('lunar.panel.orders.kpis', now()->addMinutes(5), function (): array {
-            $defaultCurrency = Currency::getDefault();
+        $defaultCurrency = Currency::getDefault();
 
-            $placedOrders = fn (): Builder => Order::query()
-                ->whereNotNull('placed_at')
-                ->whereNull('cancelled_at');
+        $placedOrders = fn (): Builder => Order::query()
+            ->whereNotNull('placed_at')
+            ->whereNull('cancelled_at');
 
-            $revenueMinor = (int) round((float) $placedOrders()
-                ->where('placed_at', '>=', now()->subDays(30))
-                ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS revenue')
-                ->value('revenue'));
+        $revenueMinor = (int) round((float) $placedOrders()
+            ->where('placed_at', '>=', now()->subDays(30))
+            ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS revenue')
+            ->value('revenue'));
 
-            return [
-                'orders30d' => $placedOrders()->where('placed_at', '>=', now()->subDays(30))->count(),
-                'revenue30d' => $revenueMinor && $defaultCurrency
-                    ? (new PriceValue($revenueMinor, $defaultCurrency))->format()
-                    : null,
-                'awaitingPayment' => $placedOrders()
-                    ->whereIn('payment_status', ['pending', 'authorized'])
-                    ->count(),
-                'awaitingFulfilment' => $placedOrders()
-                    ->where('payment_status', 'paid')
-                    ->whereIn('fulfilment_status', ['unfulfilled', 'partially-fulfilled'])
-                    ->count(),
-            ];
-        });
+        return [
+            'orders30d' => $placedOrders()->where('placed_at', '>=', now()->subDays(30))->count(),
+            'revenue30d' => $revenueMinor && $defaultCurrency
+                ? (new PriceValue($revenueMinor, $defaultCurrency))->format()
+                : null,
+            'awaitingPayment' => $placedOrders()
+                ->whereIn('payment_status', ['pending', 'authorized'])
+                ->count(),
+            'awaitingFulfilment' => $placedOrders()
+                ->where('payment_status', 'paid')
+                ->whereIn('fulfilment_status', ['unfulfilled', 'partially-fulfilled'])
+                ->count(),
+        ];
     }
 }

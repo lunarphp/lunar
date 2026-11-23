@@ -149,6 +149,25 @@ it('reports the kpi strip', function () {
         );
 });
 
+it('reflects a deleted discount in the kpi strip on the next load', function () {
+    $discount = Discount::factory()->create(['starts_at' => now()->subDay(), 'ends_at' => null, 'uses' => 2]);
+    Discount::factory()->create(['starts_at' => now()->subDay(), 'ends_at' => null, 'uses' => 3]);
+
+    $this->get(route('panel.discounts.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.active', 2)
+            ->where('kpis.redemptions', 5)
+        );
+
+    $this->delete(route('panel.discounts.destroy', $discount))->assertRedirect();
+
+    $this->get(route('panel.discounts.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.active', 1)
+            ->where('kpis.redemptions', 3)
+        );
+});
+
 it('is gated on the manage-discounts permission', function () {
     auth('staff')->logout();
 
