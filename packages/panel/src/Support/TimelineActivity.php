@@ -3,6 +3,12 @@
 namespace Lunar\Panel\Support;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Facades\CancelReasons;
+use Lunar\Core\Facades\HoldReasons;
+use Lunar\Core\Models\Currency;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -23,6 +29,127 @@ class TimelineActivity
             'avatar' => Gravatar::url($activity->causer?->email),
             'changes' => static::changedKeys($activity),
         ];
+    }
+
+    /**
+     * Serialise an entry for the order page timeline. Every event logged
+     * against an order — its own model events, cancellations, notifications,
+     * transactions and fulfilment changes — gets a translated label, plus a
+     * detail line (cancel note, notification message, transaction notes, hold
+     * reason, comment) where the event carries one. An event the panel does
+     * not know reads as a humanised label rather than its raw key.
+     *
+     * @return array{description: string, detail: ?string, created_at: ?Carbon, causer_name: ?string, avatar: ?string, changes: list<string>}
+     */
+    public static function forOrder(Activity $activity, ?Currency $currency): array
+    {
+        return array_merge(static::toArray($activity), [
+            'description' => static::orderDescription($activity, $currency),
+            'detail' => static::orderDetail($activity),
+        ]);
+    }
+
+    /**
+     * The translated label for an order timeline entry.
+     */
+    protected static function orderDescription(Activity $activity, ?Currency $currency): string
+    {
+        $event = (string) ($activity->event ?: $activity->description);
+        $properties = $activity->properties;
+
+        return match ($event) {
+            'created', 'updated', 'deleted' => __('panel::orders.activity_'.$event),
+            'order-address-update' => static::description($activity),
+            'order-cancelled' => ($reason = CancelReasons::label($properties->get('reason')))
+                ? __('panel::orders.activity_order_cancelled_reason', ['reason' => $reason])
+                : __('panel::orders.activity_order_cancelled'),
+            'order-closed' => __('panel::orders.activity_order_closed'),
+            'order-reopened' => __('panel::orders.activity_order_reopened'),
+            'email-notification' => __('panel::orders.activity_email_notification', [
+                'notification' => (string) ($properties->get('notification') ?: __('panel::orders.notify_notification')),
+                'email' => (string) $properties->get('email'),
+            ]),
+            'intent' => __('panel::orders.activity_payment_authorized', ['amount' => static::money($properties->get('amount'), $currency)]),
+            'capture' => __('panel::orders.activity_payment_captured', ['amount' => static::money($properties->get('amount'), $currency)]),
+            'refund' => __('panel::orders.activity_refund_issued', ['amount' => static::money($properties->get('amount'), $currency)]),
+            'fulfilment-update' => static::fulfilmentDescription($activity),
+            'comment' => __('panel::orders.activity_comment'),
+            'tags-update' => __('panel::orders.activity_tags_updated'),
+            default => static::humanise($event),
+        };
+    }
+
+    /**
+     * The secondary line for an order timeline entry, when its event carries
+     * free text or a reason worth showing.
+     */
+    protected static function orderDetail(Activity $activity): ?string
+    {
+        $properties = $activity->properties;
+
+        $detail = match ((string) $activity->event) {
+            'order-cancelled' => $properties->get('note'),
+            'email-notification' => $properties->get('message'),
+            'intent', 'capture', 'refund' => $properties->get('notes'),
+            'fulfilment-update' => $properties->get('type') === 'held'
+                ? HoldReasons::label($properties->get('reason'))
+                : null,
+            'comment' => $properties->get('content'),
+            default => null,
+        };
+
+        return is_string($detail) && trim($detail) !== '' ? $detail : null;
+    }
+
+    /**
+     * The label for a fulfilment change logged against its order: a state
+     * transition, a hold, or a release.
+     */
+    protected static function fulfilmentDescription(Activity $activity): string
+    {
+        $properties = $activity->properties;
+        $reference = $properties->get('reference') ?: '#'.$properties->get('fulfilment_id');
+
+        return match ($properties->get('type')) {
+            'state' => __('panel::orders.activity_fulfilment_state', [
+                'reference' => $reference,
+                'state' => static::fulfilmentStateLabel((string) $properties->get('to')),
+            ]),
+            'held' => __('panel::orders.activity_fulfilment_held', ['reference' => $reference]),
+            'released' => __('panel::orders.activity_fulfilment_released', ['reference' => $reference]),
+            default => static::humanise((string) $activity->event),
+        };
+    }
+
+    /**
+     * The translated name of a fulfilment state, humanised when the state has
+     * no translation (a store-registered state, for example).
+     */
+    protected static function fulfilmentStateLabel(string $state): string
+    {
+        $key = 'lunar::states.fulfilment.'.$state;
+
+        return Lang::has($key) ? __($key) : static::humanise($state);
+    }
+
+    /**
+     * A minor-unit amount formatted in the order currency, or the bare number
+     * when the order has no currency to format it with.
+     */
+    protected static function money(mixed $amount, ?Currency $currency): string
+    {
+        $amount = (int) $amount;
+
+        return $currency ? (new PriceValue($amount, $currency))->format() : (string) $amount;
+    }
+
+    /**
+     * A readable label for an event key: "loyalty-points_awarded" reads as
+     * "Loyalty points awarded".
+     */
+    protected static function humanise(string $key): string
+    {
+        return Str::ucfirst(str_replace(['-', '_'], ' ', $key));
     }
 
     /**

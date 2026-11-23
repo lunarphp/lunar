@@ -387,6 +387,29 @@ it('defers the activity feed', function () {
         );
 });
 
+it('labels the activity feed and keeps the cancel note', function () {
+    activity()->enableLogging();
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $order = Order::factory()->placed()->create();
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'amount' => 12000, 'notes' => null]);
+
+    $this->post(route('panel.orders.cancel', $order), ['reason' => 'customer', 'note' => 'Called to cancel', 'notify' => false]);
+
+    $has = fn (array $activities, string $description, ?string $detail = null) => collect($activities)
+        ->contains(fn (array $entry) => $entry['description'] === $description && ($entry['detail'] ?? null) === $detail);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('order.cancel_note', 'Called to cancel')
+            ->loadDeferredProps(fn (Assert $props) => $props
+                ->where('activities', fn ($activities) => $has($activities->all(), 'Order created')
+                    && $has($activities->all(), 'Payment captured: £120.00')
+                    && $has($activities->all(), 'Order cancelled: Customer changed/cancelled order', 'Called to cancel'))
+            )
+        );
+});
+
 it('forbids staff without the manage-orders permission', function () {
     $order = Order::factory()->placed()->create();
 
