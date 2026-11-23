@@ -1360,3 +1360,76 @@ test('can retrieve cart lines in ascending id order', function () {
     expect($cart->load('lines')->lines->pluck('id')->all())
         ->toBe($expectedOrder);
 });
+
+test('refreshing the cart for calculation reloads nested relations dropped by a plain refresh', function () {
+    // Regression test for #2222: adding a second product to a cart in the
+    // same request used to throw a LazyLoadingException. Cart::add(),
+    // Cart::remove() etc. all called $this->refresh() before recalculating,
+    // but Eloquent's refresh() only reloads relations that are already
+    // loaded, and only one level deep. So a nested relation configured in
+    // lunar.cart.eager_load, such as lines.purchasable.prices, ended up
+    // dropped after a refresh and got lazy-loaded the next time the cart
+    // was calculated.
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create(['stock' => 1]);
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->load(config('lunar.cart.eager_load'));
+
+    // A plain Eloquent refresh() drops the nested relations.
+    $cart->refresh();
+    expect($cart->lines->first()->relationLoaded('purchasable'))->toBeFalse();
+
+    // refreshForCalculation() reapplies the full eager_load config, so the
+    // nested relations survive the refresh.
+    $refreshed = $cart->refreshForCalculation();
+    $line = $refreshed->lines->first();
+
+    expect($line->relationLoaded('purchasable'))->toBeTrue()
+        ->and($line->purchasable->relationLoaded('prices'))->toBeTrue()
+        ->and($line->purchasable->prices->first()->relationLoaded('currency'))->toBeTrue();
+});
+
+test('can add multiple purchasables to a cart without triggering lazy loading', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasableA = ProductVariant::factory()->create(['stock' => 1]);
+    $purchasableB = ProductVariant::factory()->create(['stock' => 1]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 100,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->add($purchasableA, 1);
+    $cart->add($purchasableB, 1);
+
+    expect($cart->lines)->toHaveCount(2);
+})->throwsNoExceptions();
