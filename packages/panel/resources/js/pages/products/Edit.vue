@@ -17,6 +17,7 @@ import Button from '../../components/Button.vue';
 import CollectionPicker, { type CollectionOption } from '../../components/CollectionPicker.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
+import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
@@ -245,6 +246,13 @@ const collapse = (): void => {
     router.post(props.urls.optionsGenerate, { selections: [] }, { preserveScroll: true });
 };
 
+// Generating variants from the simple shape removes the sole variant's
+// fields from the page, and their unsaved edits with them.
+const confirmDropVariantFields = (): boolean =>
+    props.shape !== 'simple'
+    || !draftForm.dirtyKeys.value.some((key) => key.startsWith('variant:'))
+    || window.confirm(t('drafts.variant_fields_drop_confirm'));
+
 // Rows the builder's pending selection would remove; dimmed in the table.
 const staleIds = ref<number[]>([]);
 
@@ -438,6 +446,7 @@ const timelineEvents = computed(() =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <DraftRestoredBanner :form="draftForm" />
                 <PageZone region="main" position="before" :product="product" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -535,6 +544,7 @@ const timelineEvents = computed(() =>
                                     :variants="variants"
                                     :search-url="urls.productOptionsSearch"
                                     :generate-url="urls.optionsGenerate"
+                                    :confirm-generate="confirmDropVariantFields"
                                     @update:stale-ids="staleIds = $event"
                                     @generated="editingOptions = false"
                                 />

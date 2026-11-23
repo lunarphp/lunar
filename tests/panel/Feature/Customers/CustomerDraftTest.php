@@ -118,7 +118,9 @@ it('commits a draft, applies the changes and flashes success', function () {
         'data' => ['first_name' => 'Changed'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $customer))
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => 'Changed'],
+    ])
         ->assertOk()
         ->assertJsonPath('committed', true)
         ->assertSessionHas('success');
@@ -127,7 +129,7 @@ it('commits a draft, applies the changes and flashes success', function () {
         ->and(EditDraft::count())->toBe(0);
 });
 
-it('merges the request diff into the draft at commit time', function () {
+it('commits the request diff alone, not keys left in the stored draft', function () {
     actingStaff();
 
     $customer = Customer::factory()->create(['first_name' => 'Original', 'company_name' => 'Acme']);
@@ -136,13 +138,15 @@ it('merges the request diff into the draft at commit time', function () {
         'data' => ['first_name' => 'Changed'],
     ])->assertOk();
 
-    // The un-debounced final keystrokes ride along with the commit.
+    // first_name was reverted and company_name typed after the last autosave:
+    // the client's diff is the whole commit.
     $this->postJson(route('panel.customers.draft.commit', $customer), [
         'data' => ['company_name' => 'Globex'],
     ])->assertOk();
 
-    expect($customer->refresh()->first_name)->toBe('Changed')
-        ->and($customer->company_name)->toBe('Globex');
+    expect($customer->refresh()->first_name)->toBe('Original')
+        ->and($customer->company_name)->toBe('Globex')
+        ->and(EditDraft::count())->toBe(0);
 });
 
 it('returns 409 with per-field detail when a drafted field conflicts', function () {
@@ -156,7 +160,9 @@ it('returns 409 with per-field detail when a drafted field conflicts', function 
 
     $customer->update(['first_name' => 'Theirs']);
 
-    $this->postJson(route('panel.customers.draft.commit', $customer))
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => 'Mine', 'company_name' => 'Globex'],
+    ])
         ->assertStatus(409)
         ->assertJsonCount(1, 'conflicts')
         ->assertJsonPath('conflicts.0.key', 'first_name')
@@ -181,7 +187,9 @@ it('commits resolved conflicts sent with a rebase payload', function () {
 
     $customer->update(['first_name' => 'Theirs']);
 
-    $this->postJson(route('panel.customers.draft.commit', $customer))->assertStatus(409);
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => 'Mine'],
+    ])->assertStatus(409);
 
     $this->postJson(route('panel.customers.draft.commit', $customer), [
         'data' => ['first_name' => 'Mine'],
@@ -200,7 +208,9 @@ it('returns 422 when the merged payload fails validation', function () {
         'data' => ['first_name' => ''],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $customer))
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => ''],
+    ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors('first_name');
 
@@ -219,4 +229,44 @@ it('requires the manage-customers permission', function () {
     $this->postJson(route('panel.customers.draft.commit', $customer))->assertForbidden();
 
     $this->deleteJson(route('panel.customers.draft.destroy', $customer))->assertForbidden();
+});
+
+it('returns the draft version from autosave and refuses a stale one with 409', function () {
+    actingStaff();
+
+    $customer = Customer::factory()->create(['first_name' => 'Original', 'company_name' => 'Acme']);
+
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['first_name' => 'Tab A'],
+        'base' => ['first_name' => 'Original'],
+        'version' => 0,
+    ])->assertOk()->assertJsonPath('version', 1);
+
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['company_name' => 'Tab B'],
+        'version' => 0,
+    ])->assertStatus(409)->assertExactJson(['stale_draft' => true, 'version' => 1]);
+
+    $this->deleteJson(route('panel.customers.draft.destroy', $customer), ['version' => 0])->assertStatus(409);
+
+    expect(EditDraft::sole()->data)->toBe(['first_name' => 'Tab A']);
+});
+
+it('returns the draft version a refused commit leaves behind', function () {
+    actingStaff();
+
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => ''],
+        'base' => ['first_name' => 'Original'],
+        'version' => 0,
+    ])->assertUnprocessable()->assertJsonValidationErrors('first_name')->assertJsonPath('version', 1);
+
+    $customer->update(['first_name' => 'Theirs']);
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['first_name' => 'Mine'],
+        'version' => 1,
+    ])->assertStatus(409)->assertJsonPath('conflicts.0.theirs', 'Theirs')->assertJsonPath('version', 2);
 });

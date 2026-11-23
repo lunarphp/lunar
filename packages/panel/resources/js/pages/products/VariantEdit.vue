@@ -8,6 +8,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
+import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import Icon from '../../components/Icon.vue';
 import IdentifiersCard from '../../components/IdentifiersCard.vue';
@@ -211,6 +212,7 @@ const timelineEvents = computed(() =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <DraftRestoredBanner :form="draftForm" />
                 <PageZone region="main" position="before" :variant="variant" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">

@@ -99,6 +99,44 @@ describe('DraftConflictDialog', () => {
         expect(dialog.emitted('resolve')).toEqual([[{ first_name: 'Merged by hand' }, { first_name: 'Theirs' }]]);
     });
 
+    it('keeps a manual edit to a numeric field numeric', async () => {
+        const dialog = await mountDialog([{ key: 'sort', label: 'Sort', mine: 3, base: 1, theirs: 2 }]);
+
+        const input = body().querySelector<HTMLInputElement>('input[type="text"]');
+        input!.value = '5';
+        input!.dispatchEvent(new Event('input', { bubbles: true }));
+        await nextTick();
+
+        await clickButtonByText('drafts.apply');
+
+        expect(dialog.emitted('resolve')).toEqual([[{ sort: 5 }, { sort: 2 }]]);
+    });
+
+    it('keeps a manual edit to a boolean field boolean', async () => {
+        const dialog = await mountDialog([{ key: 'shippable', label: 'Shippable', mine: true, base: true, theirs: false }]);
+
+        const input = body().querySelector<HTMLInputElement>('input[type="text"]');
+        input!.value = 'false';
+        input!.dispatchEvent(new Event('input', { bubbles: true }));
+        await nextTick();
+
+        await clickButtonByText('drafts.apply');
+
+        expect(dialog.emitted('resolve')).toEqual([[{ shippable: false }, { shippable: false }]]);
+    });
+
+    it('shows a translated field as its text rather than an object', async () => {
+        await mountDialog([
+            { key: 'name', label: 'Name', mine: { en: 'Mine' }, base: { en: 'Base' }, theirs: { en: 'Theirs', fr: 'Les leurs' } },
+        ]);
+
+        const text = body().textContent ?? '';
+
+        expect(text).toContain('Mine');
+        expect(text).toContain('en: Theirs · fr: Les leurs');
+        expect(text).not.toContain('[object Object]');
+    });
+
     it('offers no manual edit input for structured values', async () => {
         await mountDialog([arrayConflict]);
 

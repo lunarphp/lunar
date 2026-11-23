@@ -16,4 +16,9 @@ return [
     'base_note' => 'Düzenlemeye başladığınızda {value} idi',
     'empty' => 'Boş',
     'apply' => 'Uygula ve kaydet',
+    'stale_confirm' => 'Bu taslak başka bir sekmede değiştirildi. En son taslaktan devam etmek için sayfa yeniden yüklensin mi? Bu sekmedeki kaydedilmemiş düzenlemeler değiştirilecek.',
+    'autosave_failed' => 'Taslağınız kaydedilemedi. Düzenlemeleriniz hâlâ bu sayfada; bir sonraki değişikliğinizle birlikte kaydedilecek.',
+    'save_failed' => 'Değişiklikleriniz kaydedilemedi. Lütfen tekrar deneyin.',
+    'discard_failed' => 'Taslaktan vazgeçilemedi. Lütfen tekrar deneyin.',
+    'variant_fields_drop_confirm' => 'Varyant oluşturmak tek varyantın alanlarını bu sayfadan kaldırır ve bu alanlardaki kaydedilmemiş değişiklikleriniz silinir. Devam edilsin mi?',
 ];

@@ -53,6 +53,8 @@ const props = defineProps<{
     variants: VariantRow[];
     searchUrl: string;
     generateUrl: string;
+    /** Asked before generating; returning false leaves the builder as it is. */
+    confirmGenerate?: () => boolean;
 }>();
 
 const emit = defineEmits<{ 'update:staleIds': [ids: number[]]; generated: [] }>();
@@ -319,7 +321,7 @@ const generate = (): void => {
 };
 
 const onGenerateClick = (): void => {
-    if (!canGenerate.value) {
+    if (!canGenerate.value || (props.confirmGenerate && !props.confirmGenerate())) {
         return;
     }
 

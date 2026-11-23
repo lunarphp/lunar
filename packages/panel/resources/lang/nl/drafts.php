@@ -16,4 +16,9 @@ return [
     'base_note' => 'Was {value} toen u begon met bewerken',
     'empty' => 'Leeg',
     'apply' => 'Toepassen en opslaan',
+    'stale_confirm' => 'Dit concept is in een ander tabblad gewijzigd. Pagina opnieuw laden om verder te gaan vanaf het nieuwste concept? Niet-opgeslagen bewerkingen in dit tabblad worden vervangen.',
+    'autosave_failed' => 'Uw concept kon niet worden opgeslagen. Uw bewerkingen staan nog op deze pagina; ze worden opgeslagen bij uw volgende wijziging.',
+    'save_failed' => 'Uw wijzigingen konden niet worden opgeslagen. Probeer het opnieuw.',
+    'discard_failed' => 'Het concept kon niet worden verworpen. Probeer het opnieuw.',
+    'variant_fields_drop_confirm' => 'Bij het genereren van varianten worden de velden van de enkele variant van deze pagina verwijderd en gaan uw niet-opgeslagen wijzigingen daarin verloren. Doorgaan?',
 ];

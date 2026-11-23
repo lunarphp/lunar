@@ -106,6 +106,7 @@ class CollectionEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at,
+                'version' => (int) $draft->version,
             ] : null,
             'languages' => Language::query()
                 ->orderByDesc('default')

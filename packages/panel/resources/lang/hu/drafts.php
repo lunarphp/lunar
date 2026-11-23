@@ -16,4 +16,9 @@ return [
     'base_note' => '{value} volt, amikor a szerkesztést elkezdte',
     'empty' => 'Üres',
     'apply' => 'Alkalmazás és mentés',
+    'stale_confirm' => 'Ezt a piszkozatot egy másik lapon módosították. Újratölti az oldalt, hogy a legfrissebb piszkozattal folytassa? Az ezen a lapon lévő nem mentett szerkesztések felülíródnak.',
+    'autosave_failed' => 'A piszkozatot nem sikerült menteni. A szerkesztései továbbra is ezen az oldalon vannak; a következő módosításával együtt mentésre kerülnek.',
+    'save_failed' => 'A módosításokat nem sikerült menteni. Kérjük, próbálja újra.',
+    'discard_failed' => 'A piszkozatot nem sikerült elvetni. Kérjük, próbálja újra.',
+    'variant_fields_drop_confirm' => 'A változatok generálása eltávolítja az egyetlen változat mezőit erről az oldalról, és az ezekben lévő nem mentett módosításai elvesznek. Folytatja?',
 ];

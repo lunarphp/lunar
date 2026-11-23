@@ -52,7 +52,7 @@ it('commits a draft through the update action', function () {
     ]);
 
     $this->postJson(route('panel.product-types.draft.commit', $this->productType), [
-        'data' => [],
+        'data' => ['name' => 'Office Supplies', 'status' => 'draft'],
         'rebase' => [],
     ])->assertOk();
 
@@ -74,7 +74,7 @@ it('commits one mapping surface without clearing the other', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.product-types.draft.commit', $this->productType), [
-        'data' => [],
+        'data' => ['product_attribute_ids' => [$productAttribute->id]],
         'rebase' => [],
     ])->assertOk();
 
@@ -93,7 +93,7 @@ it('commits type-level attribute values into attribute data', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.product-types.draft.commit', $this->productType), [
-        'data' => [],
+        'data' => ['attribute:buying_guide' => 'How to choose the right pen.'],
         'rebase' => [],
     ])->assertOk();
 
@@ -108,7 +108,7 @@ it('rejects an invalid merged payload at commit', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.product-types.draft.commit', $this->productType), [
-        'data' => [],
+        'data' => ['handle' => 'taken'],
         'rebase' => [],
     ])->assertUnprocessable();
 });
@@ -121,7 +121,7 @@ it('detects a conflict when the same field changed underneath the draft', functi
     $this->productType->update(['name' => 'Theirs']);
 
     $response = $this->postJson(route('panel.product-types.draft.commit', $this->productType), [
-        'data' => [],
+        'data' => ['name' => 'Mine'],
         'rebase' => [],
     ]);
 

@@ -69,7 +69,11 @@ it('commits a draft through the update action', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => [
+            'name' => ['en' => 'Renamed Widget'],
+            'status' => 'published',
+            'tags' => ['SALE'],
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -96,7 +100,10 @@ it('saves the product once when only its own fields changed', function () {
         'data' => ['name' => ['en' => 'Renamed Widget']],
     ])->assertOk();
 
-    $this->postJson(route('panel.products.draft.commit', $this->product), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['name' => ['en' => 'Renamed Widget']],
+        'rebase' => [],
+    ])
         ->assertOk();
 
     expect($saves)->toBe(1);
@@ -115,7 +122,7 @@ it('commits product attribute values into attribute data', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => ['attribute:material' => 'Titanium'],
         'rebase' => [],
     ])->assertOk();
 
@@ -138,7 +145,15 @@ it('commits drafted availability rows including the purchasable flag', function 
     ])->assertOk();
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => [
+            "customer_group:{$group->id}" => [
+                'enabled' => true,
+                'visible' => true,
+                'purchasable' => false,
+                'starts_at' => null,
+                'ends_at' => null,
+            ],
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -161,7 +176,12 @@ it('commits simple-shape variant fields through the variant action', function ()
     ])->assertOk();
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => [
+            'variant:sku' => 'WID-NEW',
+            'variant:shippable' => false,
+            'variant:min_quantity' => 4,
+            'variant:selling_policy' => 'in_stock',
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -181,7 +201,7 @@ it('refuses variant fields while the product has several variants', function () 
     ])->assertOk();
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => ['variant:sku' => 'NOPE'],
         'rebase' => [],
     ])->assertUnprocessable();
 });
@@ -195,7 +215,7 @@ it('detects a field conflict on commit', function () {
     $this->product->update(['name' => collect(['en' => 'Theirs'])]);
 
     $this->postJson(route('panel.products.draft.commit', $this->product), [
-        'data' => [],
+        'data' => ['name' => ['en' => 'Mine']],
         'rebase' => [],
     ])->assertConflict();
 });
