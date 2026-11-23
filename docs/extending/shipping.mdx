@@ -28,7 +28,7 @@ For a complete, real-world shipping modifier, see the [Table Rate Shipping add-o
 
 | Method | Description |
 |:-------|:-------------|
-| `addOption(ShippingOption $option)` | Adds a single option. Options with a duplicate `identifier` are ignored. |
+| `addOption(ShippingOption $option)` | Adds a single option. An option with the same `identifier` as one already on the manifest replaces it. |
 | `addOptions(Collection $options)` | Adds a collection of options in one call. |
 | `clearOptions()` | Removes all options currently on the manifest. |
 | `getOptionUsing(Closure $closure)` | Registers a closure used to short-circuit `getOption()`, useful for retrieving an option without running the full pipeline. |
@@ -38,8 +38,10 @@ For a complete, real-world shipping modifier, see the [Table Rate Shipping add-o
 
 Calling `getOptions()` sends the cart through every registered shipping modifier using Laravel's `Illuminate\Pipeline\Pipeline`. Each modifier is expected to inspect the cart, call `addOption()` or `addOptions()` on the manifest as needed, and pass the cart to the next modifier in the pipeline.
 
+Each call starts by removing the options the modifiers added on the previous call, so the result reflects only the cart being resolved. An option a modifier stops offering, such as free shipping once the basket drops below a threshold, is no longer returned, and an option offered for one cart is never returned for another cart resolved later in the same request, queue job or command. Options added to the manifest outside a modifier are kept.
+
 <Warning>
-Shipping option `identifier` values must be unique across every registered modifier. `addOption()` silently drops an option whose identifier already exists on the manifest, so pick identifiers that will not collide with another modifier a consumer might install (such as the Table Rate Shipping add-on).
+Shipping option `identifier` values must be unique across every registered modifier. `addOption()` replaces an option whose identifier already exists on the manifest, so one modifier can overwrite another's option. Pick identifiers that will not collide with another modifier a consumer might install (such as the Table Rate Shipping add-on).
 </Warning>
 
 <Info>

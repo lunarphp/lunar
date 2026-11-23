@@ -25,6 +25,16 @@ class ShippingManifest implements ShippingManifestContract
     protected bool $resolving = false;
 
     /**
+     * Identifiers of the options the modifiers published during the latest
+     * run. The next run drops them before the modifiers publish again, so an
+     * option only stays while a modifier still offers it for the cart being
+     * resolved.
+     *
+     * @var array<int, string>
+     */
+    protected array $resolvedIdentifiers = [];
+
+    /**
      * Initiate the class.
      */
     public function __construct()
@@ -53,6 +63,10 @@ class ShippingManifest implements ShippingManifestContract
             $this->options->put($index, $option);
         }
 
+        if ($this->resolving) {
+            $this->resolvedIdentifiers[] = $option->getIdentifier();
+        }
+
         return $this;
     }
 
@@ -63,6 +77,10 @@ class ShippingManifest implements ShippingManifestContract
     {
         $this->options = $this->options->merge($options);
 
+        if ($this->resolving) {
+            array_push($this->resolvedIdentifiers, ...$options->map(fn (ShippingOption $option) => $option->getIdentifier())->all());
+        }
+
         return $this;
     }
 
@@ -72,6 +90,7 @@ class ShippingManifest implements ShippingManifestContract
     public function clearOptions()
     {
         $this->options = collect();
+        $this->resolvedIdentifiers = [];
 
         return $this;
     }
@@ -100,6 +119,14 @@ class ShippingManifest implements ShippingManifestContract
         }
 
         $this->resolving = true;
+
+        // Drop what the modifiers published last time, which may have been for
+        // another cart or for this cart in a state that no longer qualifies.
+        // Options added outside a run are left in place.
+        $this->options = $this->options
+            ->reject(fn (ShippingOption $option) => in_array($option->getIdentifier(), $this->resolvedIdentifiers, true))
+            ->values();
+        $this->resolvedIdentifiers = [];
 
         try {
             app(Pipeline::class)
