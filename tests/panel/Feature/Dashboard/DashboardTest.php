@@ -3,8 +3,13 @@
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\RefundLine;
 use Lunar\Core\Models\Staff;
+use Lunar\Core\Models\Transaction;
 use Lunar\Panel\Models\StaffPreference;
 use Lunar\Tests\Panel\TestCase;
 
@@ -211,3 +216,51 @@ it('converts foreign-currency orders at the captured exchange rate', function ()
             )
         );
 });
+
+it('values top products on the same tax-inclusive, net-of-refunds basis as revenue', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+    Language::factory()->create(['default' => true]);
+
+    $order = Order::factory()->placed()->create(['total' => 29000, 'exchange_rate' => 1, 'placed_at' => now(), 'payment_status' => 'partially-refunded']);
+    $jacket = ProductVariant::factory()->create();
+
+    // Two jackets at 12083 each ex-tax, 14500 each with tax; one is refunded,
+    // so the line nets one unit at the tax-inclusive price.
+    $line = OrderLine::factory()->for($order)->create([
+        'purchasable_type' => ProductVariant::morphName(),
+        'purchasable_id' => $jacket->id,
+        'quantity' => 2,
+        'unit_price' => 12083,
+        'sub_total' => 24166,
+        'discount_total' => 0,
+        'tax_total' => 4834,
+        'total' => 29000,
+        'refunded_quantity' => 1,
+    ]);
+
+    Transaction::factory()->for($order)->create(['type' => 'capture', 'amount' => 29000]);
+    $refund = Transaction::factory()->for($order)->create(['type' => 'refund', 'amount' => 14500]);
+    RefundLine::factory()->for($refund)->for($line)->create(['quantity' => 1, 'amount' => 14500]);
+
+    // A line on a voided order is not a sale.
+    $voided = Order::factory()->placed()->create(['total' => 99900, 'exchange_rate' => 1, 'placed_at' => now(), 'payment_status' => 'voided']);
+    OrderLine::factory()->for($voided)->create([
+        'purchasable_type' => ProductVariant::morphName(),
+        'purchasable_id' => $jacket->id,
+        'quantity' => 1,
+        'sub_total' => 99900,
+        'total' => 99900,
+    ]);
+
+    $this->get(route('panel.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->loadDeferredProps(fn (Assert $props) => $props
+                ->has('widgetData.top-products.products', 1)
+                ->where('widgetData.top-products.products.0.revenue', '£145.00')
+                ->where('widgetData.top-products.products.0.units', 1)
+                ->where('widgetData.kpis.tiles.0.valueExact', '£145.00')
+            )
+        );
+})->group('cross-db');

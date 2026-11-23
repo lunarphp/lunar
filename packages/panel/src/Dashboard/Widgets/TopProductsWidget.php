@@ -60,13 +60,20 @@ class TopProductsWidget extends Widget
             ->toBase()
             ->select('id', 'exchange_rate');
 
-        $revenue = $this->metrics->valueInDefaultCurrency('ol.sub_total', 'o.exchange_rate');
+        // Value lines on the same basis as order revenue: the line `total`
+        // (after discounts, tax included), net of refunded units. A refund
+        // prices each unit at total / quantity (RefundOrder), so the kept
+        // share of the line is total * (quantity - refunded_quantity) / quantity.
+        // Refunds recorded without line allocations are not attributable to
+        // a product and only reduce the order-level revenue.
+        $keptUnits = '(ol.quantity - ol.refunded_quantity)';
+        $revenue = $this->metrics->valueInDefaultCurrency('(ol.total * 1.0 * '.$keptUnits.' / NULLIF(ol.quantity, 0))', 'o.exchange_rate');
 
         $top = DB::table($prefix.'order_lines as ol')
             ->joinSub($placedOrders, 'o', 'o.id', '=', 'ol.order_id')
             ->where('ol.purchasable_type', ProductVariant::morphName())
             ->groupBy('ol.purchasable_id')
-            ->selectRaw('ol.purchasable_id, COALESCE(SUM('.$revenue.'), 0) as revenue, COALESCE(SUM(ol.quantity), 0) as units')
+            ->selectRaw('ol.purchasable_id, COALESCE(SUM('.$revenue.'), 0) as revenue, COALESCE(SUM('.$keptUnits.'), 0) as units')
             ->orderByDesc('revenue')
             ->limit(5)
             ->get();
