@@ -31,10 +31,17 @@ class OrderActionController
     {
         abort_unless(CaptureOrder::canRun($order), 403);
 
-        return $this->run($order, fn () => $order->capture(
-            $request->integer('transaction_id'),
-            $request->input('amount'),
-        ), 'panel::orders.flash_captured');
+        return $this->run($order, function () use ($request, $order) {
+            $capture = $order->capture(
+                $request->integer('transaction_id'),
+                $request->input('amount'),
+            );
+
+            // A driver reports a declined capture as a result, not an exception.
+            if (! $capture->success) {
+                throw new OrderActionException($capture->message ?: __('panel::orders.flash_capture_failed'));
+            }
+        }, 'panel::orders.flash_captured');
     }
 
     public function refund(RefundOrderRequest $request, Order $order): RedirectResponse
@@ -49,14 +56,21 @@ class OrderActionController
             ? $shippingLine->total / $order->currency->factor
             : 0;
 
-        return $this->run($order, fn () => $order->refund(new RefundRequest(
-            transactionId: $request->integer('transaction_id'),
-            lines: $request->lines(),
-            shipping: $shipping,
-            adjustment: $request->input('adjustment') ?: 0,
-            notes: $request->input('notes'),
-            notify: $request->boolean('notify'),
-        )), 'panel::orders.flash_refunded');
+        return $this->run($order, function () use ($request, $order, $shipping) {
+            $refund = $order->refund(new RefundRequest(
+                transactionId: $request->integer('transaction_id'),
+                lines: $request->lines(),
+                shipping: $shipping,
+                adjustment: $request->input('adjustment') ?: 0,
+                notes: $request->input('notes'),
+                notify: $request->boolean('notify'),
+            ));
+
+            // A driver reports a declined refund as a result, not an exception.
+            if (! $refund->success) {
+                throw new OrderActionException($refund->message ?: __('panel::orders.flash_refund_failed'));
+            }
+        }, 'panel::orders.flash_refunded');
     }
 
     public function recordPayment(RecordPaymentRequest $request, Order $order): RedirectResponse

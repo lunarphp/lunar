@@ -69,10 +69,27 @@ class OfflinePayment extends AbstractPayment
     }
 
     /**
-     * {@inheritDoc}
+     * Record the capture of an offline authorization. There is no gateway to
+     * call, so capturing means the store has taken the money: write the
+     * capture transaction against the intent, the way {@see refund()} writes
+     * the refund transaction, so the ledger and the order's payment status
+     * reflect it. An amount of zero captures the whole authorization.
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
+        $transaction->order->transactions()->create([
+            'success' => true,
+            'type' => 'capture',
+            'driver' => 'offline',
+            'amount' => $amount > 0 ? $amount : $transaction->amount,
+            'reference' => (string) Str::uuid(),
+            'status' => 'settled',
+            'parent_transaction_id' => $transaction->id,
+            'card_type' => $transaction->card_type,
+            'last_four' => $transaction->last_four,
+            'captured_at' => now(),
+        ]);
+
         return new PaymentCapture(true);
     }
 }

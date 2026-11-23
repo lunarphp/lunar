@@ -2,8 +2,13 @@
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Lunar\Core\Actions\Orders\CaptureOrder;
+use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Events\Orders\OrderRefunded;
+use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -12,6 +17,8 @@ use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Notifications\OrderUpdate;
+use Lunar\Core\PaymentTypes\AbstractPayment;
+use Lunar\Core\States\Order\Payment\Paid;
 use Lunar\Core\States\Order\Payment\PartiallyPaid;
 use Lunar\Tests\Panel\TestCase;
 
@@ -246,4 +253,104 @@ it('forbids recording a payment on a settled order', function () {
     Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
 
     $this->post(route('panel.orders.payments.store', $order), ['amount' => 10])->assertForbidden();
+});
+
+/**
+ * A driver whose gateway declines every capture and refund, returning the
+ * failure as a result rather than throwing — the way the Stripe and PayPal
+ * drivers report a gateway error.
+ */
+function registerDecliningPaymentDriver(string $message = 'Card declined by the gateway.'): void
+{
+    Payments::extend('declining', fn () => new class($message) extends AbstractPayment
+    {
+        public function __construct(protected string $declineMessage) {}
+
+        public function authorize(): ?PaymentAuthorize
+        {
+            return new PaymentAuthorize(false);
+        }
+
+        public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+        {
+            return new PaymentCapture(success: false, message: $this->declineMessage);
+        }
+
+        public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+        {
+            return new PaymentRefund(success: false, message: $this->declineMessage ?: null);
+        }
+    });
+}
+
+it('flashes the driver message and records nothing when a capture is declined', function () {
+    registerDecliningPaymentDriver();
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $intent = Transaction::factory()->for($order)->create(['type' => 'intent', 'success' => true, 'driver' => 'declining', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.capture', $order), ['transaction_id' => $intent->id, 'amount' => 10])
+        ->assertSessionHas('error', 'Card declined by the gateway.')
+        ->assertSessionMissing('success');
+
+    expect($order->transactions()->whereType('capture')->exists())->toBeFalse();
+});
+
+it('flashes a generic error when a declined capture carries no message', function () {
+    registerDecliningPaymentDriver('');
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $intent = Transaction::factory()->for($order)->create(['type' => 'intent', 'success' => true, 'driver' => 'declining', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.capture', $order), ['transaction_id' => $intent->id, 'amount' => 10])
+        ->assertSessionHas('error', __('panel::orders.flash_capture_failed'))
+        ->assertSessionMissing('success');
+});
+
+it('flashes the driver message and records nothing when a refund is declined', function () {
+    Event::fake([OrderRefunded::class]);
+    registerDecliningPaymentDriver();
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $capture = Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'declining', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.refund', $order), ['transaction_id' => $capture->id, 'adjustment' => 50])
+        ->assertSessionHas('error', 'Card declined by the gateway.')
+        ->assertSessionMissing('success');
+
+    expect($order->transactions()->whereType('refund')->exists())->toBeFalse();
+    Event::assertNotDispatched(OrderRefunded::class);
+});
+
+it('flashes a generic error when a declined refund carries no message', function () {
+    registerDecliningPaymentDriver('');
+
+    $order = Order::factory()->placed()->create(['total' => 12000]);
+    $capture = Transaction::factory()->for($order)->create(['type' => 'capture', 'success' => true, 'driver' => 'declining', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.refund', $order), ['transaction_id' => $capture->id, 'adjustment' => 50])
+        ->assertSessionHas('error', __('panel::orders.flash_refund_failed'))
+        ->assertSessionMissing('success');
+});
+
+it('records the capture of an offline authorization, so the order is paid and capture is no longer offered', function () {
+    $order = Order::factory()->placed()->create(['total' => 12000, 'currency_code' => 'GBP']);
+    $intent = Transaction::factory()->for($order)->create(['type' => 'intent', 'success' => true, 'driver' => 'offline', 'amount' => 12000]);
+
+    $this->from(route('panel.orders.show', $order))
+        ->post(route('panel.orders.capture', $order), ['transaction_id' => $intent->id, 'amount' => 120])
+        ->assertSessionHas('success', __('panel::orders.flash_captured'));
+
+    $capture = $order->transactions()->whereType('capture')->sole();
+
+    expect($capture->amount)->toBe(12000)
+        ->and($capture->success)->toBeTruthy()
+        ->and($capture->driver)->toBe('offline')
+        ->and($capture->parent_transaction_id)->toBe($intent->id)
+        ->and($order->refresh()->payment_status)->toBeInstanceOf(Paid::class)
+        ->and(CaptureOrder::canRun($order))->toBeFalse();
 });

@@ -506,6 +506,10 @@ $capture->message; // string
 
 `$order->capture()` delegates to `Lunar\Core\Contracts\Actions\Orders\CapturesOrder`, guards that the amount does not exceed the intent, and dispatches the driver's `capture()` — which creates the `capture` `Transaction`. Recording the capture triggers a `payment_status` recompute automatically.
 
+A capture the driver declines does not throw. `capture()` returns the driver's result with `success` set to `false` and the driver's reason in `message`, and no `capture` transaction is written, so check `$capture->success` before treating the payment as taken. The panel shows that message as an error and leaves the order unchanged. The guard failures above throw `Lunar\Core\Exceptions\OrderActionException` instead.
+
+The `offline` driver has no gateway to call, so capturing an `offline` intent records the `capture` transaction against it, as `recordPayment()` does for a payment taken after checkout.
+
 ### Recording a payment
 
 Record a payment taken after checkout, such as a settled invoice or cash at the counter, with `recordPayment()`. The amount is in minor units.
@@ -553,6 +557,8 @@ $refund->transaction; // ?Lunar\Core\Models\Transaction — the refund transacti
 ```
 
 Each requested line is validated against its own `refundableQuantity()`, and the total requested amount is validated against the order's available-to-refund balance (captured minus already refunded). An amount-only refund — no line allocation — is expressed with an empty `lines` array and the whole amount on `adjustment`.
+
+A refund the driver declines does not throw either. `refund()` returns the driver's result with `success` set to `false` and the driver's reason in `message`: no line allocation is recorded, `OrderRefunded` is not dispatched, and the panel shows the message as an error.
 
 When the driver's refund succeeds and returns a `Transaction`, each line allocation is recorded as a `RefundLine` and the corresponding `OrderLine.refunded_quantity` is incremented:
 
