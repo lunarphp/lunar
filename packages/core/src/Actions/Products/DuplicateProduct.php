@@ -3,6 +3,8 @@
 namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
+use Lunar\Core\Contracts\Actions\Products\RecomputesStockReserved;
+use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
@@ -12,9 +14,33 @@ use Lunar\Core\Models\ProductVariant;
  * Replicate a product alongside its variants, base prices, option values,
  * and attribute data. Names are suffixed to avoid collisions; the duplicate
  * starts life as a draft.
+ *
+ * Stock is not duplicated: the copy has no stock levels, orders or
+ * reservations, so its variants' cached stock rollup is rebuilt from those
+ * (empty) sources rather than copied from the source variants.
  */
 class DuplicateProduct implements DuplicatesProduct
 {
+    /**
+     * Cached stock columns on a variant, derived from its stock levels,
+     * reservations and order lines. None of those carry over to a replica.
+     *
+     * @var list<string>
+     */
+    protected const CACHED_STOCK_COLUMNS = [
+        'stock_on_hand',
+        'stock_incoming',
+        'stock_committed',
+        'stock_reserved',
+        'stock_unavailable',
+        'stock_available',
+    ];
+
+    public function __construct(
+        protected SyncsStockCommitment $syncStockCommitment,
+        protected RecomputesStockReserved $recomputeStockReserved,
+    ) {}
+
     public function execute(Product $source, ?string $nameSuffix = null): Product
     {
         /** @var Product $source */
@@ -38,10 +64,13 @@ class DuplicateProduct implements DuplicatesProduct
     protected function duplicateVariant(ProductVariant $source, Product $newProduct): ProductVariant
     {
         /** @var ProductVariant $replica */
-        $replica = $source->replicate();
+        $replica = $source->replicate(self::CACHED_STOCK_COLUMNS);
         $replica->product_id = $newProduct->id;
         $replica->sku = $source->sku ? $source->sku.'-copy' : null;
         $replica->save();
+
+        $this->syncStockCommitment->execute($replica);
+        $this->recomputeStockReserved->execute($replica);
 
         foreach ($source->basePrices as $price) {
             /** @var Price $copy */
