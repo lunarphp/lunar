@@ -8,6 +8,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Region;
 use Lunar\Core\Models\Staff;
+use Lunar\Core\States\Channel\Inactive;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -33,6 +34,36 @@ test('the regions index renders with reference names', function () {
             ->has('currencies')
             ->has('languages')
             ->has('urls.store')
+        );
+});
+
+test('the create form defaults to the default channel and currency, not the first by name', function () {
+    Channel::factory()->create(['name' => 'Alpha Outlet', 'default' => false, 'status' => Inactive::class]);
+    $defaultChannel = Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
+    Currency::factory()->create(['code' => 'EUR', 'default' => false]);
+    $defaultCurrency = Currency::factory()->create(['code' => 'GBP', 'default' => true]);
+
+    $this->get(route('panel.settings.regions.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('channels.0.name', 'Alpha Outlet')
+            ->where('currencies.0.code', 'EUR')
+            ->where('defaults.channel_id', $defaultChannel->id)
+            ->where('defaults.currency_id', $defaultCurrency->id)
+        );
+});
+
+test('the create form falls back to an active channel and an enabled currency when none is default', function () {
+    Channel::factory()->create(['name' => 'Alpha Outlet', 'default' => false, 'status' => Inactive::class]);
+    $activeChannel = Channel::factory()->create(['name' => 'Webstore', 'default' => false]);
+    Currency::factory()->create(['code' => 'EUR', 'default' => false, 'enabled' => false]);
+    $enabledCurrency = Currency::factory()->create(['code' => 'GBP', 'default' => false]);
+
+    $this->get(route('panel.settings.regions.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('defaults.channel_id', $activeChannel->id)
+            ->where('defaults.currency_id', $enabledCurrency->id)
         );
 });
 

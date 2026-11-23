@@ -53,6 +53,7 @@ const props = defineProps<{
     channels: { id: number; name: string }[];
     currencies: { id: number; code: string }[];
     languages: { id: number; code: string }[];
+    defaults: { channel_id: number | null; currency_id: number | null };
     urls: { index: string; store: string };
 }>();
 
@@ -95,8 +96,8 @@ const createForm = useForm({
 const openCreate = (): void => {
     createForm.reset();
     createForm.clearErrors();
-    createForm.channel_id = props.channels[0]?.id ?? null;
-    createForm.currency_id = props.currencies[0]?.id ?? null;
+    createForm.channel_id = props.defaults.channel_id;
+    createForm.currency_id = props.defaults.currency_id;
     createForm.language_id = props.languages[0]?.id ?? null;
     creating.value = true;
 };
