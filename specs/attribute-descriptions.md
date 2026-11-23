@@ -93,4 +93,4 @@ One-way, no `down()`, like the other upgrade steps. It runs after `convert_attri
 - [x] Slice 1 — core and upgrade: baseline column, model docblock, factory default; `add_attribute_description` upgrade migration with tests for a v1 jsonb column (with and without `en`), an over-long value, a missing column and a re-run; alpha upgrade guide row.
 - [x] Slice 2 — panel: `AttributeRequest`, `AttributeEditController`, `Edit.vue` input, `AttributeSchema::field()`, `AttributeFields.vue` helper text with a vitest case, lang keys in 16 locales, feature tests for saving and serialising.
 - [x] Slice 3 — filament: converters read the description, `AttributeForm` description component, a test that a converter's component carries the helper text.
-- [ ] Slice 4 — docs: attributes reference and upgrade guide.
+- [x] Slice 4 — docs: attributes reference and upgrade guide.
