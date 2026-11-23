@@ -1,18 +1,35 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import Dialog from './Dialog.vue';
+import Select from './Select.vue';
 import TextInput from './TextInput.vue';
 import type { DraftConflict } from '../lib/http';
+
+/**
+ * How the page's editor presents one draft key, so the dialog shows and
+ * merges its values in the same form: `options` for a select or enum field
+ * (each side shows its label and the manual merge is a select of them),
+ * `format` for a structured value the dialog cannot render itself (such a
+ * field stays a two-way choice).
+ */
+export interface ConflictField {
+    options?: { value: string | number | null; label: string }[];
+    format?: (value: unknown) => string;
+}
 
 const props = withDefaults(
     defineProps<{
         open?: boolean;
         conflicts?: DraftConflict[];
         busy?: boolean;
+        /** The presentation of a conflicting key; keys without one render generically. */
+        field?: (key: string) => ConflictField | undefined;
+        /** The form's commit errors, so a refused resolution says why. */
+        errors?: Record<string, string>;
     }>(),
-    { open: false, conflicts: () => [], busy: false },
+    { open: false, conflicts: () => [], busy: false, field: () => undefined, errors: () => ({}) },
 );
 
 const emit = defineEmits<{
@@ -53,13 +70,25 @@ const choose = (conflict: DraftConflict, choice: 'mine' | 'theirs'): void => {
 // Manual merging edits the chosen value in place; only scalar values get a
 // text input, structured values (id sets) stay a two-way choice.
 const isEditable = (conflict: DraftConflict): boolean =>
-    [conflict.mine, conflict.theirs].every(
+    !props.field(conflict.key)?.format
+    && [conflict.mine, conflict.theirs].every(
         (value) => value === null || ['string', 'number', 'boolean'].includes(typeof value),
     );
 
-const display = (value: unknown): string => {
+const display = (conflict: DraftConflict, value: unknown): string => {
     if (value === null || value === undefined || value === '') {
         return t('drafts.empty');
+    }
+
+    const field = props.field(conflict.key);
+    const option = field?.options?.find((candidate) => candidate.value === value);
+
+    if (option) {
+        return option.label;
+    }
+
+    if (field?.format) {
+        return field.format(value) || t('drafts.empty');
     }
 
     if (Array.isArray(value)) {
@@ -115,6 +144,19 @@ const onManualEdit = (conflict: DraftConflict, value: string | number): void => 
     }
 };
 
+// The commit error for a conflicting key, or for one of its nested fields
+// (`price:USD.0.price`).
+const errorFor = (conflict: DraftConflict): string | undefined =>
+    props.errors[conflict.key]
+    ?? Object.entries(props.errors).find(([key]) => key.startsWith(`${conflict.key}.`))?.[1];
+
+// Errors on keys the dialog does not list still refused the save, so they
+// show here too rather than leaving Apply silently doing nothing.
+const otherErrors = computed(() =>
+    Object.entries(props.errors)
+        .filter(([key]) => !props.conflicts.some((conflict) => key === conflict.key || key.startsWith(`${conflict.key}.`)))
+        .map(([, message]) => message));
+
 const confirm = (): void => {
     const resolved: Record<string, unknown> = {};
     const rebase: Record<string, unknown> = {};
@@ -131,6 +173,9 @@ const confirm = (): void => {
 <template>
     <Dialog :open="open" :title="t('drafts.conflict_title')" :description="t('drafts.conflict_description')" size="lg" @update:open="$emit('update:open', $event)">
         <div class="flex flex-col gap-4">
+            <div v-if="otherErrors.length" role="alert" class="text-[11px] text-danger">
+                <div v-for="(message, index) in otherErrors" :key="index">{{ message }}</div>
+            </div>
             <div v-for="conflict in conflicts" :key="conflict.key" class="rounded-lg border border-line overflow-hidden">
                 <div class="px-3.5 py-2 bg-surface-2 border-b border-line text-[12px] font-semibold text-ink-900">
                     {{ conflict.label }}
@@ -145,7 +190,7 @@ const confirm = (): void => {
                             @click="choose(conflict, 'mine')"
                         >
                             <span class="block text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-0.5">{{ t('drafts.your_value') }}</span>
-                            <span class="block text-[12.5px] text-ink-900 break-words" :class="{ italic: display(conflict.mine) === t('drafts.empty') }">{{ display(conflict.mine) }}</span>
+                            <span class="block text-[12.5px] text-ink-900 break-words" :class="{ italic: display(conflict, conflict.mine) === t('drafts.empty') }">{{ display(conflict, conflict.mine) }}</span>
                         </button>
                         <button
                             type="button"
@@ -155,16 +200,27 @@ const confirm = (): void => {
                             @click="choose(conflict, 'theirs')"
                         >
                             <span class="block text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-0.5">{{ t('drafts.current_value') }}</span>
-                            <span class="block text-[12.5px] text-ink-900 break-words" :class="{ italic: display(conflict.theirs) === t('drafts.empty') }">{{ display(conflict.theirs) }}</span>
+                            <span class="block text-[12.5px] text-ink-900 break-words" :class="{ italic: display(conflict, conflict.theirs) === t('drafts.empty') }">{{ display(conflict, conflict.theirs) }}</span>
                         </button>
                     </div>
+                    <Select
+                        v-if="field(conflict.key)?.options"
+                        :model-value="resolutions[conflict.key]?.value as string | number | null"
+                        :aria-label="conflict.label"
+                        :invalid="!!errorFor(conflict)"
+                        @update:model-value="resolutions[conflict.key].value = $event"
+                    >
+                        <option v-for="option in field(conflict.key)?.options" :key="String(option.value)" :value="option.value">{{ option.label }}</option>
+                    </Select>
                     <TextInput
-                        v-if="isEditable(conflict)"
+                        v-else-if="isEditable(conflict)"
                         :model-value="editableValue(conflict.key)"
                         :aria-label="conflict.label"
+                        :invalid="!!errorFor(conflict)"
                         @update:model-value="onManualEdit(conflict, $event)"
                     />
-                    <p class="m-0 text-[11px] text-ink-500">{{ t('drafts.base_note', { value: display(conflict.base) }) }}</p>
+                    <div v-if="errorFor(conflict)" role="alert" class="text-[11px] text-danger">{{ errorFor(conflict) }}</div>
+                    <p class="m-0 text-[11px] text-ink-500">{{ t('drafts.base_note', { value: display(conflict, conflict.base) }) }}</p>
                 </div>
             </div>
         </div>

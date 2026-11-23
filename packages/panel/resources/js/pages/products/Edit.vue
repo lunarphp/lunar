@@ -19,7 +19,7 @@ import CollectionPicker, { type CollectionOption } from '../../components/Collec
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
-import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
+import DraftConflictDialog, { type ConflictField } from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import MediaGroups from '../../components/MediaGroups.vue';
@@ -35,6 +35,7 @@ import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue'
 import TagsInput from '../../components/TagsInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
 import UrlSlugs from '../../components/UrlSlugs.vue';
+import { priceConflictField } from '../../components/pricing';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -167,6 +168,28 @@ const statusOptions = computed(() => [
     { value: 'published', label: t('products.status_published'), tone: 'sage' as const },
     { value: 'archived', label: t('products.status_archived'), tone: 'neutral' as const },
 ]);
+
+// The conflict dialog shows and merges these keys the way this page edits
+// them: selects by their option labels, price lists as money.
+const conflictField = (key: string): ConflictField | undefined => {
+    const selects: Record<string, ConflictField['options']> = {
+        status: statusOptions.value,
+        product_type_id: props.typeOptions,
+        brand_id: [{ value: null, label: t('products.field_brand_none') }, ...props.brandOptions],
+        'variant:tax_class_id': props.taxClasses.map((taxClass) => ({ value: taxClass.id, label: taxClass.name })),
+    };
+
+    return key in selects
+        ? { options: selects[key] }
+        : priceConflictField(key, 'variant:price:', props.currencies, props.customerGroups, t);
+};
+
+// Availability rows have no per-row error slot; their commit errors list
+// under the card so a refused save is never silent.
+const availabilityErrors = computed(() =>
+    Object.entries(detailsErrors.value)
+        .filter(([key]) => key.startsWith('channel:') || key.startsWith('customer_group:'))
+        .map(([, message]) => message));
 
 const statusHelp = computed(() =>
     details.status === 'published'
@@ -506,6 +529,7 @@ const timelineEvents = computed(() =>
 
                             <SideCard :title="t('products.side_status')">
                                 <StatusSegmentedControl v-model="details.status" :options="statusOptions" />
+                                <div v-if="detailsErrors.status" class="mt-1 text-[11px] text-danger" role="alert">{{ detailsErrors.status }}</div>
                                 <div class="text-[11.5px] text-ink-500 mt-2.5">{{ statusHelp }}</div>
                             </SideCard>
 
@@ -515,6 +539,9 @@ const timelineEvents = computed(() =>
                                 :values="details"
                                 with-purchasable
                             />
+                            <div v-if="availabilityErrors.length" class="-mt-2 text-[11px] text-danger" role="alert">
+                                <div v-for="(message, index) in availabilityErrors" :key="index">{{ message }}</div>
+                            </div>
 
                             <SideCard :title="t('products.side_type')">
                                 <FieldLabel for="product-type">{{ t('products.field_product_type') }}</FieldLabel>
@@ -541,10 +568,12 @@ const timelineEvents = computed(() =>
                                         :known="collections"
                                         :search-url="urls.collectionsSearch"
                                     />
+                                    <div v-if="detailsErrors.collection_ids" class="mt-1 text-[11px] text-danger">{{ detailsErrors.collection_ids }}</div>
                                 </div>
                                 <div>
                                     <FieldLabel>{{ t('products.field_tags') }}</FieldLabel>
                                     <TagsInput v-model="details.tags" :invalid="!!detailsErrors.tags" />
+                                    <div v-if="detailsErrors.tags" class="mt-1 text-[11px] text-danger">{{ detailsErrors.tags }}</div>
                                 </div>
                             </SideCard>
 
@@ -585,6 +614,8 @@ const timelineEvents = computed(() =>
                 v-model:open="conflictOpen"
                 :conflicts="draftConflicts"
                 :busy="draftCommitting"
+                :field="conflictField"
+                :errors="detailsErrors"
                 @resolve="onResolveConflicts"
             />
         </div>
