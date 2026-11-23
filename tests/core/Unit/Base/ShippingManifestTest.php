@@ -12,6 +12,7 @@ use Lunar\Core\Models\Price as PriceModel;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRateAmount;
+use Lunar\Core\Modifiers\ShippingModifier;
 use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Tests\Core\Stubs\TestRecursiveShippingModifier;
 use Lunar\Tests\Core\TestCase;
@@ -284,4 +285,64 @@ test('can not re-enter shipping modifiers while resolving options', function () 
     // ApplyShipping and CalculateTax each resolve the shipping option once, so
     // a single calculate runs the modifiers twice. Neither run may re-enter.
     expect(TestRecursiveShippingModifier::$calls)->toEqual(2);
+});
+
+/**
+ * Publishes FREESHIP only for the carts listed in $qualifying, the way a
+ * free-shipping-over-a-threshold modifier does.
+ */
+class ConditionalFreeShippingModifier extends ShippingModifier
+{
+    /** @var array<int, int> */
+    public static array $qualifying = [];
+
+    public function handle(Cart $cart, Closure $next)
+    {
+        if (in_array($cart->id, static::$qualifying, true)) {
+            ShippingManifest::addOption(new ShippingOption(
+                name: 'Free Shipping',
+                description: 'Free Shipping',
+                identifier: 'FREESHIP',
+                price: new PriceValue(0, $cart->currency),
+                taxClass: TaxClass::first() ?? TaxClass::factory()->create(),
+            ));
+        }
+
+        return $next($cart);
+    }
+}
+
+test('an option a modifier published for one cart is not offered to the next', function () {
+    $otherCart = Cart::factory()->create(['currency_id' => $this->cart->currency_id]);
+
+    ConditionalFreeShippingModifier::$qualifying = [$this->cart->id];
+    app(ShippingModifiers::class)->add(ConditionalFreeShippingModifier::class);
+
+    $forQualifyingCart = ShippingManifest::getOptions($this->cart)->pluck('identifier')->all();
+    $forOtherCart = ShippingManifest::getOptions($otherCart)->pluck('identifier')->all();
+
+    // The same cart stops qualifying, as when its basket drops below a threshold.
+    ConditionalFreeShippingModifier::$qualifying = [];
+    $afterDroppingBelow = ShippingManifest::getOptions($this->cart)->pluck('identifier')->all();
+
+    expect($forQualifyingCart)->toContain('FREESHIP')
+        ->and($forOtherCart)->not->toContain('FREESHIP')
+        ->and($afterDroppingBelow)->not->toContain('FREESHIP');
+});
+
+test('an option added outside the modifiers stays in the manifest', function () {
+    ShippingManifest::addOption(new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new PriceValue(500, $this->cart->currency),
+        taxClass: TaxClass::factory()->create(),
+    ));
+
+    ConditionalFreeShippingModifier::$qualifying = [];
+    app(ShippingModifiers::class)->add(ConditionalFreeShippingModifier::class);
+
+    ShippingManifest::getOptions($this->cart);
+
+    expect(ShippingManifest::getOptions($this->cart)->pluck('identifier')->all())->toBe(['BASDEL']);
 });
