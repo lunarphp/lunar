@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Tienes cambios sin guardar. ¿Salir de esta página y descartarlos?',
 ];

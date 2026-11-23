@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import { useLeaveGuard } from '../../../composables/useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -68,6 +69,8 @@ const toggleChild = (parent: PermissionNode, child: PermissionNode): void => {
         }
     }
 };
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form.put(props.urls.update, { preserveScroll: true });

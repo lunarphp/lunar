@@ -238,6 +238,18 @@ Three ready-made components pair with the composable:
 
 All three are exported from `@lunarphp/panel` alongside `useEditDraft`, so an [add-on](/admin/extending/addons)'s own drafted edit page builds on exactly the same pieces as a first-party one.
 
+Pages that are not drafted, such as the settings edit pages, use a plain Inertia form and prompt before leaving through `useLeaveGuard`, also exported from `@lunarphp/panel`:
+
+```ts
+import { useLeaveGuard, usePanelForm } from '@lunarphp/panel';
+
+const form = usePanelForm({ name: props.record.name });
+
+useLeaveGuard(() => form.isDirty);
+```
+
+While the callback returns `true`, an Inertia visit to another page asks for confirmation and a hard navigation (closing the tab, refreshing) shows the browser's own prompt. Saves, validation-error redirects, visits that stay on the page and actions posted from the page's own dialogs do not prompt, and Inertia clears `isDirty` after a successful save. Keep every value the page saves in the form, so the guard sees it.
+
 ## Expiry
 
 Drafts left untouched are pruned automatically: `lunar.panel.drafts.ttl_days` (`config/lunar/panel.php`, default `7`) controls how many days of inactivity mark a draft stale enough to discard. This runs as part of the panel's scheduled maintenance, alongside its other prune tasks — no separate command to run.

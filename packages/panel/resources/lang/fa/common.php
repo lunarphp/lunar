@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'تغییرات ذخیره‌نشده دارید. این صفحه را ترک می‌کنید و تغییرات را دور می‌ریزید؟',
 ];

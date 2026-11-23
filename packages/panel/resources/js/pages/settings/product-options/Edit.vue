@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { usePanelForm } from '../../../composables/usePanelForm';
+import { useLeaveGuard } from '../../../composables/useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../../components/ActivityTimeline.vue';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
@@ -145,6 +146,8 @@ const { start, over, style, end, isDragging } = useDragSort({
         form.values = next;
     },
 });
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form

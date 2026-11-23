@@ -69,6 +69,7 @@ export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/
 export { useAddonFormSlice as useFormSlice } from './composables/useFormSlice';
 export type { FormSlice } from './composables/useFormSlice';
 export { usePanelForm } from './composables/usePanelForm';
+export { useLeaveGuard } from './composables/useLeaveGuard';
 export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
 export type { DraftConflict } from './lib/http';
 

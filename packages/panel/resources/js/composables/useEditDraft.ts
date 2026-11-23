@@ -1,8 +1,6 @@
 import {
     computed,
     getCurrentInstance,
-    getCurrentScope,
-    onScopeDispose,
     provide,
     reactive,
     ref,
@@ -13,6 +11,7 @@ import {
 import { router, usePage } from '@inertiajs/vue3';
 import { clone, encode } from './formValues';
 import { sliceFormKey } from './sliceForm';
+import { useLeaveGuard } from './useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import { useToasts } from './useToasts';
 import { DraftConflictError, StaleDraftError, ValidationError, http, type DraftConflict } from '../lib/http';
@@ -142,44 +141,15 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
     const dirtyKeys = computed(() => Object.keys(diff()));
     const isDirty = computed(() => dirtyKeys.value.length > 0);
 
-    // Leaving the page with uncommitted changes prompts first — the edits
-    // survive as a draft, but staff shouldn't navigate away believing they
-    // went live. Same-page visits (partial reloads, widget posts) pass
-    // through untouched. Outside a component (unit tests) t() falls back to
-    // the raw key.
+    // Outside a component (unit tests) t() falls back to the raw key.
     const t = getCurrentInstance() ? useI18n().t : (key: string): string => key;
 
-    const unlistenNavigationGuard = router.on('before', (event) => {
-        const { url, method, prefetch } = event.detail.visit;
-
-        // Prefetch visits (sidebar <Link prefetch> on hover) fire the same
-        // 'before' event but never leave the page, so they must not prompt.
-        if (!isDirty.value || prefetch || method !== 'get' || url.pathname === window.location.pathname) {
-            return;
-        }
-
-        if (!window.confirm(t('drafts.leave_confirm'))) {
-            event.preventDefault();
-        }
-    });
-
-    // Hard navigation (close tab, external link, refresh) gets the browser's
-    // native prompt; it also covers edits still inside the autosave debounce,
-    // which a draft would otherwise lose.
-    const onBeforeUnload = (event: BeforeUnloadEvent): void => {
-        if (isDirty.value) {
-            event.preventDefault();
-        }
-    };
-
-    window.addEventListener('beforeunload', onBeforeUnload);
-
-    if (getCurrentScope()) {
-        onScopeDispose(() => {
-            unlistenNavigationGuard();
-            window.removeEventListener('beforeunload', onBeforeUnload);
-        });
-    }
+    // Leaving the page with uncommitted changes prompts first — the edits
+    // survive as a draft, but staff shouldn't navigate away believing they
+    // went live. The browser's native prompt on a hard navigation also
+    // covers edits still inside the autosave debounce, which a draft would
+    // otherwise lose.
+    useLeaveGuard(() => isDirty.value, 'drafts.leave_confirm');
 
     // In-flight requests chain so responses apply in request order.
     let queue: Promise<unknown> = Promise.resolve();

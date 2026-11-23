@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Button, ConfirmDialog, FieldLabel, RichTextEditor, Section, Select, SettingsShell, TextInput, Toggle } from '@lunarphp/panel';
+import { Button, ConfirmDialog, FieldLabel, RichTextEditor, Section, Select, SettingsShell, TextInput, Toggle, useLeaveGuard } from '@lunarphp/panel';
 import CustomerGroupAvailability, { type GroupRow } from '../../../../components/CustomerGroupAvailability.vue';
 import DriverSettings, { type DriverData } from '../../../../components/DriverSettings.vue';
 import ScheduleGrid, { type Schedule } from '../../../../components/ScheduleGrid.vue';
@@ -70,6 +70,8 @@ const driverDescriptionKey = computed(() => {
 
     return ['ship-by', 'free-shipping'].includes(form.driver) ? key : 'shipping::methods.driver_desc_none';
 });
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form.transform(({ driver_data, ...rest }) => ({

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { usePanelForm } from '../../../composables/usePanelForm';
+import { useLeaveGuard } from '../../../composables/useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -59,6 +60,8 @@ const toggleRole = (handle: string): void => {
         form.roles.push(handle);
     }
 };
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form.transform((data) => ({

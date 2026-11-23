@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Bạn có thay đổi chưa lưu. Rời khỏi trang này và hủy các thay đổi?',
 ];

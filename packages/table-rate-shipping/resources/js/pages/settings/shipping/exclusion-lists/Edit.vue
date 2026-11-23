@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Button, ConfirmDialog, FieldLabel, Section, SettingsShell, TargetChipList, TargetPickerDialog, TextInput } from '@lunarphp/panel';
+import { Button, ConfirmDialog, FieldLabel, Section, SettingsShell, TargetChipList, TargetPickerDialog, TextInput, useLeaveGuard } from '@lunarphp/panel';
 import type { TargetChip, TargetOption } from '@lunarphp/panel';
 import { noLayout } from '../../../../lib/layout';
 
@@ -22,13 +22,14 @@ const breadcrumbs = computed(() => [
     { label: props.list.name, current: true },
 ]);
 
-// The chips are the form state: saving sends their ids as the product set.
-const chips = ref<TargetChip[]>(props.products.map((chip) => ({ ...chip })));
+// The product chips live in the form, so picking or removing one marks the
+// page dirty until Save; saving sends their ids as the product set.
+const form = useForm({ name: props.list.name, products: props.products.map((chip) => ({ ...chip })) });
 
-const form = useForm({ name: props.list.name, products: [] as number[] });
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
-    form.transform((data) => ({ ...data, products: chips.value.map((chip) => chip.id) }))
+    form.transform((data) => ({ ...data, products: data.products.map((chip) => chip.id) }))
         .put(props.urls.update, { preserveScroll: true });
 };
 
@@ -36,14 +37,14 @@ const picking = ref(false);
 
 const addProducts = (targets: TargetOption[]): void => {
     targets.forEach((target) => {
-        if (!chips.value.some((chip) => chip.id === target.id)) {
-            chips.value.push({ id: target.id, label: target.label, hint: target.hint });
+        if (!form.products.some((chip) => chip.id === target.id)) {
+            form.products.push({ id: target.id, label: target.label, hint: target.hint });
         }
     });
 };
 
 const removeProduct = (_kind: string, id: number): void => {
-    chips.value = chips.value.filter((chip) => chip.id !== id);
+    form.products = form.products.filter((chip) => chip.id !== id);
 };
 
 const deleting = ref(false);
@@ -72,7 +73,7 @@ const confirmDestroy = (): void => {
             <Section :title="t('shipping::exclusion_lists.section_products')">
                 <template #desc>{{ t('shipping::exclusion_lists.products_desc') }}</template>
                 <TargetChipList
-                    :chips="{ products: chips }"
+                    :chips="{ products: form.products }"
                     :kinds="['products']"
                     :label="t('shipping::exclusion_lists.kind_products')"
                     @add="picking = true"

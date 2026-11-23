@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Button, Combobox, ConfirmDialog, FieldLabel, Section, Select, SettingsShell, StatusBadge, TextInput, useToasts } from '@lunarphp/panel';
+import { Button, Combobox, ConfirmDialog, FieldLabel, Section, Select, SettingsShell, StatusBadge, TextInput, useLeaveGuard, useToasts } from '@lunarphp/panel';
 import ChipList, { type Chip } from '../../../../components/ChipList.vue';
 import PostcodeListInput from '../../../../components/PostcodeListInput.vue';
 import RateSlideout, { type MethodOption, type RateRow } from '../../../../components/RateSlideout.vue';
@@ -60,6 +60,8 @@ watch(() => form.type, (type) => {
         form.countries = form.countries.slice(0, 1);
     }
 });
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form.put(props.urls.update, { preserveScroll: true });

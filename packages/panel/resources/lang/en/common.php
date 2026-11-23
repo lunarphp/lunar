@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'You have unsaved changes. Leave this page and discard them?',
 ];

@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Masz niezapisane zmiany. Opuścić tę stronę i je odrzucić?',
 ];
