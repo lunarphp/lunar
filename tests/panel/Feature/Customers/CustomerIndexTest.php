@@ -180,6 +180,33 @@ it('exposes per-row order stats and the linked user email', function () {
         );
 });
 
+it('leaves cancelled orders out of the row stats and lifetime value', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+
+    $latest = Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1, 'placed_at' => now()->subDay()]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1, 'placed_at' => now()->subDays(2)]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5800, 'exchange_rate' => 1, 'placed_at' => now(), 'cancelled_at' => now()]);
+
+    // A customer whose only order was cancelled has no lifetime value to average in.
+    Order::factory()->placed()->for(Customer::factory())->create(['total' => 9900, 'exchange_rate' => 1, 'cancelled_at' => now()]);
+
+    $this->get(route('panel.customers.index', ['sort' => 'created_at', 'direction' => 'asc']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('customers.data.0.id', $customer->id)
+            ->where('customers.data.0.orders_count', 2)
+            ->where('customers.data.0.total_spend', '£150.00')
+            ->where('customers.data.0.last_order_at', fn ($placedAt) => $latest->fresh()->placed_at->equalTo($placedAt))
+            ->where('customers.data.1.orders_count', 0)
+            ->where('customers.data.1.total_spend', null)
+            ->where('customers.data.1.last_order_at', null)
+            ->where('kpis.avgLifetimeValue', '£150.00')
+        );
+});
+
 it('reports empty row stats for customers without placed orders', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

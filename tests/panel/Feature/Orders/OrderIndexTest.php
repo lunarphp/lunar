@@ -248,6 +248,25 @@ it('exposes real KPI counts', function () {
         );
 });
 
+it('leaves cancelled orders out of the KPIs', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    Order::factory()->placed()->create(['payment_status' => Authorized::class, 'total' => 5000, 'exchange_rate' => 1]);
+    Order::factory()->placed()->create(['payment_status' => Paid::class, 'fulfilment_status' => Unfulfilled::class, 'total' => 10000, 'exchange_rate' => 1]);
+    Order::factory()->placed()->create(['payment_status' => Pending::class, 'total' => 5800, 'exchange_rate' => 1, 'cancelled_at' => now()]);
+    Order::factory()->placed()->create(['payment_status' => Paid::class, 'fulfilment_status' => Unfulfilled::class, 'total' => 7300, 'exchange_rate' => 1, 'cancelled_at' => now()]);
+
+    $this->get(route('panel.orders.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.orders30d', 2)
+            ->where('kpis.revenue30d', '£150.00')
+            ->where('kpis.awaitingPayment', 1)
+            ->where('kpis.awaitingFulfilment', 1)
+        );
+});
+
 it('paginates the order index', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

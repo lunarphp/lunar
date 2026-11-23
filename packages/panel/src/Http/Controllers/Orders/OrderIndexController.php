@@ -181,8 +181,9 @@ class OrderIndexController
 
     /**
      * KPI strip values, cached briefly since each is a whole-table aggregate.
-     * Revenue and awaiting-fulfilment use the placed, default-currency basis
-     * every order figure in the panel shares.
+     * Every figure counts placed orders that were not cancelled, and revenue
+     * uses the default-currency basis — the same basis as the dashboard's
+     * OrderMetrics, so the two agree.
      *
      * @return array{orders30d: int, revenue30d: ?string, awaitingPayment: int, awaitingFulfilment: int}
      */
@@ -191,21 +192,24 @@ class OrderIndexController
         return Cache::remember('lunar.panel.orders.kpis', now()->addMinutes(5), function (): array {
             $defaultCurrency = Currency::getDefault();
 
-            $revenueMinor = (int) round((float) Order::query()
+            $placedOrders = fn (): Builder => Order::query()
                 ->whereNotNull('placed_at')
+                ->whereNull('cancelled_at');
+
+            $revenueMinor = (int) round((float) $placedOrders()
                 ->where('placed_at', '>=', now()->subDays(30))
                 ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS revenue')
                 ->value('revenue'));
 
             return [
-                'orders30d' => Order::whereNotNull('placed_at')->where('placed_at', '>=', now()->subDays(30))->count(),
+                'orders30d' => $placedOrders()->where('placed_at', '>=', now()->subDays(30))->count(),
                 'revenue30d' => $revenueMinor && $defaultCurrency
                     ? (new PriceValue($revenueMinor, $defaultCurrency))->format()
                     : null,
-                'awaitingPayment' => Order::whereNotNull('placed_at')
+                'awaitingPayment' => $placedOrders()
                     ->whereIn('payment_status', ['pending', 'authorized'])
                     ->count(),
-                'awaitingFulfilment' => Order::whereNotNull('placed_at')
+                'awaitingFulfilment' => $placedOrders()
                     ->where('payment_status', 'paid')
                     ->whereIn('fulfilment_status', ['unfulfilled', 'partially-fulfilled'])
                     ->count(),

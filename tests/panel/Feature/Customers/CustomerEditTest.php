@@ -70,6 +70,34 @@ it('exposes lifetime stats and order history for placed orders', function () {
         );
 });
 
+it('leaves cancelled orders out of the lifetime stats and chart but keeps them in the history', function () {
+    $this->travelTo(now()->startOfMonth()->addDays(14));
+
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+
+    $latest = Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1, 'placed_at' => now()->subMinutes(10)]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1, 'placed_at' => now()->subMinutes(20)]);
+    $cancelled = Order::factory()->placed()->for($customer)->create(['total' => 5800, 'exchange_rate' => 1, 'placed_at' => now(), 'cancelled_at' => now()]);
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('stats.orders', 2)
+            ->where('stats.totalSpend', '£150.00')
+            ->where('stats.avgOrder', '£75.00')
+            ->where('stats.latestOrderAt', fn ($placedAt) => $latest->fresh()->placed_at->equalTo($placedAt))
+            ->has('orders', 3)
+            ->where('orders.0.id', $cancelled->id)
+            ->where('orders.0.status', 'cancelled')
+            ->loadDeferredProps(fn (Assert $chart) => $chart
+                ->where('orderChart.buckets.11.value', 150)
+            )
+        );
+});
+
 it('reports empty lifetime stats when the customer has no placed orders', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
