@@ -13,6 +13,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\DateTimeValue;
 use Lunar\Panel\Support\DiscountDataSchema;
 use Lunar\Panel\Support\DiscountTargetSchema;
 use Lunar\Panel\Support\DiscountTypeSchema;
@@ -95,6 +96,15 @@ class DiscountEditController
     public function update(DiscountRequest $request, Discount $discount, UpdatesDiscount $updatesDiscount, DiscountDataSchema $dataSchema): RedirectResponse
     {
         $attributes = $request->validated();
+
+        // The datetime cast keeps a value's wall-clock time and drops its
+        // offset, so an instant from the browser is moved to the app
+        // timezone first.
+        foreach (['starts_at', 'ends_at'] as $field) {
+            if (array_key_exists($field, $attributes)) {
+                $attributes[$field] = DateTimeValue::toStorage($attributes[$field]);
+            }
+        }
 
         if (array_key_exists('data', $attributes)) {
             $attributes['data'] = $dataSchema->toStorage(

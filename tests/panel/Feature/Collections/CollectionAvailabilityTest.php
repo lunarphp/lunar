@@ -93,6 +93,26 @@ it('commits drafted availability through the pivot sync, keeping untouched rows'
         ->and($groupPivot->starts_at)->not->toBeNull();
 });
 
+it('stores a channel schedule sent with an offset as the matching instant', function () {
+    $field = 'channel:'.$this->channel->id;
+
+    // 1 Jul 09:00 in London (BST, UTC+1).
+    $this->postJson(route('panel.collections.draft.commit', $this->collection), [
+        'data' => [$field => ['enabled' => true, 'starts_at' => '2027-07-01T09:00:00+01:00', 'ends_at' => null]],
+        'rebase' => [],
+    ])->assertOk();
+
+    $pivot = $this->collection->channels()->find($this->channel->id)->pivot;
+
+    expect((string) $pivot->starts_at)->toBe('2027-07-01 08:00:00');
+
+    // The edit page hands the schedule back as an instant the browser can read.
+    $this->get(route('panel.collections.edit', $this->collection))
+        ->assertInertia(fn ($page) => $page
+            ->where("availabilityValues.{$field}.starts_at", '2027-07-01T08:00:00+00:00')
+        );
+});
+
 it('rejects a malformed availability value', function () {
     $this->patchJson(route('panel.collections.draft.update', $this->collection), [
         'data' => [

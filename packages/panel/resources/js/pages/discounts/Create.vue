@@ -5,6 +5,7 @@ import { usePanelForm } from '../../composables/usePanelForm';
 import { useI18n } from 'vue-i18n';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
+import DateTimeInput from '../../components/DateTimeInput.vue';
 import DiscountTypeCard from '../../components/DiscountTypeCard.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
@@ -27,17 +28,11 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const toLocalInput = (date: Date): string => {
-    const pad = (value: number): string => String(value).padStart(2, '0');
-
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-};
-
 const form = usePanelForm({
     name: '',
     handle: '',
     type: props.types[0]?.class ?? '',
-    starts_at: toLocalInput(new Date()),
+    starts_at: new Date().toISOString(),
 });
 
 // snake_case, matching how the Filament admin normalises a discount handle.
@@ -135,7 +130,7 @@ const submit = (): void => {
 
                         <div class="max-w-[280px]">
                             <FieldLabel for="discount-starts-at" required>{{ t('discounts.field_starts_at') }}</FieldLabel>
-                            <TextInput id="discount-starts-at" v-model="form.starts_at" type="datetime-local" :invalid="!!form.errors.starts_at" />
+                            <DateTimeInput id="discount-starts-at" v-model="form.starts_at" :invalid="!!form.errors.starts_at" />
                             <div v-if="form.errors.starts_at" class="mt-1 text-[11px] text-danger">{{ form.errors.starts_at }}</div>
                         </div>
                     </div>

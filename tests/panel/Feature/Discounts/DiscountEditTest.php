@@ -93,6 +93,23 @@ it('accepts a handle in the shape the Filament admin produces', function () {
     expect($discount->refresh()->name)->toBe('Renamed');
 });
 
+it('stores dates sent with an offset as the matching instant on update', function () {
+    $discount = Discount::factory()->create();
+
+    $this->put(route('panel.discounts.update', $discount), [
+        'name' => $discount->name,
+        'handle' => $discount->handle,
+        'type' => $discount->type,
+        'starts_at' => '2027-06-15T09:00:00+01:00',
+        'ends_at' => '2027-08-31T22:59:00.000Z',
+    ])->assertSessionHasNoErrors();
+
+    $discount->refresh();
+
+    expect($discount->starts_at->toDateTimeString())->toBe('2027-06-15 08:00:00')
+        ->and($discount->ends_at->toDateTimeString())->toBe('2027-08-31 22:59:00');
+});
+
 it('leaves the type payload alone when an update omits it', function () {
     $discount = Discount::factory()->create([
         'type' => PercentageOff::class,

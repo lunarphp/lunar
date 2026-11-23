@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { reactive } from 'vue';
+import { nextTick, reactive } from 'vue';
 import AvailabilityCard, { type AvailabilityValue } from './AvailabilityCard.vue';
 
 const future = new Date(Date.now() + 86_400_000).toISOString();
@@ -121,5 +121,49 @@ describe('AvailabilityCard', () => {
 
         expect(values['customer_group:5'].purchasable).toBe(false);
         expect(wrapper.text()).toContain('availability.view_only');
+    });
+
+    describe('in a timezone ahead of UTC', () => {
+        // London is on BST (UTC+1) in June and July 2027.
+        beforeAll(() => {
+            vi.stubEnv('TZ', 'Europe/London');
+        });
+
+        afterAll(() => {
+            vi.unstubAllEnvs();
+        });
+
+        it('writes the schedule the staff member enters as the matching instant', async () => {
+            const values = defaults();
+            const wrapper = mountCard(values);
+
+            await wrapper.find('button[aria-expanded]').trigger('click');
+
+            const calendars = wrapper.findAll('button').filter((button) =>
+                button.attributes('aria-label') === 'availability.not_scheduled');
+            await calendars[1].trigger('click');
+            await nextTick();
+
+            const start = document.querySelector<HTMLInputElement>('#schedule-start')!;
+            start.value = '2027-07-01T09:00';
+            start.dispatchEvent(new Event('input'));
+            const end = document.querySelector<HTMLInputElement>('#schedule-end')!;
+            end.value = '2027-08-31T23:59';
+            end.dispatchEvent(new Event('input'));
+            await nextTick();
+
+            const apply = [...document.querySelectorAll('button')].find((button) =>
+                button.textContent?.includes('availability.schedule_apply'))!;
+            apply.click();
+            await nextTick();
+
+            expect(values['channel:2']).toEqual({
+                enabled: true,
+                starts_at: '2027-07-01T08:00:00.000Z',
+                ends_at: '2027-08-31T22:59:00.000Z',
+            });
+
+            wrapper.unmount();
+        });
     });
 });

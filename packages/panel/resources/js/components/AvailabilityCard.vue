@@ -2,11 +2,11 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
+import DateTimeInput from './DateTimeInput.vue';
 import Dialog from './Dialog.vue';
 import FieldLabel from './FieldLabel.vue';
 import Icon from './Icon.vue';
 import SideCard from './SideCard.vue';
-import TextInput from './TextInput.vue';
 import Tooltip from './Tooltip.vue';
 
 export interface AvailabilityRow {
@@ -78,7 +78,8 @@ const togglePurchasable = (row: AvailabilityRow): void => {
     write(row, { ...value, purchasable: !(value.purchasable ?? true) });
 };
 
-// Schedule dialog: start date (the "turns on" moment) plus an optional end.
+// Schedule dialog: start date (the "turns on" moment) plus an optional end,
+// both held as instants.
 const scheduling = ref<AvailabilityRow | null>(null);
 const scheduleStart = ref('');
 const scheduleEnd = ref('');
@@ -403,11 +404,11 @@ const calendarPillClass = (row: AvailabilityRow): string =>
         <div class="grid grid-cols-1 gap-3">
             <div>
                 <FieldLabel for="schedule-start" required>{{ t('availability.schedule_starts') }}</FieldLabel>
-                <TextInput id="schedule-start" v-model="scheduleStart" type="datetime-local" />
+                <DateTimeInput id="schedule-start" v-model="scheduleStart" />
             </div>
             <div>
                 <FieldLabel for="schedule-end">{{ t('availability.schedule_ends') }}</FieldLabel>
-                <TextInput id="schedule-end" v-model="scheduleEnd" type="datetime-local" />
+                <DateTimeInput id="schedule-end" v-model="scheduleEnd" />
             </div>
         </div>
 
