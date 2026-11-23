@@ -4,12 +4,15 @@ namespace Lunar\Panel\Dashboard;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
+use Lunar\Core\States\Order\Payment\Voided;
 use NumberFormatter;
 
 /**
@@ -17,6 +20,11 @@ use NumberFormatter;
  * in a window, valued in the default currency via the exchange rate captured
  * at placement — the same basis as the customer order-value chart, so every
  * money figure on the dashboard agrees.
+ *
+ * Revenue is net: the tax-inclusive order `total` less successful refund
+ * transactions. Orders whose payment status is voided (no transaction ever
+ * succeeded, so no money changed hands) are not sales and are left out
+ * entirely, counts included.
  *
  * Figures are aggregated in SQL (COUNT/SUM grouped in the database) rather than
  * by hydrating orders and summing in PHP: a busy store's window can hold tens
@@ -34,6 +42,7 @@ class OrderMetrics
         return Order::query()
             ->whereNotNull('placed_at')
             ->whereNull('cancelled_at')
+            ->where('payment_status', '!=', Voided::$name)
             ->where('placed_at', '>=', $start)
             ->where('placed_at', '<', $end);
     }
@@ -46,9 +55,8 @@ class OrderMetrics
      */
     public function totals(CarbonImmutable $start, CarbonImmutable $end): object
     {
-        $rows = $this->placedOrders($start, $end)
-            ->toBase()
-            ->selectRaw('new_customer, COUNT(*) as orders, COALESCE(SUM('.$this->valueInDefaultCurrency('total').'), 0) as revenue')
+        $rows = $this->revenueOrders($start, $end)
+            ->selectRaw('new_customer, COUNT(*) as orders, COALESCE(SUM('.$this->netRevenue().'), 0) as revenue')
             ->groupBy('new_customer')
             ->get();
 
@@ -87,9 +95,8 @@ class OrderMetrics
         $hourly = $range === DashboardRange::Today;
         $bucketExpression = $this->bucketExpression($hourly);
 
-        $rows = $this->placedOrders($range->start(), $range->end())
-            ->toBase()
-            ->selectRaw($bucketExpression.' as bucket, new_customer, COUNT(*) as orders, COALESCE(SUM('.$this->valueInDefaultCurrency('total').'), 0) as revenue')
+        $rows = $this->revenueOrders($range->start(), $range->end())
+            ->selectRaw($bucketExpression.' as bucket, new_customer, COUNT(*) as orders, COALESCE(SUM('.$this->netRevenue().'), 0) as revenue')
             ->groupByRaw($bucketExpression.', new_customer')
             ->get();
 
@@ -126,12 +133,46 @@ class OrderMetrics
      */
     public function revenueByColumn(CarbonImmutable $start, CarbonImmutable $end, string $column): Collection
     {
-        return $this->placedOrders($start, $end)
-            ->toBase()
-            ->selectRaw($column.' as group_value, COALESCE(SUM('.$this->valueInDefaultCurrency('total').'), 0) as revenue')
+        return $this->revenueOrders($start, $end)
+            ->selectRaw($column.' as group_value, COALESCE(SUM('.$this->netRevenue().'), 0) as revenue')
             ->groupBy($column)
             ->get()
             ->mapWithKeys(fn ($row) => [$row->group_value ?? '' => (int) round((float) $row->revenue)]);
+    }
+
+    /**
+     * The window's placed orders, one row each, left-joined to their summed
+     * successful refunds as `refunds.refunded`. The refund aggregate only
+     * reads transactions of orders in the window, through the indexed
+     * `order_id`, so its cost scales with the window rather than the ledger.
+     */
+    protected function revenueOrders(CarbonImmutable $start, CarbonImmutable $end): QueryBuilder
+    {
+        $orders = $this->placedOrders($start, $end);
+
+        $refunds = Transaction::query()
+            ->toBase()
+            ->selectRaw('order_id, SUM(amount) as refunded')
+            ->where('type', 'refund')
+            ->where('success', true)
+            ->whereIn('order_id', $this->placedOrders($start, $end)->select('id'))
+            ->groupBy('order_id');
+
+        return $orders->toBase()
+            ->leftJoinSub($refunds, 'refunds', 'refunds.order_id', '=', $orders->getModel()->qualifyColumn('id'));
+    }
+
+    /**
+     * SQL expression for an order's net revenue in the default currency:
+     * its tax-inclusive total less its successful refunds, both in the
+     * order's currency, valued at the captured exchange rate. Needs the
+     * `refunds` join from revenueOrders().
+     */
+    protected function netRevenue(): string
+    {
+        $total = (new Order)->qualifyColumn('total');
+
+        return $this->valueInDefaultCurrency('('.$total.' - COALESCE(refunds.refunded, 0))');
     }
 
     /**
