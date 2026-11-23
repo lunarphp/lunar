@@ -2,6 +2,7 @@
 import { computed, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { useToasts } from '../composables/useToasts';
 import Button from './Button.vue';
 import FieldLabel from './FieldLabel.vue';
 import Icon from './Icon.vue';
@@ -128,6 +129,8 @@ watch(() => props.prices, () => {
     rows.tiers = [...next.tiers, ...rows.tiers.filter((row) => !row.saved)];
 });
 
+const toasts = useToasts();
+
 const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
 const save = (row: WorkingRow): void => {
@@ -146,7 +149,15 @@ const save = (row: WorkingRow): void => {
         list_price: toMinor(row.compare, decimals),
     };
 
-    const options = { preserveScroll: true, preserveState: true };
+    // A refused price must not fail silently: the row keeps the typed value,
+    // so say why it did not save.
+    const options = {
+        preserveScroll: true,
+        preserveState: true,
+        onError: (errors: Record<string, string>) => {
+            Object.values(errors).forEach((message) => toasts.error(message));
+        },
+    };
 
     if (row.saved) {
         router.put(row.saved.update_url, payload, options);
@@ -247,7 +258,7 @@ const currencySymbol = (id: number): string => {
 </script>
 
 <template>
-    <Section :title="t('pricing.title')">
+    <Section :title="t('pricing.title')" immediate>
         <template #desc>{{ t('pricing.description') }}</template>
 
         <!-- Base price: one row per enabled currency -->

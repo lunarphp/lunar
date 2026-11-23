@@ -140,7 +140,6 @@ return [
 
     'notes' => 'Admin notes',
     'notes_empty' => 'No admin notes yet.',
-    'edit_notes' => 'Edit admin notes',
 
     'confirm_delete_customer' => 'Are you sure you want to delete this customer?',
     'confirm_delete_customer_title' => 'Delete this customer?',
@@ -158,5 +157,4 @@ return [
     'flash_address_deleted' => 'Address deleted.',
     'flash_user_linked' => 'User linked.',
     'flash_user_unlinked' => 'User unlinked.',
-    'flash_notes_updated' => 'Admin notes updated.',
 ];

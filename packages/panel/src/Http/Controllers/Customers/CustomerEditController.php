@@ -158,7 +158,6 @@ class CustomerEditController
                 'destroy' => route('panel.customers.destroy', $customer),
                 'addressesStore' => route('panel.customers.addresses.store', $customer),
                 'usersStore' => route('panel.customers.users.store', $customer),
-                'notesUpdate' => route('panel.customers.notes.update', $customer),
                 'draft' => route('panel.customers.draft.update', $customer),
                 'draftCommit' => route('panel.customers.draft.commit', $customer),
             ],

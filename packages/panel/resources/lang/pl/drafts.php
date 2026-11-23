@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Nie udało się zapisać Twoich zmian. Spróbuj ponownie.',
     'discard_failed' => 'Nie udało się odrzucić wersji roboczej. Spróbuj ponownie.',
     'variant_fields_drop_confirm' => 'Generowanie wariantów usuwa z tej strony pola pojedynczego wariantu, a Twoje niezapisane zmiany w nich zostaną utracone. Kontynuować?',
+    'applies_immediately' => 'Stosowane natychmiast',
+    'applies_immediately_tip' => 'Zmiany wprowadzone tutaj obowiązują od razu. Nie są częścią Twoich niezapisanych zmian, a Odrzuć ich nie cofa.',
 ];

@@ -112,7 +112,7 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
 </script>
 
 <template>
-    <Section :title="group.title">
+    <Section :title="group.title" immediate>
         <template #desc>
             {{ ordered.length ? t('media.description', { count: ordered.length }) : t('media.description_empty') }}
         </template>

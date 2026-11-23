@@ -238,6 +238,18 @@ Three ready-made components pair with the composable:
 
 All three are exported from `@lunarphp/panel` alongside `useEditDraft`, so an [add-on](/admin/extending/addons)'s own drafted edit page builds on exactly the same pieces as a first-party one.
 
+### Controls that apply immediately
+
+Some controls on an edit page are operations rather than edits: recording a stock movement, generating variants, or managing a customer's addresses changes the store as soon as it runs, and **Discard** does not undo it. Mark every such control so staff never mistake it for part of the draft. Pass `immediate` to the `Section` that holds it, which shows an "Applies immediately" marker beside the section title with a tooltip explaining it:
+
+```vue
+<Section :title="t('my-addon::loyalty.ledger_title')" immediate>
+    <!-- controls that post straight to their own endpoint -->
+</Section>
+```
+
+Where the control is not in a `Section`, render the `AppliesImmediately` component next to it. Both are exported from `@lunarphp/panel`. A slot component that adds fields to a drafted page through a [form slice](/admin/extending/form-slices) needs no marker: its values are part of the draft.
+
 ## Expiry
 
 Drafts left untouched are pruned automatically: `lunar.panel.drafts.ttl_days` (`config/lunar/panel.php`, default `7`) controls how many days of inactivity mark a draft stale enough to discard. This runs as part of the panel's scheduled maintenance, alongside its other prune tasks — no separate command to run.

@@ -80,7 +80,7 @@ it('rejects field keys outside the resource definition', function () {
     $staff = Staff::factory()->create();
     $customer = Customer::factory()->create();
 
-    draftManager()->merge(customerDraftResource(), $customer, $staff, ['admin_notes' => 'sneaky']);
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['meta' => 'sneaky']);
 })->throws(ValidationException::class);
 
 it('normalises empty strings to null for nullable text fields', function () {

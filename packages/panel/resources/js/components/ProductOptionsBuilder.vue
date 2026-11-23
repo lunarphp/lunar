@@ -340,7 +340,7 @@ const reset = (): void => {
 </script>
 
 <template>
-    <Section :title="t('products.section_options')">
+    <Section :title="t('products.section_options')" immediate>
         <template #desc>{{ t('products.section_options_description', { max: MAX_OPTIONS }) }}</template>
         <template #actions>
             <Button size="sm" icon="plus" :disabled="atCapacity" @click="openAdd">{{ t('products.options_add') }}</Button>

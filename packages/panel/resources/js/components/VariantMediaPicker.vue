@@ -66,7 +66,7 @@ const save = (): void => {
 </script>
 
 <template>
-    <Section :title="t('products.section_variant_media')">
+    <Section :title="t('products.section_variant_media')" immediate>
         <template #desc>{{ t('products.section_variant_media_description') }}</template>
         <template #actions>
             <Button v-if="dirty" size="sm" variant="primary" @click="save">{{ t('common.save') }}</Button>

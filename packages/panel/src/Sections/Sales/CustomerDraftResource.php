@@ -15,7 +15,7 @@ class CustomerDraftResource extends DraftableResource
      * submit an empty string; normalised to null so equality against the
      * stored value holds.
      */
-    private const NULLABLE_TEXT_FIELDS = ['title', 'company_name', 'tax_identifier', 'account_ref'];
+    private const NULLABLE_TEXT_FIELDS = ['title', 'company_name', 'tax_identifier', 'account_ref', 'admin_notes'];
 
     public function __construct(protected UpdatesCustomer $updatesCustomer) {}
 
@@ -33,6 +33,7 @@ class CustomerDraftResource extends DraftableResource
             'company_name',
             'tax_identifier',
             'account_ref',
+            'admin_notes',
             'customer_group_ids',
         ];
     }
@@ -47,6 +48,7 @@ class CustomerDraftResource extends DraftableResource
             'company_name' => $record->company_name,
             'tax_identifier' => $record->tax_identifier,
             'account_ref' => $record->account_ref,
+            'admin_notes' => $record->admin_notes,
             'customer_group_ids' => $this->sortedIds($record->customerGroups()->allRelatedIds()->all()),
         ];
     }
@@ -68,7 +70,10 @@ class CustomerDraftResource extends DraftableResource
 
     public function rules(Model $record): array
     {
-        return (new CustomerRequest)->rules();
+        return [
+            ...(new CustomerRequest)->rules(),
+            'admin_notes' => ['nullable', 'string', 'max:65535'],
+        ];
     }
 
     public function commit(Model $record, array $values): void
@@ -90,6 +95,7 @@ class CustomerDraftResource extends DraftableResource
             'company_name' => 'panel::customers.field_company_name',
             'tax_identifier' => 'panel::customers.field_tax_identifier',
             'account_ref' => 'panel::customers.field_account_ref',
+            'admin_notes' => 'panel::customers.notes',
             'customer_group_ids' => 'panel::customers.customer_groups',
         ];
     }

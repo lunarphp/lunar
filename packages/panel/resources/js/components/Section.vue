@@ -1,12 +1,25 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ title?: string; className?: string }>(), { className: '' });
+import AppliesImmediately from './AppliesImmediately.vue';
+
+withDefaults(
+    defineProps<{
+        title?: string;
+        className?: string;
+        /** The section's controls apply immediately rather than through the edit draft. */
+        immediate?: boolean;
+    }>(),
+    { className: '', immediate: false },
+);
 </script>
 
 <template>
     <section :class="['py-6 border-b border-line first:pt-1 last:border-b-0 last:pb-7', className]">
         <div class="flex items-start gap-4 mb-4">
             <div class="flex-1 min-w-0">
-                <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ title }}</h2>
+                <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900 flex items-center gap-2 flex-wrap">
+                    {{ title }}
+                    <AppliesImmediately v-if="immediate" />
+                </h2>
                 <div v-if="$slots.desc" class="text-xs text-ink-500 leading-normal max-w-[640px]"><slot name="desc" /></div>
             </div>
             <div v-if="$slots.actions" class="flex gap-1.5 shrink-0"><slot name="actions" /></div>

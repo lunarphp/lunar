@@ -140,7 +140,6 @@ return [
 
     'notes' => 'Notes admin',
     'notes_empty' => 'Aucune note admin pour le moment.',
-    'edit_notes' => 'Modifier les notes admin',
 
     'confirm_delete_customer' => 'Êtes-vous sûr de vouloir supprimer ce client ?',
     'confirm_delete_customer_title' => 'Supprimer ce client ?',
@@ -158,5 +157,4 @@ return [
     'flash_address_deleted' => 'Adresse supprimée.',
     'flash_user_linked' => 'Utilisateur associé.',
     'flash_user_unlinked' => 'Utilisateur dissocié.',
-    'flash_notes_updated' => 'Notes admin mises à jour.',
 ];

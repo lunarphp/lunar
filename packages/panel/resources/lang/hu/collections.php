@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Termékek hozzáadva a kollekcióhoz.',
     'flash_products_removed' => 'Termék eltávolítva a kollekcióból.',
     'flash_products_reordered' => 'Termékek átrendezve.',
-    'flash_products_reorder_not_custom' => 'A termékek kézi rendezése előtt állítsa a rendezési szabályt „egyéni” értékre.',
+    'reorder_needs_custom_sort' => 'Állítsa a rendezést „Egyéni” értékre, hogy húzással rendezhesse a termékeket.',
 ];

@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Ihre Änderungen konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.',
     'discard_failed' => 'Der Entwurf konnte nicht verworfen werden. Bitte versuchen Sie es erneut.',
     'variant_fields_drop_confirm' => 'Beim Generieren von Varianten werden die Felder der einzelnen Variante von dieser Seite entfernt, und Ihre ungespeicherten Änderungen daran gehen verloren. Fortfahren?',
+    'applies_immediately' => 'Sofort wirksam',
+    'applies_immediately_tip' => 'Änderungen hier werden sofort wirksam. Sie gehören nicht zu Ihren ungespeicherten Änderungen, und „Verwerfen“ macht sie nicht rückgängig.',
 ];

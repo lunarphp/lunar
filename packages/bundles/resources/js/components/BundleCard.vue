@@ -37,7 +37,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Section v-if="summaries || failed" :title="t('bundles::bundles.panel.card_title')">
+    <Section v-if="summaries || failed" :title="t('bundles::bundles.panel.card_title')" immediate>
         <template #desc>{{ t('bundles::bundles.panel.card_description') }}</template>
 
         <p v-if="failed" class="text-[12px] text-danger">{{ t('bundles::bundles.panel.load_failed') }}</p>

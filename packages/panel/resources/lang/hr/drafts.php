@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Vaše promjene nije bilo moguće spremiti. Pokušajte ponovno.',
     'discard_failed' => 'Skicu nije bilo moguće odbaciti. Pokušajte ponovno.',
     'variant_fields_drop_confirm' => 'Generiranje varijanti uklanja polja jedine varijante s ove stranice, a vaše nespremljene promjene u njima bit će odbačene. Nastaviti?',
+    'applies_immediately' => 'Primjenjuje se odmah',
+    'applies_immediately_tip' => 'Promjene ovdje stupaju na snagu čim ih napravite. Nisu dio vaših nespremljenih promjena i „Odbaci” ih ne poništava.',
 ];

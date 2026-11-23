@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Đã thêm sản phẩm vào bộ sưu tập.',
     'flash_products_removed' => 'Đã gỡ sản phẩm khỏi bộ sưu tập.',
     'flash_products_reordered' => 'Đã sắp xếp lại sản phẩm.',
-    'flash_products_reorder_not_custom' => 'Chuyển quy tắc sắp xếp sang "tùy chỉnh" trước khi sắp xếp sản phẩm thủ công.',
+    'reorder_needs_custom_sort' => 'Đặt cách sắp xếp thành "Tùy chỉnh" để kéo sản phẩm theo thứ tự.',
 ];

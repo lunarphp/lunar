@@ -265,7 +265,13 @@ the draft, because nothing about the record changes until save. Only the file's 
 in storage is immediate, and that is invisible.
 
 Collection product reorder follows the drafted sort: when the drafted sort is not
-"Custom", the drag handles are disabled with a hint, whatever the saved sort is.
+"Custom", the drag handles are disabled with a hint, whatever the saved sort is. The
+reorder endpoint stores positions whatever the saved sort is, since they only order the
+storefront under the custom rule.
+
+Until a surface moves into the draft in its own slice, it carries the marker too:
+associations, URL slugs, prices, images and files, and the variant image picker. Each
+later slice removes the marker from the surface it moves.
 
 ### Routes
 
@@ -375,7 +381,7 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 
 ## Implementation plan
 
-- [ ] Slice 0 — Draft layer correctness: client-supplied base, client diff authoritative
+- [x] Slice 0 — Draft layer correctness: client-supplied base, client diff authoritative
   at commit, draft `version` with the stale-draft response, no conflict when mine equals
   theirs, conflict check under lock, pristine from the sent diff, `hasDraft` and error
   toasts on failed commits and autosaves, key-set refresh after structural operations

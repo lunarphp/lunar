@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Modificările dvs. nu au putut fi salvate. Vă rugăm să încercați din nou.',
     'discard_failed' => 'Nu s-a putut renunța la ciornă. Vă rugăm să încercați din nou.',
     'variant_fields_drop_confirm' => 'Generarea variantelor elimină de pe această pagină câmpurile variantei unice, iar modificările dvs. nesalvate din acestea se vor pierde. Continuați?',
+    'applies_immediately' => 'Se aplică imediat',
+    'applies_immediately_tip' => 'Modificările de aici intră în vigoare imediat ce le faceți. Nu fac parte din modificările dvs. nesalvate, iar Renunță nu le anulează.',
 ];

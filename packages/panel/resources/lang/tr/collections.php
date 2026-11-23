@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Ürünler koleksiyona eklendi.',
     'flash_products_removed' => 'Ürün koleksiyondan kaldırıldı.',
     'flash_products_reordered' => 'Ürünler yeniden sıralandı.',
-    'flash_products_reorder_not_custom' => 'Ürünleri elle sıralamadan önce sıralama kuralını “özel” yapın.',
+    'reorder_needs_custom_sort' => 'Ürünleri sürükleyerek sıralamak için sıralamayı “Özel” olarak ayarlayın.',
 ];

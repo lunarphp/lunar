@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Your changes could not be saved. Please try again.',
     'discard_failed' => 'The draft could not be discarded. Please try again.',
     'variant_fields_drop_confirm' => 'Generating variants removes the single variant\'s fields from this page, and your unsaved changes to them will be dropped. Continue?',
+    'applies_immediately' => 'Applies immediately',
+    'applies_immediately_tip' => 'Changes here take effect as soon as you make them. They are not part of your unsaved changes, and Discard does not undo them.',
 ];

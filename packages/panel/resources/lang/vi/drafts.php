@@ -21,4 +21,6 @@ return [
     'save_failed' => 'Không thể lưu các thay đổi của bạn. Vui lòng thử lại.',
     'discard_failed' => 'Không thể hủy bỏ bản nháp. Vui lòng thử lại.',
     'variant_fields_drop_confirm' => 'Việc tạo biến thể sẽ xóa các trường của biến thể duy nhất khỏi trang này và các thay đổi chưa lưu của bạn đối với chúng sẽ bị loại bỏ. Tiếp tục?',
+    'applies_immediately' => 'Áp dụng ngay',
+    'applies_immediately_tip' => 'Các thay đổi ở đây có hiệu lực ngay khi bạn thực hiện. Chúng không thuộc các thay đổi chưa lưu của bạn và Hủy bỏ không hoàn tác được chúng.',
 ];

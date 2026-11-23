@@ -4,6 +4,7 @@ import { Deferred, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
+import AppliesImmediately from '../../components/AppliesImmediately.vue';
 import AddressFormFields from '../../components/AddressFormFields.vue';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
@@ -121,7 +122,6 @@ const props = defineProps<{
         destroy: string;
         addressesStore: string;
         usersStore: string;
-        notesUpdate: string;
         draft: string;
         draftCommit: string;
     };
@@ -161,6 +161,7 @@ const draftForm = useEditDraft({
         company_name: props.customer.company_name ?? '',
         tax_identifier: props.customer.tax_identifier ?? '',
         account_ref: props.customer.account_ref ?? '',
+        admin_notes: props.customer.admin_notes ?? '',
         customer_group_ids: props.customer.customer_groups.map((group) => group.id),
     },
     draft: props.draft,
@@ -465,25 +466,6 @@ const timelineEvents = computed(() =>
         changes: activity.changes,
     })));
 
-// Admin notes side card: view by default, pencil toggles an inline editor.
-const notesEditing = ref(false);
-const notesForm = useForm({ admin_notes: props.customer.admin_notes ?? '' });
-
-const startEditNotes = (): void => {
-    notesForm.clearErrors();
-    notesForm.admin_notes = props.customer.admin_notes ?? '';
-    notesEditing.value = true;
-};
-
-const submitNotes = (): void => {
-    notesForm.put(props.urls.notesUpdate, {
-        preserveScroll: true,
-        onSuccess: () => {
-            notesEditing.value = false;
-        },
-    });
-};
-
 // Order-value chart: the range switcher partial-reloads only the chart prop;
 // while data is in flight the previous render holds at reduced opacity.
 const chartRange = ref(props.orderChart?.range ?? '12m');
@@ -684,6 +666,9 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #addresses>
+                                    <div class="flex justify-end mb-3">
+                                        <AppliesImmediately />
+                                    </div>
                                     <div v-if="addresses.length" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                         <AddressCard v-for="address in addresses" :key="address.id" :address="cardAddress(address)">
                                             <template #actions>
@@ -719,7 +704,10 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #users>
-                                    <p class="text-xs text-ink-500 mb-3 max-w-[640px]">{{ t('customers.users_intro') }}</p>
+                                    <div class="flex items-start justify-between gap-3 mb-3">
+                                        <p class="m-0 text-xs text-ink-500 max-w-[640px]">{{ t('customers.users_intro') }}</p>
+                                        <AppliesImmediately />
+                                    </div>
                                     <div v-if="users.length" class="bg-surface border border-line rounded-xl shadow-sm overflow-hidden">
                                         <table class="w-full border-collapse text-[13px]">
                                             <thead>
@@ -872,33 +860,14 @@ const tabDefs = computed(() => [
                             </SideCard>
 
                             <SideCard :title="t('customers.notes')">
-                                <template #actions>
-                                    <Button
-                                        v-if="!notesEditing"
-                                        variant="ghost"
-                                        size="sm"
-                                        icon="edit"
-                                        :aria-label="t('customers.edit_notes')"
-                                        @click="startEditNotes"
-                                    />
-                                </template>
-                                <form v-if="notesEditing" class="flex flex-col gap-2" @submit.prevent="submitNotes">
-                                    <Textarea
-                                        v-model="notesForm.admin_notes"
-                                        :rows="4"
-                                        :aria-label="t('customers.notes')"
-                                        :invalid="!!notesForm.errors.admin_notes"
-                                    />
-                                    <div v-if="notesForm.errors.admin_notes" class="text-[11px] text-danger">{{ notesForm.errors.admin_notes }}</div>
-                                    <div class="flex gap-2">
-                                        <Button type="submit" variant="primary" size="sm" :disabled="notesForm.processing">{{ t('common.save_changes') }}</Button>
-                                        <Button type="button" size="sm" @click="notesEditing = false">{{ t('common.cancel') }}</Button>
-                                    </div>
-                                </form>
-                                <template v-else>
-                                    <p v-if="customer.admin_notes" class="m-0 text-[12.5px] text-ink-700 leading-[1.55] whitespace-pre-line">{{ customer.admin_notes }}</p>
-                                    <p v-else class="m-0 text-[12px] text-ink-500 italic">{{ t('customers.notes_empty') }}</p>
-                                </template>
+                                <Textarea
+                                    v-model="details.admin_notes"
+                                    :rows="4"
+                                    :aria-label="t('customers.notes')"
+                                    :placeholder="t('customers.notes_empty')"
+                                    :invalid="!!detailsErrors.admin_notes"
+                                />
+                                <div v-if="detailsErrors.admin_notes" class="mt-1 text-[11px] text-danger">{{ detailsErrors.admin_notes }}</div>
                             </SideCard>
                         </StickySidebar>
                     </aside>
