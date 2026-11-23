@@ -36,4 +36,10 @@ return [
         ],
     ],
 
+    'actions' => [
+        'delete' => [
+            'blocked' => 'The default channel, channels with order history and channels that a region or cart still uses cannot be deleted. Mark the channel Inactive instead.',
+        ],
+    ],
+
 ];

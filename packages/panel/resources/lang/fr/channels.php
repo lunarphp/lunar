@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '« {name} » sera définitivement supprimé.',
     'delete_blocked' => 'Impossible de supprimer un canal ayant un historique de commandes.',
     'delete_blocked_default' => "Impossible de supprimer le canal par défaut. Définissez d'abord un autre canal par défaut.",
+    'delete_blocked_in_use' => 'Impossible de supprimer un canal encore utilisé par une région ou un panier. Marquez-le plutôt comme inactif.',
 
     'flash_created' => 'Canal créé.',
     'flash_updated' => 'Canal mis à jour.',

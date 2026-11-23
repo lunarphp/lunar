@@ -9,6 +9,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Channels\DeletesChannel;
+use Lunar\Core\Exceptions\ChannelActionException;
+use Lunar\Core\Models\Channel;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ChannelTable
@@ -33,7 +37,16 @@ class ChannelTable
                 ])
                 ->toolbarActions([
                     BulkActionGroup::make([
-                        DeleteBulkAction::make(),
+                        DeleteBulkAction::make()
+                            ->using(static function (DeleteBulkAction $action, Collection $records): void {
+                                $records->each(static function (Channel $channel) use ($action): void {
+                                    try {
+                                        app(DeletesChannel::class)->execute($channel);
+                                    } catch (ChannelActionException) {
+                                        $action->reportBulkProcessingFailure('blocked', __('lunar-filament::channel.actions.delete.blocked'));
+                                    }
+                                });
+                            }),
                     ]),
                 ]),
         );

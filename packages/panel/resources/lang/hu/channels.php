@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" véglegesen eltávolításra kerül.',
     'delete_blocked' => 'Nem törölhető olyan csatorna, amelynek rendelési előzményei vannak.',
     'delete_blocked_default' => 'Az alapértelmezett csatorna nem törölhető. Előbb tegyen egy másik csatornát alapértelmezetté.',
+    'delete_blocked_in_use' => 'Nem törölhető olyan csatorna, amelyet még egy régió vagy kosár használ. Helyette állítsa inaktívra.',
 
     'flash_created' => 'A csatorna létrehozva.',
     'flash_updated' => 'A csatorna frissítve.',

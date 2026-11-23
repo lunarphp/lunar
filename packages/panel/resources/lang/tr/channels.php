@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" kalıcı olarak kaldırılacak.',
     'delete_blocked' => 'Sipariş geçmişi olan bir kanal silinemez.',
     'delete_blocked_default' => 'Varsayılan kanal silinemez. Önce başka bir kanalı varsayılan yapın.',
+    'delete_blocked_in_use' => 'Hâlâ bir bölge veya sepet tarafından kullanılan bir kanal silinemez. Bunun yerine kanalı pasif yapın.',
 
     'flash_created' => 'Kanal oluşturuldu.',
     'flash_updated' => 'Kanal güncellendi.',

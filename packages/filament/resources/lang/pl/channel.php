@@ -31,4 +31,11 @@ return [
             'label' => 'Domyślny',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Nie można usunąć domyślnego kanału, kanałów z historią zamówień ani kanałów, które są nadal używane przez region lub koszyk. Zamiast tego oznacz kanał jako nieaktywny.',
+        ],
+    ],
+
 ];

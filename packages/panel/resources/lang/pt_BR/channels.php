@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" será removido permanentemente.',
     'delete_blocked' => 'Não é possível excluir um canal com histórico de pedidos.',
     'delete_blocked_default' => 'O canal padrão não pode ser excluído. Defina outro canal como padrão primeiro.',
+    'delete_blocked_in_use' => 'Não é possível excluir um canal que ainda é usado por uma região ou um carrinho. Marque-o como inativo em vez disso.',
 
     'flash_created' => 'Canal criado.',
     'flash_updated' => 'Canal atualizado.',

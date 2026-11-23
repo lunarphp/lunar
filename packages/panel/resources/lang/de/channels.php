@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" wird dauerhaft entfernt.',
     'delete_blocked' => 'Ein Kanal mit Bestellhistorie kann nicht gelöscht werden.',
     'delete_blocked_default' => 'Der Standardkanal kann nicht gelöscht werden. Machen Sie zuerst einen anderen Kanal zum Standard.',
+    'delete_blocked_in_use' => 'Ein Kanal, der noch von einer Region oder einem Warenkorb verwendet wird, kann nicht gelöscht werden. Setzen Sie ihn stattdessen auf Inaktiv.',
 
     'flash_created' => 'Kanal erstellt.',
     'flash_updated' => 'Kanal aktualisiert.',

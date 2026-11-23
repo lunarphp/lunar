@@ -31,4 +31,11 @@ return [
             'label' => 'Zadano',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Zadani kanal, kanali s poviješću narudžbi i kanali koje još koristi regija ili košarica ne mogu se izbrisati. Umjesto toga označite kanal kao neaktivan.',
+        ],
+    ],
+
 ];

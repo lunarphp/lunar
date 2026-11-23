@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" va fi eliminat definitiv.',
     'delete_blocked' => 'Nu poți șterge un canal care are istoric de comenzi.',
     'delete_blocked_default' => 'Canalul implicit nu poate fi șters. Setați mai întâi un alt canal ca implicit.',
+    'delete_blocked_in_use' => 'Nu poți șterge un canal folosit încă de o regiune sau de un coș. Marchează-l în schimb ca inactiv.',
 
     'flash_created' => 'Canal creat.',
     'flash_updated' => 'Canal actualizat.',

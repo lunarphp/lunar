@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" bit će trajno uklonjen.',
     'delete_blocked' => 'Nije moguće izbrisati kanal s poviješću narudžbi.',
     'delete_blocked_default' => 'Zadani kanal nije moguće izbrisati. Najprije postavite drugi kanal kao zadani.',
+    'delete_blocked_in_use' => 'Nije moguće izbrisati kanal koji još koristi regija ili košarica. Umjesto toga označite ga kao neaktivan.',
 
     'flash_created' => 'Kanal je kreiran.',
     'flash_updated' => 'Kanal je ažuriran.',

@@ -1,8 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\Region;
 use Lunar\Core\Models\Staff;
 use Lunar\Tests\Panel\TestCase;
 
@@ -145,6 +150,35 @@ test('a channel with order history cannot be deleted and shows a flash error', f
         ->delete(route('panel.settings.channels.destroy', $channel))
         ->assertRedirect(route('panel.settings.channels.edit', $channel))
         ->assertSessionHas('error', 'Cannot delete a channel with order history.');
+
+    expect(Channel::find($channel->id))->not->toBeNull();
+});
+
+test('a channel that products and collections are attached to can be deleted', function () {
+    Language::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => false]);
+    $product = Product::factory()->create();
+    $collection = Collection::factory()->create();
+
+    expect($product->channels()->whereKey($channel->id)->exists())->toBeTrue()
+        ->and($collection->channels()->whereKey($channel->id)->exists())->toBeTrue();
+
+    $this->delete(route('panel.settings.channels.destroy', $channel))
+        ->assertRedirect(route('panel.settings.channels.index'))
+        ->assertSessionHas('success');
+
+    expect(Channel::find($channel->id))->toBeNull()
+        ->and(DB::table(config('lunar.database.table_prefix').'channelables')->where('channel_id', $channel->id)->exists())->toBeFalse();
+});
+
+test('a channel that a region uses cannot be deleted and shows a flash error', function () {
+    $channel = Channel::factory()->create(['default' => false]);
+    Region::factory()->create(['channel_id' => $channel->id]);
+
+    $this->from(route('panel.settings.channels.edit', $channel))
+        ->delete(route('panel.settings.channels.destroy', $channel))
+        ->assertRedirect(route('panel.settings.channels.edit', $channel))
+        ->assertSessionHas('error', __('panel::channels.delete_blocked_in_use'));
 
     expect(Channel::find($channel->id))->not->toBeNull();
 });

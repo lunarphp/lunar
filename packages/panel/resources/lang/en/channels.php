@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" will be permanently removed.',
     'delete_blocked' => 'Cannot delete a channel with order history.',
     'delete_blocked_default' => 'The default channel cannot be deleted. Make another channel the default first.',
+    'delete_blocked_in_use' => 'Cannot delete a channel that a region or cart still uses. Mark it Inactive instead.',
 
     'flash_created' => 'Channel created.',
     'flash_updated' => 'Channel updated.',
