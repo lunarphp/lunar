@@ -83,6 +83,7 @@ An added reward line stays in the cart when the cart stops earning it, and is th
   - A product the shopper adds no longer merges into a reward line.
   - `CartLine::discounts()` is removed, with no replacement. The upgrade guide lists it. No Rector rule: the `upgrade` package's rules rewrite a call into its replacement, and this relation has none.
 - **Upgrade from v1:** the ledger rewrite marks the baseline migrations as run, so an upgraded database gets the schema change from an `upgrade` package migration: add the three columns and drop `cart_line_discount`, each guarded so re-runs are no-ops. The table is dropped only when it's empty; a store that wrote rows to it keeps the table, and the upgrade guide says so. The `create_cart_line_discount_table` entry comes out of the baseline list in `packages/upgrade/config/upgrade.php` along with the migration. No data is moved: v1 has no colour option type, and v1 `BuyXGetY` didn't add lines with this marker.
+- **Alpha installs:** each fold gets a row under "Next release" in `docs/getting-started/overview/alpha-upgrade-guide.mdx`: add `product_option_values.colour`, add `added_by_discount_id` to `cart_lines` and `order_lines`, and drop `cart_line_discount` when it's empty. The `colour` row also says to copy an existing `meta['colour']` into the column, since colour options have been in the alpha since alpha.5. Each row names the `upgrade` migration as its reference.
 - **Translations:** the colour format message in `core`, in all 16 locales.
 - **Admin:** the four panel controllers. Filament doesn't read either value.
 - **Docs:** `docs/reference/discounts.mdx` describes `added_by_discount_id` in place of the meta key. `docs/reference/products.mdx` adds `colour` to the `ProductOptionValue` field table and drops the advice to keep colour hex values in `meta`.
@@ -100,6 +101,6 @@ None.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Option value colours: the column, model property, `UpdateProductOption` and its validation, the enum docblock, the four panel controllers, the translation, the upgrade migration. Tests.
-- [ ] Slice 2 — Reward lines: the two columns, model properties and relations, `BuyXGetY` writing it only on lines it creates, line identity in `GetExistingCartLine`, `MergeCart` matching and copying it, `CreateOrderLines` copying it and matching on it, removing `cart_line_discount` and `CartLine::discounts()` and its entry in `packages/upgrade/config/upgrade.php`, the upgrade migration. Tests, including a shopper adding the reward product, a guest cart with a reward line merged on sign-in, and a draft order rebuilt with both lines.
-- [ ] Slice 3 — Docs and upgrade guide.
+- [ ] Slice 1 — Option value colours: the column, model property, `UpdateProductOption` and its validation, the enum docblock, the four panel controllers, the translation, the upgrade migration, the alpha upgrade guide row. Tests.
+- [ ] Slice 2 — Reward lines: the two columns, model properties and relations, `BuyXGetY` writing it only on lines it creates, line identity in `GetExistingCartLine`, `MergeCart` matching and copying it, `CreateOrderLines` copying it and matching on it, removing `cart_line_discount` and `CartLine::discounts()` and its entry in `packages/upgrade/config/upgrade.php`, the upgrade migration, the alpha upgrade guide rows. Tests, including a shopper adding the reward product, a guest cart with a reward line merged on sign-in, and a draft order rebuilt with both lines.
+- [ ] Slice 3 — Docs and upgrade guide. (Each slice adds its own rows to the alpha upgrade guide.)
