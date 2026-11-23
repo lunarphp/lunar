@@ -56,6 +56,26 @@ class TaxZoneRequest extends FormRequest
     }
 
     /**
+     * Names for the collection fields, so a message reads "The rate name
+     * field is required." rather than quoting the raw "rates.0.name" key.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'countries.*' => __('panel::tax_zones.attribute_country'),
+            'states.*' => __('panel::tax_zones.attribute_state'),
+            'postcodes.*.country_id' => __('panel::tax_zones.attribute_country'),
+            'postcodes.*.postcode' => __('panel::tax_zones.attribute_postcode'),
+            'customer_groups.*' => __('panel::tax_zones.attribute_customer_group'),
+            'rates.*.name' => __('panel::tax_zones.attribute_rate_name'),
+            'rates.*.priority' => __('panel::tax_zones.attribute_rate_priority'),
+            'rates.*.amounts.*' => __('panel::tax_zones.attribute_rate_percentage'),
+        ];
+    }
+
+    /**
      * Extra check that amount keys are real tax class ids; array keys cannot
      * be validated with a rule.
      */

@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'татварын хувийн нэр',
+    'attribute_rate_priority' => 'татварын хувийн эрэмбэ',
+    'attribute_rate_percentage' => 'хувь',
+    'attribute_country' => 'улс',
+    'attribute_state' => 'аймаг',
+    'attribute_postcode' => 'шуудангийн код',
+    'attribute_customer_group' => 'харилцагчийн бүлэг',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',

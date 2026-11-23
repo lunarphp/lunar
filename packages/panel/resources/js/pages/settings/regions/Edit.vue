@@ -15,6 +15,7 @@ import TextInput from '../../../components/TextInput.vue';
 import Toggle from '../../../components/Toggle.vue';
 import Tooltip from '../../../components/Tooltip.vue';
 import SettingsShell from '../../../layouts/SettingsShell.vue';
+import { firstError } from '../../../lib/formErrors';
 
 type Region = {
     id: number;
@@ -120,18 +121,21 @@ const confirmDestroy = (): void => {
                     <Select v-model="form.channel_id">
                         <option v-for="channel in channels" :key="channel.id" :value="channel.id">{{ channel.name }}</option>
                     </Select>
+                    <div v-if="form.errors.channel_id" class="mt-1 text-[11px] text-danger">{{ form.errors.channel_id }}</div>
                 </div>
                 <div>
                     <FieldLabel required>{{ t('regions.field_currency') }}</FieldLabel>
                     <Select v-model="form.currency_id">
                         <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.code }} — {{ currency.name }}</option>
                     </Select>
+                    <div v-if="form.errors.currency_id" class="mt-1 text-[11px] text-danger">{{ form.errors.currency_id }}</div>
                 </div>
                 <div>
                     <FieldLabel required>{{ t('regions.field_language') }}</FieldLabel>
                     <Select v-model="form.language_id">
                         <option v-for="language in languages" :key="language.id" :value="language.id">{{ language.code }} — {{ language.name }}</option>
                     </Select>
+                    <div v-if="form.errors.language_id" class="mt-1 text-[11px] text-danger">{{ form.errors.language_id }}</div>
                 </div>
                 <div>
                     <FieldLabel>{{ t('regions.field_tax_zone') }}</FieldLabel>
@@ -139,6 +143,7 @@ const confirmDestroy = (): void => {
                         <option :value="null">{{ t('regions.no_tax_zone') }}</option>
                         <option v-for="taxZone in taxZones" :key="taxZone.id" :value="taxZone.id">{{ taxZone.name }}</option>
                     </Select>
+                    <div v-if="form.errors.tax_zone_id" class="mt-1 text-[11px] text-danger">{{ form.errors.tax_zone_id }}</div>
                 </div>
                 <div>
                     <FieldLabel :hint="t('regions.price_display_hint')">{{ t('regions.field_price_display') }}</FieldLabel>
@@ -176,6 +181,7 @@ const confirmDestroy = (): void => {
 
             <div class="max-w-[340px]">
                 <Combobox :options="availableCountries" :placeholder="t('regions.add_country_placeholder')" @change="addCountry" />
+                <div v-if="firstError(form.errors, 'countries')" class="mt-1 text-[11px] text-danger">{{ firstError(form.errors, 'countries') }}</div>
             </div>
         </Section>
 

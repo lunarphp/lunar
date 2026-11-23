@@ -187,6 +187,24 @@ test('rate percentages must be within 0-100', function () {
     ])->assertSessionHasErrors();
 });
 
+test('invalid rates are reported with human-readable field names', function () {
+    $taxZone = TaxZone::factory()->create();
+    $taxClass = TaxClass::factory()->create();
+
+    $this->put(route('panel.settings.tax-zones.update', $taxZone), [
+        'name' => $taxZone->name,
+        'zone_type' => $taxZone->zone_type,
+        'rates' => [
+            ['name' => '', 'priority' => 1, 'amounts' => [$taxClass->id => -5]],
+        ],
+    ])->assertSessionHasErrors([
+        'rates.0.name' => 'The rate name field is required.',
+        "rates.0.amounts.{$taxClass->id}" => 'The percentage field must be between 0 and 100.',
+    ]);
+
+    expect($taxZone->taxRates()->count())->toBe(0);
+});
+
 test('unsetting default on the default zone is rejected with a flash error', function () {
     $taxZone = TaxZone::factory()->create(['default' => true]);
 

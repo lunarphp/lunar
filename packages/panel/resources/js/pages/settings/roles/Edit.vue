@@ -10,6 +10,7 @@ import Section from '../../../components/Section.vue';
 import StatusBadge from '../../../components/StatusBadge.vue';
 import Tooltip from '../../../components/Tooltip.vue';
 import SettingsShell from '../../../layouts/SettingsShell.vue';
+import { firstError } from '../../../lib/formErrors';
 
 type Role = {
     id: number;
@@ -122,6 +123,7 @@ const confirmDestroy = (): void => {
                     </div>
                 </div>
             </div>
+            <div v-if="firstError(form.errors, 'permissions')" class="mt-2 text-[11px] text-danger">{{ firstError(form.errors, 'permissions') }}</div>
         </Section>
     </SettingsShell>
 

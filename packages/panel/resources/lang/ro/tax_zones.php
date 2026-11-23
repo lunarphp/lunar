@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'numele ratei',
+    'attribute_rate_priority' => 'prioritatea ratei',
+    'attribute_rate_percentage' => 'procent',
+    'attribute_country' => 'țară',
+    'attribute_state' => 'județ',
+    'attribute_postcode' => 'cod poștal',
+    'attribute_customer_group' => 'grup de clienți',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',

@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'tên thuế suất',
+    'attribute_rate_priority' => 'độ ưu tiên thuế suất',
+    'attribute_rate_percentage' => 'phần trăm',
+    'attribute_country' => 'quốc gia',
+    'attribute_state' => 'tỉnh',
+    'attribute_postcode' => 'mã bưu điện',
+    'attribute_customer_group' => 'nhóm khách hàng',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',

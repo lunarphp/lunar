@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'oran adı',
+    'attribute_rate_priority' => 'oran önceliği',
+    'attribute_rate_percentage' => 'yüzde',
+    'attribute_country' => 'ülke',
+    'attribute_state' => 'il',
+    'attribute_postcode' => 'posta kodu',
+    'attribute_customer_group' => 'müşteri grubu',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',
