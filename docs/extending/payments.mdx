@@ -236,7 +236,7 @@ Record the transaction **before** stamping `placed_at` on the order. Lunar's cus
 ### Capturing
 
 <Tip>
-If the provider already charged the card at authorization time, capturing can be skipped entirely, as with `OfflinePayment`.
+If the provider already charged the card at authorization time, record a `capture` transaction directly and capturing can be skipped. `OfflinePayment` writes no transaction at authorization; when an `offline` intent exists, its `capture()` records the `capture` transaction shown below.
 </Tip>
 
 ```php
@@ -253,6 +253,8 @@ $intent->order->transactions()->create([
     'captured_at' => now(),
 ]);
 ```
+
+When the provider declines the capture, return a `PaymentCapture` with `success: false` and the provider's reason as `message`, and write no `capture` transaction. Lunar's admin shows that message as an error. The same applies to a declined refund and `PaymentRefund`.
 
 Do not capture an amount greater than the original `intent` amount. Capturing less than the intent amount is treated by most providers as a partial refund, after which no further capture can take place against that intent.
 

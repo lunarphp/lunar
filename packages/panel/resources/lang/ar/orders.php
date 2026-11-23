@@ -176,6 +176,8 @@ return [
 
     'flash_captured' => 'Payment captured.',
     'flash_refunded' => 'Refund issued.',
+    'flash_capture_failed' => 'تعذّر استلام الدفعة.',
+    'flash_refund_failed' => 'تعذّر إصدار الاسترجاع.',
     'flash_cancelled' => 'Order cancelled.',
     'flash_closed' => 'Order closed.',
     'flash_reopened' => 'Order reopened.',

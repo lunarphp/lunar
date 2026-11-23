@@ -10,6 +10,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -184,3 +185,41 @@ test('delivery terms from the payment type are validated against the cart', func
 
     Payments::driver('cash-on-delivery')->cart(offlineCartWithAddresses())->authorize();
 })->throws(CartException::class, 'Pay on delivery needs a delivery shipping option');
+
+test('capturing an offline intent records the capture transaction', function () {
+    $order = Order::factory()->create(['total' => 12000]);
+    $intent = Transaction::factory()->for($order)->create([
+        'type' => 'intent',
+        'success' => true,
+        'driver' => 'offline',
+        'amount' => 12000,
+        'card_type' => 'visa',
+        'last_four' => '4242',
+    ]);
+
+    $result = $intent->capture(5000);
+
+    $capture = $order->transactions()->whereType('capture')->sole();
+
+    expect($result->success)->toBeTrue()
+        ->and($capture->success)->toBeTruthy()
+        ->and($capture->amount)->toBe(5000)
+        ->and($capture->driver)->toBe('offline')
+        ->and($capture->parent_transaction_id)->toBe($intent->id)
+        ->and($capture->last_four)->toBe('4242')
+        ->and($capture->captured_at)->not->toBeNull();
+});
+
+test('capturing an offline intent without an amount captures the whole authorization', function () {
+    $order = Order::factory()->create(['total' => 12000]);
+    $intent = Transaction::factory()->for($order)->create([
+        'type' => 'intent',
+        'success' => true,
+        'driver' => 'offline',
+        'amount' => 12000,
+    ]);
+
+    $intent->capture();
+
+    expect($order->transactions()->whereType('capture')->sole()->amount)->toBe(12000);
+});
