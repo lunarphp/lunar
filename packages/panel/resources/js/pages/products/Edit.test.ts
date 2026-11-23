@@ -1,10 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils';
 
+const pageProps: Record<string, unknown> = {};
+
 vi.mock('@inertiajs/vue3', () => ({
     Link: { template: '<a><slot /></a>' },
     router: { on: vi.fn(() => () => {}), delete: vi.fn(), post: vi.fn(), reload: vi.fn() },
-    usePage: () => ({ props: {} }),
+    usePage: () => ({ props: pageProps }),
 }));
 
 vi.mock('../../lib/http', async (importOriginal) => {
@@ -21,11 +23,12 @@ vi.mock('../../lib/http', async (importOriginal) => {
     };
 });
 
+import AttributeFields from '../../components/AttributeFields.vue';
 import Edit from './Edit.vue';
 
 let wrapper: VueWrapper | null = null;
 
-function mountEdit(): VueWrapper {
+function mountEdit(overrides: Record<string, unknown> = {}): VueWrapper {
     wrapper = mount(Edit, {
         props: {
             product: {
@@ -80,6 +83,8 @@ function mountEdit(): VueWrapper {
                 optionsGenerate: '',
                 variantsBulk: '',
             },
+            typeAttributeGroups: {},
+            ...overrides,
         },
         global: {
             stubs: {
@@ -112,7 +117,10 @@ function mountEdit(): VueWrapper {
 afterEach(() => {
     wrapper?.unmount();
     wrapper = null;
+    delete pageProps.formSliceValues;
 });
+
+const field = (handle: string) => ({ key: `attribute:${handle}`, handle, label: handle, required: false, type: 'text', config: {} });
 
 describe('products/Edit', () => {
     it('shows a refused status so a failed save is never silent', async () => {
@@ -122,5 +130,29 @@ describe('products/Edit', () => {
         await flushPromises();
 
         expect(page.text()).toContain('The selected status is invalid.');
+    });
+
+    it('shows the attribute fields of the selected product type without a reload', async () => {
+        pageProps.formSliceValues = { 'attribute:material': 'Steel', 'attribute:voltage': null };
+        const stockGroups = [{ handle: 'details', name: 'Details', fields: [field('material')] }];
+        const electricalGroups = [{ handle: 'details', name: 'Details', fields: [field('material'), field('voltage')] }];
+
+        const page = mountEdit({
+            draft: null,
+            attributeGroups: stockGroups,
+            typeOptions: [{ value: 1, label: 'Stock' }, { value: 2, label: 'Electrical' }],
+            typeAttributeGroups: { 1: stockGroups, 2: electricalGroups },
+        });
+
+        const attributes = page.findComponent(AttributeFields);
+        expect(attributes.props('groups')).toEqual(stockGroups);
+
+        // A value typed under the old type survives the switch on a shared field.
+        (attributes.props('values') as Record<string, unknown>)['attribute:material'] = 'Brass';
+
+        await page.find('#product-type').setValue('2');
+
+        expect(attributes.props('groups')).toEqual(electricalGroups);
+        expect(attributes.props('values')).toMatchObject({ 'attribute:material': 'Brass', 'attribute:voltage': null });
     });
 });

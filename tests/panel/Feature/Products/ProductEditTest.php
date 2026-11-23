@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\OrderLine;
@@ -73,6 +74,27 @@ it('keeps a drafted product type selectable on its own products', function () {
     $this->get(route('panel.products.edit', $this->product))
         ->assertInertia(fn (Assert $page) => $page
             ->where('typeOptions.0.value', $this->product->product_type_id)
+        );
+});
+
+it('sends the attribute fields of every selectable type and seeds their stored values', function () {
+    $shared = Attribute::factory()->modelType('product')->create(['handle' => 'material', 'type' => 'text']);
+    $voltage = Attribute::factory()->modelType('product')->create(['handle' => 'voltage', 'type' => 'text']);
+    $this->product->productType->attributeMapping()->sync([$shared->id]);
+
+    $electrical = ProductType::factory()->create();
+    $electrical->attributeMapping()->sync([$shared->id, $voltage->id]);
+
+    $this->product->update(['attribute_data' => ['material' => 'Steel', 'voltage' => '240V']]);
+
+    $handles = fn ($groups): array => collect($groups)->flatMap(fn ($group) => collect($group['fields'])->pluck('handle'))->all();
+
+    $this->get(route('panel.products.edit', $this->product))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where("typeAttributeGroups.{$this->product->product_type_id}", fn ($groups) => $handles($groups) === ['material'])
+            ->where("typeAttributeGroups.{$electrical->id}", fn ($groups) => $handles($groups) === ['material', 'voltage'])
+            ->where('formSliceValues.attribute:material', 'Steel')
+            ->where('formSliceValues.attribute:voltage', '240V')
         );
 });
 

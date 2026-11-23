@@ -87,6 +87,7 @@ const props = defineProps<{
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
     brandOptions: { value: number; label: string }[];
     typeOptions: { value: number; label: string }[];
+    typeAttributeGroups: Record<number, AttributeGroup[]>;
     collections: CollectionOption[];
     associationTypes: { type: string; label: string }[];
     associationProducts: Record<number, AssociationProduct>;
@@ -183,6 +184,12 @@ const conflictField = (key: string): ConflictField | undefined => {
         ? { options: selects[key] }
         : priceConflictField(key, 'variant:price:', props.currencies, props.customerGroups, t);
 };
+
+// The attribute fields follow the selected type, not the saved one, so a
+// type change shows its fields right away. Every product attribute's value
+// is seeded, and a field shared by both types keeps what was entered.
+const selectedAttributeGroups = computed<AttributeGroup[]>(() =>
+    props.typeAttributeGroups[Number(details.product_type_id)] ?? props.attributeGroups);
 
 // Availability rows have no per-row error slot; their commit errors list
 // under the card so a refused save is never silent.
@@ -391,7 +398,7 @@ const timelineEvents = computed(() =>
                         <MediaGroups :groups="mediaGroups" />
 
                         <AttributeFields
-                            :groups="attributeGroups"
+                            :groups="selectedAttributeGroups"
                             :values="details"
                             :errors="detailsErrors"
                             :languages="languages"

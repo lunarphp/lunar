@@ -7,6 +7,7 @@ use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\Models\EditDraft;
@@ -127,6 +128,44 @@ it('commits product attribute values into attribute data', function () {
     ])->assertOk();
 
     expect($this->product->refresh()->attr('material'))->toBe('Titanium');
+});
+
+it('validates and saves attributes against the product type the commit selects', function () {
+    $shared = Attribute::factory()->modelType('product')->create(['handle' => 'material', 'type' => 'text']);
+    $finish = Attribute::factory()->modelType('product')->create(['handle' => 'finish', 'type' => 'text', 'required' => true]);
+    $voltage = Attribute::factory()->modelType('product')->create(['handle' => 'voltage', 'type' => 'text', 'required' => true]);
+    $this->product->productType->attributeMapping()->sync([$shared->id, $finish->id]);
+    $this->product->update(['attribute_data' => ['material' => 'Steel', 'finish' => 'Matte']]);
+
+    $electrical = ProductType::factory()->create();
+    $electrical->attributeMapping()->sync([$shared->id, $voltage->id]);
+
+    // The new type's required attribute is enforced, and the old type's
+    // required attribute no longer is.
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['product_type_id' => $electrical->id, 'attribute:finish' => ''],
+        'rebase' => [],
+    ])
+        ->assertJsonValidationErrors('attribute:voltage')
+        ->assertJsonMissingValidationErrors('attribute:finish');
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => [
+            'product_type_id' => $electrical->id,
+            'attribute:material' => 'Brass',
+            'attribute:voltage' => '240V',
+            'attribute:finish' => 'Gloss',
+        ],
+        'rebase' => [],
+    ])->assertOk();
+
+    $this->product->refresh();
+
+    // A value for an attribute the new type does not carry is not written.
+    expect($this->product->product_type_id)->toBe($electrical->id)
+        ->and($this->product->attr('material'))->toBe('Brass')
+        ->and($this->product->attr('voltage'))->toBe('240V')
+        ->and($this->product->attr('finish'))->toBe('Matte');
 });
 
 it('commits drafted availability rows including the purchasable flag', function () {

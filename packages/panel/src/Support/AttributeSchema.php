@@ -28,8 +28,22 @@ class AttributeSchema
      */
     public function groups(Model $model): array
     {
+        return $this->groupsFor($this->attributes($model));
+    }
+
+    /**
+     * The given attributes grouped for rendering, for a set that does not
+     * hang off one model's own mapping (each product type's product
+     * attributes, offered while the type is being changed). Each attribute
+     * needs its group loaded.
+     *
+     * @param  Collection<int, Attribute>  $attributes
+     * @return array<int, array{handle: string, name: string, fields: array<int, array<string, mixed>>}>
+     */
+    public function groupsFor(Collection $attributes): array
+    {
         return $this->grouped(
-            $this->attributes($model),
+            $attributes,
             'fields',
             fn (Attribute $attribute) => $this->field($attribute),
         );
@@ -96,9 +110,31 @@ class AttributeSchema
      */
     public function values(Model $model): array
     {
+        return $this->valuesOf($model, $this->attributes($model));
+    }
+
+    /**
+     * Current values for every attribute attached to the model's morph type,
+     * regardless of its own mapping — the counterpart of fieldsForMorph(), so
+     * a product's form holds a stored value for each attribute a change of
+     * product type could bring onto the page.
+     *
+     * @return array<string, mixed>
+     */
+    public function valuesForMorph(Model $model): array
+    {
+        return $this->valuesOf($model, $this->morphAttributes($model->getMorphClass()));
+    }
+
+    /**
+     * @param  Collection<int, Attribute>  $attributes
+     * @return array<string, mixed>
+     */
+    protected function valuesOf(Model $model, Collection $attributes): array
+    {
         $stored = $model->attribute_data;
 
-        return $this->attributes($model)
+        return $attributes
             ->mapWithKeys(fn (Attribute $attribute) => [
                 static::PREFIX.$attribute->handle => $this->raw($stored?->get($attribute->handle)?->jsonSerialize()),
             ])
@@ -185,9 +221,20 @@ class AttributeSchema
      */
     public function rules(Model $model): array
     {
+        return $this->rulesFor($this->attributes($model));
+    }
+
+    /**
+     * Validation rules for the given attributes, keyed `attribute:{handle}`.
+     *
+     * @param  Collection<int, Attribute>  $attributes
+     * @return array<string, array<int, mixed>>
+     */
+    public function rulesFor(Collection $attributes): array
+    {
         $rules = [];
 
-        foreach ($this->attributes($model) as $attribute) {
+        foreach ($attributes as $attribute) {
             $token = $this->token($attribute);
             $key = static::PREFIX.$attribute->handle;
 
@@ -236,7 +283,26 @@ class AttributeSchema
      */
     public function tokens(Model $model): array
     {
-        return $this->attributes($model)
+        return $this->tokensOf($this->attributes($model));
+    }
+
+    /**
+     * Field-type tokens for every attribute attached to a morph type.
+     *
+     * @return array<string, string>
+     */
+    public function tokensForMorph(string $morphType): array
+    {
+        return $this->tokensOf($this->morphAttributes($morphType));
+    }
+
+    /**
+     * @param  Collection<int, Attribute>  $attributes
+     * @return array<string, string>
+     */
+    protected function tokensOf(Collection $attributes): array
+    {
+        return $attributes
             ->mapWithKeys(fn (Attribute $attribute) => [static::PREFIX.$attribute->handle => $this->token($attribute)])
             ->all();
     }
@@ -317,6 +383,19 @@ class AttributeSchema
     protected function dropdownValues(Attribute $attribute): array
     {
         return collect($this->dropdownOptions($attribute))->pluck('value')->all();
+    }
+
+    /**
+     * Every attribute attached to a morph type, in position order.
+     *
+     * @return Collection<int, Attribute>
+     */
+    protected function morphAttributes(string $morphType): Collection
+    {
+        return Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $morphType))
+            ->orderBy('position')
+            ->get();
     }
 
     /**
