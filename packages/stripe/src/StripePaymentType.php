@@ -603,53 +603,62 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
             'processing_at' => now(),
         ]);
 
-        if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
-            $this->paymentIntent = $this->stripe->paymentIntents->capture($paymentIntentId);
-        }
-
-        // Sync the Stripe-side status before any local order work so the row
-        // never disagrees with reality even when downstream steps throw.
-        $paymentIntentModel->status = $this->paymentIntent->status;
-        $paymentIntentModel->save();
-
-        if (! $this->order) {
-            try {
-                $this->order = $this->cart->createOrder();
-                $paymentIntentModel->order_id = $this->order->id;
-                $paymentIntentModel->save();
-            } catch (DisallowMultipleCartOrdersException|CartException $e) {
-                if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
-                    $paymentIntentModel->processed_at = now();
-                    $paymentIntentModel->save();
-
-                    OrphanedPaymentIntentDetected::dispatch(
-                        $paymentIntentId,
-                        $this->cart?->id,
-                        $e->getMessage(),
-                    );
-                }
-
-                $failure = new PaymentAuthorize(
-                    success: false,
-                    message: $e->getMessage(),
-                    orderId: $this->order?->id,
-                    paymentType: 'stripe'
-                );
-                PaymentAttemptEvent::dispatch($failure);
-
-                return $failure;
+        // A Stripe or database error from here on leaves the outcome unknown.
+        // Clear processing_at so the webhook dispatches its retry, and leave
+        // processed_at unset so a repeat authorize() is not refused.
+        try {
+            if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
+                $this->paymentIntent = $this->stripe->paymentIntents->capture($paymentIntentId);
             }
-        }
 
-        $order = (new UpdateOrderFromIntent)->execute(
-            $this->order,
-            $this->paymentIntent
-        );
+            // Sync the Stripe-side status before any local order work so the row
+            // never disagrees with reality even when downstream steps throw.
+            $paymentIntentModel->status = $this->paymentIntent->status;
+            $paymentIntentModel->save();
 
-        // Under the manual policy the merchant captures from the admin later,
-        // so an authorised standard intent places the order without capturing.
-        if (! $order->placed_at && $this->policy === 'manual' && $this->paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE) {
-            $order->update(['placed_at' => now()]);
+            if (! $this->order) {
+                try {
+                    $this->order = $this->cart->createOrder();
+                    $paymentIntentModel->order_id = $this->order->id;
+                    $paymentIntentModel->save();
+                } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                    if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
+                        $paymentIntentModel->processed_at = now();
+                        $paymentIntentModel->save();
+
+                        OrphanedPaymentIntentDetected::dispatch(
+                            $paymentIntentId,
+                            $this->cart?->id,
+                            $e->getMessage(),
+                        );
+                    }
+
+                    $failure = new PaymentAuthorize(
+                        success: false,
+                        message: $e->getMessage(),
+                        orderId: $this->order?->id,
+                        paymentType: 'stripe'
+                    );
+                    PaymentAttemptEvent::dispatch($failure);
+
+                    return $failure;
+                }
+            }
+
+            $order = (new UpdateOrderFromIntent)->execute(
+                $this->order,
+                $this->paymentIntent
+            );
+
+            // Under the manual policy the merchant captures from the admin later,
+            // so an authorised standard intent places the order without capturing.
+            if (! $order->placed_at && $this->policy === 'manual' && $this->paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE) {
+                $order->update(['placed_at' => now()]);
+            }
+        } catch (\Throwable $e) {
+            $paymentIntentModel->update(['processing_at' => null]);
+
+            throw $e;
         }
 
         $response = new PaymentAuthorize(

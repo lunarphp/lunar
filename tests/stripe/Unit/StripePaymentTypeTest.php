@@ -9,11 +9,15 @@ use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
+use Lunar\Stripe\MockClient;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 use Lunar\Tests\Stripe\Utils\StripeFake;
+use Stripe\ApiRequestor;
+use Stripe\Exception\ApiConnectionException;
+use Stripe\HttpClient\ClientInterface;
 
 use function Pest\Laravel\assertDatabaseHas;
 
@@ -682,4 +686,48 @@ it('refuses to place another cart\'s captured hold', function () {
         ->and($otherDraft->refresh()->placed_at)->toBeNull()
         ->and($placed->success)->toBeTrue()
         ->and($placed->orderId)->toBe($ownerDraft->id);
+});
+
+it('leaves the intent retryable when listing its charges fails, so a retry places the order', function () {
+    $cart = CartBuilder::build();
+    $mock = StripeFake::forCart($cart);
+
+    // The first charges list fails the way stripe-php reports a dropped
+    // connection; every other request goes to the usual fake.
+    $flaky = new class($mock) implements ClientInterface
+    {
+        public bool $failed = false;
+
+        public function __construct(private MockClient $inner) {}
+
+        public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
+        {
+            if (! $this->failed && $method === 'get' && str_ends_with((string) parse_url($absUrl, PHP_URL_PATH), '/v1/charges')) {
+                $this->failed = true;
+
+                throw new ApiConnectionException('Could not connect to Stripe (Operation timed out).');
+            }
+
+            return $this->inner->request($method, $absUrl, $headers, $params, $hasFile, $apiMode);
+        }
+    };
+
+    ApiRequestor::setHttpClient($flaky);
+
+    expect(fn () => (new StripePaymentType)->cart($cart)->withData(['payment_intent' => 'PI_CAPTURE'])->authorize())
+        ->toThrow(ApiConnectionException::class);
+
+    $row = StripePaymentIntent::where('intent_id', 'PI_CAPTURE')->first();
+
+    // Neither processed nor marked as processing, so the webhook dispatches
+    // its retry and a repeat authorize() is not refused.
+    expect($flaky->failed)->toBeTrue()
+        ->and($row->processed_at)->toBeNull()
+        ->and($row->processing_at)->toBeNull()
+        ->and($cart->refresh()->draftOrder->placed_at)->toBeNull();
+
+    $retry = (new StripePaymentType)->cart($cart->refresh())->withData(['payment_intent' => 'PI_CAPTURE'])->authorize();
+
+    expect($retry->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull();
 });
