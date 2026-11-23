@@ -75,6 +75,8 @@ describe('ProductPickerDialog', () => {
         addButton.click();
         await nextTick();
 
-        expect(dialog.emitted('add')).toEqual([[[2]]]);
+        const [ids, options] = dialog.emitted('add')![0] as [number[], { id: number }[]];
+        expect(ids).toEqual([2]);
+        expect(options.map((option) => option.id)).toEqual([2]);
     });
 });

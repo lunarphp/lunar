@@ -60,27 +60,29 @@ class Dissociate implements ShouldQueue
     }
 
     /**
-     * Execute the job.
-     *
-     * @return void
+     * Remove the targets from the product's associations of this type, or of
+     * every type when none is given, through the sync action.
      */
-    public function handle()
+    public function handle(): void
     {
-        DB::transaction(function () {
-            $associations = $this->product->associations()->whereIn(
-                'product_target_id',
-                $this->targets->pluck('id')
-            )->when(
-                $this->type,
-                fn ($query) => $query->where(
-                    'type',
-                    is_string($this->type) ? $this->type : $this->type->value
-                )
-            )->get();
+        $targetIds = $this->targets->map(fn ($model) => (int) $model->id)->all();
 
-            // Delete per-model so the deleted event fires and cache invalidation
-            // (both products) cascades; a bulk delete() would bypass it.
-            $associations->each->delete();
+        $types = $this->type
+            ? [is_string($this->type) ? $this->type : $this->type->value]
+            : $this->product->associations()->distinct()->pluck('type')->map(fn ($type) => (string) $type)->all();
+
+        DB::transaction(function () use ($types, $targetIds): void {
+            foreach ($types as $type) {
+                $remaining = $this->product->associations()
+                    ->where('type', $type)
+                    ->pluck('product_target_id')
+                    ->map(fn ($id) => (int) $id)
+                    ->reject(fn (int $id): bool => in_array($id, $targetIds, true))
+                    ->values()
+                    ->all();
+
+                $this->product->syncAssociations($type, $remaining);
+            }
         });
     }
 }

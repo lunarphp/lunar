@@ -29,6 +29,7 @@ use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Sections\Catalog\Slices\ProductAssociationSlice;
 use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
@@ -99,20 +100,17 @@ class ProductEditController
 
         $defaultCurrency = Currency::getDefault();
 
-        $associations = $product->associations()
-            ->with(['target.thumbnail', 'target.variants.prices', 'target.brand:id,name'])
-            ->get()
-            ->groupBy(fn (ProductAssociation $association) => (string) $association->type)
-            ->map(fn ($group) => $group->map(fn (ProductAssociation $association) => [
-                'id' => $association->id,
-                'product_id' => $association->target->id,
-                'name' => $association->target->translate('name'),
-                'price' => $this->associationFromPrice($association->target, $defaultCurrency),
-                'variants_count' => $association->target->variants->count(),
-                'thumbnail' => $association->target->thumbnail?->getAvailableUrl(['small']),
-                'status' => $association->target->status->getValue(),
-                'destroy_url' => route('panel.products.associations.destroy', [$product, $association]),
-            ])->values());
+        // The linked ids themselves seed the form as association:{type} slice
+        // values; this is the display data for every product they can name,
+        // including ids only a restored draft holds.
+        $associationProducts = $this->associationProducts(
+            $product,
+            collect($draft?->data ?? [])
+                ->filter(fn (mixed $value, string $key): bool => str_starts_with($key, ProductAssociationSlice::KEY.':'))
+                ->flatten()
+                ->all(),
+            $defaultCurrency,
+        );
 
         $measurements = Converter::getMeasurements();
 
@@ -243,12 +241,12 @@ class ProductEditController
             // One group per registered association type (the configured enum,
             // via ProductAssociation::getTypes()), so a consumer's custom type
             // shows here without touching the panel.
-            'associations' => collect(ProductAssociation::getTypes())
+            'associationTypes' => collect(ProductAssociation::getTypes())
                 ->map(fn (string $label, string $type): array => [
                     'type' => $type,
                     'label' => $label,
-                    'entries' => $associations->get($type, collect())->values(),
                 ])->values(),
+            'associationProducts' => $associationProducts ?: (object) [],
             'storefrontUrl' => config('lunar.panel.storefront_url'),
             'activities' => $activities,
             'urls' => [
@@ -259,8 +257,6 @@ class ProductEditController
                 'draft' => route('panel.products.draft.update', $product),
                 'draftCommit' => route('panel.products.draft.commit', $product),
                 'urlsStore' => route('panel.products.urls.store', $product),
-                'associationsStore' => route('panel.products.associations.store', $product),
-                'associationsReorder' => route('panel.products.associations.reorder', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
                 'productsSearch' => route('panel.catalog.products.search'),
                 'productOptionsSearch' => route('panel.catalog.product-options.search'),
@@ -284,6 +280,37 @@ class ProductEditController
             ->distinct()
             ->pluck('purchasable_id')
             ->map(fn ($id) => (int) $id)
+            ->all();
+    }
+
+    /**
+     * Display data for the product's linked targets and any extra ids, keyed
+     * by product id. Ids with no product are left out, so a draft naming a
+     * since-deleted product renders without it.
+     *
+     * @param  array<int, mixed>  $extraIds
+     * @return array<int, array<string, mixed>>
+     */
+    protected function associationProducts(Product $product, array $extraIds, ?Currency $currency): array
+    {
+        $ids = $product->associations()->pluck('product_target_id')
+            ->merge($extraIds)
+            ->map(fn (mixed $id): int => (int) $id)
+            ->unique()
+            ->values();
+
+        return Product::query()
+            ->whereIn('id', $ids)
+            ->with(['thumbnail', 'variants.prices'])
+            ->get()
+            ->mapWithKeys(fn (Product $target): array => [$target->id => [
+                'id' => $target->id,
+                'name' => $target->translate('name'),
+                'price' => $this->associationFromPrice($target, $currency),
+                'variants_count' => $target->variants->count(),
+                'thumbnail' => $target->thumbnail?->getAvailableUrl(['small']),
+                'status' => $target->status->getValue(),
+            ]])
             ->all();
     }
 

@@ -25,7 +25,6 @@ use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionProductsController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionUrlController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
-use Lunar\Panel\Http\Controllers\Products\ProductAssociationController;
 use Lunar\Panel\Http\Controllers\Products\ProductBulkStatusController;
 use Lunar\Panel\Http\Controllers\Products\ProductCreateController;
 use Lunar\Panel\Http\Controllers\Products\ProductEditController;
@@ -54,6 +53,7 @@ use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Search\Sources\BrandSearchSource;
 use Lunar\Panel\Search\Sources\CollectionSearchSource;
 use Lunar\Panel\Search\Sources\ProductSearchSource;
+use Lunar\Panel\Sections\Catalog\Slices\ProductAssociationSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductAttributeSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductChannelSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductCustomerGroupSlice;
@@ -164,6 +164,7 @@ class CatalogSection extends Section
     {
         return [
             ProductAttributeSlice::class,
+            ProductAssociationSlice::class,
             ProductChannelSlice::class,
             ProductCustomerGroupSlice::class,
             SoleVariantSlice::class,
@@ -262,10 +263,6 @@ class CatalogSection extends Section
                     Route::post('/{product}/media/reorder', [ProductMediaController::class, 'reorder'])->name('media.reorder');
                     Route::put('/{product}/media/{media}', [ProductMediaController::class, 'update'])->name('media.update');
                     Route::delete('/{product}/media/{media}', [ProductMediaController::class, 'destroy'])->name('media.destroy');
-
-                    Route::post('/{product}/associations', [ProductAssociationController::class, 'store'])->name('associations.store');
-                    Route::post('/{product}/associations/reorder', [ProductAssociationController::class, 'reorder'])->name('associations.reorder');
-                    Route::delete('/{product}/associations/{association}', [ProductAssociationController::class, 'destroy'])->name('associations.destroy');
 
                     Route::post('/{product}/variants/{productVariant}/prices', [ProductPriceController::class, 'store'])->name('variants.prices.store');
                     Route::put('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'update'])->name('variants.prices.update');

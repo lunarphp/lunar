@@ -391,7 +391,7 @@ field-like controls.
   validation errors on every operation, collection reorder following the drafted sort
   with a hint when it is not Custom; `admin_notes` as a customer draft field with the
   notes route removed; 16-locale copy.
-- [ ] Slice 2 — `SyncsProductAssociations` action and verb, the jobs delegating to it,
+- [x] Slice 2 — `SyncsProductAssociations` action and verb, the jobs delegating to it,
   the `association` slice, the associations card on `useFormSlice`, removal of the
   association routes and controller; draft feature tests (autosave, per-type conflict,
   commit ordering, no duplicate rows) and a vitest pass over the card.

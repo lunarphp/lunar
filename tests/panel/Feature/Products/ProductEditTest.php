@@ -41,7 +41,8 @@ it('renders the edit page with product, availability and option payloads', funct
             ->has('availability.customer_groups')
             ->has('brandOptions')
             ->has('typeOptions')
-            ->has('associations')
+            ->has('associationTypes')
+            ->has('associationProducts')
             ->has('urls.draft')
         );
 });

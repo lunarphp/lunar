@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\Actions\Products\SyncsProductAssociations;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\ProductFactory;
@@ -194,6 +195,19 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
     public function dissociate(mixed $product, ProvidesProductAssociationType|string|null $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
+    }
+
+    /**
+     * Make this product's associations of one type exactly the given target
+     * ids, in order.
+     *
+     * @param  array<int, int>  $targetIds
+     */
+    public function syncAssociations(ProvidesProductAssociationType|string $type, array $targetIds): static
+    {
+        app(SyncsProductAssociations::class)->execute($this, $type, $targetIds);
+
+        return $this;
     }
 
     public function customerGroups(): BelongsToMany
