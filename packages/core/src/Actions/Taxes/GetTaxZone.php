@@ -17,7 +17,7 @@ class GetTaxZone implements GetsTaxZone
     public function execute(?Addressable $address = null): ?TaxZone
     {
         if ($address && $address->postcode) {
-            $postcodeZone = $this->getTaxZonePostcode->execute($address->postcode);
+            $postcodeZone = $this->getTaxZonePostcode->execute($address->postcode, $address->country_id);
             if ($postcodeZone) {
                 return $postcodeZone->taxZone;
             }

@@ -30,6 +30,7 @@ test('can prioritize taxzones', function () {
 
     $taxZonePostcode = TaxZonePostcode::factory()->create([
         'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => $country->id,
         'postcode' => $postcode,
     ]);
 
@@ -128,4 +129,64 @@ test('can ignore a state tax zone from another country', function () {
     $zone = app(GetTaxZone::class)->execute($address);
 
     expect($zone->id)->toEqual($auZone->tax_zone_id);
+});
+
+test('a postcode zone that only shares the first character does not hide the country zone', function () {
+    $country = Country::factory()->create(['name' => 'United Arab Emirates']);
+
+    TaxZonePostcode::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => null,
+        'postcode' => 'S1 2AB',
+    ]);
+
+    $taxZoneCountry = TaxZoneCountry::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => $country->id,
+    ]);
+
+    TaxZone::factory(['default' => true])->create();
+
+    foreach (['00000', 'SW1A 0AA'] as $postcode) {
+        $address = Address::factory()->create([
+            'postcode' => $postcode,
+            'state' => null,
+            'country_id' => $country->id,
+        ]);
+
+        expect(app(GetTaxZone::class)->execute($address)->id)->toEqual($taxZoneCountry->tax_zone_id);
+    }
+});
+
+test('a postcode zone applies only to addresses in its own country', function () {
+    $uk = Country::factory()->create(['name' => 'United Kingdom']);
+    $us = Country::factory()->create(['name' => 'United States']);
+
+    $ukPostcodes = TaxZonePostcode::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => $uk->id,
+        'postcode' => 'SW*',
+    ]);
+
+    // A postcode zone with no country keeps applying wherever its pattern matches.
+    $unscoped = TaxZonePostcode::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => null,
+        'postcode' => '90210',
+    ]);
+
+    $usCountry = TaxZoneCountry::factory()->create([
+        'tax_zone_id' => TaxZone::factory(['default' => false]),
+        'country_id' => $us->id,
+    ]);
+
+    TaxZone::factory(['default' => true])->create();
+
+    $zoneFor = fn (string $postcode, Country $country) => app(GetTaxZone::class)->execute(
+        Address::factory()->create(['postcode' => $postcode, 'state' => null, 'country_id' => $country->id])
+    )->id;
+
+    expect($zoneFor('SW1A 0AA', $uk))->toEqual($ukPostcodes->tax_zone_id)
+        ->and($zoneFor('SW1A 0AA', $us))->toEqual($usCountry->tax_zone_id)
+        ->and($zoneFor('90210', $us))->toEqual($unscoped->tax_zone_id);
 });

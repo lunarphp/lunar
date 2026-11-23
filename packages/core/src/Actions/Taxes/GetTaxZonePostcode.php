@@ -11,12 +11,16 @@ class GetTaxZonePostcode
     /**
      * Execute the action.
      *
+     * A postcode only identifies a place within its country, so when the
+     * country is known, only that country's postcode zones, and zones with no
+     * country, are considered.
+     *
      * @param  string  $postcode
      * @return null|TaxZonePostcode
      */
-    public function execute($postcode)
+    public function execute($postcode, ?int $countryId = null)
     {
-        $postcodeZone = $this->getZoneMatches($postcode);
+        $postcodeZone = $this->getZoneMatches($postcode, $countryId);
 
         if ($postcodeZone instanceof TaxZonePostcode) {
             return $postcodeZone;
@@ -26,19 +30,19 @@ class GetTaxZonePostcode
             return null;
         }
 
+        // The candidates only share the postcode's first character, so a zone
+        // whose pattern does not match scores 0 and must not be returned: the
+        // caller then falls through to the state, country and default zones.
         $match = $postcodeZone->map(function ($pZone) use ($postcode) {
             return [
                 'postcode' => $pZone,
                 'matches' => $this->matchWildcard($pZone->postcode, $postcode),
             ];
-        })->sort(fn ($current, $next) => $current['matches'] < $next['matches'])->first();
+        })->filter(fn (array $candidate): bool => $candidate['matches'] > 0)
+            ->sortByDesc('matches')
+            ->first();
 
-        // Give up, use default...
-        if (! $match) {
-            return null;
-        }
-
-        return $match ? $match['postcode'] : null;
+        return $match['postcode'] ?? null;
     }
 
     /**
@@ -47,14 +51,16 @@ class GetTaxZonePostcode
      * @param  string  $postcode
      * @return TaxZonePostcode|Collection
      */
-    protected function getZoneMatches($postcode)
+    protected function getZoneMatches($postcode, ?int $countryId = null)
     {
         $postcode = (string) $postcode;
 
         $query = TaxZonePostcode::whereHas(
             'taxZone',
             fn (Builder $query) => $query->where('active', true)
-        );
+        )->when($countryId, fn (Builder $query) => $query->where(
+            fn (Builder $query) => $query->where('country_id', $countryId)->orWhereNull('country_id')
+        ));
 
         if ($zone = $query->clone()->wherePostcode($postcode)->first()) {
             return $zone;

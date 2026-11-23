@@ -127,7 +127,7 @@ Lunar\Core\Models\TaxZonePostcode
 | `id` | `id` | Primary key |
 | `public_id` | `ulid` | Publicly exposable identifier |
 | `tax_zone_id` | `foreignId` `nullable` | |
-| `country_id` | `foreignId` `nullable` | |
+| `country_id` | `foreignId` `nullable` | The country the postcode belongs to. A row without one matches addresses in any country. |
 | `postcode` | `string` | Supports wildcards, e.g. `9021*` |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
@@ -150,7 +150,7 @@ Lunar\Core\Models\TaxZoneCustomerGroup
 
 `Lunar\Core\Actions\Taxes\GetTaxZone` resolves the tax zone for an address, checking each type of zone in turn and returning the first match:
 
-1. **Postcode** — matched against the address postcode, honoring wildcards.
+1. **Postcode** — matched against the address postcode, honoring wildcards, scoped to the address country. A postcode zone applies only when its pattern matches; when none matches, resolution moves on to the state.
 2. **State** — matched against the address state, scoped to the address country.
 3. **Country** — matched against the address country.
 4. **Default** — the tax zone flagged as the default, returned when nothing above matches.
