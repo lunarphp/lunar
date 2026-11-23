@@ -16,6 +16,7 @@ return [
     'field_first_name' => 'First name',
     'field_last_name' => 'Last name',
     'field_email' => 'Email',
+    'email_belongs_to_deleted' => 'Acest e-mail aparține unui membru al personalului șters și nu poate fi refolosit.',
     'field_password' => 'Password',
     'password_hint' => 'leave blank to keep the current password',
     'field_roles' => 'Roles',

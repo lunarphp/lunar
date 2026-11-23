@@ -16,6 +16,7 @@ return [
     'field_first_name' => 'First name',
     'field_last_name' => 'Last name',
     'field_email' => 'Email',
+    'email_belongs_to_deleted' => 'Dit e-mailadres hoort bij een verwijderd personeelslid en kan niet opnieuw worden gebruikt.',
     'field_password' => 'Password',
     'password_hint' => 'leave blank to keep the current password',
     'field_roles' => 'Roles',

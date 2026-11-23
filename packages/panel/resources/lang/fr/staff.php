@@ -16,6 +16,7 @@ return [
     'field_first_name' => 'First name',
     'field_last_name' => 'Last name',
     'field_email' => 'Email',
+    'email_belongs_to_deleted' => 'Cette adresse e-mail appartient à un membre du personnel supprimé et ne peut pas être réutilisée.',
     'field_password' => 'Password',
     'password_hint' => 'leave blank to keep the current password',
     'field_roles' => 'Roles',
