@@ -199,7 +199,7 @@ class ProductEditController
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
-            'mediaGroups' => MediaGroups::for($product, 'panel.products'),
+            'mediaGroups' => MediaGroups::for($product, 'panel.products', $draft),
             // Attribute, availability and sole-variant values seed the form
             // through the shared formSliceValues prop.
             'attributeGroups' => $attributeSchema->groups($product),

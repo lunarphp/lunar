@@ -1,42 +1,36 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Button from './Button.vue';
 import Icon from './Icon.vue';
 import Section from './Section.vue';
+import { useFormSlice } from '../composables/useFormSlice';
 
 export interface VariantMediaItem {
     id: number;
     url: string | null;
     name: string | null;
     alt: string | null;
-    selected: boolean;
-    position: number | null;
 }
 
-const props = defineProps<{
-    // The product's media pool with this variant's current selection state.
+defineProps<{
+    // The product's media pool to pick from.
     pool: VariantMediaItem[];
-    syncUrl: string;
 }>();
 
 const { t } = useI18n();
 
-// Ordered selection; the first image is the variant's primary.
-const seed = (): number[] =>
-    props.pool
-        .filter((item) => item.selected)
-        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-        .map((item) => item.id);
+// The ordered selection is the draft's variant_media:ids value, so picking
+// and reordering land with the page's Save; the first is the primary.
+const slice = useFormSlice<{ ids: number[] }>('variant_media');
 
-const selection = ref<number[]>(seed());
-
-watch(() => props.pool, () => {
-    selection.value = seed();
+const selection = computed<number[]>({
+    get: () => slice.values.ids ?? [],
+    set: (ids) => {
+        slice.values.ids = ids;
+    },
 });
 
-const dirty = computed(() => JSON.stringify(selection.value) !== JSON.stringify(seed()));
+const error = computed(() => Object.values(slice.errors.value)[0]);
 
 const orderOf = (id: number): number => selection.value.indexOf(id);
 
@@ -59,18 +53,11 @@ const move = (id: number, delta: number): void => {
     [next[index], next[target]] = [next[target], next[index]];
     selection.value = next;
 };
-
-const save = (): void => {
-    router.put(props.syncUrl, { ids: selection.value }, { preserveScroll: true, preserveState: true });
-};
 </script>
 
 <template>
     <Section :title="t('products.section_variant_media')">
         <template #desc>{{ t('products.section_variant_media_description') }}</template>
-        <template #actions>
-            <Button v-if="dirty" size="sm" variant="primary" @click="save">{{ t('common.save') }}</Button>
-        </template>
 
         <div v-if="!pool.length" class="border border-dashed border-line-strong rounded-lg bg-surface-2 px-4 py-4 text-[11.5px] text-ink-500">
             {{ t('products.variant_media_empty') }}
@@ -120,5 +107,6 @@ const save = (): void => {
                 </div>
             </div>
         </div>
+        <div v-if="error" class="mt-2 text-[11px] text-danger" role="alert">{{ error }}</div>
     </Section>
 </template>

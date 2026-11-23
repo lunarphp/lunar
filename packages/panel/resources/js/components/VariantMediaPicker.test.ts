@@ -1,77 +1,82 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
-import { router } from '@inertiajs/vue3';
+import { useEditDraft, type EditDraftForm } from '../composables/useEditDraft';
 import VariantMediaPicker, { type VariantMediaItem } from './VariantMediaPicker.vue';
 
+vi.mock('../lib/http', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../lib/http')>()),
+    http: { patch: vi.fn(), post: vi.fn(), delete: vi.fn() },
+}));
+
+vi.mock('@inertiajs/vue3', () => ({
+    router: { reload: vi.fn(), on: vi.fn(() => () => {}) },
+    usePage: () => ({ props: {} }),
+}));
+
 const pool: VariantMediaItem[] = [
-    { id: 1, url: '/a.jpg', name: 'A', alt: null, selected: true, position: 1 },
-    { id: 2, url: '/b.jpg', name: 'B', alt: null, selected: true, position: 2 },
-    { id: 3, url: '/c.jpg', name: 'C', alt: null, selected: false, position: null },
+    { id: 1, url: '/a.jpg', name: 'A', alt: null },
+    { id: 2, url: '/b.jpg', name: 'B', alt: null },
+    { id: 3, url: '/c.jpg', name: 'C', alt: null },
 ];
 
-const mountPicker = (items: VariantMediaItem[] = pool) =>
-    mount(VariantMediaPicker, {
-        props: { pool: items, syncUrl: '/variant/media' },
-        global: {
-            stubs: { Tooltip: { template: '<span><slot /></span>' } },
+function mountPicker(items: VariantMediaItem[] = pool, ids: number[] = [1, 2]) {
+    let form: EditDraftForm<Record<string, unknown>> | undefined;
+
+    const Page = defineComponent({
+        setup() {
+            form = useEditDraft({ initial: { 'variant_media:ids': ids }, draft: null, urls: { draft: '/v/1/draft', commit: '/v/1/draft/commit' } });
+
+            return () => h(VariantMediaPicker, { pool: items });
         },
     });
 
+    return { wrapper: mount(Page, { attachTo: document.body }), form: form! };
+}
+
 describe('VariantMediaPicker', () => {
     afterEach(() => {
-        vi.restoreAllMocks();
+        document.body.innerHTML = '';
     });
 
     it('renders the empty state without a pool', () => {
-        const wrapper = mountPicker([]);
-
-        expect(wrapper.text()).toContain('products.variant_media_empty');
+        expect(mountPicker([], []).wrapper.text()).toContain('products.variant_media_empty');
     });
 
     it('marks the first selected tile as primary and orders the rest', () => {
-        const wrapper = mountPicker();
+        const { wrapper, form } = mountPicker();
 
-        // Primary badge label plus the second-position index badge.
         expect(wrapper.text()).toContain('products.variant_media_primary');
         expect(wrapper.text()).toContain('2');
+        expect(form.dirtyKeys.value).toEqual([]);
     });
 
-    it('is not dirty until the selection changes', () => {
-        const wrapper = mountPicker();
+    it('drafts adding and removing tiles in order', async () => {
+        const { wrapper, form } = mountPicker();
+        const toggles = wrapper.findAll('button[aria-pressed]');
 
-        expect(wrapper.text()).not.toContain('common.save');
+        await toggles[2].trigger('click');
+        expect(form.values['variant_media:ids']).toEqual([1, 2, 3]);
+
+        await toggles[0].trigger('click');
+        expect(form.values['variant_media:ids']).toEqual([2, 3]);
+        expect(form.dirtyKeys.value).toEqual(['variant_media:ids']);
     });
 
-    it('adds an unselected tile and exposes the save button', async () => {
-        const wrapper = mountPicker();
+    it('moves a selected image earlier', async () => {
+        const { wrapper, form } = mountPicker();
 
-        const tiles = wrapper.findAll('button[aria-pressed]');
-        // Third tile (id 3) is unselected; click to add it.
-        await tiles[2].trigger('click');
+        await wrapper.findAll('button[aria-label="products.variant_media_earlier"]')[1].trigger('click');
 
-        expect(wrapper.text()).toContain('common.save');
+        expect(form.values['variant_media:ids']).toEqual([2, 1]);
     });
 
-    it('posts the ordered selection with the first image primary', async () => {
-        const put = vi.spyOn(router, 'put').mockImplementation(() => undefined as never);
+    it('shows the commit error under the picker', async () => {
+        const { wrapper, form } = mountPicker();
 
-        const wrapper = mountPicker();
+        form.errors.value = { 'variant_media:ids.0': 'The image is not in the product pool.' };
+        await wrapper.vm.$nextTick();
 
-        // Add tile 3, then save.
-        await wrapper.findAll('button[aria-pressed]')[2].trigger('click');
-
-        const save = wrapper.findAll('button').find((button) => button.text().includes('common.save'));
-        await save?.trigger('click');
-
-        expect(put).toHaveBeenCalledWith('/variant/media', { ids: [1, 2, 3] }, expect.anything());
-    });
-
-    it('removes a selected tile', async () => {
-        const wrapper = mountPicker();
-
-        // Toggle tile 1 off.
-        await wrapper.findAll('button[aria-pressed]')[0].trigger('click');
-
-        expect(wrapper.text()).toContain('common.save');
+        expect(wrapper.text()).toContain('The image is not in the product pool.');
     });
 });

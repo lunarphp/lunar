@@ -177,9 +177,9 @@ concurrent write does.
 **`media`** — on every `HasMedia` draftable: product, brand, collection, and product
 type. One field per media collection the model's media definition declares, covering
 both image groups (`MediaManager`, `MediaEditDialog`) and file groups (`FileManager`,
-`FileEditDialog`). The value is an ordered list of `{id: int, properties: object}`,
-where `properties` carries the name, alt text, caption, focal point, and any custom
-properties `UpdatesMedia` manages. Order is meaningful: the first image is the hero, as
+`FileEditDialog`). The value is an ordered list of `{id, name, alt, caption, focal}`,
+the custom properties `UpdatesMedia` manages. Alt text is required by the image dialog
+but nullable at commit, so an older image without alt text never blocks a save. Order is meaningful: the first image is the hero, as
 the page shows today. Removal from the list deletes the media at commit; this is where
 the irreversible step moves to.
 
@@ -196,7 +196,8 @@ Media file moves are not covered by the database transaction. The slice moves fi
 after the transaction commits (an `afterCommit` callback), so a failed commit leaves the
 staged files on the draft, where a retry finds them.
 
-Staged media is cleaned up on three paths: `discard()` when the draft row is deleted,
+Staged media is cleaned up on three paths: `EditDraft`'s own `HasMedia` delete hook when
+the draft row is deleted (discard, prune, an autosave that empties the draft),
 the commit hook above for items uploaded and then removed before Save, and a sweep
 alongside draft pruning that deletes staged media whose draft no longer lists them
 (covering a partial revert, where autosave rewrites the draft without the media keys and
@@ -345,8 +346,8 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   (`pricing.flash_*`, `products.flash_associations_added`,
   `products.flash_associations_reordered`, `products.flash_association_removed`,
   `products.flash_variant_media_updated`, `media.flash_updated|deleted`, and
-  `customers.flash_notes_updated`) are deleted; `media.flash_uploaded` is kept for the staging
-  response.
+  `customers.flash_notes_updated`) are deleted; `media.flash_uploaded` goes too, since the staging
+  endpoint answers with JSON rather than a flash.
 - **Filament / admin impact**: none. The Filament admin's product resource is untouched.
   A Filament user editing prices while a panel user drafts them is exactly the
   concurrent case the commit check now catches for prices too.
@@ -411,7 +412,7 @@ field-like controls.
   `products.variants.update` routes, props reload after bundle repricing; per-currency
   key round-trip, adding and removing tiers, base-row rules, minor-unit normalisation,
   conflict per currency, conflict after a reprice.
-- [ ] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
+- [x] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
   the `media` slice on product, brand, collection, and product type covering image and
   file groups, move after commit, cleanup on discard, commit, and the prune sweep,
   `variant_media` slice, `MediaGroups` and the variant picker on `useFormSlice`, removal

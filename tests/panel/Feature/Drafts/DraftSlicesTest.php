@@ -313,12 +313,12 @@ it('seeds edit pages with the slice values of the deepest route-bound record', f
             ->where("formSliceValues.channel:{$channel->id}.enabled", true)
             ->where('formSliceValues.variant:sku', 'WID-1'));
 
-    // The variant page drafts the variant, which has no slices: the product's
+    // The variant page drafts the variant with its own slices: the product's
     // values must not leak in from the parent binding.
     $this->get(route('panel.products.variants.edit', [$product, $variant]))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where('formSliceValues', []));
+            ->where('formSliceValues', ['variant_media:ids' => []]));
 
     $this->get(route('panel.customers.edit', $this->customer))
         ->assertOk()

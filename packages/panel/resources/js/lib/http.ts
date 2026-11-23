@@ -58,11 +58,12 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            // FormData (file uploads) sets its own multipart content type.
+            ...(body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
             'X-Requested-With': 'XMLHttpRequest',
             'X-XSRF-TOKEN': xsrfToken(),
         },
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
     });
 
     if (response.status === 204) {

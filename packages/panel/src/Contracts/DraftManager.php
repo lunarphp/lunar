@@ -14,6 +14,13 @@ interface DraftManager
     public function find(Model $draftable, Authenticatable $staff): ?EditDraft;
 
     /**
+     * The staff member's draft for the record, created empty when there is
+     * none, for staging uploads on. Its version is left alone, so an
+     * autosave the client already has in flight is not refused as stale.
+     */
+    public function stagingDraft(Model $draftable, Authenticatable $staff): EditDraft;
+
+    /**
      * Upsert the staff member's draft, replacing `data` wholesale with the
      * incoming diff: base snapshots are captured for newly-present keys and
      * dropped for keys no longer present. An empty diff deletes the draft

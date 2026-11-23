@@ -92,7 +92,7 @@ A rule parameter that names one of the slice's own fields needs the full key, be
 
 ### `DraftSlice` for draft-only state
 
-`Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds one method, `discard(Model $record, EditDraft $draft)`, called when a draft holding the slice's keys is discarded, pruned, or orphaned by its record's deletion. Only a slice that keeps state outside the draft's JSON columns (staged uploads, for instance) needs it. There is no abstract for it: the slice extends `Lunar\Panel\Forms\FormSlice` and implements the contract, `class StagedMediaSlice extends FormSlice implements DraftSlice`. A plain `FormSlice` composes into a draft unchanged, so most slices never need this.
+`Lunar\Panel\Contracts\DraftSlice extends FormSlice` adds one method, `discard(Model $record, EditDraft $draft)`, called when a draft holding the slice's keys is discarded, pruned, or orphaned by its record's deletion. Only a slice that keeps state outside the draft's JSON columns needs it. Media staged on the draft itself does not: `EditDraft` is a `HasMedia` model, so its media is deleted with it. There is no abstract for it: the slice extends `Lunar\Panel\Forms\FormSlice` and implements the contract, `class StagedMediaSlice extends FormSlice implements DraftSlice`. A plain `FormSlice` composes into a draft unchanged, so most slices never need this.
 
 ### Worked example
 
@@ -238,14 +238,21 @@ Inertia's form data uses dot paths on plain forms, so a slice field named `a.b` 
 
 ## First-party slices
 
-The panel uses the same contract for its own sub-surfaces on the product edit page, registered through `formSlices()` under bare namespaces:
+The panel uses the same contract for its own sub-surfaces on the catalog edit pages, registered through `formSlices()` under bare namespaces:
 
-| Slice | Namespace | Fields |
-|:------|:----------|:-------|
-| `ProductAttributeSlice` | `attribute` | One per mapped attribute handle. |
-| `ProductChannelSlice` | `channel` | One per channel id, each an availability row. |
-| `ProductCustomerGroupSlice` | `customer_group` | One per customer group id, each an availability row with the purchasable flag. |
-| `SoleVariantSlice` | `variant` | The sole variant's fields on a simple-shape product, refused outright once the product has several variants. |
+| Slice | Model | Namespace | Fields |
+|:------|:------|:----------|:-------|
+| `ProductAttributeSlice` | Product | `attribute` | One per mapped attribute handle. |
+| `ProductAssociationSlice` | Product | `association` | One per association type, each an ordered list of product ids. |
+| `ProductUrlSlice`, `BrandUrlSlice`, `CollectionUrlSlice` | Product, brand, collection | `url` | One per language code, each an ordered list of `{id, slug, default}` rows. |
+| `ProductChannelSlice` | Product | `channel` | One per channel id, each an availability row. |
+| `ProductCustomerGroupSlice` | Product | `customer_group` | One per customer group id, each an availability row with the purchasable flag. |
+| `SoleVariantSlice` | Product | `variant` | The sole variant's fields and prices (`variant:price:{code}`) on a simple-shape product, refused outright once the product has several variants. |
+| `ProductVariantPriceSlice` | Variant | `price` | One per enabled currency code, each a list of `{customer_group_id, min_quantity, price, list_price}` rows in minor units. |
+| `ProductMediaSlice`, `BrandMediaSlice`, `CollectionMediaSlice`, `ProductTypeMediaSlice` | Product, brand, collection, product type | `media` | One per registered media collection, each an ordered list of `{id, name, alt, caption, focal}` rows. The first image is the hero. |
+| `ProductVariantMediaSlice` | Variant | `variant_media` | `ids`, an ordered selection from the product's image pool. The first is the variant's primary. |
+
+Media uploads are staged. Each media page's `media.store` endpoint attaches the files to the staff member's `EditDraft` for the record (creating it if needed) and answers with each staged item's id and preview. The page appends the ids to the collection's list, and the staged files move onto the record when the draft commits, after its transaction. Nothing outside the draft sees a staged file. Discarding or pruning the draft deletes its staged media, since `EditDraft` implements `HasMedia`. The daily `model:prune` run also deletes staged media no draft lists any more, once they are an hour old.
 
 These are the proof that the add-on surface is complete: a first-party card and an add-on's slot component take the same path.
 

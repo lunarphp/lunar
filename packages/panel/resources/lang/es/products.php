@@ -280,7 +280,6 @@ return [
     'variant_media_primary' => 'P',
     'variant_media_earlier' => 'Move earlier',
     'variant_media_later' => 'Move later',
-    'flash_variant_media_updated' => 'Variant media updated.',
     'variant_position' => 'Variant {position} of {total}',
     'variant_prev' => 'Previous variant',
     'variant_next' => 'Next variant',

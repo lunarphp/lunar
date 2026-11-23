@@ -70,7 +70,6 @@ const props = defineProps<{
         draft: string;
         draftCommit: string;
         stockAdjust: string;
-        mediaSync: string;
     };
 }>();
 
@@ -221,7 +220,6 @@ const timelineEvents = computed(() =>
 
                         <VariantMediaPicker
                             :pool="mediaPool"
-                            :sync-url="urls.mediaSync"
                         />
 
                         <InventoryCard

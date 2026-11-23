@@ -31,7 +31,6 @@ use Lunar\Panel\Http\Controllers\Products\ProductMediaController;
 use Lunar\Panel\Http\Controllers\Products\ProductOptionsController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantBulkController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantController;
-use Lunar\Panel\Http\Controllers\Products\ProductVariantMediaController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantStockController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeBulkStatusController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeCreateController;
@@ -49,13 +48,18 @@ use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Search\Sources\BrandSearchSource;
 use Lunar\Panel\Search\Sources\CollectionSearchSource;
 use Lunar\Panel\Search\Sources\ProductSearchSource;
+use Lunar\Panel\Sections\Catalog\Slices\BrandMediaSlice;
 use Lunar\Panel\Sections\Catalog\Slices\BrandUrlSlice;
+use Lunar\Panel\Sections\Catalog\Slices\CollectionMediaSlice;
 use Lunar\Panel\Sections\Catalog\Slices\CollectionUrlSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductAssociationSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductAttributeSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductChannelSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductCustomerGroupSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductMediaSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductTypeMediaSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductUrlSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductVariantMediaSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductVariantPriceSlice;
 use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
@@ -172,6 +176,11 @@ class CatalogSection extends Section
             ProductCustomerGroupSlice::class,
             SoleVariantSlice::class,
             ProductVariantPriceSlice::class,
+            ProductMediaSlice::class,
+            BrandMediaSlice::class,
+            CollectionMediaSlice::class,
+            ProductTypeMediaSlice::class,
+            ProductVariantMediaSlice::class,
         ];
     }
 
@@ -233,9 +242,6 @@ class CatalogSection extends Section
                 Route::scopeBindings()->group(function (): void {
 
                     Route::post('/{brand}/media', [BrandMediaController::class, 'store'])->name('media.store');
-                    Route::post('/{brand}/media/reorder', [BrandMediaController::class, 'reorder'])->name('media.reorder');
-                    Route::put('/{brand}/media/{media}', [BrandMediaController::class, 'update'])->name('media.update');
-                    Route::delete('/{brand}/media/{media}', [BrandMediaController::class, 'destroy'])->name('media.destroy');
                 });
             });
 
@@ -257,9 +263,6 @@ class CatalogSection extends Section
                 Route::scopeBindings()->group(function (): void {
 
                     Route::post('/{product}/media', [ProductMediaController::class, 'store'])->name('media.store');
-                    Route::post('/{product}/media/reorder', [ProductMediaController::class, 'reorder'])->name('media.reorder');
-                    Route::put('/{product}/media/{media}', [ProductMediaController::class, 'update'])->name('media.update');
-                    Route::delete('/{product}/media/{media}', [ProductMediaController::class, 'destroy'])->name('media.destroy');
 
                     Route::post('/{product}/variants/{productVariant}/stock', [ProductVariantStockController::class, 'update'])->name('variants.stock.adjust');
 
@@ -273,7 +276,6 @@ class CatalogSection extends Section
                     Route::delete('/{product}/variants/{productVariant}/draft', [EditDraftController::class, 'destroy'])->name('variants.draft.destroy');
                     Route::post('/{product}/variants/{productVariant}/draft/commit', [EditDraftController::class, 'commit'])->name('variants.draft.commit');
 
-                    Route::put('/{product}/variants/{productVariant}/media', [ProductVariantMediaController::class, 'sync'])->name('variants.media.sync');
                 });
             });
 
@@ -294,9 +296,6 @@ class CatalogSection extends Section
 
                 Route::scopeBindings()->group(function (): void {
                     Route::post('/{productType}/media', [ProductTypeMediaController::class, 'store'])->name('media.store');
-                    Route::post('/{productType}/media/reorder', [ProductTypeMediaController::class, 'reorder'])->name('media.reorder');
-                    Route::put('/{productType}/media/{media}', [ProductTypeMediaController::class, 'update'])->name('media.update');
-                    Route::delete('/{productType}/media/{media}', [ProductTypeMediaController::class, 'destroy'])->name('media.destroy');
                 });
             });
 
@@ -327,9 +326,6 @@ class CatalogSection extends Section
                 Route::scopeBindings()->group(function (): void {
 
                     Route::post('/{collection}/media', [CollectionMediaController::class, 'store'])->name('media.store');
-                    Route::post('/{collection}/media/reorder', [CollectionMediaController::class, 'reorder'])->name('media.reorder');
-                    Route::put('/{collection}/media/{media}', [CollectionMediaController::class, 'update'])->name('media.update');
-                    Route::delete('/{collection}/media/{media}', [CollectionMediaController::class, 'destroy'])->name('media.destroy');
                 });
             });
         };

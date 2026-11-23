@@ -97,7 +97,7 @@ class CollectionEditController
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
-            'mediaGroups' => MediaGroups::for($collection, 'panel.collections'),
+            'mediaGroups' => MediaGroups::for($collection, 'panel.collections', $draft),
             'products' => $products,
             'attributeGroups' => $attributeSchema->groups($collection),
             'attributeValues' => $attributeSchema->values($collection) ?: (object) [],

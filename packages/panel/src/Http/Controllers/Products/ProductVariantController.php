@@ -51,15 +51,12 @@ class ProductVariantController
 
         $variant = $siblings[$index];
 
-        $selection = $productVariant->images()->get()->keyBy('id');
-
+        // The selection and its order are the variant_media:ids draft value.
         $mediaPool = $product->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
             'id' => $item->id,
             'url' => $item->getAvailableUrl(['small']),
             'name' => $item->getCustomProperty('name'),
             'alt' => $item->getCustomProperty('alt'),
-            'selected' => $selection->has($item->id),
-            'position' => $selection->get($item->id)?->pivot?->position,
         ])->values();
 
         $activities = $productVariant->activities()
@@ -162,7 +159,6 @@ class ProductVariantController
                 'draft' => route('panel.products.variants.draft.update', [$product, $productVariant]),
                 'draftCommit' => route('panel.products.variants.draft.commit', [$product, $productVariant]),
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $productVariant]),
-                'mediaSync' => route('panel.products.variants.media.sync', [$product, $productVariant]),
             ],
         ]);
     }

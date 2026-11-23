@@ -58,7 +58,7 @@ class BrandEditController
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
-            'mediaGroups' => MediaGroups::for($brand, 'panel.brands'),
+            'mediaGroups' => MediaGroups::for($brand, 'panel.brands', $draft),
             'attributeGroups' => $attributeSchema->groups($brand),
             'attributeValues' => $attributeSchema->values($brand) ?: (object) [],
             'collections' => $brand->collections()->with('ancestors')->get()->map(fn (Collection $collection) => [

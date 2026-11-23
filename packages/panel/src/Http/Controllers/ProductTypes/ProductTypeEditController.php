@@ -60,7 +60,7 @@ class ProductTypeEditController
                 'updated_at' => $draft->updated_at,
                 'version' => (int) $draft->version,
             ] : null,
-            'mediaGroups' => MediaGroups::for($productType, 'panel.product-types'),
+            'mediaGroups' => MediaGroups::for($productType, 'panel.product-types', $draft),
             'languages' => Language::query()
                 ->orderByDesc('default')
                 ->orderBy('code')
