@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Това е повече от наличните за възстановяване {amount}.',
+    'refund_quantity_exceeded' => 'Остават само {quantity} за възстановяване.',
+    'refund_total_not_positive' => 'Общата сума за възстановяване трябва да е по-голяма от нула.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

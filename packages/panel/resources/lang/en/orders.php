@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'This is more than the {amount} available to refund.',
+    'refund_quantity_exceeded' => 'Only {quantity} left to refund.',
+    'refund_total_not_positive' => 'The refund total must be more than zero.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

@@ -1,10 +1,29 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { createI18n } from 'vue-i18n';
 import RefundComposerDialog from './RefundComposerDialog.vue';
 import type { RefundableLineData, ShippingLineData } from './types';
 
 let wrapper: VueWrapper | null = null;
+
+// The messages the money and limit assertions read; every other key falls
+// back to the raw key, as in the shared test setup.
+const i18n = createI18n({
+    legacy: false,
+    locale: 'en',
+    missingWarn: false,
+    fallbackWarn: false,
+    messages: {
+        en: {
+            orders: {
+                refund_total: 'Refunding {amount}',
+                refund_exceeds_available: 'This is more than the {amount} available to refund.',
+                refund_quantity_exceeded: 'Only {quantity} left to refund.',
+            },
+        },
+    },
+});
 
 const body = (): HTMLElement => document.body;
 
@@ -45,8 +64,10 @@ async function mountDialog(props: Record<string, unknown> = {}): Promise<VueWrap
             availableToRefund: 100,
             availableToRefundFormatted: '£100.00',
             url: '/refund',
+            currency: { code: 'GBP', decimal_places: 2 },
             ...props,
         },
+        global: { plugins: [i18n] },
         attachTo: document.body,
     });
     await nextTick();
@@ -58,6 +79,13 @@ const quantityInput = (): HTMLInputElement => body().querySelector<HTMLInputElem
 const shippingCheckbox = () => body().querySelector('[role="checkbox"]') as HTMLElement;
 const confirmButton = (): HTMLButtonElement =>
     [...body().querySelectorAll('button')].find((button) => button.textContent?.includes('orders.action_refund'))!;
+
+async function typeQuantity(value: string): Promise<void> {
+    const input = quantityInput();
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await nextTick();
+}
 
 async function setQuantity(value: string): Promise<void> {
     const input = quantityInput();
@@ -102,7 +130,7 @@ describe('RefundComposerDialog', () => {
         await nextTick();
 
         expect(confirmButton().hasAttribute('disabled')).toBe(false);
-        expect(body().textContent).toContain('orders.refund_total');
+        expect(body().textContent).toContain('Refunding £5.00');
     });
 
     it('disables confirm when nothing is refundable', async () => {
@@ -129,5 +157,39 @@ describe('RefundComposerDialog', () => {
         const adjustmentInput = body().querySelectorAll<HTMLInputElement>('input[type="number"]')[0];
         expect(adjustmentInput.value).toBe('12.5');
         expect(confirmButton().hasAttribute('disabled')).toBe(false);
+    });
+
+    it('formats the refund total in the order currency', async () => {
+        await mountDialog();
+
+        await setQuantity('1');
+        expect(body().textContent).toContain('Refunding £10.00');
+    });
+
+    it('says why confirm is disabled when the total exceeds what is available', async () => {
+        await mountDialog({ availableToRefund: 15, availableToRefundFormatted: '£15.00' });
+
+        await setQuantity('2');
+        expect(confirmButton().hasAttribute('disabled')).toBe(true);
+        expect(body().textContent).toContain('This is more than the £15.00 available to refund.');
+    });
+
+    it('flags a quantity above the line refundable quantity before it is clamped', async () => {
+        await mountDialog({ lines: [line({ refundable_quantity: 1 })] });
+
+        await typeQuantity('2');
+        expect(quantityInput().getAttribute('max')).toBe('1');
+        expect(body().textContent).toContain('Only 1 left to refund.');
+        expect(confirmButton().hasAttribute('disabled')).toBe(true);
+    });
+
+    it('shows server errors reported against a line', async () => {
+        const dialog = await mountDialog();
+
+        (dialog.vm as unknown as { form: { setError: (errors: Record<string, string>) => void } }).form.setError({
+            'lines.0.quantity': 'The quantity field must be an integer.',
+        });
+        await nextTick();
+        expect(body().textContent).toContain('The quantity field must be an integer.');
     });
 });

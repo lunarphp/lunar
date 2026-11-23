@@ -11,6 +11,8 @@ import Select from '../Select.vue';
 import Textarea from '../Textarea.vue';
 import TextInput from '../TextInput.vue';
 import Toggle from '../Toggle.vue';
+import { formatMoney } from '../pricing';
+import { firstError } from '../../lib/formErrors';
 import type { RefundableLineData, ShippingLineData } from './types';
 
 interface Charge {
@@ -28,6 +30,8 @@ const props = defineProps<{
     availableToRefund: number;
     availableToRefundFormatted: string | null;
     url: string;
+    /** The order's currency; formats the refund total like the rest of the order page. */
+    currency?: { code: string; decimal_places: number } | null;
     /** Pre-fills the manual adjustment field, e.g. from the settlement banner's variance. */
     prefillAdjustment?: number;
 }>();
@@ -83,7 +87,52 @@ const linesAmount = computed(() =>
 const shippingAmount = computed(() => (form.shipping && shippingLine.value ? shippingLine.value.amount : 0));
 const adjustmentAmount = computed(() => Number(form.adjustment) || 0);
 const totalAmount = computed(() => linesAmount.value + shippingAmount.value + adjustmentAmount.value);
-const canConfirm = computed(() => totalAmount.value > 0 && totalAmount.value <= props.availableToRefund + 0.001);
+
+/**
+ * A quantity typed past the line's refundable quantity, before the change
+ * event clamps it back. Flagged inline and blocks the confirm until then.
+ */
+const quantityExceeded = (line: RefundableLineData): boolean => (Number(form.lines[line.id]) || 0) > line.refundable_quantity;
+const anyQuantityExceeded = computed(() => props.lines.some(quantityExceeded));
+
+const hasSelection = computed(() => linesQuantity.value > 0 || form.shipping || adjustmentAmount.value !== 0);
+const exceedsAvailable = computed(() => totalAmount.value > props.availableToRefund + 0.001);
+
+/**
+ * Why the confirm is disabled, shown beside it so the button never sits
+ * disabled without a reason. Null when the refund can be confirmed.
+ */
+const blockedReason = computed<{ message: string; danger: boolean } | null>(() => {
+    if (anyQuantityExceeded.value) {
+        return null; // Flagged on the offending line instead.
+    }
+
+    if (!hasSelection.value) {
+        return { message: t('orders.refund_nothing_selected'), danger: false };
+    }
+
+    if (totalAmount.value <= 0) {
+        return { message: t('orders.refund_total_not_positive'), danger: true };
+    }
+
+    if (exceedsAvailable.value) {
+        return { message: t('orders.refund_exceeds_available', { amount: props.availableToRefundFormatted }), danger: true };
+    }
+
+    return null;
+});
+
+const canConfirm = computed(() => !anyQuantityExceeded.value && totalAmount.value > 0 && !exceedsAvailable.value);
+
+const money = (major: number): string => {
+    if (!props.currency) {
+        return major.toFixed(2);
+    }
+
+    return formatMoney(Math.round(major * 10 ** props.currency.decimal_places), props.currency);
+};
+
+const linesError = computed(() => firstError(form.errors, 'lines'));
 
 const close = (): void => emit('update:open', false);
 
@@ -110,11 +159,12 @@ const submit = (): void => {
         <div class="space-y-3">
             <div v-if="charges.length > 1">
                 <FieldLabel>{{ t('orders.refund_transaction') }}</FieldLabel>
-                <Select v-model="form.transaction_id">
+                <Select v-model="form.transaction_id" :invalid="!!form.errors.transaction_id">
                     <option v-for="charge in charges" :key="charge.id" :value="charge.id">
                         {{ charge.reference || '#' + charge.id }} — {{ charge.amount_formatted }}
                     </option>
                 </Select>
+                <p v-if="form.errors.transaction_id" class="m-0 text-danger text-[11px] mt-1">{{ form.errors.transaction_id }}</p>
             </div>
 
             <ul v-if="lines.length || shippingLine" class="divide-y divide-line border border-line rounded-md overflow-hidden">
@@ -125,7 +175,10 @@ const submit = (): void => {
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="text-[12.5px] text-ink-900 truncate">{{ line.description }}</div>
-                        <div class="text-[11px] text-ink-500">{{ t('orders.refund_up_to', { quantity: line.refundable_quantity }) }}</div>
+                        <div v-if="quantityExceeded(line)" class="text-[11px] text-danger">
+                            {{ t('orders.refund_quantity_exceeded', { quantity: line.refundable_quantity }) }}
+                        </div>
+                        <div v-else class="text-[11px] text-ink-500">{{ t('orders.refund_up_to', { quantity: line.refundable_quantity }) }}</div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
                         <TextInput
@@ -133,6 +186,7 @@ const submit = (): void => {
                             type="number"
                             :min="0"
                             :max="line.refundable_quantity"
+                            :invalid="quantityExceeded(line)"
                             class="!w-[64px] text-right"
                             :aria-label="line.description ?? undefined"
                             @change="clamp(line.id, line.refundable_quantity)"
@@ -156,7 +210,7 @@ const submit = (): void => {
                 </li>
             </ul>
             <p v-else class="m-0 text-[12.5px] text-ink-500 italic">{{ t('orders.refund_nothing_selectable') }}</p>
-            <p v-if="form.errors.lines" class="m-0 text-danger text-[11px]">{{ form.errors.lines }}</p>
+            <p v-if="linesError" class="m-0 text-danger text-[11px]">{{ linesError }}</p>
 
             <div>
                 <FieldLabel :hint="t('orders.refund_adjustment_hint')">{{ t('orders.refund_adjustment') }}</FieldLabel>
@@ -166,7 +220,8 @@ const submit = (): void => {
 
             <div>
                 <FieldLabel>{{ t('orders.refund_notes') }}</FieldLabel>
-                <Textarea v-model="form.notes" :rows="2" />
+                <Textarea v-model="form.notes" :rows="2" :invalid="!!form.errors.notes" />
+                <p v-if="form.errors.notes" class="m-0 text-danger text-[11px] mt-1">{{ form.errors.notes }}</p>
             </div>
 
             <label class="flex items-center gap-2 text-[12.5px] text-ink-700">
@@ -177,10 +232,13 @@ const submit = (): void => {
         <template #footer>
             <div class="flex-1 text-[11.5px] text-ink-500 [font-variant-numeric:tabular-nums]">
                 <template v-if="totalAmount > 0">
-                    {{ t('orders.refund_total', { amount: totalAmount.toFixed(2) }) }}
+                    {{ t('orders.refund_total', { amount: money(totalAmount) }) }}
                     <span v-if="linesQuantity > 0">· {{ t('orders.refund_item_count', { count: linesQuantity }, linesQuantity) }}</span>
                 </template>
                 <span class="block text-ink-400">{{ t('orders.refund_available', { amount: availableToRefundFormatted }) }}</span>
+                <span v-if="blockedReason" class="block" :class="blockedReason.danger ? 'text-danger' : 'text-ink-500'" role="status">
+                    {{ blockedReason.message }}
+                </span>
             </div>
             <Button variant="ghost" @click="close">{{ t('common.cancel') }}</Button>
             <Button variant="primary" :disabled="!canConfirm || form.processing" @click="submit">{{ t('orders.action_refund') }}</Button>

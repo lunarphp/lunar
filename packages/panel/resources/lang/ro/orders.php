@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Suma depășește {amount} disponibil pentru rambursare.',
+    'refund_quantity_exceeded' => 'Au mai rămas doar {quantity} de rambursat.',
+    'refund_total_not_positive' => 'Totalul rambursării trebuie să fie mai mare decât zero.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

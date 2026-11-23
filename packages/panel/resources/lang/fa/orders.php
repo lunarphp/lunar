@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'این مبلغ بیشتر از {amount} قابل بازپرداخت است.',
+    'refund_quantity_exceeded' => 'فقط {quantity} عدد برای بازپرداخت باقی مانده است.',
+    'refund_total_not_positive' => 'مبلغ کل بازپرداخت باید بیشتر از صفر باشد.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

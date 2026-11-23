@@ -106,6 +106,7 @@ const props = defineProps<{
     outstandingFormatted: string | null;
     availableToRefund: number;
     availableToRefundFormatted: string | null;
+    currency: { code: string; decimal_places: number } | null;
     cancelReasons: Record<string, string>;
     notifications: Record<string, string>;
     carriers: CarrierData[];
@@ -685,6 +686,7 @@ const formatDateTime = (value: string): string =>
                 :charges="charges"
                 :available-to-refund="availableToRefund"
                 :available-to-refund-formatted="availableToRefundFormatted"
+                :currency="currency"
                 :url="urls.refund"
                 :prefill-adjustment="refundPrefillAdjustment"
                 @update:open="(v: boolean) => !v && closeDialog()"

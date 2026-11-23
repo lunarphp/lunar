@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Số tiền này vượt quá {amount} có thể hoàn.',
+    'refund_quantity_exceeded' => 'Chỉ còn {quantity} để hoàn tiền.',
+    'refund_total_not_positive' => 'Tổng số tiền hoàn phải lớn hơn không.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

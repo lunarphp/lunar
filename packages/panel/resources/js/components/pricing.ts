@@ -7,7 +7,7 @@ type Translate = (key: string) => string;
  * An amount in integer minor units as money in the currency, e.g. `$33.00`;
  * a code Intl cannot resolve falls back to `33.00 XYZ`.
  */
-export function formatMoney(minor: number, currency: CurrencyOption): string {
+export function formatMoney(minor: number, currency: Pick<CurrencyOption, 'code' | 'decimal_places'>): string {
     const major = minor / 10 ** currency.decimal_places;
 
     try {

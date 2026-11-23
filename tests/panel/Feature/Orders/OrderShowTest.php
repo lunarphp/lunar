@@ -311,6 +311,8 @@ it('lists lines with quantity still left to refund', function () {
             ->where('refundableLines.0.id', $line->id)
             ->where('refundableLines.0.refundable_quantity', 2)
             ->where('refundableLines.0.refund_unit_amount', 10)
+            ->where('currency.code', $order->currency->code)
+            ->where('currency.decimal_places', $order->currency->decimal_places)
         );
 });
 

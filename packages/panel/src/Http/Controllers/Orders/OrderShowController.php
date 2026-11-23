@@ -195,6 +195,7 @@ class OrderShowController
             'outstandingFormatted' => $money($outstanding),
             'availableToRefund' => $toMajor($availableToRefund),
             'availableToRefundFormatted' => $money($availableToRefund),
+            'currency' => $currency ? ['code' => $currency->code, 'decimal_places' => $currency->decimal_places] : null,
             'cancelReasons' => CancelReasons::all(),
             'notifications' => OrderNotifications::sendable(),
             'carriers' => Carriers::all()->map(fn (ShippingCarrier $carrier) => [

@@ -145,6 +145,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Энэ нь буцаах боломжтой {amount}-аас их байна.',
+    'refund_quantity_exceeded' => 'Буцаах боломжтой ердөө {quantity} үлдсэн.',
+    'refund_total_not_positive' => 'Буцаалтын нийт дүн тэгээс их байх ёстой.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 
