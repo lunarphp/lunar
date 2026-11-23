@@ -184,6 +184,20 @@ it('clears an internal note', function () {
     expect($order->refresh()->internal_notes)->toBeNull();
 });
 
+it('returns to the order from an Inertia visit when the browser sends no Referer', function () {
+    $order = Order::factory()->placed()->create();
+
+    // A full page load of the list, then an in-app (XHR) visit to the order.
+    $this->get(route('panel.orders.index'))->assertOk();
+    $this->get(route('panel.orders.show', $order), ['X-Inertia' => 'true', 'X-Requested-With' => 'XMLHttpRequest']);
+
+    $this->put(route('panel.orders.tags.update', $order), ['tags' => ['vip']])
+        ->assertRedirect(route('panel.orders.show', $order));
+
+    $this->put(route('panel.orders.note.update', $order), ['notes' => 'Call first'])
+        ->assertRedirect(route('panel.orders.show', $order));
+});
+
 it('syncs tags, upper-casing values', function () {
     $order = Order::factory()->placed()->create();
 
