@@ -109,7 +109,7 @@ const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-in
 
     <div class="flex-1" />
 
-    <NavLink :item="settingsItem" :collapsed="collapsed" />
+    <NavLink v-if="settingsUrl" :item="settingsItem" :collapsed="collapsed" />
 
     <Tooltip :text="collapsed ? t('nav.support') : ''">
         <a
