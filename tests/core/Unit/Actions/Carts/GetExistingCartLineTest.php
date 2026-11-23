@@ -5,6 +5,7 @@ use Lunar\Core\Actions\Carts\GetExistingCartLine;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
@@ -136,3 +137,39 @@ function shuffle_assoc($list)
 
     return $random;
 }
+
+test('a product the shopper adds never goes onto a line core added for a discount', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $rewardLine = $cart->lines()->create([
+        'purchasable_id' => $purchasable->id,
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'quantity' => 1,
+        'added_by_discount_id' => Discount::factory()->create()->id,
+    ]);
+
+    expect((new GetExistingCartLine)->execute($cart, $purchasable))->toBeNull();
+
+    $cart->add($purchasable, 2);
+
+    $lines = $cart->lines()->get();
+
+    expect($lines)->toHaveCount(2)
+        ->and($lines->firstWhere('id', $rewardLine->id)->quantity)->toBe(1)
+        ->and($lines->firstWhere('id', '!=', $rewardLine->id)->quantity)->toBe(2)
+        ->and($lines->firstWhere('id', '!=', $rewardLine->id)->added_by_discount_id)->toBeNull();
+});

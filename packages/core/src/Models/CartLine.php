@@ -5,7 +5,6 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
@@ -26,6 +25,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property int $purchasable_id
  * @property int $quantity
  * @property ?array $meta
+ * @property ?int $added_by_discount_id
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
@@ -167,14 +167,18 @@ class CartLine extends Base
         );
     }
 
-    public function discounts(): BelongsToMany
+    /**
+     * The discount whose reward core added this line for. Null on a line the
+     * shopper added, even when a discount prices it.
+     */
+    public function addedByDiscount(): BelongsTo
     {
-        $prefix = config('lunar.database.table_prefix');
+        return $this->belongsTo(Discount::class, 'added_by_discount_id');
+    }
 
-        return $this->belongsToMany(
-            Discount::class,
-            "{$prefix}cart_line_discount"
-        );
+    public function isAddedByDiscount(): bool
+    {
+        return $this->added_by_discount_id !== null;
     }
 
     public function purchasable(): MorphTo

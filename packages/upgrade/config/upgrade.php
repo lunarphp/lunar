@@ -151,7 +151,6 @@ return [
             '2026_01_01_000052_create_tax_zone_states_table',
             '2026_01_01_000053_create_transactions_table',
             '2026_01_01_000054_create_cart_addresses_table',
-            '2026_01_01_000055_create_cart_line_discount_table',
             '2026_01_01_000056_create_cart_lines_table',
             '2026_01_01_000057_create_media_product_variant_table',
             '2026_01_01_000058_create_product_option_value_product_variant_table',

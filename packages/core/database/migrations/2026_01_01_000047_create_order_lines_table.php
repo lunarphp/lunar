@@ -31,6 +31,7 @@ return new class extends Migration
             $table->unsignedInteger('refunded_quantity')->default(0)->comment('Rollup of refund_lines.quantity for this line');
             $table->text('notes')->nullable();
             $table->jsonb('meta')->nullable();
+            $table->foreignId('added_by_discount_id')->nullable()->constrained($this->prefix.'discounts')->nullOnDelete()->comment('Copied from the cart line core added for a discount reward');
             $table->timestamps();
         });
     }

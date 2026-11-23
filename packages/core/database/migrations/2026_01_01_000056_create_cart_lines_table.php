@@ -15,6 +15,7 @@ return new class extends Migration
             $table->morphs('purchasable');
             $table->unsignedInteger('quantity');
             $table->jsonb('meta')->nullable();
+            $table->foreignId('added_by_discount_id')->nullable()->constrained($this->prefix.'discounts')->nullOnDelete()->comment('Set on a line core added for a discount reward; null on a line the shopper added');
             $table->timestamps();
 
             // Persisted totals snapshot (spec cart-totals-caching). NULL means "not calculated".

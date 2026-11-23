@@ -1732,6 +1732,11 @@ test('can add a multi quantity reward as a single line', function () {
     // Three of one thing is one line of three, not three lines of one.
     expect($rewardLines)->toHaveCount(1);
     expect($rewardLines->first()->quantity)->toEqual(3);
+
+    // The line records the discount in its own column, not in the store's meta.
+    expect($rewardLines->first()->added_by_discount_id)->toBe($discount->id)
+        ->and($rewardLines->first()->isAddedByDiscount())->toBeTrue()
+        ->and($rewardLines->first()->meta)->toBeNull();
 });
 
 test('can leave a reward line the shopper added at their own quantity', function () {
@@ -1828,6 +1833,10 @@ test('can leave a reward line the shopper added at their own quantity', function
 
     expect($rewardLines)->toHaveCount(1);
     expect($rewardLines->first()->quantity)->toEqual(1);
+
+    // Pricing the shopper's line as the reward doesn't make it core's.
+    expect($rewardLines->first()->added_by_discount_id)->toBeNull()
+        ->and($rewardLines->first()->meta)->toBeNull();
 });
 test('does not automatically add reward when product variant has no stock', function () {
     $customerGroup = CustomerGroup::factory()->create(['default' => true]);

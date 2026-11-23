@@ -5,6 +5,7 @@ use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
@@ -161,4 +162,36 @@ test('can handle merging of lines with different metas', function () {
 
     expect($cartB->merged_id)->toEqual($cartA->id);
     expect($cartA->lines)->toHaveCount(3);
+});
+
+test('keeps a reward line from the source cart apart from the shopper line in the target', function () {
+    $currency = Currency::factory()->create();
+
+    $target = Cart::factory()->create(['currency_id' => $currency->id]);
+    $source = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $purchasable = ProductVariant::factory()->create(['unit_quantity' => 1]);
+
+    $discount = Discount::factory()->create();
+
+    $target->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    $source->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+        'added_by_discount_id' => $discount->id,
+    ]);
+
+    app(MergeCart::class)->execute($target, $source);
+
+    $lines = $target->refresh()->lines;
+
+    expect($lines)->toHaveCount(2)
+        ->and($lines->whereNull('added_by_discount_id')->first()->quantity)->toBe(2)
+        ->and($lines->firstWhere('added_by_discount_id', $discount->id)->quantity)->toBe(1);
 });

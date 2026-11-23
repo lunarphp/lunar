@@ -25,6 +25,7 @@ class MapDiscountBreakdown
                 return empty($diff->new) &&
                     empty($diff->edited) &&
                     empty($diff->removed) &&
+                    $cartLine->added_by_discount_id == $orderLine->added_by_discount_id &&
                     $cartLine->purchasable_type == $orderLine->purchasable_type &&
                     $cartLine->purchasable_id == $orderLine->purchasable_id;
             });

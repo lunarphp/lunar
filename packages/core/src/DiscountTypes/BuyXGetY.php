@@ -321,10 +321,13 @@ class BuyXGetY extends AbstractDiscountType
                 }
 
                 if (! $rewardLine) {
+                    // Only a line core creates records the discount. A line the
+                    // shopper added that this loop prices stays theirs.
                     $rewardLine = $cart->lines()->make([
                         'purchasable_type' => $purchasable->getMorphClass(),
                         'purchasable_id' => $purchasable->id,
                         'quantity' => 1,
+                        'added_by_discount_id' => $this->discount->id,
                     ]);
 
                     if (! $cart->freeItems) {
@@ -349,17 +352,6 @@ class BuyXGetY extends AbstractDiscountType
                     $rewardLine->total = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
 
                     $addedRewardLines[$rewardKey] = $rewardLine;
-                }
-
-                $meta = $rewardLine->meta ?? json_decode('{}');
-                if (! isset($meta->added_by_discount)) {
-                    $meta->added_by_discount = [];
-                }
-
-                if (! isset($meta->added_by_discount[$this->discount->id])) {
-                    $meta->added_by_discount[$this->discount->id] = 1;
-                } else {
-                    $meta->added_by_discount[$this->discount->id]++;
                 }
 
                 $affectedLine = $affectedLines->first(function ($line) use ($rewardLine) {
@@ -389,7 +381,6 @@ class BuyXGetY extends AbstractDiscountType
                     ->subtract($rewardLine->discountTotal)
                     ->clampToZero();
 
-                $rewardLine->meta = $meta;
                 $rewardLine->save();
 
                 // Priced with the rest of the cart in this run, as it is in every later one.

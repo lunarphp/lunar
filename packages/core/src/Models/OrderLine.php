@@ -38,6 +38,7 @@ use Lunar\Core\Pricing\PriceFormatterInterface;
  * @property int $sub_total
  * @property int $discount_total
  * @property array $tax_breakdown
+ * @property ?int $added_by_discount_id
  * @property int $tax_total
  * @property int $total
  * @property int $refunded_quantity
@@ -137,6 +138,12 @@ class OrderLine extends Base implements HasCurrency
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    /** The discount whose reward core added the cart line this came from. */
+    public function addedByDiscount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class, 'added_by_discount_id');
     }
 
     /**

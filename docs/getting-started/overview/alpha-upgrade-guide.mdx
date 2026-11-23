@@ -116,10 +116,15 @@ Changes made since 2.0.0-alpha.9.
 | `orders` | Add `payment_terms` `string`, default `checkout`. | `2026_06_01_000022_add_payment_terms` |
 | `edit_drafts` | Add `version` `unsignedInteger`, default `0`. | |
 | `product_option_values` | Add `colour` `string(7)` `nullable`. | `2026_06_01_000023_add_product_option_value_colour` |
+| `cart_lines` | Add `added_by_discount_id` `foreignId` `nullable`, constrained to `discounts`, null on delete. | `2026_06_01_000024_add_line_added_by_discount` |
+| `order_lines` | Add `added_by_discount_id` `foreignId` `nullable`, constrained to `discounts`, null on delete. | `2026_06_01_000024_add_line_added_by_discount` |
+| `cart_line_discount` | Drop the table if it is empty. Lunar never used it. | `2026_06_01_000024_add_line_added_by_discount` |
 
 `edit_drafts.version` counts writes to a staff member's draft, so the panel can refuse a save from a browser tab holding an older copy. Existing drafts need no backfill: each one starts at version `0`, and the edit page passes the stored version to the panel.
 
 `product_option_values.colour` holds the `#RRGGBB` colour of a value of a colour option, which alpha releases kept in `meta['colour']`. Lunar no longer reads the `meta` key, so copy it into the column, in upper case, for every value whose `meta` has one.
+
+`added_by_discount_id` marks the cart lines a Buy X Get Y discount added automatically, which alpha releases recorded in `meta['added_by_discount']`. A line left unmarked behaves as a line the shopper added. To keep reward lines already in carts and orders marked, set `added_by_discount_id` to the discount ID used as the key in `meta['added_by_discount']`, then remove that key.
 
 ## Folded migrations
 
@@ -130,6 +135,7 @@ These migrations shipped in an alpha and were later folded into the baseline. Th
 | `2026_01_01_000069_add_region_id_to_carts_and_orders` | `create_carts_table`, `create_orders_table` and `create_regions_table` |
 | `2026_01_01_000070_drop_price_display_from_tax_zones` | `create_tax_zones_table` |
 | `2026_07_16_000000_add_preferred_locale_to_staff_table` | `create_staff_table` |
+| `2026_01_01_000055_create_cart_line_discount_table` | Removed. The table was never used; see `cart_line_discount` under Next release. |
 
 The schema these migrations produced is unchanged, so an application that ran them needs no schema change. The leftover rows are harmless, but `php artisan migrate:rollback` reports them as not found. Delete them once the catch-up migration has run:
 

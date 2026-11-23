@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Tests\Core\Stubs\User;
@@ -100,3 +102,25 @@ test('refreshing a calculated line reloads it and clears its cached totals', fun
         ->and($line->subTotal)->toBeNull()
         ->and(isset($line->taxBreakdown))->toBeFalse();
 });
+
+test('a line added for a discount stays in the cart as an ordinary line when the discount is deleted', function () {
+    $discount = Discount::factory()->create();
+
+    $line = CartLine::factory()->create([
+        'added_by_discount_id' => $discount->id,
+    ]);
+
+    expect($line->addedByDiscount->is($discount))->toBeTrue()
+        ->and($line->isAddedByDiscount())->toBeTrue();
+
+    $discount->delete();
+
+    $line = $line->fresh();
+
+    expect($line)->not->toBeNull()
+        ->and($line->added_by_discount_id)->toBeNull()
+        ->and($line->isAddedByDiscount())->toBeFalse();
+})->skip(
+    fn () => DB::connection()->getDriverName() === 'sqlite',
+    'The foreign key nulls the column; the SQLite test connection does not enforce foreign keys.'
+);
