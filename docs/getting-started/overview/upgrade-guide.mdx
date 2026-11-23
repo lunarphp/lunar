@@ -149,6 +149,9 @@ The package ships one data migration per v1 to v2 schema change, run in dependen
 - **Attribute `description` column** — flattens the v1 translatable `attributes.description` to the v2 plain string column, keeping the `en` text, or the first locale's when there is no `en`, truncated to 255 characters. Descriptions in other locales are dropped.
 - **Product option value `colour` column** — adds the column that holds a color option value's `#RRGGBB` color. No backfill: v1 has no color option type.
 - **Line `added_by_discount_id` columns** — adds the column recording which discount added a reward line to `cart_lines` and `order_lines`. No backfill: v1 did not mark the lines it added. Drops the unused `cart_line_discount` table when it is empty, and leaves it in place when the store has written rows to it.
+- **Order line `parent_line_id`, address `last_used_at`, customer `admin_notes` and product option `type` columns** — adds the columns v2 added to these tables. Existing lines have no parent, addresses and customers start empty, and every v1 option becomes a `text` option.
+- **Attribute column realignment** — gives `required`, `searchable`, `system` and `position` the v2 defaults, makes `configuration` nullable, and sets `attribute_group_id` to null when its group is deleted. It also makes `handle` unique again. v1 handles were unique per attribute type, so where two types shared a handle, the oldest attribute keeps it and each other one gets its model type appended, for example `material` → `material_collection`. Update any code that reads a renamed handle.
+- **Catalogue column realignment** — defaults `products.status` to `draft` and makes `products.name` and `collections.name` required. A row with no v1 name gets an empty name in the default language.
 
 ### Order status mapping
 
