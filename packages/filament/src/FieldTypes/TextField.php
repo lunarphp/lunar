@@ -18,12 +18,12 @@ class TextField extends BaseFieldType
             return RichEditor::make($attribute->handle)
                 ->rules($attribute->validation_rules ?? [])
                 ->required((bool) $attribute->required)
-                ->helperText(null);
+                ->helperText($attribute->description);
         }
 
         return TextInput::make($attribute->handle)
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
-            ->helperText(null);
+            ->helperText($attribute->description);
     }
 }

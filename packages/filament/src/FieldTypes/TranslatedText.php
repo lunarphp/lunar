@@ -17,6 +17,6 @@ class TranslatedText extends BaseFieldType
             ->optionRichtext((bool) $attribute->configuration->get('richtext'))
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
-            ->helperText(null);
+            ->helperText($attribute->description);
     }
 }

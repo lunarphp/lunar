@@ -126,6 +126,7 @@ test('the type must be a known field type', function () {
 test('the attribute edit screen renders with the attribute data', function () {
     $attribute = Attribute::factory()->create([
         'name' => 'Material',
+        'description' => 'What the product is made of',
         'handle' => 'material',
         'type' => 'dropdown',
         'configuration' => ['lookups' => [['label' => 'Wood', 'value' => 'wood']]],
@@ -137,6 +138,7 @@ test('the attribute edit screen renders with the attribute data', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('settings/attributes/Edit')
             ->where('attribute.name', 'Material')
+            ->where('attribute.description', 'What the product is made of')
             ->where('attribute.type', 'dropdown')
             ->where('attribute.configuration.lookups.0.label', 'Wood')
             ->where('attribute.configuration.lookups.0.value', 'wood')
@@ -282,6 +284,37 @@ test('a non-system attribute can be deleted along with its model links', functio
         ->assertSessionHas('success');
 
     expect(Attribute::find($attribute->id))->toBeNull();
+});
+
+test('an attribute description can be set, kept when omitted, and cleared', function () {
+    $attribute = Attribute::factory()->create(['type' => 'text']);
+    $attribute->models()->create(['model_type' => Product::morphName()]);
+
+    $payload = [
+        'name' => $attribute->name,
+        'handle' => $attribute->handle,
+        'model_types' => [Product::morphName()],
+    ];
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [
+        ...$payload,
+        'description' => 'Shown on the product page under the title',
+    ])->assertRedirect(route('panel.settings.attributes.index'));
+
+    expect($attribute->refresh()->description)->toBe('Shown on the product page under the title');
+
+    $this->put(route('panel.settings.attributes.update', $attribute), $payload)
+        ->assertRedirect(route('panel.settings.attributes.index'));
+
+    expect($attribute->refresh()->description)->toBe('Shown on the product page under the title');
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [...$payload, 'description' => ''])
+        ->assertRedirect(route('panel.settings.attributes.index'));
+
+    expect($attribute->refresh()->description)->toBeNull();
+
+    $this->put(route('panel.settings.attributes.update', $attribute), [...$payload, 'description' => str_repeat('a', 256)])
+        ->assertSessionHasErrors('description');
 });
 
 test('an attribute can be updated with validation rules, and clearing them stores null', function () {

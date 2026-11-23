@@ -19,6 +19,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)
 - Add Boost guidelines to packages
 - Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
+- Attribute descriptions — restore the v1 helper text staff write for an attribute and editors see under its field, in core, both admin UIs and the upgrade (spec attribute-descriptions)
 
 ## Ideas
 

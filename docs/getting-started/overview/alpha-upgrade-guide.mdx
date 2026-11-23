@@ -115,6 +115,7 @@ Changes made since 2.0.0-alpha.9.
 | `carts` | Add `payment_terms` `string` `nullable`. | `2026_06_01_000022_add_payment_terms` |
 | `orders` | Add `payment_terms` `string`, default `checkout`. | `2026_06_01_000022_add_payment_terms` |
 | `edit_drafts` | Add `version` `unsignedInteger`, default `0`. | |
+| `attributes` | Add `description` `string` `nullable`. | `2026_06_01_000023_add_attribute_description` |
 
 `edit_drafts.version` counts writes to a staff member's draft, so the panel can refuse a save from a browser tab holding an older copy. Existing drafts need no backfill: each one starts at version `0`, and the edit page passes the stored version to the panel.
 

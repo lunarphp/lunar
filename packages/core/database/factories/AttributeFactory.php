@@ -20,6 +20,7 @@ class AttributeFactory extends BaseFactory
             'attribute_group_id' => AttributeGroup::factory(),
             'position' => self::$position++,
             'name' => $this->faker->words(2, true),
+            'description' => null,
             'handle' => $this->faker->unique()->slug(),
             'type' => FieldTypeEnum::Text->value,
             'configuration' => [],

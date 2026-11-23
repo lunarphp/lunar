@@ -16,6 +16,8 @@ export interface AttributeField {
     key: string;
     handle: string;
     label: string;
+    // Helper text staff write on the attribute, shown under its input.
+    description?: string | null;
     required: boolean;
     type: string;
     config: {
@@ -462,6 +464,7 @@ const embedUrl = (field: AttributeField): string | null => {
                             {{ field.type === 'file' ? (stringValue(field) || t('attributes.file_readonly')) : t('attributes.unsupported', { type: field.type }) }}
                         </div>
 
+                        <div v-if="field.description" class="mt-1 text-[11px] text-ink-500">{{ field.description }}</div>
                         <div v-if="errors[field.key]" class="mt-1 text-[11px] text-danger">{{ errors[field.key] }}</div>
                     </div>
                 </div>

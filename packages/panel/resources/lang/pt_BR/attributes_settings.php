@@ -19,6 +19,8 @@ return [
     'field_handle' => 'Handle',
     'handle_hint' => 'lower_case_and_underscores',
     'handle_placeholder' => 'auto-generated',
+    'field_description' => 'Descrição',
+    'description_hint' => 'Exibida abaixo do campo como texto de ajuda',
     'field_group' => 'Group',
     'no_group' => 'No group',
     'field_type' => 'Type',

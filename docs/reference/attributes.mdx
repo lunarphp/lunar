@@ -61,6 +61,7 @@ Lunar\Core\Models\Attribute
 | `public_id` | `ulid` | Stable external identifier. See [Public IDs](/reference/public-ids) |
 | `attribute_group_id` | `foreignId` `nullable` | The associated attribute group |
 | `name` | `string` | |
+| `description` | `string` `nullable` | Helper text the admin panels show under the attribute's field |
 | `handle` | `string` | Underscored reference, e.g. `screen_size`. Must be unique |
 | `type` | `string` | The field type key, e.g. `text`, `number`. Indexed |
 | `configuration` | `json` `nullable` | Field-type-specific configuration, cast to a collection |
@@ -276,6 +277,10 @@ The `mappedAttributes()` method (also exposed as the `mappedAttributes` accessor
 $product->mappedAttributes();
 $product->mappedAttributes; // same result, as an accessor
 ```
+
+## Descriptions
+
+An attribute's `description` is helper text for the staff who fill the attribute in, such as what the value is for or the format it takes. The Inertia panel and the Filament admin show it under the attribute's field on every edit page that carries the attribute. Core stores the description but does not read it, and it is not indexed for search.
 
 ## Validation Rules
 

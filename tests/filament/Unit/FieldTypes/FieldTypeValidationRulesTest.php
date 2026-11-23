@@ -1,6 +1,7 @@
 <?php
 
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -99,3 +100,42 @@ it('builds components without rules under strict attribute access', function (st
         Model::preventAccessingMissingAttributes(false);
     }
 })->with('field type converters');
+
+/**
+ * The helper text a built field renders below its input, or null when none.
+ */
+function helperTextOf(Field $field): ?string
+{
+    $text = $field->getChildSchema(Field::BELOW_CONTENT_SCHEMA_KEY)?->getComponents()[0] ?? null;
+
+    return $text instanceof Text ? (string) $text->getContent() : null;
+}
+
+it('shows the attribute description as the component helper text', function (string $converter, string $type) {
+    $attribute = Attribute::factory()->create([
+        'type' => $type,
+        'description' => 'Shown under the field',
+    ]);
+
+    expect(helperTextOf(builtFieldFor($converter, $attribute)))->toBe('Shown under the field');
+})->with('field type converters');
+
+it('falls back to the embed hint when a video attribute has no description', function (string $converter, string $type) {
+    $attribute = Attribute::factory()->create(['type' => $type]);
+
+    expect(helperTextOf(builtFieldFor($converter, $attribute)))
+        ->toBe(__('lunar-filament::components.forms.youtube.helperText'));
+})->with([
+    'youtube' => [YouTube::class, FieldTypeEnum::YouTube->value],
+    'vimeo' => [Vimeo::class, FieldTypeEnum::Vimeo->value],
+]);
+
+it('shows the description on the rich text editor too', function () {
+    $attribute = Attribute::factory()->create([
+        'type' => FieldTypeEnum::Text->value,
+        'configuration' => ['richtext' => true],
+        'description' => 'Shown under the editor',
+    ]);
+
+    expect(helperTextOf(builtFieldFor(TextField::class, $attribute)))->toBe('Shown under the editor');
+});
