@@ -275,6 +275,11 @@ class StripeManager
         return $intent;
     }
 
+    /**
+     * An intent Stripe does not know has no charges. Any other API error, such
+     * as a timeout or a 5xx, is rethrown: reading it as "no charges" would
+     * leave a paid order unplaced.
+     */
     public function getCharges(string $paymentIntentId): Collection
     {
         try {
@@ -283,11 +288,9 @@ class StripeManager
                     'payment_intent' => $paymentIntentId,
                 ])['data'] ?? null
             );
-        } catch (\Exception $e) {
-            //
+        } catch (InvalidRequestException $e) {
+            return collect();
         }
-
-        return collect();
     }
 
     public function getCharge(string $chargeId): Charge

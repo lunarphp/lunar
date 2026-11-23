@@ -238,6 +238,8 @@ use Lunar\Stripe\Facades\Stripe;
 Stripe::getCharges($paymentIntentId);
 ```
 
+An unknown PaymentIntent returns an empty collection. Any other Stripe API error, such as a timeout, is thrown. When that happens during `authorize()`, the payment intent row is left unprocessed, so the next `authorize()` call or the webhook places the order.
+
 ## Authorizing a payment
 
 `Lunar\Stripe\StripePaymentType::authorize()` is the driver's entry point, resolved through the `Lunar\Core\Facades\Payments` facade.
