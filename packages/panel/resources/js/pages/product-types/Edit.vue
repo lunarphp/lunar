@@ -312,6 +312,7 @@ const timelineEvents = computed(() =>
                 v-model:open="conflictOpen"
                 :conflicts="draftConflicts"
                 :busy="draftCommitting"
+                :errors="detailsErrors"
                 @resolve="onResolveConflicts"
             />
         </div>

@@ -501,6 +501,7 @@ const confirmDestroy = (): void => {
                 v-model:open="conflictOpen"
                 :conflicts="draftConflicts"
                 :busy="draftCommitting"
+                :errors="detailsErrors"
                 @resolve="onResolveConflicts"
             />
         </div>

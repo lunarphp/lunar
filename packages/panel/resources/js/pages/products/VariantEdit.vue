@@ -9,13 +9,14 @@ import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
-import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
+import DraftConflictDialog, { type ConflictField } from '../../components/DraftConflictDialog.vue';
 import Icon from '../../components/Icon.vue';
 import IdentifiersCard from '../../components/IdentifiersCard.vue';
 import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
 import PricingEditor, { type CurrencyOption } from '../../components/PricingEditor.vue';
+import { priceConflictField } from '../../components/pricing';
 import ShippingCard from '../../components/ShippingCard.vue';
 import SideCard from '../../components/SideCard.vue';
 import StickySidebar from '../../components/StickySidebar.vue';
@@ -109,6 +110,12 @@ const conflictOpen = computed({
 const onResolveConflicts = (resolutions: Record<string, unknown>, rebase: Record<string, unknown>): void => {
     void resolveDraft(resolutions, rebase);
 };
+
+// The conflict dialog shows the tax class by name and price lists as money.
+const conflictField = (key: string): ConflictField | undefined =>
+    key === 'tax_class_id'
+        ? { options: props.taxClasses.map((taxClass) => ({ value: taxClass.id, label: taxClass.name })) }
+        : priceConflictField(key, 'price:', props.currencies, props.customerGroups, t);
 
 const enabled = computed(() => Boolean(details.enabled));
 
@@ -318,6 +325,8 @@ const timelineEvents = computed(() =>
                 v-model:open="conflictOpen"
                 :conflicts="draftConflicts"
                 :busy="draftCommitting"
+                :field="conflictField"
+                :errors="detailsErrors"
                 @resolve="onResolveConflicts"
             />
         </div>
