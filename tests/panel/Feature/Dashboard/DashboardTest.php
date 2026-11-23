@@ -63,6 +63,22 @@ it('defers widget data for visible widgets only', function () {
         );
 });
 
+it('links each recent order to its order page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $order = Order::factory()->placed()->create(['placed_at' => now()]);
+
+    $this->get(route('panel.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->loadDeferredProps(fn (Assert $props) => $props
+                ->has('widgetData.recent-orders.orders', 1)
+                ->where('widgetData.recent-orders.orders.0.show_url', route('panel.orders.show', $order))
+            )
+        );
+});
+
 it('scopes widget data to the requested range', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

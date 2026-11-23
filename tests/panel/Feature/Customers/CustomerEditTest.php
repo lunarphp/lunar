@@ -65,8 +65,42 @@ it('exposes lifetime stats and order history for placed orders', function () {
             ->whereNot('stats.latestOrderAt', null)
             ->has('orders', 2)
             ->has('orders.0', fn (Assert $order) => $order
-                ->hasAll(['id', 'reference', 'status', 'status_label', 'placed_at', 'total'])
+                ->hasAll(['id', 'reference', 'status', 'status_label', 'placed_at', 'total', 'show_url'])
             )
+        );
+});
+
+it('links each order in the history to its order page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+    $order = Order::factory()->placed()->for($customer)->create();
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('orders', 1)
+            ->where('orders.0.show_url', route('panel.orders.show', $order))
+        );
+});
+
+it('leaves order history rows unlinked for staff who cannot view orders', function () {
+    $staff = Staff::factory()->create(['admin' => false]);
+    $staff->givePermissionTo('sales:manage-customers');
+    $this->actingAs($staff, 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+    Order::factory()->placed()->for($customer)->create();
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('orders', 1)
+            ->has('orders.0.show_url')
+            ->where('orders.0.show_url', null)
         );
 });
 

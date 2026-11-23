@@ -9,6 +9,7 @@ import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
+import DataTable from '../../components/DataTable.vue';
 import Dialog from '../../components/Dialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
@@ -74,14 +75,17 @@ interface ActivityEntry {
     changes: string[];
 }
 
-interface OrderRow {
+// A type alias, not an interface, so a row is assignable to DataTable's
+// Record<string, unknown> rows.
+type OrderRow = {
     id: number;
     reference: string;
     status: string;
     status_label: string;
     placed_at: string;
     total: string;
-}
+    show_url: string | null;
+};
 
 const props = defineProps<{
     customer: {
@@ -510,6 +514,13 @@ const orderStatusTone = (status: string): 'sage' | 'archived' | 'danger' | 'neut
 
 const formatDate = (value: string): string => new Date(value).toLocaleDateString();
 
+const orderColumns = computed(() => [
+    { key: 'reference', label: t('customers.order_reference') },
+    { key: 'placed_at', label: t('customers.order_date') },
+    { key: 'status', label: t('customers.order_status') },
+    { key: 'total', label: t('customers.order_total'), align: 'right' as const },
+]);
+
 // Tabs
 const activeTab = ref<'addresses' | 'users' | 'orders' | 'activity'>('addresses');
 const tabDefs = computed(() => [
@@ -742,28 +753,25 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #orders>
-                                    <div v-if="orders.length" class="bg-surface border border-line rounded-xl shadow-sm overflow-hidden">
-                                        <table class="w-full border-collapse text-[13px]">
-                                            <thead>
-                                                <tr class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium bg-surface-2 border-b border-line">
-                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_reference') }}</th>
-                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_date') }}</th>
-                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_status') }}</th>
-                                                    <th class="text-right font-medium px-4 py-2.5">{{ t('customers.order_total') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="order in orders" :key="order.id" class="border-b border-line last:border-b-0">
-                                                    <td class="px-4 py-2.5 align-middle font-mono text-[12px] text-ink-900">{{ order.reference }}</td>
-                                                    <td class="px-4 py-2.5 align-middle text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(order.placed_at) }}</td>
-                                                    <td class="px-4 py-2.5 align-middle">
-                                                        <StatusBadge size="sm" :tone="orderStatusTone(order.status)">{{ order.status_label }}</StatusBadge>
-                                                    </td>
-                                                    <td class="px-4 py-2.5 align-middle text-right text-ink-900 [font-variant-numeric:tabular-nums]">{{ order.total }}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <DataTable
+                                        v-if="orders.length"
+                                        :columns="orderColumns"
+                                        :rows="orders"
+                                        :row-to="(row) => row.show_url as string | null"
+                                    >
+                                        <template #cell-reference="{ value }">
+                                            <span class="font-mono text-[12px] text-ink-900">{{ value }}</span>
+                                        </template>
+                                        <template #cell-placed_at="{ value }">
+                                            <span class="text-[13px] text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(value as string) }}</span>
+                                        </template>
+                                        <template #cell-status="{ row }">
+                                            <StatusBadge size="sm" :tone="orderStatusTone(row.status as string)">{{ row.status_label }}</StatusBadge>
+                                        </template>
+                                        <template #cell-total="{ value }">
+                                            <span class="text-[13px] text-ink-900 [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                                        </template>
+                                    </DataTable>
                                     <PageEmpty v-else :title="t('customers.orders_empty_title')">{{ t('customers.orders_empty_body') }}</PageEmpty>
                                 </template>
 
