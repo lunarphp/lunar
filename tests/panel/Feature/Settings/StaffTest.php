@@ -127,6 +127,32 @@ test('email must be unique', function () {
     ])->assertSessionHasErrors('email');
 });
 
+test('a deleted staff member email cannot be reused for a new staff member', function () {
+    Staff::factory()->create(['email' => 'quinn@example.com'])->delete();
+
+    $this->post(route('panel.settings.staff.store'), [
+        'first_name' => 'Quinn',
+        'last_name' => 'Again',
+        'email' => 'quinn@example.com',
+        'password' => 'super-secret-password',
+    ])->assertSessionHasErrors(['email' => __('panel::staff.email_belongs_to_deleted')]);
+
+    expect(Staff::withTrashed()->where('email', 'quinn@example.com')->count())->toBe(1);
+});
+
+test('a staff member email cannot be changed to a deleted staff member email', function () {
+    Staff::factory()->create(['email' => 'quinn@example.com'])->delete();
+    $member = Staff::factory()->create(['admin' => false]);
+
+    $this->put(route('panel.settings.staff.update', $member), [
+        'first_name' => $member->first_name,
+        'last_name' => $member->last_name,
+        'email' => 'quinn@example.com',
+    ])->assertSessionHasErrors(['email' => __('panel::staff.email_belongs_to_deleted')]);
+
+    expect($member->fresh()->email)->not->toBe('quinn@example.com');
+});
+
 test('the staff edit screen renders with the staff data', function () {
     $member = Staff::factory()->create(['first_name' => 'Bob', 'last_name' => 'Builder', 'admin' => false]);
 

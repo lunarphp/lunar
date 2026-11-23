@@ -34,6 +34,13 @@ class StaffRequest extends FormRequest
             'email' => [
                 'required', 'email', 'max:255',
                 Rule::unique(Staff::class, 'email')->ignore($staff?->id)->withoutTrashed(),
+                // The unique index on staff.email covers soft-deleted rows too,
+                // so a deleted staff member's email is still taken.
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if (Staff::onlyTrashed()->where('email', $value)->exists()) {
+                        $fail(__('panel::staff.email_belongs_to_deleted'));
+                    }
+                },
             ],
             'password' => [$staff ? 'nullable' : 'required', Password::defaults()],
             'admin' => ['sometimes', 'boolean'],

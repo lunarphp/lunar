@@ -42,3 +42,19 @@ it('can create staff', function () {
 
     $this->assertDatabaseHas(Staff::class, $formData);
 });
+
+it('rejects the email of a deleted staff member', function () {
+    Staff::factory()->create(['email' => 'quinn@example.com'])->delete();
+
+    Livewire::test(CreateStaff::class)
+        ->fillForm([
+            'first_name' => 'Quinn',
+            'last_name' => 'Again',
+            'email' => 'quinn@example.com',
+            'password' => 'password',
+        ])
+        ->call('create')
+        ->assertHasFormErrors(['email' => 'unique']);
+
+    expect(Staff::withTrashed()->where('email', 'quinn@example.com')->count())->toBe(1);
+});
