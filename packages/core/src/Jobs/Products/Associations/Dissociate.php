@@ -69,7 +69,7 @@ class Dissociate implements ShouldQueue
 
         $types = $this->type
             ? [is_string($this->type) ? $this->type : $this->type->value]
-            : $this->product->associations()->distinct()->pluck('type')->map(fn ($type) => (string) $type)->all();
+            : $this->product->associations()->reorder()->distinct()->pluck('type')->map(fn ($type) => (string) $type)->all();
 
         DB::transaction(function () use ($types, $targetIds): void {
             foreach ($types as $type) {
