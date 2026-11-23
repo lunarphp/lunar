@@ -4,6 +4,7 @@ namespace Lunar\Actions\Carts;
 
 use Lunar\Actions\AbstractAction;
 use Lunar\Base\LunarUser;
+use Lunar\Facades\CartSession;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
 
@@ -18,14 +19,18 @@ class AssociateUser extends AbstractAction
     {
         /** @var Cart $userCart */
         if ($policy == 'merge') {
-            $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())
+                ->where('channel_id', CartSession::getChannel()->id)
+                ->active()->unMerged()->latest()->first();
             if ($userCart) {
                 app(MergeCart::class)->execute($cart, $userCart);
             }
         }
 
         if ($policy == 'override') {
-            $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())
+                ->where('channel_id', CartSession::getChannel()->id)
+                ->active()->unMerged()->latest()->first();
             if ($userCart && $userCart->id != $cart->id) {
                 $userCart->update([
                     'merged_id' => $userCart->id,
