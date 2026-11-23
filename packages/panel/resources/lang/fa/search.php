@@ -6,7 +6,7 @@ return [
     'aria_label' => 'جستجوی سراسری',
     'recent_heading' => 'اخیراً مشاهده‌شده',
     'commands_heading' => 'اقدامات سریع',
-    'no_results' => 'نتیجه‌ای برای «:term» یافت نشد',
+    'no_results' => 'نتیجه‌ای برای «{term}» یافت نشد',
     'searching' => 'در حال جستجو…',
     'empty_hint' => 'برای جستجو تایپ کنید، یا یک اقدام سریع انتخاب کنید.',
     'filter_all' => 'همه',

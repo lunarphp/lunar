@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Căutare globală',
     'recent_heading' => 'Vizualizate recent',
     'commands_heading' => 'Acțiuni rapide',
-    'no_results' => 'Niciun rezultat pentru „:term”',
+    'no_results' => 'Niciun rezultat pentru „{term}”',
     'searching' => 'Se caută…',
     'empty_hint' => 'Începe să scrii pentru a căuta sau alege o acțiune rapidă.',
     'filter_all' => 'Toate',

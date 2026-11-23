@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Genel arama',
     'recent_heading' => 'Son görüntülenenler',
     'commands_heading' => 'Hızlı işlemler',
-    'no_results' => '“:term” için sonuç bulunamadı',
+    'no_results' => '“{term}” için sonuç bulunamadı',
     'searching' => 'Aranıyor…',
     'empty_hint' => 'Aramak için yazmaya başlayın veya bir hızlı işlem seçin.',
     'filter_all' => 'Tümü',

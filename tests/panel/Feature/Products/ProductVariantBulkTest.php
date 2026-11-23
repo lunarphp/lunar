@@ -71,7 +71,7 @@ it('deletes a selection but skips guarded rows', function () {
     $this->post(route('panel.products.variants.bulk', $this->product), [
         'op' => 'destroy',
         'ids' => [$deletable->id, $ordered->id],
-    ])->assertRedirect()->assertSessionHas('error');
+    ])->assertRedirect()->assertSessionHas('error', '1 variants were skipped - they are referenced by orders or are the last variant.');
 
     $this->assertDatabaseMissing('lunar_product_variants', ['id' => $deletable->id]);
     $this->assertDatabaseHas('lunar_product_variants', ['id' => $ordered->id]);

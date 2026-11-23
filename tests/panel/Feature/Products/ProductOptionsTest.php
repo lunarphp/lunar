@@ -51,6 +51,20 @@ it('generates variants from a shared option selection', function () {
         ->and($this->product->productOptions()->count())->toBe(1);
 });
 
+it('reports the variant counts in the generate flash message', function () {
+    $option = sizeOption(['Small', 'Medium', 'Large']);
+
+    $this->post(route('panel.products.options.generate', $this->product), [
+        'selections' => [[
+            'type' => 'shared',
+            'id' => $option->id,
+            'value_ids' => $option->values->pluck('id')->all(),
+        ]],
+    ])->assertRedirect();
+
+    expect(session('success'))->toBe('Variants updated: 1 kept, 2 added, 0 removed.');
+});
+
 it('creates exclusive options through the generate payload', function () {
     $this->post(route('panel.products.options.generate', $this->product), [
         'selections' => [[

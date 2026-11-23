@@ -6,7 +6,7 @@ return [
     'aria_label' => 'البحث الشامل',
     'recent_heading' => 'شوهدت مؤخرًا',
     'commands_heading' => 'إجراءات سريعة',
-    'no_results' => 'لا توجد نتائج لـ ":term"',
+    'no_results' => 'لا توجد نتائج لـ "{term}"',
     'searching' => 'جارٍ البحث…',
     'empty_hint' => 'ابدأ الكتابة للبحث، أو اختر إجراءً سريعًا.',
     'filter_all' => 'الكل',

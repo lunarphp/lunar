@@ -11,6 +11,7 @@ return [
     'add_url' => 'Add URL',
     'add_description' => 'Add a slug for any language. A record can carry several slugs per language — the default is the canonical link, the rest act as alias or redirect slugs.',
     'field_slug' => 'Slug',
+    'field_url_slug' => 'slug de URL',
     'make_default' => 'Make this the default URL',
     'non_default_hint' => 'Non-default slugs still resolve on the storefront and suit renamed pages or campaign links.',
     'add' => 'Add',

@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Búsqueda global',
     'recent_heading' => 'Vistos recientemente',
     'commands_heading' => 'Acciones rápidas',
-    'no_results' => 'Sin coincidencias para «:term»',
+    'no_results' => 'Sin coincidencias para «{term}»',
     'searching' => 'Buscando…',
     'empty_hint' => 'Empieza a escribir para buscar, o elige una acción rápida.',
     'filter_all' => 'Todos',

@@ -61,6 +61,11 @@ it('rejects draft product types in the create flow', function () {
     ])->assertSessionHasErrors('product_type_id');
 });
 
+it('names the product type field in validation messages', function () {
+    $this->post(route('panel.products.store'), ['name' => 'Coffee Grinder'])
+        ->assertSessionHasErrors(['product_type_id' => 'The Product type field is required.']);
+});
+
 it('validates the payload', function () {
     $type = ProductType::factory()->active()->create();
 

@@ -139,6 +139,19 @@ it('refuses duplicate, malformed and foreign slugs', function () {
         ->and($brand->urls()->count())->toBe(0);
 });
 
+it('names the slug field in validation messages', function (Closure $make, string $prefix) {
+    $record = $make();
+    $record::factory()->create()->urls()->create(['language_id' => $this->en->id, 'slug' => 'taken', 'default' => true]);
+
+    commitUrls($prefix, $record, ['url:en' => [
+        ['id' => null, 'slug' => 'taken', 'default' => true],
+        ['id' => null, 'slug' => 'Not A Slug', 'default' => false],
+    ]])->assertUnprocessable()->assertJsonValidationErrors([
+        'url:en.0.slug' => 'The URL slug has already been taken.',
+        'url:en.1.slug' => 'The URL slug field format is invalid.',
+    ]);
+})->with('url records');
+
 it('no longer exposes immediate url endpoints', function () {
     foreach (['products', 'brands', 'collections'] as $prefix) {
         foreach (['store', 'update', 'destroy'] as $action) {

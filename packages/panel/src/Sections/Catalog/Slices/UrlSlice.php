@@ -162,7 +162,16 @@ abstract class UrlSlice extends FormSlice
 
     public function labels(): array
     {
-        return array_fill_keys(array_map('strval', array_keys($this->languages())), 'panel::urls.title');
+        $labels = [];
+
+        foreach (array_keys($this->languages()) as $code) {
+            $labels[$code] = 'panel::urls.title';
+            $labels[$code.'.*.id'] = 'panel::urls.title';
+            $labels[$code.'.*.slug'] = 'panel::urls.field_url_slug';
+            $labels[$code.'.*.default'] = 'panel::urls.column_default';
+        }
+
+        return $labels;
     }
 
     /** @return array<string, int> */
