@@ -1,9 +1,9 @@
 ---
 title: "Local Development"
-description: "Setting up the Lunar monorepo locally for development and contribution."
+description: "Setting up the Lunar monorepo locally to explore the code, reproduce bugs, and write failing tests."
 ---
 
-This guide walks through setting up the Lunar monorepo inside a Laravel application for local development and contribution.
+This guide walks through setting up the Lunar monorepo inside a Laravel application, for exploring the source, reproducing a bug, or writing a failing test to include in a bug report.
 
 <Info>
 Lunar v2 is built as a monorepo: a single repository containing several Composer packages (`core`, `admin`, `filament`, `panel`, `stripe`, `paypal`, and more) plus the shared test suite that exercises them.
@@ -35,11 +35,11 @@ Add `packages` to the `.gitignore` file so it is not committed to the applicatio
 
 ### 2. Clone the repository
 
-Fork the [lunarphp/lunar](https://github.com/lunarphp/lunar) repository on GitHub, then clone the fork into the `packages` directory on the `2.x` branch.
+Clone the [lunarphp/lunar](https://github.com/lunarphp/lunar) repository into the `packages` directory on the `2.x` branch.
 
 ```bash
 cd packages
-git clone --branch 2.x https://github.com/YOUR-USERNAME/lunar.git
+git clone --branch 2.x https://github.com/lunarphp/lunar.git
 ```
 
 This places the monorepo at `packages/lunar/`.
@@ -125,7 +125,7 @@ Cross-database tests run as a group rather than a testsuite, against MySQL and P
 vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite
 ```
 
-All existing tests must continue to pass before submitting a pull request.
+A failing test written this way can be pasted into a [bug report](/getting-started/overview/contributing#reporting-a-bug).
 
 ## Panel Frontend
 
@@ -148,7 +148,7 @@ npm run build --workspace @lunarphp/panel-addon-example
 
 ## Code Style and Static Analysis
 
-Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) for enforcement, and [PHPStan](https://phpstan.org/) (via Larastan) for static analysis. Run both from the monorepo root before committing changes.
+Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) for enforcement, and [PHPStan](https://phpstan.org/) (via Larastan) for static analysis. Run both from the monorepo root.
 
 ```bash
 vendor/bin/pint --dirty
@@ -157,4 +157,4 @@ vendor/bin/phpstan analyse --no-progress
 
 ## Next Steps
 
-With local development set up, see the [Contributing](/getting-started/overview/contributing) guide for information on coding standards, submitting pull requests, and reporting bugs.
+With local development set up, see the [Contributing](/getting-started/overview/contributing) guide for how to report bugs and propose features.
