@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Không thể thêm theo dõi vận chuyển vào đơn giao hàng :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" không phải là màu hợp lệ. Hãy dùng # theo sau là ba hoặc sáu chữ số thập lục phân.',
 ];

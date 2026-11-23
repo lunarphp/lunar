@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'لا يمكن إضافة التتبّع إلى عملية تنفيذ من نوع :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" ليس لونًا صالحًا. استخدم # متبوعة بثلاثة أو ستة أرقام سداسية عشرية.',
 ];

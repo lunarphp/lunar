@@ -326,6 +326,7 @@ There is no generic "fee" or "extra charge" line primitive. A line's `type` is w
 | refunded_quantity | `unsignedInteger` | Rollup of `refund_lines.quantity` for this line, see [Refunds](#refunds) |
 | notes | `text` `nullable` | Additional line notes |
 | meta | `jsonb` `nullable` | Custom metadata |
+| added_by_discount_id | `foreignId` `nullable` | Copied from the cart line a discount added as an automatic reward. Set to `null` when the discount is deleted |
 | created_at | `timestamp` | |
 | updated_at | `timestamp` | |
 
@@ -334,6 +335,7 @@ There is no generic "fee" or "extra charge" line primitive. A line's `type` is w
 | Relationship | Type | Related Model | Description |
 |:-------------|:-----|:--------------|:------------|
 | `order` | BelongsTo | `Lunar\Core\Models\Order` | |
+| `addedByDiscount` | BelongsTo | `Lunar\Core\Models\Discount` | The discount that added the cart line this came from |
 | `purchasable` | MorphTo | — | The polymorphic purchasable item. `null` on shipping lines |
 | `parent` | BelongsTo | `Lunar\Core\Models\OrderLine` | The line this component line belongs to. `null` on a top-level line, see [Component lines](#component-lines) |
 | `components` | HasMany | `Lunar\Core\Models\OrderLine` | Component lines belonging to this line, ordered by `id` |

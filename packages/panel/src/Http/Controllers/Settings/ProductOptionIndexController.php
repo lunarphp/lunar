@@ -58,7 +58,7 @@ class ProductOptionIndexController
                     'values_count' => (int) $productOption->getAttribute('values_count'),
                     'values_preview' => $productOption->values->take(4)->map(fn (ProductOptionValue $value) => [
                         'name' => $value->translate('name'),
-                        'colour' => $value->meta['colour'] ?? null,
+                        'colour' => $value->colour,
                         'swatch' => $value->getFirstMediaUrl($collection, 'small') ?: ($value->getFirstMediaUrl($collection) ?: null),
                     ])->values(),
                     'products_count' => (int) $productOption->getAttribute('products_count'),

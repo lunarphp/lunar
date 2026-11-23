@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Urmărirea nu poate fi adăugată la o onorare de tip :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" nu este o culoare validă. Folosiți # urmat de trei sau șase cifre hexazecimale.',
 ];

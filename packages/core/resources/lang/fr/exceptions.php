@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Le suivi ne peut pas être ajouté à un traitement de type :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '« :colour » n’est pas une couleur valide. Utilisez # suivi de trois ou six chiffres hexadécimaux.',
 ];

@@ -17,7 +17,7 @@ class CleanUpOrderLines
 
         // Build a set of "signatures" that uniquely identify each cart line
         $cartSignatures = $cart->lines->map(function ($line) {
-            return $this->signature($line->purchasable_id, $line->purchasable_type, (array) $line->meta, $line->quantity);
+            return $this->signature($line->purchasable_id, $line->purchasable_type, (array) $line->meta, $line->quantity, $line->added_by_discount_id);
         })->toArray();
 
         // Component lines are never the image of a cart line; they go with their parent.
@@ -27,6 +27,7 @@ class CleanUpOrderLines
                 $orderLine->purchasable_type,
                 (array) $orderLine->meta,
                 $orderLine->quantity,
+                $orderLine->added_by_discount_id,
             );
 
             if (! in_array($sig, $cartSignatures, true)) {
@@ -37,13 +38,14 @@ class CleanUpOrderLines
         return $next($order);
     }
 
-    private function signature(string $purchasableId, string $purchasableType, array $meta, int $qty): string
+    private function signature(string $purchasableId, string $purchasableType, array $meta, int $qty, ?int $addedByDiscountId): string
     {
         return md5(json_encode([
             'id' => $purchasableId,
             'type' => $purchasableType,
             'meta' => collect($meta)->sortKeys()->toArray(),
             'qty' => $qty,
+            'added_by_discount_id' => $addedByDiscountId,
         ]));
     }
 }

@@ -20,11 +20,13 @@ class GetExistingCartLine implements GetsExistingCartLine
     ): ?CartLine {
         /** @var Cart $cart */
 
-        // Get all possible cart lines
+        // Lines the shopper added for this purchasable. A line core added for a
+        // discount reward is never one the shopper's quantity goes onto.
         $lines = $cart->lines()
             ->wherePurchasableType(
                 $purchasable->getMorphClass()
             )->wherePurchasableId($purchasable->id)
+            ->whereNull('added_by_discount_id')
             ->get();
 
         return $lines->first(function ($line) use ($meta) {

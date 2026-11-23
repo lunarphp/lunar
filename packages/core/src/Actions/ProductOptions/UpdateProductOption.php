@@ -78,27 +78,40 @@ class UpdateProductOption implements UpdatesProductOption
                 'position' => $row['position'] ?? $index + 1,
             ]);
 
-            $meta = (array) ($value->meta ?? []);
+            $value->colour = $isColour && ! empty($row['colour'])
+                ? $this->normaliseColour($row['colour'])
+                : null;
 
-            if ($isColour && ! empty($row['colour'])) {
-                $meta['colour'] = strtoupper($row['colour']);
-            } else {
-                unset($meta['colour']);
-            }
-
-            $value->meta = $meta ?: null;
             $value->save();
         }
     }
 
-    /** Strip colour meta and swatch media from every value after a type change. */
+    /**
+     * Validate a hex colour (`#` and three or six hex digits) and return its
+     * six-digit upper-case form, so `#abc` is stored as `#AABBCC`.
+     */
+    protected function normaliseColour(string $colour): string
+    {
+        if (! preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $colour, $matches)) {
+            throw new ProductOptionActionException(
+                __('lunar::exceptions.product_option_invalid_colour', ['colour' => $colour])
+            );
+        }
+
+        $digits = $matches[1];
+
+        if (strlen($digits) === 3) {
+            $digits = $digits[0].$digits[0].$digits[1].$digits[1].$digits[2].$digits[2];
+        }
+
+        return '#'.strtoupper($digits);
+    }
+
+    /** Clear the colour and swatch media of every value after a type change. */
     protected function clearValuePayloads(ProductOption $productOption): void
     {
         $productOption->values()->get()->each(function (ProductOptionValue $value): void {
-            $meta = (array) ($value->meta ?? []);
-            unset($meta['colour']);
-            $value->meta = $meta ?: null;
-            $value->save();
+            $value->update(['colour' => null]);
 
             $value->clearMediaCollection(config('lunar.media.collection'));
         });

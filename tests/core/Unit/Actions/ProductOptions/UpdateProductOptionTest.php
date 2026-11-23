@@ -53,18 +53,49 @@ test('keeps the values when none are supplied', function () {
     expect($option->values()->count())->toBe(1);
 });
 
-test('stores a value colour on meta for colour options', function () {
+test('stores a value colour in the colour column, leaving meta alone', function () {
     $option = ProductOption::factory()->colour()->create();
+    $value = ProductOptionValue::factory()->create([
+        'product_option_id' => $option->id,
+        'meta' => ['colour' => 'store-value'],
+    ]);
 
     app(UpdateProductOption::class)->execute($option, [
         'values' => [
-            ['name' => ['en' => 'Navy'], 'position' => 1, 'colour' => '#1f2a44'],
+            ['id' => $value->id, 'name' => ['en' => 'Navy'], 'position' => 1, 'colour' => '#1f2a44'],
+            ['name' => ['en' => 'Sky'], 'position' => 2, 'colour' => '#4aD'],
         ],
     ]);
 
-    $value = $option->values()->first();
+    $values = $option->values()->orderBy('position')->get();
 
-    expect($value->meta['colour'])->toBe('#1F2A44');
+    expect($values[0]->colour)->toBe('#1F2A44')
+        ->and($values[0]->meta['colour'])->toBe('store-value')
+        ->and($values[1]->colour)->toBe('#44AADD');
+});
+
+test('rejects a colour that is not a hex colour', function (string $colour) {
+    $option = ProductOption::factory()->colour()->create();
+
+    expect(fn () => app(UpdateProductOption::class)->execute($option, [
+        'values' => [
+            ['name' => ['en' => 'Navy'], 'position' => 1, 'colour' => $colour],
+        ],
+    ]))->toThrow(ProductOptionActionException::class, "\"{$colour}\" is not a valid colour");
+
+    expect($option->values()->count())->toBe(0);
+})->with(['1F2A44', '#1F2A4', '#GGGGGG', 'navy']);
+
+test('ignores a colour on an option that is not a colour option', function () {
+    $option = ProductOption::factory()->create(['type' => 'text']);
+
+    app(UpdateProductOption::class)->execute($option, [
+        'values' => [
+            ['name' => ['en' => 'Navy'], 'position' => 1, 'colour' => '#1F2A44'],
+        ],
+    ]);
+
+    expect($option->values()->first()->colour)->toBeNull();
 });
 
 test('changing the type clears the value colour payload', function () {
@@ -74,7 +105,7 @@ test('changing the type clears the value colour payload', function () {
     app(UpdateProductOption::class)->execute($option, ['type' => 'text']);
 
     expect($option->fresh()->type)->toBe('text')
-        ->and($value->fresh()->meta['colour'] ?? null)->toBeNull();
+        ->and($value->fresh()->colour)->toBeNull();
 });
 
 test('refuses to remove a value carried by variants', function () {

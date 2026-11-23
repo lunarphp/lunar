@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Проследяване не може да бъде добавено към изпълнение от тип :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" не е валиден цвят. Използвайте # последван от три или шест шестнадесетични цифри.',
 ];

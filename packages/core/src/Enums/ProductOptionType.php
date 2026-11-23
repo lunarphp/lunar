@@ -7,7 +7,7 @@ namespace Lunar\Core\Enums;
  * what payload each value carries:
  *
  *   - Text   — value name only (the default).
- *   - Colour — each value carries a hex colour in its `meta->colour`.
+ *   - Colour — each value carries a `#RRGGBB` hex colour in its `colour` column.
  *   - Swatch — each value carries a single image in its `images` media collection.
  *
  * The column backing this is a plain string, so a value the current admin does

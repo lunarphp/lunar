@@ -49,7 +49,7 @@ class ProductOptionEditController
                     'id' => $value->id,
                     'name' => (array) ($value->name ?? []),
                     'position' => $value->position,
-                    'colour' => $value->meta['colour'] ?? null,
+                    'colour' => $value->colour,
                     'swatch' => $value->getFirstMediaUrl($collection, 'small') ?: ($value->getFirstMediaUrl($collection) ?: null),
                     'variant_count' => (int) $value->getAttribute('variants_count'),
                     // Values carried by variants cannot be removed.

@@ -32,6 +32,7 @@ class CreateOrderLines
                 return empty($diff->new) &&
                     empty($diff->edited) &&
                     empty($diff->removed) &&
+                    $line->added_by_discount_id == $cartLine->added_by_discount_id &&
                     $line->purchasable_type == $cartLine->purchasable_type &&
                     $line->purchasable_id == $cartLine->purchasable_id;
             }) ?: App::make(OrderLine::class);
@@ -56,6 +57,7 @@ class CreateOrderLines
                 'total' => $cartLine->total->value,
                 'notes' => null,
                 'meta' => $cartLine->meta,
+                'added_by_discount_id' => $cartLine->added_by_discount_id,
             ])->save();
         }
 

@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Não é possível adicionar rastreamento a um fulfillment do tipo :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" não é uma cor válida. Use # seguido de três ou seis dígitos hexadecimais.',
 ];

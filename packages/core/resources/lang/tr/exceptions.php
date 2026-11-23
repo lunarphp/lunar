@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => ':method karşılamasına takip eklenemez.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" geçerli bir renk değil. # ve ardından üç veya altı onaltılık rakam kullanın.',
 ];

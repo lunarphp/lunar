@@ -15,6 +15,7 @@ return new class extends Migration
             $table->jsonb('name');
             $table->timestamps();
             $table->integer('position')->default(0)->index();
+            $table->string('colour', 7)->nullable()->comment('#RRGGBB for a value of a colour option');
             $table->jsonb('meta')->nullable();
         });
     }
