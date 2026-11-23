@@ -152,7 +152,7 @@ Field types determine how an attribute's value is stored and retrieved. Each typ
 |:----|:------|:------------|
 | `text` | `Lunar\Core\FieldTypes\Text` | Single string value. The `richtext` configuration option marks it for rich text editing |
 | `translated_text` | `Lunar\Core\FieldTypes\TranslatedText` | A collection of `Text` values, keyed by locale |
-| `number` | `Lunar\Core\FieldTypes\Number` | Integer or decimal value |
+| `number` | `Lunar\Core\FieldTypes\Number` | Integer or decimal value, or `null` when blank |
 | `toggle` | `Lunar\Core\FieldTypes\Toggle` | Boolean on/off value |
 | `dropdown` | `Lunar\Core\FieldTypes\Dropdown` | Single selection from a list of predefined `lookups` |
 | `list` | `Lunar\Core\FieldTypes\ListField` | An array of values |

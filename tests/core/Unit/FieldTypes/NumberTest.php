@@ -22,21 +22,28 @@ test('can set value in constructor', function () {
 test('can set as empty string', function () {
     $field = new Number('');
 
-    expect($field->getValue())->toEqual(0);
+    expect($field->getValue())->toBeNull();
 
     $field->setValue('');
 
-    expect($field->getValue())->toEqual(0);
+    expect($field->getValue())->toBeNull();
 });
 
 test('can set as null value', function () {
     $field = new Number(null);
 
-    expect($field->getValue())->toEqual(0);
+    expect($field->getValue())->toBeNull()
+        ->and($field->jsonSerialize())->toBeNull();
 
     $field->setValue(null);
 
-    expect($field->getValue())->toEqual(0);
+    expect($field->getValue())->toBeNull();
+});
+
+test('keeps zero distinct from blank', function () {
+    expect((new Number(0))->getValue())->toBe(0)
+        ->and((new Number('0'))->getValue())->toBe(0)
+        ->and((new Number('2.50'))->getValue())->toBe(2.5);
 });
 
 test('check does not allow non numerics', function () {
