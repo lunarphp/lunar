@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\FieldTypes\Number;
 use Lunar\Core\FieldTypes\Text;
@@ -9,6 +10,7 @@ use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Jobs\Products\Associations\Associate;
 use Lunar\Core\Jobs\Products\Associations\Dissociate;
 use Lunar\Core\Jobs\SyncTags;
+use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
@@ -554,4 +556,28 @@ test('can retrieve prices', function () {
     ]);
 
     expect($product->refresh()->prices)->toHaveCount(1);
+});
+
+test('a non-UTF-8 attribute value fails the save and keeps the stored attribute data', function () {
+    Attribute::factory()->create([
+        'handle' => 'material',
+        'type' => FieldTypeEnum::Text->value,
+    ]);
+
+    $product = Product::factory()
+        ->for(ProductType::factory())
+        ->create(['attribute_data' => collect(['material' => new Text('Cotton')])]);
+
+    $stored = DB::table($product->getTable())->where('id', $product->id)->value('attribute_data');
+
+    // One byte from a feed that is not UTF-8: 'ä' as Latin-1 encodes it.
+    expect(function () use ($product) {
+        $product->attribute_data = collect(['material' => new Text("Sh\xE4mpoo")]);
+        $product->save();
+    })->toThrow(JsonException::class);
+
+    expect(DB::table($product->getTable())->where('id', $product->id)->value('attribute_data'))->toBe($stored)
+        ->and(json_decode($stored, true))->toBe([
+            (string) Attribute::where('handle', 'material')->value('id') => 'Cotton',
+        ]);
 });
