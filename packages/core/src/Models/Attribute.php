@@ -21,6 +21,7 @@ use Lunar\Core\Models\Concerns\HasPublicId;
  * @property string $public_id
  * @property ?int $attribute_group_id
  * @property string $name
+ * @property ?string $description
  * @property string $handle
  * @property string $type
  * @property ?Collection $configuration

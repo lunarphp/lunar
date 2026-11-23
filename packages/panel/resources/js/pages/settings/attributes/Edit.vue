@@ -12,6 +12,7 @@ import Icon from '../../../components/Icon.vue';
 import Section from '../../../components/Section.vue';
 import Select from '../../../components/Select.vue';
 import StatusBadge from '../../../components/StatusBadge.vue';
+import Textarea from '../../../components/Textarea.vue';
 import TextInput from '../../../components/TextInput.vue';
 import Toggle from '../../../components/Toggle.vue';
 import Tooltip from '../../../components/Tooltip.vue';
@@ -20,6 +21,7 @@ import SettingsShell from '../../../layouts/SettingsShell.vue';
 type Attribute = {
     id: number;
     name: string;
+    description: string | null;
     handle: string;
     type: string;
     attribute_group_id: number | null;
@@ -93,6 +95,7 @@ type ConfigurationValue = string | number | boolean | null | LookupRow[] | strin
 
 const form = usePanelForm({
     name: props.attribute.name,
+    description: props.attribute.description ?? '',
     handle: props.attribute.handle,
     attribute_group_id: props.attribute.attribute_group_id,
     position: String(props.attribute.position),
@@ -234,6 +237,11 @@ const confirmDestroy = (): void => {
                 <div>
                     <FieldLabel :hint="t('attributes_settings.handle_hint')">{{ t('attributes_settings.field_handle') }}</FieldLabel>
                     <TextInput :model-value="attribute.handle" disabled mono />
+                </div>
+                <div class="sm:col-span-2">
+                    <FieldLabel :hint="t('attributes_settings.description_hint')">{{ t('attributes_settings.field_description') }}</FieldLabel>
+                    <Textarea v-model="form.description" rows="2" maxlength="255" :invalid="!!form.errors.description" />
+                    <div v-if="form.errors.description" class="mt-1 text-[11px] text-danger">{{ form.errors.description }}</div>
                 </div>
                 <div>
                     <FieldLabel>{{ t('attributes_settings.field_group') }}</FieldLabel>

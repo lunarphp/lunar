@@ -20,7 +20,7 @@ class Number extends BaseFieldType
             ->numeric()
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
-            ->helperText(null);
+            ->helperText($attribute->description);
 
         if ($min) {
             $input->minValue($min);

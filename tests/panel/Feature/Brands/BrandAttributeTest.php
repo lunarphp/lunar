@@ -33,6 +33,7 @@ it('serves the attribute schema and values on the edit page', function () {
     brandAttribute([
         'handle' => 'hero_cta',
         'name' => 'Hero CTA',
+        'description' => 'Button text on the brand banner',
         'type' => 'text',
         'attribute_group_id' => $group->id,
         'required' => false,
@@ -47,6 +48,7 @@ it('serves the attribute schema and values on the edit page', function () {
             ->where('attributeGroups.0.name', 'Storefront')
             ->where('attributeGroups.0.fields.0.handle', 'hero_cta')
             ->where('attributeGroups.0.fields.0.type', 'text')
+            ->where('attributeGroups.0.fields.0.description', 'Button text on the brand banner')
             ->where('attributeValues.attribute:hero_cta', 'Shop the range')
         );
 });

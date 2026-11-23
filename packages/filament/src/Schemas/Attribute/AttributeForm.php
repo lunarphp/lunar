@@ -5,6 +5,7 @@ namespace Lunar\Filament\Schemas\Attribute;
 use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
@@ -49,6 +50,7 @@ class AttributeForm
     {
         return [
             static::getNameComponent(),
+            static::getDescriptionComponent(),
             static::getHandleComponent(),
             static::getGroupComponent(),
             static::getModelTypesComponent(),
@@ -72,6 +74,15 @@ class AttributeForm
                 }
                 $set('handle', Str::slug($state, '_'));
             });
+    }
+
+    public static function getDescriptionComponent(): Component
+    {
+        return Textarea::make('description')
+            ->label(__('lunar-filament::attribute.form.description.label'))
+            ->helperText(__('lunar-filament::attribute.form.description.helper'))
+            ->rows(2)
+            ->maxLength(255);
     }
 
     public static function getHandleComponent(): Component

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->foreignId('attribute_group_id')->nullable()->constrained($this->prefix.'attribute_groups')->nullOnDelete();
             $table->string('name');
+            $table->string('description')->nullable();
             $table->string('handle')->unique();
             $table->string('type')->index();
             $table->json('configuration')->nullable();

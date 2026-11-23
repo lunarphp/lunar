@@ -62,6 +62,7 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
         'pageClass' => EditAttributeGroup::class,
     ])->callTableAction(CreateAction::class, data: [
         'name' => 'Foobar',
+        'description' => 'Shown under the field',
         'type' => $type,
         'model_types' => ['product'],
         'handle' => 'foobar',
@@ -71,6 +72,7 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
     $this->assertDatabaseHas((new Attribute)->getTable(), [
         'attribute_group_id' => $attributeGroup->id,
         'name' => 'Foobar',
+        'description' => 'Shown under the field',
         'handle' => 'foobar',
         'configuration' => $expectedData,
     ]);
