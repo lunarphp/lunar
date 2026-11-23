@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Models\Cart;
@@ -194,4 +195,46 @@ test('keeps a reward line from the source cart apart from the shopper line in th
     expect($lines)->toHaveCount(2)
         ->and($lines->whereNull('added_by_discount_id')->first()->quantity)->toBe(2)
         ->and($lines->firstWhere('added_by_discount_id', $discount->id)->quantity)->toBe(1);
+});
+
+/**
+ * A second purchasable type whose ids line up with product variants', as two
+ * independent id sequences do.
+ */
+class MergeCartGiftCard extends ProductVariant
+{
+    protected $table = 'product_variants';
+}
+
+test('keeps lines of different purchasable types that share an id apart', function () {
+    Relation::morphMap(['gift_card' => MergeCartGiftCard::class]);
+
+    $currency = Currency::factory()->create();
+    $target = Cart::factory()->create(['currency_id' => $currency->id]);
+    $source = Cart::factory()->create(['currency_id' => $currency->id]);
+    $variant = ProductVariant::factory()->create();
+
+    $target->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    // Another purchasable type whose id sequence has reached the variant's id.
+    $source->lines()->create([
+        'purchasable_type' => 'gift_card',
+        'purchasable_id' => $variant->id,
+        'quantity' => 4,
+    ]);
+
+    (new MergeCart)->execute($target, $source->load('lines'));
+
+    $lines = $target->lines()->orderBy('id')->get()
+        ->map(fn ($line) => [$line->purchasable_type, $line->purchasable_id, $line->quantity])
+        ->all();
+
+    expect($lines)->toBe([
+        [$variant->getMorphClass(), $variant->id, 1],
+        ['gift_card', $variant->id, 4],
+    ]);
 });

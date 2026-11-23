@@ -22,8 +22,11 @@ class MergeCart implements MergesCart
         DB::transaction(function () use ($target, $source) {
             $source->lines->map(function ($line) use ($target) {
                 return [
+                    // Ids of different purchasable types are independent
+                    // sequences, so a line's identity is its type and id.
                     'target' => $target->lines->first(function ($targetLine) use ($line) {
-                        return $targetLine->purchasable_id == $line->purchasable_id &&
+                        return $targetLine->purchasable_type === $line->purchasable_type &&
+                        $targetLine->purchasable_id == $line->purchasable_id &&
                         $targetLine->added_by_discount_id == $line->added_by_discount_id &&
                         json_encode($targetLine->meta) == json_encode($line->meta);
                     }),
