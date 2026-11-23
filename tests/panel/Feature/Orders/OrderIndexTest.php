@@ -65,6 +65,24 @@ it('searches orders by billing customer name', function () {
         );
 });
 
+it('searches orders by a full name spanning the first and last name', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $match = Order::factory()->placed()->create();
+    $match->addresses()->create(['type' => 'billing', 'first_name' => 'Hassie', 'last_name' => 'Cole']);
+    $other = Order::factory()->placed()->create();
+    $other->addresses()->create(['type' => 'billing', 'first_name' => 'Hassie', 'last_name' => 'Kemp']);
+
+    $this->get(route('panel.orders.index', ['q' => 'Hassie Cole']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('orders.data', 1)
+            ->where('orders.data.0.id', $match->id)
+        );
+
+    $this->get(route('panel.orders.index', ['q' => 'Ada Cole']))
+        ->assertInertia(fn (Assert $page) => $page->has('orders.data', 0));
+});
+
 it('filters orders by payment status', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

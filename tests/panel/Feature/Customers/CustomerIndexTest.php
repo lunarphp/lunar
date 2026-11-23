@@ -52,6 +52,32 @@ it('searches customers by name, company, tax identifier and account ref', functi
         );
 });
 
+it('searches customers by a full name spanning the first and last name', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $match = Customer::factory()->create([
+        'first_name' => 'Hassie',
+        'last_name' => 'Cole',
+        'company_name' => null,
+        'tax_identifier' => null,
+    ]);
+    Customer::factory()->create([
+        'first_name' => 'Hassie',
+        'last_name' => 'Kemp',
+        'company_name' => null,
+        'tax_identifier' => null,
+    ]);
+
+    $this->get(route('panel.customers.index', ['q' => 'Hassie Cole']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('customers.data', 1)
+            ->where('customers.data.0.id', $match->id)
+        );
+
+    $this->get(route('panel.customers.index', ['q' => 'Ada Cole']))
+        ->assertInertia(fn (Assert $page) => $page->has('customers.data', 0));
+});
+
 it('filters customers by customer group', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
