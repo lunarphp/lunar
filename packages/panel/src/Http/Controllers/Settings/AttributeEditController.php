@@ -24,6 +24,7 @@ class AttributeEditController
             'attribute' => [
                 'id' => $attribute->id,
                 'name' => $attribute->name,
+                'description' => $attribute->description,
                 'handle' => $attribute->handle,
                 'type' => $attribute->type,
                 'attribute_group_id' => $attribute->attribute_group_id,

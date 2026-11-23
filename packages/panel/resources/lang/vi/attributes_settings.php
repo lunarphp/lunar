@@ -19,6 +19,8 @@ return [
     'field_handle' => 'Handle',
     'handle_hint' => 'lower_case_and_underscores',
     'handle_placeholder' => 'auto-generated',
+    'field_description' => 'Mô tả',
+    'description_hint' => 'Hiển thị bên dưới trường dưới dạng văn bản trợ giúp',
     'field_group' => 'Group',
     'no_group' => 'No group',
     'field_type' => 'Type',

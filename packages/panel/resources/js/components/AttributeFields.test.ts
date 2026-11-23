@@ -76,6 +76,22 @@ describe('AttributeFields', () => {
         expect(values['attribute:cta']).toBe('New CTA');
     });
 
+    it('shows each attribute description under its own field, as text', () => {
+        const wrapper = mountFields(
+            [
+                field({ handle: 'cta', label: 'CTA', type: 'text', description: 'Keep it under <b>3</b> words' }),
+                field({ handle: 'featured', label: 'Featured', type: 'toggle', description: null }),
+            ],
+            reactive<Record<string, unknown>>({ 'attribute:cta': '', 'attribute:featured': false }),
+        );
+
+        const [cta, featured] = wrapper.findAll('.grid > div');
+
+        expect(cta.text()).toContain('Keep it under <b>3</b> words');
+        expect(cta.find('b').exists()).toBe(false);
+        expect(featured.findAll('.text-ink-500')).toHaveLength(0);
+    });
+
     it('renders sequential list values as editable rows and appends via the trailing input', async () => {
         const values = reactive<Record<string, unknown>>({ 'attribute:tags': ['alpha'] });
 

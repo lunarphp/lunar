@@ -263,6 +263,7 @@ class AttributeSchema
             'key' => static::PREFIX.$attribute->handle,
             'handle' => $attribute->handle,
             'label' => $attribute->name,
+            'description' => $attribute->description,
             'required' => $attribute->required,
             'type' => $token,
             'config' => (object) $config,

@@ -47,6 +47,7 @@ class AttributeRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string', 'max:255'],
             'handle' => [
                 'nullable', 'string', 'max:255',
                 Rule::unique(Attribute::class, 'handle')->ignore($attribute?->id),
@@ -120,6 +121,10 @@ class AttributeRequest extends FormRequest
             'attribute_group_id' => $validated['attribute_group_id'] ?? null,
             'model_types' => $validated['model_types'],
         ];
+
+        if (array_key_exists('description', $validated)) {
+            $attributes['description'] = $validated['description'];
+        }
 
         if (array_key_exists('type', $validated)) {
             $attributes['type'] = $validated['type'];
