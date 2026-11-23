@@ -7,8 +7,9 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Url;
 
 /**
- * Delete a URL. When the deleted URL was the element's default, the first
- * remaining URL is promoted so the element keeps exactly one default.
+ * Delete a URL. When the deleted URL was its language's default, the first
+ * remaining URL in that language is promoted so the element keeps exactly
+ * one default per language.
  */
 class DeleteUrl implements DeletesUrl
 {
@@ -21,7 +22,11 @@ class DeleteUrl implements DeletesUrl
             $url->delete();
 
             if ($wasDefault) {
-                $element->urls()->orderBy('id')->first()?->update(['default' => true]);
+                $element->urls()
+                    ->where('language_id', $url->language_id)
+                    ->orderBy('id')
+                    ->first()
+                    ?->update(['default' => true]);
             }
         });
     }

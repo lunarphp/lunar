@@ -24,7 +24,6 @@ use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\TaxClass;
-use Lunar\Core\Models\Url;
 use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Products\ProductRequest;
@@ -75,21 +74,6 @@ class ProductEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($product, $staff) : null;
-
-        $urls = $product->urls()
-            ->with('language:id,code,name')
-            ->orderByDesc('default')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Url $url) => [
-                'id' => $url->id,
-                'slug' => $url->slug,
-                'default' => $url->default,
-                'language_id' => $url->language_id,
-                'language_code' => $url->language->code,
-                'update_url' => route('panel.products.urls.update', [$product, $url]),
-                'destroy_url' => route('panel.products.urls.destroy', [$product, $url]),
-            ]);
 
         $activities = $product->activities()
             ->with('causer')
@@ -218,7 +202,6 @@ class ProductEditController
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
             'mediaGroups' => MediaGroups::for($product, 'panel.products'),
-            'productUrls' => $urls,
             // Attribute, availability and sole-variant values seed the form
             // through the shared formSliceValues prop.
             'attributeGroups' => $attributeSchema->groups($product),
@@ -256,7 +239,6 @@ class ProductEditController
                 'destroy' => route('panel.products.destroy', $product),
                 'draft' => route('panel.products.draft.update', $product),
                 'draftCommit' => route('panel.products.draft.commit', $product),
-                'urlsStore' => route('panel.products.urls.store', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
                 'productsSearch' => route('panel.catalog.products.search'),
                 'productOptionsSearch' => route('panel.catalog.product-options.search'),

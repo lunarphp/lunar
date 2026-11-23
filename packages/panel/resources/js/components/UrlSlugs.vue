@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useFormSlice } from '../composables/useFormSlice';
 import { regionForLanguage } from '../lib/flags';
 import Button from './Button.vue';
 import Checkbox from './Checkbox.vue';
-import ConfirmDialog from './ConfirmDialog.vue';
 import Dialog from './Dialog.vue';
 import FieldLabel from './FieldLabel.vue';
 import Flag from './Flag.vue';
@@ -16,170 +15,116 @@ import StatusBadge from './StatusBadge.vue';
 import TextInput from './TextInput.vue';
 import type { LanguageOption } from './TranslatedInput.vue';
 
-export interface UrlRow {
-    id: number;
+/** One slug in a language's `url:{code}` draft value; new rows have a null id. */
+interface SlugRow {
+    id: number | null;
     slug: string;
     default: boolean;
-    language_id: number;
-    language_code: string;
-    update_url: string;
-    destroy_url: string;
 }
 
 const props = defineProps<{
-    urls: UrlRow[];
     languages: LanguageOption[];
-    storeUrl: string;
     pathPrefix: string;
     storefrontUrl: string | null;
 }>();
 
 const { t } = useI18n();
 
-// Rows persist immediately (they are sub-resources, not part of the edit
-// draft): slug edits debounce into a PUT, default/delete act at once.
-const slugs = reactive<Record<number, string>>({});
-const rowErrors = reactive<Record<number, string>>({});
+// Each language's slugs are a draft value: editing, adding, removing and
+// choosing the default dirty the page form and land with Save.
+const slice = useFormSlice<Record<string, SlugRow[]>>('url');
 
-watch(
-    () => props.urls,
-    (urls) => {
-        for (const url of urls) {
-            if (!(url.id in slugs)) {
-                slugs[url.id] = url.slug;
-            }
-        }
+const rowsFor = (code: string): SlugRow[] => slice.values[code] ?? [];
 
-        for (const id of Object.keys(slugs).map(Number)) {
-            if (!urls.some((url) => url.id === id)) {
-                delete slugs[id];
-                delete rowErrors[id];
-            }
-        }
-    },
-    { immediate: true, deep: true },
-);
-
-const timers = new Map<number, ReturnType<typeof setTimeout>>();
-
-const save = (url: UrlRow, extra: Partial<{ default: boolean }> = {}): void => {
-    delete rowErrors[url.id];
-
-    router.put(
-        url.update_url,
-        {
-            language_id: url.language_id,
-            slug: slugs[url.id] ?? url.slug,
-            default: extra.default ?? url.default,
-        },
-        {
-            preserveScroll: true,
-            onError: (errors) => {
-                rowErrors[url.id] = errors.slug ?? Object.values(errors)[0] ?? '';
-            },
-        },
-    );
+const setRows = (code: string, rows: SlugRow[]): void => {
+    slice.values[code] = rows;
 };
 
-const onSlugInput = (url: UrlRow, value: string): void => {
-    slugs[url.id] = value;
+const rows = computed(() =>
+    props.languages.flatMap((language) =>
+        rowsFor(language.code).map((row, index) => ({
+            ...row,
+            code: language.code,
+            index,
+            error: slice.errors.value[`${language.code}.${index}.slug`]
+                ?? slice.errors.value[`${language.code}.${index}.id`]
+                ?? slice.errors.value[`${language.code}.${index}`],
+        }))));
 
-    clearTimeout(timers.get(url.id));
-    timers.set(url.id, setTimeout(() => {
-        if (slugs[url.id] !== url.slug) {
-            save(url);
-        }
-    }, 600));
+const languageErrors = computed(() =>
+    props.languages.map((language) => slice.errors.value[language.code]).filter(Boolean));
+
+const updateSlug = (code: string, index: number, slug: string): void => {
+    setRows(code, rowsFor(code).map((row, i) => (i === index ? { ...row, slug } : row)));
 };
 
-const setDefault = (url: UrlRow): void => {
-    if (!url.default) {
-        save(url, { default: true });
+const setDefault = (code: string, index: number): void => {
+    setRows(code, rowsFor(code).map((row, i) => ({ ...row, default: i === index })));
+};
+
+// Removing a language's default hands it to the first remaining slug, the
+// same rule the server applies.
+const remove = (code: string, index: number): void => {
+    const remaining = rowsFor(code).filter((_, i) => i !== index);
+
+    if (remaining.length && !remaining.some((row) => row.default)) {
+        remaining[0] = { ...remaining[0], default: true };
     }
-};
 
-// Deleting re-points the default server-side; confirm first since links stop
-// resolving immediately.
-const pendingDelete = ref<UrlRow | null>(null);
-
-const confirmDeleteOpen = computed({
-    get: () => pendingDelete.value !== null,
-    set: (value: boolean) => {
-        if (!value) {
-            pendingDelete.value = null;
-        }
-    },
-});
-
-const confirmDelete = (): void => {
-    if (pendingDelete.value) {
-        router.delete(pendingDelete.value.destroy_url, { preserveScroll: true });
-        pendingDelete.value = null;
-    }
+    setRows(code, remaining);
 };
 
 // Add dialog: any language is valid — an element may carry several slugs in
 // the same language (only one is the default; the rest act as alias/redirect
 // slugs on the storefront).
 const addOpen = ref(false);
-const addLanguageId = ref<number | ''>('');
+const addCode = ref('');
 const addSlug = ref('');
 const addDefault = ref(false);
-const addErrors = ref<Record<string, string>>({});
-const adding = ref(false);
 
 watch(addOpen, (open) => {
     if (open) {
-        addLanguageId.value = props.languages.find((language) => language.default)?.id ?? props.languages[0]?.id ?? '';
+        addCode.value = props.languages.find((language) => language.default)?.code ?? props.languages[0]?.code ?? '';
         addSlug.value = '';
-        addDefault.value = props.urls.length === 0;
-        addErrors.value = {};
+        addDefault.value = rows.value.length === 0;
     }
 });
 
 const submitAdd = (): void => {
-    if (addLanguageId.value === '' || !addSlug.value) {
+    const slug = addSlug.value.trim();
+
+    if (!addCode.value || !slug) {
         return;
     }
 
-    addErrors.value = {};
-    adding.value = true;
+    const current = rowsFor(addCode.value);
+    const makeDefault = addDefault.value || current.length === 0;
 
-    router.post(
-        props.storeUrl,
-        { language_id: Number(addLanguageId.value), slug: addSlug.value, default: addDefault.value },
-        {
-            preserveScroll: true,
-            onSuccess: () => {
-                addOpen.value = false;
-            },
-            onError: (errors) => {
-                addErrors.value = errors;
-            },
-            onFinish: () => {
-                adding.value = false;
-            },
-        },
-    );
+    setRows(addCode.value, [
+        ...current.map((row) => (makeDefault ? { ...row, default: false } : row)),
+        { id: null, slug, default: makeDefault },
+    ]);
+
+    addOpen.value = false;
 };
 
-const previewHref = (url: UrlRow): string | null => {
-    if (!props.storefrontUrl) {
+const previewHref = (slug: string): string | null => {
+    if (!props.storefrontUrl || !slug) {
         return null;
     }
 
-    return props.storefrontUrl.replace(/\/$/, '') + props.pathPrefix + (slugs[url.id] ?? url.slug);
+    return props.storefrontUrl.replace(/\/$/, '') + props.pathPrefix + slug;
 };
 </script>
 
 <template>
     <Section :title="t('urls.title')">
-        <template #desc>{{ t('urls.description', { count: urls.length }) }}</template>
+        <template #desc>{{ t('urls.description', { count: rows.length }) }}</template>
         <template #actions>
             <Button icon="plus" size="sm" @click="addOpen = true">{{ t('urls.add_url') }}</Button>
         </template>
 
-        <div v-if="!urls.length" class="text-center px-5 py-6 border border-dashed border-line-strong rounded-md bg-surface-2 text-xs text-ink-500">
+        <div v-if="!rows.length" class="text-center px-5 py-6 border border-dashed border-line-strong rounded-md bg-surface-2 text-xs text-ink-500">
             {{ t('urls.empty') }}
         </div>
 
@@ -194,34 +139,34 @@ const previewHref = (url: UrlRow): string | null => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="url in urls" :key="url.id" class="last:[&_td]:border-b-0">
+                    <tr v-for="url in rows" :key="`${url.code}-${url.index}`" class="last:[&_td]:border-b-0">
                         <td class="pl-4 whitespace-nowrap align-top pt-3.5 pb-2.5 px-3 border-b border-line">
                             <span class="inline-flex items-center gap-1.5">
-                                <Flag :code="regionForLanguage(url.language_code)" class="text-[13px]" />
-                                <span class="font-mono text-[11.5px] text-ink-700">{{ url.language_code }}</span>
+                                <Flag :code="regionForLanguage(url.code)" class="text-[13px]" />
+                                <span class="font-mono text-[11.5px] text-ink-700">{{ url.code }}</span>
                             </span>
                         </td>
                         <td class="align-top py-2 px-3 border-b border-line">
                             <TextInput
-                                :model-value="slugs[url.id] ?? url.slug"
-                                :invalid="!!rowErrors[url.id]"
+                                :model-value="url.slug"
+                                :invalid="!!url.error"
                                 mono
-                                :aria-label="`${url.language_code} slug`"
-                                @update:model-value="(value) => onSlugInput(url, value)"
+                                :aria-label="`${url.code} slug`"
+                                @update:model-value="(value) => updateSlug(url.code, url.index, value)"
                             >
                                 <template #prefix>{{ pathPrefix }}</template>
                             </TextInput>
-                            <div v-if="rowErrors[url.id]" class="text-[11px] text-danger mt-1 flex items-center gap-1">
-                                <Icon name="alert" cls="sm" />{{ rowErrors[url.id] }}
+                            <div v-if="url.error" class="text-[11px] text-danger mt-1 flex items-center gap-1">
+                                <Icon name="alert" cls="sm" />{{ url.error }}
                             </div>
                             <a
-                                v-else-if="previewHref(url)"
+                                v-else-if="previewHref(url.slug)"
                                 class="group font-mono text-[11px] text-ink-500 inline-flex items-center gap-1 mt-1 rounded p-0.5 -m-0.5 hover:bg-surface-2"
-                                :href="previewHref(url)!"
+                                :href="previewHref(url.slug)!"
                                 target="_blank"
                                 rel="noopener"
                             >
-                                <span class="truncate max-w-[320px]">{{ previewHref(url) }}</span>
+                                <span class="truncate max-w-[320px]">{{ previewHref(url.slug) }}</span>
                                 <Icon name="externalLink" cls="sm" class="opacity-40 group-hover:opacity-85" />
                             </a>
                         </td>
@@ -230,7 +175,7 @@ const previewHref = (url: UrlRow): string | null => {
                                 type="button"
                                 :class="url.default ? 'cursor-default' : 'cursor-pointer'"
                                 :aria-pressed="url.default"
-                                @click="setDefault(url)"
+                                @click="setDefault(url.code, url.index)"
                             >
                                 <StatusBadge :tone="url.default ? 'sage' : 'neutral'" size="sm">
                                     <Icon v-if="url.default" name="check" cls="sm" />
@@ -245,13 +190,14 @@ const previewHref = (url: UrlRow): string | null => {
                                 icon="trash"
                                 class="!text-ink-400 hover:!text-danger"
                                 :aria-label="t('urls.remove')"
-                                @click="pendingDelete = url"
+                                @click="remove(url.code, url.index)"
                             />
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <div v-for="message in languageErrors" :key="message" class="mt-1 text-[11px] text-danger">{{ message }}</div>
 
         <Dialog
             :open="addOpen"
@@ -262,12 +208,11 @@ const previewHref = (url: UrlRow): string | null => {
             <div class="flex flex-col gap-3">
                 <div>
                     <FieldLabel for="url-language">{{ t('urls.column_language') }}</FieldLabel>
-                    <Select id="url-language" v-model="addLanguageId" :invalid="!!addErrors.language_id">
-                        <option v-for="language in languages" :key="language.id" :value="language.id">
+                    <Select id="url-language" v-model="addCode">
+                        <option v-for="language in languages" :key="language.id" :value="language.code">
                             {{ language.name ?? language.code }}
                         </option>
                     </Select>
-                    <div v-if="addErrors.language_id" class="mt-1 text-[11px] text-danger">{{ addErrors.language_id }}</div>
                 </div>
                 <div>
                     <FieldLabel for="url-slug" required>{{ t('urls.field_slug') }}</FieldLabel>
@@ -275,13 +220,11 @@ const previewHref = (url: UrlRow): string | null => {
                         id="url-slug"
                         v-model="addSlug"
                         mono
-                        :invalid="!!addErrors.slug"
                         :placeholder="t('urls.slug_placeholder')"
                         @keydown.enter.prevent="submitAdd"
                     >
                         <template #prefix>{{ pathPrefix }}</template>
                     </TextInput>
-                    <div v-if="addErrors.slug" class="mt-1 text-[11px] text-danger">{{ addErrors.slug }}</div>
                 </div>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <Checkbox :model-value="addDefault" :aria-label="t('urls.make_default')" @update:model-value="addDefault = $event" />
@@ -292,19 +235,10 @@ const previewHref = (url: UrlRow): string | null => {
 
             <template #footer>
                 <Button variant="ghost" @click="addOpen = false">{{ t('common.cancel') }}</Button>
-                <Button variant="primary" :disabled="addLanguageId === '' || !addSlug || adding" @click="submitAdd">
+                <Button variant="primary" :disabled="!addCode || !addSlug.trim()" @click="submitAdd">
                     {{ t('urls.add') }}
                 </Button>
             </template>
         </Dialog>
-
-        <ConfirmDialog
-            v-model:open="confirmDeleteOpen"
-            :title="t('urls.confirm_remove_title')"
-            :description="t('urls.confirm_remove_body')"
-            tone="danger"
-            :confirm-label="t('common.delete')"
-            @confirm="confirmDelete"
-        />
     </Section>
 </template>

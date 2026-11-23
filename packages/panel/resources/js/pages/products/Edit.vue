@@ -34,7 +34,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TagsInput from '../../components/TagsInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -83,7 +83,6 @@ const props = defineProps<{
     draft: DraftState | null;
     languages: LanguageOption[];
     mediaGroups: MediaGroup[];
-    productUrls: UrlRow[];
     attributeGroups: AttributeGroup[];
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
     brandOptions: { value: number; label: string }[];
@@ -100,7 +99,6 @@ const props = defineProps<{
         destroy: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
         collectionsSearch: string;
         productsSearch: string;
         productOptionsSearch: string;
@@ -495,9 +493,7 @@ const timelineEvents = computed(() =>
                         />
 
                         <UrlSlugs
-                            :urls="productUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/products/"
                             :storefront-url="storefrontUrl"
                         />

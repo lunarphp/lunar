@@ -7,8 +7,9 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Url;
 
 /**
- * Update a URL. Promoting a URL to default demotes its siblings; the default
- * cannot be unset directly — promote another URL instead.
+ * Update a URL. Promoting a URL to default demotes its siblings in the same
+ * language; the default cannot be unset directly — promote another URL
+ * instead.
  */
 class UpdateUrl implements UpdatesUrl
 {
@@ -20,7 +21,10 @@ class UpdateUrl implements UpdatesUrl
             }
 
             if ($attributes['default'] ?? false) {
-                $url->element->urls()->whereKeyNot($url->getKey())->update(['default' => false]);
+                $url->element->urls()
+                    ->where('language_id', $url->language_id)
+                    ->whereKeyNot($url->getKey())
+                    ->update(['default' => false]);
             }
 
             $url->update($attributes);

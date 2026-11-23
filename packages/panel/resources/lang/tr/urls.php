@@ -17,9 +17,4 @@ return [
     'slug_placeholder' => 'brand-slug',
     'remove' => 'Remove slug',
     'empty' => 'No URLs yet — add a slug so the storefront can route to this page.',
-    'confirm_remove_title' => 'Remove this slug?',
-    'confirm_remove_body' => 'Links using it will stop resolving. The default re-points to the next slug automatically.',
-    'flash_created' => 'URL added.',
-    'flash_updated' => 'URL updated.',
-    'flash_deleted' => 'URL removed.',
 ];

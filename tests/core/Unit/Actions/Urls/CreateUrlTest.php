@@ -24,15 +24,15 @@ test('the first url is always the default', function () {
     expect($url->default)->toBeTrue();
 });
 
-test('creating a default demotes the current default', function () {
+test('creating a default demotes the current default in the same language', function () {
     $first = app(CreateUrl::class)->execute($this->brand, [
         'language_id' => $this->language->id,
         'slug' => 'stark',
     ]);
 
     $second = app(CreateUrl::class)->execute($this->brand, [
-        'language_id' => Language::factory()->create(['code' => 'de'])->id,
-        'slug' => 'stark-de',
+        'language_id' => $this->language->id,
+        'slug' => 'stark-industries',
         'default' => true,
     ]);
 
@@ -47,10 +47,28 @@ test('a non-default create keeps the existing default', function () {
     ]);
 
     $second = app(CreateUrl::class)->execute($this->brand, [
-        'language_id' => Language::factory()->create(['code' => 'de'])->id,
-        'slug' => 'stark-de',
+        'language_id' => $this->language->id,
+        'slug' => 'stark-industries',
     ]);
 
     expect($second->default)->toBeFalse()
         ->and($first->refresh()->default)->toBeTrue();
+});
+
+test('each language keeps its own default', function () {
+    $english = app(CreateUrl::class)->execute($this->brand, [
+        'language_id' => $this->language->id,
+        'slug' => 'stark',
+    ]);
+
+    // The first German URL is German's default, whatever was asked, and
+    // leaves the English default alone.
+    $german = app(CreateUrl::class)->execute($this->brand, [
+        'language_id' => Language::factory()->create(['code' => 'de'])->id,
+        'slug' => 'stark-de',
+        'default' => false,
+    ]);
+
+    expect($german->default)->toBeTrue()
+        ->and($english->refresh()->default)->toBeTrue();
 });

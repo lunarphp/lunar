@@ -29,7 +29,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TextInput from '../../components/TextInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 import { useDragSort } from '../../composables/useDragSort';
@@ -86,7 +86,6 @@ const props = defineProps<{
     draft: DraftState | null;
     languages: LanguageOption[];
     groups: { id: number; name: string }[];
-    collectionUrls: UrlRow[];
     mediaGroups: MediaGroup[];
     products: Paginated<ProductRow>;
     attributeGroups: AttributeGroup[];
@@ -103,7 +102,6 @@ const props = defineProps<{
         move: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
         productsAttach: string;
         productsReorder: string;
         collectionsSearch: string;
@@ -520,9 +518,7 @@ const timelineEvents = computed(() =>
                         </Section>
 
                         <UrlSlugs
-                            :urls="collectionUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/collections/"
                             :storefront-url="storefrontUrl"
                         />

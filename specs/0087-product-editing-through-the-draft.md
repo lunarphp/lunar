@@ -395,7 +395,7 @@ field-like controls.
   the `association` slice, the associations card on `useFormSlice`, removal of the
   association routes and controller; draft feature tests (autosave, per-type conflict,
   commit ordering, no duplicate rows) and a vitest pass over the card.
-- [ ] Slice 3 — `url` slice on product, brand, and collection, `UrlSlugs` on
+- [x] Slice 3 — `url` slice on product, brand, and collection, `UrlSlugs` on
   `useFormSlice`, removal of the URL routes; uniqueness and one-default rules; tests
   across the three resources.
 - [ ] Slice 4 — `SyncsPrices` action and verb, the `price` slice on the variant

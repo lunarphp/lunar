@@ -13,7 +13,6 @@ use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
-use Lunar\Core\Models\Url;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\PanelManager;
@@ -37,21 +36,6 @@ class CollectionEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($collection, $staff) : null;
-
-        $urls = $collection->urls()
-            ->with('language:id,code,name')
-            ->orderByDesc('default')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Url $url) => [
-                'id' => $url->id,
-                'slug' => $url->slug,
-                'default' => $url->default,
-                'language_id' => $url->language_id,
-                'language_code' => $url->language->code,
-                'update_url' => route('panel.collections.urls.update', [$collection, $url]),
-                'destroy_url' => route('panel.collections.urls.destroy', [$collection, $url]),
-            ]);
 
         $activities = $collection->activities()
             ->with('causer')
@@ -113,7 +97,6 @@ class CollectionEditController
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
-            'collectionUrls' => $urls,
             'mediaGroups' => MediaGroups::for($collection, 'panel.collections'),
             'products' => $products,
             'attributeGroups' => $attributeSchema->groups($collection),
@@ -130,7 +113,6 @@ class CollectionEditController
                 'move' => route('panel.collections.move', $collection),
                 'draft' => route('panel.collections.draft.update', $collection),
                 'draftCommit' => route('panel.collections.draft.commit', $collection),
-                'urlsStore' => route('panel.collections.urls.store', $collection),
                 'productsAttach' => route('panel.collections.products.attach', $collection),
                 'productsReorder' => route('panel.collections.products.reorder', $collection),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
