@@ -50,9 +50,11 @@ class ChannelEditController
         try {
             $deletesChannel->execute($channel);
         } catch (ChannelActionException) {
-            return back()->with('error', $channel->default
-                ? __('panel::channels.delete_blocked_default')
-                : __('panel::channels.delete_blocked'));
+            return back()->with('error', match (true) {
+                $channel->default => __('panel::channels.delete_blocked_default'),
+                $channel->hasOrderHistory() => __('panel::channels.delete_blocked'),
+                default => __('panel::channels.delete_blocked_in_use'),
+            });
         }
 
         return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_deleted'));

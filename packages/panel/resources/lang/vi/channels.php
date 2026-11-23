@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" sẽ bị xóa vĩnh viễn.',
     'delete_blocked' => 'Không thể xóa kênh có lịch sử đơn hàng.',
     'delete_blocked_default' => 'Không thể xóa kênh mặc định. Hãy đặt một kênh khác làm mặc định trước.',
+    'delete_blocked_in_use' => 'Không thể xóa kênh vẫn đang được khu vực hoặc giỏ hàng sử dụng. Thay vào đó, hãy đặt kênh ở trạng thái không hoạt động.',
 
     'flash_created' => 'Đã tạo kênh.',
     'flash_updated' => 'Đã cập nhật kênh.',

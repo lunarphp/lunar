@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" wordt permanent verwijderd.',
     'delete_blocked' => 'Kan geen kanaal verwijderen met bestelgeschiedenis.',
     'delete_blocked_default' => 'Het standaardkanaal kan niet worden verwijderd. Maak eerst een ander kanaal standaard.',
+    'delete_blocked_in_use' => 'Kan geen kanaal verwijderen dat nog door een regio of winkelwagen wordt gebruikt. Markeer het in plaats daarvan als inactief.',
 
     'flash_created' => 'Kanaal aangemaakt.',
     'flash_updated' => 'Kanaal bijgewerkt.',

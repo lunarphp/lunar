@@ -31,4 +31,11 @@ return [
             'label' => 'Implicit',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Canalul implicit, canalele cu istoric de comenzi și canalele folosite încă de o regiune sau de un coș nu pot fi șterse. Marchează în schimb canalul ca inactiv.',
+        ],
+    ],
+
 ];

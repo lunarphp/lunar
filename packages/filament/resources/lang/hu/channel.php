@@ -31,4 +31,11 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Az alapértelmezett csatorna, a rendelési előzményekkel rendelkező csatornák és azok a csatornák, amelyeket még egy régió vagy kosár használ, nem törölhetők. Helyette állítsa a csatornát inaktívra.',
+        ],
+    ],
+
 ];

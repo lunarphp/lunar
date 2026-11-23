@@ -31,4 +31,11 @@ return [
             'label' => 'Mặc định',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Không thể xóa kênh mặc định, các kênh có lịch sử đơn hàng và các kênh vẫn đang được khu vực hoặc giỏ hàng sử dụng. Thay vào đó, hãy đặt kênh ở trạng thái không hoạt động.',
+        ],
+    ],
+
 ];

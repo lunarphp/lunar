@@ -31,4 +31,11 @@ return [
             'label' => 'Par défaut',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Le canal par défaut, les canaux ayant un historique de commandes et les canaux encore utilisés par une région ou un panier ne peuvent pas être supprimés. Marquez plutôt le canal comme inactif.',
+        ],
+    ],
+
 ];

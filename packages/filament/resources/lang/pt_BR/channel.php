@@ -31,4 +31,11 @@ return [
             'label' => 'Padrão',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'O canal padrão, os canais com histórico de pedidos e os canais que ainda são usados por uma região ou um carrinho não podem ser excluídos. Marque o canal como inativo em vez disso.',
+        ],
+    ],
+
 ];

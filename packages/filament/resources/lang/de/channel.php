@@ -31,4 +31,11 @@ return [
             'label' => 'Standard',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Der Standardkanal, Kanäle mit Bestellhistorie und Kanäle, die noch von einer Region oder einem Warenkorb verwendet werden, können nicht gelöscht werden. Setzen Sie den Kanal stattdessen auf Inaktiv.',
+        ],
+    ],
+
 ];

@@ -31,4 +31,11 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
+
+    'actions' => [
+        'delete' => [
+            'blocked' => 'Varsayılan kanal, sipariş geçmişi olan kanallar ve hâlâ bir bölge veya sepet tarafından kullanılan kanallar silinemez. Bunun yerine kanalı pasif yapın.',
+        ],
+    ],
+
 ];

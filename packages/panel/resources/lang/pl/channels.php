@@ -33,6 +33,7 @@ return [
     'confirm_delete_body' => '"{name}" zostanie trwale usunięty.',
     'delete_blocked' => 'Nie można usunąć kanału z historią zamówień.',
     'delete_blocked_default' => 'Nie można usunąć domyślnego kanału. Najpierw ustaw inny kanał jako domyślny.',
+    'delete_blocked_in_use' => 'Nie można usunąć kanału, który jest nadal używany przez region lub koszyk. Zamiast tego oznacz go jako nieaktywny.',
 
     'flash_created' => 'Kanał utworzony.',
     'flash_updated' => 'Kanał zaktualizowany.',
