@@ -27,6 +27,13 @@ const chips = ref<TargetChip[]>(props.products.map((chip) => ({ ...chip })));
 
 const form = useForm({ name: props.list.name, products: [] as number[] });
 
+// Errors for the product set arrive keyed per item (`products.2`); show the first.
+const productsError = computed<string | undefined>(() => {
+    const errors = form.errors as Record<string, string | undefined>;
+
+    return errors.products ?? Object.entries(errors).find(([key]) => key.startsWith('products.'))?.[1];
+});
+
 const submit = (): void => {
     form.transform((data) => ({ ...data, products: chips.value.map((chip) => chip.id) }))
         .put(props.urls.update, { preserveScroll: true });
@@ -78,6 +85,7 @@ const confirmDestroy = (): void => {
                     @add="picking = true"
                     @remove="removeProduct"
                 />
+                <div v-if="productsError" class="mt-1 text-[11px] text-danger">{{ productsError }}</div>
             </Section>
 
             <Section :title="t('shipping::exclusion_lists.section_zones')">

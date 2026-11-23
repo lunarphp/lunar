@@ -15,6 +15,7 @@ import TextInput from '../../../components/TextInput.vue';
 import Toggle from '../../../components/Toggle.vue';
 import Tooltip from '../../../components/Tooltip.vue';
 import SettingsShell from '../../../layouts/SettingsShell.vue';
+import { firstError } from '../../../lib/formErrors';
 
 type TaxZone = {
     id: number;
@@ -76,6 +77,8 @@ const form = usePanelForm({
 const submit = (): void => {
     form.put(props.urls.update, { preserveScroll: true });
 };
+
+const listError = (field: string): string | undefined => firstError(form.errors, field);
 
 // --- Coverage pickers -------------------------------------------------------
 
@@ -177,6 +180,7 @@ const confirmDestroy = (): void => {
                         <option value="state">{{ t('tax_zones.type_state') }}</option>
                         <option value="postcode">{{ t('tax_zones.type_postcode') }}</option>
                     </Select>
+                    <div v-if="form.errors.zone_type" class="mt-1 text-[11px] text-danger">{{ form.errors.zone_type }}</div>
                 </div>
                 <div class="sm:col-span-2 flex flex-col gap-3">
                     <label class="flex items-center gap-3 cursor-pointer">
@@ -225,6 +229,7 @@ const confirmDestroy = (): void => {
 
             <div class="max-w-[340px]">
                 <Combobox :options="availableCountries" :placeholder="t('tax_zones.add_country_placeholder')" @change="addCountry" />
+                <div v-if="listError('countries')" class="mt-1 text-[11px] text-danger">{{ listError('countries') }}</div>
             </div>
         </Section>
 
@@ -252,6 +257,7 @@ const confirmDestroy = (): void => {
 
             <div class="max-w-[340px]">
                 <Combobox :options="availableStates" :placeholder="t('tax_zones.add_state_placeholder')" @change="addState" />
+                <div v-if="listError('states')" class="mt-1 text-[11px] text-danger">{{ listError('states') }}</div>
             </div>
         </Section>
 
@@ -269,6 +275,7 @@ const confirmDestroy = (): void => {
                         {{ countryFor(row.country_id)?.name ?? row.country_id }}
                     </span>
                     <span class="font-mono text-ink-700">{{ row.postcode }}</span>
+                    <span v-if="listError(`postcodes.${index}`)" class="text-[11px] text-danger">{{ listError(`postcodes.${index}`) }}</span>
                     <button
                         type="button"
                         class="ml-auto w-5 h-5 inline-flex items-center justify-center rounded-full text-ink-500 hover:text-danger"
@@ -312,6 +319,7 @@ const confirmDestroy = (): void => {
 
             <div class="max-w-[340px]">
                 <Combobox :options="availableGroups" :placeholder="t('tax_zones.add_customer_group_placeholder')" @change="addGroup" />
+                <div v-if="listError('customer_groups')" class="mt-1 text-[11px] text-danger">{{ listError('customer_groups') }}</div>
             </div>
         </Section>
 
@@ -338,13 +346,29 @@ const confirmDestroy = (): void => {
                 <div
                     v-for="(rate, index) in form.rates"
                     :key="rate.id ?? `new-${index}`"
-                    class="grid items-center gap-3 px-3.5 py-2 border-b border-line last:border-b-0 min-w-max"
+                    class="grid items-start gap-3 px-3.5 py-2 border-b border-line last:border-b-0 min-w-max"
                     :style="ratesGridStyle"
                 >
-                    <TextInput v-model="rate.name" />
-                    <TextInput v-model.number="rate.priority" type="number" min="1" max="255" />
+                    <div>
+                        <TextInput v-model="rate.name" :invalid="!!listError(`rates.${index}.name`)" />
+                        <div v-if="listError(`rates.${index}.name`)" class="mt-1 text-[11px] text-danger">{{ listError(`rates.${index}.name`) }}</div>
+                    </div>
+                    <div>
+                        <TextInput v-model.number="rate.priority" type="number" min="1" max="255" :invalid="!!listError(`rates.${index}.priority`)" />
+                        <div v-if="listError(`rates.${index}.priority`)" class="mt-1 text-[11px] text-danger">{{ listError(`rates.${index}.priority`) }}</div>
+                    </div>
                     <div v-for="taxClass in taxClasses" :key="taxClass.id">
-                        <TextInput v-model.number="rate.amounts[taxClass.id]" type="number" step="0.001" min="0" max="100" />
+                        <TextInput
+                            v-model.number="rate.amounts[taxClass.id]"
+                            type="number"
+                            step="0.001"
+                            min="0"
+                            max="100"
+                            :invalid="!!listError(`rates.${index}.amounts.${taxClass.id}`)"
+                        />
+                        <div v-if="listError(`rates.${index}.amounts.${taxClass.id}`)" class="mt-1 text-[11px] text-danger">
+                            {{ listError(`rates.${index}.amounts.${taxClass.id}`) }}
+                        </div>
                     </div>
                     <Button
                         variant="ghost"

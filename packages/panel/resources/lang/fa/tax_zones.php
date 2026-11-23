@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'نام نرخ مالیات',
+    'attribute_rate_priority' => 'اولویت نرخ مالیات',
+    'attribute_rate_percentage' => 'درصد',
+    'attribute_country' => 'کشور',
+    'attribute_state' => 'استان',
+    'attribute_postcode' => 'کد پستی',
+    'attribute_customer_group' => 'گروه مشتری',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',

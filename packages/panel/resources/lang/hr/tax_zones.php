@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'naziv stope',
+    'attribute_rate_priority' => 'prioritet stope',
+    'attribute_rate_percentage' => 'postotak',
+    'attribute_country' => 'država',
+    'attribute_state' => 'županija',
+    'attribute_postcode' => 'poštanski broj',
+    'attribute_customer_group' => 'grupa kupaca',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',

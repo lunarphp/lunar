@@ -55,6 +55,15 @@ return [
     'new_rate_name' => 'New rate',
     'column_rate_name' => 'Rate name',
     'column_priority' => 'Priority',
+
+    'attribute_rate_name' => 'nom du taux',
+    'attribute_rate_priority' => 'priorité du taux',
+    'attribute_rate_percentage' => 'pourcentage',
+    'attribute_country' => 'pays',
+    'attribute_state' => 'état',
+    'attribute_postcode' => 'code postal',
+    'attribute_customer_group' => 'groupe de clients',
+
     'edit_title' => 'Edit tax zone — {name}',
 
     'confirm_delete_tax_zone' => 'Are you sure you want to delete this tax zone?',
