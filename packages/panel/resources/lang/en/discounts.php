@@ -150,6 +150,6 @@ return [
     'flash_created' => 'Discount created.',
     'flash_updated' => 'Discount updated.',
     'flash_deleted' => 'Discount deleted.',
-    'flash_bulk_ended' => 'Ended :count discounts.',
-    'flash_bulk_deleted' => 'Deleted :count discounts.',
+    'flash_bulk_ended' => 'Ended :count discount.|Ended :count discounts.',
+    'flash_bulk_deleted' => 'Deleted :count discount.|Deleted :count discounts.',
 ];

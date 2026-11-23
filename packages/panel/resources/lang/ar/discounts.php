@@ -193,6 +193,6 @@ return [
     'flash_created' => 'تم إنشاء الخصم.',
     'flash_updated' => 'تم تحديث الخصم.',
     'flash_deleted' => 'تم حذف الخصم.',
-    'flash_bulk_ended' => 'تم إنهاء {count} من الخصومات.',
-    'flash_bulk_deleted' => 'تم حذف {count} من الخصومات.',
+    'flash_bulk_ended' => 'لم يتم إنهاء أي خصم.|تم إنهاء خصم واحد.|تم إنهاء خصمين.|تم إنهاء :count خصومات.|تم إنهاء :count خصمًا.|تم إنهاء :count خصم.',
+    'flash_bulk_deleted' => 'لم يتم حذف أي خصم.|تم حذف خصم واحد.|تم حذف خصمين.|تم حذف :count خصومات.|تم حذف :count خصمًا.|تم حذف :count خصم.',
 ];

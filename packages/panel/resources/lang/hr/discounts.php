@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Popust je stvoren.',
     'flash_updated' => 'Popust je ažuriran.',
     'flash_deleted' => 'Popust je obrisan.',
-    'flash_bulk_ended' => 'Završeno je {count} popusta.',
-    'flash_bulk_deleted' => 'Obrisano je {count} popusta.',
+    'flash_bulk_ended' => 'Završen je :count popust.|Završena su :count popusta.|Završeno je :count popusta.',
+    'flash_bulk_deleted' => 'Obrisan je :count popust.|Obrisana su :count popusta.|Obrisano je :count popusta.',
 ];

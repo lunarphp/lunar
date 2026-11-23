@@ -193,6 +193,6 @@ return [
     'flash_created' => 'تخفیف ساخته شد.',
     'flash_updated' => 'تخفیف به‌روزرسانی شد.',
     'flash_deleted' => 'تخفیف حذف شد.',
-    'flash_bulk_ended' => '{count} تخفیف پایان یافت.',
-    'flash_bulk_deleted' => '{count} تخفیف حذف شد.',
+    'flash_bulk_ended' => ':count تخفیف پایان یافت.',
+    'flash_bulk_deleted' => ':count تخفیف حذف شد.',
 ];

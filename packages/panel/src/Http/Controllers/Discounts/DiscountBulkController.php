@@ -15,14 +15,34 @@ class DiscountBulkController
     /**
      * End a selection of discounts now — the safe "switch these off" that
      * leaves the records, and their reporting, intact.
+     *
+     * A discount that has already ended keeps its end date, so ending it again
+     * never extends its history. A discount that has not started yet, or
+     * started less than a minute ago, gets its start moved to a minute before
+     * the new end: the edit form requires the end to be after the start and
+     * submits both at minute precision, so a shorter window would leave the
+     * discount impossible to save.
      */
     public function end(Request $request, UpdatesDiscount $updatesDiscount): RedirectResponse
     {
-        $discounts = $this->selected($request);
+        $endsAt = now();
+        $latestStart = $endsAt->copy()->subMinute();
 
-        $discounts->each(fn (Discount $discount) => $updatesDiscount->execute($discount, ['ends_at' => now()]));
+        $discounts = $this->selected($request)->reject(
+            fn (Discount $discount) => $discount->ends_at?->lte($endsAt)
+        );
 
-        return back()->with('success', __('panel::discounts.flash_bulk_ended', ['count' => $discounts->count()]));
+        $discounts->each(function (Discount $discount) use ($endsAt, $latestStart, $updatesDiscount) {
+            $attributes = ['ends_at' => $endsAt];
+
+            if (! $discount->starts_at?->lte($latestStart)) {
+                $attributes['starts_at'] = $latestStart;
+            }
+
+            $updatesDiscount->execute($discount, $attributes);
+        });
+
+        return back()->with('success', trans_choice('panel::discounts.flash_bulk_ended', $discounts->count()));
     }
 
     public function destroy(Request $request, DeletesDiscount $deletesDiscount): RedirectResponse
@@ -31,7 +51,7 @@ class DiscountBulkController
 
         $discounts->each(fn (Discount $discount) => $deletesDiscount->execute($discount));
 
-        return back()->with('success', __('panel::discounts.flash_bulk_deleted', ['count' => $discounts->count()]));
+        return back()->with('success', trans_choice('panel::discounts.flash_bulk_deleted', $discounts->count()));
     }
 
     /**

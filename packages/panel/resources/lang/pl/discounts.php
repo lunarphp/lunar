@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Rabat utworzony.',
     'flash_updated' => 'Rabat zaktualizowany.',
     'flash_deleted' => 'Rabat usunięty.',
-    'flash_bulk_ended' => 'Zakończono {count} rabatów.',
-    'flash_bulk_deleted' => 'Usunięto {count} rabatów.',
+    'flash_bulk_ended' => 'Zakończono :count rabat.|Zakończono :count rabaty.|Zakończono :count rabatów.',
+    'flash_bulk_deleted' => 'Usunięto :count rabat.|Usunięto :count rabaty.|Usunięto :count rabatów.',
 ];

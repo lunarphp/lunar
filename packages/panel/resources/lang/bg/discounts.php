@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Отстъпката е създадена.',
     'flash_updated' => 'Отстъпката е обновена.',
     'flash_deleted' => 'Отстъпката е изтрита.',
-    'flash_bulk_ended' => 'Приключени са {count} отстъпки.',
-    'flash_bulk_deleted' => 'Изтрити са {count} отстъпки.',
+    'flash_bulk_ended' => 'Приключена е :count отстъпка.|Приключени са :count отстъпки.',
+    'flash_bulk_deleted' => 'Изтрита е :count отстъпка.|Изтрити са :count отстъпки.',
 ];

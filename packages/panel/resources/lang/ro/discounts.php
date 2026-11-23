@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Reducere creată.',
     'flash_updated' => 'Reducere actualizată.',
     'flash_deleted' => 'Reducere ștearsă.',
-    'flash_bulk_ended' => 'S-au încheiat {count} reduceri.',
-    'flash_bulk_deleted' => 'S-au șters {count} reduceri.',
+    'flash_bulk_ended' => 'S-a încheiat :count reducere.|S-au încheiat :count reduceri.|S-au încheiat :count de reduceri.',
+    'flash_bulk_deleted' => 'S-a șters :count reducere.|S-au șters :count reduceri.|S-au șters :count de reduceri.',
 ];
