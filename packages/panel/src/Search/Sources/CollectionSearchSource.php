@@ -8,6 +8,7 @@ use Lunar\Core\Models\Collection;
 use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Sections\Catalog\CatalogSection;
 use Lunar\Panel\Support\Position;
+use Lunar\Panel\Support\TranslatedColumn;
 
 class CollectionSearchSource extends SearchSource
 {
@@ -46,7 +47,7 @@ class CollectionSearchSource extends SearchSource
     {
         $like = "%{$token}%";
 
-        $query->where('name', 'like', $like)
+        TranslatedColumn::whereLike($query, 'name', $token)
             ->orWhereHas('urls', fn (Builder $query) => $query->where('slug', 'like', $like));
     }
 

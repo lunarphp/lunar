@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Support\DiscountTargetSchema;
+use Lunar\Panel\Support\TranslatedColumn;
 
 /**
  * One typeahead behind the target picker, returning the kinds a bucket can
@@ -79,12 +80,10 @@ class DiscountTargetSearchController
         $like = "%{$term}%";
 
         return match ($kind) {
-            // The dedicated name column holds a {locale: text} map.
-            'products' => $query->where(fn ($query) => $query
-                ->where('name', 'like', $like)
+            'products' => $query->where(fn ($query) => TranslatedColumn::whereLike($query, 'name', $term)
                 ->orWhereHas('variants', fn ($query) => $query->where('sku', 'like', $like))),
             'variants' => $query->where('sku', 'like', $like),
-            'collections' => $query->where('name', 'like', $like),
+            'collections' => TranslatedColumn::whereLike($query, 'name', $term),
             'brands' => $query->where('name', 'like', $like),
             'customers' => $query->where(fn ($query) => $query
                 ->where('first_name', 'like', $like)

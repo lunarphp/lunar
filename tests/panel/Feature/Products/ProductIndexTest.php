@@ -147,6 +147,69 @@ it('sorts by the allow-listed columns and falls back on unknown sorts', function
     $this->get(route('panel.products.index', ['sort' => 'evil_column']))->assertOk();
 });
 
+it('sorts by the translated name rather than the raw name json', function () {
+    actingAsAdmin();
+
+    // Inserted out of order, with another locale's key ahead of `en`, so
+    // neither insertion order nor the raw JSON text gives the expected order.
+    $zucchini = Product::factory()->create(['name' => collect(['de' => 'Aal', 'en' => 'Zucchini'])]);
+    $apple = Product::factory()->create(['name' => collect(['de' => 'Zebra', 'en' => 'Apple'])]);
+    $mango = Product::factory()->create(['name' => collect(['en' => 'mango'])]);
+
+    $this->get(route('panel.products.index', ['sort' => 'name', 'direction' => 'asc']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('products.data.0.id', $apple->id)
+            ->where('products.data.1.id', $mango->id)
+            ->where('products.data.2.id', $zucchini->id)
+        );
+
+    $this->get(route('panel.products.index', ['sort' => 'name', 'direction' => 'desc']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('products.data.0.id', $zucchini->id)
+            ->where('products.data.1.id', $mango->id)
+            ->where('products.data.2.id', $apple->id)
+        );
+})->group('cross-db');
+
+it('sorts by the name in the staff locale, falling back to the default language', function () {
+    Language::factory()->create(['default' => false, 'code' => 'de']);
+
+    $this->actingAs(Staff::factory()->create(['admin' => true, 'preferred_locale' => 'de']), 'staff');
+
+    $zebra = Product::factory()->create(['name' => collect(['de' => 'Zebra', 'en' => 'Aardvark'])]);
+    $bear = Product::factory()->create(['name' => collect(['en' => 'Bear'])]);
+    $affe = Product::factory()->create(['name' => collect(['de' => 'Affe', 'en' => 'Monkey'])]);
+
+    $this->get(route('panel.products.index', ['sort' => 'name', 'direction' => 'asc']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('products.data.0.id', $affe->id)
+            ->where('products.data.1.id', $bear->id)
+            ->where('products.data.2.id', $zebra->id)
+        );
+})->group('cross-db');
+
+it('searches name values, not the locale keys of the name json', function () {
+    actingAsAdmin();
+
+    Language::factory()->create(['default' => false, 'code' => 'fr']);
+
+    Product::factory()->create(['name' => collect(['en' => 'Widget'])]);
+    $greenTea = Product::factory()->create(['name' => collect(['en' => 'Green Tea'])]);
+    $hat = Product::factory()->create(['name' => collect(['en' => 'Hat', 'fr' => 'Chapeau'])]);
+    $fridge = Product::factory()->create(['name' => collect(['en' => 'Fridge'])]);
+
+    // "en" and "fr" are locale keys of every (or the translated) name.
+    $this->get(route('panel.products.index', ['q' => 'en']))
+        ->assertInertia(fn (Assert $page) => $page->has('products.data', 1)->where('products.data.0.id', $greenTea->id));
+
+    $this->get(route('panel.products.index', ['q' => 'fr']))
+        ->assertInertia(fn (Assert $page) => $page->has('products.data', 1)->where('products.data.0.id', $fridge->id));
+
+    // Any store language's value matches, regardless of case.
+    $this->get(route('panel.products.index', ['q' => 'chapeau']))
+        ->assertInertia(fn (Assert $page) => $page->has('products.data', 1)->where('products.data.0.id', $hat->id));
+})->group('cross-db');
+
 it('paginates fifteen per page', function () {
     actingAsAdmin();
 

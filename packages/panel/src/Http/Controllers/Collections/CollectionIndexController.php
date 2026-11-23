@@ -13,6 +13,7 @@ use Lunar\Core\States\Collection\Draft;
 use Lunar\Core\States\Collection\Published;
 use Lunar\Panel\Http\Controllers\Concerns\PresentsCollectionRows;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
+use Lunar\Panel\Support\TranslatedColumn;
 
 class CollectionIndexController
 {
@@ -39,8 +40,7 @@ class CollectionIndexController
                     $like = "%{$term}%";
 
                     $query->where(function ($query) use ($like, $term, $resolver) {
-                        // The dedicated name column holds a {locale: text} map.
-                        $query->where('name', 'like', $like)
+                        TranslatedColumn::whereLike($query, 'name', $term)
                             ->orWhere('handle', 'like', $like)
                             ->orWhereHas('urls', fn ($query) => $query->where('slug', 'like', $like));
 
