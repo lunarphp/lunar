@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Tìm kiếm toàn hệ thống',
     'recent_heading' => 'Đã xem gần đây',
     'commands_heading' => 'Thao tác nhanh',
-    'no_results' => 'Không có kết quả cho “:term”',
+    'no_results' => 'Không có kết quả cho “{term}”',
     'searching' => 'Đang tìm…',
     'empty_hint' => 'Bắt đầu nhập để tìm kiếm, hoặc chọn một thao tác nhanh.',
     'filter_all' => 'Tất cả',

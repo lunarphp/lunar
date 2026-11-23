@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Wyszukiwanie globalne',
     'recent_heading' => 'Ostatnio oglądane',
     'commands_heading' => 'Szybkie akcje',
-    'no_results' => 'Brak wyników dla „:term”',
+    'no_results' => 'Brak wyników dla „{term}”',
     'searching' => 'Wyszukiwanie…',
     'empty_hint' => 'Zacznij pisać, aby wyszukać, lub wybierz szybką akcję.',
     'filter_all' => 'Wszystkie',

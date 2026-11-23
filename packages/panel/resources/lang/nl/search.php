@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Globaal zoeken',
     'recent_heading' => 'Recent bekeken',
     'commands_heading' => 'Snelle acties',
-    'no_results' => 'Geen resultaten voor ‘:term’',
+    'no_results' => 'Geen resultaten voor ‘{term}’',
     'searching' => 'Bezig met zoeken…',
     'empty_hint' => 'Begin met typen om te zoeken, of kies een snelle actie.',
     'filter_all' => 'Alle',

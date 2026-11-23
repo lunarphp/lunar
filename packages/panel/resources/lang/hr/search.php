@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Globalno pretraživanje',
     'recent_heading' => 'Nedavno pregledano',
     'commands_heading' => 'Brze radnje',
-    'no_results' => 'Nema rezultata za „:term”',
+    'no_results' => 'Nema rezultata za „{term}”',
     'searching' => 'Pretraživanje…',
     'empty_hint' => 'Počnite tipkati za pretraživanje ili odaberite brzu radnju.',
     'filter_all' => 'Sve',

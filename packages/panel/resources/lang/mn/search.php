@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Ерөнхий хайлт',
     'recent_heading' => 'Саяхан үзсэн',
     'commands_heading' => 'Түргэн үйлдлүүд',
-    'no_results' => '„:term“-д тохирох илэрц алга',
+    'no_results' => '„{term}“-д тохирох илэрц алга',
     'searching' => 'Хайж байна…',
     'empty_hint' => 'Хайхын тулд бичиж эхлэх, эсвэл түргэн үйлдэл сонгоно уу.',
     'filter_all' => 'Бүгд',

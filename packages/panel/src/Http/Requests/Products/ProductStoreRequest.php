@@ -37,4 +37,18 @@ class ProductStoreRequest extends FormRequest
             'status' => ['nullable', Rule::in([Published::$name, Draft::$name])],
         ];
     }
+
+    /**
+     * Field names for validation messages, matching the product page's.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => __('panel::products.field_name'),
+            'product_type_id' => __('panel::products.field_product_type'),
+            'status' => __('panel::products.field_status'),
+        ];
+    }
 }

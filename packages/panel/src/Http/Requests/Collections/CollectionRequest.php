@@ -62,6 +62,26 @@ class CollectionRequest extends FormRequest
         ];
     }
 
+    /**
+     * Field names for validation messages, matching the collection page's.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => __('panel::collections.field_name'),
+            'name.*' => __('panel::collections.field_name'),
+            'handle' => __('panel::collections.field_handle'),
+            'status' => __('panel::collections.field_status'),
+            'sort' => __('panel::collections.field_sort'),
+            'short_description' => __('panel::collections.field_short_description'),
+            'short_description.*' => __('panel::collections.field_short_description'),
+            'description' => __('panel::collections.field_description'),
+            'description.*' => __('panel::collections.field_description'),
+        ];
+    }
+
     /** @return array<string, mixed> */
     public function collectionAttributes(): array
     {

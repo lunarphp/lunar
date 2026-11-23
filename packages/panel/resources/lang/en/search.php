@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Global search',
     'recent_heading' => 'Recently viewed',
     'commands_heading' => 'Quick actions',
-    'no_results' => 'No matches for ":term"',
+    'no_results' => 'No matches for "{term}"',
     'searching' => 'Searching…',
     'empty_hint' => 'Start typing to search, or pick a quick action.',
     'filter_all' => 'All',

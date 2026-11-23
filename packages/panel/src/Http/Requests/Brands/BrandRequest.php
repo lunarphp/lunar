@@ -61,6 +61,26 @@ class BrandRequest extends FormRequest
         ];
     }
 
+    /**
+     * Field names for validation messages, matching the brand page's.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => __('panel::brands.field_name'),
+            'handle' => __('panel::brands.field_handle'),
+            'status' => __('panel::brands.field_status'),
+            'short_description' => __('panel::brands.field_short_description'),
+            'short_description.*' => __('panel::brands.field_short_description'),
+            'description' => __('panel::brands.field_description'),
+            'description.*' => __('panel::brands.field_description'),
+            'collection_ids' => __('panel::brands.side_collections'),
+            'collection_ids.*' => __('panel::brands.side_collections'),
+        ];
+    }
+
     /** @return array<string, mixed> */
     public function brandAttributes(): array
     {

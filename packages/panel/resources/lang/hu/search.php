@@ -6,7 +6,7 @@ return [
     'aria_label' => 'Globális keresés',
     'recent_heading' => 'Nemrég megtekintett',
     'commands_heading' => 'Gyors műveletek',
-    'no_results' => 'Nincs találat erre: „:term”',
+    'no_results' => 'Nincs találat erre: „{term}”',
     'searching' => 'Keresés…',
     'empty_hint' => 'Kezdjen el gépelni a kereséshez, vagy válasszon gyors műveletet.',
     'filter_all' => 'Összes',

@@ -37,6 +37,21 @@ class CollectionStoreRequest extends FormRequest
         ];
     }
 
+    /**
+     * Field names for validation messages, matching the collection page's.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => __('panel::collections.field_name'),
+            'collection_group_id' => __('panel::collections.field_group'),
+            'parent_id' => __('panel::collections.field_parent'),
+            'status' => __('panel::collections.field_status'),
+        ];
+    }
+
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
