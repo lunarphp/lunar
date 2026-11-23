@@ -98,6 +98,19 @@ class Staff extends Authenticatable
     }
 
     /**
+     * Every staff class records itself under the "staff" morph alias, which
+     * LunarServiceProvider maps to the configured `lunar.staff.model`. The
+     * staff actions create this core model while the auth guard resolves the
+     * configured subclass (lunarphp/filament swaps in its own); deriving the
+     * type from the class would write roles, permissions and activity under
+     * one type and read them under another.
+     */
+    public function getMorphClass(): string
+    {
+        return 'staff';
+    }
+
+    /**
      * Staff is not a Base subclass, so give it Lunar's builder explicitly —
      * the HasPublicId `wherePublicId()` scope type-hints it.
      *

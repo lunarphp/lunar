@@ -1,8 +1,11 @@
 <?php
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Staff;
+use Lunar\Tests\Core\Stubs\TestStaff;
 use Lunar\Tests\Panel\TestCase;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -79,6 +82,38 @@ test('a staff member can be created with roles', function () {
     expect($staff)->not->toBeNull();
     expect($staff->admin)->toBeFalse();
     expect($staff->hasRole('estimator'))->toBeTrue();
+});
+
+test('a staff member created with a role reaches role-gated routes when the staff model is swapped', function () {
+    // Swap the staff model the way lunarphp/filament does: the subclass
+    // becomes the configured model, the "staff" morph alias and the auth
+    // provider model, while the staff actions still create the core model.
+    config()->set('lunar.staff.model', TestStaff::class);
+    config()->set('auth.providers.staff.model', TestStaff::class);
+    Relation::morphMap(['staff' => TestStaff::class]);
+    auth()->forgetGuards();
+
+    $role = Role::create(['name' => 'catalogue-manager', 'guard_name' => 'staff']);
+    $role->givePermissionTo(Permission::findOrCreate('catalog:manage-products', 'staff'));
+
+    $this->actingAs(TestStaff::findOrFail($this->staff->id), 'staff')
+        ->post(route('panel.settings.staff.store'), [
+            'first_name' => 'Bob',
+            'last_name' => 'Builder',
+            'email' => 'bob@example.com',
+            'password' => 'super-secret-password',
+            'roles' => ['catalogue-manager'],
+        ])->assertRedirect(route('panel.settings.staff.index'));
+
+    expect($role->users()->count())->toBe(1);
+
+    // Drop the admin's session so the panel's session guard does not log the
+    // switched user out.
+    $this->flushSession();
+
+    $this->actingAs(TestStaff::where('email', 'bob@example.com')->firstOrFail(), 'staff')
+        ->get('/panel/products')
+        ->assertOk();
 });
 
 test('email must be unique', function () {
