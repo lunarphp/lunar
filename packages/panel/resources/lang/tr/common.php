@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Kaydedilmemiş değişiklikleriniz var. Bu sayfadan ayrılıp değişiklikleri silmek istiyor musunuz?',
 ];

@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Танд хадгалаагүй өөрчлөлт байна. Энэ хуудаснаас гарч, өөрчлөлтийг цуцлах уу?',
 ];

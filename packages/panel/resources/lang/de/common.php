@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Sie haben ungespeicherte Änderungen. Diese Seite verlassen und die Änderungen verwerfen?',
 ];

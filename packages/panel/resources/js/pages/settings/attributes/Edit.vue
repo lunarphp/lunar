@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { usePanelForm } from '../../../composables/usePanelForm';
+import { useLeaveGuard } from '../../../composables/useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -183,6 +184,8 @@ const scalarConfig = (key: string): string => {
 
 const configError = (key: string): string | undefined =>
     (form.errors as Record<string, string>)[`configuration.${key}`];
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     // A rule typed but not yet committed with Enter would otherwise be

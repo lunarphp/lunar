@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'لديك تغييرات غير محفوظة. هل تريد مغادرة هذه الصفحة وتجاهلها؟',
 ];

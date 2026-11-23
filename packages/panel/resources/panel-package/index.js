@@ -67,6 +67,7 @@ export const DraftRestoredBanner = ui().DraftRestoredBanner;
 export const useEditDraft = (...args) => ui().useEditDraft(...args);
 export const useFormSlice = (...args) => ui().useFormSlice(...args);
 export const usePanelForm = (...args) => ui().usePanelForm(...args);
+export const useLeaveGuard = (...args) => ui().useLeaveGuard(...args);
 export const http = {
     get: (...args) => ui().http.get(...args),
     post: (...args) => ui().http.post(...args),

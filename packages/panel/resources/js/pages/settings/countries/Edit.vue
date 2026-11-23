@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { usePanelForm } from '../../../composables/usePanelForm';
+import { useLeaveGuard } from '../../../composables/useLeaveGuard';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
@@ -50,6 +51,8 @@ const form = usePanelForm({
     iso2: props.country.iso2 ?? '',
     iso3: props.country.iso3,
 });
+
+useLeaveGuard(() => form.isDirty);
 
 const submit = (): void => {
     form.put(props.urls.update);

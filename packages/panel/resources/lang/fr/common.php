@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Vous avez des modifications non enregistrées. Quitter cette page et les abandonner ?',
 ];

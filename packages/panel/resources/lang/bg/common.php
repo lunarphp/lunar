@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Имате незапазени промени. Да напуснете ли страницата и да ги отхвърлите?',
 ];

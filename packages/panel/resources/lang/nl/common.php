@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Je hebt niet-opgeslagen wijzigingen. Deze pagina verlaten en de wijzigingen negeren?',
 ];

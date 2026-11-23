@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Nem mentett változtatásai vannak. Elhagyja az oldalt, és elveti őket?',
 ];

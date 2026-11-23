@@ -47,4 +47,5 @@ return [
     'apply' => 'Apply',
     'loading' => 'Loading',
     'select_all' => 'Select all',
+    'leave_unsaved_confirm' => 'Aveți modificări nesalvate. Părăsiți această pagină și renunțați la ele?',
 ];
