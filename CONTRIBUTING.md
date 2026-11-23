@@ -1,103 +1,56 @@
 # Contributing to Lunar
 
 Thanks for wanting to contribute. Lunar is used in production by real stores, so
-we hold a high bar on changes to the core packages. This document explains how we
-handle contributions so you don't waste effort on work we can't merge.
+we hold a high bar on changes to the core packages.
+
+## Pull requests are limited to collaborators
+
+Pull requests to this repository can only be opened by collaborators. We no
+longer accept pull requests from outside the Lunar team.
+
+You contribute through issues and Discussions instead. The Lunar team, working
+with Claude, turns accepted reports and ideas into code, tests and docs. A clear,
+well-evidenced issue or Discussion is now the most useful contribution you can
+make.
 
 ## Where things go
 
 - **Bug reports** — a [new issue](https://github.com/lunarphp/lunar/issues/new/choose) using the bug form.
-- **Usage questions and support** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose) or [Discord](https://lunarphp.com/discord). Support questions filed as issues will be redirected.
 - **Feature requests and enhancements** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose), not issues.
-- **Documentation** — a pull request changing `docs/` on the version branch it documents. See [`docs/README.md`](docs/README.md).
+- **Documentation corrections** — a [new issue](https://github.com/lunarphp/lunar/issues/new/choose) naming the page and what is wrong or missing. Larger documentation ideas go in [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose).
+- **Usage questions and support** — [Discussions](https://github.com/lunarphp/lunar/discussions/new/choose) or [Discord](https://lunarphp.com/discord). Support questions filed as issues will be redirected.
+- **Security vulnerabilities** — never a public issue. See [`SECURITY.md`](.github/SECURITY.md).
 
-## Before you open a pull request
+## Writing a good bug report
 
-### Talk to us before larger changes
+The bug form asks for the release line, the exact versions you're running, and
+the steps to reproduce. Reports without reproduction steps usually can't be
+actioned and will be closed after a fortnight without a response.
 
-You don't need an issue or Discussion to open a pull request. For a larger change,
-starting one first is still the quickest way to check we'd take the approach
-before you spend a weekend on it.
+The more of these you can include, the faster a fix lands:
 
-If there is a related issue or Discussion, link it in your PR description.
+- **The smallest reproduction you can manage**, starting from a fresh install.
+- **The full error message and stack trace**, if there was one.
+- **A failing test**, pasted into the issue as a code block. A Pest test written
+  against the monorepo's existing factories is the clearest possible description
+  of a bug. See the Local Development page in the docs for setting up the
+  monorepo to write one.
+- **Which release lines are affected.** If you've confirmed the problem on both
+  `1.x` and `2.x`, say so.
+- **Where you think the problem is**, if you've traced it. Link the file and lines
+  on GitHub.
 
-### Target the right branch
+## Proposing a feature or enhancement
 
-| Your change | Base branch |
-| --- | --- |
-| Bug fix or improvement for the current stable release | `1.x` |
-| Work for the next major version | `2.x` |
+Start a Discussion. Describe the problem you're trying to solve, not only the
+solution you have in mind: how your store works today, what's missing, and what
+you've tried. If a prototype or a branch in your own fork helps illustrate the
+idea, link to it — it's useful context, but it won't be merged as-is.
 
-A bot labels every PR `1.x` or `2.x` based purely on the branch you targeted. It
-does not read your description, so if you target the wrong branch the label will
-be wrong and we'll ask you to retarget. If your fix applies to both lines, say so
-in the description — we track that with a `needs-forward-port` label.
+If the Lunar team accepts the idea, we'll track it and implement it ourselves.
 
-### One concern per pull request
+## Your fork and your branches
 
-Bundling an unrelated refactor, a formatting sweep, or your IDE config into a bug
-fix makes the change much harder to review and much slower to merge. Keep the diff
-to the thing you set out to change.
-
-Don't worry about code style. Pint runs automatically and PHPStan runs in CI, so
-there's no need to hand-format anything or to correct style in files you're not
-otherwise touching.
-
-### Tests
-
-Changes to behaviour need tests. Cover the failure path, not only the happy path,
-and use the existing factories and test helpers rather than building new
-scaffolding alongside them.
-
-## Open pull request limit
-
-Please keep to a maximum of **5 open pull requests** at a time.
-
-Draft PRs count toward that limit. Opening work as a draft doesn't create extra
-allowance, and it doesn't get you an earlier review — see below.
-
-## How your pull request gets reviewed
-
-### An automated review runs first
-
-When you mark a PR as ready for review, an automated reviewer reads the diff
-against our review standards and posts a single summary comment: what the change
-touches, which of our review criteria it passes or fails, and any questions it
-couldn't answer from the diff alone.
-
-Two things to know about it:
-
-- **It's advisory.** It cannot approve, merge, close, or reject anything. A human
-  makes every decision. If you think it's wrong, say so in a reply — you may well
-  be right.
-- **We expect you to address its findings before a maintainer looks.** Working
-  through them first is the single fastest way to get a human review.
-
-Draft PRs are labelled but not reviewed. Mark the PR ready when you want the
-review to run.
-
-### Review priority
-
-Every PR gets a risk tier, which determines who picks it up:
-
-| Tier | What it means | Reviewed by |
-| --- | --- | --- |
-| `trivial` | Docs, comments, typos, changelog. No code paths touched. | The wider team |
-| `low` | Isolated bug fix, single file or class, has tests, no public API change. | The wider team |
-| `medium` | New feature in a contained area, a migration, a new config option, several files in one package. | Maintainer |
-| `high` | Core models, ERP integration surfaces, payment or fulfilment logic, cart/order state transitions, public API contracts, or anything that could break existing consumers. | Maintainer |
-
-Higher tiers get more scrutiny and therefore take longer. A `high` tier label
-isn't a criticism of your change — it means the change is in a place where a
-mistake is expensive.
-
-## A note on generated code
-
-We have no objection to you using AI tooling. We do care about the result. In
-practice the PRs we end up closing tend to share the same signals: a large diff
-with no tests and a generic description, docblocks added to every trivial method
-in a style unlike the surrounding code, or defensive `try`/`catch` blocks that
-don't match how the rest of the codebase handles failure.
-
-If you can't explain why each change in your diff is there, it isn't ready for
-review yet.
+You're still free to fork Lunar, run it locally, and change it for your own
+stores. You can't open a pull request from that fork, but you can link to a
+commit or branch in it from an issue or Discussion to show exactly what you mean.

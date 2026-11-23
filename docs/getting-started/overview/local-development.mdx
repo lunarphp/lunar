@@ -1,9 +1,9 @@
 ---
 title: "Local Development"
-description: "Setting up the Lunar monorepo locally for development and contribution."
+description: "Setting up the Lunar monorepo locally to explore the code, reproduce bugs, and write failing tests."
 ---
 
-This guide walks through setting up the Lunar monorepo inside a Laravel application for local development and contribution.
+This guide walks through setting up the Lunar monorepo inside a Laravel application, for exploring the source, reproducing a bug, or writing a failing test to include in a bug report.
 
 ## Prerequisites
 
@@ -30,11 +30,11 @@ Add `packages` to the `.gitignore` file so it is not committed to the applicatio
 
 ### 2. Clone the repository
 
-Fork the [lunarphp/lunar](https://github.com/lunarphp/lunar) repository on GitHub, then clone the fork into the `packages` directory.
+Clone the [lunarphp/lunar](https://github.com/lunarphp/lunar) repository into the `packages` directory.
 
 ```bash
 cd packages
-git clone https://github.com/YOUR-USERNAME/lunar.git
+git clone https://github.com/lunarphp/lunar.git
 ```
 
 This places the monorepo at `packages/lunar/`.
@@ -91,11 +91,11 @@ vendor/bin/pest tests/core
 vendor/bin/pest tests/admin
 ```
 
-All existing tests must continue to pass before submitting a pull request.
+A failing test written this way can be pasted into a [bug report](/getting-started/overview/contributing#reporting-a-bug).
 
 ## Code Style
 
-Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) for enforcement. Run Pint from the monorepo root before committing changes.
+Lunar follows the [Laravel coding style](https://laravel.com/docs/contributions#coding-style) and uses [Laravel Pint](https://laravel.com/docs/pint) for enforcement. Run Pint from the monorepo root.
 
 ```bash
 vendor/bin/pint
@@ -120,4 +120,4 @@ Tests for each package are located in the top-level `tests/` directory, organize
 
 ## Next Steps
 
-With local development set up, see the [Contributing](/getting-started/overview/contributing) guide for information on coding standards, submitting pull requests, and reporting bugs.
+With local development set up, see the [Contributing](/getting-started/overview/contributing) guide for how to report bugs and propose features.
