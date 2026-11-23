@@ -55,6 +55,7 @@
             "pages": [
               "getting-started/overview/introduction",
               "getting-started/overview/upgrade-guide",
+              "getting-started/overview/alpha-upgrade-guide",
               "getting-started/overview/security",
               "getting-started/overview/contributing",
               "getting-started/overview/local-development",
