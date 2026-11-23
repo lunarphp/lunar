@@ -7,6 +7,7 @@ import '../css/app.css';
 import { LunarPanelRuntime } from './runtime/registry';
 import { createPageResolver } from './runtime/pageResolver';
 import { whenDomContentLoaded } from './runtime/domReady';
+import { panelVisitOptions } from './runtime/visitOptions';
 import { useTheme } from './composables/useTheme';
 import { bootTranslations, createPanelI18n } from './i18n';
 import * as LunarPanelUI from './ui';
@@ -43,6 +44,7 @@ createInertiaApp({
     // scaffold); pages without one fall back to the bare panel name.
     title: (title) => (title ? `${title} — ${panelName}` : panelName),
     resolve: createPageResolver(window.LunarPanel as LunarPanelRuntime, pages),
+    defaults: { visitOptions: panelVisitOptions },
     async setup({ el, App, props, plugin }) {
         // Applies the persisted/system theme class before first paint.
         useTheme();
