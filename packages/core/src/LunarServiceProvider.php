@@ -253,7 +253,7 @@ class LunarServiceProvider extends ServiceProvider
                 __DIR__.'/../resources/views' => resource_path('views/vendor/lunar'),
             ], 'lunar.views');
 
-            $this->publishes([
+            $this->publishesMigrations([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
             ], 'lunar.migrations');
 
