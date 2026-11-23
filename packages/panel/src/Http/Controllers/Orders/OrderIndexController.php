@@ -21,7 +21,7 @@ class OrderIndexController
     use SearchesByWords;
 
     /** Column keys the list may sort on; anything else falls back to the default. */
-    protected array $sortable = ['created_at', 'placed_at', 'total'];
+    protected array $sortable = ['placed_at', 'total'];
 
     /** Payment status keys, in ledger progression order (see core states.php). */
     protected array $paymentStatuses = ['pending', 'authorized', 'partially-paid', 'paid', 'partially-refunded', 'refunded', 'voided'];
@@ -46,7 +46,7 @@ class OrderIndexController
         ];
 
         $sort = $request->string('sort')->value();
-        $sort = in_array($sort, $this->sortable, true) ? $sort : 'created_at';
+        $sort = in_array($sort, $this->sortable, true) ? $sort : 'placed_at';
         $direction = $request->string('direction')->value() === 'asc' ? 'asc' : 'desc';
 
         $lifecycle = $request->filled('lifecycle') ? $request->string('lifecycle')->value() : 'open';
@@ -90,7 +90,12 @@ class OrderIndexController
             ->tap(fn ($query) => $this->applyDateRange($query, $request->string('date')->value()))
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
+            // Unplaced orders have no date to show, so they sit after every
+            // placed order in either direction. The id tie-break keeps pages
+            // stable when sort values are equal.
+            ->when($sort === 'placed_at', fn ($query) => $query->orderByRaw('CASE WHEN placed_at IS NULL THEN 1 ELSE 0 END'))
             ->orderBy($sort, $direction)
+            ->orderBy('id', $direction)
             ->paginate(15)
             ->withQueryString()
             ->through(function (Order $order) use ($resolver, $defaultCurrency) {

@@ -112,6 +112,7 @@ class CustomerEditController
 
         $orders = (clone $placedOrders)
             ->latest('placed_at')
+            ->latest('id')
             ->limit(25)
             ->get()
             ->map(fn (Order $order) => [

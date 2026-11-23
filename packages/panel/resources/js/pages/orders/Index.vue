@@ -114,8 +114,8 @@ const selected = ref<(string | number)[]>([]);
 const hasBulkActions = computed(() => props.tableBulkActions.length > 0);
 
 const sortOptions: { value: string; label: string; sort: string; direction: string }[] = [
-    { value: 'recent', label: t('orders.sort_recent'), sort: 'created_at', direction: 'desc' },
-    { value: 'oldest', label: t('orders.sort_oldest'), sort: 'created_at', direction: 'asc' },
+    { value: 'recent', label: t('orders.sort_recent'), sort: 'placed_at', direction: 'desc' },
+    { value: 'oldest', label: t('orders.sort_oldest'), sort: 'placed_at', direction: 'asc' },
     { value: 'total_high', label: t('orders.sort_total_high'), sort: 'total', direction: 'desc' },
     { value: 'total_low', label: t('orders.sort_total_low'), sort: 'total', direction: 'asc' },
 ];
