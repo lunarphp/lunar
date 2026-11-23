@@ -345,7 +345,9 @@ it('brings the currency in line when syncing an intent', function () {
 });
 
 it('re-prices a reused intent when the cart has changed currency', function () {
-    $cart = CartBuilder::build();
+    // Pin the cart's currency: the factory's random code can land on JPY,
+    // which would match the mocked intent and skip the currency change.
+    $cart = CartBuilder::build(currencyParams: ['code' => 'GBP']);
     $cart->paymentIntents()->create(['intent_id' => 'PI_HOLD', 'status' => 'requires_payment_method']);
 
     $mock = Stripe::fake()->next(['currency' => 'jpy', 'status' => 'requires_payment_method']);
@@ -360,7 +362,7 @@ it('re-prices a reused intent when the cart has changed currency', function () {
 });
 
 it('replaces an authorised hold when the cart has changed currency', function () {
-    $cart = CartBuilder::build();
+    $cart = CartBuilder::build(currencyParams: ['code' => 'GBP']);
     $cart->paymentIntents()->create(['intent_id' => 'PI_HOLD', 'status' => 'requires_capture', 'flavour' => 'hold']);
 
     $mock = Stripe::fake()->next(['currency' => 'jpy']);
@@ -377,7 +379,7 @@ it('replaces an authorised hold when the cart has changed currency', function ()
 });
 
 it('does not open a second hold when the wrong-currency hold cannot be released', function () {
-    $cart = CartBuilder::build();
+    $cart = CartBuilder::build(currencyParams: ['code' => 'GBP']);
     $cart->paymentIntents()->create(['intent_id' => 'PI_HOLD', 'status' => 'requires_capture', 'flavour' => 'hold']);
     $cart = $cart->calculate();
 
