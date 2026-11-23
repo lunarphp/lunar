@@ -140,7 +140,6 @@ return [
 
     'notes' => 'Admin-Notizen',
     'notes_empty' => 'Noch keine Admin-Notizen.',
-    'edit_notes' => 'Admin-Notizen bearbeiten',
 
     'confirm_delete_customer' => 'Möchten Sie diesen Kunden wirklich löschen?',
     'confirm_delete_customer_title' => 'Diesen Kunden löschen?',
@@ -158,5 +157,4 @@ return [
     'flash_address_deleted' => 'Adresse gelöscht.',
     'flash_user_linked' => 'Benutzer verknüpft.',
     'flash_user_unlinked' => 'Benutzer getrennt.',
-    'flash_notes_updated' => 'Admin-Notizen aktualisiert.',
 ];

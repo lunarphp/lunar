@@ -202,7 +202,7 @@ The set of types offered in the admin panel's association type dropdown is drive
 
 ## Ordering Associations
 
-Associations are ordered by the `sort` column, scoped per parent product and type. `associate()` appends new associations to the end of the existing set for that type — the sort value is calculated as `max(sort) + 1` for each target, in the order the targets are given. Associations of different types on the same product sort independently.
+Associations are ordered by the `sort` column, scoped per parent product and type, and numbered from `1` in order. `associate()` appends new associations to the end of the existing set for that type, in the order the targets are given. A target that is already associated with that type keeps its place rather than being added twice. Associations of different types on the same product sort independently.
 
 ```php
 // Appends after any existing cross-sell associations for $product
@@ -211,6 +211,21 @@ $product->associate([$productA, $productB], ProductAssociation::CROSS_SELL);
 // Ordered by sort, then id
 $product->associations()->crossSell()->get();
 ```
+
+## Syncing Associations
+
+`syncAssociations()` makes a product's associations of one type exactly the given product ids, in the given order. Targets already associated keep their row and take their new position, new targets are added, and targets missing from the list are removed. Duplicate ids, the product's own id, and ids with no product are ignored. Other types are left untouched.
+
+```php
+use Lunar\Core\Enums\ProductAssociation;
+
+$product->syncAssociations(ProductAssociation::CROSS_SELL, [$caseId, $chargerId]);
+
+// Remove every cross-sell association
+$product->syncAssociations(ProductAssociation::CROSS_SELL, []);
+```
+
+Unlike `associate()` and `dissociate()`, `syncAssociations()` runs straight away rather than on the queue. It delegates to the `Lunar\Core\Contracts\Actions\Products\SyncsProductAssociations` action, which you can rebind in a service provider to customise it. The queued jobs behind `associate()` and `dissociate()` go through the same action. The admin panel saves a product's associations this way when its edit draft is saved.
 
 ## Removing Associations
 
@@ -232,5 +247,5 @@ $product->dissociate($associatedProduct, ProductAssociation::CROSS_SELL);
 ## Queued Operations
 
 <Info>
-Both `associate()` and `dissociate()` dispatch queued jobs (`Lunar\Core\Jobs\Products\Associations\Associate` and `Lunar\Core\Jobs\Products\Associations\Dissociate`). This means the changes may not be reflected immediately if using an asynchronous queue driver.
+Both `associate()` and `dissociate()` dispatch queued jobs (`Lunar\Core\Jobs\Products\Associations\Associate` and `Lunar\Core\Jobs\Products\Associations\Dissociate`). This means the changes may not be reflected immediately if using an asynchronous queue driver. Use `syncAssociations()` when the change must be in place before the next line runs.
 </Info>

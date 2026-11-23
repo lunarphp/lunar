@@ -47,53 +47,61 @@ it('serves an image group and a file group on the edit page', function () {
             ->where('mediaGroups.1.type', 'file')
             ->where('mediaGroups.1.accept', 'application/pdf')
             ->hasAll([
-                'mediaGroups.1.items.0.file_name',
-                'mediaGroups.1.items.0.size',
-                'mediaGroups.1.items.0.original_url',
+                'mediaGroups.1.library.0.file_name',
+                'mediaGroups.1.library.0.size',
+                'mediaGroups.1.library.0.original_url',
+                'formSliceValues.media:downloads.0.id',
                 'mediaGroups.1.urls.store',
             ])
         );
 });
 
-it('uploads a pdf to the downloads group', function () {
-    $this->post(route('panel.products.media.store', $this->product), [
+it('stages a pdf for the downloads group and commits it there', function () {
+    $id = $this->postJson(route('panel.products.media.store', $this->product), [
         'collection' => 'downloads',
         'files' => [fakePdf()],
-    ])->assertRedirect()->assertSessionHas('success');
+    ])->assertOk()->assertJsonPath('items.0.extension', 'pdf')->json('items.0.id');
 
-    expect($this->product->getMedia('downloads'))->toHaveCount(1)
+    expect($this->product->refresh()->getMedia('downloads'))->toHaveCount(0);
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['media:downloads' => [['id' => $id, 'name' => 'Spec sheet']]],
+        'rebase' => [],
+    ])->assertOk();
+
+    expect($this->product->refresh()->getMedia('downloads')->map->getCustomProperty('name')->all())->toBe(['Spec sheet'])
         ->and($this->product->getMedia('images'))->toHaveCount(0);
 });
 
 it('rejects a pdf uploaded to the images group', function () {
-    $this->post(route('panel.products.media.store', $this->product), [
+    $this->postJson(route('panel.products.media.store', $this->product), [
         'collection' => 'images',
         'files' => [fakePdf()],
-    ])->assertSessionHasErrors('files.0');
+    ])->assertJsonValidationErrors('files.0');
 });
 
 it('rejects an image uploaded to the downloads group', function () {
-    $this->post(route('panel.products.media.store', $this->product), [
+    $this->postJson(route('panel.products.media.store', $this->product), [
         'collection' => 'downloads',
         'files' => [UploadedFile::fake()->image('hero.jpg')],
-    ])->assertSessionHasErrors('files.0');
+    ])->assertJsonValidationErrors('files.0');
 });
 
 it('rejects a collection the model does not register', function () {
-    $this->post(route('panel.products.media.store', $this->product), [
+    $this->postJson(route('panel.products.media.store', $this->product), [
         'collection' => 'brochures',
         'files' => [fakePdf()],
-    ])->assertSessionHasErrors('collection');
+    ])->assertJsonValidationErrors('collection');
 });
 
 it('reorders the downloads group without touching the thumbnail', function () {
     $first = $this->product->addMedia(fakePdf('a.pdf'))->toMediaCollection('downloads');
     $second = $this->product->addMedia(fakePdf('b.pdf'))->toMediaCollection('downloads');
 
-    $this->post(route('panel.products.media.reorder', $this->product), [
-        'collection' => 'downloads',
-        'ids' => [$second->id, $first->id],
-    ])->assertRedirect();
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['media:downloads' => [['id' => $second->id], ['id' => $first->id]]],
+        'rebase' => [],
+    ])->assertOk();
 
     $ordered = $this->product->refresh()->getMedia('downloads');
 

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
-import MediaEditDialog, { type MediaItem } from './MediaEditDialog.vue';
+import MediaEditDialog from './MediaEditDialog.vue';
 import Section from './Section.vue';
-import type { ImageMediaGroup } from './media';
+import type { ImageMediaGroup, ImagePreview, MediaItem } from './media';
 import { useGridSort } from '../composables/useGridSort';
+import { useMediaGroup } from '../composables/useMediaGroup';
 
 const props = defineProps<{
     group: ImageMediaGroup;
@@ -25,86 +26,59 @@ const maxUploadMb = computed(() => {
     return Number.isInteger(mb) ? String(mb) : mb.toFixed(1);
 });
 
-// Local order mirrors the prop; drag reordering mutates it optimistically and
-// persists on drop, so tiles don't snap back while the request runs.
-const ordered = ref<MediaItem[]>([...props.group.items]);
-
-watch(
-    () => props.group.items,
-    (items) => {
-        ordered.value = [...items];
-    },
-    { deep: true },
-);
+// The images are the draft's media:{collection} list: reordering, editing
+// and removing land with Save; uploads stage on the draft until then.
+const media = useMediaGroup<ImagePreview>(() => props.group);
+const ordered = media.items;
+const uploading = media.uploading;
+const uploadError = media.uploadError;
 
 const fileInput = ref<HTMLInputElement | null>(null);
-const uploading = ref(false);
-const uploadError = ref('');
 
 const pickFiles = (): void => fileInput.value?.click();
 
-const upload = (files: FileList | null): void => {
-    if (!files?.length) {
-        return;
+const upload = async (files: FileList | null): Promise<void> => {
+    await media.upload(files);
+
+    if (fileInput.value) {
+        fileInput.value.value = '';
     }
-
-    uploading.value = true;
-    uploadError.value = '';
-
-    router.post(
-        props.group.urls.store,
-        { collection: props.group.collection, files: Array.from(files) },
-        {
-            preserveScroll: true,
-            forceFormData: true,
-            onError: (errors) => {
-                uploadError.value = Object.values(errors)[0] ?? '';
-            },
-            onFinish: () => {
-                uploading.value = false;
-
-                if (fileInput.value) {
-                    fileInput.value.value = '';
-                }
-            },
-        },
-    );
 };
 
 const dropActive = ref(false);
 
 const onDrop = (event: DragEvent): void => {
     dropActive.value = false;
-    upload(event.dataTransfer?.files ?? null);
+    void upload(event.dataTransfer?.files ?? null);
 };
 
 // Animated drag-to-reorder over the 2-D tile grid (first tile is the hero).
-// The local `ordered` snapshot holds the new order while the request runs; the
-// watch on `props.group.items` re-syncs once the reloaded props arrive.
 const tileSort = useGridSort({
-    onCommit: (_listId, from, to) => {
-        const current = [...ordered.value];
-        current.splice(to, 0, ...current.splice(from, 1));
-        ordered.value = current;
-
-        router.post(props.group.urls.reorder, {
-            collection: props.group.collection,
-            ids: current.map((item) => item.id),
-        }, {
-            preserveScroll: true,
-        });
-    },
+    onCommit: (_listId, from, to) => media.move(from, to),
 });
 
-const editing = ref<MediaItem | null>(null);
+const editingId = ref<number | null>(null);
+const editing = computed<MediaItem | null>(() => ordered.value.find((item) => item.id === editingId.value) ?? null);
 const dialogOpen = computed({
     get: () => editing.value !== null,
     set: (value: boolean) => {
         if (!value) {
-            editing.value = null;
+            editingId.value = null;
         }
     },
 });
+
+const onSave = (properties: Pick<MediaItem, 'name' | 'alt' | 'caption' | 'focal'>): void => {
+    if (editingId.value !== null) {
+        media.update(editingId.value, properties);
+    }
+};
+
+const onRemove = (): void => {
+    if (editingId.value !== null) {
+        media.remove(editingId.value);
+    }
+};
 
 const focalStyle = (item: MediaItem): Record<string, string> => ({
     objectPosition: `${item.focal?.x ?? 50}% ${item.focal?.y ?? 50}%`,
@@ -178,12 +152,17 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
                             index === 0 ? 'bg-ink-900/85 text-paper' : 'bg-paper/95 border border-line text-ink-900',
                         ]"
                     >{{ index === 0 ? t('media.hero') : index + 1 }}</div>
+                    <div
+                        v-if="media.errors.value[item.id]"
+                        class="absolute inset-x-0 bottom-0 bg-danger/90 text-paper text-[10.5px] px-1.5 py-1 leading-tight"
+                        role="alert"
+                    >{{ media.errors.value[item.id] }}</div>
                     <div class="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity duration-100 group-hover:opacity-100 focus-within:opacity-100">
                         <button
                             type="button"
                             class="w-[22px] h-[22px] grid place-items-center bg-paper/95 border border-line rounded-[5px] text-ink-500 hover:text-ink-900 hover:border-ink-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35 cursor-pointer"
                             :aria-label="t('media.edit_image')"
-                            @click.stop="editing = item"
+                            @click.stop="editingId = item.id"
                         >
                             <Icon name="edit" cls="sm" />
                         </button>
@@ -213,6 +192,6 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
 
         <div v-if="uploadError" class="mt-2 text-[11px] text-danger">{{ uploadError }}</div>
 
-        <MediaEditDialog v-model:open="dialogOpen" :media="editing" />
+        <MediaEditDialog v-model:open="dialogOpen" :media="editing" @save="onSave" @remove="onRemove" />
     </Section>
 </template>

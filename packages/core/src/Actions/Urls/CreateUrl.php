@@ -9,20 +9,22 @@ use Lunar\Core\Models\Url;
 
 /**
  * Create a URL for a HasUrls element, keeping exactly one default per
- * element: the element's first URL is always the default, and creating a
- * new default demotes the current one.
+ * element and language: the element's first URL in a language is always
+ * that language's default, and creating a new default demotes the current
+ * one in the same language.
  */
 class CreateUrl implements CreatesUrl
 {
     public function execute(Model $element, array $attributes): Url
     {
         return DB::transaction(function () use ($element, $attributes): Url {
-            $hasUrls = $element->urls()->exists();
+            $siblings = $element->urls()->where('language_id', $attributes['language_id'] ?? null);
+            $hasUrls = $siblings->exists();
 
             $attributes['default'] = ! $hasUrls || (bool) ($attributes['default'] ?? false);
 
             if ($attributes['default'] && $hasUrls) {
-                $element->urls()->update(['default' => false]);
+                $siblings->update(['default' => false]);
             }
 
             return $element->urls()->create($attributes);

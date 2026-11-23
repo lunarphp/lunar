@@ -3,7 +3,7 @@
 - Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-09-16
-- TODO item: Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate say so (spec 0087)
+- TODO item: Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate are explicit actions (spec 0087)
 
 ## Problem
 
@@ -43,7 +43,7 @@ covered under "Operations that stay immediate".
 ## Proposal
 
 One rule, stated on the page: **an edit is part of the draft and lands when you save; an
-operation applies immediately and says so.** Every control on the product, variant,
+operation is an explicit action that applies when you confirm it.** Every control on the product, variant,
 brand, collection, product-type, and customer edit pages is one or the other.
 
 Edits: everything that changes the record's own state, including its associations,
@@ -54,8 +54,9 @@ Operations: the things that change the world beyond the record's fields. Recordi
 stock movement, generating or regenerating variants, collapsing to the simple shape,
 bulk variant actions, defining a bundle, moving a collection in its tree, changing a
 collection's product membership, managing a customer's addresses and linked users, and
-deleting. These keep their immediate endpoints and gain a consistent affordance so
-nobody mistakes them for drafted edits.
+deleting. These keep their immediate endpoints. None of them is a field: each runs
+from a button or a dialog with its own confirming step, so nobody mistakes it for a
+drafted edit.
 
 ### Draft layer correctness
 
@@ -115,7 +116,8 @@ or overwrites a colleague without a conflict.
   operation that removes drafted keys warns that those edits are dropped before it runs.
 - **Row keys and removal.** Pristine and the diff only see keys present at load, and
   `assertKnownFields` rejects keys `fields($record)` does not list. The slices below add
-  keys at runtime (a new price tuple). `DraftableResource` gains
+  keys at runtime (a new media item). Prices avoid this by keying per enabled currency,
+  a fixed key set. `DraftableResource` gains
   `acceptsField(Model $record, string $key): bool`, defaulting to membership of
   `fields()`, which a slice overrides with a key pattern; the client accepts a new key
   whose pristine value is `null` and drafts it like any other. A `null` value marks a
@@ -154,28 +156,30 @@ language at commit time, so the conflict is reported as a validation error rathe
 database exception. Commits through `CreatesUrl`, `UpdatesUrl`, `DeletesUrl`.
 
 **`price`** — on `ProductVariant`, riding the product draft under the `variant:` slice
-on simple-shape products the way the variant's other fields do. One field per
-`{currency_code}:{customer_group_id|0}:{min_quantity}` tuple, value
-`{price: int, list_price: int|null}` in minor units, or null to remove the tier.
-Changing a tier's quantity or group is a removal plus an addition, which is what it is
-from the other editor's point of view too. Rules require a base row (group 0, quantity
-1) per enabled currency. The composer guarantees the tuple is unique by construction, so
-the duplicate-tier case cannot arise. Core has no price write action today
+on simple-shape products the way the variant's other fields do (`variant:price:{code}`).
+One field per enabled currency code (`price:GBP`), value an ordered list of
+`{customer_group_id, min_quantity, price, list_price}` rows in minor units. Adding or
+removing a tier edits that currency's list. The key set is fixed by the enabled
+currencies, so no runtime keys are needed, and a disabled currency's rows are left alone
+at commit. Rules refuse a duplicate customer group and minimum quantity within a
+currency, and refuse removing a stored base row (group none, quantity 1); a currency
+without a base price may stay unpriced. Core has no price write action today
 (`ProductPriceController` calls `prices()->create()` and `update()` directly); this
 slice adds a `SyncsPrices` action contract with a `syncPrices()` verb on `HasPrices`
 models and commits through it. Validation errors render on the row that caused them.
 
 Bundle repricing (`RepriceBundle`) rewrites a bundle variant's price rows outside the
 draft. After it runs, the bundles card reloads the page props, and the `price` keys pick
-up the new server values through the key-set refresh above; a drafted price for a tuple
-the reprice changed conflicts on commit as any concurrent write does.
+up the new server values: the key-set refresh also moves keys staff have not touched to
+the reloaded value. A drafted currency the reprice changed conflicts on commit as any
+concurrent write does.
 
 **`media`** — on every `HasMedia` draftable: product, brand, collection, and product
 type. One field per media collection the model's media definition declares, covering
 both image groups (`MediaManager`, `MediaEditDialog`) and file groups (`FileManager`,
-`FileEditDialog`). The value is an ordered list of `{id: int, properties: object}`,
-where `properties` carries the name, alt text, caption, focal point, and any custom
-properties `UpdatesMedia` manages. Order is meaningful: the first image is the hero, as
+`FileEditDialog`). The value is an ordered list of `{id, name, alt, caption, focal}`,
+the custom properties `UpdatesMedia` manages. Alt text is required by the image dialog
+but nullable at commit, so an older image without alt text never blocks a save. Order is meaningful: the first image is the hero, as
 the page shows today. Removal from the list deletes the media at commit; this is where
 the irreversible step moves to.
 
@@ -192,7 +196,8 @@ Media file moves are not covered by the database transaction. The slice moves fi
 after the transaction commits (an `afterCommit` callback), so a failed commit leaves the
 staged files on the draft, where a retry finds them.
 
-Staged media is cleaned up on three paths: `discard()` when the draft row is deleted,
+Staged media is cleaned up on three paths: `EditDraft`'s own `HasMedia` delete hook when
+the draft row is deleted (discard, prune, an autosave that empties the draft),
 the commit hook above for items uploaded and then removed before Save, and a sweep
 alongside draft pruning that deletes staged media whose draft no longer lists them
 (covering a partial revert, where autosave rewrites the draft without the media keys and
@@ -229,7 +234,7 @@ through the restore banner, and lands atomically with the rest of the record.
 
 `DraftConflictDialog` today renders a field's mine/base/theirs values as text and offers
 a manual merge input. That is right for scalars and translated text and wrong for a list
-of media items or a price tuple, which render as `[object Object]`. The dialog gains a
+of media items or a currency's price list, which render as `[object Object]`. The dialog gains a
 per-namespace summary presentation: a short human description of each side (a slug, an
 amount with currency, a count of items with thumbnails for media, product names for
 associations) and keep-mine / take-theirs only, with no manual merge input. First-party
@@ -252,20 +257,25 @@ slice is out of scope here and can be added additively.
 | Delete | Page actions, every page | Destroys the record |
 | File upload | Media groups | The bytes land in storage; the link is drafted |
 
-Every card or section containing one of these carries the same affordance: a small
-"Applies immediately" marker next to the control (new `drafts.applies_immediately`
-lang key, with a tooltip explaining that the action is not part of the draft),
-destructive ones confirm before running as they do today, and every one flashes a
-success message on completion and renders its validation errors. Bulk set-price is the
-one operation that looks like a value edit; it keeps a confirmation step for that
-reason.
+No card carries a label saying it applies immediately. A marker would make a split
+save model honest without making it sensible, and once every field-like control is
+drafted it has nothing left to explain: what remains runs from a button, a dialog, or a
+drag, the way staff expect an action to. Destructive operations confirm before running
+as they do today, and every one flashes a success message on completion and renders
+its validation errors. Bulk set-price is the one operation that looks like a value
+edit; it keeps its confirmation step for that reason.
 
-File upload is the exception to the marker: from the user's point of view it is part of
-the draft, because nothing about the record changes until save. Only the file's arrival
-in storage is immediate, and that is invisible.
+File upload is part of the draft from the user's point of view, because nothing about
+the record changes until save. Only the file's arrival in storage is immediate, and
+that is invisible.
 
 Collection product reorder follows the drafted sort: when the drafted sort is not
-"Custom", the drag handles are disabled with a hint, whatever the saved sort is.
+"Custom", the drag handles are disabled with a hint, whatever the saved sort is. The
+reorder endpoint stores positions whatever the saved sort is, since they only order the
+storefront under the custom rule.
+
+Slices 2 to 5 land together, so no release has a page where some field-like controls
+are drafted and others are not. There is no interim marker.
 
 ### Routes
 
@@ -304,8 +314,12 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   is the natural owner: it already has the record and staff identity, its lifetime is
   the staging lifetime, and its prune and discard paths are where cleanup belongs.
 - **Whole-table keys for prices** (`prices` as one list) — rejected. One key means any
-  two staff touching pricing conflict on everything. Per-tuple keys conflict only on the
-  row both touched, which is the draft layer's whole point.
+  two staff touching pricing conflict on everything.
+- **Per-tuple keys for prices** (`{currency}:{group}:{qty}`) — rejected during Slice 4.
+  They need runtime keys, null-pristine handling on the client, and a removal marker,
+  and a tier whose quantity changes becomes a delete plus an add anyway. Per-currency
+  keys keep a fixed key set and still let two staff price different currencies without
+  conflict; edits to the same currency conflict, which the dialog resolves per currency.
 - **Manual merge for structured conflicts** — rejected for now. A merge editor for a
   media list or a price row is a feature in itself; keep-mine / take-theirs covers the
   realistic case and matches how the products spec already treats availability rows.
@@ -326,23 +340,22 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   on `HasPrices` models and their contracts. The `Associate` and `Dissociate` jobs
   delegate to the association action.
 - **Upgrade path**: none required.
-- **Translations**: new `drafts.applies_immediately` and its tooltip, the stale-draft
+- **Translations**: the stale-draft
   message, the dropped-keys warning before a structural operation, and the conflict summary phrases for the first-party
   slices, across all 16 panel locales. The removed endpoints' flash keys
   (`pricing.flash_*`, `products.flash_associations_added`,
   `products.flash_associations_reordered`, `products.flash_association_removed`,
   `products.flash_variant_media_updated`, `media.flash_updated|deleted`, and
-  `customers.flash_notes_updated`) are deleted; `media.flash_uploaded` is kept for the staging
-  response.
+  `customers.flash_notes_updated`) are deleted; `media.flash_uploaded` goes too, since the staging
+  endpoint answers with JSON rather than a flash.
 - **Filament / admin impact**: none. The Filament admin's product resource is untouched.
   A Filament user editing prices while a panel user drafts them is exactly the
   concurrent case the commit check now catches for prices too.
 - **Public contract surface**: the slice namespaces `association`, `url`, `price`,
   `media`, and `variant_media` and their value shapes; the draft PATCH and commit
   payloads (`data`, `base`, `rebase`, `version`); `DraftableResource::acceptsField()`;
-  the staging upload endpoint and its response shape; the two new action contracts and
-  verbs; the `drafts.applies_immediately` affordance as the convention for any future
-  immediate operation on an edit page.
+  the staging upload endpoint and its response shape; and the two new action contracts and
+  verbs.
 
 ## Open questions
 
@@ -353,12 +366,6 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 - **Bulk set-price as an operation.** It is the one immediate control that edits values.
   Keeping it immediate with confirmation is the proposal; revisit if staff find it
   surprising in use.
-- **Slice migration order.** Media staging is the largest piece. Ship associations and
-  slugs first to prove the pattern, then prices, then media? Or land all four together
-  so the page has one save model from the first release that changes it? Owner: Glenn.
-  Lean: ship in the plan's order below; each slice leaves the page consistent for the
-  surfaces it covers, and the marker makes the remaining immediate ones explicit in the
-  interim.
 
 ## References
 
@@ -375,7 +382,10 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 
 ## Implementation plan
 
-- [ ] Slice 0 — Draft layer correctness: client-supplied base, client diff authoritative
+Slices 2 to 5 land in one pull request, so no release mixes drafted and immediate
+field-like controls.
+
+- [x] Slice 0 — Draft layer correctness: client-supplied base, client diff authoritative
   at commit, draft `version` with the stale-draft response, no conflict when mine equals
   theirs, conflict check under lock, pristine from the sent diff, `hasDraft` and error
   toasts on failed commits and autosaves, key-set refresh after structural operations
@@ -385,26 +395,24 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   field, colleague commit before first autosave, same-value conflict, failed commit,
   stale version) and vitest for `useEditDraft` (edits during an in-flight commit,
   key-set refresh). Lands first because every later slice relies on it.
-- [ ] Slice 1 — Affordance and rule: the `drafts.applies_immediately` marker with
-  tooltip on every immediate operation in the table above, confirmation on bulk
-  set-price, flash and visible validation errors on every operation, collection reorder
-  following the drafted sort; `admin_notes` as a customer draft field with the notes
-  route removed; 16-locale copy; page tests asserting each operation carries the marker.
-  Lands before any other surface moves so the pages are honest.
-- [ ] Slice 2 — `SyncsProductAssociations` action and verb, the jobs delegating to it,
+- [ ] Slice 1 — Operations and notes: confirmation on bulk set-price, flash and visible
+  validation errors on every operation, collection reorder following the drafted sort
+  with a hint when it is not Custom; `admin_notes` as a customer draft field with the
+  notes route removed; 16-locale copy.
+- [x] Slice 2 — `SyncsProductAssociations` action and verb, the jobs delegating to it,
   the `association` slice, the associations card on `useFormSlice`, removal of the
   association routes and controller; draft feature tests (autosave, per-type conflict,
   commit ordering, no duplicate rows) and a vitest pass over the card.
-- [ ] Slice 3 — `url` slice on product, brand, and collection, `UrlSlugs` on
+- [x] Slice 3 — `url` slice on product, brand, and collection, `UrlSlugs` on
   `useFormSlice`, removal of the URL routes; uniqueness and one-default rules; tests
   across the three resources.
-- [ ] Slice 4 — `SyncsPrices` action and verb, the `price` slice on the variant
+- [x] Slice 4 — `SyncsPrices` action and verb, the `price` slice on the variant
   resource and under `variant:` on the product resource, `PricingEditor` on
   `useFormSlice`, removal of the price routes and the unused `products.update` and
-  `products.variants.update` routes, props reload after bundle repricing; tuple-key
-  round-trip, adding and removing tiers, base-row rules, minor-unit normalisation,
-  conflict per tuple, conflict after a reprice.
-- [ ] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
+  `products.variants.update` routes, props reload after bundle repricing; per-currency
+  key round-trip, adding and removing tiers, base-row rules, minor-unit normalisation,
+  conflict per currency, conflict after a reprice.
+- [x] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
   the `media` slice on product, brand, collection, and product type covering image and
   file groups, move after commit, cleanup on discard, commit, and the prune sweep,
   `variant_media` slice, `MediaGroups` and the variant picker on `useFormSlice`, removal

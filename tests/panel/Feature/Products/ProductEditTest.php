@@ -1,9 +1,6 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
-use Lunar\Core\Models\Brand;
-use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\OrderLine;
@@ -41,7 +38,8 @@ it('renders the edit page with product, availability and option payloads', funct
             ->has('availability.customer_groups')
             ->has('brandOptions')
             ->has('typeOptions')
-            ->has('associations')
+            ->has('associationTypes')
+            ->has('associationProducts')
             ->has('urls.draft')
         );
 });
@@ -78,35 +76,13 @@ it('keeps a drafted product type selectable on its own products', function () {
         );
 });
 
-it('updates the product through the update endpoint', function () {
-    $brand = Brand::factory()->create();
-    $group = CollectionGroup::factory()->create();
-    $collection = Collection::factory()->create(['collection_group_id' => $group->id]);
-
-    $this->put(route('panel.products.update', $this->product), [
-        'name' => ['en' => 'Renamed Widget'],
-        'status' => 'published',
-        'brand_id' => $brand->id,
-        'tags' => ['festive'],
-        'collection_ids' => [$collection->id],
-    ])->assertRedirect();
-
-    $this->product->refresh();
-
-    expect($this->product->translate('name'))->toBe('Renamed Widget')
-        ->and((string) $this->product->status)->toBe('published')
-        ->and($this->product->brand_id)->toBe($brand->id)
-        ->and($this->product->tags->pluck('value')->all())->toBe(['FESTIVE'])
-        ->and($this->product->collections->modelKeys())->toBe([$collection->id]);
-});
-
-it('rejects a draft product type on update', function () {
+it('rejects a draft product type on commit', function () {
     $draftType = ProductType::factory()->draft()->create();
 
-    $this->put(route('panel.products.update', $this->product), [
-        'name' => ['en' => 'Widget'],
-        'product_type_id' => $draftType->id,
-    ])->assertSessionHasErrors('product_type_id');
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['product_type_id' => $draftType->id],
+        'rebase' => [],
+    ])->assertJsonValidationErrors('product_type_id');
 });
 
 it('deletes a product without order history', function () {
@@ -156,7 +132,6 @@ it('gates the edit surface behind the catalog permission', function () {
     $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
 
     $this->get(route('panel.products.edit', $this->product))->assertForbidden();
-    $this->put(route('panel.products.update', $this->product))->assertForbidden();
     $this->delete(route('panel.products.destroy', $this->product))->assertForbidden();
     $this->post(route('panel.products.duplicate', $this->product))->assertForbidden();
 });

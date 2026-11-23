@@ -1,35 +1,28 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { reactive, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
-import ConfirmDialog from './ConfirmDialog.vue';
 import CropPreview from './CropPreview.vue';
 import Dialog from './Dialog.vue';
 import FieldLabel from './FieldLabel.vue';
 import FocalPointEditor from './FocalPointEditor.vue';
 import TextInput from './TextInput.vue';
 import Textarea from './Textarea.vue';
+import type { MediaItem } from './media';
 
-export interface MediaItem {
-    id: number;
-    url: string;
-    original_url: string;
-    name: string | null;
-    alt: string | null;
-    caption: string | null;
-    focal: { x: number; y: number } | null;
-    primary: boolean;
-    update_url: string;
-    destroy_url: string;
-}
+export type { MediaItem };
 
 const props = defineProps<{
     open: boolean;
     media: MediaItem | null;
 }>();
 
-const emit = defineEmits<{ 'update:open': [value: boolean] }>();
+// Applying and removing edit the page draft; Save on the page commits them.
+const emit = defineEmits<{
+    'update:open': [value: boolean];
+    save: [properties: Pick<MediaItem, 'name' | 'alt' | 'caption' | 'focal'>];
+    remove: [];
+}>();
 
 const { t } = useI18n();
 
@@ -39,9 +32,6 @@ const draft = reactive({
     caption: '',
     focal: { x: 50, y: 50 },
 });
-
-const errors = ref<Record<string, string>>({});
-const saving = ref(false);
 
 watch(
     () => props.open,
@@ -54,7 +44,6 @@ watch(
         draft.alt = props.media.alt ?? '';
         draft.caption = props.media.caption ?? '';
         draft.focal = { x: props.media.focal?.x ?? 50, y: props.media.focal?.y ?? 50 };
-        errors.value = {};
     },
     { immediate: true },
 );
@@ -62,41 +51,18 @@ watch(
 const close = (): void => emit('update:open', false);
 
 const save = (): void => {
-    if (!props.media) {
-        return;
-    }
-
-    saving.value = true;
-
-    router.put(
-        props.media.update_url,
-        {
-            name: draft.name.trim() || null,
-            alt: draft.alt.trim(),
-            caption: draft.caption.trim() || null,
-            focal: draft.focal,
-        },
-        {
-            preserveScroll: true,
-            onSuccess: () => close(),
-            onError: (bag) => {
-                errors.value = bag;
-            },
-            onFinish: () => {
-                saving.value = false;
-            },
-        },
-    );
+    emit('save', {
+        name: draft.name.trim() || null,
+        alt: draft.alt.trim() || null,
+        caption: draft.caption.trim() || null,
+        focal: { ...draft.focal },
+    });
+    close();
 };
 
-const confirmDeleteOpen = ref(false);
-
-const confirmDelete = (): void => {
-    if (props.media) {
-        router.delete(props.media.destroy_url, { preserveScroll: true });
-        confirmDeleteOpen.value = false;
-        close();
-    }
+const remove = (): void => {
+    emit('remove');
+    close();
 };
 
 const RATIOS = ['1:1', '4:5', '16:9', '9:16'];
@@ -119,8 +85,7 @@ const RATIOS = ['1:1', '4:5', '16:9', '9:16'];
             <div class="flex flex-col gap-4 min-w-0">
                 <div>
                     <FieldLabel for="media-name">{{ t('media.field_name') }}</FieldLabel>
-                    <TextInput id="media-name" v-model="draft.name" :invalid="!!errors.name" />
-                    <div v-if="errors.name" class="mt-1 text-[11px] text-danger">{{ errors.name }}</div>
+                    <TextInput id="media-name" v-model="draft.name" />
                 </div>
                 <div>
                     <FieldLabel for="media-alt" required>{{ t('media.field_alt') }}</FieldLabel>
@@ -128,9 +93,7 @@ const RATIOS = ['1:1', '4:5', '16:9', '9:16'];
                         id="media-alt"
                         v-model="draft.alt"
                         :placeholder="t('media.field_alt_placeholder')"
-                        :invalid="!!errors.alt"
                     />
-                    <div v-if="errors.alt" class="mt-1 text-[11px] text-danger">{{ errors.alt }}</div>
                 </div>
                 <div>
                     <FieldLabel for="media-caption">{{ t('media.field_caption') }}</FieldLabel>
@@ -139,9 +102,7 @@ const RATIOS = ['1:1', '4:5', '16:9', '9:16'];
                         v-model="draft.caption"
                         :rows="2"
                         :placeholder="t('media.field_caption_placeholder')"
-                        :invalid="!!errors.caption"
                     />
-                    <div v-if="errors.caption" class="mt-1 text-[11px] text-danger">{{ errors.caption }}</div>
                 </div>
                 <div>
                     <FieldLabel :hint="t('media.crop_previews_hint')">{{ t('media.crop_previews') }}</FieldLabel>
@@ -161,20 +122,12 @@ const RATIOS = ['1:1', '4:5', '16:9', '9:16'];
         </div>
 
         <template #footer>
-            <Button variant="ghost" class="!text-danger mr-auto" icon="trash" @click="confirmDeleteOpen = true">
+            <Button variant="ghost" class="!text-danger mr-auto" icon="trash" @click="remove">
                 {{ t('media.delete_image') }}
             </Button>
             <Button variant="ghost" @click="close">{{ t('common.cancel') }}</Button>
-            <Button variant="primary" :disabled="!draft.alt.trim() || saving" @click="save">{{ t('common.save_changes') }}</Button>
+            <Button variant="primary" :disabled="!draft.alt.trim()" @click="save">{{ t('common.apply') }}</Button>
         </template>
     </Dialog>
 
-    <ConfirmDialog
-        v-model:open="confirmDeleteOpen"
-        :title="t('media.confirm_delete_title')"
-        :description="t('media.confirm_delete_body')"
-        tone="danger"
-        :confirm-label="t('common.delete')"
-        @confirm="confirmDelete"
-    />
 </template>

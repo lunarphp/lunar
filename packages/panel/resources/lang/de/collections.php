@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Produkte zur Kollektion hinzugefügt.',
     'flash_products_removed' => 'Produkt aus der Kollektion entfernt.',
     'flash_products_reordered' => 'Produkte neu geordnet.',
-    'flash_products_reorder_not_custom' => 'Stellen Sie die Sortierregel auf „Manuell“, bevor Sie Produkte von Hand ordnen.',
+    'reorder_needs_custom_sort' => 'Stellen Sie die Sortierung auf „Manuell“, um Produkte per Ziehen zu ordnen.',
 ];

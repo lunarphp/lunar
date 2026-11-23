@@ -140,7 +140,6 @@ return [
 
     'notes' => 'Administratorske bilješke',
     'notes_empty' => 'Još nema administratorskih bilješki.',
-    'edit_notes' => 'Uredi administratorske bilješke',
 
     'confirm_delete_customer' => 'Jeste li sigurni da želite izbrisati ovog kupca?',
     'confirm_delete_customer_title' => 'Izbrisati ovog kupca?',
@@ -158,5 +157,4 @@ return [
     'flash_address_deleted' => 'Adresa je izbrisana.',
     'flash_user_linked' => 'Korisnik je povezan.',
     'flash_user_unlinked' => 'Korisnik je odspojen.',
-    'flash_notes_updated' => 'Administratorske bilješke ažurirane.',
 ];

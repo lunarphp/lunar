@@ -43,7 +43,7 @@ it('renders the edit page with type, picker payloads and mapped id sets', functi
             ->hasAll(['urls.update', 'urls.destroy', 'urls.draft', 'urls.draftCommit'])
             ->has('mediaGroups', 1)
             ->where('mediaGroups.0.type', 'image')
-            ->hasAll(['mediaGroups.0.urls.store', 'mediaGroups.0.urls.reorder'])
+            ->hasAll(['mediaGroups.0.urls.store', 'mediaGroups.0.library'])
         );
 });
 

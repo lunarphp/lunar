@@ -20,9 +20,15 @@ beforeEach(function () {
     ]);
 
     $this->other = $this->brand->urls()->create([
+        'language_id' => $language->id,
+        'slug' => 'stark-industries',
+        'default' => false,
+    ]);
+
+    $this->german = $this->brand->urls()->create([
         'language_id' => Language::factory()->create(['code' => 'de'])->id,
         'slug' => 'stark-de',
-        'default' => false,
+        'default' => true,
     ]);
 });
 
@@ -32,11 +38,12 @@ test('updates the slug', function () {
     expect($this->other->refresh()->slug)->toBe('stark-germany');
 });
 
-test('promoting a url to default demotes its siblings', function () {
+test('promoting a url to default demotes its siblings in that language only', function () {
     app(UpdateUrl::class)->execute($this->other, ['default' => true]);
 
     expect($this->other->refresh()->default)->toBeTrue()
-        ->and($this->default->refresh()->default)->toBeFalse();
+        ->and($this->default->refresh()->default)->toBeFalse()
+        ->and($this->german->refresh()->default)->toBeTrue();
 });
 
 test('the default cannot be unset directly', function () {

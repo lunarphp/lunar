@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Proizvodi dodani u kolekciju.',
     'flash_products_removed' => 'Proizvod uklonjen iz kolekcije.',
     'flash_products_reordered' => 'Redoslijed proizvoda promijenjen.',
-    'flash_products_reorder_not_custom' => 'Prebacite pravilo sortiranja na „prilagođeno” prije ručnog slaganja proizvoda.',
+    'reorder_needs_custom_sort' => 'Postavite sortiranje na „Prilagođeno” kako biste povlačenjem složili proizvode.',
 ];

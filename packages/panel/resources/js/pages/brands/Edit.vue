@@ -23,7 +23,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TextInput from '../../components/TextInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -55,7 +55,6 @@ const props = defineProps<{
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
     collections: CollectionOption[];
-    brandUrls: UrlRow[];
     storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
@@ -65,7 +64,6 @@ const props = defineProps<{
         destroy: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
         collectionsSearch: string;
     };
 }>();
@@ -250,9 +248,7 @@ const timelineEvents = computed(() =>
                         />
 
                         <UrlSlugs
-                            :urls="brandUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/brands/"
                             :storefront-url="storefrontUrl"
                         />

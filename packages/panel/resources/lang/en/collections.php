@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Products added to the collection.',
     'flash_products_removed' => 'Product removed from the collection.',
     'flash_products_reordered' => 'Products reordered.',
-    'flash_products_reorder_not_custom' => 'Switch the sort rule to custom before reordering products by hand.',
+    'reorder_needs_custom_sort' => 'Set the sort to Custom to drag products into order.',
 ];

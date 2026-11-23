@@ -96,6 +96,7 @@ use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Actions\Orders\ReopenOrder;
 use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
 use Lunar\Core\Actions\Orders\ResolvePaymentStatus;
+use Lunar\Core\Actions\Prices\SyncPrices;
 use Lunar\Core\Actions\ProductOptions\CreateProductOption;
 use Lunar\Core\Actions\ProductOptions\DeleteProductOption;
 use Lunar\Core\Actions\ProductOptions\UpdateProductOption;
@@ -113,6 +114,7 @@ use Lunar\Core\Actions\Products\RecordStockMovement;
 use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
 use Lunar\Core\Actions\Products\ResolveInventory;
+use Lunar\Core\Actions\Products\SyncProductAssociations;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
 use Lunar\Core\Actions\Products\UpdateProduct;
 use Lunar\Core\Actions\Products\UpdateProductStatus;
@@ -238,6 +240,9 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\ProductTypes\DeletesProductType::class => DeleteProductType::class,
         Contracts\ProductTypes\UpdatesProductType::class => UpdateProductType::class,
 
+        // Prices
+        Contracts\Prices\SyncsPrices::class => SyncPrices::class,
+
         // Products
         Contracts\Products\AdjustsStock::class => AdjustStock::class,
         Contracts\Products\CommitsReservation::class => CommitReservation::class,
@@ -252,6 +257,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\ReleasesReservation::class => ReleaseReservation::class,
         Contracts\Products\ResolvesInventory::class => ResolveInventory::class,
         Contracts\Products\ReservesStock::class => ReserveStock::class,
+        Contracts\Products\SyncsProductAssociations::class => SyncProductAssociations::class,
         Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,
         Contracts\Products\UpdatesProduct::class => UpdateProduct::class,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { useFormSlice } from '../composables/useFormSlice';
 import Button from './Button.vue';
 import FieldLabel from './FieldLabel.vue';
 import Icon from './Icon.vue';
@@ -9,15 +9,12 @@ import Section from './Section.vue';
 import Select from './Select.vue';
 import TextInput from './TextInput.vue';
 
-export interface PriceRow {
-    id: number;
-    currency_id: number;
+/** One row of a currency's price list, in integer minor units. */
+export interface PriceValue {
     customer_group_id: number | null;
     min_quantity: number;
-    price: number;
+    price: number | null;
     list_price: number | null;
-    update_url: string;
-    destroy_url: string;
 }
 
 export interface CurrencyOption {
@@ -27,27 +24,37 @@ export interface CurrencyOption {
     default: boolean;
 }
 
-const props = defineProps<{
-    prices: PriceRow[];
+const props = withDefaults(defineProps<{
     currencies: CurrencyOption[];
     customerGroups: { id: number; name: string }[];
-    storeUrl: string;
-}>();
+    /**
+     * The form slice holding the prices: `price` on the variant page, or the
+     * product page's `variant` slice with a `price:` field prefix.
+     */
+    namespace?: string;
+    fieldPrefix?: string;
+}>(), { namespace: 'price', fieldPrefix: '' });
 
 const { t } = useI18n();
+
+// Each currency's price list is a draft value (`{prefix}{code}`): editing,
+// adding and removing rows dirty the page form and land with Save.
+const slice = useFormSlice<Record<string, PriceValue[]>>(props.namespace);
+
+const fieldFor = (code: string): string => `${props.fieldPrefix}${code}`;
 
 const currencyById = (id: number): CurrencyOption | undefined =>
     props.currencies.find((currency) => currency.id === id);
 
 const defaultCurrency = computed(() => props.currencies.find((currency) => currency.default) ?? props.currencies[0]);
 
-// Amounts render and edit in major units; the server stores integer minor
+// Amounts render and edit in major units; the draft holds integer minor
 // units, converted by the currency's decimal places.
 const toMajor = (minor: number | null, decimals: number): string =>
     minor === null ? '' : (minor / 10 ** decimals).toFixed(decimals);
 
 const toMinor = (major: string, decimals: number): number | null => {
-    const value = major.trim();
+    const value = String(major ?? '').trim();
 
     if (value === '') {
         return null;
@@ -58,11 +65,10 @@ const toMinor = (major: string, decimals: number): number | null => {
     return Number.isFinite(parsed) ? Math.round(parsed * 10 ** decimals) : null;
 };
 
-// Editable working rows. Base rows are keyed per currency; group and tier
-// rows keep their own identity (saved id or a local key while pending).
+// Editable working rows: the typed text stays as typed, and every edit
+// writes the converted lists back to the slice.
 interface WorkingRow {
     key: string;
-    saved: PriceRow | null;
     currency_id: number;
     customer_group_id: number | null;
     min_quantity: number;
@@ -70,21 +76,7 @@ interface WorkingRow {
     compare: string;
 }
 
-let pendingKey = 0;
-
-const rowFrom = (saved: PriceRow): WorkingRow => {
-    const decimals = currencyById(saved.currency_id)?.decimal_places ?? 2;
-
-    return {
-        key: `saved-${saved.id}`,
-        saved,
-        currency_id: saved.currency_id,
-        customer_group_id: saved.customer_group_id,
-        min_quantity: saved.min_quantity,
-        amount: toMajor(saved.price, decimals),
-        compare: toMajor(saved.list_price, decimals),
-    };
-};
+let rowKey = 0;
 
 const isBase = (row: { customer_group_id: number | null; min_quantity: number }): boolean =>
     row.customer_group_id === null && row.min_quantity === 1;
@@ -92,84 +84,124 @@ const isBase = (row: { customer_group_id: number | null; min_quantity: number })
 const isGroup = (row: { customer_group_id: number | null; min_quantity: number }): boolean =>
     row.customer_group_id !== null && row.min_quantity === 1;
 
-const buildRows = (): { base: WorkingRow[]; groups: WorkingRow[]; tiers: WorkingRow[] } => {
-    const base = props.currencies.map((currency) => {
-        const saved = props.prices.find((price) => isBase(price) && price.currency_id === currency.id);
+const readLists = (): Record<string, PriceValue[]> =>
+    Object.fromEntries(props.currencies.map((currency) => [currency.code, slice.values[fieldFor(currency.code)] ?? []]));
 
-        return saved
-            ? rowFrom(saved)
-            : {
-                key: `base-${currency.id}`,
-                saved: null,
+const buildRows = (): { base: WorkingRow[]; groups: WorkingRow[]; tiers: WorkingRow[] } => {
+    const all = props.currencies.flatMap((currency) =>
+        (slice.values[fieldFor(currency.code)] ?? []).map((value): WorkingRow => ({
+            key: `row-${++rowKey}`,
+            currency_id: currency.id,
+            customer_group_id: value.customer_group_id,
+            min_quantity: value.min_quantity,
+            amount: toMajor(value.price, currency.decimal_places),
+            compare: toMajor(value.list_price, currency.decimal_places),
+        })));
+
+    return {
+        base: props.currencies.map((currency) =>
+            all.find((row) => isBase(row) && row.currency_id === currency.id) ?? {
+                key: `row-${++rowKey}`,
                 currency_id: currency.id,
                 customer_group_id: null,
                 min_quantity: 1,
                 amount: '',
                 compare: '',
-            };
-    });
-
-    return {
-        base,
-        groups: props.prices.filter(isGroup).map(rowFrom),
-        tiers: props.prices.filter((price) => price.min_quantity > 1).map(rowFrom),
+            }),
+        groups: all.filter(isGroup),
+        tiers: all.filter((row) => row.min_quantity > 1),
     };
 };
 
 const rows = reactive(buildRows());
 
-// Server responses refresh the prices prop; rebuild while keeping any
-// pending (unsaved) rows staff are still filling in.
-watch(() => props.prices, () => {
-    const next = buildRows();
+// The server lists rows in this order, so an edit undone leaves the draft
+// clean: base first, then any-customer tiers, then group prices and tiers.
+const rank = (row: WorkingRow): number[] => [
+    row.customer_group_id === null ? 0 : 1,
+    row.min_quantity > 1 ? 1 : 0,
+    row.min_quantity,
+    row.customer_group_id ?? 0,
+];
 
-    rows.base = next.base;
-    rows.groups = [...next.groups, ...rows.groups.filter((row) => !row.saved)];
-    rows.tiers = [...next.tiers, ...rows.tiers.filter((row) => !row.saved)];
+const compareRows = (a: WorkingRow, b: WorkingRow): number => {
+    const left = rank(a);
+    const right = rank(b);
+
+    return left.reduce((result, value, index) => result || value - right[index], 0);
+};
+
+// Where each working row sits in its currency's list, so commit errors
+// (keyed `{code}.{index}.{field}`) land on the row that caused them.
+const positions = reactive(new Map<string, string>());
+
+let lastWritten = JSON.stringify(readLists());
+
+const write = (): void => {
+    const lists: Record<string, PriceValue[]> = {};
+
+    positions.clear();
+
+    for (const currency of props.currencies) {
+        const decimals = currency.decimal_places;
+
+        // A blank base row is no base price; a blank group or tier row is
+        // kept, so the commit says the amount is missing on that row.
+        const listed = [
+            ...rows.base.filter((row) => row.currency_id === currency.id && row.amount.trim() !== ''),
+            ...rows.groups.filter((row) => row.currency_id === currency.id),
+            ...rows.tiers.filter((row) => row.currency_id === currency.id),
+        ].sort(compareRows);
+
+        lists[currency.code] = listed.map((row, index) => {
+            positions.set(row.key, `${currency.code}.${index}`);
+
+            return {
+                customer_group_id: row.customer_group_id,
+                min_quantity: row.min_quantity,
+                price: toMinor(row.amount, decimals),
+                list_price: toMinor(row.compare, decimals),
+            };
+        });
+
+        slice.values[fieldFor(currency.code)] = lists[currency.code];
+    }
+
+    lastWritten = JSON.stringify(lists);
+};
+
+// A restore, conflict resolution or commit reload replaces the lists from
+// outside; rebuild the rows from them then, never from this editor's writes.
+watch(() => JSON.stringify(readLists()), (next) => {
+    if (next === lastWritten) {
+        return;
+    }
+
+    lastWritten = next;
+    positions.clear();
+    Object.assign(rows, buildRows());
 });
 
-const timers = new Map<string, ReturnType<typeof setTimeout>>();
+const rowError = (row: WorkingRow): string | undefined => {
+    const position = positions.get(row.key);
 
-const save = (row: WorkingRow): void => {
-    const decimals = currencyById(row.currency_id)?.decimal_places ?? 2;
-    const price = toMinor(row.amount, decimals);
-
-    if (price === null) {
-        return;
+    if (!position) {
+        return undefined;
     }
 
-    const payload = {
-        currency_id: row.currency_id,
-        customer_group_id: row.customer_group_id,
-        min_quantity: row.min_quantity,
-        price,
-        list_price: toMinor(row.compare, decimals),
-    };
+    const errors = slice.errors.value;
+    const field = `${props.fieldPrefix}${position}`;
 
-    const options = { preserveScroll: true, preserveState: true };
-
-    if (row.saved) {
-        router.put(row.saved.update_url, payload, options);
-    } else {
-        router.post(props.storeUrl, payload, options);
-    }
+    return errors[`${field}.price`] ?? errors[`${field}.list_price`] ?? errors[`${field}.min_quantity`]
+        ?? errors[`${field}.customer_group_id`] ?? errors[field];
 };
 
-const queueSave = (row: WorkingRow): void => {
-    clearTimeout(timers.get(row.key));
-    timers.set(row.key, setTimeout(() => save(row), 600));
-};
+const currencyErrors = computed(() =>
+    props.currencies.map((currency) => slice.errors.value[fieldFor(currency.code)]).filter(Boolean));
 
 const removeRow = (list: WorkingRow[], row: WorkingRow): void => {
-    clearTimeout(timers.get(row.key));
-
-    if (row.saved) {
-        router.delete(row.saved.destroy_url, { preserveScroll: true, preserveState: true });
-
-        return;
-    }
-
     list.splice(list.indexOf(row), 1);
+    write();
 };
 
 const addGroupRow = (): void => {
@@ -180,14 +212,14 @@ const addGroupRow = (): void => {
     }
 
     rows.groups.push({
-        key: `pending-${++pendingKey}`,
-        saved: null,
+        key: `row-${++rowKey}`,
         currency_id: defaultCurrency.value.id,
         customer_group_id: group.id,
         min_quantity: 1,
         amount: '',
         compare: '',
     });
+    write();
 };
 
 const addTierRow = (): void => {
@@ -198,14 +230,14 @@ const addTierRow = (): void => {
     const last = rows.tiers[rows.tiers.length - 1];
 
     rows.tiers.push({
-        key: `pending-${++pendingKey}`,
-        saved: null,
+        key: `row-${++rowKey}`,
         currency_id: defaultCurrency.value.id,
         customer_group_id: null,
         min_quantity: last ? last.min_quantity + 5 : 2,
         amount: '',
         compare: '',
     });
+    write();
 };
 
 const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
@@ -266,7 +298,7 @@ const currencySymbol = (id: number): string => {
                             min="0"
                             step="any"
                             :aria-label="`${t('pricing.amount')} ${currencyCode(row.currency_id)}`"
-                            @update:model-value="queueSave(row)"
+                            @update:model-value="write()"
                         >
                             <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                         </TextInput>
@@ -278,13 +310,15 @@ const currencySymbol = (id: number): string => {
                             type="number"
                             min="0"
                             step="any"
-                            @update:model-value="queueSave(row)"
+                            @update:model-value="write()"
                         >
                             <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                         </TextInput>
                     </div>
                     <div class="text-[12px] font-mono text-ink-500 pb-2">{{ currencyCode(row.currency_id) }}</div>
+                    <div v-if="rowError(row)" class="col-span-3 -mt-1 text-[11px] text-danger">{{ rowError(row) }}</div>
                 </div>
+                <div v-for="message in currencyErrors" :key="message" class="text-[11px] text-danger">{{ message }}</div>
             </div>
         </div>
 
@@ -301,16 +335,16 @@ const currencySymbol = (id: number): string => {
                     :key="row.key"
                     class="grid grid-cols-[minmax(120px,1fr)_minmax(132px,1fr)_minmax(132px,1fr)_90px_36px] gap-2.5 items-center px-3 py-2 border-b border-line last:border-b-0"
                 >
-                    <Select v-model="row.customer_group_id" :aria-label="t('pricing.group_column')" @update:model-value="queueSave(row)">
+                    <Select v-model="row.customer_group_id" :aria-label="t('pricing.group_column')" @update:model-value="write()">
                         <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
                     </Select>
-                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)">
+                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="write()">
                         <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                     </TextInput>
-                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)">
+                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="write()">
                         <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                     </TextInput>
-                    <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="queueSave(row)">
+                    <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="write()">
                         <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.code }}</option>
                     </Select>
                     <button
@@ -319,6 +353,7 @@ const currencySymbol = (id: number): string => {
                         :aria-label="t('pricing.remove_row')"
                         @click="removeRow(rows.groups, row)"
                     ><Icon name="trash" cls="sm" /></button>
+                    <div v-if="rowError(row)" class="col-span-5 text-[11px] text-danger">{{ rowError(row) }}</div>
                 </div>
                 <div class="px-3 py-2 bg-surface-2 border-t border-line">
                     <Button variant="ghost" size="sm" icon="plus" @click="addGroupRow">{{ t('pricing.group_add') }}</Button>
@@ -344,25 +379,25 @@ const currencySymbol = (id: number): string => {
                         type="number"
                         min="2"
                         :aria-label="t('pricing.tier_min_qty')"
-                        @update:model-value="(value) => { row.min_quantity = Math.max(2, Number(value) || 2); queueSave(row); }"
+                        @update:model-value="(value) => { row.min_quantity = Math.max(2, Number(value) || 2); write(); }"
                     >
                         <template #prefix>{{ t('pricing.tier_min_prefix') }}</template>
                     </TextInput>
                     <Select
                         :model-value="row.customer_group_id ?? ''"
                         :aria-label="t('pricing.group_column')"
-                        @update:model-value="(value) => { row.customer_group_id = value === '' ? null : Number(value); queueSave(row); }"
+                        @update:model-value="(value) => { row.customer_group_id = value === '' ? null : Number(value); write(); }"
                     >
                         <option value="">{{ t('pricing.tier_any_customer') }}</option>
                         <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
                     </Select>
-                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)">
+                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="write()">
                         <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                     </TextInput>
-                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)">
+                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="write()">
                         <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
                     </TextInput>
-                    <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="queueSave(row)">
+                    <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="write()">
                         <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.code }}</option>
                     </Select>
                     <button
@@ -371,6 +406,7 @@ const currencySymbol = (id: number): string => {
                         :aria-label="t('pricing.remove_row')"
                         @click="removeRow(rows.tiers, row)"
                     ><Icon name="trash" cls="sm" /></button>
+                    <div v-if="rowError(row)" class="col-span-6 text-[11px] text-danger">{{ rowError(row) }}</div>
                 </div>
                 <div class="px-3 py-2 bg-surface-2 border-t border-line">
                     <Button variant="ghost" size="sm" icon="plus" @click="addTierRow">{{ t('pricing.tier_add') }}</Button>

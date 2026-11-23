@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Mỗi nhóm khách hàng và số lượng tối thiểu chỉ có thể được định giá một lần cho mỗi loại tiền tệ.',
+    'error_base_required' => 'Giá cơ bản có thể thay đổi nhưng không thể xóa.',
 ];

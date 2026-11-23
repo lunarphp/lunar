@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Her müşteri grubu ve minimum miktar, para birimi başına yalnızca bir kez fiyatlandırılabilir.',
+    'error_base_required' => 'Temel fiyat değiştirilebilir ancak kaldırılamaz.',
 ];

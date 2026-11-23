@@ -54,7 +54,7 @@ it('rejects autosaves with unknown field keys', function () {
     $customer = Customer::factory()->create();
 
     $this->patchJson(route('panel.customers.draft.update', $customer), [
-        'data' => ['admin_notes' => 'not draftable'],
+        'data' => ['meta' => 'not draftable'],
     ])->assertUnprocessable();
 });
 
@@ -127,6 +127,41 @@ it('commits a draft, applies the changes and flashes success', function () {
 
     expect($customer->refresh()->first_name)->toBe('Changed')
         ->and(EditDraft::count())->toBe(0);
+});
+
+it('drafts admin notes and commits them through the draft', function () {
+    actingStaff();
+
+    $customer = Customer::factory()->create(['admin_notes' => null]);
+
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['admin_notes' => 'Contact via email only.'],
+    ])->assertOk()->assertJsonPath('data.admin_notes', 'Contact via email only.');
+
+    expect($customer->refresh()->admin_notes)->toBeNull();
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['admin_notes' => 'Contact via email only.'],
+    ])->assertOk()->assertJsonPath('committed', true);
+
+    expect($customer->refresh()->admin_notes)->toBe('Contact via email only.')
+        ->and(EditDraft::count())->toBe(0);
+});
+
+it('normalises cleared admin notes to null', function () {
+    actingStaff();
+
+    $customer = Customer::factory()->create(['admin_notes' => 'Old note.']);
+
+    $this->patchJson(route('panel.customers.draft.update', $customer), [
+        'data' => ['admin_notes' => ''],
+    ])->assertOk()->assertJsonPath('data.admin_notes', null);
+
+    $this->postJson(route('panel.customers.draft.commit', $customer), [
+        'data' => ['admin_notes' => ''],
+    ])->assertOk();
+
+    expect($customer->refresh()->admin_notes)->toBeNull();
 });
 
 it('commits the request diff alone, not keys left in the stored draft', function () {

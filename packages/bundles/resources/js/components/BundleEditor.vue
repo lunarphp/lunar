@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import {
     Button,
@@ -40,6 +41,10 @@ const run = async (request: () => Promise<BundleSummary>, message = t('bundles::
     try {
         summary.value = await request();
         toasts.success(message);
+        // A save can reprice the variant; reload the page's form values so
+        // the pricing card shows the new amounts (prices staff are editing
+        // keep their edit and conflict at Save instead).
+        router.reload({ only: ['formSliceValues'] });
     } catch (error) {
         if (error instanceof ValidationError) {
             errors.value = Object.values(error.errors).flat();

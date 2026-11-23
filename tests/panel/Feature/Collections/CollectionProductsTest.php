@@ -86,15 +86,17 @@ it('reorders the given page window when the sort rule is custom', function () {
     expect($ordered)->toBe([$products[2]->id, $products[0]->id, $products[1]->id]);
 });
 
-it('refuses to reorder while the sort rule is not custom', function () {
+it('stores positions while the saved sort rule is not yet custom', function () {
     $products = attachProducts($this->collection, 2);
     $this->collection->update(['sort' => 'min_price:asc']);
 
+    // The page has drafted the switch to custom; the order must be ready for it.
     $this->post(route('panel.collections.products.reorder', $this->collection), [
         'ids' => [$products[1]->id, $products[0]->id],
-    ])->assertSessionHas('error');
+    ])->assertSessionHas('success');
 
-    expect((int) $this->collection->products()->find($products[0]->id)->pivot->position)->toBe(1);
+    expect((int) $this->collection->products()->find($products[0]->id)->pivot->position)->toBe(2)
+        ->and($this->collection->refresh()->sort)->toBe('min_price:asc');
 });
 
 it('searches products by name and sku', function () {

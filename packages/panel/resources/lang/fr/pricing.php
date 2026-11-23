@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Chaque groupe de clients et quantité minimale ne peut avoir qu\'un seul prix par devise.',
+    'error_base_required' => 'Un prix de base peut être modifié, mais pas supprimé.',
 ];

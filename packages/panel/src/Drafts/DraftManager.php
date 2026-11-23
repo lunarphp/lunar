@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Validation\ValidationException;
 use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Contracts\DraftManager as DraftManagerContract;
@@ -25,6 +26,25 @@ class DraftManager implements DraftManagerContract
             ->where('draftable_id', $draftable->getKey())
             ->where('staff_id', $staff->getAuthIdentifier())
             ->first();
+    }
+
+    public function stagingDraft(Model $draftable, Authenticatable $staff): EditDraft
+    {
+        $draft = $this->find($draftable, $staff);
+
+        if ($draft) {
+            return $draft;
+        }
+
+        try {
+            $draft = $this->newDraft($draftable, $staff);
+            $draft->fill(['data' => [], 'base_snapshot' => [], 'version' => 0])->save();
+
+            return $draft;
+        } catch (UniqueConstraintViolationException) {
+            // A parallel upload created it first.
+            return $this->find($draftable, $staff) ?? throw new \LogicException('Draft vanished while staging.');
+        }
     }
 
     public function merge(DraftableResource $resource, Model $draftable, Authenticatable $staff, array $data, array $base = [], ?int $version = null): ?EditDraft

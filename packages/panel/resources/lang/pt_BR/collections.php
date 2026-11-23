@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Produtos adicionados à coleção.',
     'flash_products_removed' => 'Produto removido da coleção.',
     'flash_products_reordered' => 'Produtos reordenados.',
-    'flash_products_reorder_not_custom' => 'Mude a regra de ordenação para "personalizado" antes de reordenar os produtos manualmente.',
+    'reorder_needs_custom_sort' => 'Defina a ordenação como "Personalizado" para arrastar os produtos na ordem desejada.',
 ];

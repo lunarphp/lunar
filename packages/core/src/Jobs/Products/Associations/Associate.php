@@ -9,7 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Product;
 
 class Associate implements ShouldQueue
@@ -57,26 +56,20 @@ class Associate implements ShouldQueue
     }
 
     /**
-     * Execute the job.
-     *
-     * @return void
+     * Append the targets to the product's associations of this type, through
+     * the sync action so a target already linked is never linked twice.
      */
-    public function handle()
+    public function handle(): void
     {
-        DB::transaction(function () {
-            $type = is_string($this->type) ? $this->type : $this->type->value;
+        $existing = $this->product->associations()
+            ->where('type', is_string($this->type) ? $this->type : $this->type->value)
+            ->pluck('product_target_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
 
-            $sort = (int) $this->product->associations()->where('type', $type)->max('sort');
-
-            $this->product->associations()->createMany(
-                $this->targets->values()->map(function ($model, $index) use ($type, $sort) {
-                    return [
-                        'product_target_id' => $model->id,
-                        'type' => $type,
-                        'sort' => $sort + $index + 1,
-                    ];
-                })
-            );
-        });
+        $this->product->syncAssociations($this->type, [
+            ...$existing,
+            ...$this->targets->map(fn ($model) => (int) $model->id)->all(),
+        ]);
     }
 }
