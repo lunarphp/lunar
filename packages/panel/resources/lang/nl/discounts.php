@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Korting aangemaakt.',
     'flash_updated' => 'Korting bijgewerkt.',
     'flash_deleted' => 'Korting verwijderd.',
-    'flash_bulk_ended' => '{count} kortingen beëindigd.',
-    'flash_bulk_deleted' => '{count} kortingen verwijderd.',
+    'flash_bulk_ended' => ':count korting beëindigd.|:count kortingen beëindigd.',
+    'flash_bulk_deleted' => ':count korting verwijderd.|:count kortingen verwijderd.',
 ];

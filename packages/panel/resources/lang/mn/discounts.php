@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Хөнгөлөлт үүсгэлээ.',
     'flash_updated' => 'Хөнгөлөлтийг шинэчиллээ.',
     'flash_deleted' => 'Хөнгөлөлтийг устгалаа.',
-    'flash_bulk_ended' => '{count} хөнгөлөлтийг дуусгалаа.',
-    'flash_bulk_deleted' => '{count} хөнгөлөлтийг устгалаа.',
+    'flash_bulk_ended' => ':count хөнгөлөлтийг дуусгалаа.',
+    'flash_bulk_deleted' => ':count хөнгөлөлтийг устгалаа.',
 ];

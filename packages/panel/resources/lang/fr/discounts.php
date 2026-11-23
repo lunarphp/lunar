@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Réduction créée.',
     'flash_updated' => 'Réduction mise à jour.',
     'flash_deleted' => 'Réduction supprimée.',
-    'flash_bulk_ended' => '{count} réductions terminées.',
-    'flash_bulk_deleted' => '{count} réductions supprimées.',
+    'flash_bulk_ended' => ':count réduction terminée.|:count réductions terminées.',
+    'flash_bulk_deleted' => ':count réduction supprimée.|:count réductions supprimées.',
 ];

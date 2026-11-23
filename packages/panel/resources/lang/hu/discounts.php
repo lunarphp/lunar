@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Kedvezmény létrehozva.',
     'flash_updated' => 'Kedvezmény frissítve.',
     'flash_deleted' => 'Kedvezmény törölve.',
-    'flash_bulk_ended' => '{count} kedvezmény befejezve.',
-    'flash_bulk_deleted' => '{count} kedvezmény törölve.',
+    'flash_bulk_ended' => ':count kedvezmény befejezve.',
+    'flash_bulk_deleted' => ':count kedvezmény törölve.',
 ];

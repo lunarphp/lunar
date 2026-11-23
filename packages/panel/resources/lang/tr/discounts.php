@@ -193,6 +193,6 @@ return [
     'flash_created' => 'İndirim oluşturuldu.',
     'flash_updated' => 'İndirim güncellendi.',
     'flash_deleted' => 'İndirim silindi.',
-    'flash_bulk_ended' => '{count} indirim bitirildi.',
-    'flash_bulk_deleted' => '{count} indirim silindi.',
+    'flash_bulk_ended' => ':count indirim bitirildi.',
+    'flash_bulk_deleted' => ':count indirim silindi.',
 ];

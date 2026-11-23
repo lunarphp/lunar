@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Desconto criado.',
     'flash_updated' => 'Desconto atualizado.',
     'flash_deleted' => 'Desconto excluído.',
-    'flash_bulk_ended' => '{count} descontos encerrados.',
-    'flash_bulk_deleted' => '{count} descontos excluídos.',
+    'flash_bulk_ended' => ':count desconto encerrado.|:count descontos encerrados.',
+    'flash_bulk_deleted' => ':count desconto excluído.|:count descontos excluídos.',
 ];

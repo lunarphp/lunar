@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Đã tạo chương trình giảm giá.',
     'flash_updated' => 'Đã cập nhật chương trình giảm giá.',
     'flash_deleted' => 'Đã xóa chương trình giảm giá.',
-    'flash_bulk_ended' => 'Đã kết thúc {count} chương trình giảm giá.',
-    'flash_bulk_deleted' => 'Đã xóa {count} chương trình giảm giá.',
+    'flash_bulk_ended' => 'Đã kết thúc :count chương trình giảm giá.',
+    'flash_bulk_deleted' => 'Đã xóa :count chương trình giảm giá.',
 ];

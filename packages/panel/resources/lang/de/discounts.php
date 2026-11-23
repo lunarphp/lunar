@@ -193,6 +193,6 @@ return [
     'flash_created' => 'Rabatt erstellt.',
     'flash_updated' => 'Rabatt aktualisiert.',
     'flash_deleted' => 'Rabatt gelöscht.',
-    'flash_bulk_ended' => '{count} Rabatte beendet.',
-    'flash_bulk_deleted' => '{count} Rabatte gelöscht.',
+    'flash_bulk_ended' => ':count Rabatt beendet.|:count Rabatte beendet.',
+    'flash_bulk_deleted' => ':count Rabatt gelöscht.|:count Rabatte gelöscht.',
 ];
