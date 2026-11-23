@@ -63,6 +63,7 @@ export const UsageMeter = ui().UsageMeter;
 // Edit drafts
 export const DraftActions = ui().DraftActions;
 export const DraftConflictDialog = ui().DraftConflictDialog;
+export const DraftRestoredBanner = ui().DraftRestoredBanner;
 export const useEditDraft = (...args) => ui().useEditDraft(...args);
 export const useFormSlice = (...args) => ui().useFormSlice(...args);
 export const usePanelForm = (...args) => ui().usePanelForm(...args);

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
 import FileEditDialog from './FileEditDialog.vue';
 import Section from './Section.vue';
-import type { FileItem, FileMediaGroup } from './media';
+import type { FileItem, FileMediaGroup, FilePreview } from './media';
 import { useDragSort } from '../composables/useDragSort';
+import { useMediaGroup } from '../composables/useMediaGroup';
 
 const props = defineProps<{
     group: FileMediaGroup;
@@ -20,81 +21,57 @@ const maxUploadKb = computed(
     () => ((usePage().props.panel as { media_max_kb?: number } | undefined)?.media_max_kb ?? 8192),
 );
 
-const ordered = ref<FileItem[]>([...props.group.items]);
-
-watch(
-    () => props.group.items,
-    (items) => {
-        ordered.value = [...items];
-    },
-    { deep: true },
-);
+// The files are the draft's media:{collection} list, like images.
+const media = useMediaGroup<FilePreview>(() => props.group);
+const ordered = media.items;
+const uploading = media.uploading;
+const uploadError = media.uploadError;
 
 const fileInput = ref<HTMLInputElement | null>(null);
-const uploading = ref(false);
-const uploadError = ref('');
 
 const pickFiles = (): void => fileInput.value?.click();
 
-const upload = (files: FileList | null): void => {
-    if (!files?.length) {
-        return;
+const upload = async (files: FileList | null): Promise<void> => {
+    await media.upload(files);
+
+    if (fileInput.value) {
+        fileInput.value.value = '';
     }
-
-    uploading.value = true;
-    uploadError.value = '';
-
-    router.post(
-        props.group.urls.store,
-        { collection: props.group.collection, files: Array.from(files) },
-        {
-            preserveScroll: true,
-            forceFormData: true,
-            onError: (errors) => {
-                uploadError.value = Object.values(errors)[0] ?? '';
-            },
-            onFinish: () => {
-                uploading.value = false;
-
-                if (fileInput.value) {
-                    fileInput.value.value = '';
-                }
-            },
-        },
-    );
 };
 
 const dropActive = ref(false);
 
 const onDrop = (event: DragEvent): void => {
     dropActive.value = false;
-    upload(event.dataTransfer?.files ?? null);
+    void upload(event.dataTransfer?.files ?? null);
 };
 
 const rowSort = useDragSort({
-    onCommit: (_listId, from, to) => {
-        const current = [...ordered.value];
-        current.splice(to, 0, ...current.splice(from, 1));
-        ordered.value = current;
-
-        router.post(props.group.urls.reorder, {
-            collection: props.group.collection,
-            ids: current.map((item) => item.id),
-        }, {
-            preserveScroll: true,
-        });
-    },
+    onCommit: (_listId, from, to) => media.move(from, to),
 });
 
-const editing = ref<FileItem | null>(null);
+const editingId = ref<number | null>(null);
+const editing = computed<FileItem | null>(() => ordered.value.find((item) => item.id === editingId.value) ?? null);
 const dialogOpen = computed({
     get: () => editing.value !== null,
     set: (value: boolean) => {
         if (!value) {
-            editing.value = null;
+            editingId.value = null;
         }
     },
 });
+
+const onSave = (properties: Pick<FileItem, 'name' | 'caption'>): void => {
+    if (editingId.value !== null) {
+        media.update(editingId.value, properties);
+    }
+};
+
+const onRemove = (): void => {
+    if (editingId.value !== null) {
+        media.remove(editingId.value);
+    }
+};
 
 const formatSize = (bytes: number): string => {
     if (bytes >= 1024 * 1024) {
@@ -168,6 +145,7 @@ const displayName = (item: FileItem): string => item.name?.trim() || item.file_n
                     <div class="min-w-0 flex-1">
                         <div class="text-[13px] font-medium truncate">{{ displayName(item) }}</div>
                         <div class="text-[11px] text-ink-500 truncate">{{ item.extension.toUpperCase() }} · {{ formatSize(item.size) }}</div>
+                        <div v-if="media.errors.value[item.id]" class="text-[11px] text-danger" role="alert">{{ media.errors.value[item.id] }}</div>
                     </div>
                     <a
                         :href="item.original_url"
@@ -183,7 +161,7 @@ const displayName = (item: FileItem): string => item.name?.trim() || item.file_n
                         type="button"
                         class="w-[26px] h-[26px] grid place-items-center bg-paper border border-line rounded-[5px] text-ink-500 hover:text-ink-900 hover:border-ink-300 shrink-0 cursor-pointer"
                         :aria-label="t('media.edit_file')"
-                        @click.stop="editing = item"
+                        @click.stop="editingId = item.id"
                     >
                         <Icon name="edit" cls="sm" />
                     </button>
@@ -194,6 +172,6 @@ const displayName = (item: FileItem): string => item.name?.trim() || item.file_n
 
         <div v-if="uploadError" class="mt-2 text-[11px] text-danger">{{ uploadError }}</div>
 
-        <FileEditDialog v-model:open="dialogOpen" :file="editing" />
+        <FileEditDialog v-model:open="dialogOpen" :file="editing" @save="onSave" @remove="onRemove" />
     </Section>
 </template>

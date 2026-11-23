@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('staff_id')->constrained($this->prefix.'staff')->cascadeOnDelete();
             $table->json('data');
             $table->json('base_snapshot');
+            $table->unsignedInteger('version')->default(0);
             $table->timestamps();
 
             $table->unique(['draftable_type', 'draftable_id', 'staff_id']);

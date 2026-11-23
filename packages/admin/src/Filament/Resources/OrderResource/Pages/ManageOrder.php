@@ -39,6 +39,7 @@ use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
 use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\NotifyCustomerAction;
+use Lunar\Filament\Actions\Orders\RecordPaymentAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
 use Lunar\Filament\Actions\Orders\ReopenOrderAction;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
@@ -386,6 +387,7 @@ class ManageOrder extends BaseViewRecord
 
         return [
             CaptureOrderAction::make(),
+            RecordPaymentAction::make()->after($bumpActivity),
             RefundOrderAction::make(),
             CloseOrderAction::make()->after($bumpActivity),
             ReopenOrderAction::make()->after($bumpActivity),

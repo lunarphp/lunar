@@ -1,111 +1,103 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { defineComponent, h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { useEditDraft, type EditDraftForm } from '../composables/useEditDraft';
 import UrlSlugs from './UrlSlugs.vue';
 
-vi.mock('@inertiajs/vue3', () => ({
-    router: {
-        put: vi.fn(),
-        post: vi.fn(),
-        delete: vi.fn(),
-    },
+vi.mock('../lib/http', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../lib/http')>()),
+    http: { patch: vi.fn(), post: vi.fn(), delete: vi.fn() },
 }));
 
-import { router } from '@inertiajs/vue3';
+vi.mock('@inertiajs/vue3', () => ({
+    router: { reload: vi.fn(), on: vi.fn(() => () => {}) },
+    usePage: () => ({ props: {} }),
+}));
 
 const languages = [
     { id: 1, code: 'en', name: 'English', default: true },
     { id: 2, code: 'de', name: 'German', default: false },
 ];
 
-const urls = [
-    {
-        id: 10,
-        slug: 'stark',
-        default: true,
-        language_id: 1,
-        language_code: 'en',
-        update_url: '/panel/brands/1/urls/10',
-        destroy_url: '/panel/brands/1/urls/10',
-    },
-];
+function mountSlugs(initial: Record<string, unknown>) {
+    let form: EditDraftForm<Record<string, unknown>> | undefined;
 
-const mountComponent = () =>
-    mount(UrlSlugs, {
-        props: {
-            urls,
-            languages,
-            storeUrl: '/panel/brands/1/urls',
-            pathPrefix: '/brands/',
-            storefrontUrl: 'https://shop.test',
+    const Page = defineComponent({
+        setup() {
+            form = useEditDraft({ initial, draft: null, urls: { draft: '/b/1/draft', commit: '/b/1/draft/commit' } });
+
+            return () => h(UrlSlugs, { languages, pathPrefix: '/brands/', storefrontUrl: 'https://shop.test' });
         },
-        attachTo: document.body,
     });
+
+    return { wrapper: mount(Page, { attachTo: document.body }), form: form! };
+}
+
+const stark = { id: 10, slug: 'stark', default: true };
+const alias = { id: 11, slug: 'stark-industries', default: false };
 
 describe('UrlSlugs', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
+    afterEach(() => {
+        document.body.innerHTML = '';
     });
 
-    it('renders a row per url with a storefront preview link', () => {
-        const wrapper = mountComponent();
+    it('renders a row per drafted slug with a storefront preview link', () => {
+        const { wrapper } = mountSlugs({ 'url:en': [stark], 'url:de': [] });
 
         expect(wrapper.findAll('tbody tr')).toHaveLength(1);
         expect(wrapper.find('a[target="_blank"]').attributes('href')).toBe('https://shop.test/brands/stark');
     });
 
-    it('debounces slug edits into a PUT', async () => {
-        vi.useFakeTimers();
+    it('edits a slug into the draft', async () => {
+        const { wrapper, form } = mountSlugs({ 'url:en': [stark], 'url:de': [] });
 
-        const wrapper = mountComponent();
+        await wrapper.find('input[aria-label="en slug"]').setValue('stark-hq');
 
-        await wrapper.find('tbody input').setValue('stark-industries');
-
-        expect(router.put).not.toHaveBeenCalled();
-
-        vi.advanceTimersByTime(700);
-
-        expect(router.put).toHaveBeenCalledWith(
-            '/panel/brands/1/urls/10',
-            { language_id: 1, slug: 'stark-industries', default: true },
-            expect.anything(),
-        );
-
-        vi.useRealTimers();
+        expect(form.values['url:en']).toEqual([{ ...stark, slug: 'stark-hq' }]);
+        expect(form.dirtyKeys.value).toEqual(['url:en']);
     });
 
-    it('adds a slug for any language through the modal', async () => {
-        const wrapper = mountComponent();
+    it('moves the default within the language only', async () => {
+        const german = { id: 12, slug: 'stark-de', default: true };
+        const { wrapper, form } = mountSlugs({ 'url:en': [stark, alias], 'url:de': [german] });
 
-        await wrapper
-            .findAll('button')
-            .find((button) => button.text().includes('urls.add_url'))!
-            .trigger('click');
-        // Reka's DialogPortal teleports content to document.body on the next tick.
+        await wrapper.findAll('button[aria-pressed]')[1].trigger('click');
+
+        expect(form.values['url:en']).toEqual([{ ...stark, default: false }, { ...alias, default: true }]);
+        expect(form.values['url:de']).toEqual([german]);
+    });
+
+    it('hands the default to the next slug when the default is removed', async () => {
+        const { wrapper, form } = mountSlugs({ 'url:en': [stark, alias], 'url:de': [] });
+
+        await wrapper.findAll('button[aria-label="urls.remove"]')[0].trigger('click');
+
+        expect(form.values['url:en']).toEqual([{ ...alias, default: true }]);
+    });
+
+    it('adds a new slug without an id, as the default when asked', async () => {
+        const { wrapper, form } = mountSlugs({ 'url:en': [stark], 'url:de': [] });
+
+        await wrapper.findAll('button').find((button) => button.text() === 'urls.add_url')!.trigger('click');
         await nextTick();
 
-        const dialog = document.body;
-        const select = dialog.querySelector('select') as HTMLSelectElement;
-
-        // All languages stay addable: an element may carry several slugs in
-        // the same language (alias / redirect slugs).
-        expect(select.querySelectorAll('option')).toHaveLength(2);
-
-        select.value = '2';
-        select.dispatchEvent(new Event('change'));
-
-        const slug = dialog.querySelector('input#url-slug') as HTMLInputElement;
-        slug.value = 'stark-de';
-        slug.dispatchEvent(new Event('input'));
+        const input = document.body.querySelector('#url-slug') as HTMLInputElement;
+        input.value = 'iron';
+        input.dispatchEvent(new Event('input'));
+        (document.body.querySelector('[role="checkbox"], button[aria-label="urls.make_default"]') as HTMLElement).click();
+        await nextTick();
+        [...document.body.querySelectorAll('button')].find((button) => button.textContent?.trim() === 'urls.add')!.click();
         await nextTick();
 
-        const add = [...dialog.querySelectorAll('button')].find((button) => button.textContent?.trim() === 'urls.add');
-        add!.click();
+        expect(form.values['url:en']).toEqual([{ ...stark, default: false }, { id: null, slug: 'iron', default: true }]);
+    });
 
-        expect(router.post).toHaveBeenCalledWith(
-            '/panel/brands/1/urls',
-            { language_id: 2, slug: 'stark-de', default: false },
-            expect.anything(),
-        );
+    it('shows a commit error under the row it belongs to', async () => {
+        const { wrapper, form } = mountSlugs({ 'url:en': [stark, alias], 'url:de': [] });
+
+        form.errors.value = { 'url:en.1.slug': 'The slug has already been taken.' };
+        await nextTick();
+
+        expect(wrapper.findAll('tbody tr')[1].text()).toContain('The slug has already been taken.');
     });
 });

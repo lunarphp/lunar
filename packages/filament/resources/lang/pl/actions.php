@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Zarejestruj płatność',
+            'modal_heading' => 'Zarejestruj płatność otrzymaną po złożeniu zamówienia',
+            'reference' => [
+                'label' => 'Numer referencyjny',
+            ],
+            'notification' => [
+                'success' => 'Płatność zarejestrowana.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

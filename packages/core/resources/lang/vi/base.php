@@ -11,4 +11,10 @@ return [
         'up-sell' => 'Bán nâng cấp',
         'alternate' => 'Thay thế',
     ],
+    'payment-terms' => [
+        'checkout' => 'Khi thanh toán',
+        'on-account' => 'Ghi nợ tài khoản',
+        'on-pickup' => 'Thanh toán khi nhận hàng tại cửa hàng',
+        'on-delivery' => 'Thanh toán khi giao hàng',
+    ],
 ];

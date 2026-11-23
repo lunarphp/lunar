@@ -23,6 +23,13 @@ interface DraftableResource
     public function fields(): array;
 
     /**
+     * Whether a field key may be drafted for this record. Defaults to
+     * membership of fields(); a resource whose rows are keyed at runtime
+     * (a price tuple, a staged upload) accepts keys by pattern instead.
+     */
+    public function acceptsField(Model $record, string $key): bool;
+
+    /**
      * The current, normalised database value of every draftable field key.
      *
      * @return array<string, mixed>

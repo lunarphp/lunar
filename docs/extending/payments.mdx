@@ -56,7 +56,7 @@ interface PaymentType
 | `refund()` | Refunds a captured transaction for the given amount and returns a `PaymentRefund` object. |
 | `capture()` | Captures an amount against an `intent` transaction and returns a `PaymentCapture` object. |
 
-Rather than implementing the interface directly, a driver typically extends `Lunar\Core\PaymentTypes\AbstractPayment`, which implements `cart()`, `order()`, `withData()`, `setConfig()`, and `allowPartialPayment()`, leaving only `authorize()`, `refund()`, and `capture()` to be written.
+Rather than implementing the interface directly, a driver typically extends `Lunar\Core\PaymentTypes\AbstractPayment`, which implements `cart()`, `order()`, `withData()`, `setConfig()`, and `allowPartialPayment()`, leaving only `authorize()`, `refund()`, and `capture()` to be written. It also exposes `terms()`, the payment terms the type's config declares (see [Payment terms](/reference/payments#payment-terms)). A driver that places orders without taking payment writes them to the order.
 
 `AbstractPayment` also defines `getPaymentChecks(Transaction $transaction): Lunar\Core\DataObjects\PaymentChecks`. This method is not part of the `PaymentType` contract itself, but every transaction resolves its driver and calls it through `Transaction::paymentChecks()`, so a driver that performs verification checks (AVS, postal code, CVC, and similar) should override it. The default implementation returns an empty `PaymentChecks` collection.
 

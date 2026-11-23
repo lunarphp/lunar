@@ -3,6 +3,7 @@
 namespace Lunar\Core\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Lunar\Core\Contracts\Actions\Prices\SyncsPrices;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Facades\Pricing;
@@ -19,6 +20,19 @@ trait HasPrices
             Price::class,
             'priceable'
         );
+    }
+
+    /**
+     * Make this model's price rows exactly the given set, matched by
+     * currency, customer group and minimum quantity.
+     *
+     * @param  array<int, array{currency_id: int, customer_group_id: ?int, min_quantity: int, price: int, list_price?: ?int}>  $prices
+     */
+    public function syncPrices(array $prices): static
+    {
+        app(SyncsPrices::class)->execute($this, $prices);
+
+        return $this;
     }
 
     /**

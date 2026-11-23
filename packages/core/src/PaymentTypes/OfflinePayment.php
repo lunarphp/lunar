@@ -17,6 +17,11 @@ class OfflinePayment extends AbstractPayment
     public function authorize(): ?PaymentAuthorize
     {
         if (! $this->order) {
+            // Set on the cart first so order creation validates the terms that win.
+            if ($terms = $this->terms()) {
+                $this->cart->setPaymentTerms($terms);
+            }
+
             if (! $this->order = $this->cart->draftOrder()->first()) {
                 $this->order = $this->cart->createOrder();
             }
@@ -28,6 +33,7 @@ class OfflinePayment extends AbstractPayment
 
         $this->order->update([
             'meta' => $orderMeta,
+            'payment_terms' => $this->terms() ?? $this->order->payment_terms,
             'placed_at' => now(),
         ]);
 

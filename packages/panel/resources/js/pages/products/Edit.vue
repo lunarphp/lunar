@@ -3,11 +3,12 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
+import AssociationsCard, { type AssociationProduct } from '../../components/AssociationsCard.vue';
 import AttributeFields, { type AttributeGroup } from '../../components/AttributeFields.vue';
 import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
 import IdentifiersCard from '../../components/IdentifiersCard.vue';
 import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
-import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
+import PricingEditor, { type CurrencyOption } from '../../components/PricingEditor.vue';
 import ProductOptionsBuilder, { type AttachedOption, type VariantRow } from '../../components/ProductOptionsBuilder.vue';
 import VariantsTable from '../../components/VariantsTable.vue';
 import ShippingCard from '../../components/ShippingCard.vue';
@@ -17,6 +18,7 @@ import Button from '../../components/Button.vue';
 import CollectionPicker, { type CollectionOption } from '../../components/CollectionPicker.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
+import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
@@ -24,7 +26,6 @@ import MediaGroups from '../../components/MediaGroups.vue';
 import { type MediaGroup } from '../../components/media';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
-import ProductPickerDialog, { type ProductOption } from '../../components/ProductPickerDialog.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
@@ -33,10 +34,9 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TagsInput from '../../components/TagsInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
-import { useDragSort } from '../../composables/useDragSort';
 
 interface ActivityEntry {
     description: string;
@@ -44,23 +44,6 @@ interface ActivityEntry {
     causer_name: string | null;
     avatar: string | null;
     changes: string[];
-}
-
-interface AssociationEntry {
-    id: number;
-    product_id: number;
-    name: string | null;
-    price: string | null;
-    variants_count: number;
-    thumbnail: string | null;
-    status: string;
-    destroy_url: string;
-}
-
-interface AssociationGroup {
-    type: string;
-    label: string;
-    entries: AssociationEntry[];
 }
 
 const props = defineProps<{
@@ -88,9 +71,8 @@ const props = defineProps<{
     variants: VariantRow[];
     variant: {
         id: number;
-        prices: PriceRow[];
         stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
-        urls: { pricesStore: string; stockAdjust: string };
+        urls: { stockAdjust: string };
     } | null;
     variantAttributeGroups: AttributeGroup[];
     currencies: CurrencyOption[];
@@ -100,25 +82,21 @@ const props = defineProps<{
     draft: DraftState | null;
     languages: LanguageOption[];
     mediaGroups: MediaGroup[];
-    productUrls: UrlRow[];
     attributeGroups: AttributeGroup[];
     availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
     brandOptions: { value: number; label: string }[];
     typeOptions: { value: number; label: string }[];
     collections: CollectionOption[];
-    associations: AssociationGroup[];
+    associationTypes: { type: string; label: string }[];
+    associationProducts: Record<number, AssociationProduct>;
     storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
         index: string;
         activityLog: string;
-        update: string;
         destroy: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
-        associationsStore: string;
-        associationsReorder: string;
         collectionsSearch: string;
         productsSearch: string;
         productOptionsSearch: string;
@@ -150,9 +128,9 @@ const draftForm = useEditDraft({
         collection_ids: props.collections.map((collection) => collection.id),
         // Mapped attribute values ride the same draft under attribute:{handle}
         // keys; availability rows under channel:{id} / customer_group:{id};
-        // on the simple shape the sole variant's fields under variant:{field}.
-        // All three are form slices, seeded from the shared formSliceValues
-        // prop by useEditDraft.
+        // linked products under association:{type}; on the simple shape the
+        // sole variant's fields under variant:{field}. All are form slices,
+        // seeded from the shared formSliceValues prop by useEditDraft.
     },
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
@@ -245,6 +223,13 @@ const collapse = (): void => {
     router.post(props.urls.optionsGenerate, { selections: [] }, { preserveScroll: true });
 };
 
+// Generating variants from the simple shape removes the sole variant's
+// fields from the page, and their unsaved edits with them.
+const confirmDropVariantFields = (): boolean =>
+    props.shape !== 'simple'
+    || !draftForm.dirtyKeys.value.some((key) => key.startsWith('variant:'))
+    || window.confirm(t('drafts.variant_fields_drop_confirm'));
+
 // Rows the builder's pending selection would remove; dimmed in the table.
 const staleIds = ref<number[]>([]);
 
@@ -283,106 +268,6 @@ onMounted(() => {
 const confirmDestroy = (): void => {
     confirmOpen.value = false;
     router.delete(props.urls.destroy);
-};
-
-// Curated label/hint for the built-in types, keyed by type value. The type
-// list itself is server-driven, so a registered custom type still renders -
-// it just falls back to the enum label the server sends and shows no hint.
-const ASSOCIATION_META: Record<string, { label: string; hint: string }> = {
-    'alternate': { label: t('products.assoc_related'), hint: t('products.assoc_related_hint') },
-    'cross-sell': { label: t('products.assoc_cross_sell'), hint: t('products.assoc_cross_sell_hint') },
-    'up-sell': { label: t('products.assoc_up_sell'), hint: t('products.assoc_up_sell_hint') },
-};
-
-// Local order mirrors the server order per type; drag reordering mutates it
-// optimistically and persists on drop so rows don't snap back mid-request.
-const orderedEntries = ref<Record<string, AssociationEntry[]>>({});
-
-watch(
-    () => props.associations,
-    (groups) => {
-        orderedEntries.value = Object.fromEntries(
-            groups.map((group) => [group.type, [...group.entries]]),
-        );
-    },
-    { immediate: true, deep: true },
-);
-
-const entriesFor = (type: string): AssociationEntry[] => orderedEntries.value[type] ?? [];
-
-const associationGroups = computed(() =>
-    props.associations.map((group) => ({
-        type: group.type,
-        label: ASSOCIATION_META[group.type]?.label ?? group.label,
-        hint: ASSOCIATION_META[group.type]?.hint ?? '',
-        entries: entriesFor(group.type),
-    })),
-);
-
-// Collapsed accordion: each relationship type expands independently to reveal
-// its linked products.
-const expandedGroups = ref<Record<string, boolean>>({});
-
-const toggleGroup = (type: string): void => {
-    expandedGroups.value = { ...expandedGroups.value, [type]: !expandedGroups.value[type] };
-};
-
-// Animated drag-to-reorder, one list per association type (keyed by type).
-// Committing the previewed order in the same tick the transforms clear leaves
-// the settled DOM exactly where the preview was - no snap.
-const entrySort = useDragSort({
-    onCommit: (type, from, to) => {
-        const current = [...(orderedEntries.value[type] ?? [])];
-        current.splice(to, 0, ...current.splice(from, 1));
-        orderedEntries.value = { ...orderedEntries.value, [type]: current };
-
-        router.post(
-            props.urls.associationsReorder,
-            { type, ids: current.map((entry) => entry.id) },
-            { preserveScroll: true },
-        );
-    },
-});
-
-// Associations: one picker dialog, opened per relationship type.
-const picking = ref<string | null>(null);
-
-const pickerOpen = computed({
-    get: () => picking.value !== null,
-    set: (value: boolean) => {
-        if (!value) {
-            picking.value = null;
-        }
-    },
-});
-
-const existingAssociationIds = computed(() => {
-    if (!picking.value) {
-        return [props.product.id];
-    }
-
-    return [
-        props.product.id,
-        ...entriesFor(picking.value).map((entry) => entry.product_id),
-    ];
-});
-
-const addAssociations = (ids: number[]): void => {
-    if (!picking.value || !ids.length) {
-        return;
-    }
-
-    router.post(
-        props.urls.associationsStore,
-        { type: picking.value, product_ids: ids },
-        { preserveScroll: true },
-    );
-
-    picking.value = null;
-};
-
-const removeAssociation = (entry: AssociationEntry): void => {
-    router.delete(entry.destroy_url, { preserveScroll: true });
 };
 
 const activityLabel = (description: string): string => {
@@ -438,6 +323,7 @@ const timelineEvents = computed(() =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <DraftRestoredBanner :form="draftForm" />
                 <PageZone region="main" position="before" :product="product" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -535,6 +421,7 @@ const timelineEvents = computed(() =>
                                     :variants="variants"
                                     :search-url="urls.productOptionsSearch"
                                     :generate-url="urls.optionsGenerate"
+                                    :confirm-generate="confirmDropVariantFields"
                                     @update:stale-ids="staleIds = $event"
                                     @generated="editingOptions = false"
                                 />
@@ -555,10 +442,10 @@ const timelineEvents = computed(() =>
                              riding the product draft under variant:{field} keys. -->
                         <template v-if="!wantsMulti && shape === 'simple' && variant">
                             <PricingEditor
-                                :prices="variant.prices"
                                 :currencies="currencies"
                                 :customer-groups="customerGroups"
-                                :store-url="variant.urls.pricesStore"
+                                namespace="variant"
+                                field-prefix="price:"
                             />
                             <InventoryCard
                                 :values="details"
@@ -596,86 +483,15 @@ const timelineEvents = computed(() =>
 
                         <PageZone region="variants" position="after" :product="product" />
 
-                        <Section :title="t('products.section_associations')">
-                            <template #desc>{{ t('products.section_associations_description') }}</template>
-                            <div class="flex flex-col gap-2.5">
-                                <div
-                                    v-for="group in associationGroups"
-                                    :key="group.type"
-                                    class="border border-line rounded-lg bg-surface overflow-hidden"
-                                >
-                                    <div class="flex items-center gap-3 pl-2.5 pr-3 py-2.5">
-                                        <button
-                                            type="button"
-                                            class="min-w-0 flex-1 flex items-center gap-2 text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
-                                            :aria-expanded="!!expandedGroups[group.type]"
-                                            @click="toggleGroup(group.type)"
-                                        >
-                                            <Icon
-                                                :name="expandedGroups[group.type] ? 'chevDown' : 'chevRight'"
-                                                cls="sm"
-                                                class="shrink-0 text-ink-400"
-                                            />
-                                            <span class="min-w-0 flex items-baseline gap-1.5">
-                                                <span class="text-[12.5px] font-semibold text-ink-900">{{ group.label }}</span>
-                                                <span v-if="group.hint" class="text-[11.5px] text-ink-500 truncate">· {{ group.hint }}</span>
-                                            </span>
-                                        </button>
-                                        <span class="shrink-0 text-[11.5px] font-mono text-ink-500 tabular-nums">{{ t('products.assoc_count', group.entries.length) }}</span>
-                                        <Button size="sm" variant="ghost" icon="plus" @click="picking = group.type">{{ t('products.assoc_add') }}</Button>
-                                    </div>
-                                    <div
-                                        v-if="expandedGroups[group.type]"
-                                        class="border-t border-line"
-                                        @dragover.prevent="entrySort.over($event, group.type)"
-                                        @drop.prevent
-                                    >
-                                        <template v-if="group.entries.length">
-                                            <div
-                                                v-for="(entry, index) in group.entries"
-                                                :key="entry.id"
-                                                class="group/row flex items-center gap-3 pl-2 pr-3 py-2 border-b border-line last:border-b-0 bg-surface"
-                                                :class="entrySort.isDragging(group.type, index) ? 'opacity-60 relative z-10' : ''"
-                                                :style="entrySort.style(group.type, index)"
-                                                draggable="true"
-                                                @dragstart="entrySort.start($event, group.type, index)"
-                                                @dragend="entrySort.end()"
-                                            >
-                                                <Icon
-                                                    name="grip"
-                                                    cls="sm"
-                                                    class="shrink-0 text-ink-300 group-hover/row:text-ink-500 cursor-grab active:cursor-grabbing"
-                                                />
-                                                <div class="w-9 h-9 rounded-md shrink-0 border border-line overflow-hidden bg-surface-2 grid place-items-center text-ink-700">
-                                                    <img v-if="entry.thumbnail" :src="entry.thumbnail" :alt="entry.name ?? ''" class="w-full h-full object-cover block" />
-                                                    <Icon v-else name="box" cls="sm" />
-                                                </div>
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="text-[12.5px] font-medium text-ink-900 truncate">{{ entry.name }}</div>
-                                                    <div class="text-[11.5px] text-ink-500 truncate">
-                                                        <template v-if="entry.price">{{ t('products.assoc_from_price', { price: entry.price }) }} · </template>{{ t('products.assoc_variants', entry.variants_count) }}
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    class="h-7 w-7 grid place-items-center rounded-md text-ink-500 hover:text-danger hover:bg-danger-soft transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/25"
-                                                    :aria-label="t('products.assoc_remove')"
-                                                    @click="removeAssociation(entry)"
-                                                ><Icon name="x" cls="sm" /></button>
-                                            </div>
-                                        </template>
-                                        <div v-else class="px-3.5 py-3 text-[11.5px] text-ink-500">
-                                            {{ t('products.assoc_empty') }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Section>
+                        <AssociationsCard
+                            :types="associationTypes"
+                            :products="associationProducts"
+                            :product-id="product.id"
+                            :search-url="urls.productsSearch"
+                        />
 
                         <UrlSlugs
-                            :urls="productUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/products/"
                             :storefront-url="storefrontUrl"
                         />
@@ -746,13 +562,6 @@ const timelineEvents = computed(() =>
                 </div>
             </div>
 
-            <ProductPickerDialog
-                :open="pickerOpen"
-                :search-url="urls.productsSearch"
-                :existing-ids="existingAssociationIds"
-                @update:open="pickerOpen = $event"
-                @add="addAssociations"
-            />
 
             <ConfirmDialog
                 v-model:open="confirmCollapse"

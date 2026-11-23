@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'محصولات به مجموعه افزوده شدند.',
     'flash_products_removed' => 'محصول از مجموعه حذف شد.',
     'flash_products_reordered' => 'ترتیب محصولات تغییر کرد.',
-    'flash_products_reorder_not_custom' => 'پیش از مرتب‌سازی دستی محصولات، قاعده مرتب‌سازی را روی «سفارشی» بگذارید.',
+    'reorder_needs_custom_sort' => 'برای مرتب کردن محصولات با کشیدن، مرتب‌سازی را روی «سفارشی» بگذارید.',
 ];

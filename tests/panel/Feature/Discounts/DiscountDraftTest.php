@@ -71,7 +71,7 @@ it('commits a draft through the update action', function () {
     ]);
 
     $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
-        'data' => [],
+        'data' => ['name' => 'Winter Clearance', 'priority' => 30, 'stop' => true],
         'rebase' => [],
     ])->assertOk();
 
@@ -91,7 +91,7 @@ it('commits drafted channel availability', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
-        'data' => [],
+        'data' => ["channel:{$channel->id}" => ['enabled' => true, 'starts_at' => null, 'ends_at' => null]],
         'rebase' => [],
     ])->assertOk();
 
@@ -108,7 +108,7 @@ it('rejects an invalid merged payload at commit', function () {
     ])->assertOk();
 
     $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
-        'data' => [],
+        'data' => ['handle' => 'taken'],
         'rebase' => [],
     ])->assertUnprocessable();
 

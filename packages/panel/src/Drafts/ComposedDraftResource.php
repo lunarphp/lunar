@@ -52,6 +52,12 @@ class ComposedDraftResource implements DraftableResource
         return [...$this->resource->fields(), ...$this->set->fields($this->record)];
     }
 
+    public function acceptsField(Model $record, string $key): bool
+    {
+        return $this->resource->acceptsField($record, $key)
+            || in_array($key, $this->set->fields($record), true);
+    }
+
     public function currentValues(Model $record): array
     {
         return [...$this->resource->currentValues($record), ...$this->sliceValues($record)];

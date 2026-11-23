@@ -283,6 +283,19 @@ Rector rewrites `Model::modelClass()` calls to `Model::class`, but a subclass re
 - **Replaced extension hooks.** Two v1 admin extension hooks are removed rather than renamed, so Rector cannot rewrite them. A resource extension's `extendTable()` is replaced by a `configureTable(Table $table): Table` hook targeting the bridge table class (for example `Lunar\Filament\Tables\Currency\CurrencyTable`) instead of the resource. A list-page extension's `relationManagers()` is replaced by `getRelations()` on an extension targeting the resource itself. `extendTable()` still works when targeting a relation manager or relation page.
 - **Subclasses of `CartSessionManager`.** `Lunar\Core\Managers\CartSessionManager`'s constructor takes an `Illuminate\Contracts\Cookie\QueueingFactory` and an `Illuminate\Http\Request` before the optional `$cart`. A subclass that calls `parent::__construct()` with positional arguments needs updating. Subclasses resolved from the container are unaffected.
 - **Customer notifications now send by default.** v1 only sent the mailers listed under `lunar.orders.notifications` when an admin changed an order's status. v2 removes that config key and ships a default set of lifecycle emails (order confirmation, payment received, shipped, ready for pickup, provisioned, return received, cancelled, refund issued) that fire automatically on every install. Review the defaults against the store's existing emails: re-register a key to swap in the store's own notification class, or `OrderNotifications::forget()` any that should not send. A storefront that already sends its own order confirmation will now send two until it forgets `order-confirmation` or re-registers it. Any v1 mailer the store wants to keep becomes a Laravel `Notification` constructed with `(Order $order, ?string $message = null)` and is registered on the manifest from a service provider. A data import that creates placed orders should run inside `OrderNotifications::withoutSending()`. A notification meant for the refund action registers `on: ['refund-issued']`, not `on: ['refunded']` (which is the payment-status rollup). See [Notifications](/reference/notifications).
+- **On-account checkouts.** Orders gain a `payment_terms` column, and every v1 order is upgraded with `checkout` terms. A store that marked on-account orders by passing `meta['payment_method']` through `OfflinePayment` moves that checkout to a payment type that declares its terms, and the admin then shows those orders as on account:
+
+  ```php
+  // config/lunar/payments.php
+  'types' => [
+      'on-account' => [
+          'driver' => 'offline',
+          'terms' => 'on-account',
+      ],
+  ],
+  ```
+
+  The admin no longer reads `meta['payment_method']`. Existing on-account orders keep their meta but show as `Pending` until their `payment_terms` are set, for example with `Order::where('meta->payment_method', 'on-account')->update(['payment_terms' => 'on-account'])`. Staff record the payment when the invoice is settled, with the admin's "Record payment" action or `Order::recordPayment()`. See [Payment terms](/reference/orders#payment-terms).
 - **Table-rate shipping translations.** The add-on's lang namespace changes from `lunarpanel.shipping` to `shipping`. Move any overrides from `lang/vendor/lunarpanel.shipping` to `lang/vendor/shipping`, and change `__('lunarpanel.shipping::…')` calls to `__('shipping::…')`.
 - **`lunar:migrate:getcandy`.** Removed in v2 with no replacement. Applications still on GetCandy-era data must run it on v1.x before upgrading further.
 

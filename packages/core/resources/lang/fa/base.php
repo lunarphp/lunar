@@ -11,4 +11,10 @@ return [
         'up-sell' => 'فروش ارتقایی',
         'alternate' => 'جایگزین',
     ],
+    'payment-terms' => [
+        'checkout' => 'هنگام پرداخت',
+        'on-account' => 'به حساب',
+        'on-pickup' => 'پرداخت هنگام تحویل حضوری',
+        'on-delivery' => 'پرداخت هنگام تحویل',
+    ],
 ];

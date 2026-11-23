@@ -5,6 +5,7 @@ use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\Contracts\DraftManager;
+use Lunar\Panel\Drafts\StaleDraftException;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Sections\Sales\CustomerDraftResource;
 use Lunar\Tests\Panel\TestCase;
@@ -79,7 +80,7 @@ it('rejects field keys outside the resource definition', function () {
     $staff = Staff::factory()->create();
     $customer = Customer::factory()->create();
 
-    draftManager()->merge(customerDraftResource(), $customer, $staff, ['admin_notes' => 'sneaky']);
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['meta' => 'sneaky']);
 })->throws(ValidationException::class);
 
 it('normalises empty strings to null for nullable text fields', function () {
@@ -91,7 +92,7 @@ it('normalises empty strings to null for nullable text fields', function () {
 
     expect($draft->data)->toBe(['company_name' => null]);
 
-    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, []);
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, ['company_name' => '']);
 
     expect($result->committed)->toBeTrue();
 });
@@ -111,7 +112,9 @@ it('normalises customer group ids to a sorted unique set', function () {
 
     expect($draft->data['customer_group_ids'])->toBe([$low->id, $high->id]);
 
-    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, []);
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, [
+        'customer_group_ids' => [(string) $high->id, $low->id, $low->id],
+    ]);
 
     expect($result->committed)->toBeTrue()
         ->and($customer->refresh()->customerGroups)->toHaveCount(2);
@@ -123,7 +126,7 @@ it('commits cleanly when no other write touched the drafted fields', function ()
 
     draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Changed']);
 
-    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, []);
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Changed']);
 
     expect($result->committed)->toBeTrue()
         ->and($result->conflicts)->toBe([])
@@ -139,8 +142,8 @@ it('lets two staff editing disjoint fields both commit without conflict', functi
     draftManager()->merge(customerDraftResource(), $customer, $staffA, ['first_name' => 'Alice']);
     draftManager()->merge(customerDraftResource(), $customer, $staffB, ['company_name' => 'Globex']);
 
-    $resultA = draftManager()->commit(customerDraftResource(), $customer, $staffA, []);
-    $resultB = draftManager()->commit(customerDraftResource(), $customer->refresh(), $staffB, []);
+    $resultA = draftManager()->commit(customerDraftResource(), $customer, $staffA, ['first_name' => 'Alice']);
+    $resultB = draftManager()->commit(customerDraftResource(), $customer->refresh(), $staffB, ['company_name' => 'Globex']);
 
     expect($resultA->committed)->toBeTrue()
         ->and($resultB->committed)->toBeTrue()
@@ -160,7 +163,10 @@ it('flags a conflict when another write changed a drafted field, applying nothin
     // A concurrent editor wins the race on first_name.
     $customer->update(['first_name' => 'Theirs']);
 
-    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, []);
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, [
+        'first_name' => 'Mine',
+        'company_name' => 'Globex',
+    ]);
 
     expect($result->committed)->toBeFalse()
         ->and($result->conflicts)->toHaveCount(1)
@@ -182,7 +188,7 @@ it('commits after a rebase pinning the resolved field to the value the user saw'
     draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine']);
     $customer->update(['first_name' => 'Theirs']);
 
-    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, [])->committed)->toBeFalse();
+    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine'])->committed)->toBeFalse();
 
     $result = draftManager()->commit(
         customerDraftResource(),
@@ -203,7 +209,7 @@ it('re-conflicts when the record moves again after the user resolved', function 
     draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine']);
     $customer->update(['first_name' => 'Theirs']);
 
-    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, [])->committed)->toBeFalse();
+    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine'])->committed)->toBeFalse();
 
     // The user resolved against 'Theirs', but a third write lands first.
     $customer->update(['first_name' => 'Newer still']);
@@ -227,7 +233,7 @@ it('validates the full payload before conflict detection', function () {
 
     draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => '']);
 
-    draftManager()->commit(customerDraftResource(), $customer, $staff, []);
+    draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => '']);
 })->throws(ValidationException::class);
 
 it('treats a commit with no draft and no diff as a no-op success', function () {
@@ -275,4 +281,113 @@ it('prunes drafts untouched beyond the configured ttl', function () {
 
     expect(EditDraft::count())->toBe(1)
         ->and(EditDraft::first()->id)->toBe($fresh->id);
+});
+
+it('commits the current value when a conflict is resolved by taking theirs', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine']);
+    $customer->update(['first_name' => 'Theirs']);
+
+    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine'])->committed)->toBeFalse();
+
+    // Taking theirs makes the field equal what the page shows, so the
+    // client's diff no longer holds it.
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, [], rebase: ['first_name' => 'Theirs']);
+
+    expect($result->committed)->toBeTrue()
+        ->and($customer->refresh()->first_name)->toBe('Theirs')
+        ->and(EditDraft::count())->toBe(0);
+});
+
+it('does not commit a field reverted after it was autosaved', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original', 'company_name' => 'Acme']);
+
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Autosaved']);
+
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, ['company_name' => 'Globex']);
+
+    expect($result->committed)->toBeTrue()
+        ->and($customer->refresh()->first_name)->toBe('Original')
+        ->and($customer->company_name)->toBe('Globex');
+});
+
+it('conflicts with a colleague commit that landed before the first autosave', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    // The page showed 'Original'; a colleague commits before this draft exists.
+    $customer->update(['first_name' => 'Theirs']);
+
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine'], base: ['first_name' => 'Original']);
+
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Mine']);
+
+    expect($result->committed)->toBeFalse()
+        ->and($result->conflicts[0])->toMatchArray(['base' => 'Original', 'theirs' => 'Theirs'])
+        ->and($customer->refresh()->first_name)->toBe('Theirs');
+});
+
+it('conflicts when saving before any autosave against a moved record', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    $customer->update(['first_name' => 'Theirs']);
+
+    $result = draftManager()->commit(
+        customerDraftResource(),
+        $customer,
+        $staff,
+        ['first_name' => 'Mine'],
+        base: ['first_name' => 'Original'],
+    );
+
+    expect($result->committed)->toBeFalse()
+        ->and($customer->refresh()->first_name)->toBe('Theirs');
+});
+
+it('keeps an existing base snapshot over a client-supplied base', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'One'], base: ['first_name' => 'Original']);
+
+    $draft = draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Two'], base: ['first_name' => 'Something else']);
+
+    expect($draft->base_snapshot)->toBe(['first_name' => 'Original']);
+});
+
+it('raises no conflict when the record already holds the drafted value', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original']);
+
+    draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Same']);
+    $customer->update(['first_name' => 'Same']);
+
+    $result = draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Same']);
+
+    expect($result->committed)->toBeTrue()
+        ->and(EditDraft::count())->toBe(0);
+});
+
+it('counts draft writes and refuses a request made against an older version', function () {
+    $staff = Staff::factory()->create();
+    $customer = Customer::factory()->create(['first_name' => 'Original', 'company_name' => 'Acme']);
+
+    expect(draftManager()->merge(customerDraftResource(), $customer, $staff, ['first_name' => 'Tab A'], version: 0)->version)->toBe(1);
+
+    // A second tab that loaded before the first save still holds version 0.
+    expect(fn () => draftManager()->merge(customerDraftResource(), $customer, $staff, ['company_name' => 'Tab B'], version: 0))
+        ->toThrow(StaleDraftException::class)
+        ->and(fn () => draftManager()->commit(customerDraftResource(), $customer, $staff, ['company_name' => 'Tab B'], version: 0))
+        ->toThrow(StaleDraftException::class)
+        ->and(fn () => draftManager()->discard($customer, $staff, version: 0))
+        ->toThrow(StaleDraftException::class);
+
+    expect(EditDraft::sole()->data)->toBe(['first_name' => 'Tab A'])
+        ->and($customer->refresh()->company_name)->toBe('Acme');
+
+    expect(draftManager()->commit(customerDraftResource(), $customer, $staff, ['first_name' => 'Tab A'], version: 1)->committed)->toBeTrue();
 });

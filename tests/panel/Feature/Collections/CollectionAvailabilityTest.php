@@ -69,7 +69,15 @@ it('commits drafted availability through the pivot sync, keeping untouched rows'
     ])->assertOk();
 
     $this->postJson(route('panel.collections.draft.commit', $this->collection), [
-        'data' => [],
+        'data' => [
+            'channel:'.$this->channel->id => ['enabled' => false, 'starts_at' => null, 'ends_at' => null],
+            'customer_group:'.$this->customerGroup->id => [
+                'enabled' => true,
+                'visible' => false,
+                'starts_at' => '2027-01-01 09:00:00',
+                'ends_at' => null,
+            ],
+        ],
         'rebase' => [],
     ])->assertOk();
 
@@ -93,7 +101,9 @@ it('rejects a malformed availability value', function () {
     ]);
 
     $this->postJson(route('panel.collections.draft.commit', $this->collection), [
-        'data' => [],
+        'data' => [
+            'channel:'.$this->channel->id => ['enabled' => 'maybe', 'starts_at' => 'not-a-date'],
+        ],
         'rebase' => [],
     ])->assertUnprocessable();
 });

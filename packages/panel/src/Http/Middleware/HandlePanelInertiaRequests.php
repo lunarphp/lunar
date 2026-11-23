@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Http\Middleware;
 
+use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -18,6 +19,22 @@ class HandlePanelInertiaRequests extends Middleware
         protected PanelManager $manager,
         protected FormSlices $formSlices,
     ) {}
+
+    /**
+     * Record each Inertia page visit as the session's previous URL. Laravel
+     * records only full page loads, and Inertia visits are XHR, so an action
+     * answering with back() from a browser that sends no Referer header
+     * (privacy settings, some embedded views) would land on the site root
+     * instead of the page it came from.
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        if ($request->isMethod('GET') && $request->header('X-Inertia') && ! $request->prefetch() && $request->hasSession()) {
+            $request->session()->setPreviousUrl($request->fullUrl());
+        }
+
+        return parent::handle($request, $next);
+    }
 
     /** @return array<string, mixed> */
     public function share(Request $request): array

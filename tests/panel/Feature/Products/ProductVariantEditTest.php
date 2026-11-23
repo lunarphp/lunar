@@ -68,26 +68,6 @@ it('explains why a variant cannot be deleted', function () {
         );
 });
 
-it('updates the variant through the update endpoint', function () {
-    $this->put(route('panel.products.variants.update', [$this->product, $this->variant]), [
-        'sku' => 'NEW-SKU',
-        'tax_class_id' => $this->variant->tax_class_id,
-        'enabled' => false,
-        'min_quantity' => 3,
-        'selling_policy' => 'in_stock',
-        'shippable' => true,
-        'unit_quantity' => 1,
-        'quantity_increment' => 1,
-        'backorder' => 0,
-    ])->assertRedirect();
-
-    $this->variant->refresh();
-
-    expect($this->variant->sku)->toBe('NEW-SKU')
-        ->and($this->variant->enabled)->toBeFalse()
-        ->and($this->variant->min_quantity)->toBe(3);
-});
-
 it('drafts and commits variant fields including attribute values', function () {
     $attribute = Attribute::factory()->modelType('product_variant')->create([
         'handle' => 'finish',
@@ -103,7 +83,7 @@ it('drafts and commits variant fields including attribute values', function () {
     expect(EditDraft::sole()->data['sku'])->toBe('DRAFTED');
 
     $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
-        'data' => [],
+        'data' => ['sku' => 'DRAFTED', 'attribute:finish' => 'Matte'],
         'rebase' => [],
     ])->assertOk();
 
@@ -113,39 +93,38 @@ it('drafts and commits variant fields including attribute values', function () {
         ->and($this->variant->attr('finish'))->toBe('Matte');
 });
 
-it('syncs variant media from the product pool in order', function () {
-    $this->post(route('panel.products.media.store', $this->product), [
-        'files' => [
-            UploadedFile::fake()->image('one.jpg', 400, 400),
-            UploadedFile::fake()->image('two.jpg', 400, 400),
-        ],
-    ]);
+it('drafts and commits the variant image selection from the product pool', function () {
+    [$first, $second] = collect(['one.jpg', 'two.jpg'])
+        ->map(fn ($name) => $this->product->addMedia(UploadedFile::fake()->image($name, 400, 400))->toMediaCollection(config('lunar.media.collection')))
+        ->all();
 
-    [$first, $second] = $this->product->getMedia(config('lunar.media.collection'));
+    $this->get(route('panel.products.variants.edit', [$this->product, $this->variant]))
+        ->assertInertia(fn (Assert $page) => $page->where('formSliceValues.variant_media:ids', []));
 
-    $this->put(route('panel.products.variants.media.sync', [$this->product, $this->variant]), [
-        'ids' => [$second->id, $first->id],
-    ])->assertRedirect();
+    $data = ['variant_media:ids' => [$second->id, $first->id]];
 
-    $images = $this->variant->images()->get();
+    $this->patchJson(route('panel.products.variants.draft.update', [$this->product, $this->variant]), ['data' => $data])
+        ->assertOk();
 
-    expect($images)->toHaveCount(2)
-        ->and($images->first()->id)->toBe($second->id)
+    expect($this->variant->images()->count())->toBe(0);
+
+    $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), ['data' => $data, 'rebase' => []])
+        ->assertOk();
+
+    $images = $this->variant->images()->orderBy('position')->get();
+
+    expect($images->modelKeys())->toBe([$second->id, $first->id])
         ->and((bool) $images->first()->pivot->primary)->toBeTrue();
 });
 
-it('rejects media outside the product pool', function () {
+it('refuses variant images outside the product pool', function () {
     $other = Product::factory()->create();
+    $foreign = $other->addMedia(UploadedFile::fake()->image('foreign.jpg', 400, 400))->toMediaCollection(config('lunar.media.collection'));
 
-    $this->post(route('panel.products.media.store', $other), [
-        'files' => [UploadedFile::fake()->image('foreign.jpg', 400, 400)],
-    ]);
-
-    $foreign = $other->getFirstMedia(config('lunar.media.collection'));
-
-    $this->put(route('panel.products.variants.media.sync', [$this->product, $this->variant]), [
-        'ids' => [$foreign->id],
-    ])->assertSessionHasErrors('ids.0');
+    $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
+        'data' => ['variant_media:ids' => [$foreign->id]],
+        'rebase' => [],
+    ])->assertJsonValidationErrors('variant_media:ids.0');
 });
 
 it('deletes a variant with siblings and refuses guarded ones', function () {

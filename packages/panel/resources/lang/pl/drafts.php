@@ -16,4 +16,9 @@ return [
     'base_note' => 'Było {value}, gdy rozpoczynano edycję',
     'empty' => 'Puste',
     'apply' => 'Zastosuj i zapisz',
+    'stale_confirm' => 'Ta wersja robocza została zmieniona w innej karcie. Przeładować stronę, aby kontynuować od najnowszej wersji roboczej? Niezapisane zmiany w tej karcie zostaną zastąpione.',
+    'autosave_failed' => 'Nie udało się zapisać Twojej wersji roboczej. Twoje zmiany nadal są na tej stronie; zostaną zapisane przy następnej zmianie.',
+    'save_failed' => 'Nie udało się zapisać Twoich zmian. Spróbuj ponownie.',
+    'discard_failed' => 'Nie udało się odrzucić wersji roboczej. Spróbuj ponownie.',
+    'variant_fields_drop_confirm' => 'Generowanie wariantów usuwa z tej strony pola pojedynczego wariantu, a Twoje niezapisane zmiany w nich zostaną utracone. Kontynuować?',
 ];

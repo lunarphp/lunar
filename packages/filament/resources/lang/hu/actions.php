@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Fizetés rögzítése',
+            'modal_heading' => 'A rendelés után beérkezett fizetés rögzítése',
+            'reference' => [
+                'label' => 'Hivatkozás',
+            ],
+            'notification' => [
+                'success' => 'Fizetés rögzítve.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

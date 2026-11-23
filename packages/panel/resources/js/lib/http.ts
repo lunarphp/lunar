@@ -11,16 +11,31 @@ export interface DraftConflict {
 }
 
 export class ValidationError extends Error {
-    constructor(public readonly errors: Record<string, string[]>) {
+    constructor(
+        public readonly errors: Record<string, string[]>,
+        /** The draft version after the refused request, on draft endpoints. */
+        public readonly version: number | null = null,
+    ) {
         super('The request payload failed validation.');
         this.name = 'ValidationError';
     }
 }
 
 export class DraftConflictError extends Error {
-    constructor(public readonly conflicts: DraftConflict[]) {
+    constructor(
+        public readonly conflicts: DraftConflict[],
+        public readonly version: number | null = null,
+    ) {
         super('The commit conflicts with concurrent changes.');
         this.name = 'DraftConflictError';
+    }
+}
+
+/** The draft was saved from another tab since this one last saw it. */
+export class StaleDraftError extends Error {
+    constructor(public readonly version: number) {
+        super('The draft changed in another tab.');
+        this.name = 'StaleDraftError';
     }
 }
 
@@ -43,11 +58,12 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            // FormData (file uploads) sets its own multipart content type.
+            ...(body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
             'X-Requested-With': 'XMLHttpRequest',
             'X-XSRF-TOKEN': xsrfToken(),
         },
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
     });
 
     if (response.status === 204) {
@@ -56,12 +72,18 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
 
     const payload = await response.json().catch(() => null);
 
+    const version = typeof payload?.version === 'number' ? (payload.version as number) : null;
+
     if (response.status === 422) {
-        throw new ValidationError((payload?.errors ?? {}) as Record<string, string[]>);
+        throw new ValidationError((payload?.errors ?? {}) as Record<string, string[]>, version);
+    }
+
+    if (response.status === 409 && payload?.stale_draft) {
+        throw new StaleDraftError(version ?? 0);
     }
 
     if (response.status === 409) {
-        throw new DraftConflictError((payload?.conflicts ?? []) as DraftConflict[]);
+        throw new DraftConflictError((payload?.conflicts ?? []) as DraftConflict[], version);
     }
 
     if (!response.ok) {
@@ -76,5 +98,5 @@ export const http = {
     post: <T>(url: string, body?: unknown): Promise<T> => request<T>('POST', url, body),
     put: <T>(url: string, body?: unknown): Promise<T> => request<T>('PUT', url, body),
     patch: <T>(url: string, body?: unknown): Promise<T> => request<T>('PATCH', url, body),
-    delete: <T = null>(url: string): Promise<T> => request<T>('DELETE', url),
+    delete: <T = null>(url: string, body?: unknown): Promise<T> => request<T>('DELETE', url, body),
 };

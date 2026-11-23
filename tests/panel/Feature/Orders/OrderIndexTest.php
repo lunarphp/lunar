@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
@@ -10,6 +11,7 @@ use Lunar\Core\States\Order\Fulfilment\Fulfilled;
 use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
 use Lunar\Core\States\Order\Payment\Authorized;
 use Lunar\Core\States\Order\Payment\Paid;
+use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -202,9 +204,29 @@ it('exposes shaped row fields', function () {
             ->where('orders.data.0.customer_name', 'Ada Lovelace')
             ->where('orders.data.0.customer_email', 'ada@example.com')
             ->where('orders.data.0.payment_status', 'paid')
+            ->where('orders.data.0.awaiting_payment_by_terms', false)
             ->where('orders.data.0.fulfilment_status', 'unfulfilled')
             ->where('orders.data.0.total', '£120.00')
             ->where('orders.data.0.tags.0', 'VIP')
+        );
+});
+
+it('labels an order awaiting payment by its terms', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    Order::factory()->placed()->create([
+        'total' => 12000,
+        'payment_status' => Pending::class,
+        'payment_terms' => PaymentTerms::OnAccount,
+    ]);
+
+    $this->get(route('panel.orders.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orders.data.0.payment_status', 'pending')
+            ->where('orders.data.0.payment_status_label', 'On account')
+            ->where('orders.data.0.awaiting_payment_by_terms', true)
         );
 });
 

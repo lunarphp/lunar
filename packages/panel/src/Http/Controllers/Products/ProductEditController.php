@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Products\DeletesProduct;
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
-use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\Brand;
@@ -24,11 +23,10 @@ use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\TaxClass;
-use Lunar\Core\Models\Url;
 use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
-use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Sections\Catalog\Slices\ProductAssociationSlice;
 use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
@@ -75,21 +73,6 @@ class ProductEditController
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($product, $staff) : null;
 
-        $urls = $product->urls()
-            ->with('language:id,code,name')
-            ->orderByDesc('default')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Url $url) => [
-                'id' => $url->id,
-                'slug' => $url->slug,
-                'default' => $url->default,
-                'language_id' => $url->language_id,
-                'language_code' => $url->language->code,
-                'update_url' => route('panel.products.urls.update', [$product, $url]),
-                'destroy_url' => route('panel.products.urls.destroy', [$product, $url]),
-            ]);
-
         $activities = $product->activities()
             ->with('causer')
             ->latest()
@@ -99,20 +82,17 @@ class ProductEditController
 
         $defaultCurrency = Currency::getDefault();
 
-        $associations = $product->associations()
-            ->with(['target.thumbnail', 'target.variants.prices', 'target.brand:id,name'])
-            ->get()
-            ->groupBy(fn (ProductAssociation $association) => (string) $association->type)
-            ->map(fn ($group) => $group->map(fn (ProductAssociation $association) => [
-                'id' => $association->id,
-                'product_id' => $association->target->id,
-                'name' => $association->target->translate('name'),
-                'price' => $this->associationFromPrice($association->target, $defaultCurrency),
-                'variants_count' => $association->target->variants->count(),
-                'thumbnail' => $association->target->thumbnail?->getAvailableUrl(['small']),
-                'status' => $association->target->status->getValue(),
-                'destroy_url' => route('panel.products.associations.destroy', [$product, $association]),
-            ])->values());
+        // The linked ids themselves seed the form as association:{type} slice
+        // values; this is the display data for every product they can name,
+        // including ids only a restored draft holds.
+        $associationProducts = $this->associationProducts(
+            $product,
+            collect($draft?->data ?? [])
+                ->filter(fn (mixed $value, string $key): bool => str_starts_with($key, ProductAssociationSlice::KEY.':'))
+                ->flatten()
+                ->all(),
+            $defaultCurrency,
+        );
 
         $measurements = Converter::getMeasurements();
 
@@ -213,13 +193,13 @@ class ProductEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at,
+                'version' => (int) $draft->version,
             ] : null,
             'languages' => Language::query()
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
-            'mediaGroups' => MediaGroups::for($product, 'panel.products'),
-            'productUrls' => $urls,
+            'mediaGroups' => MediaGroups::for($product, 'panel.products', $draft),
             // Attribute, availability and sole-variant values seed the form
             // through the shared formSliceValues prop.
             'attributeGroups' => $attributeSchema->groups($product),
@@ -242,24 +222,20 @@ class ProductEditController
             // One group per registered association type (the configured enum,
             // via ProductAssociation::getTypes()), so a consumer's custom type
             // shows here without touching the panel.
-            'associations' => collect(ProductAssociation::getTypes())
+            'associationTypes' => collect(ProductAssociation::getTypes())
                 ->map(fn (string $label, string $type): array => [
                     'type' => $type,
                     'label' => $label,
-                    'entries' => $associations->get($type, collect())->values(),
                 ])->values(),
+            'associationProducts' => $associationProducts ?: (object) [],
             'storefrontUrl' => config('lunar.panel.storefront_url'),
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.products.index'),
                 'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $product->getMorphClass()]),
-                'update' => route('panel.products.update', $product),
                 'destroy' => route('panel.products.destroy', $product),
                 'draft' => route('panel.products.draft.update', $product),
                 'draftCommit' => route('panel.products.draft.commit', $product),
-                'urlsStore' => route('panel.products.urls.store', $product),
-                'associationsStore' => route('panel.products.associations.store', $product),
-                'associationsReorder' => route('panel.products.associations.reorder', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
                 'productsSearch' => route('panel.catalog.products.search'),
                 'productOptionsSearch' => route('panel.catalog.product-options.search'),
@@ -283,6 +259,37 @@ class ProductEditController
             ->distinct()
             ->pluck('purchasable_id')
             ->map(fn ($id) => (int) $id)
+            ->all();
+    }
+
+    /**
+     * Display data for the product's linked targets and any extra ids, keyed
+     * by product id. Ids with no product are left out, so a draft naming a
+     * since-deleted product renders without it.
+     *
+     * @param  array<int, mixed>  $extraIds
+     * @return array<int, array<string, mixed>>
+     */
+    protected function associationProducts(Product $product, array $extraIds, ?Currency $currency): array
+    {
+        $ids = $product->associations()->pluck('product_target_id')
+            ->merge($extraIds)
+            ->map(fn (mixed $id): int => (int) $id)
+            ->unique()
+            ->values();
+
+        return Product::query()
+            ->whereIn('id', $ids)
+            ->with(['thumbnail', 'variants.prices'])
+            ->get()
+            ->mapWithKeys(fn (Product $target): array => [$target->id => [
+                'id' => $target->id,
+                'name' => $target->translate('name'),
+                'price' => $this->associationFromPrice($target, $currency),
+                'variants_count' => $target->variants->count(),
+                'thumbnail' => $target->thumbnail?->getAvailableUrl(['small']),
+                'status' => $target->status->getValue(),
+            ]])
             ->all();
     }
 
@@ -320,17 +327,6 @@ class ProductEditController
 
         return [
             'id' => $variant->id,
-            'prices' => $variant->prices()->orderBy('min_quantity')->orderBy('id')->get()
-                ->map(fn (Price $price) => [
-                    'id' => $price->id,
-                    'currency_id' => $price->currency_id,
-                    'customer_group_id' => $price->customer_group_id,
-                    'min_quantity' => $price->min_quantity,
-                    'price' => $price->price,
-                    'list_price' => $price->list_price,
-                    'update_url' => route('panel.products.variants.prices.update', [$product, $variant, $price]),
-                    'destroy_url' => route('panel.products.variants.prices.destroy', [$product, $variant, $price]),
-                ])->values(),
             'stock' => [
                 'aggregate' => [
                     'on_hand' => $variant->stock_on_hand,
@@ -357,7 +353,6 @@ class ProductEditController
                     })->values(),
             ],
             'urls' => [
-                'pricesStore' => route('panel.products.variants.prices.store', [$product, $variant]),
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $variant]),
             ],
         ];
@@ -382,18 +377,6 @@ class ProductEditController
 
             return $group;
         }, $groups);
-    }
-
-    public function update(ProductRequest $request, Product $product, UpdatesProduct $updatesProduct): RedirectResponse
-    {
-        $updatesProduct->execute(
-            $product,
-            $request->productAttributes(),
-            $request->tags(),
-            $request->collectionIds(),
-        );
-
-        return back()->with('success', __('panel::products.flash_updated'));
     }
 
     public function destroy(Product $product, DeletesProduct $deletesProduct): RedirectResponse

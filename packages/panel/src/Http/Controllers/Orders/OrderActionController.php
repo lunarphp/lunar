@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Lunar\Core\Actions\Orders\CancelOrder;
 use Lunar\Core\Actions\Orders\CaptureOrder;
+use Lunar\Core\Actions\Orders\RecordPayment;
 use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\DataObjects\RefundRequest;
 use Lunar\Core\Exceptions\OrderActionException;
@@ -16,6 +17,7 @@ use Lunar\Panel\Http\Requests\Orders\CaptureOrderRequest;
 use Lunar\Panel\Http\Requests\Orders\NotifyOrderRequest;
 use Lunar\Panel\Http\Requests\Orders\OrderNoteRequest;
 use Lunar\Panel\Http\Requests\Orders\OrderTagsRequest;
+use Lunar\Panel\Http\Requests\Orders\RecordPaymentRequest;
 use Lunar\Panel\Http\Requests\Orders\RefundOrderRequest;
 
 /**
@@ -55,6 +57,17 @@ class OrderActionController
             notes: $request->input('notes'),
             notify: $request->boolean('notify'),
         )), 'panel::orders.flash_refunded');
+    }
+
+    public function recordPayment(RecordPaymentRequest $request, Order $order): RedirectResponse
+    {
+        abort_unless(RecordPayment::canRun($order), 403);
+
+        return $this->run($order, fn () => $order->recordPayment(
+            (int) bcmul((string) $request->input('amount'), (string) $order->currency->factor),
+            $request->input('reference'),
+            $request->input('notes'),
+        ), 'panel::orders.flash_payment_recorded');
     }
 
     public function cancel(CancelOrderRequest $request, Order $order): RedirectResponse

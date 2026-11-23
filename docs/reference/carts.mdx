@@ -31,6 +31,7 @@ Lunar\Core\Models\Cart
 | `channel_id` | `foreignId` | |
 | `order_id` | `foreignId` `nullable` | References the order created from this cart |
 | `coupon_code` | `string` `nullable` | |
+| `payment_terms` | `string` `nullable` | When the order is meant to be paid, cast to `Lunar\Core\Enums\PaymentTerms`. `null` means at checkout. See [Payment terms](#payment-terms) |
 | `remember_token` | `string` `nullable` | SHA-256 hash of the guest cart's remember cookie token, hidden from serialization. See [Remembering guest carts](#remembering-guest-carts) |
 | `completed_at` | `dateTime` `nullable` | |
 | `meta` | `jsonb` `nullable` | |
@@ -353,6 +354,19 @@ $current = $cart->getShippingOption();               // the option currently app
 ```
 
 Shipping options are resolved through `Lunar\Core\Facades\ShippingManifest` — see [Extending Shipping](/extending/shipping) for how carriers register options. `CartSession::getShippingOptions()` returns the options available for the session's current cart.
+
+## Payment terms
+
+A cart can record when its order is meant to be paid. `setPaymentTerms()` takes a `Lunar\Core\Enums\PaymentTerms` case, or `null` to clear it. Order creation copies the terms onto the order.
+
+```php
+use Lunar\Core\Enums\PaymentTerms;
+
+$cart->setPaymentTerms(PaymentTerms::OnAccount);
+$cart->setPaymentTerms(null); // paid at checkout
+```
+
+`setPaymentTerms()` delegates to `Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms`. A payment type can also declare terms in its config, and those terms win. Order creation rejects a cart with `OnPickup` terms when the chosen shipping option is not a pickup, and a cart with `OnDelivery` terms when there is nothing to ship or the chosen option is a pickup. See [Payment terms](/reference/orders#payment-terms) on the Orders reference.
 
 ## Discounts
 

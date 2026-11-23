@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'أُضيفت المنتجات إلى التشكيلة.',
     'flash_products_removed' => 'أُزيل المنتج من التشكيلة.',
     'flash_products_reordered' => 'أُعيد ترتيب المنتجات.',
-    'flash_products_reorder_not_custom' => 'بدّل قاعدة الترتيب إلى «مخصص» قبل ترتيب المنتجات يدويًا.',
+    'reorder_needs_custom_sort' => 'اضبط الترتيب على «مخصص» لترتيب المنتجات بالسحب.',
 ];

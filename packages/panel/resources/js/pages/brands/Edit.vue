@@ -9,6 +9,7 @@ import Button from '../../components/Button.vue';
 import CollectionPicker, { type CollectionOption } from '../../components/CollectionPicker.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
+import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import MediaGroups from '../../components/MediaGroups.vue';
@@ -22,7 +23,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TextInput from '../../components/TextInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -54,7 +55,6 @@ const props = defineProps<{
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
     collections: CollectionOption[];
-    brandUrls: UrlRow[];
     storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
@@ -64,7 +64,6 @@ const props = defineProps<{
         destroy: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
         collectionsSearch: string;
     };
 }>();
@@ -194,6 +193,7 @@ const timelineEvents = computed(() =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <DraftRestoredBanner :form="draftForm" />
                 <PageZone region="main" position="before" :brand="brand" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -248,9 +248,7 @@ const timelineEvents = computed(() =>
                         />
 
                         <UrlSlugs
-                            :urls="brandUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/brands/"
                             :storefront-url="storefrontUrl"
                         />

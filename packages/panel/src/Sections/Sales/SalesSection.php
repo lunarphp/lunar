@@ -13,7 +13,6 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerAddressController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerCreateController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerEditController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
-use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountBulkController;
 use Lunar\Panel\Http\Controllers\Discounts\DiscountCreateController;
@@ -161,6 +160,7 @@ class SalesSection extends Section
                 Route::get('/{order}', [OrderShowController::class, 'show'])->name('show');
                 Route::post('/{order}/capture', [OrderActionController::class, 'capture'])->name('capture');
                 Route::post('/{order}/refund', [OrderActionController::class, 'refund'])->name('refund');
+                Route::post('/{order}/payments', [OrderActionController::class, 'recordPayment'])->name('payments.store');
                 Route::post('/{order}/cancel', [OrderActionController::class, 'cancel'])->name('cancel');
                 Route::post('/{order}/close', [OrderActionController::class, 'close'])->name('close');
                 Route::post('/{order}/reopen', [OrderActionController::class, 'reopen'])->name('reopen');
@@ -195,7 +195,6 @@ class SalesSection extends Section
                 Route::get('/{customer}/edit', [CustomerEditController::class, 'edit'])->name('edit');
                 Route::put('/{customer}', [CustomerEditController::class, 'update'])->name('update');
                 Route::delete('/{customer}', [CustomerEditController::class, 'destroy'])->name('destroy');
-                Route::put('/{customer}/notes', [CustomerNotesController::class, 'update'])->name('notes.update');
 
                 Route::patch('/{customer}/draft', [EditDraftController::class, 'update'])->name('draft.update');
                 Route::delete('/{customer}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');

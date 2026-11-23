@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Înregistrează plata',
+            'modal_heading' => 'Înregistrează o plată primită după finalizarea comenzii',
+            'reference' => [
+                'label' => 'Referință',
+            ],
+            'notification' => [
+                'success' => 'Plata a fost înregistrată.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

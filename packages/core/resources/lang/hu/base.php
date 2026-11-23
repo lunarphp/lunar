@@ -11,4 +11,10 @@ return [
         'up-sell' => 'Felülértékesítés',
         'alternate' => 'Alternatíva',
     ],
+    'payment-terms' => [
+        'checkout' => 'Fizetéskor',
+        'on-account' => 'Számlára',
+        'on-pickup' => 'Fizetés átvételkor',
+        'on-delivery' => 'Utánvét',
+    ],
 ];

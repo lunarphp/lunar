@@ -43,12 +43,13 @@ class CollectionProductsController
         return back()->with('success', __('panel::collections.flash_products_removed'));
     }
 
+    /**
+     * Positions are stored whatever the saved sort rule is: they only order
+     * the storefront under the custom rule, so a staff member who has drafted
+     * the switch to custom can arrange products before saving it.
+     */
     public function reorder(Request $request, Collection $collection): RedirectResponse
     {
-        if ($collection->sort !== 'custom') {
-            return back()->with('error', __('panel::collections.flash_products_reorder_not_custom'));
-        }
-
         $validated = $request->validate([
             // The ordered ids of the current page; positions rewrite inside
             // that page's window so other pages keep their order.

@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Fiecare grup de clienți și cantitate minimă poate avea un singur preț per monedă.',
+    'error_base_required' => 'Un preț de bază poate fi modificat, dar nu eliminat.',
 ];

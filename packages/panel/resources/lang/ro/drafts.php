@@ -16,4 +16,9 @@ return [
     'base_note' => 'Era {value} când ați început editarea',
     'empty' => 'Gol',
     'apply' => 'Aplică și salvează',
+    'stale_confirm' => 'Această ciornă a fost modificată în altă filă. Reîncărcați pagina pentru a continua de la cea mai recentă ciornă? Editările nesalvate din această filă vor fi înlocuite.',
+    'autosave_failed' => 'Ciorna dvs. nu a putut fi salvată. Editările dvs. sunt încă pe această pagină; vor fi salvate la următoarea modificare.',
+    'save_failed' => 'Modificările dvs. nu au putut fi salvate. Vă rugăm să încercați din nou.',
+    'discard_failed' => 'Nu s-a putut renunța la ciornă. Vă rugăm să încercați din nou.',
+    'variant_fields_drop_confirm' => 'Generarea variantelor elimină de pe această pagină câmpurile variantei unice, iar modificările dvs. nesalvate din acestea se vor pierde. Continuați?',
 ];

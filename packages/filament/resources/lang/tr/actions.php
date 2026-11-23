@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Ödeme kaydet',
+            'modal_heading' => 'Siparişten sonra alınan bir ödemeyi kaydet',
+            'reference' => [
+                'label' => 'Referans',
+            ],
+            'notification' => [
+                'success' => 'Ödeme kaydedildi.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

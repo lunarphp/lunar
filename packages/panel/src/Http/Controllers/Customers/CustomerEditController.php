@@ -149,6 +149,7 @@ class CustomerEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at?->toJSON(),
+                'version' => (int) $draft->version,
             ] : null,
             'urls' => [
                 'index' => route('panel.customers.index'),
@@ -157,7 +158,6 @@ class CustomerEditController
                 'destroy' => route('panel.customers.destroy', $customer),
                 'addressesStore' => route('panel.customers.addresses.store', $customer),
                 'usersStore' => route('panel.customers.users.store', $customer),
-                'notesUpdate' => route('panel.customers.notes.update', $customer),
                 'draft' => route('panel.customers.draft.update', $customer),
                 'draftCommit' => route('panel.customers.draft.commit', $customer),
             ],

@@ -14,9 +14,11 @@ On a draft-backed edit page (Customers, Discounts, and other first-party record 
 - Leaving the page with unsaved changes (closing the tab, following a link elsewhere) prompts first; navigating away anyway keeps the edits as a draft rather than discarding them.
 - Returning to the same record later restores the draft automatically, with a banner noting when it was saved and a **Discard** action to drop it and revert to the saved values.
 - Clicking **Save** (or the page's equivalent commit action) commits the draft. If nobody else touched the same fields in the meantime, it saves normally.
-- If another staff member changed one of the same fields since this draft started tracking it, a conflict dialog appears listing only the conflicting fields — not the whole form — with the value the user typed, the current database value, and a choice to keep their own value or take the other one. Fields neither staff member touched in common are never affected.
+- If another staff member changed one of the same fields since the page showed it, a conflict dialog appears listing only the conflicting fields — not the whole form — with the value the user typed, the current database value, and a choice to keep their own value or take the other one. Fields neither staff member touched in common are never affected.
 
-Two staff members editing *different* fields on the same record never see a conflict, in either save order. Only the same field, edited by both, triggers resolution.
+Two staff members editing *different* fields on the same record never see a conflict, in either save order. Only the same field, edited by both, triggers resolution, and not when both chose the same value.
+
+A staff member with the same record open in two browser tabs shares one draft between them. When one tab saves the draft, the other tab's next autosave, save, or discard is refused, and that tab offers to reload so it continues from the latest draft.
 
 ## Adding to a draft the add-on does not own
 
@@ -46,6 +48,8 @@ interface DraftableResource
     /** @return array<int, string> */
     public function fields(): array;
 
+    public function acceptsField(Model $record, string $key): bool;
+
     /** @return array<string, mixed> */
     public function currentValues(Model $record): array;
 
@@ -62,13 +66,15 @@ interface DraftableResource
 }
 ```
 
-Extend the abstract `Lunar\Panel\Drafts\DraftableResource` rather than implementing the interface directly — it supplies sensible defaults for `normalize()` (a no-op passthrough) and `labels()` (an empty map, so the conflict dialog falls back to the raw field key).
+Extend the abstract `Lunar\Panel\Drafts\DraftableResource` rather than implementing the interface directly — it supplies sensible defaults for `acceptsField()` (membership of `fields()`), `normalize()` (a no-op passthrough), and `labels()` (an empty map, so the conflict dialog falls back to the raw field key).
 
 - `model()` — the Eloquent model class this definition drafts.
-- `fields()` — the allowed field keys. Autosave and commit reject any key outside this set. A field key is usually a column name, but can be anything the resource defines meaning for — a relation-backed key like `customer_group_ids`, or a whole JSON payload treated as one field.
+- `fields()` — the allowed field keys. Autosave and commit reject any key `acceptsField()` refuses, which by default is any key outside this set. A field key is usually a column name, but can be anything the resource defines meaning for — a relation-backed key like `customer_group_ids`, or a whole JSON payload treated as one field.
+- `acceptsField(Model $record, string $key)` — whether a key may be drafted for the record. Override it for rows keyed at runtime, such as one key per price tier, to accept keys by pattern rather than listing them in `fields()`.
 - `currentValues(Model $record)` — the record's current value for every field key, normalized the same way `normalize()` shapes incoming draft data. This is the baseline conflict detection compares against.
 - `normalize(array $data)` — shapes incoming draft values into the same form `currentValues()` reports, so equality comparison between "what the draft has" and "what the database has" is meaningful (for example, coercing an empty string to `null` for a nullable text column, or sorting a relation's id array).
 - `rules(Model $record)` — validation rules for a full commit payload, run before conflict detection.
+  A commit refused by validation keeps its edits in the draft.
 - `commit(Model $record, array $values)` — applies a validated, conflict-free value set to the record. Always delegate to the core action contracts here; the panel layer never writes model fields directly.
 - `labels()` — field key to lang key, used to label a field in the conflict dialog.
 
@@ -179,11 +185,19 @@ A draftable resource needs three routes, registered inside the owning section's 
 
 | Method | Route | Purpose |
 | --- | --- | --- |
-| `PATCH` | `{resource}/{record}/draft` | Merge an autosave diff into the staff member's draft. |
+| `PATCH` | `{resource}/{record}/draft` | Replace the staff member's draft with an autosave diff; returns the draft's `data`, `updated_at`, and `version`. |
 | `DELETE` | `{resource}/{record}/draft` | Discard the draft. |
-| `POST` | `{resource}/{record}/draft/commit` | Attempt to commit; returns 200 on success, 409 with the conflict set, or 422 on validation failure. |
+| `POST` | `{resource}/{record}/draft/commit` | Commit the request's diff; returns 200 on success, 409 with the conflict set, or 422 on validation failure. |
 
-There is no `GET` route for a draft: the edit page's own Inertia response includes a `draft` prop (`{data, updated_at}`, or `null` when there is none) for the current staff member, resolved as part of the normal page load.
+Every request takes the same optional fields alongside `data`:
+
+- `base` — for each key in `data`, the value the page showed before the staff member edited it. The server records it as the key's base the first time the key enters the draft, so a change another staff member saved after the page loaded still conflicts. Without it, the base is the record's value at the time of the request.
+- `version` — the draft version the client last saw: `0` when there is no draft, then the `version` each response returns. A request made against an older version is refused with 409 and `{"stale_draft": true, "version": n}`, and nothing is written.
+- `rebase` (commit only) — see `resolve()` below.
+
+The commit's `data` is the whole commit: keys held in the stored draft but missing from the request are not committed, and the draft is consumed. 409 conflict and 422 validation responses include the draft's new `version`.
+
+There is no `GET` route for a draft: the edit page's own Inertia response includes a `draft` prop (`{data, updated_at, version}`, or `null` when there is none) for the current staff member, resolved as part of the normal page load.
 
 ## The JS side
 
@@ -206,22 +220,23 @@ const form = useEditDraft({
 
 - `values` — reactive form state, the pristine record overlaid with any restored draft.
 - `isDirty`, `dirtyKeys`, `saving`, `committing`, `savedAt`, `hasDraft`, `restoredFrom` — status for the autosave indicator and the restored-draft banner.
-- `errors` — validation errors from a failed commit.
+- `errors` — validation errors from a failed commit. Other failed requests show an error toast and leave the form dirty.
 - `conflicts` — the per-field conflict set from a 409 response.
-- `commit()` — sends the current diff immediately (not waiting out the autosave debounce) and, on success, reloads the page so the server's session flash message shows.
+- `commit()` — sends the current diff immediately (not waiting out the autosave debounce) and, on success, reloads the page so the server's session flash message shows. Edits made while the commit is in flight stay dirty and autosave afterwards.
 - `resolve(resolutions, rebase)` — re-commits after the staff member resolves conflicts, pinning each resolved field's `rebase` value to the current database value they were shown (so a further change to the same field between resolving and re-committing conflicts again, rather than being silently overwritten).
 - `discard()` — reverts local values to pristine and deletes the draft.
 
-`initial` is merged with the page's shared `formSliceValues` prop, so any [form slices](/admin/extending/form-slices) registered on the record seed the form automatically. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
+`initial` is merged with the page's shared `formSliceValues` prop, so any [form slices](/admin/extending/form-slices) registered on the record seed the form automatically. When an operation on the page changes which slice keys the record has (generating variants removes a simple product's variant fields, for example), the form follows: new keys join with their current values, and removed keys leave the form and the draft. Pass `slices: false` on a page that drafts some record other than the route's deepest binding.
 
 Autosave watches `values` with a debounce (roughly 750ms by default), sends only the changed fields, and serialises requests so a slower, older response can never clobber a newer one. A diff that empties back out (the user undid their own change) triggers a `DELETE` instead of a `PATCH`.
 
-Two ready-made components pair with the composable:
+Three ready-made components pair with the composable:
 
 - `DraftActions` — the small "Saving draft… / Draft saved" status plus save/discard controls, driven entirely from the `EditDraftForm` object `useEditDraft` returns.
+- `DraftRestoredBanner` — the banner shown when the page opens on a stored draft, with when it was saved and a **Discard** action.
 - `DraftConflictDialog` — the resolution dialog: one row per conflicting field, the drafted value and the current database value side by side, keep-mine / take-theirs choices, and a `resolve` event carrying the resolutions and rebase payload back to the caller.
 
-Both are exported from `@lunarphp/panel` alongside `useEditDraft`, so an [add-on](/admin/extending/addons)'s own drafted edit page builds on exactly the same pieces as a first-party one.
+All three are exported from `@lunarphp/panel` alongside `useEditDraft`, so an [add-on](/admin/extending/addons)'s own drafted edit page builds on exactly the same pieces as a first-party one.
 
 ## Expiry
 

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Models\Currency;
@@ -8,6 +9,7 @@ use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Models\EditDraft;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -34,112 +36,129 @@ beforeEach(function () {
 
     $this->product = Product::factory()->create();
     ProductVariant::factory()->create(['product_id' => $this->product->id]);
+
+    [$this->a, $this->b, $this->c] = Product::factory()->count(3)->create()->all();
 });
 
-it('links picked products with the requested type', function () {
-    $targets = Product::factory()->count(2)->create();
+/** @return array<int, int> */
+function linkedIds(Product $product, string $type): array
+{
+    return $product->associations()->where('type', $type)->pluck('product_target_id')->map(fn ($id) => (int) $id)->all();
+}
 
-    $this->post(route('panel.products.associations.store', $this->product), [
-        'type' => 'cross-sell',
-        'product_ids' => $targets->pluck('id')->all(),
-    ])->assertRedirect();
-
-    expect($this->product->associations()->where('type', 'cross-sell')->count())->toBe(2);
-});
-
-it('skips already-linked targets and the product itself', function () {
-    $target = Product::factory()->create();
-    $this->product->associations()->create(['product_target_id' => $target->id, 'type' => 'up-sell']);
-
-    $this->post(route('panel.products.associations.store', $this->product), [
-        'type' => 'up-sell',
-        'product_ids' => [$target->id, $this->product->id],
-    ])->assertRedirect();
-
-    expect($this->product->associations()->where('type', 'up-sell')->count())->toBe(1);
-});
-
-it('rejects unknown association types', function () {
-    $target = Product::factory()->create();
-
-    $this->post(route('panel.products.associations.store', $this->product), [
-        'type' => 'bff',
-        'product_ids' => [$target->id],
-    ])->assertSessionHasErrors('type');
-});
-
-it('removes a link and serves the grouped payload on the edit page', function () {
+it('seeds each association type as an ordered id list with display data for the targets', function () {
     $target = Product::factory()->create(['name' => collect(['en' => 'Charger'])]);
-    $association = $this->product->associations()->create([
-        'product_target_id' => $target->id,
-        'type' => 'cross-sell',
-    ]);
+    $this->product->syncAssociations('cross-sell', [$target->id, $this->a->id]);
 
-    // Groups are ordered by the enum: cross-sell, up-sell, alternate.
+    // Types follow the enum: cross-sell, up-sell, alternate.
     $this->get(route('panel.products.edit', $this->product))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('associations.0.type', 'cross-sell')
-            ->where('associations.0.entries.0.name', 'Charger')
-            ->where('associations.2.type', 'alternate')
-            ->has('associations.2.entries', 0)
+            ->where('associationTypes.0.type', 'cross-sell')
+            ->where('associationTypes.2.type', 'alternate')
+            ->where('formSliceValues.association:cross-sell', [$target->id, $this->a->id])
+            ->where('formSliceValues.association:alternate', [])
+            ->where("associationProducts.{$target->id}.name", 'Charger')
         );
-
-    $this->delete(route('panel.products.associations.destroy', [$this->product, $association]))
-        ->assertRedirect();
-
-    expect($this->product->associations()->count())->toBe(0);
 });
 
-it('renders and accepts a registered custom association type', function () {
+it('drafts association changes without touching the product until commit', function () {
+    $this->product->syncAssociations('cross-sell', [$this->a->id, $this->b->id]);
+    $keptRow = $this->product->associations()->where('product_target_id', $this->b->id)->value('id');
+
+    // Reorder, unlink one and link another, all in one drafted value.
+    $data = ['association:cross-sell' => [$this->c->id, $this->b->id]];
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), ['data' => $data])->assertOk();
+
+    expect(linkedIds($this->product, 'cross-sell'))->toBe([$this->a->id, $this->b->id])
+        ->and(EditDraft::sole()->data)->toBe($data);
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), ['data' => $data, 'rebase' => []])
+        ->assertOk();
+
+    expect(linkedIds($this->product, 'cross-sell'))->toBe([$this->c->id, $this->b->id])
+        ->and($this->product->associations()->where('product_target_id', $this->b->id)->value('id'))->toBe($keptRow)
+        ->and(EditDraft::count())->toBe(0);
+});
+
+it('drops duplicate ids when drafting', function () {
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['association:up-sell' => [$this->b->id, $this->a->id, $this->b->id]],
+    ])->assertOk();
+
+    expect(EditDraft::sole()->data['association:up-sell'])->toBe([$this->b->id, $this->a->id]);
+});
+
+it('refuses to link the product to itself or to a product that does not exist', function () {
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => ['association:cross-sell' => [$this->a->id, $this->product->id, 999999]],
+        'rebase' => [],
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['association:cross-sell.1', 'association:cross-sell.2']);
+
+    expect(linkedIds($this->product, 'cross-sell'))->toBe([]);
+});
+
+it('refuses an association type that is not registered', function () {
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['association:bff' => [$this->a->id]],
+    ])->assertUnprocessable();
+});
+
+it('drafts and commits a registered custom association type', function () {
     config()->set('lunar.products.association_types_enum', CustomAssociationType::class);
 
-    $target = Product::factory()->create();
-
-    // The custom type leads the group list and carries its enum label.
     $this->get(route('panel.products.edit', $this->product))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('associations.0.type', 'bundle')
-            ->where('associations.0.label', 'Bundle')
-            ->has('associations', 2)
+            ->where('associationTypes.0.type', 'bundle')
+            ->where('associationTypes.0.label', 'Bundle')
+            ->has('associationTypes', 2)
         );
 
-    // Validation accepts the custom type, and the link is stored.
-    $this->post(route('panel.products.associations.store', $this->product), [
-        'type' => 'bundle',
-        'product_ids' => [$target->id],
-    ])->assertRedirect()->assertSessionHasNoErrors();
+    $data = ['association:bundle' => [$this->a->id]];
 
-    expect($this->product->associations()->where('type', 'bundle')->count())->toBe(1);
+    $this->postJson(route('panel.products.draft.commit', $this->product), ['data' => $data, 'rebase' => []])
+        ->assertOk();
+
+    expect(linkedIds($this->product, 'bundle'))->toBe([$this->a->id]);
 });
 
-it('persists a new linking order and ignores foreign ids', function () {
-    $targets = Product::factory()->count(3)->create();
+it('conflicts only on the association type a colleague changed', function () {
+    $this->product->syncAssociations('cross-sell', [$this->a->id]);
 
-    foreach ($targets as $target) {
-        $this->product->associate($target, 'cross-sell');
-    }
+    $mine = [
+        'association:cross-sell' => [$this->a->id, $this->b->id],
+        'association:up-sell' => [$this->c->id],
+    ];
+    $base = ['association:cross-sell' => [$this->a->id], 'association:up-sell' => []];
 
-    $links = $this->product->associations()->where('type', 'cross-sell')->orderBy('sort')->get();
-    expect($links->pluck('sort')->all())->toBe([1, 2, 3]);
+    $this->patchJson(route('panel.products.draft.update', $this->product), ['data' => $mine, 'base' => $base])
+        ->assertOk();
 
-    // A link from another product must not be touched by this product's reorder.
-    $other = Product::factory()->create();
-    $foreign = $other->associations()->create([
-        'product_target_id' => Product::factory()->create()->id,
-        'type' => 'cross-sell',
-        'sort' => 5,
-    ]);
+    // A colleague relinks cross-sells in the meantime.
+    $this->product->syncAssociations('cross-sell', [$this->c->id]);
 
-    $reordered = $links->reverse()->pluck('id')->values()->all();
+    $response = $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => $mine,
+        'base' => $base,
+        'rebase' => [],
+    ])->assertConflict();
 
-    $this->post(route('panel.products.associations.reorder', $this->product), [
-        'type' => 'cross-sell',
-        'ids' => [...$reordered, $foreign->id],
-    ])->assertRedirect()->assertSessionHas('success');
+    expect(collect($response->json('conflicts'))->pluck('key')->all())->toBe(['association:cross-sell'])
+        ->and(linkedIds($this->product, 'up-sell'))->toBe([]);
+});
 
-    expect($this->product->associations()->where('type', 'cross-sell')->orderBy('sort')->pluck('id')->all())
-        ->toBe($reordered)
-        ->and($foreign->refresh()->sort)->toBe(5);
+it('serves display data for products only a restored draft links', function () {
+    $drafted = Product::factory()->create(['name' => collect(['en' => 'Drafted link'])]);
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['association:alternate' => [$drafted->id]],
+    ])->assertOk();
+
+    $this->get(route('panel.products.edit', $this->product))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where("associationProducts.{$drafted->id}.name", 'Drafted link')
+        );
 });
 
 it('exposes the cheapest default-currency price for each linked product', function () {
@@ -158,25 +177,17 @@ it('exposes the cheapest default-currency price for each linked product', functi
         'currency_id' => $currency->id, 'customer_group_id' => null, 'min_quantity' => 1, 'price' => 99900,
     ]);
 
-    $this->product->associate($target, 'cross-sell');
+    $this->product->syncAssociations('cross-sell', [$target->id]);
 
-    // The cheaper variant's price is surfaced, formatted for the "From ..." label.
     $this->get(route('panel.products.edit', $this->product))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('associations.0.type', 'cross-sell')
-            ->where('associations.0.entries.0.name', 'Charger')
-            ->where('associations.0.entries.0.price', $cheapPrice->format('price'))
+            ->where("associationProducts.{$target->id}.price", $cheapPrice->format('price'))
+            ->where("associationProducts.{$target->id}.variants_count", 2)
         );
 });
 
-it('scopes association routes to the owning product', function () {
-    $target = Product::factory()->create();
-    $other = Product::factory()->create();
-    $association = $other->associations()->create([
-        'product_target_id' => $target->id,
-        'type' => 'cross-sell',
-    ]);
-
-    $this->delete(route('panel.products.associations.destroy', [$this->product, $association]))
-        ->assertNotFound();
+it('no longer exposes immediate association endpoints', function () {
+    expect(Route::has('panel.products.associations.store'))->toBeFalse()
+        ->and(Route::has('panel.products.associations.reorder'))->toBeFalse()
+        ->and(Route::has('panel.products.associations.destroy'))->toBeFalse();
 });

@@ -11,7 +11,6 @@ use Lunar\Core\Exceptions\BrandActionException;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Language;
-use Lunar\Core\Models\Url;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Brands\BrandRequest;
 use Lunar\Panel\PanelManager;
@@ -28,21 +27,6 @@ class BrandEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($brand, $staff) : null;
-
-        $urls = $brand->urls()
-            ->with('language:id,code,name')
-            ->orderByDesc('default')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Url $url) => [
-                'id' => $url->id,
-                'slug' => $url->slug,
-                'default' => $url->default,
-                'language_id' => $url->language_id,
-                'language_code' => $url->language->code,
-                'update_url' => route('panel.brands.urls.update', [$brand, $url]),
-                'destroy_url' => route('panel.brands.urls.destroy', [$brand, $url]),
-            ]);
 
         $activities = $brand->activities()
             ->with('causer')
@@ -68,13 +52,13 @@ class BrandEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at,
+                'version' => (int) $draft->version,
             ] : null,
             'languages' => Language::query()
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
-            'brandUrls' => $urls,
-            'mediaGroups' => MediaGroups::for($brand, 'panel.brands'),
+            'mediaGroups' => MediaGroups::for($brand, 'panel.brands', $draft),
             'attributeGroups' => $attributeSchema->groups($brand),
             'attributeValues' => $attributeSchema->values($brand) ?: (object) [],
             'collections' => $brand->collections()->with('ancestors')->get()->map(fn (Collection $collection) => [
@@ -91,7 +75,6 @@ class BrandEditController
                 'destroy' => route('panel.brands.destroy', $brand),
                 'draft' => route('panel.brands.draft.update', $brand),
                 'draftCommit' => route('panel.brands.draft.commit', $brand),
-                'urlsStore' => route('panel.brands.urls.store', $brand),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
             ],
         ]);

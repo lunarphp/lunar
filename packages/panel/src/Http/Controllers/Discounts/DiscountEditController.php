@@ -67,6 +67,7 @@ class DiscountEditController
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at,
+                'version' => (int) $draft->version,
             ] : null,
             'currencies' => Currency::query()
                 ->orderByDesc('default')

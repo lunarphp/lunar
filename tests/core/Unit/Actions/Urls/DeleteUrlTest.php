@@ -19,9 +19,15 @@ beforeEach(function () {
         'default' => true,
     ]);
 
-    $this->other = $this->brand->urls()->create([
+    $this->german = $this->brand->urls()->create([
         'language_id' => Language::factory()->create(['code' => 'de'])->id,
         'slug' => 'stark-de',
+        'default' => true,
+    ]);
+
+    $this->other = $this->brand->urls()->create([
+        'language_id' => $language->id,
+        'slug' => 'stark-industries',
         'default' => false,
     ]);
 });
@@ -33,15 +39,17 @@ test('deletes a url', function () {
     expect($this->default->refresh()->default)->toBeTrue();
 });
 
-test('deleting the default promotes the first remaining url', function () {
+test('deleting the default promotes the first remaining url in its language', function () {
     app(DeleteUrl::class)->execute($this->default);
 
-    expect($this->other->refresh()->default)->toBeTrue();
+    expect($this->other->refresh()->default)->toBeTrue()
+        ->and($this->german->refresh()->default)->toBeTrue();
 });
 
 test('deleting the last url leaves none behind', function () {
     app(DeleteUrl::class)->execute($this->other);
     app(DeleteUrl::class)->execute($this->default);
+    app(DeleteUrl::class)->execute($this->german);
 
     expect($this->brand->urls()->count())->toBe(0);
 });

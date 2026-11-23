@@ -16,4 +16,9 @@ return [
     'base_note' => 'Era {value} cuando empezaste a editar',
     'empty' => 'Vacío',
     'apply' => 'Aplicar y guardar',
+    'stale_confirm' => 'Este borrador se modificó en otra pestaña. ¿Recargar la página para continuar desde el borrador más reciente? Las ediciones sin guardar de esta pestaña se reemplazarán.',
+    'autosave_failed' => 'No se pudo guardar tu borrador. Tus ediciones siguen en esta página; se guardarán con tu próximo cambio.',
+    'save_failed' => 'No se pudieron guardar tus cambios. Inténtalo de nuevo.',
+    'discard_failed' => 'No se pudo descartar el borrador. Inténtalo de nuevo.',
+    'variant_fields_drop_confirm' => 'Al generar variantes se eliminan de esta página los campos de la variante única, y se perderán tus cambios sin guardar en ellos. ¿Continuar?',
 ];

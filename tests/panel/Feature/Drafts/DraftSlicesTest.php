@@ -3,9 +3,9 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
-use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -14,8 +14,8 @@ use Lunar\Panel\Drafts\ComposedDraftResource;
 use Lunar\Panel\Forms\FormSlice;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\PanelManager;
-use Lunar\Panel\Sections\Catalog\BrandDraftResource;
 use Lunar\Panel\Sections\Sales\CustomerDraftResource;
+use Lunar\Panel\Sections\Sales\DiscountDraftResource;
 use Lunar\Tests\Panel\Fixtures\Drafts\MemoSlice;
 use Lunar\Tests\Panel\TestCase;
 
@@ -86,8 +86,8 @@ it('composes a resource with its slices under prefixed keys', function () {
 });
 
 it('returns the plain resource for a model without slices', function () {
-    expect(app(PanelManager::class)->draftableFor(Brand::factory()->make()))
-        ->toBeInstanceOf(BrandDraftResource::class);
+    expect(app(PanelManager::class)->draftableFor(Discount::factory()->make()))
+        ->toBeInstanceOf(DiscountDraftResource::class);
 });
 
 it('places extension slices under the reserved addon namespace', function () {
@@ -127,7 +127,7 @@ it('validates slice fields under their prefixed key', function () {
         'data' => ['notes:memo' => str_repeat('x', 21)],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['notes:memo' => str_repeat('x', 21)], 'rebase' => []])
         ->assertUnprocessable()
         ->assertJsonValidationErrorFor('notes:memo');
 });
@@ -137,7 +137,7 @@ it('commits the resource then the slice inside one transaction', function () {
         'data' => ['first_name' => 'Grace', 'notes:memo' => 'updated'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace', 'notes:memo' => 'updated'], 'rebase' => []])
         ->assertOk();
 
     $this->customer->refresh();
@@ -158,7 +158,7 @@ it('rolls the resource commit back when a slice commit fails', function () {
     $this->withoutExceptionHandling();
 
     try {
-        $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []]);
+        $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace', 'notes:memo' => 'boom'], 'rebase' => []]);
     } catch (RuntimeException $exception) {
         expect($exception->getMessage())->toBe('Memo slice commit failed.');
     }
@@ -174,26 +174,36 @@ it('reports a slice conflict with the slice label', function () {
 
     $this->customer->update(['meta' => ['memo' => 'theirs']]);
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['notes:memo' => 'mine'], 'rebase' => []])
         ->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'notes:memo')
         ->assertJsonPath('conflicts.0.label', 'Memo')
         ->assertJsonPath('conflicts.0.theirs', 'theirs');
 });
 
-it('drops stored keys the resource no longer declares instead of blocking the commit', function () {
+it('commits only the request diff, ignoring keys left in the stored draft', function () {
     EditDraft::factory()->create([
         'draftable_type' => $this->customer->getMorphClass(),
         'draftable_id' => $this->customer->id,
         'staff_id' => $this->staff->id,
-        'data' => ['first_name' => 'Grace', 'addon:removed:field' => 'orphan'],
-        'base_snapshot' => ['first_name' => 'Ada', 'addon:removed:field' => 'old'],
+        'data' => ['first_name' => 'Grace', 'notes:memo' => 'stale', 'addon:removed:field' => 'orphan'],
+        'base_snapshot' => ['first_name' => 'Ada', 'notes:memo' => 'hello', 'addon:removed:field' => 'old'],
     ]);
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    // The client reverted the memo (and never knew the orphan key), so only
+    // first_name is in its diff; the stored leftovers must not ride along.
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), [
+        'data' => ['first_name' => 'Grace'],
+        'rebase' => [],
+    ])
         ->assertOk();
 
-    expect($this->customer->refresh()->first_name)->toBe('Grace');
+    $this->customer->refresh();
+
+    expect($this->customer->first_name)->toBe('Grace')
+        ->and($this->customer->meta['memo'])->toBe('hello')
+        ->and(MemoSlice::$committed)->toBe([])
+        ->and(EditDraft::count())->toBe(0);
 });
 
 it('skips a slice commit when none of its values changed', function () {
@@ -201,7 +211,7 @@ it('skips a slice commit when none of its values changed', function () {
         'data' => ['first_name' => 'Grace'],
     ])->assertOk();
 
-    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => [], 'rebase' => []])
+    $this->postJson(route('panel.customers.draft.commit', $this->customer), ['data' => ['first_name' => 'Grace'], 'rebase' => []])
         ->assertOk();
 
     expect($this->customer->refresh()->first_name)->toBe('Grace')
@@ -224,10 +234,9 @@ it('clears a draft that holds only keys the resource no longer declares', functi
 });
 
 it('does not load the record of a discarded draft whose model has no slices', function () {
-    Language::factory()->create(['default' => true]);
-    $brand = Brand::factory()->create();
+    $discount = Discount::factory()->create();
 
-    $this->patchJson(route('panel.brands.draft.update', $brand), [
+    $this->patchJson(route('panel.discounts.draft.update', $discount), [
         'data' => ['name' => 'Renamed'],
     ])->assertOk();
 
@@ -239,7 +248,7 @@ it('does not load the record of a discarded draft whose model has no slices', fu
 
     $draft->delete();
 
-    expect(collect($queries)->filter(fn (string $sql) => str_contains($sql, 'brands'))->all())->toBe([]);
+    expect(collect($queries)->filter(fn (string $sql) => str_contains($sql, 'discounts'))->all())->toBe([]);
 });
 
 it('fans a discard out to the slices whose keys the draft held', function () {
@@ -304,12 +313,12 @@ it('seeds edit pages with the slice values of the deepest route-bound record', f
             ->where("formSliceValues.channel:{$channel->id}.enabled", true)
             ->where('formSliceValues.variant:sku', 'WID-1'));
 
-    // The variant page drafts the variant, which has no slices: the product's
+    // The variant page drafts the variant with its own slices: the product's
     // values must not leak in from the parent binding.
     $this->get(route('panel.products.variants.edit', [$product, $variant]))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->where('formSliceValues', []));
+            ->where('formSliceValues', ['variant_media:ids' => []]));
 
     $this->get(route('panel.customers.edit', $this->customer))
         ->assertOk()

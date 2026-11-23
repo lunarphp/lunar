@@ -11,4 +11,10 @@ return [
         'up-sell' => 'الارتقاء بالصفقة (Up Sell)',
         'alternate' => 'بديل',
     ],
+    'payment-terms' => [
+        'checkout' => 'عند الدفع',
+        'on-account' => 'على الحساب',
+        'on-pickup' => 'الدفع عند الاستلام',
+        'on-delivery' => 'الدفع عند التسليم',
+    ],
 ];

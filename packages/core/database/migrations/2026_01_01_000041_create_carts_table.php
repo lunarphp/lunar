@@ -15,8 +15,10 @@ return new class extends Migration
             $table->foreignId('merged_id')->nullable()->constrained($this->prefix.'carts');
             $table->foreignId('currency_id')->constrained($this->prefix.'currencies');
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
+            $table->unsignedBigInteger('region_id')->nullable()->index();
             $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
             $table->string('coupon_code')->index()->nullable();
+            $table->string('payment_terms')->nullable();
             $table->string('remember_token', 64)->nullable()->unique();
             $table->dateTime('completed_at')->nullable()->index();
             $table->jsonb('meta')->nullable();

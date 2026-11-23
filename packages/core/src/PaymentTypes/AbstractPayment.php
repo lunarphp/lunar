@@ -4,6 +4,7 @@ namespace Lunar\Core\PaymentTypes;
 
 use Lunar\Core\Contracts\PaymentType;
 use Lunar\Core\DataObjects\PaymentChecks;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
@@ -77,6 +78,14 @@ abstract class AbstractPayment implements PaymentType
         $this->config = $config;
 
         return $this;
+    }
+
+    /**
+     * The payment terms this payment type's config declares, if any.
+     */
+    public function terms(): ?PaymentTerms
+    {
+        return PaymentTerms::tryFrom($this->config['terms'] ?? '');
     }
 
     public function allowPartialPayment(bool $condition = true): self

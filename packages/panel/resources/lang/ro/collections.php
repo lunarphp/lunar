@@ -137,5 +137,5 @@ return [
     'flash_products_added' => 'Produse adăugate în colecție.',
     'flash_products_removed' => 'Produs eliminat din colecție.',
     'flash_products_reordered' => 'Produse reordonate.',
-    'flash_products_reorder_not_custom' => 'Comută regula de sortare pe „personalizat” înainte de a ordona produsele manual.',
+    'reorder_needs_custom_sort' => 'Setează sortarea pe „Personalizat” pentru a ordona produsele prin tragere.',
 ];

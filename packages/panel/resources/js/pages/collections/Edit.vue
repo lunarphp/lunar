@@ -9,6 +9,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
+import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
@@ -28,7 +29,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TextInput from '../../components/TextInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
-import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
+import UrlSlugs from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 import { useDragSort } from '../../composables/useDragSort';
@@ -85,7 +86,6 @@ const props = defineProps<{
     draft: DraftState | null;
     languages: LanguageOption[];
     groups: { id: number; name: string }[];
-    collectionUrls: UrlRow[];
     mediaGroups: MediaGroup[];
     products: Paginated<ProductRow>;
     attributeGroups: AttributeGroup[];
@@ -102,7 +102,6 @@ const props = defineProps<{
         move: string;
         draft: string;
         draftCommit: string;
-        urlsStore: string;
         productsAttach: string;
         productsReorder: string;
         collectionsSearch: string;
@@ -198,6 +197,7 @@ const moveGroupId = ref<number | null>(props.collection.group_id);
 const moveParent = ref<ParentOption | null>(props.collection.parent);
 const moveConfirmOpen = ref(false);
 const moving = ref(false);
+const moveErrors = ref<Record<string, string>>({});
 
 // Hierarchies never cross groups, so a group change resets the parent —
 // back to the saved parent when returning to the saved group.
@@ -222,6 +222,10 @@ const applyMove = (): void => {
             preserveScroll: true,
             onStart: () => {
                 moving.value = true;
+                moveErrors.value = {};
+            },
+            onError: (errors) => {
+                moveErrors.value = errors;
             },
             onFinish: () => {
                 moving.value = false;
@@ -251,8 +255,9 @@ const removeProduct = (row: ProductRow): void => {
 };
 
 // Drag reorder within the current page, persisted with the page's position
-// window; only offered while the saved sort rule is custom.
-const canReorder = computed(() => props.collection.sort === 'custom');
+// window; only offered while the sort rule on the page is custom, drafted or
+// saved, so the handles follow the Sort select rather than the last save.
+const canReorder = computed(() => details.sort === 'custom');
 const orderedProducts = ref<ProductRow[]>([...props.products.data]);
 
 watch(
@@ -340,6 +345,7 @@ const timelineEvents = computed(() =>
             </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <DraftRestoredBanner :form="draftForm" />
                 <PageZone region="main" position="before" :collection="collection" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -396,6 +402,7 @@ const timelineEvents = computed(() =>
                                     <Select id="collection-group" v-model="moveGroupId">
                                         <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
                                     </Select>
+                                    <div v-if="moveErrors.collection_group_id" class="mt-1 text-[11px] text-danger">{{ moveErrors.collection_group_id }}</div>
                                     <div class="mt-1 text-[11.5px] text-ink-500">{{ t('collections.hierarchy_group_hint') }}</div>
                                 </div>
                                 <div>
@@ -406,6 +413,7 @@ const timelineEvents = computed(() =>
                                         :group-id="moveGroupId"
                                         :exclude-id="collection.id"
                                     />
+                                    <div v-if="moveErrors.parent_id" class="mt-1 text-[11px] text-danger">{{ moveErrors.parent_id }}</div>
                                     <div class="mt-1 text-[11.5px] text-ink-500">{{ t('collections.field_parent_hint') }}</div>
                                 </div>
                             </div>
@@ -441,6 +449,10 @@ const timelineEvents = computed(() =>
                                 </Select>
                                 <div class="mt-1 text-[11.5px] text-ink-500">{{ t('collections.sort_hint') }}</div>
                             </div>
+
+                            <p v-if="orderedProducts.length > 1 && !canReorder" class="m-0 mb-2 text-[11.5px] text-ink-500" data-testid="reorder-hint">
+                                {{ t('collections.reorder_needs_custom_sort') }}
+                            </p>
 
                             <div v-if="orderedProducts.length" class="border border-line rounded-lg bg-surface overflow-hidden">
                                 <div class="grid grid-cols-[24px_minmax(0,1.6fr)_120px_110px_44px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
@@ -506,9 +518,7 @@ const timelineEvents = computed(() =>
                         </Section>
 
                         <UrlSlugs
-                            :urls="collectionUrls"
                             :languages="languages"
-                            :store-url="urls.urlsStore"
                             path-prefix="/collections/"
                             :storefront-url="storefrontUrl"
                         />

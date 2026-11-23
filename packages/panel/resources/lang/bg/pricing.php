@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Всяка клиентска група и минимално количество може да има само една цена за валута.',
+    'error_base_required' => 'Базовата цена може да бъде променена, но не и премахната.',
 ];

@@ -14,7 +14,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
-use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
 use Lunar\Filament\Support\RecordUrls;
@@ -62,7 +61,7 @@ class OrderTable
             TextColumn::make('payment_status')
                 ->label(__('lunar-filament::order.table.payment_status.label'))
                 ->toggleable()
-                ->formatStateUsing(fn ($state) => $state instanceof PaymentStatus ? $state->label() : (string) $state)
+                ->formatStateUsing(fn (Order $record) => $record->paymentStatusLabel())
                 ->badge(),
             TextColumn::make('fulfilment_status')
                 ->label(__('lunar-filament::order.table.fulfilment_status.label'))

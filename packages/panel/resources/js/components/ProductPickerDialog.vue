@@ -28,7 +28,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     'update:open': [value: boolean];
-    add: [ids: number[]];
+    // The picked rows ride along so a caller can show them before any save.
+    add: [ids: number[], options: ProductOption[]];
 }>();
 
 const { t } = useI18n();
@@ -37,6 +38,9 @@ const query = ref('');
 const results = ref<ProductOption[]>([]);
 const searching = ref(false);
 const picked = ref(new Set<number>());
+// Every row a search returned while the dialog is open, so a pick made
+// before the query changed still has its details when Add emits.
+const seen = new Map<number, ProductOption>();
 
 const search = async (): Promise<void> => {
     searching.value = true;
@@ -46,6 +50,7 @@ const search = async (): Promise<void> => {
             `${props.searchUrl}?q=${encodeURIComponent(query.value)}`,
         );
         results.value = response.data;
+        response.data.forEach((option) => seen.set(option.id, option));
     } finally {
         searching.value = false;
     }
@@ -64,6 +69,7 @@ watch(
         if (open) {
             query.value = '';
             picked.value = new Set();
+            seen.clear();
             void search();
         }
     },
@@ -84,7 +90,8 @@ const togglePick = (id: number): void => {
 };
 
 const addPicked = (): void => {
-    emit('add', Array.from(picked.value));
+    const ids = Array.from(picked.value);
+    emit('add', ids, ids.map((id) => seen.get(id)).filter((option): option is ProductOption => option !== undefined));
     emit('update:open', false);
 };
 

@@ -140,7 +140,6 @@ return [
 
     'notes' => 'Notițe administrative',
     'notes_empty' => 'Nicio notiță administrativă încă.',
-    'edit_notes' => 'Editează notițele administrative',
 
     'confirm_delete_customer' => 'Ești sigur că vrei să ștergi acest client?',
     'confirm_delete_customer_title' => 'Ștergi acest client?',
@@ -158,5 +157,4 @@ return [
     'flash_address_deleted' => 'Adresă ștearsă.',
     'flash_user_linked' => 'Utilizator asociat.',
     'flash_user_unlinked' => 'Utilizator dezasociat.',
-    'flash_notes_updated' => 'Notițe administrative actualizate.',
 ];

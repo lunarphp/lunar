@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Record payment',
+            'modal_heading' => 'Record a payment taken after checkout',
+            'reference' => [
+                'label' => 'Reference',
+            ],
+            'notification' => [
+                'success' => 'Payment recorded.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

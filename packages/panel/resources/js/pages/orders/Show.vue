@@ -66,7 +66,9 @@ const props = defineProps<{
         id: number;
         reference: string;
         customer_reference: string | null;
-        on_account: boolean;
+        awaiting_payment_by_terms: boolean;
+        payment_terms: string;
+        payment_terms_note: string | null;
         payment_status: string;
         payment_status_label: string;
         fulfilment_status: string;
@@ -97,9 +99,11 @@ const props = defineProps<{
     shippingAddress: Address | null;
     billingAddress: Address | null;
     tags: string[];
-    actions: { can_capture: boolean; can_refund: boolean; can_cancel: boolean; is_open: boolean };
+    actions: { can_capture: boolean; can_refund: boolean; can_cancel: boolean; can_record_payment: boolean; is_open: boolean };
     intents: Charge[];
     charges: Charge[];
+    outstanding: number;
+    outstandingFormatted: string | null;
     availableToRefund: number;
     availableToRefundFormatted: string | null;
     cancelReasons: Record<string, string>;
@@ -115,7 +119,7 @@ const props = defineProps<{
         pickup_point: { handle: string; name: string; lines: string[] } | null;
     } | null;
     countries: { id: number; name: string }[];
-    urls: { index: string; capture: string; refund: string; cancel: string; notify: string; note: string; tags: string };
+    urls: { index: string; capture: string; refund: string; record_payment: string; cancel: string; notify: string; note: string; tags: string };
 }>();
 
 const { t } = useI18n();
@@ -142,7 +146,7 @@ const FULFILMENT_TONES: Record<string, Tone> = {
     'partially-returned': 'warn',
     returned: 'danger',
 };
-const paymentTone = (key: string): Tone => (props.order.on_account ? 'neutral' : (PAYMENT_TONES[key] ?? 'neutral'));
+const paymentTone = (key: string): Tone => (props.order.awaiting_payment_by_terms ? 'neutral' : (PAYMENT_TONES[key] ?? 'neutral'));
 const fulfilmentTone = (key: string): Tone => FULFILMENT_TONES[key] ?? 'neutral';
 
 const TXN_TYPE_LABELS: Record<string, string> = {
@@ -166,7 +170,7 @@ const activities = computed(() => (page.props.activities as any[] | undefined) ?
 const metaEntries = computed(() => Object.entries(props.order.meta ?? {}));
 
 // Which action dialog is open (null = none).
-const dialog = ref<null | 'capture' | 'refund' | 'cancel' | 'notify'>(null);
+const dialog = ref<null | 'capture' | 'refund' | 'record_payment' | 'cancel' | 'notify'>(null);
 const closeDialog = (): void => {
     dialog.value = null;
 };
@@ -175,6 +179,13 @@ const captureForm = useForm({ transaction_id: props.intents[0]?.id ?? null, amou
 const cancelForm = useForm({ reason: '' as string, note: '', notify: true });
 const notifyForm = useForm({ notification: Object.keys(props.notifications)[0] ?? '', message: '' });
 
+const recordPaymentForm = useForm({ amount: props.outstanding, reference: '', notes: '' });
+const openRecordPayment = (): void => {
+    recordPaymentForm.reset();
+    recordPaymentForm.amount = props.outstanding;
+    dialog.value = 'record_payment';
+};
+const submitRecordPayment = (): void => recordPaymentForm.post(props.urls.record_payment, { preserveScroll: true, onSuccess: closeDialog });
 const submitCapture = (): void => captureForm.post(props.urls.capture, { preserveScroll: true, onSuccess: closeDialog });
 const submitCancel = (): void => cancelForm.post(props.urls.cancel, { preserveScroll: true, onSuccess: closeDialog });
 
@@ -348,6 +359,7 @@ const formatDateTime = (value: string): string =>
                 </template>
                 <template #actions>
                     <Button v-if="actions.can_capture" variant="primary" icon="check" @click="dialog = 'capture'">{{ t('orders.action_capture') }}</Button>
+                    <Button v-if="actions.can_record_payment && !actions.can_capture" variant="primary" icon="check" @click="openRecordPayment">{{ t('orders.action_record_payment') }}</Button>
                     <Button v-if="actions.can_refund" icon="undo" @click="dialog = 'refund'">{{ t('orders.action_refund') }}</Button>
                     <Button icon="mail" @click="dialog = 'notify'">{{ t('orders.action_notify') }}</Button>
                     <Button v-if="actions.can_cancel" icon="x" class="!text-danger" @click="dialog = 'cancel'">{{ t('orders.action_cancel') }}</Button>
@@ -427,7 +439,7 @@ const formatDateTime = (value: string): string =>
                         </Section>
 
                         <!-- Transactions -->
-                        <Section v-if="transactions.length || !order.on_account" :title="t('orders.section_transactions')">
+                        <Section v-if="transactions.length || !order.awaiting_payment_by_terms" :title="t('orders.section_transactions')">
                             <div v-if="transactions.length" class="overflow-x-auto">
                                 <table class="w-full text-[12.5px] border-collapse">
                                     <thead>
@@ -503,7 +515,7 @@ const formatDateTime = (value: string): string =>
                                     <dt class="text-ink-500">{{ t('orders.column_payment') }}</dt>
                                     <dd>
                                         <StatusBadge :tone="paymentTone(order.payment_status)" size="sm" dot>{{ order.payment_status_label }}</StatusBadge>
-                                        <p v-if="order.on_account" class="m-0 mt-1 text-[12px] text-ink-500">{{ t('orders.payment_on_account_sub') }}</p>
+                                        <p v-if="order.payment_terms_note" class="m-0 mt-1 text-[12px] text-ink-500">{{ order.payment_terms_note }}</p>
                                     </dd>
                                 </div>
                                 <div class="flex items-center justify-between gap-2">
@@ -636,6 +648,32 @@ const formatDateTime = (value: string): string =>
                 <template #footer>
                     <Button variant="ghost" @click="closeDialog">{{ t('common.cancel') }}</Button>
                     <Button variant="primary" :disabled="captureForm.processing" @click="submitCapture">{{ t('orders.action_capture') }}</Button>
+                </template>
+            </Dialog>
+
+            <!-- Record payment -->
+            <Dialog :open="dialog === 'record_payment'" :title="t('orders.action_record_payment')" size="sm" @update:open="(v: boolean) => !v && closeDialog()">
+                <div class="space-y-3">
+                    <p class="m-0 text-[12.5px] text-ink-500">{{ t('orders.record_payment_outstanding', { amount: outstandingFormatted ?? '' }) }}</p>
+                    <div>
+                        <FieldLabel>{{ t('orders.record_payment_amount') }}</FieldLabel>
+                        <TextInput v-model="recordPaymentForm.amount" type="number" :invalid="!!recordPaymentForm.errors.amount" />
+                        <p v-if="recordPaymentForm.errors.amount" class="text-danger text-[11px] mt-1">{{ recordPaymentForm.errors.amount }}</p>
+                    </div>
+                    <div>
+                        <FieldLabel>{{ t('orders.record_payment_reference') }}</FieldLabel>
+                        <TextInput v-model="recordPaymentForm.reference" :invalid="!!recordPaymentForm.errors.reference" />
+                        <p v-if="recordPaymentForm.errors.reference" class="text-danger text-[11px] mt-1">{{ recordPaymentForm.errors.reference }}</p>
+                    </div>
+                    <div>
+                        <FieldLabel>{{ t('orders.record_payment_notes') }}</FieldLabel>
+                        <TextInput v-model="recordPaymentForm.notes" :invalid="!!recordPaymentForm.errors.notes" />
+                        <p v-if="recordPaymentForm.errors.notes" class="text-danger text-[11px] mt-1">{{ recordPaymentForm.errors.notes }}</p>
+                    </div>
+                </div>
+                <template #footer>
+                    <Button variant="ghost" @click="closeDialog">{{ t('common.cancel') }}</Button>
+                    <Button variant="primary" :disabled="recordPaymentForm.processing" @click="submitRecordPayment">{{ t('orders.action_record_payment') }}</Button>
                 </template>
             </Dialog>
 

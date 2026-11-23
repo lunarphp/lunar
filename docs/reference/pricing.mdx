@@ -59,6 +59,20 @@ $variant->basePrices;                        // min_quantity = 1, no customer gr
 $variant->priceBreaks;                       // min_quantity > 1, quantity discount tiers
 ```
 
+### Syncing prices
+
+`syncPrices()` makes the model's price rows exactly the given set. Each row is identified by its currency, customer group and minimum quantity. A row that matches an existing one keeps its id and takes the new amounts, a new combination is created, and existing rows not in the set are deleted. Amounts are integers in the currency's minor units.
+
+```php
+$variant->syncPrices([
+    ['currency_id' => $gbp->id, 'customer_group_id' => null, 'min_quantity' => 1, 'price' => 1299, 'list_price' => 1499],
+    ['currency_id' => $gbp->id, 'customer_group_id' => null, 'min_quantity' => 10, 'price' => 1099],
+    ['currency_id' => $gbp->id, 'customer_group_id' => $trade->id, 'min_quantity' => 1, 'price' => 999],
+]);
+```
+
+Rows are written one model at a time inside a transaction, so price observers run, including currency syncing from the default currency. The verb delegates to the `Lunar\Core\Contracts\Actions\Prices\SyncsPrices` action, which you can rebind in a service provider. The admin panel saves a variant's prices this way when its edit draft is saved.
+
 ## Currency decimal scaling
 
 `Lunar\Core\Models\Currency` defines how many decimal places its minor unit represents:

@@ -13,7 +13,7 @@ use Lunar\Core\States\Product\Draft;
 use Lunar\Core\States\Product\Published;
 use Lunar\Core\States\ProductType\Active;
 
-/** Rules for the product update endpoint and the drafts layer. */
+/** The product draft resource's rules. */
 class ProductRequest extends FormRequest
 {
     /**
@@ -26,10 +26,10 @@ class ProductRequest extends FormRequest
 
     /**
      * The rule set, parameterised on the product being edited so the drafts
-     * layer can validate a commit payload with the same rules the update
-     * endpoint applies. The translated `name` map must carry at least one
-     * non-blank value; the product type must be active, except that a product
-     * keeps its current type even after that type is drafted.
+     * layer can validate a commit payload. The translated `name` map must
+     * carry at least one non-blank value; the product type must be active,
+     * except that a product keeps its current type even after that type is
+     * drafted.
      *
      * @return array<string, array<int, mixed>>
      */
@@ -69,38 +69,5 @@ class ProductRequest extends FormRequest
             'collection_ids' => ['nullable', 'array'],
             'collection_ids.*' => ['integer', Rule::exists((new Collection)->getTable(), 'id')],
         ];
-    }
-
-    /** @return array<string, mixed> */
-    public function productAttributes(): array
-    {
-        return collect($this->validated())
-            ->except(['tags', 'collection_ids'])
-            ->reject(fn (mixed $value, string $key) => in_array($key, ['status', 'product_type_id'], true) && blank($value))
-            ->all();
-    }
-
-    /**
-     * The tags to sync, or null when the request left them untouched.
-     *
-     * @return ?array<int, string>
-     */
-    public function tags(): ?array
-    {
-        return array_key_exists('tags', $this->validated())
-            ? array_map('strval', $this->validated()['tags'] ?? [])
-            : null;
-    }
-
-    /**
-     * The collections to sync, or null when the request left membership untouched.
-     *
-     * @return ?array<int, int>
-     */
-    public function collectionIds(): ?array
-    {
-        return array_key_exists('collection_ids', $this->validated())
-            ? array_map('intval', $this->validated()['collection_ids'] ?? [])
-            : null;
     }
 }

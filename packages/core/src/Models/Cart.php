@@ -24,6 +24,7 @@ use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
 use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
 use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
 use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\SetsCartPaymentTerms;
 use Lunar\Core\Contracts\Actions\Carts\SetsShippingOption;
 use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
@@ -35,6 +36,7 @@ use Lunar\Core\Database\Factories\CartFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Enums\StepList;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
@@ -67,6 +69,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?int $calculated_revision
  * @property ?Carbon $calculated_at
  * @property ?string $remember_token
+ * @property ?PaymentTerms $payment_terms
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -258,6 +261,7 @@ class Cart extends Base
         'shipping_tax_breakdown' => TaxBreakdownCast::class,
         'discount_breakdown' => 'array',
         'free_items' => 'array',
+        'payment_terms' => PaymentTerms::class,
     ];
 
     protected static function booted(): void
@@ -827,6 +831,14 @@ class Cart extends Base
         app(SetsShippingOption::class)->execute($this, $option);
 
         return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();
+    }
+
+    /**
+     * Set when the order is meant to be paid. Null means at checkout.
+     */
+    public function setPaymentTerms(?PaymentTerms $terms): Cart
+    {
+        return app(SetsCartPaymentTerms::class)->execute($this, $terms);
     }
 
     public function getShippingOption(): ?ShippingOption

@@ -11,4 +11,10 @@ return [
         'up-sell' => 'Up-sell',
         'alternate' => 'Alternatief',
     ],
+    'payment-terms' => [
+        'checkout' => 'Bij het afrekenen',
+        'on-account' => 'Op rekening',
+        'on-pickup' => 'Betalen bij afhalen',
+        'on-delivery' => 'Betalen bij levering',
+    ],
 ];

@@ -90,7 +90,7 @@ it('drafts and commits an attribute value alongside scalar fields', function () 
     ])->assertOk();
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['attribute:hero_cta' => 'Shop the range', 'name' => 'Renamed'],
         'rebase' => [],
     ])->assertOk();
 
@@ -140,7 +140,7 @@ it('round-trips keyed list values from the Filament admin without reordering', f
     ])->assertOk();
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['attribute:specs' => ['width' => '12cm', 'depth' => '5cm', 'colour' => 'red']],
         'rebase' => [],
     ])->assertOk();
 
@@ -195,7 +195,7 @@ it('detects conflicts per attribute field', function () {
     $this->brand->update(['attribute_data' => ['hero_cta' => 'Theirs']]);
 
     $this->postJson(route('panel.brands.draft.commit', $this->brand), [
-        'data' => [],
+        'data' => ['attribute:hero_cta' => 'Mine'],
         'rebase' => [],
     ])->assertConflict()
         ->assertJsonPath('conflicts.0.key', 'attribute:hero_cta');

@@ -91,6 +91,16 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
+        'record_payment' => [
+            'label' => 'Registrar pago',
+            'modal_heading' => 'Registrar un pago recibido después de la compra',
+            'reference' => [
+                'label' => 'Referencia',
+            ],
+            'notification' => [
+                'success' => 'Pago registrado.',
+            ],
+        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
             'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',

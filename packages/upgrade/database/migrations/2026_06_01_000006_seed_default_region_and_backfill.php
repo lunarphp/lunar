@@ -95,7 +95,7 @@ return new class extends Migration
 
     /**
      * Add the nullable `region_id` FK to carts and orders if the baseline has not
-     * (mirrors ..._add_region_id_to_carts_and_orders).
+     * (mirrors the `region_id` keys in the carts, orders and regions baseline).
      */
     protected function ensureRegionForeignKeys(): void
     {
