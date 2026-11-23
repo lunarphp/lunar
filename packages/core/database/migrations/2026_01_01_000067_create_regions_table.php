@@ -21,10 +21,23 @@ return new class extends Migration
             $table->boolean('default')->default(false)->index();
             $table->timestamps();
         });
+
+        // Carts and orders are created before regions, so their region keys are constrained here.
+        foreach (['carts', 'orders'] as $name) {
+            Schema::table($this->prefix.$name, function (Blueprint $table) {
+                $table->foreign('region_id')->references('id')->on($this->prefix.'regions')->nullOnDelete();
+            });
+        }
     }
 
     public function down(): void
     {
+        foreach (['carts', 'orders'] as $name) {
+            Schema::table($this->prefix.$name, function (Blueprint $table) {
+                $table->dropForeign(['region_id']);
+            });
+        }
+
         Schema::dropIfExists($this->prefix.'regions');
     }
 };
