@@ -163,7 +163,7 @@ The defaults cover the stock v1 statuses. Add any custom status strings the stor
 
 ## Behavior changes
 
-Three v2 changes alter what existing code does without a Rector rewrite, and each needs a decision in the application.
+These v2 changes alter what existing code does without a Rector rewrite, and each needs a decision in the application.
 
 ### Bare price calls return store defaults
 
@@ -253,6 +253,12 @@ v2 writes a cart's totals to the `carts` and `cart_lines` rows after each calcul
 - A modifier that sets a custom property on the cart or a line moves that data to the model's `meta`. A served snapshot restores the standard totals only.
 
 See [Persisted totals](/reference/carts#persisted-totals).
+
+### Blank number attributes are null
+
+In v1.5, a `number` attribute with no value read back as `0`: `Lunar\Core\FieldTypes\Number` turned a blank or `null` value into `0`. In v2 a blank value stays `null`, so `$product->attr('weight')` returns `null` for an attribute that has no value and `0` only when `0` was saved. The stored data is unchanged; only the value read from it differs.
+
+Check code that reads number attributes and assumes a number, such as arithmetic, comparisons, formatting with `number_format()`, or search filters on the indexed value. Treat `null` as "not set", or restore the old behavior at the call site with `$product->attr('weight') ?? 0`.
 
 ## Manual checklist
 

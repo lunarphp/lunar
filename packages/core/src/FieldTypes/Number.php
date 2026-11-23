@@ -6,16 +6,15 @@ use Lunar\Core\Exceptions\FieldTypeException;
 
 class Number extends AbstractFieldType
 {
-    protected mixed $value = 0;
-
     public function setValue(mixed $value): void
     {
         if (! blank($value) && ! is_numeric($value)) {
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
-        // Cast to int if the value is a whole number, otherwise use float
-        $this->value = blank($value) ? 0 : (floor($value) == $value ? (int) $value : (float) $value);
+        // A blank value stays null so "not set" is distinct from zero. Otherwise
+        // cast to int if the value is a whole number, or float if it is not.
+        $this->value = blank($value) ? null : (floor($value) == $value ? (int) $value : (float) $value);
     }
 
     /**
