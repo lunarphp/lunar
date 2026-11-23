@@ -148,6 +148,8 @@ To take full control of Lunar's database migrations, disable the bundled migrati
 php artisan vendor:publish --tag=lunar.migrations
 ```
 
+The published copies are dated when they are published, in their original order, so they run after the application's existing migrations, such as its `users` table. This uses Laravel's `database.migrations.update_date_on_publish` option, which new Laravel applications enable by default. Publish the migrations once: running the command again copies them again under new dates.
+
 ### Search
 
 `lunarphp/core` depends on Laravel Scout, and defaults to Scout's `collection` driver, which needs no external service and is suitable for local development. For production search (faceted search, filtering, and dedicated engines like Meilisearch or Typesense), install the [Storefront Search add-on](/addons/search).
