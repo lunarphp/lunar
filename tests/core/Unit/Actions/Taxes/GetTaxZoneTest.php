@@ -14,7 +14,7 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 
 uses(RefreshDatabase::class)
-    ->group('taxes');
+    ->group('taxes', 'cross-db');
 
 test('can prioritize taxzones', function () {
     $postcode = 'SW1A 0AA';
@@ -80,15 +80,15 @@ test('can prioritize taxzones', function () {
     expect($zone3->id)->toEqual($taxZoneCountry->tax_zone_id);
 
     // nothing matches => default tax zone should be returned
-    $addressWithOnlyCountryMatching = Address::factory()->create([
+    $addressWithNothingMatching = Address::factory()->create([
         'postcode' => '1234AB',
         'state' => 'Alaska',
-        'country_id' => 123,
+        'country_id' => Country::factory()->create()->id,
     ]);
 
-    $zone3 = app(GetTaxZone::class)->execute($addressWithOnlyCountryMatching);
+    $zone4 = app(GetTaxZone::class)->execute($addressWithNothingMatching);
 
-    expect($zone3->id)->toEqual($defaultTaxZone->id);
+    expect($zone4->id)->toEqual($defaultTaxZone->id);
 });
 
 test('can ignore a state tax zone from another country', function () {
