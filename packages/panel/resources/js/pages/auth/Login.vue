@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed, onMounted, ref } from 'vue';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
@@ -21,6 +21,10 @@ const HERO_ALT = 'Curated clothing racks in a boutique';
 const { t } = useI18n();
 const showPassword = ref(false);
 const emailInputRef = ref<InstanceType<typeof TextInput> | null>(null);
+
+// Guest pages have no Toaster, so the success flash (the password reset
+// confirmation) renders inline, as on the forgot password page.
+const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 
 const form = useForm({
     email: '',
@@ -50,6 +54,15 @@ onMounted(() => {
             <Head :title="t('auth.sign_in_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.sign_in_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.sign_in_subtitle') }}</p>
+
+            <div
+                v-if="flashSuccess"
+                role="status"
+                class="mt-5 flex items-center gap-2 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink"
+            >
+                <Icon name="check" cls="sm" class="shrink-0" />
+                <span class="flex-1 min-w-0">{{ flashSuccess }}</span>
+            </div>
 
             <div class="mt-7 flex flex-col gap-3.5">
                 <div>
