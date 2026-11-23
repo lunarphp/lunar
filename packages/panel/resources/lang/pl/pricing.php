@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Każda grupa klientów i minimalna ilość może mieć tylko jedną cenę w danej walucie.',
+    'error_base_required' => 'Cenę bazową można zmienić, ale nie można jej usunąć.',
 ];

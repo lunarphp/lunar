@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'لا يمكن تسعير كل مجموعة عملاء وحد أدنى للكمية إلا مرة واحدة لكل عملة.',
+    'error_base_required' => 'يمكن تغيير السعر الأساسي ولكن لا يمكن إزالته.',
 ];

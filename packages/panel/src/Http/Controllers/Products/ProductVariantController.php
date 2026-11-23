@@ -6,21 +6,18 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Products\DeletesProductVariant;
-use Lunar\Core\Contracts\Actions\Products\UpdatesProductVariant;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
-use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Panel\Contracts\DraftManager;
-use Lunar\Panel\Http\Requests\Products\ProductVariantRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\TimelineActivity;
@@ -102,17 +99,6 @@ class ProductVariantController
                 'next_url' => $index < $siblings->count() - 1
                     ? route('panel.products.variants.edit', [$product, $siblings[$index + 1]])
                     : null,
-                'prices' => $productVariant->prices()->orderBy('min_quantity')->orderBy('id')->get()
-                    ->map(fn (Price $price) => [
-                        'id' => $price->id,
-                        'currency_id' => $price->currency_id,
-                        'customer_group_id' => $price->customer_group_id,
-                        'min_quantity' => $price->min_quantity,
-                        'price' => $price->price,
-                        'list_price' => $price->list_price,
-                        'update_url' => route('panel.products.variants.prices.update', [$product, $productVariant, $price]),
-                        'destroy_url' => route('panel.products.variants.prices.destroy', [$product, $productVariant, $price]),
-                    ])->values(),
                 'stock' => [
                     'aggregate' => [
                         'on_hand' => $productVariant->stock_on_hand,
@@ -172,30 +158,13 @@ class ProductVariantController
             'urls' => [
                 'productEdit' => route('panel.products.edit', $product),
                 'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $productVariant->getMorphClass()]),
-                'update' => route('panel.products.variants.update', [$product, $productVariant]),
                 'destroy' => route('panel.products.variants.destroy', [$product, $productVariant]),
                 'draft' => route('panel.products.variants.draft.update', [$product, $productVariant]),
                 'draftCommit' => route('panel.products.variants.draft.commit', [$product, $productVariant]),
-                'pricesStore' => route('panel.products.variants.prices.store', [$product, $productVariant]),
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $productVariant]),
                 'mediaSync' => route('panel.products.variants.media.sync', [$product, $productVariant]),
             ],
         ]);
-    }
-
-    public function update(
-        ProductVariantRequest $request,
-        Product $product,
-        ProductVariant $productVariant,
-        UpdatesProductVariant $updatesProductVariant,
-        VariantFields $variantFields,
-    ): RedirectResponse {
-        $updatesProductVariant->execute(
-            $productVariant,
-            $variantFields->commitPayload($productVariant, $request->variantAttributes()),
-        );
-
-        return back()->with('success', __('panel::products.flash_variant_updated'));
     }
 
     public function destroy(

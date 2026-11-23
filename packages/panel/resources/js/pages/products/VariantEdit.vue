@@ -15,7 +15,7 @@ import IdentifiersCard from '../../components/IdentifiersCard.vue';
 import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
-import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
+import PricingEditor, { type CurrencyOption } from '../../components/PricingEditor.vue';
 import ShippingCard from '../../components/ShippingCard.vue';
 import SideCard from '../../components/SideCard.vue';
 import StickySidebar from '../../components/StickySidebar.vue';
@@ -49,7 +49,6 @@ const props = defineProps<{
         total: number;
         prev_url: string | null;
         next_url: string | null;
-        prices: PriceRow[];
         stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
     };
     variantValues: Record<string, unknown>;
@@ -67,11 +66,9 @@ const props = defineProps<{
     urls: {
         productEdit: string;
         activityLog: string;
-        update: string;
         destroy: string;
         draft: string;
         draftCommit: string;
-        pricesStore: string;
         stockAdjust: string;
         mediaSync: string;
     };
@@ -218,10 +215,8 @@ const timelineEvents = computed(() =>
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
                         <PricingEditor
-                            :prices="variant.prices"
                             :currencies="currencies"
                             :customer-groups="customerGroups"
-                            :store-url="urls.pricesStore"
                         />
 
                         <VariantMediaPicker

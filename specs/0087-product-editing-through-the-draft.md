@@ -116,7 +116,8 @@ or overwrites a colleague without a conflict.
   operation that removes drafted keys warns that those edits are dropped before it runs.
 - **Row keys and removal.** Pristine and the diff only see keys present at load, and
   `assertKnownFields` rejects keys `fields($record)` does not list. The slices below add
-  keys at runtime (a new price tuple). `DraftableResource` gains
+  keys at runtime (a new media item). Prices avoid this by keying per enabled currency,
+  a fixed key set. `DraftableResource` gains
   `acceptsField(Model $record, string $key): bool`, defaulting to membership of
   `fields()`, which a slice overrides with a key pattern; the client accepts a new key
   whose pristine value is `null` and drafts it like any other. A `null` value marks a
@@ -155,21 +156,23 @@ language at commit time, so the conflict is reported as a validation error rathe
 database exception. Commits through `CreatesUrl`, `UpdatesUrl`, `DeletesUrl`.
 
 **`price`** — on `ProductVariant`, riding the product draft under the `variant:` slice
-on simple-shape products the way the variant's other fields do. One field per
-`{currency_code}:{customer_group_id|0}:{min_quantity}` tuple, value
-`{price: int, list_price: int|null}` in minor units, or null to remove the tier.
-Changing a tier's quantity or group is a removal plus an addition, which is what it is
-from the other editor's point of view too. Rules require a base row (group 0, quantity
-1) per enabled currency. The composer guarantees the tuple is unique by construction, so
-the duplicate-tier case cannot arise. Core has no price write action today
+on simple-shape products the way the variant's other fields do (`variant:price:{code}`).
+One field per enabled currency code (`price:GBP`), value an ordered list of
+`{customer_group_id, min_quantity, price, list_price}` rows in minor units. Adding or
+removing a tier edits that currency's list. The key set is fixed by the enabled
+currencies, so no runtime keys are needed, and a disabled currency's rows are left alone
+at commit. Rules refuse a duplicate customer group and minimum quantity within a
+currency, and refuse removing a stored base row (group none, quantity 1); a currency
+without a base price may stay unpriced. Core has no price write action today
 (`ProductPriceController` calls `prices()->create()` and `update()` directly); this
 slice adds a `SyncsPrices` action contract with a `syncPrices()` verb on `HasPrices`
 models and commits through it. Validation errors render on the row that caused them.
 
 Bundle repricing (`RepriceBundle`) rewrites a bundle variant's price rows outside the
 draft. After it runs, the bundles card reloads the page props, and the `price` keys pick
-up the new server values through the key-set refresh above; a drafted price for a tuple
-the reprice changed conflicts on commit as any concurrent write does.
+up the new server values: the key-set refresh also moves keys staff have not touched to
+the reloaded value. A drafted currency the reprice changed conflicts on commit as any
+concurrent write does.
 
 **`media`** — on every `HasMedia` draftable: product, brand, collection, and product
 type. One field per media collection the model's media definition declares, covering
@@ -230,7 +233,7 @@ through the restore banner, and lands atomically with the rest of the record.
 
 `DraftConflictDialog` today renders a field's mine/base/theirs values as text and offers
 a manual merge input. That is right for scalars and translated text and wrong for a list
-of media items or a price tuple, which render as `[object Object]`. The dialog gains a
+of media items or a currency's price list, which render as `[object Object]`. The dialog gains a
 per-namespace summary presentation: a short human description of each side (a slug, an
 amount with currency, a count of items with thumbnails for media, product names for
 associations) and keep-mine / take-theirs only, with no manual merge input. First-party
@@ -310,8 +313,12 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   is the natural owner: it already has the record and staff identity, its lifetime is
   the staging lifetime, and its prune and discard paths are where cleanup belongs.
 - **Whole-table keys for prices** (`prices` as one list) — rejected. One key means any
-  two staff touching pricing conflict on everything. Per-tuple keys conflict only on the
-  row both touched, which is the draft layer's whole point.
+  two staff touching pricing conflict on everything.
+- **Per-tuple keys for prices** (`{currency}:{group}:{qty}`) — rejected during Slice 4.
+  They need runtime keys, null-pristine handling on the client, and a removal marker,
+  and a tier whose quantity changes becomes a delete plus an add anyway. Per-currency
+  keys keep a fixed key set and still let two staff price different currencies without
+  conflict; edits to the same currency conflict, which the dialog resolves per currency.
 - **Manual merge for structured conflicts** — rejected for now. A merge editor for a
   media list or a price row is a feature in itself; keep-mine / take-theirs covers the
   realistic case and matches how the products spec already treats availability rows.
@@ -398,12 +405,12 @@ field-like controls.
 - [x] Slice 3 — `url` slice on product, brand, and collection, `UrlSlugs` on
   `useFormSlice`, removal of the URL routes; uniqueness and one-default rules; tests
   across the three resources.
-- [ ] Slice 4 — `SyncsPrices` action and verb, the `price` slice on the variant
+- [x] Slice 4 — `SyncsPrices` action and verb, the `price` slice on the variant
   resource and under `variant:` on the product resource, `PricingEditor` on
   `useFormSlice`, removal of the price routes and the unused `products.update` and
-  `products.variants.update` routes, props reload after bundle repricing; tuple-key
-  round-trip, adding and removing tiers, base-row rules, minor-unit normalisation,
-  conflict per tuple, conflict after a reprice.
+  `products.variants.update` routes, props reload after bundle repricing; per-currency
+  key round-trip, adding and removing tiers, base-row rules, minor-unit normalisation,
+  conflict per currency, conflict after a reprice.
 - [ ] Slice 5 — Media staging: `EditDraft` as `HasMedia`, the staging upload endpoint,
   the `media` slice on product, brand, collection, and product type covering image and
   file groups, move after commit, cleanup on discard, commit, and the prune sweep,

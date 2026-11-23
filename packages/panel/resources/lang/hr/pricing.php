@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Svaka grupa kupaca i minimalna količina mogu imati samo jednu cijenu po valuti.',
+    'error_base_required' => 'Osnovna cijena može se promijeniti, ali ne i ukloniti.',
 ];

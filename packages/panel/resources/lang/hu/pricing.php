@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Minden ügyfélcsoporthoz és minimális mennyiséghez pénznemenként csak egy ár adható meg.',
+    'error_base_required' => 'Az alapár módosítható, de nem távolítható el.',
 ];

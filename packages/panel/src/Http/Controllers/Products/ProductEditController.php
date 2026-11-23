@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Products\DeletesProduct;
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
-use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\Brand;
@@ -26,7 +25,6 @@ use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
-use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Sections\Catalog\Slices\ProductAssociationSlice;
 use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
@@ -235,7 +233,6 @@ class ProductEditController
             'urls' => [
                 'index' => route('panel.products.index'),
                 'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $product->getMorphClass()]),
-                'update' => route('panel.products.update', $product),
                 'destroy' => route('panel.products.destroy', $product),
                 'draft' => route('panel.products.draft.update', $product),
                 'draftCommit' => route('panel.products.draft.commit', $product),
@@ -330,17 +327,6 @@ class ProductEditController
 
         return [
             'id' => $variant->id,
-            'prices' => $variant->prices()->orderBy('min_quantity')->orderBy('id')->get()
-                ->map(fn (Price $price) => [
-                    'id' => $price->id,
-                    'currency_id' => $price->currency_id,
-                    'customer_group_id' => $price->customer_group_id,
-                    'min_quantity' => $price->min_quantity,
-                    'price' => $price->price,
-                    'list_price' => $price->list_price,
-                    'update_url' => route('panel.products.variants.prices.update', [$product, $variant, $price]),
-                    'destroy_url' => route('panel.products.variants.prices.destroy', [$product, $variant, $price]),
-                ])->values(),
             'stock' => [
                 'aggregate' => [
                     'on_hand' => $variant->stock_on_hand,
@@ -367,7 +353,6 @@ class ProductEditController
                     })->values(),
             ],
             'urls' => [
-                'pricesStore' => route('panel.products.variants.prices.store', [$product, $variant]),
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $variant]),
             ],
         ];
@@ -392,18 +377,6 @@ class ProductEditController
 
             return $group;
         }, $groups);
-    }
-
-    public function update(ProductRequest $request, Product $product, UpdatesProduct $updatesProduct): RedirectResponse
-    {
-        $updatesProduct->execute(
-            $product,
-            $request->productAttributes(),
-            $request->tags(),
-            $request->collectionIds(),
-        );
-
-        return back()->with('success', __('panel::products.flash_updated'));
     }
 
     public function destroy(Product $product, DeletesProduct $deletesProduct): RedirectResponse

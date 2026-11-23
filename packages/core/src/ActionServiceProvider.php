@@ -96,6 +96,7 @@ use Lunar\Core\Actions\Orders\RefundOrder;
 use Lunar\Core\Actions\Orders\ReopenOrder;
 use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
 use Lunar\Core\Actions\Orders\ResolvePaymentStatus;
+use Lunar\Core\Actions\Prices\SyncPrices;
 use Lunar\Core\Actions\ProductOptions\CreateProductOption;
 use Lunar\Core\Actions\ProductOptions\DeleteProductOption;
 use Lunar\Core\Actions\ProductOptions\UpdateProductOption;
@@ -238,6 +239,9 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\ProductTypes\CreatesProductType::class => CreateProductType::class,
         Contracts\ProductTypes\DeletesProductType::class => DeleteProductType::class,
         Contracts\ProductTypes\UpdatesProductType::class => UpdateProductType::class,
+
+        // Prices
+        Contracts\Prices\SyncsPrices::class => SyncPrices::class,
 
         // Products
         Contracts\Products\AdjustsStock::class => AdjustStock::class,

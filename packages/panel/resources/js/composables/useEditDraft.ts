@@ -368,7 +368,10 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
     // variants) reloads props with preserved state, changing which slice
     // keys the record has. New keys join with their server value as
     // pristine; removed keys leave values and pristine, and the values watch
-    // autosaves so they leave the stored draft too.
+    // autosaves so they leave the stored draft too. An operation that
+    // rewrites a slice's values (a bundle reprice) moves the keys staff have
+    // not touched to the new server value; touched keys keep the edit and
+    // conflict at commit if the server moved under them.
     if (page) {
         watch(
             () => sliceValuesOf(page),
@@ -378,6 +381,9 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
                 for (const [key, value] of Object.entries(next)) {
                     if (!(key in pristine)) {
                         sliceKeys.add(key);
+                        pristine[key] = clone(value);
+                        record[key] = clone(value);
+                    } else if (sliceKeys.has(key) && encode(record[key]) === encode(pristine[key])) {
                         pristine[key] = clone(value);
                         record[key] = clone(value);
                     }

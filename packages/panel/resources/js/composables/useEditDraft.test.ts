@@ -456,6 +456,22 @@ describe('useEditDraft', () => {
             expect(httpMock.delete).toHaveBeenCalledWith(urls.draft, { version: 1 });
         });
 
+        it('moves untouched slice keys to rewritten server values and keeps edited ones', async () => {
+            pageState.page = reactive({ props: { formSliceValues: { 'price:GBP': [1000], 'price:JPY': [1500] } as Record<string, unknown> } });
+
+            const form = useEditDraft({ initial: { name: 'Mug' }, draft: null, urls });
+            const values = form.values as Record<string, unknown>;
+
+            values['price:JPY'] = [1600];
+
+            pageState.page.props.formSliceValues = { 'price:GBP': [900], 'price:JPY': [1400] };
+            await nextTick();
+
+            expect(values['price:GBP']).toEqual([900]);
+            expect(values['price:JPY']).toEqual([1600]);
+            expect(form.dirtyKeys.value).toEqual(['price:JPY']);
+        });
+
         it('leaves the page\'s own keys alone when the slice prop changes', async () => {
             pageState.page = reactive({ props: { formSliceValues: { name: 'from slice' } as Record<string, unknown> } });
 

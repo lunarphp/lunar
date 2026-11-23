@@ -8,7 +8,7 @@ import AttributeFields, { type AttributeGroup } from '../../components/Attribute
 import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
 import IdentifiersCard from '../../components/IdentifiersCard.vue';
 import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
-import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
+import PricingEditor, { type CurrencyOption } from '../../components/PricingEditor.vue';
 import ProductOptionsBuilder, { type AttachedOption, type VariantRow } from '../../components/ProductOptionsBuilder.vue';
 import VariantsTable from '../../components/VariantsTable.vue';
 import ShippingCard from '../../components/ShippingCard.vue';
@@ -71,9 +71,8 @@ const props = defineProps<{
     variants: VariantRow[];
     variant: {
         id: number;
-        prices: PriceRow[];
         stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
-        urls: { pricesStore: string; stockAdjust: string };
+        urls: { stockAdjust: string };
     } | null;
     variantAttributeGroups: AttributeGroup[];
     currencies: CurrencyOption[];
@@ -95,7 +94,6 @@ const props = defineProps<{
     urls: {
         index: string;
         activityLog: string;
-        update: string;
         destroy: string;
         draft: string;
         draftCommit: string;
@@ -444,10 +442,10 @@ const timelineEvents = computed(() =>
                              riding the product draft under variant:{field} keys. -->
                         <template v-if="!wantsMulti && shape === 'simple' && variant">
                             <PricingEditor
-                                :prices="variant.prices"
                                 :currencies="currencies"
                                 :customer-groups="customerGroups"
-                                :store-url="variant.urls.pricesStore"
+                                namespace="variant"
+                                field-prefix="price:"
                             />
                             <InventoryCard
                                 :values="details"

@@ -68,26 +68,6 @@ it('explains why a variant cannot be deleted', function () {
         );
 });
 
-it('updates the variant through the update endpoint', function () {
-    $this->put(route('panel.products.variants.update', [$this->product, $this->variant]), [
-        'sku' => 'NEW-SKU',
-        'tax_class_id' => $this->variant->tax_class_id,
-        'enabled' => false,
-        'min_quantity' => 3,
-        'selling_policy' => 'in_stock',
-        'shippable' => true,
-        'unit_quantity' => 1,
-        'quantity_increment' => 1,
-        'backorder' => 0,
-    ])->assertRedirect();
-
-    $this->variant->refresh();
-
-    expect($this->variant->sku)->toBe('NEW-SKU')
-        ->and($this->variant->enabled)->toBeFalse()
-        ->and($this->variant->min_quantity)->toBe(3);
-});
-
 it('drafts and commits variant fields including attribute values', function () {
     $attribute = Attribute::factory()->modelType('product_variant')->create([
         'handle' => 'finish',

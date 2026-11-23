@@ -22,7 +22,6 @@ return [
     'tier_min_prefix' => '≥',
     'tier_any_customer' => 'Any customer',
     'remove_row' => 'Remove price row',
-    'flash_created' => 'Price added.',
-    'flash_updated' => 'Price updated.',
-    'flash_deleted' => 'Price removed.',
+    'error_duplicate_row' => 'Elke klantgroep en minimale hoeveelheid kan per valuta maar één keer worden geprijsd.',
+    'error_base_required' => 'Een basisprijs kan worden gewijzigd, maar niet worden verwijderd.',
 ];

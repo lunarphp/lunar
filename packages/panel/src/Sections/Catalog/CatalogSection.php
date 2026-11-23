@@ -29,7 +29,6 @@ use Lunar\Panel\Http\Controllers\Products\ProductEditController;
 use Lunar\Panel\Http\Controllers\Products\ProductIndexController;
 use Lunar\Panel\Http\Controllers\Products\ProductMediaController;
 use Lunar\Panel\Http\Controllers\Products\ProductOptionsController;
-use Lunar\Panel\Http\Controllers\Products\ProductPriceController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantBulkController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantMediaController;
@@ -57,6 +56,7 @@ use Lunar\Panel\Sections\Catalog\Slices\ProductAttributeSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductChannelSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductCustomerGroupSlice;
 use Lunar\Panel\Sections\Catalog\Slices\ProductUrlSlice;
+use Lunar\Panel\Sections\Catalog\Slices\ProductVariantPriceSlice;
 use Lunar\Panel\Sections\Catalog\Slices\SoleVariantSlice;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
@@ -171,6 +171,7 @@ class CatalogSection extends Section
             ProductChannelSlice::class,
             ProductCustomerGroupSlice::class,
             SoleVariantSlice::class,
+            ProductVariantPriceSlice::class,
         ];
     }
 
@@ -246,7 +247,6 @@ class CatalogSection extends Section
                     ->whereIn('status', ['published', 'draft'])
                     ->name('bulk-status');
                 Route::get('/{product}/edit', [ProductEditController::class, 'edit'])->name('edit');
-                Route::put('/{product}', [ProductEditController::class, 'update'])->name('update');
                 Route::delete('/{product}', [ProductEditController::class, 'destroy'])->name('destroy');
                 Route::post('/{product}/duplicate', [ProductEditController::class, 'duplicate'])->name('duplicate');
 
@@ -261,17 +261,12 @@ class CatalogSection extends Section
                     Route::put('/{product}/media/{media}', [ProductMediaController::class, 'update'])->name('media.update');
                     Route::delete('/{product}/media/{media}', [ProductMediaController::class, 'destroy'])->name('media.destroy');
 
-                    Route::post('/{product}/variants/{productVariant}/prices', [ProductPriceController::class, 'store'])->name('variants.prices.store');
-                    Route::put('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'update'])->name('variants.prices.update');
-                    Route::delete('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'destroy'])->name('variants.prices.destroy');
-
                     Route::post('/{product}/variants/{productVariant}/stock', [ProductVariantStockController::class, 'update'])->name('variants.stock.adjust');
 
                     Route::post('/{product}/options/generate', [ProductOptionsController::class, 'generate'])->name('options.generate');
                     Route::post('/{product}/variants/bulk', [ProductVariantBulkController::class, 'update'])->name('variants.bulk');
 
                     Route::get('/{product}/variants/{productVariant}/edit', [ProductVariantController::class, 'edit'])->name('variants.edit');
-                    Route::put('/{product}/variants/{productVariant}', [ProductVariantController::class, 'update'])->name('variants.update');
                     Route::delete('/{product}/variants/{productVariant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
 
                     Route::patch('/{product}/variants/{productVariant}/draft', [EditDraftController::class, 'update'])->name('variants.draft.update');
