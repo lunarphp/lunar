@@ -219,8 +219,13 @@ return new class extends Migration
 
         $productTypeAliases = ['product_type', 'Lunar\\Core\\Models\\ProductType'];
 
+        // v1 deletes product types and attributes without deleting their
+        // attributables rows. Those links point at nothing, and the pivot's
+        // foreign keys reject them, so only links whose ends both exist move.
         DB::table($attributables)
             ->whereIn('attributable_type', $productTypeAliases)
+            ->whereIn('attributable_id', DB::table($productTypes)->select('id'))
+            ->whereIn('attribute_id', DB::table($attributes)->select('id'))
             ->orderBy('id')
             ->each(function ($row) use ($pivot) {
                 $exists = DB::table($pivot)

@@ -256,6 +256,40 @@ test('it migrates product_type_attribute and drops attributables', function () {
     expect(Schema::hasTable(SPEC0019_PREFIX.'attributables'))->toBeFalse();
 });
 
+test('it drops attributables links to a deleted product type or attribute', function () {
+    simulateV1AttributeShape();
+
+    // v1 deletes product types and attributes without deleting their
+    // attributables rows: product type 99 and attribute 98 no longer exist.
+    DB::table(SPEC0019_PREFIX.'attributables')->insert([
+        [
+            'attributable_type' => 'product_type',
+            'attributable_id' => 99,
+            'attribute_id' => 10,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+        [
+            'attributable_type' => 'product_type',
+            'attributable_id' => 1,
+            'attribute_id' => 98,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+    ]);
+
+    attributeReshapeMigration()->up();
+
+    $rows = DB::table(SPEC0019_PREFIX.'product_type_attribute')
+        ->orderBy('attribute_id')
+        ->get(['product_type_id', 'attribute_id']);
+
+    expect($rows->map(fn ($row) => [$row->product_type_id, $row->attribute_id])->all())->toBe([
+        [1, 10],
+        [1, 11],
+    ]);
+});
+
 test('it converts FieldType FQCN to enum value strings', function () {
     simulateV1AttributeShape();
 
