@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lunar\Core\Models\Discount;
+use Lunar\Panel\Http\Controllers\Concerns\SearchesByWords;
 use Lunar\Panel\Support\DiscountTargetSchema;
 use Lunar\Panel\Support\TranslatedColumn;
 
@@ -21,6 +22,8 @@ use Lunar\Panel\Support\TranslatedColumn;
  */
 class DiscountTargetSearchController
 {
+    use SearchesByWords;
+
     /** How many rows each kind contributes, so no one kind crowds out the rest. */
     private const PER_KIND = 10;
 
@@ -85,10 +88,10 @@ class DiscountTargetSearchController
             'variants' => $query->where('sku', 'like', $like),
             'collections' => TranslatedColumn::whereLike($query, 'name', $term),
             'brands' => $query->where('name', 'like', $like),
-            'customers' => $query->where(fn ($query) => $query
+            'customers' => $query->where(fn ($query) => $this->whereEveryWord($query, $term, fn ($query, $like) => $query
                 ->where('first_name', 'like', $like)
                 ->orWhere('last_name', 'like', $like)
-                ->orWhere('company_name', 'like', $like)),
+                ->orWhere('company_name', 'like', $like))),
             default => $query,
         };
     }

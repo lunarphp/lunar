@@ -13,10 +13,12 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
+use Lunar\Panel\Http\Controllers\Concerns\SearchesByWords;
 
 class OrderIndexController
 {
     use ResolvesTableExtensions;
+    use SearchesByWords;
 
     /** Column keys the list may sort on; anything else falls back to the default. */
     protected array $sortable = ['created_at', 'placed_at', 'total'];
@@ -58,10 +60,10 @@ class OrderIndexController
             ->withSum('productLines as items_count', 'quantity')
             ->when($request->filled('q'), function ($query) use ($request, $resolver) {
                 $term = $request->string('q')->value();
-                $like = "%{$term}%";
 
-                $query->where(function ($query) use ($like, $term, $resolver) {
-                    $query->where('reference', 'like', $like)
+                $query->where(function ($query) use ($term, $resolver) {
+                    $query->where(fn ($query) => $this->whereEveryWord($query, $term, fn ($query, $like) => $query
+                        ->where('reference', 'like', $like)
                         ->orWhere('customer_reference', 'like', $like)
                         ->orWhereHas('billingAddress', fn ($query) => $query
                             ->where('first_name', 'like', $like)
@@ -71,7 +73,7 @@ class OrderIndexController
                             ->orWhere('postcode', 'like', $like))
                         ->orWhereHas('customer', fn ($query) => $query
                             ->where('first_name', 'like', $like)
-                            ->orWhere('last_name', 'like', $like));
+                            ->orWhere('last_name', 'like', $like))));
 
                     $resolver->applySearchQueries($query, $term);
                 });

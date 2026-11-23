@@ -273,6 +273,20 @@ it('finds customers only when they are asked for', function () {
     ]);
 });
 
+it('finds customers by a full name spanning the first and last name', function () {
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    $customer = Customer::factory()->create(['title' => null, 'first_name' => 'Ada', 'last_name' => 'Kshlerin', 'company_name' => null]);
+    Customer::factory()->create(['title' => null, 'first_name' => 'Ada', 'last_name' => 'Lovelace', 'company_name' => null]);
+
+    $search = fn (string $term) => $this->getJson(
+        route('panel.discounts.targets.search', $discount).'?bucket=limitation&kinds[]=customers&q='.rawurlencode($term)
+    )->json('data');
+
+    expect(collect($search('Ada Kshlerin'))->pluck('id')->all())->toBe([$customer->id])
+        ->and($search('Grace Kshlerin'))->toBe([]);
+});
+
 it('commits eligible customers alongside the limitation targets', function () {
     $discount = Discount::factory()->create(['type' => PercentageOff::class]);
     $product = Product::factory()->create();

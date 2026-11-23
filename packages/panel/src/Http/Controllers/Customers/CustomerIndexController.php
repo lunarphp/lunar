@@ -12,10 +12,12 @@ use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
+use Lunar\Panel\Http\Controllers\Concerns\SearchesByWords;
 
 class CustomerIndexController
 {
     use ResolvesTableExtensions;
+    use SearchesByWords;
 
     /** @var string[] */
     protected array $sortable = ['first_name', 'last_name', 'company_name', 'created_at'];
@@ -67,15 +69,15 @@ class CustomerIndexController
             )])
             ->when($request->filled('q'), function ($query) use ($request, $resolver) {
                 $term = $request->string('q')->value();
-                $like = "%{$term}%";
 
-                $query->where(function ($query) use ($like, $term, $resolver) {
-                    $query->where('first_name', 'like', $like)
+                $query->where(function ($query) use ($term, $resolver) {
+                    $query->where(fn ($query) => $this->whereEveryWord($query, $term, fn ($query, $like) => $query
+                        ->where('first_name', 'like', $like)
                         ->orWhere('last_name', 'like', $like)
                         ->orWhere('company_name', 'like', $like)
                         ->orWhere('tax_identifier', 'like', $like)
                         ->orWhere('account_ref', 'like', $like)
-                        ->orWhereHas('users', fn ($query) => $query->where('email', 'like', $like));
+                        ->orWhereHas('users', fn ($query) => $query->where('email', 'like', $like))));
 
                     $resolver->applySearchQueries($query, $term);
                 });
