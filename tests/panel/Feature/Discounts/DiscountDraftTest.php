@@ -100,6 +100,43 @@ it('commits drafted channel availability', function () {
     expect((bool) $pivot->enabled)->toBeTrue();
 });
 
+it('stores drafted dates sent with an offset as the matching instant', function () {
+    // A staff member in London (BST, UTC+1) picks 15 Jun 09:00 to 31 Aug 23:59.
+    $dates = ['starts_at' => '2027-06-15T08:00:00.000Z', 'ends_at' => '2027-08-31T23:59:00+01:00'];
+
+    $this->patchJson(route('panel.discounts.draft.update', $this->discount), ['data' => $dates])->assertOk();
+
+    // The draft hands the browser an instant it can read back, not a zoneless string.
+    expect(EditDraft::sole()->data)->toMatchArray([
+        'starts_at' => '2027-06-15T08:00:00+00:00',
+        'ends_at' => '2027-08-31T22:59:00+00:00',
+    ]);
+
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
+        'data' => $dates,
+        'rebase' => [],
+    ])->assertOk();
+
+    $this->discount->refresh();
+
+    expect($this->discount->starts_at->toDateTimeString())->toBe('2027-06-15 08:00:00')
+        ->and($this->discount->ends_at->toDateTimeString())->toBe('2027-08-31 22:59:00');
+});
+
+it('stores a drafted channel schedule sent with an offset as the matching instant', function () {
+    $channel = Channel::factory()->create();
+    $row = ['enabled' => true, 'starts_at' => '2027-07-01T09:00:00+01:00', 'ends_at' => null];
+
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
+        'data' => ["channel:{$channel->id}" => $row],
+        'rebase' => [],
+    ])->assertOk();
+
+    $pivot = $this->discount->channels()->where('channel_id', $channel->id)->first()->pivot;
+
+    expect((string) $pivot->starts_at)->toBe('2027-07-01 08:00:00');
+});
+
 it('rejects an invalid merged payload at commit', function () {
     Discount::factory()->create(['handle' => 'taken']);
 

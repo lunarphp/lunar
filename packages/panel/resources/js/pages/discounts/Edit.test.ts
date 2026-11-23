@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
@@ -14,6 +14,7 @@ vi.mock('../../lib/http', async (importOriginal) => ({
 }));
 
 import Edit from './Edit.vue';
+import { http } from '../../lib/http';
 import TargetChipList from '../../components/TargetChipList.vue';
 import TargetPickerDialog from '../../components/TargetPickerDialog.vue';
 
@@ -21,7 +22,7 @@ let wrapper: VueWrapper | null = null;
 
 const emptyLimitation = { products: [], variants: [], collections: [], brands: [], customers: [] };
 
-function mountEdit(): VueWrapper {
+function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
     wrapper = mount(Edit, {
         props: {
             discount: {
@@ -42,6 +43,7 @@ function mountEdit(): VueWrapper {
                 data: {},
                 created_at: '2026-01-01',
                 updated_at: '2026-01-01',
+                ...discount,
             },
             type: { class: 'PercentageOff', label: 'Percentage off', component: 'PercentageOffForm', buckets: ['limitation', 'exclusion'] },
             typeRegistered: true,
@@ -116,6 +118,42 @@ describe('discounts/Edit', () => {
 
         expect(customerList(page).props('chips')).toEqual({
             customers: [{ id: 42, label: 'Ada Kshlerin', hint: null }],
+        });
+    });
+
+    describe('in a timezone ahead of UTC', () => {
+        // London is on BST (UTC+1) in June to August 2027.
+        beforeAll(() => {
+            vi.stubEnv('TZ', 'Europe/London');
+        });
+
+        afterAll(() => {
+            vi.unstubAllEnvs();
+            vi.useRealTimers();
+        });
+
+        it('shows the stored schedule in the staff member\'s local time', () => {
+            const page = mountEdit({ starts_at: '2027-06-15T08:00:00.000000Z', ends_at: '2027-08-31T22:59:00.000000Z' });
+
+            expect((page.find('#discount-starts-at').element as HTMLInputElement).value).toBe('2027-06-15T09:00');
+            expect((page.find('#discount-ends-at').element as HTMLInputElement).value).toBe('2027-08-31T23:59');
+        });
+
+        it('drafts the local time the staff member enters as the matching instant', async () => {
+            vi.useFakeTimers();
+            vi.mocked(http.patch).mockResolvedValue({ data: {}, updated_at: null, version: 1 });
+
+            const page = mountEdit({ starts_at: '2027-06-15T08:00:00.000000Z' });
+
+            await page.find('#discount-ends-at').setValue('2027-08-31T23:59');
+            await vi.advanceTimersByTimeAsync(1000);
+
+            expect(http.patch).toHaveBeenCalledWith(
+                '/panel/discounts/1/draft',
+                expect.objectContaining({ data: { ends_at: '2027-08-31T22:59:00.000Z' } }),
+            );
+
+            vi.useRealTimers();
         });
     });
 });

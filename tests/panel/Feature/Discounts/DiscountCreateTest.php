@@ -39,6 +39,19 @@ it('creates a discount and lands on its edit page', function () {
     expect($discount->type)->toBe(PercentageOff::class);
 });
 
+it('stores a start date sent with an offset as the matching instant', function () {
+    $this->post(route('panel.discounts.store'), [
+        'name' => 'Summer Sale',
+        'handle' => 'summer-sale',
+        'type' => PercentageOff::class,
+        // 15 Jun 09:00 in London (BST, UTC+1).
+        'starts_at' => '2027-06-15T09:00:00+01:00',
+    ])->assertRedirect();
+
+    expect(Discount::whereHandle('summer-sale')->firstOrFail()->starts_at->toDateTimeString())
+        ->toBe('2027-06-15 08:00:00');
+});
+
 it('rejects a duplicate handle', function () {
     Discount::factory()->create(['handle' => 'winter-sale']);
 

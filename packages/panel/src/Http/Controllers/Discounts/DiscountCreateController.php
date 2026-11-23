@@ -11,6 +11,7 @@ use Lunar\Core\Contracts\Actions\Discounts\CreatesDiscount;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Forms\FormSlices;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
+use Lunar\Panel\Support\DateTimeValue;
 use Lunar\Panel\Support\DiscountTypeSchema;
 
 class DiscountCreateController
@@ -43,6 +44,10 @@ class DiscountCreateController
             'starts_at' => ['required', 'date'],
             ...$formSlices->rules(Discount::class),
         ]);
+
+        // The datetime cast keeps a value's wall-clock time and drops its
+        // offset, so the browser's instant is moved to the app timezone first.
+        $validated['starts_at'] = DateTimeValue::toStorage($validated['starts_at']);
 
         $discount = $formSlices->save($validated, fn () => $createsDiscount->execute(
             array_intersect_key($validated, array_flip($own)),

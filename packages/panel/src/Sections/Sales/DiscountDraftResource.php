@@ -3,13 +3,13 @@
 namespace Lunar\Panel\Sections\Sales;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Lunar\Core\Contracts\Actions\Discounts\UpdatesDiscount;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Drafts\DraftableResource;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\DateTimeValue;
 use Lunar\Panel\Support\DiscountDataSchema;
 use Lunar\Panel\Support\DiscountTargetSchema;
 
@@ -150,6 +150,12 @@ class DiscountDraftResource extends DraftableResource
 
         $attributes = $availability['attributes'];
 
+        foreach (['starts_at', 'ends_at'] as $field) {
+            if (array_key_exists($field, $attributes)) {
+                $attributes[$field] = DateTimeValue::toStorage($attributes[$field]);
+            }
+        }
+
         if (array_key_exists('data', $attributes)) {
             $attributes['data'] = $this->dataSchema->toStorage(
                 $record->type,
@@ -190,14 +196,6 @@ class DiscountDraftResource extends DraftableResource
      */
     protected function normalizeDate(mixed $value): ?string
     {
-        if (blank($value)) {
-            return null;
-        }
-
-        try {
-            return Carbon::parse($value)->toDateTimeString();
-        } catch (\Throwable) {
-            return is_string($value) ? $value : null;
-        }
+        return DateTimeValue::normalize($value);
     }
 }

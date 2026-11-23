@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Support;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\CustomerGroup;
 
@@ -189,7 +188,7 @@ class AvailabilitySchema
     /**
      * Turn one side's full value set (keyed by bare row id, every row
      * present) into the pivot map the update actions sync: id => canonical
-     * row, with keys the side's pivot lacks dropped.
+     * row in storage form, with keys the side's pivot lacks dropped.
      *
      * @param  array<int|string, mixed>  $values
      * @return array<int, array<string, mixed>>
@@ -207,7 +206,7 @@ class AvailabilitySchema
                 unset($value['purchasable']);
             }
 
-            $rows[(int) $id] = $value;
+            $rows[(int) $id] = $this->toStorage($value);
         }
 
         return $rows;
@@ -215,7 +214,8 @@ class AvailabilitySchema
 
     /**
      * Canonicalise an availability value so draft equality holds: keys are
-     * sorted, booleans are real booleans and dates share one format.
+     * sorted, booleans are real booleans and dates share one format, an
+     * ISO 8601 instant the browser reads back unchanged.
      *
      * @param  array<string, mixed>  $value
      * @return array<string, mixed>
@@ -241,20 +241,30 @@ class AvailabilitySchema
         return $normalized;
     }
 
+    /**
+     * Normalisation runs before validation; an unparsable value passes
+     * through untouched so the date rule rejects it with a message rather
+     * than a parse exception.
+     */
     protected function normalizeDate(mixed $value): ?string
     {
-        if (blank($value)) {
-            return null;
-        }
+        return DateTimeValue::normalize($value);
+    }
 
-        // Normalisation runs before validation; an unparsable value passes
-        // through untouched so the date rule rejects it with a message
-        // rather than a parse exception.
-        try {
-            return Carbon::parse($value)->toDateTimeString();
-        } catch (\Throwable) {
-            return is_string($value) ? $value : null;
-        }
+    /**
+     * A canonical row with its dates as app-timezone `Y-m-d H:i:s` strings:
+     * the pivot sync inserts them without casts, so an offset must not reach
+     * the column.
+     *
+     * @param  array<string, mixed>  $value
+     * @return array<string, mixed>
+     */
+    protected function toStorage(array $value): array
+    {
+        $value['starts_at'] = DateTimeValue::toStorage($value['starts_at'] ?? null);
+        $value['ends_at'] = DateTimeValue::toStorage($value['ends_at'] ?? null);
+
+        return $value;
     }
 
     /**
@@ -285,7 +295,7 @@ class AvailabilitySchema
         $customerGroups = [];
 
         foreach ($current as $key => $value) {
-            $value = $this->normalizeValue((array) $value);
+            $value = $this->toStorage($this->normalizeValue((array) $value));
 
             if (str_starts_with($key, static::CHANNEL_PREFIX)) {
                 // The channelables pivot has no visible or purchasable column;

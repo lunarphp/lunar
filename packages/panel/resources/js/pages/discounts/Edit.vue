@@ -7,6 +7,7 @@ import AvailabilityCard, { type AvailabilityRow } from '../../components/Availab
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
+import DateTimeInput from '../../components/DateTimeInput.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftRestoredBanner from '../../components/DraftRestoredBanner.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
@@ -87,16 +88,14 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: props.discount.name, current: true },
 ]);
 
-// A datetime-local input wants `YYYY-MM-DDTHH:mm`; the server sends ISO.
-const toLocalInput = (value: string | null): string => (value ? value.slice(0, 16).replace(' ', 'T') : '');
-
 const draftForm = useEditDraft({
     initial: {
         name: props.discount.name,
         handle: props.discount.handle,
         coupon: props.discount.coupon ?? '',
-        starts_at: toLocalInput(props.discount.starts_at),
-        ends_at: toLocalInput(props.discount.ends_at),
+        // Instants, not input values: DateTimeInput shows them in local time.
+        starts_at: props.discount.starts_at ?? '',
+        ends_at: props.discount.ends_at ?? '',
         priority: props.discount.priority,
         stop: props.discount.stop,
         max_uses: props.discount.max_uses ?? '',
@@ -402,12 +401,12 @@ const confirmDestroy = (): void => {
                                 <div class="flex flex-col gap-3">
                                     <div>
                                         <FieldLabel for="discount-starts-at" required>{{ t('discounts.field_starts_at') }}</FieldLabel>
-                                        <TextInput id="discount-starts-at" v-model="details.starts_at" type="datetime-local" :invalid="!!detailsErrors.starts_at" />
+                                        <DateTimeInput id="discount-starts-at" v-model="details.starts_at" :invalid="!!detailsErrors.starts_at" />
                                         <div v-if="detailsErrors.starts_at" class="mt-1 text-[11px] text-danger">{{ detailsErrors.starts_at }}</div>
                                     </div>
                                     <div>
                                         <FieldLabel for="discount-ends-at">{{ t('discounts.field_ends_at') }}</FieldLabel>
-                                        <TextInput id="discount-ends-at" v-model="details.ends_at" type="datetime-local" :invalid="!!detailsErrors.ends_at" />
+                                        <DateTimeInput id="discount-ends-at" v-model="details.ends_at" :invalid="!!detailsErrors.ends_at" />
                                         <div v-if="detailsErrors.ends_at" class="mt-1 text-[11px] text-danger">{{ detailsErrors.ends_at }}</div>
                                         <div class="mt-1 text-[11.5px] text-ink-500">{{ t('discounts.field_ends_at_hint') }}</div>
                                     </div>
