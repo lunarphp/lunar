@@ -103,4 +103,4 @@ None.
 
 - [x] Slice 1 — Option value colours: the column, model property, `UpdateProductOption` and its validation, the enum docblock, the four panel controllers, the translation, the upgrade migration, the alpha upgrade guide row. Tests.
 - [x] Slice 2 — Reward lines: the two columns, model properties and relations, `BuyXGetY` writing it only on lines it creates, line identity in `GetExistingCartLine`, `MergeCart` matching and copying it, `CreateOrderLines` copying it and matching on it, removing `cart_line_discount` and `CartLine::discounts()` and its entry in `packages/upgrade/config/upgrade.php`, the upgrade migration, the alpha upgrade guide rows. Tests, including a shopper adding the reward product, a guest cart with a reward line merged on sign-in, and a draft order rebuilt with both lines.
-- [ ] Slice 3 — Docs and upgrade guide. (Each slice adds its own rows to the alpha upgrade guide.)
+- [x] Slice 3 — Docs and upgrade guide. (Each slice adds its own rows to the alpha upgrade guide.)

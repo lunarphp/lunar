@@ -146,6 +146,8 @@ The package ships one data migration per v1 to v2 schema change, run in dependen
 - **Table-rate shipping `collection` driver** — renames the stored `shipping_methods.driver` key from `collection` to `pickup`, following the driver's rename to `Lunar\Shipping\Drivers\ShippingMethods\Pickup`. A no-op on stores without the table-rate-shipping package.
 - **Order line `refunded_quantity` column** — adds the rollup of refunded quantity that line-item refunds increment. Existing lines default to `0`, since v1 recorded no line-item refunds.
 - **Cart totals columns** — adds the persisted totals snapshot columns (`sub_total`, `total`, `revision`, `calculated_at`, and the rest) to `carts` and `cart_lines`. No backfill: every upgraded cart reads as not yet calculated and is filled in by its next `calculate()`.
+- **Product option value `colour` column** — adds the column that holds a color option value's `#RRGGBB` color. No backfill: v1 has no color option type.
+- **Line `added_by_discount_id` columns** — adds the column recording which discount added a reward line to `cart_lines` and `order_lines`. No backfill: v1 did not mark the lines it added. Drops the unused `cart_line_discount` table when it is empty, and leaves it in place when the store has written rows to it.
 
 ### Order status mapping
 
@@ -296,6 +298,7 @@ Rector rewrites `Model::modelClass()` calls to `Model::class`, but a subclass re
   ```
 
   The admin no longer reads `meta['payment_method']`. Existing on-account orders keep their meta but show as `Pending` until their `payment_terms` are set, for example with `Order::where('meta->payment_method', 'on-account')->update(['payment_terms' => 'on-account'])`. Staff record the payment when the invoice is settled, with the admin's "Record payment" action or `Order::recordPayment()`. See [Payment terms](/reference/orders#payment-terms).
+- **`CartLine::discounts()` is removed.** v2 drops the relationship and its `cart_line_discount` table, which Lunar never wrote to. It has no replacement, so Rector does not rewrite calls to it. To find the discount that added a reward line, use `added_by_discount_id` or the `addedByDiscount` relationship. The discounts that priced a line are in the cart's `discountBreakdown`. If the store wrote its own rows to `cart_line_discount`, the upgrade keeps the table and the store reads it with its own query or relationship.
 - **Table-rate shipping translations.** The add-on's lang namespace changes from `lunarpanel.shipping` to `shipping`. Move any overrides from `lang/vendor/lunarpanel.shipping` to `lang/vendor/shipping`, and change `__('lunarpanel.shipping::…')` calls to `__('shipping::…')`.
 - **`lunar:migrate:getcandy`.** Removed in v2 with no replacement. Applications still on GetCandy-era data must run it on v1.x before upgrading further.
 

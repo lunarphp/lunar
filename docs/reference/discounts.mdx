@@ -264,7 +264,9 @@ When `automatically_add_rewards` is `true` and a qualifying cart does not alread
 - A reward candidate is chosen at random from the fulfillable `discountableRewards` (a collection reward picks a random fulfillable product from that collection).
 - Only reward items that can currently be fulfilled at the required quantity are considered; an out-of-stock reward is skipped rather than raising an error.
 - A reward quantity greater than one is added to a single cart line, not one line per unit.
-- Added lines are tracked in the line's `meta.added_by_discount` for the discount's ID and quantity.
+- A line `BuyXGetY` adds has `added_by_discount_id` set to the discount's ID, and `isAddedByDiscount()` returns `true`. When the reward product is already on a line the customer added, that line is discounted instead and its `added_by_discount_id` stays `null`.
+- A product the customer adds never merges into a line added by a discount: `Cart::add()` creates a separate line. Merging carts keeps the two apart as well, and order creation copies `added_by_discount_id` to the order line.
+- When the discount is deleted, `added_by_discount_id` is set to `null` and the line stays in the cart as an ordinary line.
 
 ## The Discounts facade
 

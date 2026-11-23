@@ -259,7 +259,7 @@ Lunar\Core\Models\ProductOption
 | `type` | `string` | Rendering type. Default: `text` |
 | `shared` | `boolean` | Whether the option can be reused across multiple products (`true`), or is restricted to a single product (`false`). Default: `false` |
 | `label` | `jsonb` `nullable` | Translatable display label, e.g. `{"en": "Color"}` |
-| `meta` | `jsonb` `nullable` | Custom metadata (color hex values, image links, etc.) |
+| `meta` | `jsonb` `nullable` | Custom metadata |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
 
@@ -328,11 +328,14 @@ This product option and its values are now ready to be used with product variant
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
 | `position` | `integer` | Sort order, default `0` |
+| `colour` | `string` `nullable` | The value's color as `#RRGGBB`, set on values of a `colour` option |
 | `meta` | `jsonb` `nullable` | Custom metadata |
 
 ### Product Option Meta
 
-Both `ProductOption` and `ProductOptionValue` models include a `meta` field for storing custom information such as color hex values, image links, or other display data.
+Both `ProductOption` and `ProductOptionValue` models include a `meta` field for storing custom information the application needs, such as image links or other display data. A value's color belongs in its `colour` column, not in `meta`.
+
+`Lunar\Core\Actions\ProductOptions\UpdateProductOption` writes `colour` when the option's `type` is `colour`. It accepts `#` followed by three or six hex digits and stores the six-digit upper-case form, so `#abc` is stored as `#AABBCC`. Any other value throws `Lunar\Core\Exceptions\ProductOptionActionException`. Changing an option's `type` clears `colour` on every value.
 
 Lunar makes no assumptions about the structure of the `meta` JSON field. Any values can be stored in whatever format the application requires.
 

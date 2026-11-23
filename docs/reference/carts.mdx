@@ -105,6 +105,7 @@ Lunar\Core\Models\CartLine
 | `purchasable_id` | `unsignedBigInteger` | Morph ID of the purchasable item |
 | `quantity` | `unsignedInteger` | |
 | `meta` | `jsonb` `nullable` | |
+| `added_by_discount_id` | `foreignId` `nullable` | The discount that added this line as an automatic reward, `null` on a line the customer added. Set to `null` when the discount is deleted. See [Automatically adding rewards](/reference/discounts#automatically-adding-rewards) |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
 | `unit_price` | `unsignedBigInteger` `nullable` | Persisted totals snapshot, `null` until the line is first calculated |
@@ -124,7 +125,7 @@ Lunar\Core\Models\CartLine
 | `cart` | BelongsTo | `Lunar\Core\Models\Cart` | |
 | `purchasable` | MorphTo | Various | The item being purchased, typically `Lunar\Core\Models\ProductVariant` |
 | `taxClass` | HasOneThrough | `Lunar\Core\Models\TaxClass` | Reached through the purchasable |
-| `discounts` | BelongsToMany | `Lunar\Core\Models\Discount` | Discounts applied to this line |
+| `addedByDiscount` | BelongsTo | `Lunar\Core\Models\Discount` | The discount that added this line, through `added_by_discount_id` |
 
 <Info>
 `purchasable_type` / `purchasable_id` on a cart line are always set — every cart line points at a real purchasable. This is unlike an order line, where the same morph is nullable for self-describing lines such as shipping or ad-hoc charges. A cart never produces a purchasable-less line.
