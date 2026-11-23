@@ -53,6 +53,7 @@ test('the edit screen flags order history', function () {
 test('a channel can be updated', function () {
     $channel = Channel::factory()->create([
         'name' => 'Retail',
+        'handle' => 'retail',
         'url' => 'https://old.example.com',
         'default' => false,
         'status' => 'active',
@@ -68,19 +69,33 @@ test('a channel can be updated', function () {
     $channel->refresh();
 
     expect($channel->name)->toBe('Retail Store');
-    expect($channel->handle)->toBe('retail-store');
+    expect($channel->handle)->toBe('retail');
     expect($channel->url)->toBe('https://new.example.com');
     expect((string) $channel->status)->toBe('inactive');
 });
 
-test('renaming a channel onto another channel handle is rejected', function () {
+test('renaming a channel keeps its handle', function () {
+    $channel = Channel::factory()->create(['name' => 'QA Wholesale', 'handle' => 'qa-wholesale', 'default' => false]);
+
+    $this->put(route('panel.settings.channels.update', $channel), [
+        'name' => 'QA Wholesale 2',
+    ])->assertSessionHasNoErrors()
+        ->assertRedirect(route('panel.settings.channels.index'));
+
+    expect($channel->fresh()->name)->toBe('QA Wholesale 2');
+    expect($channel->fresh()->handle)->toBe('qa-wholesale');
+});
+
+test('a channel can be renamed to a name whose slug is another channel handle', function () {
     Channel::factory()->create(['name' => 'Webstore', 'handle' => 'webstore']);
     $channel = Channel::factory()->create(['name' => 'Retail', 'handle' => 'retail']);
 
     $this->put(route('panel.settings.channels.update', $channel), [
         'name' => 'Webstore',
-    ])->assertSessionHasErrors('name');
+    ])->assertSessionHasNoErrors()
+        ->assertRedirect(route('panel.settings.channels.index'));
 
+    expect($channel->fresh()->name)->toBe('Webstore');
     expect($channel->fresh()->handle)->toBe('retail');
 });
 

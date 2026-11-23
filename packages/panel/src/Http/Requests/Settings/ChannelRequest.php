@@ -10,7 +10,7 @@ use Lunar\Core\Models\Channel;
 use Lunar\Core\States\Channel\ChannelState;
 use Lunar\Panel\Http\Requests\Concerns\ValidatesFormSlices;
 
-/** Shared by the channel store and update endpoints, whose rules are identical. */
+/** Shared by the channel store and update endpoints, whose rules are identical bar the name-to-handle collision check, which only applies on create. */
 class ChannelRequest extends FormRequest
 {
     use ValidatesFormSlices;
@@ -29,12 +29,16 @@ class ChannelRequest extends FormRequest
         return [
             'name' => [
                 'required', 'string', 'max:255',
-                // The unique handle is derived by slugging the name, so a
-                // colliding name would hit the DB constraint — reject it here.
+                // On create the unique handle is derived by slugging the name,
+                // so a colliding name would hit the DB constraint — reject it
+                // here. An update keeps the existing handle, so any name goes.
                 function (string $attribute, mixed $value, Closure $fail) use ($channel): void {
+                    if ($channel) {
+                        return;
+                    }
+
                     $taken = Channel::query()
                         ->where('handle', Str::slug((string) $value))
-                        ->when($channel, fn ($query) => $query->whereKeyNot($channel->getKey()))
                         ->exists();
 
                     if ($taken) {
