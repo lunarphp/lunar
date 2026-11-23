@@ -4,7 +4,6 @@ import { Deferred, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
-import AppliesImmediately from '../../components/AppliesImmediately.vue';
 import AddressFormFields from '../../components/AddressFormFields.vue';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
@@ -666,9 +665,6 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #addresses>
-                                    <div class="flex justify-end mb-3">
-                                        <AppliesImmediately />
-                                    </div>
                                     <div v-if="addresses.length" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                         <AddressCard v-for="address in addresses" :key="address.id" :address="cardAddress(address)">
                                             <template #actions>
@@ -704,10 +700,7 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #users>
-                                    <div class="flex items-start justify-between gap-3 mb-3">
-                                        <p class="m-0 text-xs text-ink-500 max-w-[640px]">{{ t('customers.users_intro') }}</p>
-                                        <AppliesImmediately />
-                                    </div>
+                                    <p class="text-xs text-ink-500 mb-3 max-w-[640px]">{{ t('customers.users_intro') }}</p>
                                     <div v-if="users.length" class="bg-surface border border-line rounded-xl shadow-sm overflow-hidden">
                                         <table class="w-full border-collapse text-[13px]">
                                             <thead>

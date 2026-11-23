@@ -127,7 +127,7 @@ const isStale = (variant: VariantRow): boolean => (props.staleIds ?? []).include
 </script>
 
 <template>
-    <Section :title="t('products.section_variants')" immediate>
+    <Section :title="t('products.section_variants')">
         <template #desc>
             <template v-if="optionsSummary">{{ t('products.variants_summary', { count: variants.length, options: optionsSummary }) }}</template>
             <template v-else>{{ t('products.variants_count', { shown: filtered.length, total: variants.length }) }}</template>

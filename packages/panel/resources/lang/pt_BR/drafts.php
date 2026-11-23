@@ -21,6 +21,4 @@ return [
     'save_failed' => 'Não foi possível salvar suas alterações. Tente novamente.',
     'discard_failed' => 'Não foi possível descartar o rascunho. Tente novamente.',
     'variant_fields_drop_confirm' => 'Gerar variantes remove desta página os campos da variante única, e suas alterações não salvas neles serão perdidas. Continuar?',
-    'applies_immediately' => 'Aplicado imediatamente',
-    'applies_immediately_tip' => 'As alterações aqui entram em vigor assim que você as faz. Elas não fazem parte das suas alterações não salvas, e Descartar não as desfaz.',
 ];

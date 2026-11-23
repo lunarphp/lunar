@@ -21,6 +21,4 @@ return [
     'save_failed' => 'Uw wijzigingen konden niet worden opgeslagen. Probeer het opnieuw.',
     'discard_failed' => 'Het concept kon niet worden verworpen. Probeer het opnieuw.',
     'variant_fields_drop_confirm' => 'Bij het genereren van varianten worden de velden van de enkele variant van deze pagina verwijderd en gaan uw niet-opgeslagen wijzigingen daarin verloren. Doorgaan?',
-    'applies_immediately' => 'Direct van kracht',
-    'applies_immediately_tip' => 'Wijzigingen hier worden direct van kracht. Ze horen niet bij uw niet-opgeslagen wijzigingen, en Verwerpen maakt ze niet ongedaan.',
 ];

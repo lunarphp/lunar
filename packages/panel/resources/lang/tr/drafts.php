@@ -21,6 +21,4 @@ return [
     'save_failed' => 'Değişiklikleriniz kaydedilemedi. Lütfen tekrar deneyin.',
     'discard_failed' => 'Taslaktan vazgeçilemedi. Lütfen tekrar deneyin.',
     'variant_fields_drop_confirm' => 'Varyant oluşturmak tek varyantın alanlarını bu sayfadan kaldırır ve bu alanlardaki kaydedilmemiş değişiklikleriniz silinir. Devam edilsin mi?',
-    'applies_immediately' => 'Hemen uygulanır',
-    'applies_immediately_tip' => 'Buradaki değişiklikler yaptığınız anda geçerli olur. Kaydedilmemiş değişikliklerinizin parçası değildir ve Vazgeç bunları geri almaz.',
 ];

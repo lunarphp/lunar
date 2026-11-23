@@ -173,7 +173,7 @@ const previewHref = (url: UrlRow): string | null => {
 </script>
 
 <template>
-    <Section :title="t('urls.title')" immediate>
+    <Section :title="t('urls.title')">
         <template #desc>{{ t('urls.description', { count: urls.length }) }}</template>
         <template #actions>
             <Button icon="plus" size="sm" @click="addOpen = true">{{ t('urls.add_url') }}</Button>

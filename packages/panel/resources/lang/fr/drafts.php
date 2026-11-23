@@ -21,6 +21,4 @@ return [
     'save_failed' => "Vos modifications n'ont pas pu être enregistrées. Veuillez réessayer.",
     'discard_failed' => "Le brouillon n'a pas pu être abandonné. Veuillez réessayer.",
     'variant_fields_drop_confirm' => 'La génération des variantes retire de cette page les champs de la variante unique, et vos modifications non enregistrées sur ces champs seront perdues. Continuer ?',
-    'applies_immediately' => "S'applique immédiatement",
-    'applies_immediately_tip' => 'Les modifications effectuées ici prennent effet dès que vous les faites. Elles ne font pas partie de vos modifications non enregistrées, et Abandonner ne les annule pas.',
 ];

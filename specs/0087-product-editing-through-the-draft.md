@@ -3,7 +3,7 @@
 - Status: proposed
 - Author: Glenn Jacobs
 - Created: 2026-09-16
-- TODO item: Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate say so (spec 0087)
+- TODO item: Product editing through the draft — associations, slugs, prices, and media join the product draft as slices; the few operations that stay immediate are explicit actions (spec 0087)
 
 ## Problem
 
@@ -43,7 +43,7 @@ covered under "Operations that stay immediate".
 ## Proposal
 
 One rule, stated on the page: **an edit is part of the draft and lands when you save; an
-operation applies immediately and says so.** Every control on the product, variant,
+operation is an explicit action that applies when you confirm it.** Every control on the product, variant,
 brand, collection, product-type, and customer edit pages is one or the other.
 
 Edits: everything that changes the record's own state, including its associations,
@@ -54,8 +54,9 @@ Operations: the things that change the world beyond the record's fields. Recordi
 stock movement, generating or regenerating variants, collapsing to the simple shape,
 bulk variant actions, defining a bundle, moving a collection in its tree, changing a
 collection's product membership, managing a customer's addresses and linked users, and
-deleting. These keep their immediate endpoints and gain a consistent affordance so
-nobody mistakes them for drafted edits.
+deleting. These keep their immediate endpoints. None of them is a field: each runs
+from a button or a dialog with its own confirming step, so nobody mistakes it for a
+drafted edit.
 
 ### Draft layer correctness
 
@@ -252,26 +253,25 @@ slice is out of scope here and can be added additively.
 | Delete | Page actions, every page | Destroys the record |
 | File upload | Media groups | The bytes land in storage; the link is drafted |
 
-Every card or section containing one of these carries the same affordance: a small
-"Applies immediately" marker next to the control (new `drafts.applies_immediately`
-lang key, with a tooltip explaining that the action is not part of the draft),
-destructive ones confirm before running as they do today, and every one flashes a
-success message on completion and renders its validation errors. Bulk set-price is the
-one operation that looks like a value edit; it keeps a confirmation step for that
-reason.
+No card carries a label saying it applies immediately. A marker would make a split
+save model honest without making it sensible, and once every field-like control is
+drafted it has nothing left to explain: what remains runs from a button, a dialog, or a
+drag, the way staff expect an action to. Destructive operations confirm before running
+as they do today, and every one flashes a success message on completion and renders
+its validation errors. Bulk set-price is the one operation that looks like a value
+edit; it keeps its confirmation step for that reason.
 
-File upload is the exception to the marker: from the user's point of view it is part of
-the draft, because nothing about the record changes until save. Only the file's arrival
-in storage is immediate, and that is invisible.
+File upload is part of the draft from the user's point of view, because nothing about
+the record changes until save. Only the file's arrival in storage is immediate, and
+that is invisible.
 
 Collection product reorder follows the drafted sort: when the drafted sort is not
 "Custom", the drag handles are disabled with a hint, whatever the saved sort is. The
 reorder endpoint stores positions whatever the saved sort is, since they only order the
 storefront under the custom rule.
 
-Until a surface moves into the draft in its own slice, it carries the marker too:
-associations, URL slugs, prices, images and files, and the variant image picker. Each
-later slice removes the marker from the surface it moves.
+Slices 2 to 5 land together, so no release has a page where some field-like controls
+are drafted and others are not. There is no interim marker.
 
 ### Routes
 
@@ -332,7 +332,7 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   on `HasPrices` models and their contracts. The `Associate` and `Dissociate` jobs
   delegate to the association action.
 - **Upgrade path**: none required.
-- **Translations**: new `drafts.applies_immediately` and its tooltip, the stale-draft
+- **Translations**: the stale-draft
   message, the dropped-keys warning before a structural operation, and the conflict summary phrases for the first-party
   slices, across all 16 panel locales. The removed endpoints' flash keys
   (`pricing.flash_*`, `products.flash_associations_added`,
@@ -346,9 +346,8 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 - **Public contract surface**: the slice namespaces `association`, `url`, `price`,
   `media`, and `variant_media` and their value shapes; the draft PATCH and commit
   payloads (`data`, `base`, `rebase`, `version`); `DraftableResource::acceptsField()`;
-  the staging upload endpoint and its response shape; the two new action contracts and
-  verbs; the `drafts.applies_immediately` affordance as the convention for any future
-  immediate operation on an edit page.
+  the staging upload endpoint and its response shape; and the two new action contracts and
+  verbs.
 
 ## Open questions
 
@@ -359,12 +358,6 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 - **Bulk set-price as an operation.** It is the one immediate control that edits values.
   Keeping it immediate with confirmation is the proposal; revisit if staff find it
   surprising in use.
-- **Slice migration order.** Media staging is the largest piece. Ship associations and
-  slugs first to prove the pattern, then prices, then media? Or land all four together
-  so the page has one save model from the first release that changes it? Owner: Glenn.
-  Lean: ship in the plan's order below; each slice leaves the page consistent for the
-  surfaces it covers, and the marker makes the remaining immediate ones explicit in the
-  interim.
 
 ## References
 
@@ -381,6 +374,9 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
 
 ## Implementation plan
 
+Slices 2 to 5 land in one pull request, so no release mixes drafted and immediate
+field-like controls.
+
 - [x] Slice 0 — Draft layer correctness: client-supplied base, client diff authoritative
   at commit, draft `version` with the stale-draft response, no conflict when mine equals
   theirs, conflict check under lock, pristine from the sent diff, `hasDraft` and error
@@ -391,12 +387,10 @@ the collection `move` and `products.*` routes, and the customer `addresses.*` an
   field, colleague commit before first autosave, same-value conflict, failed commit,
   stale version) and vitest for `useEditDraft` (edits during an in-flight commit,
   key-set refresh). Lands first because every later slice relies on it.
-- [ ] Slice 1 — Affordance and rule: the `drafts.applies_immediately` marker with
-  tooltip on every immediate operation in the table above, confirmation on bulk
-  set-price, flash and visible validation errors on every operation, collection reorder
-  following the drafted sort; `admin_notes` as a customer draft field with the notes
-  route removed; 16-locale copy; page tests asserting each operation carries the marker.
-  Lands before any other surface moves so the pages are honest.
+- [ ] Slice 1 — Operations and notes: confirmation on bulk set-price, flash and visible
+  validation errors on every operation, collection reorder following the drafted sort
+  with a hint when it is not Custom; `admin_notes` as a customer draft field with the
+  notes route removed; 16-locale copy.
 - [ ] Slice 2 — `SyncsProductAssociations` action and verb, the jobs delegating to it,
   the `association` slice, the associations card on `useFormSlice`, removal of the
   association routes and controller; draft feature tests (autosave, per-type conflict,

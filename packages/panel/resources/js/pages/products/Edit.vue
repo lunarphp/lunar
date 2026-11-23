@@ -606,7 +606,7 @@ const timelineEvents = computed(() =>
 
                         <PageZone region="variants" position="after" :product="product" />
 
-                        <Section :title="t('products.section_associations')" immediate>
+                        <Section :title="t('products.section_associations')">
                             <template #desc>{{ t('products.section_associations_description') }}</template>
                             <div class="flex flex-col gap-2.5">
                                 <div

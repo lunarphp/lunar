@@ -119,7 +119,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
 </script>
 
 <template>
-    <Section :title="t('products.section_inventory')" immediate>
+    <Section :title="t('products.section_inventory')">
         <template #desc>{{ t('products.section_inventory_description') }}</template>
 
         <div class="mb-4">

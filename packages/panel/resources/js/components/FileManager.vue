@@ -112,7 +112,7 @@ const displayName = (item: FileItem): string => item.name?.trim() || item.file_n
 </script>
 
 <template>
-    <Section :title="group.title" immediate>
+    <Section :title="group.title">
         <template #desc>
             {{ group.description || (ordered.length ? t('media.files_description', { count: ordered.length }) : t('media.files_description_empty')) }}
         </template>

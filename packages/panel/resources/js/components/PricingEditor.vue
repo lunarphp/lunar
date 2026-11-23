@@ -258,7 +258,7 @@ const currencySymbol = (id: number): string => {
 </script>
 
 <template>
-    <Section :title="t('pricing.title')" immediate>
+    <Section :title="t('pricing.title')">
         <template #desc>{{ t('pricing.description') }}</template>
 
         <!-- Base price: one row per enabled currency -->

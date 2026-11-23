@@ -21,6 +21,4 @@ return [
     'save_failed' => 'A módosításokat nem sikerült menteni. Kérjük, próbálja újra.',
     'discard_failed' => 'A piszkozatot nem sikerült elvetni. Kérjük, próbálja újra.',
     'variant_fields_drop_confirm' => 'A változatok generálása eltávolítja az egyetlen változat mezőit erről az oldalról, és az ezekben lévő nem mentett módosításai elvesznek. Folytatja?',
-    'applies_immediately' => 'Azonnal érvényes',
-    'applies_immediately_tip' => 'Az itt végzett módosítások azonnal érvénybe lépnek. Nem részei a nem mentett módosításainak, és az Elvetés nem vonja vissza őket.',
 ];

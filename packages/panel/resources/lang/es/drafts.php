@@ -21,6 +21,4 @@ return [
     'save_failed' => 'No se pudieron guardar tus cambios. Inténtalo de nuevo.',
     'discard_failed' => 'No se pudo descartar el borrador. Inténtalo de nuevo.',
     'variant_fields_drop_confirm' => 'Al generar variantes se eliminan de esta página los campos de la variante única, y se perderán tus cambios sin guardar en ellos. ¿Continuar?',
-    'applies_immediately' => 'Se aplica de inmediato',
-    'applies_immediately_tip' => 'Los cambios aquí se aplican en cuanto los haces. No forman parte de tus cambios sin guardar y Descartar no los deshace.',
 ];

@@ -51,7 +51,6 @@ export const Tooltip = ui().Tooltip;
 export const SideCard = ui().SideCard;
 export const StickySidebar = ui().StickySidebar;
 export const Section = ui().Section;
-export const AppliesImmediately = ui().AppliesImmediately;
 export const Tabs = ui().Tabs;
 export const Flag = ui().Flag;
 export const ValuePreviewChip = ui().ValuePreviewChip;

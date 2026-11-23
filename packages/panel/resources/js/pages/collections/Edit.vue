@@ -396,7 +396,7 @@ const timelineEvents = computed(() =>
                             </Section>
                         </form>
 
-                        <Section :title="t('collections.section_hierarchy')" immediate>
+                        <Section :title="t('collections.section_hierarchy')">
                             <template #desc>{{ t('collections.section_hierarchy_description') }}</template>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
@@ -436,7 +436,7 @@ const timelineEvents = computed(() =>
                             :description="t('collections.attributes_description')"
                         />
 
-                        <Section :title="t('collections.section_products')" immediate>
+                        <Section :title="t('collections.section_products')">
                             <template #desc>{{ t('collections.section_products_description', { count: products.total }) }}</template>
                             <template #actions>
                                 <Button variant="primary" icon="plus" @click="productDialogOpen = true">
