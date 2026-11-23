@@ -10,8 +10,9 @@ use Lunar\Core\Models\Discount;
 use Lunar\Panel\Support\DiscountTargetSchema;
 
 /**
- * One typeahead behind the target picker, returning every kind a bucket can
- * target as `{kind, id, label, hint}` rows.
+ * One typeahead behind the target picker, returning the kinds a bucket can
+ * target as `{kind, id, label, hint}` rows — the requested ones, or every
+ * kind but customers when none are named.
  *
  * A single search across the allowed kinds rather than a tab per kind: staff
  * usually know the name of the thing they want, not which of five tables it
@@ -22,6 +23,13 @@ class DiscountTargetSearchController
     /** How many rows each kind contributes, so no one kind crowds out the rest. */
     private const PER_KIND = 10;
 
+    /**
+     * Kinds that restrict who gets the discount rather than what it applies
+     * to. They share the limitation bucket with the product kinds but have
+     * their own picker, so a search returns them only when it asks for them.
+     */
+    private const AUDIENCE_KINDS = ['customers'];
+
     public function search(Request $request, Discount $discount, DiscountTargetSchema $targets): JsonResponse
     {
         $bucket = $request->string('bucket')->value();
@@ -30,7 +38,7 @@ class DiscountTargetSearchController
 
         $kinds = $request->has('kinds')
             ? array_intersect($allowed, (array) $request->input('kinds'))
-            : $allowed;
+            : array_diff($allowed, self::AUDIENCE_KINDS);
 
         $term = $request->string('q')->value();
 

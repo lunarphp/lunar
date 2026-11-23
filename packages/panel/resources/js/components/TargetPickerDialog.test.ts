@@ -74,6 +74,17 @@ describe('TargetPickerDialog', () => {
         expect(titled).toContain('Widget \u2014 WID-1');
     });
 
+    it('keeps the search to its own kinds when no chip is chosen', async () => {
+        // The bucket alone is wider than one picker: limitation also holds
+        // customers, which only the eligible customers picker may offer.
+        await mountDialog(['products', 'brands']);
+
+        const url = (http.get as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
+        const kinds = new URLSearchParams(url.split('?')[1]).getAll('kinds[]');
+
+        expect(kinds).toEqual(['products', 'brands']);
+    });
+
     it('narrows to one kind when a chip is chosen', async () => {
         await mountDialog();
 

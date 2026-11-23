@@ -244,3 +244,57 @@ it('gates the target search on the manage-discounts permission', function () {
         ->get(route('panel.discounts.targets.search', $discount))
         ->assertForbidden();
 });
+
+it('leaves customers out of a limitation search that names no kinds', function () {
+    // Customers are an audience, picked in their own card; the applies-to
+    // picker shares the limitation bucket and must never offer them.
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    Brand::factory()->create(['name' => 'Kshlerin Co']);
+    Customer::factory()->create(['title' => null, 'first_name' => 'Ada', 'last_name' => 'Kshlerin']);
+
+    $response = $this->getJson(route('panel.discounts.targets.search', $discount).'?bucket=limitation&q=Kshlerin');
+
+    expect(collect($response->json('data'))->pluck('kind')->unique()->values()->all())->toBe(['brands']);
+});
+
+it('finds customers only when they are asked for', function () {
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+
+    Brand::factory()->create(['name' => 'Kshlerin Co']);
+    $customer = Customer::factory()->create(['title' => null, 'first_name' => 'Ada', 'last_name' => 'Kshlerin']);
+
+    $response = $this->getJson(
+        route('panel.discounts.targets.search', $discount).'?bucket=limitation&q=Kshlerin&kinds[]=customers'
+    );
+
+    expect($response->json('data'))->toBe([
+        ['kind' => 'customers', 'id' => $customer->id, 'label' => 'Ada Kshlerin', 'hint' => $customer->company_name],
+    ]);
+});
+
+it('commits eligible customers alongside the limitation targets', function () {
+    $discount = Discount::factory()->create(['type' => PercentageOff::class]);
+    $product = Product::factory()->create();
+    $customer = Customer::factory()->create(['title' => null, 'first_name' => 'Ada', 'last_name' => 'Kshlerin']);
+
+    $limitation = ['products' => [$product->id], 'customers' => [$customer->id]];
+
+    $this->patchJson(route('panel.discounts.draft.update', $discount), [
+        'data' => ['target:limitation' => $limitation],
+    ])->assertOk();
+
+    $this->postJson(route('panel.discounts.draft.commit', $discount), [
+        'data' => ['target:limitation' => $limitation],
+        'rebase' => [],
+    ])->assertOk();
+
+    expect($discount->customers()->pluck('lunar_customers.id')->all())->toBe([$customer->id]);
+
+    $this->get(route('panel.discounts.edit', $discount))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('targets.target:limitation.customers', [$customer->id])
+            ->where('targets.target:limitation.products', [$product->id])
+            ->where('targetChips.target:limitation.customers.0.label', 'Ada Kshlerin')
+        );
+});
