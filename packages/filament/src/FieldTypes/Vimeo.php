@@ -18,7 +18,7 @@ class Vimeo extends BaseFieldType
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
             ->helperText(
-                null ?? __('lunar-filament::components.forms.youtube.helperText')
+                $attribute->description ?? __('lunar-filament::components.forms.youtube.helperText')
             );
     }
 }

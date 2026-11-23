@@ -23,7 +23,7 @@ class File extends BaseFieldType
         $input = FileUpload::make($attribute->handle)
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
-            ->helperText(null);
+            ->helperText($attribute->description);
 
         if (! blank($file_types) && is_array($file_types)) {
             $input->acceptedFileTypes($file_types);

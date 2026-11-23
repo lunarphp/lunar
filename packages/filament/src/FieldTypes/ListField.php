@@ -20,6 +20,6 @@ class ListField extends BaseFieldType
             })
             ->rules($attribute->validation_rules ?? [])
             ->required((bool) $attribute->required)
-            ->helperText(null);
+            ->helperText($attribute->description);
     }
 }

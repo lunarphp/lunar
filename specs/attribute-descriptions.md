@@ -40,7 +40,7 @@ Restore the description as an optional, plain-string attribute property. Core st
 ### Filament bridge (`lunarphp/filament`)
 
 - The converters replace `->helperText(null)` with `->helperText($attribute->description)`, and `YouTube` / `Vimeo` with `->helperText($attribute->description ?? __('lunar-filament::components.forms.youtube.helperText'))`, restoring the v1 fallback. `TextField` has two call sites (rich text and plain); both change.
-- `Lunar\Filament\Schemas\Attribute\AttributeForm` gains `getDescriptionComponent()`, a `Textarea::make('description')` with `->maxLength(255)`, labelled and helped by the existing `lunar-filament::attribute.form.description.*` keys, listed in `getMainComponents()` after the name. The keys already exist in all 16 locales, so the bridge needs no translation changes.
+- `Lunar\Filament\Schemas\Attribute\AttributeForm` gains `getDescriptionComponent()`, a `Textarea::make('description')` with `->maxLength(255)`, labelled and helped by the existing `lunar-filament::attribute.form.description.*` keys, listed after the name in `getMainComponents()` and in the component list `AttributesRelationManager::getDefaultForm()` builds for the attribute group page. The keys already exist in all 16 locales, so the bridge needs no translation changes.
 - `lunarphp/admin` builds its attribute screens from the bridge and needs no change of its own.
 
 ### Upgrade package
@@ -92,5 +92,5 @@ One-way, no `down()`, like the other upgrade steps. It runs after `convert_attri
 
 - [x] Slice 1 — core and upgrade: baseline column, model docblock, factory default; `add_attribute_description` upgrade migration with tests for a v1 jsonb column (with and without `en`), an over-long value, a missing column and a re-run; alpha upgrade guide row.
 - [x] Slice 2 — panel: `AttributeRequest`, `AttributeEditController`, `Edit.vue` input, `AttributeSchema::field()`, `AttributeFields.vue` helper text with a vitest case, lang keys in 16 locales, feature tests for saving and serialising.
-- [ ] Slice 3 — filament: converters read the description, `AttributeForm` description component, a test that a converter's component carries the helper text.
+- [x] Slice 3 — filament: converters read the description, `AttributeForm` description component, a test that a converter's component carries the helper text.
 - [ ] Slice 4 — docs: attributes reference and upgrade guide.

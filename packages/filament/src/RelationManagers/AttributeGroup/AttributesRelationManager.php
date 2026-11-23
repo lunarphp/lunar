@@ -39,6 +39,7 @@ class AttributesRelationManager extends BaseRelationManager
         return $schema
             ->components([
                 $form::getNameComponent(),
+                $form::getDescriptionComponent(),
                 $form::getHandleComponent(),
                 $form::getModelTypesComponent(),
                 $form::getFlagsComponent(),
