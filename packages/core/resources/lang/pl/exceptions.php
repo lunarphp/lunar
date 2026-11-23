@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Nie można dodać śledzenia do realizacji typu :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" nie jest prawidłowym kolorem. Użyj # oraz trzech lub sześciu cyfr szesnastkowych.',
 ];

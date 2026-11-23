@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Praćenje se ne može dodati ispunjenju vrste :method.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" nije valjana boja. Upotrijebite # nakon kojeg slijede tri ili šest heksadecimalnih znamenki.',
 ];

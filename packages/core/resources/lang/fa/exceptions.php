@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'رهگیری را نمی‌توان به تأمین سفارش از نوع :method افزود.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" رنگ معتبری نیست. از # به‌همراه سه یا شش رقم هگزادسیمال استفاده کنید.',
 ];

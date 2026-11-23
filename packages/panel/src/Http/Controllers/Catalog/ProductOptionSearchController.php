@@ -43,7 +43,7 @@ class ProductOptionSearchController
                     ->map(fn (ProductOptionValue $value) => [
                         'id' => $value->id,
                         'name' => $value->translate('name'),
-                        'colour' => $value->meta['colour'] ?? null,
+                        'colour' => $value->colour,
                         'swatch' => $value->getFirstMediaUrl($collection, 'small') ?: ($value->getFirstMediaUrl($collection) ?: null),
                     ])
                     ->values(),

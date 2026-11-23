@@ -104,7 +104,7 @@ class ProductEditController
 
         $mediaCollection = config('lunar.media.collection');
         $valuePreview = fn ($value): array => [
-            'colour' => $value->meta['colour'] ?? null,
+            'colour' => $value->colour,
             'swatch' => $value->getFirstMediaUrl($mediaCollection, 'small') ?: ($value->getFirstMediaUrl($mediaCollection) ?: null),
         ];
 

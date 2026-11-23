@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => 'Tracking cannot be added to a :method fulfilment.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" is not a valid colour. Use # followed by three or six hex digits.',
 ];

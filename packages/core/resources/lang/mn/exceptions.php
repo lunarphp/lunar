@@ -45,4 +45,5 @@ return [
     'fulfilment_method_no_tracking' => ':method биелүүлэлтэд хяналт нэмэх боломжгүй.',
     'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
     'notification_no_recipients' => 'No recipient email address is available for this notification.',
+    'product_option_invalid_colour' => '":colour" нь хүчинтэй өнгө биш байна. # тэмдгийн араас гурав эсвэл зургаан арван зургаатын цифр ашиглана уу.',
 ];

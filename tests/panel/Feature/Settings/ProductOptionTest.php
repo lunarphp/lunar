@@ -39,13 +39,15 @@ test('the product options index renders with translated names and counts', funct
 
 test('the index filters by type', function () {
     ProductOption::factory()->create(['name' => ['en' => 'Size'], 'handle' => 'size']);
-    ProductOption::factory()->colour()->create(['name' => ['en' => 'Colour'], 'handle' => 'colour']);
+    $colour = ProductOption::factory()->colour()->create(['name' => ['en' => 'Colour'], 'handle' => 'colour']);
+    ProductOptionValue::factory()->colour('#1F2A44')->create(['product_option_id' => $colour->id]);
 
     $this->get(route('panel.settings.product-options.index', ['type' => 'colour']))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->has('productOptions.data', 1)
             ->where('productOptions.data.0.handle', 'colour')
+            ->where('productOptions.data.0.values_preview.0.colour', '#1F2A44')
         );
 });
 
@@ -170,7 +172,7 @@ test('updating a product option syncs its values', function () {
     expect($kept->fresh()->translate('name'))->toBe('Crimson');
 });
 
-test('updating a colour option stores the value colour on meta', function () {
+test('updating a colour option stores the value colour', function () {
     $option = ProductOption::factory()->colour()->create(['name' => ['en' => 'Colour'], 'handle' => 'colour']);
 
     $this->put(route('panel.settings.product-options.update', $option), [
@@ -182,7 +184,7 @@ test('updating a colour option stores the value colour on meta', function () {
         ],
     ])->assertRedirect()->assertSessionHas('success');
 
-    expect($option->values()->first()->meta['colour'])->toBe('#1F2A44');
+    expect($option->values()->first()->colour)->toBe('#1F2A44');
 });
 
 test('an invalid colour is rejected', function () {
@@ -209,7 +211,7 @@ test('changing the type through the update endpoint clears value colours', funct
     ])->assertRedirect()->assertSessionHas('success');
 
     expect($option->fresh()->type)->toBe('text')
-        ->and($value->fresh()->meta['colour'] ?? null)->toBeNull();
+        ->and($value->fresh()->colour)->toBeNull();
 });
 
 test('updating preserves other locale translations', function () {

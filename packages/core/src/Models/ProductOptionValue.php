@@ -21,6 +21,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property int $product_option_id
  * @property AsArrayObject $name
  * @property int $position
+ * @property ?string $colour
  * @property ?AsArrayObject $meta
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
