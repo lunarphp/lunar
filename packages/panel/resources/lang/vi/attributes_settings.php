@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Sản phẩm',
+    'model_type_product_variant' => 'Biến thể',
+    'model_type_product_type' => 'Loại sản phẩm',
+    'model_type_collection' => 'Bộ sưu tập',
+    'model_type_customer' => 'Khách hàng',
+    'model_type_brand' => 'Thương hiệu',
+    'model_type_customer_group' => 'Nhóm khách hàng',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

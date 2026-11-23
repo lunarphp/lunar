@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\FieldTypeManifest;
 use Lunar\Core\FieldTypes\AbstractFieldType;
 use Lunar\Core\Models\Attribute;
@@ -49,6 +50,52 @@ test('the attributes index renders with groups, field types, and model types', f
             ->has('fieldTypes')
             ->has('modelTypes')
             ->has('urls.store')
+        );
+});
+
+test('model types carry translated labels, not class names', function () {
+    $this->get(route('panel.settings.attributes.index'))
+        ->assertInertia(fn (Assert $page) => $page->where('modelTypes', fn ($types) => collect($types)->pluck('label', 'value')->sortKeys()->all() === [
+            'brand' => 'Brands',
+            'collection' => 'Collections',
+            'customer' => 'Customers',
+            'customer_group' => 'Customer groups',
+            'product' => 'Products',
+            'product_type' => 'Product types',
+            'product_variant' => 'Variants',
+        ]));
+});
+
+test('the attributes index labels model types in the staff locale', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true, 'preferred_locale' => 'de']), 'staff');
+
+    $this->get(route('panel.settings.attributes.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('modelTypes', fn ($types) => collect($types)->pluck('label')->contains('Varianten')
+                && collect($types)->pluck('label')->contains('Kundengruppen')
+                && ! collect($types)->pluck('label')->contains('ProductVariant'))
+        );
+});
+
+test('the attribute edit screen labels model types in the staff locale', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true, 'preferred_locale' => 'fr']), 'staff');
+
+    $attribute = Attribute::factory()->create();
+
+    $this->get(route('panel.settings.attributes.edit', $attribute))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('modelTypes', fn ($types) => collect($types)->pluck('label')->contains('Groupes de clients')
+                && ! collect($types)->pluck('label')->contains('CustomerGroup'))
+        );
+});
+
+test('a store-registered model type without a lang key is labelled from its class name', function () {
+    AttributeManifest::addType('App\\Models\\GiftCard');
+
+    $this->get(route('panel.settings.attributes.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('modelTypes', fn ($types) => collect($types)->pluck('label', 'value')->get('gift_card') === 'Gift Card')
         );
 });
 

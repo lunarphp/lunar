@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Translation\MessageSelector;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -42,5 +43,24 @@ test('every locale mirrors the english keys of every lang group', function () {
             expect(array_keys(trans("panel::{$group}", [], $locale)))
                 ->toBe($base, "Locale {$locale} is missing or has extra {$group} keys");
         }
+    }
+});
+
+/**
+ * Laravel's trans_choice() quietly falls back to the first segment when a
+ * locale has fewer forms than its plural rule needs, so a missing form reads
+ * as "1 variants" or "5 wariant" rather than failing.
+ */
+test('every locale carries a form for each plural category of flash_bulk_skipped', function () {
+    $selector = new MessageSelector;
+
+    foreach (['en', ...PANEL_LOCALES] as $locale) {
+        $forms = count(explode('|', trans('panel::products.flash_bulk_skipped', [], $locale)));
+
+        $needed = collect(range(0, 200))
+            ->map(fn (int $count) => $selector->getPluralIndex($locale, $count))
+            ->max() + 1;
+
+        expect($forms)->toBe($needed, "Locale {$locale} needs {$needed} plural forms for flash_bulk_skipped");
     }
 });

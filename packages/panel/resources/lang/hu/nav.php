@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Kijelentkezés',
     'toggle_theme' => 'Téma váltása',
     'toggle_sidebar' => 'Oldalsáv váltása',
+    'collapse_sidebar' => 'Oldalsáv összecsukása',
+    'expand_sidebar' => 'Oldalsáv kibontása',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

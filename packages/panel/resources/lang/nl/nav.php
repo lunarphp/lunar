@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Uitloggen',
     'toggle_theme' => 'Thema wisselen',
     'toggle_sidebar' => 'Zijbalk wisselen',
+    'collapse_sidebar' => 'Zijbalk inklappen',
+    'expand_sidebar' => 'Zijbalk uitklappen',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

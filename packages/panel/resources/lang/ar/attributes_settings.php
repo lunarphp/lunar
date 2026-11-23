@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'المنتجات',
+    'model_type_product_variant' => 'المتغيرات',
+    'model_type_product_type' => 'أنواع المنتجات',
+    'model_type_collection' => 'التشكيلات',
+    'model_type_customer' => 'العملاء',
+    'model_type_brand' => 'العلامات التجارية',
+    'model_type_customer_group' => 'مجموعات العملاء',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

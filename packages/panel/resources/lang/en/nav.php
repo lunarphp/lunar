@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Sign out',
     'toggle_theme' => 'Toggle theme',
     'toggle_sidebar' => 'Toggle sidebar',
+    'collapse_sidebar' => 'Collapse sidebar',
+    'expand_sidebar' => 'Expand sidebar',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

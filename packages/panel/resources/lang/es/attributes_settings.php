@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Productos',
+    'model_type_product_variant' => 'Variantes',
+    'model_type_product_type' => 'Tipos de producto',
+    'model_type_collection' => 'Colecciones',
+    'model_type_customer' => 'Clientes',
+    'model_type_brand' => 'Marcas',
+    'model_type_customer_group' => 'Grupos de clientes',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

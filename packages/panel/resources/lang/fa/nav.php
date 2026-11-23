@@ -14,6 +14,8 @@ return [
     'sign_out' => 'خروج',
     'toggle_theme' => 'تغییر تم',
     'toggle_sidebar' => 'تغییر نوار کناری',
+    'collapse_sidebar' => 'جمع کردن نوار کناری',
+    'expand_sidebar' => 'باز کردن نوار کناری',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

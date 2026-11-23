@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Deconectare',
     'toggle_theme' => 'Comută tema',
     'toggle_sidebar' => 'Comută bara laterală',
+    'collapse_sidebar' => 'Restrânge bara laterală',
+    'expand_sidebar' => 'Extinde bara laterală',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

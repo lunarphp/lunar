@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Produse',
+    'model_type_product_variant' => 'Variante',
+    'model_type_product_type' => 'Tipuri de produs',
+    'model_type_collection' => 'Colecții',
+    'model_type_customer' => 'Clienți',
+    'model_type_brand' => 'Mărci',
+    'model_type_customer_group' => 'Grupuri de clienți',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

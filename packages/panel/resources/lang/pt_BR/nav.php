@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Sair',
     'toggle_theme' => 'Alternar tema',
     'toggle_sidebar' => 'Alternar barra lateral',
+    'collapse_sidebar' => 'Recolher barra lateral',
+    'expand_sidebar' => 'Expandir barra lateral',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

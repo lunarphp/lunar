@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Đăng xuất',
     'toggle_theme' => 'Chuyển đổi giao diện',
     'toggle_sidebar' => 'Chuyển đổi thanh bên',
+    'collapse_sidebar' => 'Thu gọn thanh bên',
+    'expand_sidebar' => 'Mở rộng thanh bên',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

@@ -59,7 +59,7 @@ class ProductVariantBulkController
         }
 
         if ($skipped > 0) {
-            return back()->with('error', __('panel::products.flash_bulk_skipped', ['count' => $skipped]));
+            return back()->with('error', trans_choice('panel::products.flash_bulk_skipped', $skipped));
         }
 
         return back()->with('success', __('panel::products.flash_bulk_updated'));

@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Termékek',
+    'model_type_product_variant' => 'Változatok',
+    'model_type_product_type' => 'Terméktípusok',
+    'model_type_collection' => 'Kollekciók',
+    'model_type_customer' => 'Vevők',
+    'model_type_brand' => 'Márkák',
+    'model_type_customer_group' => 'Vevőcsoportok',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

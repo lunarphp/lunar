@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Изход',
     'toggle_theme' => 'Превключи темата',
     'toggle_sidebar' => 'Превключи страничната лента',
+    'collapse_sidebar' => 'Свий страничната лента',
+    'expand_sidebar' => 'Разгъни страничната лента',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

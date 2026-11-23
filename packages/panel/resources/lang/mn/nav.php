@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Гарах',
     'toggle_theme' => 'Загвар солих',
     'toggle_sidebar' => 'Хажуугийн самбар солих',
+    'collapse_sidebar' => 'Хажуугийн самбарыг хураах',
+    'expand_sidebar' => 'Хажуугийн самбарыг дэлгэх',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',
