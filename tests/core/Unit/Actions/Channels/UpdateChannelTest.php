@@ -10,7 +10,7 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 it('updates a channel', function () {
-    $channel = Channel::factory()->create(['default' => false]);
+    $channel = Channel::factory()->create(['handle' => 'retail', 'default' => false]);
 
     $updated = app(UpdateChannel::class)->execute($channel, [
         'name' => 'Wholesale',
@@ -19,8 +19,41 @@ it('updates a channel', function () {
 
     expect($updated->id)->toBe($channel->id);
     expect($updated->fresh()->name)->toBe('Wholesale');
-    expect($updated->fresh()->handle)->toBe('wholesale');
+    expect($updated->fresh()->handle)->toBe('retail');
     expect($updated->fresh()->url)->toBe('https://wholesale.example.com');
+});
+
+it('keeps the existing handle when a channel is renamed without a handle', function () {
+    $channel = Channel::factory()->create(['name' => 'QA Wholesale', 'handle' => 'qa-wholesale', 'default' => false]);
+
+    app(UpdateChannel::class)->execute($channel, [
+        'name' => 'QA Wholesale 2',
+    ]);
+
+    expect($channel->fresh()->name)->toBe('QA Wholesale 2');
+    expect($channel->fresh()->handle)->toBe('qa-wholesale');
+});
+
+it('keeps the existing handle when the handle is passed as null', function () {
+    $channel = Channel::factory()->create(['name' => 'Webstore', 'handle' => 'webstore', 'default' => false]);
+
+    app(UpdateChannel::class)->execute($channel, [
+        'name' => 'Online Store',
+        'handle' => null,
+    ]);
+
+    expect($channel->fresh()->handle)->toBe('webstore');
+});
+
+it('changes the handle when one is passed explicitly', function () {
+    $channel = Channel::factory()->create(['name' => 'Webstore', 'handle' => 'webstore', 'default' => false]);
+
+    app(UpdateChannel::class)->execute($channel, [
+        'name' => 'Webstore',
+        'handle' => 'Online Store',
+    ]);
+
+    expect($channel->fresh()->handle)->toBe('online-store');
 });
 
 it('unsets default on every other channel when this channel becomes default', function () {
