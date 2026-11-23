@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Odbiór osobisty',
+                'flat-rate' => 'Stała stawka',
+                'free-shipping' => 'Darmowa dostawa',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Odbiór osobisty',
+                'flat-rate' => 'Stała stawka',
+                'free-shipping' => 'Darmowa dostawa',
             ],
         ],
     ],

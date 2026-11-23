@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Collecte',
+                'flat-rate' => 'Forfaitaire',
+                'free-shipping' => 'Livraison gratuite',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Standard',
                 'collection' => 'Collecte',
+                'flat-rate' => 'Forfaitaire',
+                'free-shipping' => 'Livraison gratuite',
             ],
         ],
     ],

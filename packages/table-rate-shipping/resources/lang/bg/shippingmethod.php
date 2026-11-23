@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Стандартен',
                 'collection' => 'Колекция',
+                'flat-rate' => 'Фиксирана цена',
+                'free-shipping' => 'Безплатна доставка',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Стандартен',
                 'collection' => 'Колекция',
+                'flat-rate' => 'Фиксирана цена',
+                'free-shipping' => 'Безплатна доставка',
             ],
         ],
     ],

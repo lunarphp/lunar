@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'استاندارد',
                 'collection' => 'تحویل حضوری',
+                'flat-rate' => 'نرخ ثابت',
+                'free-shipping' => 'ارسال رایگان',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'استاندارد',
                 'collection' => 'تحویل حضوری',
+                'flat-rate' => 'نرخ ثابت',
+                'free-shipping' => 'ارسال رایگان',
             ],
         ],
     ],

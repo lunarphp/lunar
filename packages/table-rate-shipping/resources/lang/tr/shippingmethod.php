@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'Standart',
                 'collection' => 'Mağazadan Teslim Alma',
+                'flat-rate' => 'Sabit Ücret',
+                'free-shipping' => 'Ücretsiz Kargo',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'Standart',
                 'collection' => 'Mağazadan Teslim Alma',
+                'flat-rate' => 'Sabit Ücret',
+                'free-shipping' => 'Ücretsiz Kargo',
             ],
         ],
     ],

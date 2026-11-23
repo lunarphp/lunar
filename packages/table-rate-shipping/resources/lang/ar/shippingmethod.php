@@ -28,6 +28,8 @@ return [
             'options' => [
                 'ship-by' => 'قياسي',
                 'collection' => 'استلام من المتجر',
+                'flat-rate' => 'سعر ثابت',
+                'free-shipping' => 'شحن مجاني',
             ],
         ],
         'stock_available' => [
@@ -46,6 +48,8 @@ return [
             'options' => [
                 'ship-by' => 'قياسي',
                 'collection' => 'استلام من المتجر',
+                'flat-rate' => 'سعر ثابت',
+                'free-shipping' => 'شحن مجاني',
             ],
         ],
     ],

@@ -46,6 +46,8 @@ return [
             'options' => [
                 'ship-by' => 'Standardno',
                 'collection' => 'Preuzimanje',
+                'flat-rate' => 'Fiksna cijena',
+                'free-shipping' => 'Besplatna dostava',
             ],
         ],
         'stock_available' => [
@@ -74,6 +76,8 @@ return [
             'options' => [
                 'ship-by' => 'Standardno',
                 'collection' => 'Preuzimanje',
+                'flat-rate' => 'Fiksna cijena',
+                'free-shipping' => 'Besplatna dostava',
             ],
         ],
     ],
