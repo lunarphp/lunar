@@ -5,6 +5,7 @@ namespace Lunar\Panel\Http\Controllers\Catalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lunar\Core\Models\Product;
+use Lunar\Panel\Support\TranslatedColumn;
 
 /**
  * Lightweight product lookup for relation pickers: id, translated name,
@@ -23,9 +24,8 @@ class ProductSearchController
             ->when($term !== '', function ($query) use ($term) {
                 $like = "%{$term}%";
 
-                $query->where(function ($query) use ($like) {
-                    // The dedicated name column holds a {locale: text} map.
-                    $query->where('name', 'like', $like)
+                $query->where(function ($query) use ($like, $term) {
+                    TranslatedColumn::whereLike($query, 'name', $term)
                         ->orWhereHas('variants', fn ($query) => $query->where('sku', 'like', $like));
                 });
             })

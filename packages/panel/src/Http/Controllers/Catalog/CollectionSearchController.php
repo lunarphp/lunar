@@ -5,6 +5,7 @@ namespace Lunar\Panel\Http\Controllers\Catalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lunar\Core\Models\Collection;
+use Lunar\Panel\Support\TranslatedColumn;
 
 /**
  * Lightweight collection lookup for relation pickers: id, translated name
@@ -26,12 +27,7 @@ class CollectionSearchController
         $collections = Collection::query()
             // The breadcrumb accessor walks the nested-set ancestors.
             ->with('ancestors')
-            ->when($term !== '', function ($query) use ($term) {
-                $like = "%{$term}%";
-
-                // The dedicated name column holds a {locale: text} map.
-                $query->where('name', 'like', $like);
-            })
+            ->when($term !== '', fn ($query) => TranslatedColumn::whereLike($query, 'name', $term))
             ->when(
                 $request->filled('group_id'),
                 fn ($query) => $query->where('collection_group_id', $request->integer('group_id')),

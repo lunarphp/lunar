@@ -8,6 +8,7 @@ use Lunar\Core\Models\Product;
 use Lunar\Panel\Search\SearchSource;
 use Lunar\Panel\Sections\Catalog\CatalogSection;
 use Lunar\Panel\Support\Position;
+use Lunar\Panel\Support\TranslatedColumn;
 
 class ProductSearchSource extends SearchSource
 {
@@ -46,8 +47,7 @@ class ProductSearchSource extends SearchSource
     {
         $like = "%{$token}%";
 
-        // The dedicated name column holds a {locale: text} map.
-        $query->where('name', 'like', $like)
+        TranslatedColumn::whereLike($query, 'name', $token)
             ->orWhereHas('variants', fn (Builder $query) => $query->where('sku', 'like', $like))
             ->orWhereHas('urls', fn (Builder $query) => $query->where('slug', 'like', $like));
     }

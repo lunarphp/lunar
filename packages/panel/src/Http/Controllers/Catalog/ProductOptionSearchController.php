@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lunar\Core\Models\ProductOption;
 use Lunar\Core\Models\ProductOptionValue;
+use Lunar\Panel\Support\TranslatedColumn;
 
 /**
  * Shared product options with their canonical values, for the variant
@@ -24,12 +25,10 @@ class ProductOptionSearchController
             ->shared()
             ->with('values.media')
             ->when($term !== '', function ($query) use ($term) {
-                $like = "%{$term}%";
-
-                $query->where(function ($query) use ($like) {
+                $query->where(function ($query) use ($term) {
                     // Both columns hold {locale: text} maps.
-                    $query->where('name', 'like', $like)
-                        ->orWhere('label', 'like', $like);
+                    TranslatedColumn::whereLike($query, 'name', $term);
+                    TranslatedColumn::whereLike($query, 'label', $term, 'or');
                 });
             })
             ->limit(20)

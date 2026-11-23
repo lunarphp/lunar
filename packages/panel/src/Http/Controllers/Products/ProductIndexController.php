@@ -16,6 +16,7 @@ use Lunar\Core\States\Product\Archived;
 use Lunar\Core\States\Product\Draft;
 use Lunar\Core\States\Product\Published;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
+use Lunar\Panel\Support\TranslatedColumn;
 
 class ProductIndexController
 {
@@ -56,8 +57,7 @@ class ProductIndexController
                 $like = "%{$term}%";
 
                 $query->where(function ($query) use ($like, $term, $resolver) {
-                    // The dedicated name column holds a {locale: text} map.
-                    $query->where('name', 'like', $like)
+                    TranslatedColumn::whereLike($query, 'name', $term)
                         ->orWhereHas('variants', fn ($query) => $query->where('sku', 'like', $like))
                         ->orWhereHas('urls', fn ($query) => $query->where('slug', 'like', $like));
 
@@ -90,7 +90,11 @@ class ProductIndexController
             )
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
-            ->orderBy($sort === 'stock' ? 'stock' : $sort, $direction)
+            ->when(
+                $sort === 'name',
+                fn ($query) => TranslatedColumn::orderBy($query, 'name', $direction),
+                fn ($query) => $query->orderBy($sort, $direction),
+            )
             ->paginate(15)
             ->withQueryString();
 
