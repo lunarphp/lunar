@@ -195,13 +195,9 @@ const pickerOpen = computed({
 
 const pickerKinds = computed(() => (pickerBucket.value ? bucketKinds(pickerBucket.value) : []));
 
-const addTargets = (added: TargetOption[]): void => {
-    const bucket = pickerBucket.value;
-
-    if (!bucket) {
-        return;
-    }
-
+// The bucket comes from the caller rather than pickerBucket, which only the
+// product picker sets; the customer picker fills limitation too.
+const addTargets = (bucket: string, added: TargetOption[]): void => {
     const field = TARGET_PREFIX + bucket;
     const value = { ...targetValues[field] };
     const bucketChips = { ...(chips.value[field] ?? {}) };
@@ -490,7 +486,7 @@ const confirmDestroy = (): void => {
                 :search-url="urls.targetSearch"
                 :bucket="pickerBucket ?? 'limitation'"
                 :kinds="pickerKinds"
-                @add="addTargets"
+                @add="(added) => pickerBucket && addTargets(pickerBucket, added)"
             />
 
             <TargetPickerDialog
@@ -498,7 +494,7 @@ const confirmDestroy = (): void => {
                 :search-url="urls.targetSearch"
                 bucket="limitation"
                 :kinds="['customers']"
-                @add="addTargets"
+                @add="(added) => addTargets('limitation', added)"
             />
 
             <DraftConflictDialog

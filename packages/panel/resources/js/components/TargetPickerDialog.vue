@@ -48,9 +48,11 @@ const search = async (): Promise<void> => {
     try {
         const params = new URLSearchParams({ q: query.value, bucket: props.bucket });
 
-        // One search across every kind the bucket allows, narrowed by a chip
-        // rather than split into a tab per kind.
-        (kindFilter.value ? [kindFilter.value] : []).forEach((kind) => params.append('kinds[]', kind));
+        // One search across every kind this picker offers, narrowed by a chip
+        // rather than split into a tab per kind. The kinds always go along:
+        // a bucket can hold more kinds than one picker offers (limitation
+        // also holds customers, which have their own picker).
+        (kindFilter.value ? [kindFilter.value] : props.kinds).forEach((kind) => params.append('kinds[]', kind));
 
         const response = await http.get<{ data: TargetOption[] }>(`${props.searchUrl}?${params.toString()}`);
         results.value = response.data;
