@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Suzite ovaj popust na dio kataloga. Prazan blok znači da vrijedi svugdje.',
 
+    'section_targets_required_description' => 'Odaberite proizvode na koje se ovaj popust odnosi. Ne djeluje dok svaki blok ispod nema barem jedan.',
+
     'section_customers' => 'Prihvatljivi kupci',
 
     'bucket_limitation' => 'Odnosi se na',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Ukloni {label}',
 
     'target_empty' => 'Ništa nije odabrano, pa vrijedi za sve.',
+
+    'target_empty_required' => 'Dodajte barem jedan proizvod. Do tada ovaj popust ne djeluje.',
+
+    'missing_targets_warning' => 'Ovaj popust još ne djeluje. Dodajte barem jedan proizvod u: {buckets}.',
+
+    'missing_targets_short' => 'Ne djeluje dok se ne dodaju proizvodi',
 
     'target_dialog_title' => 'Dodaj ciljeve',
 

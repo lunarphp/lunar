@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Restrinja este desconto a parte do catálogo. Deixe um bloco vazio para valer em tudo.',
 
+    'section_targets_required_description' => 'Escolha os produtos com que este desconto funciona. Ele não faz nada até que cada bloco abaixo tenha pelo menos um.',
+
     'section_customers' => 'Clientes elegíveis',
 
     'bucket_limitation' => 'Aplica-se a',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Remover {label}',
 
     'target_empty' => 'Nada selecionado, então vale para tudo.',
+
+    'target_empty_required' => 'Adicione pelo menos um produto. Até lá, este desconto não faz nada.',
+
+    'missing_targets_warning' => 'Este desconto ainda não faz nada. Adicione pelo menos um produto a: {buckets}.',
+
+    'missing_targets_short' => 'Não faz nada até que produtos sejam adicionados',
 
     'target_dialog_title' => 'Adicionar alvos',
 

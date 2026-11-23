@@ -62,7 +62,7 @@ interface DiscountProps {
 
 const props = defineProps<{
     discount: DiscountProps;
-    type: { class: string; label: string; component: string; buckets: string[] };
+    type: { class: string; label: string; component: string; buckets: string[]; required_buckets: string[] };
     typeRegistered: boolean;
     draft: DraftState | null;
     currencies: { id: number; code: string; name: string; decimal_places: number; default: boolean }[];
@@ -182,6 +182,22 @@ const bucketKinds = (bucket: string): string[] =>
 
 const visibleBuckets = computed(() => props.type.buckets.filter((bucket) => bucketKinds(bucket).length > 0));
 
+// Buckets the type does nothing without (Buy X Get Y's condition and reward).
+// Read from the draft, so the warning clears as soon as staff add a target.
+const isRequiredBucket = (bucket: string): boolean => props.type.required_buckets.includes(bucket);
+
+const missingBuckets = computed(() =>
+    visibleBuckets.value.filter(
+        (bucket) => isRequiredBucket(bucket) && Object.values(targetValues[TARGET_PREFIX + bucket] ?? {}).every((ids) => !ids?.length),
+    ),
+);
+
+const targetsDescription = computed(() =>
+    visibleBuckets.value.length && visibleBuckets.value.every(isRequiredBucket)
+        ? t('discounts.section_targets_required_description')
+        : t('discounts.section_targets_description'),
+);
+
 const pickerBucket = ref<string | null>(null);
 const pickerOpen = computed({
     get: () => pickerBucket.value !== null,
@@ -296,6 +312,18 @@ const confirmDestroy = (): void => {
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
                 <DraftRestoredBanner :form="draftForm" />
+
+                <div
+                    v-if="missingBuckets.length"
+                    data-testid="missing-targets-warning"
+                    role="status"
+                    class="mb-5 px-3 py-2.5 bg-warn-soft border border-warn-border rounded-md flex items-center gap-3"
+                >
+                    <Icon name="alert" cls="sm" class="text-warn-ink shrink-0" />
+                    <span class="text-[12px] text-warn-ink">
+                        {{ t('discounts.missing_targets_warning', { buckets: missingBuckets.map((bucket) => t(`discounts.bucket_${bucket}`)).join(', ') }) }}
+                    </span>
+                </div>
                 <PageZone region="main" position="before" :discount="discount" />
 
                 <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-5">
@@ -357,7 +385,7 @@ const confirmDestroy = (): void => {
                         <section v-if="visibleBuckets.length" class="bg-surface border border-line rounded-xl shadow-sm p-5">
                             <div class="pb-4 border-b border-line mb-4">
                                 <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">{{ t('discounts.section_targets') }}</h2>
-                                <div class="text-xs text-ink-500 leading-normal">{{ t('discounts.section_targets_description') }}</div>
+                                <div class="text-xs text-ink-500 leading-normal">{{ targetsDescription }}</div>
                             </div>
 
                             <div class="flex flex-col gap-5">
@@ -368,6 +396,7 @@ const confirmDestroy = (): void => {
                                     :kinds="bucketKinds(bucket)"
                                     :label="t(`discounts.bucket_${bucket}`)"
                                     :description="t(`discounts.bucket_${bucket}_description`)"
+                                    :required="isRequiredBucket(bucket)"
                                     @add="pickerBucket = bucket"
                                     @remove="(kind, id) => removeTarget(bucket, kind, id)"
                                 />

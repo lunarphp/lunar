@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Grenzen Sie diesen Rabatt auf einen Teil des Katalogs ein. Ein leerer Block gilt überall.',
 
+    'section_targets_required_description' => 'Wählen Sie die Produkte, mit denen dieser Rabatt arbeitet. Er bewirkt nichts, bis jeder Block unten mindestens eines enthält.',
+
     'section_customers' => 'Berechtigte Kunden',
 
     'bucket_limitation' => 'Gilt für',
@@ -126,6 +128,12 @@ return [
     'target_remove' => '{label} entfernen',
 
     'target_empty' => 'Nichts ausgewählt, gilt also für alles.',
+
+    'target_empty_required' => 'Fügen Sie mindestens ein Produkt hinzu. Bis dahin bewirkt dieser Rabatt nichts.',
+
+    'missing_targets_warning' => 'Dieser Rabatt bewirkt noch nichts. Fügen Sie mindestens ein Produkt hinzu zu: {buckets}.',
+
+    'missing_targets_short' => 'Wirkungslos, bis Produkte hinzugefügt sind',
 
     'target_dialog_title' => 'Ziele hinzufügen',
 

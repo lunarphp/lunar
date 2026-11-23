@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Szűkítse a kedvezményt a katalógus egy részére. Az üresen hagyott blokk mindenre vonatkozik.',
 
+    'section_targets_required_description' => 'Válassza ki, mely termékekkel működik ez a kedvezmény. Addig nem csinál semmit, amíg minden alábbi blokkban nincs legalább egy.',
+
     'section_customers' => 'Jogosult vevők',
 
     'bucket_limitation' => 'Mire vonatkozik',
@@ -126,6 +128,12 @@ return [
     'target_remove' => '{label} eltávolítása',
 
     'target_empty' => 'Nincs kiválasztva semmi, így mindenre vonatkozik.',
+
+    'target_empty_required' => 'Adjon hozzá legalább egy terméket. Addig ez a kedvezmény nem csinál semmit.',
+
+    'missing_targets_warning' => 'Ez a kedvezmény még nem csinál semmit. Adjon hozzá legalább egy terméket ide: {buckets}.',
+
+    'missing_targets_short' => 'Nem csinál semmit, amíg nincs hozzáadva termék',
 
     'target_dialog_title' => 'Célok hozzáadása',
 

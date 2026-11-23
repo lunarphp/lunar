@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'ضيّق هذا الخصم على جزء من الكتالوج. اترك أي قسم فارغًا ليُطبَّق على الجميع.',
 
+    'section_targets_required_description' => 'اختر المنتجات التي يعمل عليها هذا الخصم. لن يفعل شيئًا حتى يحتوي كل قسم أدناه على منتج واحد على الأقل.',
+
     'section_customers' => 'العملاء المؤهلون',
 
     'bucket_limitation' => 'ينطبق على',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'إزالة {label}',
 
     'target_empty' => 'لم يُحدَّد شيء، فينطبق على كل شيء.',
+
+    'target_empty_required' => 'أضف منتجًا واحدًا على الأقل. حتى ذلك الحين لا يفعل هذا الخصم شيئًا.',
+
+    'missing_targets_warning' => 'هذا الخصم لا يفعل شيئًا بعد. أضف منتجًا واحدًا على الأقل إلى: {buckets}.',
+
+    'missing_targets_short' => 'لا يفعل شيئًا حتى تُضاف منتجات',
 
     'target_dialog_title' => 'إضافة أهداف',
 

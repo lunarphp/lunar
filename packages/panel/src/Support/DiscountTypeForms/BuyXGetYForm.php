@@ -4,13 +4,18 @@ namespace Lunar\Panel\Support\DiscountTypeForms;
 
 use Lunar\Core\Models\Currency;
 use Lunar\Panel\Contracts\DiscountTypeForm;
+use Lunar\Panel\Contracts\RequiresDiscountTargets;
 
 /**
  * BuyXGetY works off quantities rather than money, and reads its products from
  * the condition and reward buckets rather than the limitation ones the
  * line-targeting types use.
+ *
+ * Unlike those buckets, an empty one here does not mean "everything": core's
+ * BuyXGetY only counts lines that match a condition and only discounts lines
+ * that match a reward, so with either bucket empty it does nothing.
  */
-class BuyXGetYForm implements DiscountTypeForm
+class BuyXGetYForm implements DiscountTypeForm, RequiresDiscountTargets
 {
     public function component(): string
     {
@@ -18,6 +23,11 @@ class BuyXGetYForm implements DiscountTypeForm
     }
 
     public function targetBuckets(): array
+    {
+        return ['condition', 'reward'];
+    }
+
+    public function requiredTargetBuckets(): array
     {
         return ['condition', 'reward'];
     }

@@ -13,6 +13,8 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
 use Lunar\Panel\Support\DiscountDataSchema;
+use Lunar\Panel\Support\DiscountTargetSchema;
+use Lunar\Panel\Support\DiscountTypeSchema;
 
 class DiscountIndexController
 {
@@ -29,8 +31,12 @@ class DiscountIndexController
         Discount::PENDING,
     ];
 
-    public function index(Request $request, DiscountDataSchema $dataSchema): Response
-    {
+    public function index(
+        Request $request,
+        DiscountDataSchema $dataSchema,
+        DiscountTypeSchema $typeSchema,
+        DiscountTargetSchema $targetSchema,
+    ): Response {
         $columns = [
             ['key' => 'status', 'label' => __('panel::discounts.column_status'), 'width' => '110px'],
             ['key' => 'name', 'label' => __('panel::discounts.column_name'), 'width' => 'minmax(0,1.6fr)'],
@@ -93,7 +99,7 @@ class DiscountIndexController
             ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString()
-            ->through(function (Discount $discount) use ($resolver, $types, $dataSchema, $defaultCurrency) {
+            ->through(function (Discount $discount) use ($resolver, $types, $dataSchema, $defaultCurrency, $typeSchema, $targetSchema) {
                 $status = $discount->status;
 
                 $row = [
@@ -115,6 +121,11 @@ class DiscountIndexController
                     'ends_at' => $discount->ends_at,
                     'uses' => $discount->uses,
                     'max_uses' => $discount->max_uses,
+                    // Buckets the type does nothing without that are still
+                    // empty: a Buy X Get Y discount with no qualifying or no
+                    // rewarded products reads as active but discounts nothing.
+                    // Only types that declare such buckets pay for the lookup.
+                    'missing_targets' => $targetSchema->emptyBuckets($discount, $typeSchema->requiredBuckets($discount->type)),
                     'priority' => $discount->priority,
                     'edit_url' => route('panel.discounts.edit', $discount),
                     '_actions' => $resolver->resolveRowActionUrls($discount),
