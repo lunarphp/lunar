@@ -16,6 +16,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Typed fields for the core values still kept in meta — option value colours and reward lines added by a discount (spec core-values-out-of-meta)
 - Remove reward lines the cart no longer earns — an automatically added `BuyXGetY` reward stays and is charged at full price once the cart stops earning it; builds on `added_by_discount_id` from spec core-values-out-of-meta (needs a spec)
 - Fulfilment choice — a cart default and per-line fulfilment method, per-variant allowed methods, a typed pickup location, and changing a fulfilment's method after placement (spec 0083)
+- Pickup locations — a location says whether customers can collect from it, and pickup is only offered when one can; builds on spec 0083 (spec pickup-locations)
 - Add Boost guidelines to packages
 - Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
 - Attribute descriptions — restore the v1 helper text staff write for an attribute and editors see under its field, in core, both admin UIs and the upgrade (spec attribute-descriptions)
