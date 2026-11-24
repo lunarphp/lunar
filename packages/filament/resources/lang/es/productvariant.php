@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Métodos de cumplimiento',
             'helper_text' => 'Cómo se cumple esta variante. Marcar un método físico, como envío o recogida, la hace enviable. No marques ninguno cuando no haya nada que cumplir, como una descarga inmediata.',
+            'unavailable' => ':methods no está disponible ahora mismo, así que los clientes no pueden elegirlo. Desmárcalo o vuelve a hacerlo disponible.',
         ],
         'length_value' => [
             'label' => 'Longitud',

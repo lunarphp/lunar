@@ -11,6 +11,10 @@ return [
         'default' => [
             'label' => 'Alapértelmezett',
         ],
+        'accepts_pickup' => [
+            'label' => 'Az ügyfelek itt átvehetik',
+            'helper_text' => 'Kínálja fel ezt a helyszínt átvételi pontként a pénztárban.',
+        ],
         'address' => [
             'label' => 'Cím',
         ],
@@ -25,6 +29,9 @@ return [
         ],
         'default' => [
             'label' => 'Alapértelmezett',
+        ],
+        'accepts_pickup' => [
+            'label' => 'Személyes átvétel',
         ],
         'fulfilments' => [
             'label' => 'Teljesítések',

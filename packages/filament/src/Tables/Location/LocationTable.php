@@ -46,6 +46,11 @@ class LocationTable
                 ->badge()
                 ->color('gray')
                 ->label(''),
+            TextColumn::make('pickup_indicator')
+                ->state(fn (Model $record) => $record->accepts_pickup ? __('lunar-filament::location.table.accepts_pickup.label') : null)
+                ->badge()
+                ->color('gray')
+                ->label(''),
             TextColumn::make('handle')
                 ->label(__('lunar-filament::location.table.handle.label')),
             TextColumn::make('fulfilments_count')

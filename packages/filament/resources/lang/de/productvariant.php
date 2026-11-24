@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Fulfillment-Methoden',
             'helper_text' => 'Wie diese Variante erfüllt wird. Eine physische Methode wie Versand oder Abholung macht sie versandfähig. Haken Sie nichts an, wenn es nichts zu erfüllen gibt, etwa bei einem Sofort-Download.',
+            'unavailable' => ':methods ist derzeit nicht verfügbar und kann von Kunden nicht gewählt werden. Entfernen Sie den Haken oder machen Sie die Methode wieder verfügbar.',
         ],
         'length_value' => [
             'label' => 'Länge',

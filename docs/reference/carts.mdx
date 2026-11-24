@@ -373,6 +373,14 @@ $cartLine->setFulfilmentMethod('pickup');  // a line override; null inherits the
 $cart->setPickupLocation($location);       // null clears it
 ```
 
+Offer the customer only the locations that accept pickup, and leave pickup out when there are none:
+
+```php
+use Lunar\Core\Models\Location;
+
+$pickupLocations = Location::query()->acceptsPickup()->orderBy('name')->get();
+```
+
 The verbs delegate to `Lunar\Core\Contracts\Actions\Carts\SetsCartFulfilmentMethod`, `SetsCartLineFulfilmentMethod` and `SetsCartPickupLocation`. Before they run, the `StepList::SetFulfilmentMethodValidation` list checks that the key is registered, `StepList::SetLineFulfilmentMethodValidation` checks that the line's purchasable supports it, and `StepList::SetPickupLocationValidation` checks that the location accepts pickup. Adding a line runs the same line check from `StepList::AddToCartValidation`. A failure throws `Lunar\Core\Exceptions\Carts\CartException`. The method is part of a line's identity, so a line set to the same method as another line for the same purchasable and `meta` merges into it, and `setFulfilmentMethod()` returns the merged line.
 
 The same purchasable for delivery and for pickup is two lines. The method joins line identity, cart merging and the cart fingerprint.

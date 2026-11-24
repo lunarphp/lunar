@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Hoe dit artikel kan worden afgehandeld',
     'field_fulfilment_none_hint' => 'Zonder aangevinkte methode valt er niets af te handelen, zoals bij een directe download of een dienst.',
     'field_fulfilment_methods_mixed' => 'Kies methoden voor een fysiek of een niet-fysiek artikel, niet allebei.',
+    'fulfilment_methods_unavailable' => '{methods} is op dit moment niet beschikbaar, dus klanten kunnen het niet kiezen. Vink het uit of maak het weer beschikbaar.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

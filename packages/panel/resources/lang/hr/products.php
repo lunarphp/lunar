@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Kako se ovaj artikl može ispuniti',
     'field_fulfilment_none_hint' => 'Bez označenog načina nema se što ispuniti, npr. za trenutno preuzimanje ili uslugu.',
     'field_fulfilment_methods_mixed' => 'Odaberite načine za fizički ili nefizički artikl, ne oboje.',
+    'fulfilment_methods_unavailable' => '{methods} trenutno nije dostupno pa ga kupci ne mogu odabrati. Odznačite ga ili ga ponovno učinite dostupnim.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

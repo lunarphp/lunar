@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'How this item can be fulfilled',
     'field_fulfilment_none_hint' => 'With no method ticked there is nothing to fulfil, such as an instant download or a service.',
     'field_fulfilment_methods_mixed' => 'Choose methods for a physical item or for a non-physical one, not both.',
+    'fulfilment_methods_unavailable' => '{methods} isn\'t available right now, so customers can\'t choose it. Untick it, or make it available again.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

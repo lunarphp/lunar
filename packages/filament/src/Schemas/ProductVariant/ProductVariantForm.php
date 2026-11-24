@@ -146,17 +146,29 @@ class ProductVariantForm
     }
 
     /**
-     * Every registered fulfilment method, ticked for the ones this variant
+     * Every available fulfilment method, ticked for the ones this variant
      * uses. A variant either ships or doesn't, so ticking a method of the
      * other kind replaces the ticked methods; the page sets `shippable` from
-     * them with shipsWith().
+     * them with shipsWith(). A method that isn't available right now, such
+     * as pickup with no location that accepts it, is only listed while the
+     * variant still uses it, with a warning.
      */
     public static function getFulfilmentMethodsComponent(): CheckboxList
     {
         return CheckboxList::make('fulfilment_methods')
             ->label(__('lunar-filament::productvariant.form.fulfilment_methods.label'))
-            ->helperText(__('lunar-filament::productvariant.form.fulfilment_methods.helper_text'))
-            ->options(fn (): array => static::fulfilmentMethodOptions())
+            ->helperText(function (?array $state): string {
+                $unavailable = array_intersect_key(static::fulfilmentMethodOptions(), array_flip(array_diff($state ?? [], static::availableFulfilmentMethods())));
+
+                return $unavailable === []
+                    ? __('lunar-filament::productvariant.form.fulfilment_methods.helper_text')
+                    : __('lunar-filament::productvariant.form.fulfilment_methods.unavailable', ['methods' => implode(', ', $unavailable)]);
+            })
+            ->options(fn (?array $state): array => array_filter(
+                static::fulfilmentMethodOptions(),
+                fn (string $key): bool => in_array($key, static::availableFulfilmentMethods(), true) || in_array($key, $state ?? [], true),
+                ARRAY_FILTER_USE_KEY,
+            ))
             ->live()
             ->afterStateUpdated(fn (?array $state, ?array $old, Set $set) => $set(
                 'fulfilment_methods',
@@ -183,19 +195,40 @@ class ProductVariantForm
     }
 
     /**
-     * The keys of the methods that fulfil a shippable variant.
+     * The keys of the methods that fulfil a shippable variant, whether or
+     * not they are available right now.
      *
      * @return list<string>
      */
     public static function physicalFulfilmentMethods(): array
     {
-        return FulfilmentMethods::supporting(new ProductVariant(['shippable' => true]))->keys()->values()->all();
+        $shippable = new ProductVariant(['shippable' => true]);
+
+        return FulfilmentMethods::all()
+            ->filter(fn (FulfilmentMethod $method): bool => $method->supports($shippable))
+            ->keys()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * The keys of the methods a customer can choose right now.
+     *
+     * @return list<string>
+     */
+    public static function availableFulfilmentMethods(): array
+    {
+        return FulfilmentMethods::all()
+            ->filter(fn (FulfilmentMethod $method): bool => $method->isAvailable())
+            ->keys()
+            ->values()
+            ->all();
     }
 
     /**
      * The methods to show ticked. Null on a shippable variant allows every
-     * physical method, so it shows them all; a variant that doesn't ship
-     * shows only the methods it names.
+     * physical method, so it shows the available ones; a variant that
+     * doesn't ship shows only the methods it names.
      *
      * @param  list<string>|null  $stored
      * @return list<string>
@@ -207,7 +240,7 @@ class ProductVariantForm
             : array_values(array_diff(array_keys(static::fulfilmentMethodOptions()), static::physicalFulfilmentMethods()));
 
         return $stored === null
-            ? ($shippable ? $pool : [])
+            ? ($shippable ? array_values(array_intersect($pool, static::availableFulfilmentMethods())) : [])
             : array_values(array_intersect($pool, $stored));
     }
 
@@ -246,8 +279,8 @@ class ProductVariantForm
     /**
      * The `fulfilment_methods` value to store for the ticked methods: null
      * when nothing is ticked, so there is nothing to fulfil, and when every
-     * physical method is ticked, so a method registered later stays
-     * available.
+     * available physical method is ticked, so a method registered or made
+     * available later stays allowed.
      *
      * @param  array<int, string>|null  $ticked
      * @return list<string>|null
@@ -258,7 +291,9 @@ class ProductVariantForm
         $allowed = array_values(array_intersect(array_keys(static::fulfilmentMethodOptions()), $ticked ?? []));
         $ships = array_intersect($physical, $allowed) !== [];
 
-        return $allowed === [] || ($ships && count($allowed) === count($physical)) ? null : $allowed;
+        $covers = array_diff(array_intersect($physical, static::availableFulfilmentMethods()), $allowed) === [];
+
+        return $allowed === [] || ($ships && $covers) ? null : $allowed;
     }
 
     public static function getMeasurements(?string $key = null): array

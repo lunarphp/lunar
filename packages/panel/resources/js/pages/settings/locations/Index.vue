@@ -21,6 +21,7 @@ type Location = {
     name: string;
     handle: string;
     default: boolean;
+    accepts_pickup: boolean;
     stocked_variants_count: number;
     urls: { edit: string };
 };
@@ -83,6 +84,7 @@ const createForm = useForm({
     name: '',
     handle: '',
     default: false as boolean,
+    accepts_pickup: false as boolean,
 });
 
 const openCreate = (): void => {
@@ -145,6 +147,7 @@ const submitCreate = (): void => {
             <template #cell-name="{ row }">
                 <span class="text-[12.5px] text-ink-900 font-medium">{{ (row as unknown as Location).name }}</span>
                 <StatusBadge v-if="(row as unknown as Location).default" tone="sage" size="sm" class="ml-2">{{ t('locations.default_badge') }}</StatusBadge>
+                <StatusBadge v-if="(row as unknown as Location).accepts_pickup" tone="archived" size="sm" class="ml-2">{{ t('locations.pickup_badge') }}</StatusBadge>
             </template>
             <template #cell-handle="{ row }">
                 <span class="font-mono text-xs text-ink-700">{{ (row as unknown as Location).handle }}</span>
@@ -181,6 +184,10 @@ const submitCreate = (): void => {
             <label class="flex items-center gap-3 cursor-pointer">
                 <Toggle :on="createForm.default" @toggle="createForm.default = !createForm.default" />
                 <span class="text-[12.5px] text-ink-900 font-medium">{{ t('locations.default_location') }}</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <Toggle :on="createForm.accepts_pickup" @toggle="createForm.accepts_pickup = !createForm.accepts_pickup" />
+                <span class="text-[12.5px] text-ink-900 font-medium">{{ t('locations.accepts_pickup') }}</span>
             </label>
         </div>
         <template #footer>

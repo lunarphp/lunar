@@ -214,6 +214,7 @@ class OrderShowController
             'locations' => $locations->map(fn (Location $location) => [
                 'id' => $location->id,
                 'name' => $location->name,
+                'accepts_pickup' => $location->accepts_pickup,
             ])->values(),
             'activities' => Inertia::defer(fn () => $order->activities()
                 ->with('causer')
@@ -563,7 +564,9 @@ class OrderShowController
 
     /**
      * The methods an outstanding fulfilment can change to: every other
-     * registered method that supports each of its lines.
+     * registered method that supports each of its lines. A change to pickup
+     * starts at the customer's pickup location while it still accepts
+     * pickup, otherwise at the store's default pickup location.
      *
      * @param  \Illuminate\Database\Eloquent\Collection<int, Location>  $locations
      * @return list<array{key: string, label: string, requires_delivery: bool, location_id: ?int}>
@@ -586,7 +589,8 @@ class OrderShowController
                 'requires_delivery' => $method->requiresDelivery(),
                 'location_id' => $method->requiresDelivery()
                     ? null
-                    : ($order->pickup_location_id ?? $locations->firstWhere('default', true)?->id ?? $fulfilment->location_id),
+                    : ($locations->first(fn (Location $location) => $location->id === $order->pickup_location_id && $location->accepts_pickup)?->id
+                        ?? Location::defaultPickup()?->id),
             ])
             ->values()
             ->all();

@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Fulfilmentmethoden',
             'helper_text' => 'Hoe deze variant wordt afgehandeld. Een fysieke methode zoals verzending of afhalen aanvinken maakt hem verzendbaar. Vink niets aan als er niets af te handelen is, zoals bij een directe download.',
+            'unavailable' => ':methods is op dit moment niet beschikbaar, dus klanten kunnen het niet kiezen. Vink het uit of maak het weer beschikbaar.',
         ],
         'length_value' => [
             'label' => 'Lengte',

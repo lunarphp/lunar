@@ -44,6 +44,7 @@ class LocationRequest extends FormRequest
                 Rule::unique(Location::class, 'handle')->ignore($location?->id),
             ],
             'default' => ['sometimes', 'boolean'],
+            'accepts_pickup' => ['sometimes', 'boolean'],
             'line_one' => ['sometimes', 'nullable', 'string', 'max:255'],
             'line_two' => ['sometimes', 'nullable', 'string', 'max:255'],
             'line_three' => ['sometimes', 'nullable', 'string', 'max:255'],
@@ -56,8 +57,8 @@ class LocationRequest extends FormRequest
     }
 
     /**
-     * The validated input shaped for the location actions: the default flag
-     * omitted when absent so an update leaves it untouched.
+     * The validated input shaped for the location actions: the default and
+     * pickup flags omitted when absent so an update leaves them untouched.
      *
      * @return array<string, mixed>
      */
@@ -72,8 +73,10 @@ class LocationRequest extends FormRequest
 
         $attributes += array_intersect_key($validated, array_flip(self::ADDRESS_FIELDS));
 
-        if (array_key_exists('default', $validated)) {
-            $attributes['default'] = (bool) $validated['default'];
+        foreach (['default', 'accepts_pickup'] as $flag) {
+            if (array_key_exists($flag, $validated)) {
+                $attributes[$flag] = (bool) $validated[$flag];
+            }
         }
 
         return $attributes;

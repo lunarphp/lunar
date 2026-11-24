@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Comment cet article peut être traité',
     'field_fulfilment_none_hint' => 'Sans méthode cochée, il n\'y a rien à traiter, comme pour un téléchargement immédiat ou un service.',
     'field_fulfilment_methods_mixed' => 'Choisissez des méthodes pour un article physique ou non physique, pas les deux.',
+    'fulfilment_methods_unavailable' => '{methods} n\'est pas disponible pour le moment, les clients ne peuvent donc pas le choisir. Décochez-le ou rendez-le à nouveau disponible.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

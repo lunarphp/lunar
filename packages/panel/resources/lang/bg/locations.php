@@ -6,6 +6,7 @@ return [
     'create_location' => 'Create location',
     'create_description' => 'Add a place that holds stock and dispatches fulfilments.',
     'default_badge' => 'Default',
+    'pickup_badge' => 'Вземане на място',
     'empty_title' => 'No locations',
 
     'column_name' => 'Name',
@@ -21,6 +22,8 @@ return [
     'default_location_hint' => 'Used when a fulfilment does not pick a location explicitly.',
     'default_locked_hint' => 'This is the default location. To change it, make another location the default.',
     'default_unset_blocked' => 'The default location cannot be unset. Make another location the default instead.',
+    'accepts_pickup' => 'Клиентите могат да вземат оттук',
+    'accepts_pickup_hint' => 'Предлагайте това местоположение като пункт за вземане при плащане.',
 
     'section_details' => 'Details',
     'section_address' => 'Адрес',

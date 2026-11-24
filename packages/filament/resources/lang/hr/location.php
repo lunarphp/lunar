@@ -11,6 +11,10 @@ return [
         'default' => [
             'label' => 'Zadano',
         ],
+        'accepts_pickup' => [
+            'label' => 'Kupci mogu preuzeti ovdje',
+            'helper_text' => 'Ponudi ovu lokaciju kao mjesto preuzimanja pri naplati.',
+        ],
         'address' => [
             'label' => 'Adresa',
         ],
@@ -25,6 +29,9 @@ return [
         ],
         'default' => [
             'label' => 'Zadano',
+        ],
+        'accepts_pickup' => [
+            'label' => 'Preuzimanje',
         ],
         'fulfilments' => [
             'label' => 'Ispunjenja',

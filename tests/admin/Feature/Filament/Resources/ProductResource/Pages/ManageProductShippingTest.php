@@ -5,6 +5,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductShipping;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -171,6 +172,7 @@ it('can set shipping volume automatically', function () {
 it('shows every fulfilment method allowed by default and stores a restriction', function () {
     Language::factory()->create(['default' => true]);
     Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
+    Location::factory()->default()->acceptsPickup()->create();
 
     $record = Product::factory()->create();
     $variant = ProductVariant::factory()->create(['product_id' => $record->id, 'shippable' => true]);
@@ -197,6 +199,7 @@ it('shows every fulfilment method allowed by default and stores a restriction', 
 it('stops shipping when every fulfilment method is unticked', function () {
     Language::factory()->create(['default' => true]);
     Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
+    Location::factory()->default()->acceptsPickup()->create();
 
     $record = Product::factory()->create();
     $variant = ProductVariant::factory()->create(['product_id' => $record->id, 'shippable' => true, 'fulfilment_methods' => ['pickup']]);

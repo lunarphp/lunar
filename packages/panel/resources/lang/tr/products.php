@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Bu ürünün nasıl karşılanabileceği',
     'field_fulfilment_none_hint' => 'Hiçbir yöntem işaretlenmezse karşılanacak bir şey yoktur; örneğin anında indirme veya bir hizmet.',
     'field_fulfilment_methods_mixed' => 'Fiziksel ya da fiziksel olmayan bir ürün için yöntem seçin, ikisini birden değil.',
+    'fulfilment_methods_unavailable' => '{methods} şu anda kullanılamıyor, bu yüzden müşteriler seçemez. İşaretini kaldırın veya yeniden kullanılabilir hale getirin.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

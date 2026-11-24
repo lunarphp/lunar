@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Karşılama yöntemleri',
             'helper_text' => 'Bu varyantın nasıl karşılandığı. Gönderim veya mağazadan teslim alma gibi fiziksel bir yöntemi işaretlemek onu gönderilebilir yapar. Anında indirme gibi karşılanacak bir şey yoksa hiçbirini işaretlemeyin.',
+            'unavailable' => ':methods şu anda kullanılamıyor, bu yüzden müşteriler seçemez. İşaretini kaldırın veya yeniden kullanılabilir hale getirin.',
         ],
         'length_value' => [
             'label' => 'Uzunluk',

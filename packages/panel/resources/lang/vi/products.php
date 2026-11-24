@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Cách sản phẩm này có thể được thực hiện',
     'field_fulfilment_none_hint' => 'Khi không chọn phương thức nào thì không có gì cần thực hiện, ví dụ tải xuống ngay hoặc dịch vụ.',
     'field_fulfilment_methods_mixed' => 'Chọn phương thức cho sản phẩm vật lý hoặc phi vật lý, không chọn cả hai.',
+    'fulfilment_methods_unavailable' => '{methods} hiện không khả dụng nên khách hàng không thể chọn. Bỏ chọn hoặc làm cho phương thức khả dụng trở lại.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

@@ -377,7 +377,7 @@ it('removes a tracking reference, scoped to the fulfilment', function () {
 
 it('changes a delivery to pickup at the chosen location', function () {
     $order = Order::factory()->placed()->create();
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
     $fulfilment = pendingShippingFulfilment($order);
 
     $this->from(route('panel.orders.show', $order))

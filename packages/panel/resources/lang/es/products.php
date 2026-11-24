@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Cómo se puede cumplir este artículo',
     'field_fulfilment_none_hint' => 'Sin ningún método marcado no hay nada que cumplir, como una descarga inmediata o un servicio.',
     'field_fulfilment_methods_mixed' => 'Elige métodos para un artículo físico o para uno no físico, no ambos.',
+    'fulfilment_methods_unavailable' => '{methods} no está disponible ahora mismo, así que los clientes no pueden elegirlo. Desmárcalo o vuelve a hacerlo disponible.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

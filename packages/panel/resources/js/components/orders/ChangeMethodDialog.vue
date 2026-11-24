@@ -58,6 +58,9 @@ watch(
     { immediate: true },
 );
 
+// Goods can only be collected from a location with a pickup counter.
+const pickupLocations = computed(() => props.locations.filter((location) => location.accepts_pickup));
+
 const title = computed(() => (props.method ? t('orders.action_change_method', { method: props.method.label }) : ''));
 
 const close = (): void => emit('update:open', false);
@@ -91,7 +94,7 @@ const submit = (): void => {
         <div v-if="method && !method.requires_delivery">
             <FieldLabel>{{ t('orders.location_field') }}</FieldLabel>
             <Select v-model="form.location_id">
-                <option v-for="location in locations" :key="location.id" :value="location.id">{{ location.name }}</option>
+                <option v-for="location in pickupLocations" :key="location.id" :value="location.id">{{ location.name }}</option>
             </Select>
             <div v-if="form.errors.location_id" class="mt-1 text-[11px] text-danger">{{ form.errors.location_id }}</div>
         </div>

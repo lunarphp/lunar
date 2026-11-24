@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Métodos de fulfillment',
             'helper_text' => 'Como esta variante é atendida. Marcar um método físico, como envio ou retirada, a torna enviável. Não marque nenhum quando não houver nada a atender, como um download imediato.',
+            'unavailable' => ':methods não está disponível no momento, então os clientes não podem escolhê-lo. Desmarque-o ou torne-o disponível novamente.',
         ],
         'length_value' => [
             'label' => 'Comprimento',

@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'كيف يمكن تنفيذ هذا العنصر',
     'field_fulfilment_none_hint' => 'إذا لم تُحدَّد أي طريقة فلا يوجد ما يلزم تنفيذه، مثل التنزيل الفوري أو الخدمة.',
     'field_fulfilment_methods_mixed' => 'اختر طرقًا لعنصر مادي أو لعنصر غير مادي، وليس كليهما.',
+    'fulfilment_methods_unavailable' => '{methods} غير متاح حاليًا، لذا لا يمكن للعملاء اختياره. ألغِ تحديده أو اجعله متاحًا مرة أخرى.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',
