@@ -57,12 +57,8 @@ class NewVsReturningCustomersChart extends BarChartWidget
                     END
                 ) as returning_customer_count'),
                 DB::RAW('COUNT(*) as total'),
-                DB::RAW(db_date('placed_at', '%M', 'month')),
-                DB::RAW(db_date('placed_at', '%Y', 'year')),
                 DB::RAW(db_date('placed_at', '%Y%m', 'monthstamp'))
             )->groupBy(
-                DB::RAW('month'),
-                DB::RAW('year'),
                 DB::RAW('monthstamp'),
                 DB::RAW(db_date('placed_at', '%Y-%m')),
             )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();
