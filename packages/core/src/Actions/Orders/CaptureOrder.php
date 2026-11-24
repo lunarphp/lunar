@@ -12,9 +12,10 @@ use Lunar\Core\Models\Transaction;
 /**
  * Capture a pending payment intent against an order.
  *
- * Validates the requested amount, then dispatches the capture through the
- * underlying transaction's payment driver. Returns the driver's
- * `PaymentCapture` result unchanged.
+ * Validates the requested amount and that the order has no successful
+ * capture yet, then dispatches the capture through the underlying
+ * transaction's payment driver. Returns the driver's `PaymentCapture` result
+ * unchanged.
  */
 class CaptureOrder implements CapturesOrder
 {
@@ -28,24 +29,34 @@ class CaptureOrder implements CapturesOrder
         float|int|string $amount,
     ): PaymentCapture {
         /** @var Order $order */
-        /** @var Transaction $transaction */
-        $transaction = $order->transactions()->whereKey($transactionId)->firstOrFail();
+        return $order->getConnection()->transaction(function () use ($order, $transactionId, $amount) {
+            // Lock the order so two captures sent at once can't both pass the
+            // "not captured yet" check.
+            $order->newQuery()->whereKey($order->getKey())->lockForUpdate()->first();
 
-        if ($transaction->type !== 'intent' || ! $transaction->success) {
-            throw new OrderActionException('Transaction is not a successful payment intent and cannot be captured.');
-        }
+            /** @var Transaction $transaction */
+            $transaction = $order->transactions()->whereKey($transactionId)->firstOrFail();
 
-        $minorAmount = (int) bcmul((string) $amount, (string) $order->currency->factor);
+            if ($transaction->type !== 'intent' || ! $transaction->success) {
+                throw new OrderActionException('Transaction is not a successful payment intent and cannot be captured.');
+            }
 
-        if ($minorAmount <= 0) {
-            throw new OrderActionException('Capture amount must be greater than zero.');
-        }
+            if ($order->transactions()->whereType('capture')->whereSuccess(true)->exists()) {
+                throw new OrderActionException('Order has already been captured.');
+            }
 
-        if ($minorAmount > $transaction->amount) {
-            throw new OrderActionException('Capture amount exceeds the transaction amount.');
-        }
+            $minorAmount = (int) bcmul((string) $amount, (string) $order->currency->factor);
 
-        return $transaction->capture($minorAmount);
+            if ($minorAmount <= 0) {
+                throw new OrderActionException('Capture amount must be greater than zero.');
+            }
+
+            if ($minorAmount > $transaction->amount) {
+                throw new OrderActionException('Capture amount exceeds the transaction amount.');
+            }
+
+            return $transaction->capture($minorAmount);
+        });
     }
 
     /**

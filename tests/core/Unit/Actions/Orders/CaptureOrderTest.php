@@ -71,6 +71,28 @@ it('rejects capturing against a non-intent transaction', function () {
     app(CaptureOrder::class)->execute($order, $capture->id, '10.00');
 })->throws(OrderActionException::class);
 
+it('rejects capturing an order that already has a successful capture', function () {
+    $order = Order::factory()->create(['currency_code' => $this->currency->code]);
+
+    $intent = Transaction::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'intent',
+        'success' => true,
+        'driver' => 'testing',
+        'amount' => 5_000,
+    ]);
+
+    Transaction::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'capture',
+        'success' => true,
+        'driver' => 'testing',
+        'amount' => 5_000,
+    ]);
+
+    app(CaptureOrder::class)->execute($order, $intent->id, '50.00');
+})->throws(OrderActionException::class, 'Order has already been captured.');
+
 it('reports canRun false when a capture already exists', function () {
     $order = Order::factory()->create(['currency_code' => $this->currency->code]);
 
