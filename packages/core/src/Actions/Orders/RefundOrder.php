@@ -3,7 +3,6 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\DataObjects\RefundRequest;
@@ -34,6 +33,26 @@ class RefundOrder implements RefundsOrder
     public function execute(Order $order, RefundRequest $request): PaymentRefund
     {
         /** @var Order $order */
+        /** @var PaymentRefund $refund */
+        $refund = $order->getConnection()->transaction(function () use ($order, $request) {
+            // Lock the order so concurrent refunds are checked one after
+            // another against the committed ledger, not all against the same
+            // balance, and so each refund and its line allocation commit together.
+            $order->newQuery()->whereKey($order->getKey())->lockForUpdate()->first();
+
+            return $this->refund($order, $request);
+        });
+
+        if ($refund->success) {
+            event(new OrderRefunded($order, $request->notify));
+        }
+
+        return $refund;
+    }
+
+    protected function refund(Order $order, RefundRequest $request): PaymentRefund
+    {
+        /** @var Order $order */
         /** @var Transaction $transaction */
         $transaction = $order->transactions()->whereKey($request->transactionId)->firstOrFail();
 
@@ -61,8 +80,6 @@ class RefundOrder implements RefundsOrder
 
         if ($refund->success) {
             $this->recordLineAllocations($refund, $lineAllocations);
-
-            event(new OrderRefunded($order, $request->notify));
         }
 
         return $refund;
@@ -126,18 +143,16 @@ class RefundOrder implements RefundsOrder
             return;
         }
 
-        DB::transaction(function () use ($refund, $allocations) {
-            foreach ($allocations as $allocation) {
-                RefundLine::create([
-                    'transaction_id' => $refund->transaction->id,
-                    'order_line_id' => $allocation['order_line_id'],
-                    'quantity' => $allocation['quantity'],
-                    'amount' => $allocation['amount'],
-                ]);
+        foreach ($allocations as $allocation) {
+            RefundLine::create([
+                'transaction_id' => $refund->transaction->id,
+                'order_line_id' => $allocation['order_line_id'],
+                'quantity' => $allocation['quantity'],
+                'amount' => $allocation['amount'],
+            ]);
 
-                OrderLine::whereKey($allocation['order_line_id'])->increment('refunded_quantity', $allocation['quantity']);
-            }
-        });
+            OrderLine::whereKey($allocation['order_line_id'])->increment('refunded_quantity', $allocation['quantity']);
+        }
     }
 
     /**
