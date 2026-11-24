@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RenameShippingOptionCollectArgRectorTest extends AbstractRectorTestCase
+final class RewriteShippingOptionCollectRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,11 +18,11 @@ final class RenameShippingOptionCollectArgRectorTest extends AbstractRectorTestC
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__.'/Fixture/RenameShippingOptionCollectArgRector');
+        return self::yieldFilesFromDirectory(__DIR__.'/Fixture/RewriteShippingOptionCollectRector');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__.'/config/shipping_option_collect_arg.php';
+        return __DIR__.'/config/shipping_option_collect.php';
     }
 }

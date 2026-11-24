@@ -69,7 +69,6 @@ return [
     'section_transactions' => 'Transactions',
     'section_shipping' => 'Shipping',
     'section_pickup' => 'Odbiór osobisty',
-    'pickup_from' => 'Odbiór w {name}',
     'section_activity' => 'Activity',
 
     'fulfilments_empty' => 'Nothing has been fulfilled yet.',
@@ -98,6 +97,7 @@ return [
     'side_customer' => 'Customer',
     'side_shipping_address' => 'Shipping address',
     'side_customer_address' => 'Adres klienta',
+    'side_pickup_location' => 'Miejsce odbioru',
     'side_billing_address' => 'Billing address',
     'side_tags' => 'Tags',
     'side_notes' => 'Notatki wewnętrzne',
@@ -203,6 +203,7 @@ return [
     'action_split' => 'Split…',
     'action_merge' => 'Merge into…',
     'action_change_location' => 'Change location…',
+    'action_change_method' => 'Zmień na {method}',
     'action_add_tracking' => 'Add tracking…',
     'action_undo_return' => 'Undo return',
     'action_hold' => 'Hold…',
@@ -250,6 +251,8 @@ return [
     'location_title' => 'Change location',
     'location_field' => 'Location',
     'location_confirm' => 'Change location',
+    'change_method_address_hint' => 'To zamówienie nie ma adresu dostawy. Wprowadź adres, na który mają zostać wysłane te produkty.',
+    'change_method_ships_to_address' => 'Te produkty zostaną wysłane na adres dostawy zamówienia.',
 
     'line_unit_price' => 'Unit price',
     'line_quantity' => 'Quantity',
@@ -269,6 +272,7 @@ return [
     'flash_fulfilment_released' => 'Fulfilment released from hold.',
     'flash_fulfilment_cancelled' => 'Fulfilment cancelled.',
     'flash_fulfilment_location_changed' => 'Fulfilment location updated.',
+    'flash_fulfilment_method_changed' => 'Metoda realizacji zmieniona.',
     'flash_tracking_added' => 'Tracking reference added.',
     'flash_tracking_removed' => 'Tracking reference removed.',
 ];

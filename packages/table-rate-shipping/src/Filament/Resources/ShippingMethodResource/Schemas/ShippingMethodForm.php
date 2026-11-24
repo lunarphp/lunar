@@ -46,6 +46,7 @@ class ShippingMethodForm
             ])->columns(2),
             Group::make([
                 static::getChargeByComponent(),
+                static::getPickupLocationComponent(),
             ])->columns(2),
             static::getWeightConstraintsComponent(),
             static::getStockAvailableComponent(),
@@ -171,6 +172,16 @@ class ShippingMethodForm
                 'pickup' => __('shipping::shippingmethod.form.driver.options.pickup'),
             ])
             ->default('ship-by')
+            ->live()
             ->required();
+    }
+
+    public static function getPickupLocationComponent(): Component
+    {
+        return Select::make('pickup_location_id')
+            ->label(__('shipping::shippingmethod.form.pickup_location.label'))
+            ->helperText(__('shipping::shippingmethod.form.pickup_location.helper_text'))
+            ->relationship('pickupLocation', 'name')
+            ->visible(fn (Get $get) => $get('driver') === 'pickup');
     }
 }

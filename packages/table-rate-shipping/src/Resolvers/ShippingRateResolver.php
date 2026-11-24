@@ -65,13 +65,15 @@ class ShippingRateResolver
 
         $shippingMeta = $cart->shippingEstimateMeta;
 
-        $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
+        $deliveryLines = $this->cart->deliveryLines();
+
+        $this->allCartItemsAreInStock = ! $deliveryLines->first(function ($line) {
             return $line->purchasable->shippable && ! $line->purchasable->canBeFulfilledAtQuantity($line->quantity);
         });
 
         // Sum all line weights converted to kg so we can cheaply convert to any
         // method's weight_unit later without iterating cart lines again.
-        $this->cartWeightKg = (float) $this->cart->lines->sum(function ($line) {
+        $this->cartWeightKg = (float) $deliveryLines->sum(function ($line) {
             $value = (float) ($line->purchasable->weight_value ?? 0);
             $unit = $line->purchasable->weight_unit ?? 'kg';
 

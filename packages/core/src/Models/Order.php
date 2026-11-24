@@ -28,6 +28,7 @@ use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\DataObjects\RefundRequest;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
@@ -48,6 +49,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?int $user_id
  * @property int $channel_id
  * @property ?int $region_id
+ * @property ?int $pickup_location_id
  * @property bool $new_customer
  * @property PaymentStatus $payment_status
  * @property FulfilmentStatus $fulfilment_status
@@ -175,18 +177,20 @@ class Order extends Base implements HasCurrency
     }
 
     /**
-     * Whether the customer picks the order up rather than having it shipped,
-     * read from the `pickup` flag stamped onto the shipping line's meta at
-     * order creation. Uses the loaded `lines` relation when present so
-     * callers that eager load lines don't pay for another query.
+     * Whether the order has lines the customer picks up. It may also have
+     * lines to deliver. Read from the fulfilments once there are any, so a
+     * method changed after placement counts, and from the pickup location
+     * requested at checkout before then.
      */
     public function isPickup(): bool
     {
-        $line = $this->relationLoaded('lines')
-            ? $this->lines->firstWhere('type', 'shipping')
-            : $this->shippingLines()->first();
+        $fulfilments = $this->relationLoaded('fulfilments')
+            ? $this->fulfilments
+            : $this->fulfilments()->get(['id', 'method']);
 
-        return ($line?->meta['pickup'] ?? false) === true;
+        return $fulfilments->isNotEmpty()
+            ? $fulfilments->contains('method', Pickup::KEY)
+            : $this->pickup_location_id !== null;
     }
 
     /**
@@ -245,6 +249,14 @@ class Order extends Base implements HasCurrency
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::class);
+    }
+
+    /**
+     * Where the order's pickup lines are collected, as requested at checkout.
+     */
+    public function pickupLocation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function region(): BelongsTo

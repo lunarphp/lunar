@@ -68,6 +68,49 @@ it('explains why a variant cannot be deleted', function () {
         );
 });
 
+it('lists every registered fulfilment method, physical ones first', function () {
+    $this->variant->update(['fulfilment_methods' => ['pickup']]);
+
+    $this->get(route('panel.products.variants.edit', [$this->product, $this->variant]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('variantValues.fulfilment_methods', ['pickup'])
+            ->where('fulfilmentMethods', fn ($methods) => collect($methods)->map(fn ($method) => [$method['key'], $method['physical']])->all() === [
+                ['pickup', true],
+                ['shipping', true],
+                ['digital', false],
+            ])
+        );
+});
+
+it('commits the allowed fulfilment methods, an empty selection as null', function () {
+    $commit = fn (array $methods) => $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
+        'data' => ['fulfilment_methods' => $methods],
+        'rebase' => [],
+    ])->assertOk();
+
+    $commit(['shipping', 'pickup']);
+
+    expect($this->variant->refresh()->fulfilment_methods)->toBe(['pickup', 'shipping']);
+
+    $commit([]);
+
+    expect($this->variant->refresh()->fulfilment_methods)->toBeNull();
+});
+
+it('rejects an unregistered fulfilment method', function () {
+    $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
+        'data' => ['fulfilment_methods' => ['teleport']],
+        'rebase' => [],
+    ])->assertJsonValidationErrors('fulfilment_methods');
+});
+
+it('rejects physical and non-physical fulfilment methods together', function () {
+    $this->postJson(route('panel.products.variants.draft.commit', [$this->product, $this->variant]), [
+        'data' => ['fulfilment_methods' => ['pickup', 'digital']],
+        'rebase' => [],
+    ])->assertJsonValidationErrors(['fulfilment_methods' => __('panel::products.field_fulfilment_methods_mixed')]);
+});
+
 it('drafts and commits variant fields including attribute values', function () {
     $attribute = Attribute::factory()->modelType('product_variant')->create([
         'handle' => 'finish',

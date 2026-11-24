@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Abholung',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Abholort',
+            'helper_text' => 'Leer lassen, um den Standardstandort zu verwenden.',
+        ],
         'stock_available' => [
             'label' => 'Der Bestand aller Warenkorbartikel muss verfügbar sein',
         ],

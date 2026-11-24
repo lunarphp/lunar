@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'По подразбиране',
         ],
+        'address' => [
+            'label' => 'Адрес',
+        ],
     ],
 
     'table' => [

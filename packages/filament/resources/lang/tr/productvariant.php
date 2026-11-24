@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Kargo Edilebilir',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Karşılama yöntemleri',
+            'helper_text' => 'Bu varyantın nasıl karşılandığı. Gönderim veya mağazadan teslim alma gibi fiziksel bir yöntemi işaretlemek onu gönderilebilir yapar. Anında indirme gibi karşılanacak bir şey yoksa hiçbirini işaretlemeyin.',
+        ],
         'length_value' => [
             'label' => 'Uzunluk',
         ],

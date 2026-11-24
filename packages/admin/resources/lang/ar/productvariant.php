@@ -29,7 +29,7 @@ return [
             'title' => 'المخزون',
         ],
         'shipping' => [
-            'title' => 'الشحن',
+            'title' => 'التنفيذ',
         ],
     ],
     'form' => [

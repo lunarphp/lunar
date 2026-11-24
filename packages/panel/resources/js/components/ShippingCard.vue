@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Checkbox from './Checkbox.vue';
 import FieldLabel from './FieldLabel.vue';
 import Section from './Section.vue';
 import Select from './Select.vue';
 import TextInput from './TextInput.vue';
-import Toggle from './Toggle.vue';
 
 const props = defineProps<{
     values: Record<string, unknown>;
     fieldPrefix?: string;
     measurements: { length: string[]; weight: string[] };
+    fulfilmentMethods?: { key: string; label: string; physical: boolean }[];
     errors?: Record<string, string>;
 }>();
 
@@ -27,7 +28,42 @@ const write = (field: string, value: unknown): void => {
 
 const shippable = computed(() => Boolean(read('shippable')));
 
-const toggleShippable = (): void => write('shippable', !shippable.value);
+type MethodOption = { key: string; label: string; physical: boolean };
+
+const methodOptions = computed<MethodOption[]>(() => props.fulfilmentMethods ?? []);
+
+const physicalKeys = computed(() => methodOptions.value.filter((method) => method.physical).map((method) => method.key));
+
+const otherKeys = computed(() => methodOptions.value.filter((method) => !method.physical).map((method) => method.key));
+
+// A variant that ships uses the physical methods, and one that doesn't uses the others or none.
+// Null on a shippable variant allows every physical method, so it shows them all ticked.
+const tickedMethods = computed<string[]>(() => {
+    const stored = read('fulfilment_methods') as string[] | null;
+
+    if (shippable.value) {
+        return stored ? physicalKeys.value.filter((key) => stored.includes(key)) : physicalKeys.value;
+    }
+
+    return stored ? otherKeys.value.filter((key) => stored.includes(key)) : [];
+});
+
+// An item either ships or it doesn't, so ticking a method of the other kind switches the variant
+// over. Shippable follows the ticked methods, and ticking every physical method stores null again,
+// which keeps a method registered later available.
+const toggleMethod = (method: MethodOption, ticked: boolean): void => {
+    const sameKind = method.physical === shippable.value;
+    const keys = ticked
+        ? sameKind ? [...tickedMethods.value, method.key] : [method.key]
+        : tickedMethods.value.filter((key) => key !== method.key);
+
+    const ships = keys.some((key) => physicalKeys.value.includes(key));
+    const pool = ships ? physicalKeys.value : otherKeys.value;
+    const methods = pool.filter((key) => keys.includes(key));
+
+    write('shippable', ships);
+    write('fulfilment_methods', methods.length === 0 || (ships && methods.length === pool.length) ? null : methods);
+};
 
 // Length, width and height share a single unit so their product is a coherent
 // volume; the select mirrors the chosen unit onto all three stored fields.
@@ -72,16 +108,26 @@ const volumeDisplay = computed(() => String(Math.round(volume.value * 100) / 100
 </script>
 
 <template>
-    <Section :title="t('products.section_shipping')">
-        <template #desc>{{ t('products.section_shipping_description') }}</template>
+    <Section :title="t('products.section_fulfilment')">
+        <template #desc>{{ t('products.section_fulfilment_description') }}</template>
 
-        <label class="flex items-center gap-3 p-3.5 border border-line rounded-lg bg-surface cursor-pointer mb-4">
-            <Toggle :on="shippable" @toggle="toggleShippable" />
-            <span class="flex flex-col">
-                <span class="text-[13px] font-medium text-ink-900">{{ t('products.field_shippable') }}</span>
-                <span class="text-[11.5px] text-ink-500">{{ t('products.field_shippable_hint') }}</span>
-            </span>
-        </label>
+        <div v-if="methodOptions.length" class="mb-4">
+            <FieldLabel :hint="t('products.field_fulfilment_methods_hint')">{{ t('products.field_fulfilment_methods') }}</FieldLabel>
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
+                <label
+                    v-for="method in methodOptions"
+                    :key="method.key"
+                    class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer"
+                >
+                    <Checkbox
+                        :model-value="tickedMethods.includes(method.key)"
+                        @update:model-value="(ticked: boolean) => toggleMethod(method, ticked)"
+                    />
+                    {{ method.label }}
+                </label>
+            </div>
+            <div v-if="(errors ?? {})[key('fulfilment_methods')]" class="mt-1 text-[11px] text-danger">{{ (errors ?? {})[key('fulfilment_methods')] }}</div>
+        </div>
 
         <template v-if="shippable">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-3.5 gap-y-3 mb-3">
@@ -146,6 +192,6 @@ const volumeDisplay = computed(() => String(Math.round(volume.value * 100) / 100
                 <span class="text-[11px] text-ink-400">{{ t('products.field_volume_hint') }}</span>
             </div>
         </template>
-        <div v-else class="text-[11.5px] text-ink-500">{{ t('products.field_shippable_off_hint') }}</div>
+        <div v-else-if="!tickedMethods.length" class="text-[11.5px] text-ink-500">{{ t('products.field_fulfilment_none_hint') }}</div>
     </Section>
 </template>

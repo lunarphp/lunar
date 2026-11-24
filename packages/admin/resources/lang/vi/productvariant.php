@@ -29,7 +29,7 @@ return [
             'title' => 'Kho hàng',
         ],
         'shipping' => [
-            'title' => 'Vận chuyển',
+            'title' => 'Thực hiện đơn',
         ],
     ],
     'form' => [

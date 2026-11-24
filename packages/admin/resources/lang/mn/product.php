@@ -118,7 +118,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Хүргэлт',
+            'label' => 'Биелүүлэлт',
         ],
         'variants' => [
             'label' => 'Вариантүүд',

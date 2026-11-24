@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Versandfähig',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfillment-Methoden',
+            'helper_text' => 'Wie diese Variante erfüllt wird. Eine physische Methode wie Versand oder Abholung macht sie versandfähig. Haken Sie nichts an, wenn es nichts zu erfüllen gibt, etwa bei einem Sofort-Download.',
+        ],
         'length_value' => [
             'label' => 'Länge',
         ],

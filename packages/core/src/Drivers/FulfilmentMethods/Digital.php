@@ -4,6 +4,7 @@ namespace Lunar\Core\Drivers\FulfilmentMethods;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\FulfilmentMethod;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\Cancelled;
 use Lunar\Core\States\Fulfilment\Pending;
@@ -80,6 +81,16 @@ class Digital implements FulfilmentMethod
     }
 
     public function usesTracking(): bool
+    {
+        return false;
+    }
+
+    public function supports(Purchasable $purchasable): bool
+    {
+        return (bool) ($purchasable->requiresFulfilment() && ! $purchasable->isShippable());
+    }
+
+    public function requiresDelivery(): bool
     {
         return false;
     }

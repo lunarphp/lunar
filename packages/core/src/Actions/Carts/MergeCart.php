@@ -28,6 +28,7 @@ class MergeCart implements MergesCart
                         return $targetLine->purchasable_type === $line->purchasable_type &&
                         $targetLine->purchasable_id == $line->purchasable_id &&
                         $targetLine->added_by_discount_id == $line->added_by_discount_id &&
+                        $targetLine->fulfilment_method === $line->fulfilment_method &&
                         json_encode($targetLine->meta) == json_encode($line->meta);
                     }),
                     'source' => $line,
@@ -41,6 +42,7 @@ class MergeCart implements MergesCart
                         'quantity' => $lines['source']->quantity,
                         'meta' => $lines['source']->meta,
                         'added_by_discount_id' => $lines['source']->added_by_discount_id,
+                        'fulfilment_method' => $lines['source']->fulfilment_method,
                     ]);
 
                     return;

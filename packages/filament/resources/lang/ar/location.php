@@ -11,6 +11,9 @@ return [
         'default' => [
             'label' => 'افتراضي',
         ],
+        'address' => [
+            'label' => 'العنوان',
+        ],
     ],
 
     'table' => [

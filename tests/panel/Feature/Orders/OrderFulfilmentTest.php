@@ -1,5 +1,6 @@
 <?php
 
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
@@ -372,4 +373,89 @@ it('removes a tracking reference, scoped to the fulfilment', function () {
         ->assertSessionHas('success');
 
     expect($fulfilment->trackings()->count())->toBe(0);
+});
+
+it('changes a delivery to pickup at the chosen location', function () {
+    $order = Order::factory()->placed()->create();
+    $counter = Location::factory()->create();
+    $fulfilment = pendingShippingFulfilment($order);
+
+    $this->from(route('panel.orders.show', $order))
+        ->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), [
+            'method' => 'pickup',
+            'location_id' => $counter->id,
+        ])
+        ->assertSessionHas('success', __('panel::orders.flash_fulfilment_method_changed'));
+
+    $pickup = $order->fulfilments()->sole();
+
+    expect($pickup->method)->toBe('pickup')
+        ->and($pickup->location_id)->toBe($counter->id)
+        ->and($pickup->lines()->sum('quantity'))->toBe(2);
+});
+
+it('changes a pickup to shipping with the address entered in the same step', function () {
+    Location::factory()->create(['default' => true]);
+    $order = Order::factory()->placed()->create();
+    $fulfilment = pendingShippingFulfilment($order);
+    $fulfilment->update(['method' => 'pickup']);
+    $country = Country::factory()->create();
+
+    $this->from(route('panel.orders.show', $order))
+        ->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), [
+            'method' => 'shipping',
+            'address' => [
+                'first_name' => 'Ada',
+                'line_one' => '1 Analytical Way',
+                'city' => 'London',
+                'country_id' => $country->id,
+            ],
+        ])
+        ->assertSessionHas('success');
+
+    expect($order->fulfilments()->sole()->method)->toBe('shipping')
+        ->and($order->shippingAddress()->sole()->line_one)->toBe('1 Analytical Way');
+});
+
+it('flashes the core error when a delivery needs an address the order lacks', function () {
+    $order = Order::factory()->placed()->create();
+    $fulfilment = pendingShippingFulfilment($order);
+    $fulfilment->update(['method' => 'pickup']);
+
+    $this->from(route('panel.orders.show', $order))
+        ->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), ['method' => 'shipping'])
+        ->assertSessionHas('error', __('lunar::exceptions.fulfilment_change_address_missing'));
+
+    expect($fulfilment->refresh()->method)->toBe('pickup');
+});
+
+it('requires the rest of an address once one is sent', function () {
+    $order = Order::factory()->placed()->create();
+    $fulfilment = pendingShippingFulfilment($order);
+    $fulfilment->update(['method' => 'pickup']);
+
+    $this->from(route('panel.orders.show', $order))
+        ->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), [
+            'method' => 'shipping',
+            'address' => ['first_name' => 'Ada'],
+        ])
+        ->assertSessionHasErrors(['address.line_one', 'address.city', 'address.country_id']);
+
+    expect($order->shippingAddress()->exists())->toBeFalse();
+});
+
+it('rejects changing a fulfilment to the method it already uses', function () {
+    $order = Order::factory()->placed()->create();
+    $fulfilment = pendingShippingFulfilment($order);
+
+    $this->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), ['method' => 'shipping'])
+        ->assertForbidden();
+});
+
+it('rejects changing the method of a handed-over fulfilment', function () {
+    $order = Order::factory()->placed()->create();
+    $fulfilment = Fulfilment::factory()->for($order)->shipped()->create();
+
+    $this->put(route('panel.orders.fulfilments.method.update', [$order, $fulfilment]), ['method' => 'pickup'])
+        ->assertForbidden();
 });

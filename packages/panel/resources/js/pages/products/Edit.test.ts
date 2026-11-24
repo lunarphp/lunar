@@ -55,6 +55,7 @@ function mountEdit(): VueWrapper {
             currencies: [],
             customerGroups: [],
             taxClasses: [],
+            fulfilmentMethods: [],
             measurements: { length: [], weight: [] },
             draft: { data: { status: 'live' }, updated_at: '2026-01-01', version: 1 },
             languages: [],

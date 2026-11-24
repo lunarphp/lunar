@@ -6,6 +6,7 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
 use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Facades\OrderNotifications;
+use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -233,6 +234,52 @@ it('changes a fulfilment location', function () {
         ->assertHasNoActionErrors();
 
     expect($fulfilment->refresh()->location_id)->toBe($other->id);
+});
+
+it('offers a change to each other method the fulfilment supports', function () {
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2], ['method' => 'shipping']);
+
+    $component = new OrderFulfilments;
+    $component->record = $this->order;
+
+    $actions = $component->moreActions($fulfilment->refresh()->load('lines.orderLine.purchasable'));
+
+    expect($actions)->toHaveKey('changeMethod.pickup')
+        ->and($actions)->not->toHaveKey('changeMethod.shipping')
+        ->and($actions)->not->toHaveKey('changeMethod.digital');
+});
+
+it('changes a delivery to pickup at the chosen location', function () {
+    $counter = Location::factory()->create();
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'shipping']);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('changeMethod', data: ['location' => $counter->id], arguments: ['fulfilment' => $fulfilment->id, 'method' => 'pickup'])
+        ->assertHasNoActionErrors();
+
+    $pickup = $this->order->fulfilments()->sole();
+
+    expect($pickup->method)->toBe('pickup')
+        ->and($pickup->location_id)->toBe($counter->id);
+});
+
+it('changes a pickup to shipping with the address entered in the same step', function () {
+    $country = Country::factory()->create();
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'pickup']);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('changeMethod', data: [
+            'address' => [
+                'first_name' => 'Ada',
+                'line_one' => '1 Analytical Way',
+                'city' => 'London',
+                'country_id' => $country->id,
+            ],
+        ], arguments: ['fulfilment' => $fulfilment->id, 'method' => 'shipping'])
+        ->assertHasNoActionErrors();
+
+    expect($this->order->fulfilments()->sole()->method)->toBe('shipping')
+        ->and($this->order->shippingAddress()->sole()->line_one)->toBe('1 Analytical Way');
 });
 
 it('lists the states a pending fulfilment can move to', function () {

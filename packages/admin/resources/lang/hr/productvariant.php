@@ -29,7 +29,7 @@ return [
             'title' => 'Zaliha',
         ],
         'shipping' => [
-            'title' => 'Dostava',
+            'title' => 'Ispunjenje',
         ],
     ],
     'form' => [

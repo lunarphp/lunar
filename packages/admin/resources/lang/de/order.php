@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Lieferadresse',
         ],
+        'pickup_location' => [
+            'label' => 'Abholort',
+        ],
         'billing_address' => [
             'label' => 'Rechnungsadresse',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Fulfillment-Standort aktualisiert.',
                     'error' => 'Fulfillment-Standort konnte nicht geändert werden.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Zu :method wechseln',
+                'address_hint' => 'Diese Bestellung hat keine Lieferadresse. Bitte die Adresse eingeben, an die diese Artikel gesendet werden.',
+                'notification' => [
+                    'success' => 'Fulfillment-Methode geändert.',
+                    'error' => 'Fulfillment-Methode konnte nicht geändert werden.',
                 ],
             ],
             'return' => [

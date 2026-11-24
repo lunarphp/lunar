@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Ridicare',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Locație de ridicare',
+            'helper_text' => 'Lasă gol pentru a folosi locația implicită.',
+        ],
         'stock_available' => [
             'label' => 'Stocul tuturor articolelor din coș trebuie să fie disponibil',
         ],

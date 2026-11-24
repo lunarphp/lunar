@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Lang;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentMethod;
 use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
@@ -15,12 +16,15 @@ use Lunar\Core\Actions\Orders\CancelOrder;
 use Lunar\Core\Actions\Orders\CaptureOrder;
 use Lunar\Core\Actions\Orders\RecordPayment;
 use Lunar\Core\Actions\Orders\RefundOrder;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Enums\PaymentTerms;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Facades\Carriers;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Country;
@@ -52,7 +56,8 @@ class OrderShowController
             'fulfilments.lines.orderLine.parent',
             'fulfilments.lines.orderLine.components',
             'fulfilments.trackings',
-            'fulfilments.location',
+            'fulfilments.location.country',
+            'pickupLocation.country',
             'transactions.refundLines.orderLine',
             'shippingAddress.country',
             'billingAddress.country',
@@ -79,7 +84,8 @@ class OrderShowController
             : ($order->customer ? trim($order->customer->first_name.' '.$order->customer->last_name) : null);
 
         $locations = Location::query()->orderBy('name')->get();
-        $shippingOption = $this->shippingOption($order, $money);
+        $delivers = $this->delivers($order);
+        $shippingOption = $this->shippingOption($order, $delivers, $money);
 
         return Inertia::render('orders/Show', [
             'order' => [
@@ -170,6 +176,8 @@ class OrderShowController
             'shippingAddress' => $this->address($order->shippingAddress, $order),
             'billingAddress' => $this->address($order->billingAddress, $order),
             'shippingOption' => $shippingOption,
+            'pickupLocation' => $this->pickupLocation($order),
+            'delivers' => $delivers,
             'countries' => Country::orderBy('name')->get(['id', 'name']),
             'tags' => $order->tags->pluck('value')->all(),
             'actions' => [
@@ -294,6 +302,7 @@ class OrderShowController
                 'release' => ReleaseFulfilment::canRun($fulfilment),
                 'cancel' => $fulfilment->state->canTransitionTo($method->defaultState()),
             ],
+            'change_methods' => $this->changeMethodTargets($order, $fulfilment, $locations),
             'merge_targets' => $mergeTargets->map(fn (Fulfilment $target) => [
                 'id' => $target->id,
                 'reference' => $target->reference ?: '#'.$target->id,
@@ -311,6 +320,7 @@ class OrderShowController
                 'release' => route('panel.orders.fulfilments.release', [$order, $fulfilment]),
                 'cancel' => route('panel.orders.fulfilments.cancel', [$order, $fulfilment]),
                 'location' => route('panel.orders.fulfilments.location.update', [$order, $fulfilment]),
+                'method' => route('panel.orders.fulfilments.method.update', [$order, $fulfilment]),
                 'trackings' => route('panel.orders.fulfilments.trackings.store', [$order, $fulfilment]),
             ],
         ];
@@ -469,23 +479,14 @@ class OrderShowController
 
     /**
      * The delivery method chosen at checkout: the shipping-breakdown snapshot,
-     * falling back to the shipping line for orders without a breakdown. The
-     * pickup flag comes from {@see Order::isPickup()}. The pickup point
-     * comes from the shipping line's meta, written there by the checkout, and
-     * is only returned for a pickup.
+     * falling back to the shipping line for orders without a breakdown. It is
+     * a pickup option when the order collects everything and delivers nothing.
      *
-     * @return array{name: string, identifier: ?string, price: ?string, pickup: bool, pickup_point: ?array{handle: string, name: string, lines: list<string>}}|null
+     * @return array{name: string, identifier: ?string, price: ?string, pickup: bool}|null
      */
-    protected function shippingOption(Order $order, callable $money): ?array
+    protected function shippingOption(Order $order, bool $delivers, callable $money): ?array
     {
-        $line = $order->lines->firstWhere('type', 'shipping');
-        $isPickup = $order->isPickup();
-
-        $pickup = [
-            'pickup' => $isPickup,
-            'pickup_point' => $isPickup ? $this->pickupPoint($line?->meta['pickup_point'] ?? null) : null,
-        ];
-
+        $pickup = $order->isPickup() && ! $delivers;
         $item = $order->shipping_breakdown?->items?->first();
 
         if ($item) {
@@ -493,9 +494,11 @@ class OrderShowController
                 'name' => $item->name,
                 'identifier' => $item->identifier,
                 'price' => $item->price->format(),
-                ...$pickup,
+                'pickup' => $pickup,
             ];
         }
+
+        $line = $order->lines->firstWhere('type', 'shipping');
 
         if (! $line) {
             return null;
@@ -505,32 +508,88 @@ class OrderShowController
             'name' => $line->description,
             'identifier' => $order->shippingAddress?->shipping_option,
             'price' => $money($line->total),
-            ...$pickup,
+            'pickup' => $pickup,
         ];
     }
 
     /**
-     * Normalise the pickup point the checkout stored on the shipping line.
-     * The panel does not own that meta, so anything malformed is dropped
-     * rather than trusted.
-     *
-     * @return array{handle: string, name: string, lines: list<string>}|null
+     * Whether anything on the order goes to the customer's address: a
+     * fulfilment whose method delivers, or before fulfilments exist, a line
+     * requested for delivery or an order that is not a pickup.
      */
-    protected function pickupPoint(mixed $point): ?array
+    protected function delivers(Order $order): bool
     {
-        if (! is_array($point) || ! is_scalar($point['handle'] ?? null)) {
+        if ($order->fulfilments->isNotEmpty()) {
+            return $order->fulfilments->contains(fn (Fulfilment $fulfilment) => $fulfilment->method()->requiresDelivery());
+        }
+
+        return ! $order->isPickup()
+            || $order->lines->contains(fn (OrderLine $line) => (bool) FulfilmentMethods::get($line->fulfilment_method)?->requiresDelivery());
+    }
+
+    /**
+     * Where the order's pickup lines are collected: the pickup fulfilment's
+     * location, falling back to the location the customer chose.
+     *
+     * @return array{id: int, name: string, lines: list<string>}|null
+     */
+    protected function pickupLocation(Order $order): ?array
+    {
+        if (! $order->isPickup()) {
             return null;
         }
 
-        $name = $point['name'] ?? null;
+        $location = $order->fulfilments->firstWhere('method', Pickup::KEY)?->location ?? $order->pickupLocation;
+
+        if (! $location) {
+            return null;
+        }
 
         return [
-            'handle' => (string) $point['handle'],
-            'name' => (string) (is_scalar($name) ? $name : $point['handle']),
-            'lines' => is_array($point['lines'] ?? null)
-                ? array_values(array_map('strval', array_filter($point['lines'], 'is_scalar')))
-                : [],
+            'id' => $location->id,
+            'name' => $location->name,
+            'lines' => collect([
+                $location->line_one,
+                $location->line_two,
+                $location->line_three,
+                $location->city,
+                $location->state,
+                $location->postcode,
+                $location->country?->name,
+                $location->contact_phone,
+            ])->filter(fn (?string $value) => filled($value))->values()->all(),
         ];
+    }
+
+    /**
+     * The methods an outstanding fulfilment can change to: every other
+     * registered method that supports each of its lines.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection<int, Location>  $locations
+     * @return list<array{key: string, label: string, requires_delivery: bool, location_id: ?int}>
+     */
+    protected function changeMethodTargets(Order $order, Fulfilment $fulfilment, \Illuminate\Database\Eloquent\Collection $locations): array
+    {
+        if (! ChangeFulfilmentMethod::canRun($fulfilment)) {
+            return [];
+        }
+
+        return FulfilmentMethods::all()
+            ->reject(fn (FulfilmentMethod $method) => $method->getKey() === $fulfilment->method)
+            ->filter(fn (FulfilmentMethod $method) => $fulfilment->lines->every(
+                fn (FulfilmentLine $line) => ! $line->orderLine?->purchasable
+                    || FulfilmentMethods::supporting($line->orderLine->purchasable)->has($method->getKey())
+            ))
+            ->map(fn (FulfilmentMethod $method) => [
+                'key' => $method->getKey(),
+                'label' => $method->getLabel(),
+                'requires_delivery' => $method->requiresDelivery(),
+                'location_id' => $method->requiresDelivery()
+                    ? null
+                    : ($order->pickup_location_id ?? $locations->firstWhere('default', true)?->id ?? $fulfilment->location_id),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

@@ -105,6 +105,12 @@ describe('FulfilmentCard', () => {
         expect(wrapper!.find('[aria-label="common.more_actions"]').exists()).toBe(true);
     });
 
+    it('shows the more-actions menu when the fulfilment can change method', () => {
+        mountCard(makeFulfilment({ change_methods: [{ key: 'pickup', label: 'Pickup', requires_delivery: false, location_id: 1 }] }));
+
+        expect(wrapper!.find('[aria-label="common.more_actions"]').exists()).toBe(true);
+    });
+
     it('lists tracking rows and emits their removal', async () => {
         mountCard(
             makeFulfilment({

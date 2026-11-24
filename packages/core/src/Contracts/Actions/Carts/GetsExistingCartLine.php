@@ -11,6 +11,7 @@ interface GetsExistingCartLine
     public function execute(
         Cart $cart,
         Purchasable $purchasable,
-        array $meta = []
+        array $meta = [],
+        ?string $fulfilmentMethod = null,
     ): ?CartLine;
 }

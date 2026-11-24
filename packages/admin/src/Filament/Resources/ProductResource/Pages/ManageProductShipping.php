@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
@@ -15,12 +14,16 @@ use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\TextInputSelectAffix;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 
 class ManageProductShipping extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
 
-    public bool $shippable = true;
+    /**
+     * @var list<string>
+     */
+    public array $fulfilment_methods = [];
 
     public ?array $dimensions = [
         'length_value' => 0,
@@ -73,7 +76,7 @@ class ManageProductShipping extends BaseEditRecord
             ...$this->dimensions,
             ...$variant->only(array_keys($this->dimensions)),
         ];
-        $this->shippable = $variant->shippable;
+        $this->fulfilment_methods = ProductVariantForm::tickedFulfilmentMethods($variant->fulfilment_methods, $variant->shippable);
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
@@ -82,7 +85,8 @@ class ManageProductShipping extends BaseEditRecord
 
         $variant->update([
             ...[
-                'shippable' => $this->shippable,
+                'shippable' => ProductVariantForm::shipsWith($this->fulfilment_methods),
+                'fulfilment_methods' => ProductVariantForm::allowedFulfilmentMethods($this->fulfilment_methods),
                 'volume_unit' => 'l',
                 'volume_value' => ManageVariantShipping::getVolume(
                     [
@@ -135,9 +139,7 @@ class ManageProductShipping extends BaseEditRecord
 
         return $schema->components([
             Section::make()->schema([
-                Toggle::make('shippable')->label(
-                    __('lunarpanel::productvariant.form.shippable.label')
-                )->columnSpan(2),
+                ProductVariantForm::getFulfilmentMethodsComponent(),
 
                 TextInputSelectAffix::make('dimensions.length_value')
                     ->label(

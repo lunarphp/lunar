@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Expédiable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Méthodes de traitement',
+            'helper_text' => 'Comment cette variante est traitée. Cocher une méthode physique, comme l\'expédition ou le retrait, la rend expédiable. Ne cochez rien s\'il n\'y a rien à traiter, comme pour un téléchargement immédiat.',
+        ],
         'length_value' => [
             'label' => 'Longueur',
         ],

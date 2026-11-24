@@ -2,15 +2,18 @@
 
 namespace Lunar\Panel\Support;
 
+use Closure;
 use Illuminate\Validation\Rule;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Facades\Converter;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 
 /**
  * The draftable field surface of a single variant — identifiers, tax,
- * shipping, ordering quantities, selling policy, enabled flag, and the
+ * shipping, allowed fulfilment methods, ordering quantities, selling policy, enabled flag, and the
  * variant-morph attribute values. Shared by the variant edit page's draft
  * resource and the product page's simple shape, where the same keys ride the
  * product draft under a `variant:` prefix.
@@ -26,6 +29,7 @@ class VariantFields
         'tax_class_id',
         'tax_ref',
         'shippable',
+        'fulfilment_methods',
         'length_value',
         'length_unit',
         'width_value',
@@ -74,6 +78,7 @@ class VariantFields
             'tax_class_id' => $variant->tax_class_id,
             'tax_ref' => $variant->tax_ref,
             'shippable' => $variant->shippable,
+            'fulfilment_methods' => $variant->fulfilment_methods,
             'length_value' => $variant->length_value,
             'length_unit' => $variant->length_unit,
             'width_value' => $variant->width_value,
@@ -117,6 +122,7 @@ class VariantFields
             'tax_class_id' => ['required', Rule::exists((new TaxClass)->getTable(), 'id')],
             'tax_ref' => ['nullable', 'string', 'max:255'],
             'shippable' => ['boolean'],
+            'fulfilment_methods' => ['nullable', 'array', Rule::in(array_column($this->fulfilmentMethodOptions(), 'key')), $this->unmixedFulfilmentMethods(...)],
             'length_value' => ['nullable', 'numeric', 'min:0'],
             'length_unit' => ['nullable', Rule::in($lengthUnits)],
             'width_value' => ['nullable', 'numeric', 'min:0'],
@@ -160,9 +166,65 @@ class VariantFields
             in_array($field, ['shippable', 'enabled'], true) => (bool) $value,
             in_array($field, ['unit_quantity', 'min_quantity', 'quantity_increment', 'backorder'], true) => (int) $value,
             in_array($field, ['tax_class_id'], true) => $value === null || $value === '' ? null : (int) $value,
+            $field === 'fulfilment_methods' => $this->normalizeMethods($value),
             str_ends_with($field, '_value') => $value === null || $value === '' ? null : (float) $value,
             default => $value === '' ? null : $value,
         };
+    }
+
+    /**
+     * An empty selection allows any method, stored as null; a selection is
+     * sorted so the same set always compares equal.
+     *
+     * @return list<string>|null
+     */
+    protected function normalizeMethods(mixed $value): ?array
+    {
+        $methods = array_values(array_unique(array_filter((array) $value, 'is_string')));
+        sort($methods);
+
+        return $methods ?: null;
+    }
+
+    /**
+     * Every registered fulfilment method, for the variant to choose from.
+     * `physical` marks the methods that fulfil a shippable variant: ticking
+     * one makes the variant shippable, and the rest fulfil a variant that
+     * doesn't ship. Physical methods come first.
+     *
+     * @return list<array{key: string, label: string, physical: bool}>
+     */
+    public function fulfilmentMethodOptions(): array
+    {
+        $shippable = new ProductVariant(['shippable' => true]);
+
+        return FulfilmentMethods::all()
+            ->map(fn (FulfilmentMethod $method): array => [
+                'key' => $method->getKey(),
+                'label' => $method->getLabel(),
+                'physical' => $method->supports($shippable),
+            ])
+            ->sortBy(fn (array $option): bool => ! $option['physical'])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * A variant either ships or doesn't, so its methods can't mix the two
+     * kinds.
+     */
+    protected function unmixedFulfilmentMethods(string $attribute, mixed $value, Closure $fail): void
+    {
+        $physical = collect($this->fulfilmentMethodOptions())->pluck('physical', 'key');
+
+        $kinds = collect((array) $value)
+            ->filter(fn (mixed $key): bool => is_string($key) && $physical->has($key))
+            ->map(fn (string $key): bool => $physical[$key])
+            ->unique();
+
+        if ($kinds->count() > 1) {
+            $fail(__('panel::products.field_fulfilment_methods_mixed'));
+        }
     }
 
     /**

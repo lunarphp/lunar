@@ -2,15 +2,20 @@
 
 namespace Lunar\Core\Actions\Fulfilment;
 
+use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
+use Lunar\Core\Drivers\FulfilmentMethods\Pickup;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
 
 /**
- * Give an order its initial fulfilments. Walk the registered methods in
- * priority order, handing each the still-unclaimed fulfillable lines; each
+ * Give an order its initial fulfilments. Lines stamped with a registered
+ * method at order creation go to that method first. Then walk the registered
+ * methods in priority order, handing each the still-unclaimed fulfillable lines; each
  * claims a subset, and a method that claims >= 1 line gets one fulfilment (in its
  * `defaultState()`) covering them at full quantity. One method, an all-physical
  * order → exactly one fulfilment (today's behaviour); a basket of a delivered good
@@ -42,6 +47,15 @@ class EnsureInitialFulfilment implements EnsuresInitialFulfilment
 
         $first = null;
 
+        $explicit = $unclaimed->filter(fn (OrderLine $line) => $this->methods->get($line->fulfilment_method) !== null);
+
+        foreach ($explicit->groupBy('fulfilment_method') as $key => $lines) {
+            $fulfilment = $this->createFor($order, $this->methods->get($key), $lines);
+            $first ??= $fulfilment;
+        }
+
+        $unclaimed = $unclaimed->diff($explicit)->values();
+
         foreach ($this->methods->all() as $method) {
             if ($unclaimed->isEmpty()) {
                 break;
@@ -53,16 +67,30 @@ class EnsureInitialFulfilment implements EnsuresInitialFulfilment
                 continue;
             }
 
-            $lines = $claimed->mapWithKeys(fn ($line) => [$line->id => $line->quantity])->all();
-
-            $fulfilment = $this->createFulfilment->execute($order, $lines, ['method' => $method->getKey()]);
-
+            $fulfilment = $this->createFor($order, $method, $claimed);
             $first ??= $fulfilment;
 
-            $claimedIds = $claimed->pluck('id')->all();
-            $unclaimed = $unclaimed->reject(fn ($line) => in_array($line->id, $claimedIds, true))->values();
+            $unclaimed = $unclaimed->diff($claimed)->values();
         }
 
         return $first;
+    }
+
+    /**
+     * @param  Collection<int, OrderLine>  $lines
+     */
+    protected function createFor(Order $order, FulfilmentMethod $method, Collection $lines): Fulfilment
+    {
+        $attributes = ['method' => $method->getKey()];
+
+        if ($method->getKey() === Pickup::KEY && $order->pickup_location_id) {
+            $attributes['location_id'] = $order->pickup_location_id;
+        }
+
+        return $this->createFulfilment->execute(
+            $order,
+            $lines->mapWithKeys(fn (OrderLine $line) => [$line->id => $line->quantity])->all(),
+            $attributes,
+        );
     }
 }

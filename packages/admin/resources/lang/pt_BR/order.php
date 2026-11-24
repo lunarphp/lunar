@@ -191,6 +191,9 @@ return [
         'shipping_address' => [
             'label' => 'Endereço de entrega',
         ],
+        'pickup_location' => [
+            'label' => 'Local de retirada',
+        ],
         'billing_address' => [
             'label' => 'Endereço de cobrança',
         ],
@@ -362,6 +365,14 @@ return [
                 'notification' => [
                     'success' => 'Local do fulfillment atualizado.',
                     'error' => 'Não foi possível alterar o local do fulfillment.',
+                ],
+            ],
+            'change_method' => [
+                'label' => 'Mudar para :method',
+                'address_hint' => 'Este pedido não tem endereço de entrega. Informe o endereço para onde enviar estes itens.',
+                'notification' => [
+                    'success' => 'Método de fulfillment alterado.',
+                    'error' => 'Não foi possível alterar o método de fulfillment.',
                 ],
             ],
             'return' => [

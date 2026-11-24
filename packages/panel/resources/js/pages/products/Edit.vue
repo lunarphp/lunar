@@ -80,6 +80,7 @@ const props = defineProps<{
     customerGroups: { id: number; name: string }[];
     taxClasses: { id: number; name: string }[];
     measurements: { length: string[]; weight: string[] };
+    fulfilmentMethods: { key: string; label: string; physical: boolean }[];
     draft: DraftState | null;
     languages: LanguageOption[];
     mediaGroups: MediaGroup[];
@@ -481,6 +482,7 @@ const timelineEvents = computed(() =>
                                 :values="details"
                                 field-prefix="variant:"
                                 :measurements="measurements"
+                                :fulfilment-methods="fulfilmentMethods"
                                 :errors="detailsErrors"
                             />
                             <IdentifiersCard

@@ -4,8 +4,10 @@ namespace Lunar\Panel\Http\Controllers\Orders;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentMethod;
 use Lunar\Core\Actions\Fulfilment\FulfilFulfilment;
 use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
@@ -18,8 +20,10 @@ use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\FulfilmentTracking;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Panel\Http\Requests\Orders\ChangeFulfilmentLocationRequest;
+use Lunar\Panel\Http\Requests\Orders\ChangeFulfilmentMethodRequest;
 use Lunar\Panel\Http\Requests\Orders\FulfilmentTrackingRequest;
 use Lunar\Panel\Http\Requests\Orders\HoldFulfilmentRequest;
 use Lunar\Panel\Http\Requests\Orders\MergeFulfilmentRequest;
@@ -31,8 +35,9 @@ use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
 /**
  * Fulfilment mutations, each delegating to a core fulfilment verb behind its
- * guard. Fulfilments are never created here — the initial fulfilment is
- * created at order placement and admins split it down or merge it back.
+ * guard. Fulfilments are never created directly here — the initial
+ * fulfilment is created at order placement and admins split it down, merge it
+ * back, or change its method.
  */
 class OrderFulfilmentController
 {
@@ -189,6 +194,30 @@ class OrderFulfilmentController
         return $this->run(
             fn () => $fulfilment->changeLocation($request->integer('location_id')),
             'panel::orders.flash_fulfilment_location_changed',
+        );
+    }
+
+    /**
+     * Hand the fulfilment over another way, entering a shipping address in
+     * the same step when a delivery method needs one the order lacks.
+     */
+    public function updateMethod(ChangeFulfilmentMethodRequest $request, Order $order, Fulfilment $fulfilment): RedirectResponse
+    {
+        $method = $request->string('method')->value();
+
+        abort_unless(ChangeFulfilmentMethod::canRun($fulfilment) && $method !== $fulfilment->method, 403);
+
+        $location = $request->filled('location_id') ? Location::find($request->integer('location_id')) : null;
+
+        return $this->run(
+            fn () => DB::transaction(function () use ($request, $order, $fulfilment, $method, $location) {
+                if ($request->filled('address') && ! $order->shippingAddress()->exists()) {
+                    $order->addresses()->create([...$request->validated('address'), 'type' => 'shipping']);
+                }
+
+                return $fulfilment->changeMethod($method, $location);
+            }),
+            'panel::orders.flash_fulfilment_method_changed',
         );
     }
 

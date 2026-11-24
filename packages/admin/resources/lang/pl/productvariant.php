@@ -29,7 +29,7 @@ return [
             'title' => 'Inwentarz',
         ],
         'shipping' => [
-            'title' => 'Wysyłka',
+            'title' => 'Realizacja',
         ],
     ],
     'form' => [

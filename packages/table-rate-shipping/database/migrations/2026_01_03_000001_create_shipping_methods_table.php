@@ -18,6 +18,7 @@ return new class extends Migration
             $table->time('cutoff')->nullable();
             $table->json('data')->nullable();
             $table->string('driver');
+            $table->foreignId('pickup_location_id')->nullable()->constrained($this->prefix.'locations')->nullOnDelete();
             $table->timestamps();
         });
     }

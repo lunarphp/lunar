@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Moguća dostava',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Načini ispunjenja',
+            'helper_text' => 'Kako se ova varijanta ispunjava. Označavanje fizičkog načina, poput slanja ili preuzimanja, čini je dostavljivom. Ne označite ništa kada se nema što ispuniti, npr. za trenutno preuzimanje datoteke.',
+        ],
         'length_value' => [
             'label' => 'Duljina',
         ],

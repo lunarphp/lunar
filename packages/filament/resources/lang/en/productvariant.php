@@ -86,6 +86,10 @@ return [
         'shippable' => [
             'label' => 'Shippable',
         ],
+        'fulfilment_methods' => [
+            'label' => 'Fulfilment methods',
+            'helper_text' => 'How this variant is fulfilled. Ticking a physical method such as shipping or pickup makes it shippable. Tick none when there is nothing to fulfil, such as an instant download.',
+        ],
         'length_value' => [
             'label' => 'Length',
         ],

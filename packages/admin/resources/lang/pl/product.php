@@ -118,7 +118,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Dostawa',
+            'label' => 'Realizacja',
         ],
         'variants' => [
             'label' => 'Warianty',

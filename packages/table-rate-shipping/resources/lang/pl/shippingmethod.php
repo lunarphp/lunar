@@ -48,6 +48,10 @@ return [
                 'pickup' => 'Odbiór osobisty',
             ],
         ],
+        'pickup_location' => [
+            'label' => 'Miejsce odbioru',
+            'helper_text' => 'Pozostaw puste, aby użyć lokalizacji domyślnej.',
+        ],
         'stock_available' => [
             'label' => 'Wszystkie produkty w koszyku muszą być dostępne',
         ],

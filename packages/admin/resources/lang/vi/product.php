@@ -118,7 +118,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Vận chuyển',
+            'label' => 'Thực hiện đơn',
         ],
         'variants' => [
             'label' => 'Biến thể',

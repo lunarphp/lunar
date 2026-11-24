@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Upgrade\Unit\Rector\Shipping\Fixture\RenameShippingOptionCollectArgRector;
+namespace Lunar\Tests\Upgrade\Unit\Rector\Shipping\Fixture\RewriteShippingOptionCollectRector;
 
 use Lunar\Core\DataTypes\ShippingOption;
 
@@ -12,5 +12,5 @@ class NotAShippingOption
 function untouched($price, $taxClass): void
 {
     new NotAShippingOption(collect: true);
-    new ShippingOption(name: 'Pickup', description: null, identifier: 'PICKUP', price: $price, taxClass: $taxClass, pickup: true);
+    new ShippingOption(name: 'Pickup', description: null, identifier: 'PICKUP', price: $price, taxClass: $taxClass, pickupLocation: null);
 }

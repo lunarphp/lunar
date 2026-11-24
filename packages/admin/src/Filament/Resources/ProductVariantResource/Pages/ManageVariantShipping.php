@@ -63,8 +63,18 @@ class ManageVariantShipping extends BaseEditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['fulfilment_methods'] = ProductVariantForm::tickedFulfilmentMethods($data['fulfilment_methods'] ?? null, (bool) ($data['shippable'] ?? false));
+
+        return parent::mutateFormDataBeforeFill($data);
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        $data['shippable'] = ProductVariantForm::shipsWith($data['fulfilment_methods'] ?? null);
+        $data['fulfilment_methods'] = ProductVariantForm::allowedFulfilmentMethods($data['fulfilment_methods'] ?? null);
+
         $volume = static::getVolume(
             [
                 'value' => $data['width_value'],
@@ -117,7 +127,7 @@ class ManageVariantShipping extends BaseEditRecord
     {
         return $schema->components([
             Section::make()->schema([
-                ProductVariantForm::getShippableComponent(),
+                ProductVariantForm::getFulfilmentMethodsComponent(),
                 ProductVariantForm::getLengthComponent(),
                 ProductVariantForm::getWidthComponent(),
                 ProductVariantForm::getHeightComponent(),

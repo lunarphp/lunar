@@ -126,7 +126,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Shipping',
+            'label' => 'Fulfilment',
         ],
         'variants' => [
             'label' => 'Variants',

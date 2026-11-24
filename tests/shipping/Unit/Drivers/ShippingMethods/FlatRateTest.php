@@ -3,9 +3,11 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Product;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
+use Lunar\Shipping\Models\ShippingExclusionList;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
@@ -101,4 +103,36 @@ test('flat rate shipping is priced in the cart currency, not the default currenc
     ));
 
     expect($shippingOption->price->value)->toEqual(450);
+});
+
+test('an excluded product picked up does not block flat rate shipping', function () {
+    $currency = Currency::factory()->create(['default' => true]);
+    TaxClass::factory()->create(['default' => true]);
+
+    $shippingZone = ShippingZone::factory()->create(['type' => 'countries']);
+
+    $shippingRate = ShippingRate::factory()->create([
+        'shipping_method_id' => ShippingMethod::factory()->create(['driver' => 'flat-rate', 'data' => []])->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->create(['price' => 600, 'min_quantity' => 1, 'currency_id' => $currency->id]);
+
+    $cart = $this->createCart($currency, 500, calculate: false);
+    $line = $cart->lines()->with('purchasable')->first();
+
+    $exclusions = ShippingExclusionList::factory()->create();
+    $exclusions->exclusions()->create([
+        'purchasable_type' => Product::morphName(),
+        'purchasable_id' => $line->purchasable->product_id,
+    ]);
+    $shippingZone->shippingExclusions()->attach($exclusions);
+
+    $resolve = fn () => (new FlatRate)->resolve(new ShippingOptionRequest(cart: $cart->refresh()->calculate(), shippingRate: $shippingRate));
+
+    expect($resolve())->toBeNull();
+
+    $line->update(['fulfilment_method' => 'pickup']);
+
+    expect($resolve())->toBeInstanceOf(ShippingOption::class);
 });

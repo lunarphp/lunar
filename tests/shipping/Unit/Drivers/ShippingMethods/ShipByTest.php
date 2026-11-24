@@ -653,3 +653,41 @@ test('weight tiers are evaluated in the shipping method configured weight_unit',
     expect($option)->toBeInstanceOf(ShippingOption::class)
         ->and($option->price->value)->toEqual(200);
 });
+
+test('a line picked up adds no weight to a weight tier', function () {
+    $currency = Currency::factory()->create(['default' => true]);
+    TaxClass::factory()->create(['default' => true]);
+
+    $shippingRate = ShippingRate::factory()->create([
+        'shipping_method_id' => ShippingMethod::factory()->create(['driver' => 'ship-by', 'data' => ['charge_by' => 'weight']])->id,
+        'shipping_zone_id' => ShippingZone::factory()->create(['type' => 'countries'])->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
+        ['price' => 1000, 'min_quantity' => 1, 'currency_id' => $currency->id],
+        ['price' => 200, 'min_quantity' => 10, 'currency_id' => $currency->id],
+    ]);
+
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    foreach ([3.0 => null, 20.0 => 'pickup'] as $weight => $method) {
+        $variant = ProductVariant::factory()->create(['weight_value' => $weight, 'weight_unit' => 'kg']);
+        Price::factory()->create([
+            'price' => 500,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $variant->getMorphClass(),
+            'priceable_id' => $variant->id,
+        ]);
+        $cart->lines()->create([
+            'purchasable_type' => $variant->getMorphClass(),
+            'purchasable_id' => $variant->id,
+            'quantity' => 1,
+            'fulfilment_method' => $method,
+        ]);
+    }
+
+    $option = (new ShipBy)->resolve(new ShippingOptionRequest(shippingRate: $shippingRate, cart: $cart->refresh()->calculate()));
+
+    expect($option->price->value)->toEqual(1000);
+});

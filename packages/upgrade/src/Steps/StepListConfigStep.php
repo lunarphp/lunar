@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunar\Core\Enums\StepList;
 use Lunar\Core\Manifests\StepManifest;
+use Lunar\Core\Validation\CartLine\CartLineFulfilmentMethod;
 use Lunar\Upgrade\Rector\LunarSetList;
 use Lunar\Upgrade\Support\StepReport;
 
@@ -21,6 +22,16 @@ use Lunar\Upgrade\Support\StepReport;
  */
 class StepListConfigStep implements UpgradeStep
 {
+    /**
+     * Default steps added in v2, keyed by step list. A v1 list can't name
+     * them, so their absence is not a customisation to remove.
+     *
+     * @var array<string, list<class-string>>
+     */
+    protected const ADDED_IN_V2 = [
+        'cart.validation.add_to_cart' => [CartLineFulfilmentMethod::class],
+    ];
+
     /**
      * Published config files, loaded once each.
      *
@@ -102,6 +113,10 @@ class StepListConfigStep implements UpgradeStep
      */
     protected function publishedList(StepList $list): ?array
     {
+        if ($list->legacyConfigKey() === null) {
+            return null;
+        }
+
         [, $file, $path] = explode('.', $list->legacyConfigKey(), 3);
 
         $config = $this->publishedConfig[$file] ??= $this->loadPublishedConfig($file);
@@ -152,7 +167,7 @@ class StepListConfigStep implements UpgradeStep
         $calls = [];
 
         foreach ($defaults as $step) {
-            if (! in_array($step, $configured, true)) {
+            if (! in_array($step, $configured, true) && ! in_array($step, self::ADDED_IN_V2[$list->value] ?? [], true)) {
                 $calls[] = "->remove(\\{$step}::class)";
             }
         }

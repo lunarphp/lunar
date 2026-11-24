@@ -118,7 +118,7 @@ return [
             ],
         ],
         'shipping' => [
-            'label' => 'Szállítás',
+            'label' => 'Teljesítés',
         ],
         'variants' => [
             'label' => 'Változatok',

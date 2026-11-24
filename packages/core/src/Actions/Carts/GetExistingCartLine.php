@@ -16,7 +16,8 @@ class GetExistingCartLine implements GetsExistingCartLine
     public function execute(
         Cart $cart,
         Purchasable $purchasable,
-        array $meta = []
+        array $meta = [],
+        ?string $fulfilmentMethod = null,
     ): ?CartLine {
         /** @var Cart $cart */
 
@@ -27,6 +28,7 @@ class GetExistingCartLine implements GetsExistingCartLine
                 $purchasable->getMorphClass()
             )->wherePurchasableId($purchasable->id)
             ->whereNull('added_by_discount_id')
+            ->where('fulfilment_method', $fulfilmentMethod)
             ->get();
 
         return $lines->first(function ($line) use ($meta) {

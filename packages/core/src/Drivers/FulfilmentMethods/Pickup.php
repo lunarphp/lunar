@@ -4,6 +4,7 @@ namespace Lunar\Core\Drivers\FulfilmentMethods;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\FulfilmentMethod;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\Cancelled;
 use Lunar\Core\States\Fulfilment\Pending;
@@ -12,10 +13,10 @@ use Lunar\Core\States\Fulfilment\ReadyForPickup;
 use Lunar\Core\States\Fulfilment\Returned;
 
 /**
- * Click-and-collect / trade-counter pickup. Claims physical lines when the
- * order's chosen shipping option is a pickup (`pickup === true`, persisted
- * onto the shipping line at order creation), so the fulfilment presents "ready
- * for pickup → picked up" instead of ship-and-track. No tracking.
+ * Click-and-collect / trade-counter pickup, so the fulfilment presents "ready
+ * for pickup → picked up" instead of ship-and-track. Lines are normally
+ * stamped `pickup` at order creation; claim() covers unstamped physical lines
+ * on an order with a pickup location. No tracking.
  */
 class Pickup implements FulfilmentMethod
 {
@@ -76,7 +77,7 @@ class Pickup implements FulfilmentMethod
      */
     public function claim(Order $order, Collection $unclaimed): Collection
     {
-        if (! $order->isPickup()) {
+        if ($order->pickup_location_id === null) {
             return $unclaimed->take(0);
         }
 
@@ -89,6 +90,16 @@ class Pickup implements FulfilmentMethod
     }
 
     public function usesTracking(): bool
+    {
+        return false;
+    }
+
+    public function supports(Purchasable $purchasable): bool
+    {
+        return (bool) ($purchasable->isShippable());
+    }
+
+    public function requiresDelivery(): bool
     {
         return false;
     }

@@ -4,6 +4,7 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
@@ -53,6 +54,11 @@ class Pickup implements ShippingRateInterface
             return null;
         }
 
+        // A pickup option is one with a location, so without one there is nothing to offer.
+        if (! $pickupLocation = $shippingMethod->pickupLocation ?? Location::getDefault()) {
+            return null;
+        }
+
         return new ShippingOption(
             name: $shippingMethod->name,
             description: $shippingMethod->description,
@@ -64,7 +70,7 @@ class Pickup implements ShippingRateInterface
             taxClass: $shippingRate->getTaxClass(),
             taxReference: $shippingRate->getTaxReference(),
             option: $shippingZone->name,
-            pickup: true,
+            pickupLocation: $pickupLocation,
             meta: ['shipping_zone' => $shippingZone->name]
         );
     }
