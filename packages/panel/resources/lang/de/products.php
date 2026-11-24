@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Wie dieser Artikel erfüllt werden kann',
     'field_fulfilment_none_hint' => 'Ohne angehakte Methode gibt es nichts zu erfüllen, etwa bei einem Sofort-Download oder einer Dienstleistung.',
     'field_fulfilment_methods_mixed' => 'Wählen Sie Methoden für einen physischen oder einen nicht physischen Artikel, nicht beides.',
+    'fulfilment_methods_unavailable' => '{methods} ist derzeit nicht verfügbar und kann von Kunden nicht gewählt werden. Entfernen Sie den Haken oder machen Sie die Methode wieder verfügbar.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

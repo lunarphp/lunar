@@ -22,7 +22,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->currency = Currency::factory()->create(['default' => true]);
-    $this->defaultLocation = Location::factory()->create(['default' => true]);
+    $this->defaultLocation = Location::factory()->acceptsPickup()->create(['default' => true]);
     $this->cart = Cart::factory()->create(['currency_id' => $this->currency->id]);
 });
 
@@ -135,14 +135,14 @@ test('an unregistered method key falls through to the next step', function () {
 
 test('the pickup location prefers the cart, then the shipping option, then the default', function () {
     $this->cart->add(pricedVariant($this->currency));
-    $optionLocation = Location::factory()->create();
+    $optionLocation = Location::factory()->acceptsPickup()->create();
     chooseShippingOption($this->cart, pickupLocation: $optionLocation);
 
     $cart = $this->cart->refresh();
 
     expect($cart->resolvedPickupLocation()->id)->toBe($optionLocation->id);
 
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
 
     expect($cart->setPickupLocation($counter)->resolvedPickupLocation()->id)->toBe($counter->id)
         ->and($cart->setPickupLocation(null)->resolvedPickupLocation()->id)->toBe($optionLocation->id);
@@ -180,6 +180,36 @@ test('addLines passes the fulfilment method through', function () {
     ]);
 
     expect($cart->lines->first()->fulfilment_method)->toBe(Pickup::KEY);
+});
+
+test('a location that stops accepting pickup is skipped for the next one that does', function () {
+    $this->cart->add(pricedVariant($this->currency), fulfilmentMethod: Pickup::KEY);
+    $counter = Location::factory()->acceptsPickup()->create();
+    $cart = $this->cart->refresh()->setPickupLocation($counter);
+
+    $counter->update(['accepts_pickup' => false]);
+
+    expect($cart->refresh()->resolvedPickupLocation()->id)->toBe($this->defaultLocation->id);
+});
+
+test('a location that does not accept pickup cannot be chosen', function () {
+    $this->cart->setPickupLocation(Location::factory()->create());
+})->throws(CartException::class, 'This location doesn\'t accept pickup');
+
+test('a collection-only item cannot be added while no location accepts pickup', function () {
+    $this->defaultLocation->update(['accepts_pickup' => false]);
+
+    $this->cart->add(pricedVariant($this->currency, ['fulfilment_methods' => [Pickup::KEY], 'sku' => 'CEMENT']));
+})->throws(CartException::class, '"CEMENT" can\'t be fulfilled right now');
+
+test('pickup is neither chosen nor defaulted while no location accepts it', function () {
+    $this->defaultLocation->update(['accepts_pickup' => false]);
+    $this->cart->add(pricedVariant($this->currency));
+
+    $cart = $this->cart->refresh()->setFulfilmentMethod(Pickup::KEY);
+
+    expect($cart->lines->first()->fulfilmentMethod())->toBeNull()
+        ->and(fn () => $cart->add(pricedVariant($this->currency), fulfilmentMethod: Pickup::KEY))->toThrow(CartException::class);
 });
 
 test('adding a line with a method the item does not allow is rejected', function () {

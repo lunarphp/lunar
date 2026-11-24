@@ -6,18 +6,21 @@ import ShippingCard from './ShippingCard.vue';
 const measurements = { length: ['mm', 'cm', 'm'], weight: ['kg', 'g'] };
 
 const fulfilmentMethods = [
-    { key: 'shipping', label: 'Shipping', physical: true },
-    { key: 'pickup', label: 'Pickup', physical: true },
-    { key: 'digital', label: 'Digital', physical: false },
+    { key: 'shipping', label: 'Shipping', physical: true, available: true },
+    { key: 'pickup', label: 'Pickup', physical: true, available: true },
+    { key: 'digital', label: 'Digital', physical: false, available: true },
 ];
 
-const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
+// No location accepts pickup.
+const withoutPickup = fulfilmentMethods.map((method) => (method.key === 'pickup' ? { ...method, available: false } : method));
+
+const mountCard = (values: Record<string, unknown>, fieldPrefix = '', methods = fulfilmentMethods) =>
     mount(ShippingCard, {
         props: {
             values: reactive(values),
             fieldPrefix,
             measurements,
-            fulfilmentMethods,
+            fulfilmentMethods: methods,
         },
         global: {
             stubs: {
@@ -130,5 +133,36 @@ describe('ShippingCard', () => {
         expect(values.shippable).toBe(true);
         expect(values.fulfilment_methods).toEqual(['pickup']);
         expect(states(wrapper)).toEqual(['unchecked', 'checked', 'unchecked']);
+    });
+
+    it('leaves an unavailable method out of an unrestricted variant, keeping it unrestricted', async () => {
+        const values: Record<string, unknown> = { shippable: true, fulfilment_methods: null };
+        const wrapper = mountCard(values, '', withoutPickup);
+
+        expect(wrapper.text()).not.toContain('Pickup');
+        expect(wrapper.text()).not.toContain('products.fulfilment_methods_unavailable');
+        expect(states(wrapper)).toEqual(['checked', 'unchecked']);
+
+        await boxes(wrapper)[0].trigger('click');
+        await boxes(wrapper)[0].trigger('click');
+
+        // Shipping is every listed physical method, so pickup comes back once a location accepts it.
+        expect(values.fulfilment_methods).toBeNull();
+    });
+
+    it('warns about an unavailable method the variant still uses', async () => {
+        const values: Record<string, unknown> = { shippable: true, fulfilment_methods: ['pickup'] };
+        const wrapper = mountCard(values, '', withoutPickup);
+
+        expect(wrapper.text()).toContain('Pickup');
+        expect(wrapper.text()).toContain('products.fulfilment_methods_unavailable');
+        expect(states(wrapper)).toEqual(['unchecked', 'checked', 'unchecked']);
+
+        // Shipping plus pickup is every physical method, so the variant is unrestricted again.
+        await boxes(wrapper)[0].trigger('click');
+        expect(values.fulfilment_methods).toBeNull();
+        expect(values.shippable).toBe(true);
+        expect(wrapper.text()).not.toContain('Pickup');
+        expect(wrapper.text()).not.toContain('products.fulfilment_methods_unavailable');
     });
 });

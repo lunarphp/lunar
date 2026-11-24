@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Como este item pode ser atendido',
     'field_fulfilment_none_hint' => 'Sem nenhum método marcado, não há nada a atender, como um download imediato ou um serviço.',
     'field_fulfilment_methods_mixed' => 'Escolha métodos para um item físico ou não físico, não ambos.',
+    'fulfilment_methods_unavailable' => '{methods} não está disponível no momento, então os clientes não podem escolhê-lo. Desmarque-o ou torne-o disponível novamente.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

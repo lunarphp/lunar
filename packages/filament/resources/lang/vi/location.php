@@ -11,6 +11,10 @@ return [
         'default' => [
             'label' => 'Mặc định',
         ],
+        'accepts_pickup' => [
+            'label' => 'Khách hàng có thể đến lấy hàng tại đây',
+            'helper_text' => 'Cung cấp địa điểm này làm điểm lấy hàng khi thanh toán.',
+        ],
         'address' => [
             'label' => 'Địa chỉ',
         ],
@@ -25,6 +29,9 @@ return [
         ],
         'default' => [
             'label' => 'Mặc định',
+        ],
+        'accepts_pickup' => [
+            'label' => 'Lấy tại cửa hàng',
         ],
         'fulfilments' => [
             'label' => 'Đơn giao hàng',

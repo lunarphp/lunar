@@ -190,9 +190,11 @@ class VariantFields
      * Every registered fulfilment method, for the variant to choose from.
      * `physical` marks the methods that fulfil a shippable variant: ticking
      * one makes the variant shippable, and the rest fulfil a variant that
-     * doesn't ship. Physical methods come first.
+     * doesn't ship. `available` is false for a method a customer can't choose
+     * right now, such as pickup with no location that accepts it. Physical
+     * methods come first.
      *
-     * @return list<array{key: string, label: string, physical: bool}>
+     * @return list<array{key: string, label: string, physical: bool, available: bool}>
      */
     public function fulfilmentMethodOptions(): array
     {
@@ -203,6 +205,7 @@ class VariantFields
                 'key' => $method->getKey(),
                 'label' => $method->getLabel(),
                 'physical' => $method->supports($shippable),
+                'available' => $method->isAvailable(),
             ])
             ->sortBy(fn (array $option): bool => ! $option['physical'])
             ->values()

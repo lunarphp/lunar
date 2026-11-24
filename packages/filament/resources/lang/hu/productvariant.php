@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Teljesítési módok',
             'helper_text' => 'Hogyan teljesül ez a változat. Egy fizikai mód, például a szállítás vagy az átvétel bejelölése szállíthatóvá teszi. Ne jelöljön be semmit, ha nincs mit teljesíteni, például azonnali letöltésnél.',
+            'unavailable' => 'A(z) :methods jelenleg nem érhető el, így az ügyfelek nem választhatják. Vegye ki a pipát, vagy tegye újra elérhetővé.',
         ],
         'length_value' => [
             'label' => 'Hossz',

@@ -1,6 +1,6 @@
 # Pickup locations: say which locations customers can collect from
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-11-24
 - TODO item: Pickup locations — a location says whether customers can collect from it, and pickup is only offered when one can (spec pickup-locations)
@@ -21,9 +21,11 @@
 
 So that pickup keeps working where it works today, every existing install marks its default location as accepting pickup (see Migration impact). New locations start with it off.
 
-### Pickup is only supported when a location accepts it
+### Pickup is only available when a location accepts it
 
-`Drivers\FulfilmentMethods\Pickup::supports()` becomes `$purchasable->isShippable() && Location::defaultPickup() !== null`, with the location lookup injected rather than called statically on the model. Everything that reads `supporting()` then follows from one rule: the variant form doesn't list Pickup, `CartLineFulfilmentMethod` rejects `pickup`, and `ResolveCartFulfilment` skips it as a cart default.
+The `FulfilmentMethod` contract gains `isAvailable(): bool`: whether the store can use the method right now, whatever the purchasable. `Drivers\FulfilmentMethods\Pickup::isAvailable()` is `Location::defaultPickup() !== null`; `Shipping` and `Digital` are always available. `FulfilmentMethodManifest::supporting()` keeps only methods that are available and support the purchasable, so everything that reads it follows from one rule: `CartLineFulfilmentMethod` rejects `pickup`, `ResolveCartFulfilment` skips it as a cart default, and the change-method actions don't offer it.
+
+`Pickup::supports()` keeps asking only whether the purchasable is shippable. Keeping availability out of `supports()` lets the variant forms tell a method the store can't use right now from one that never fits the variant, so they can still show a variant that names it.
 
 A collection-only variant (`fulfilment_methods = ['pickup']`) has no supporting method once no location accepts pickup. Today such a line resolves to null and `Shipping::claim()` would ship it. `CartLineFulfilmentMethod` gains a second rule: a purchasable that restricts its methods and has none left can't be added, with `exceptions.carts.fulfilment_method_none` (":identifier can't be fulfilled right now").
 
@@ -39,7 +41,7 @@ A collection-only variant (`fulfilment_methods = ['pickup']`) has no supporting 
 
 - The panel and Filament location forms get a toggle, "Customers can collect from here", and the location index shows it.
 - The table-rate pickup method's location select, and the change-to-pickup location select on panel and Filament fulfilment cards, list only locations that accept pickup.
-- The variant form needs no change of its own: Pickup drops out of the checklist through `supporting()`. When a variant is already restricted to `pickup` and pickup is no longer available, the form shows a warning instead of an empty checklist (open question 2).
+- The panel and Filament variant forms leave an unavailable method out of the checklist. When a variant already names it, such as a collection-only variant once no location accepts pickup, the method stays listed and ticked with a warning, so staff can untick it. An unrestricted variant stays unrestricted: ticking every available physical method still stores null, so pickup comes back once a location accepts it.
 
 ## Alternatives considered
 
@@ -51,15 +53,17 @@ A collection-only variant (`fulfilment_methods = ['pickup']`) has no supporting 
 ## Migration impact
 
 - **Database:** `locations.accepts_pickup` in the baseline migration. Row under "Next release" in the alpha upgrade guide: add the column and set it to `true` for the default location. A guarded data step in `packages/upgrade` does the same for v1 stores, whose pickups were fulfilled from the default location.
-- **Contract changes (in place while v2 is in alpha):** `Pickup::supports()` also depends on a location accepting pickup; `ResolveCartFulfilment` and `ChangeFulfilmentMethod` fall back to `Location::defaultPickup()`; `SetCartPickupLocation` validates.
+- **Contract changes (in place while v2 is in alpha):** `FulfilmentMethod` gains `isAvailable()`, so a custom method adds it; `supporting()` also requires it; `ResolveCartFulfilment` and `ChangeFulfilmentMethod` fall back to `Location::defaultPickup()`; `SetCartPickupLocation` validates.
 - **New surface:** `Location::$accepts_pickup`, `scopeAcceptsPickup()`, `defaultPickup()`; `StepList::SetPickupLocationValidation` and `Validation\Cart\CartPickupLocation`.
 - **Translations (16 locales):** `exceptions.carts.pickup_location_unavailable` and `exceptions.carts.fulfilment_method_none` in `core`; the location toggle, its index column and the variant warning in `panel` and `admin`.
 - **Docs:** the locations and fulfilments references, and the storefront guidance on listing pickup locations.
 
 ## Open questions
 
-1. **Choosing among several pickup locations.** `defaultPickup()` picks the default, then the first by name. Should a store be able to order them, or is the storefront expected to set the location explicitly once there is more than one?
-2. **A collection-only variant when pickup is unavailable.** Warn in the form and refuse it at add-to-cart (proposed), or also hide the product from listings?
+None outstanding. Both were settled on the proposed behaviour when the spec was implemented:
+
+- **Choosing among several pickup locations.** `defaultPickup()` picks the default, then the first by name. A store with more than one sets the location on the cart explicitly; ordering them is left for a later spec.
+- **A collection-only variant when pickup is unavailable.** The variant forms warn and add-to-cart refuses it. Listings are unchanged.
 
 ## References
 
@@ -69,6 +73,6 @@ A collection-only variant (`fulfilment_methods = ['pickup']`) has no supporting 
 
 ## Implementation plan
 
-- [ ] Slice 1 — Core: the column, cast, scope and `defaultPickup()`; `Pickup::supports()`; the resolver and change-method fallbacks; the pickup-location validator and the no-method rule in `CartLineFulfilmentMethod`; exception messages in 16 locales; the alpha guide row and the v1 upgrade step. Tests.
-- [ ] Slice 2 — Table-rate shipping: the `Pickup` driver and its location select. Tests.
-- [ ] Slice 3 — Panel and Filament: the location toggle and index column, the filtered location selects, the variant warning, translations. Docs.
+- [x] Slice 1 — Core: the column, cast, scope and `defaultPickup()`; `isAvailable()` and `supporting()`; the resolver and change-method fallbacks; the pickup-location validator and the no-method rule in `CartLineFulfilmentMethod`; exception messages in 16 locales; the alpha guide row and the v1 upgrade step. Tests.
+- [x] Slice 2 — Table-rate shipping: the `Pickup` driver and its location select. Tests.
+- [x] Slice 3 — Panel and Filament: the location toggle and index column, the filtered location selects, the variant warning, translations. Docs.

@@ -48,6 +48,18 @@ it('can edit a location', function () {
     expect($location->refresh()->name)->toBe('New name');
 });
 
+it('can let a location accept pickup', function () {
+    $location = Location::factory()->create();
+
+    Livewire::actingAs($this->makeStaff(admin: true), 'staff')
+        ->test(EditLocation::class, ['record' => $location->getRouteKey()])
+        ->fillForm(['accepts_pickup' => true])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($location->refresh()->accepts_pickup)->toBeTrue();
+});
+
 it('can edit a location address', function () {
     $location = Location::factory()->create();
     $country = Country::factory()->create();

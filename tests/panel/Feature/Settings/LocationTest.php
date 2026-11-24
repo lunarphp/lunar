@@ -87,6 +87,29 @@ test('a location can be updated', function () {
     expect($location->fresh()->name)->toBe('Main warehouse');
 });
 
+test('a location can start and stop accepting pickup', function () {
+    $location = Location::factory()->create(['name' => 'Main']);
+
+    $update = fn (array $data) => $this->put(route('panel.settings.locations.update', $location), [
+        'name' => 'Main',
+        'handle' => $location->handle,
+        ...$data,
+    ])->assertSessionHas('success');
+
+    $update(['accepts_pickup' => true]);
+    expect($location->fresh()->accepts_pickup)->toBeTrue();
+
+    // Leaving the flag out of an update keeps it.
+    $update([]);
+    expect($location->fresh()->accepts_pickup)->toBeTrue();
+
+    $update(['accepts_pickup' => false]);
+    expect($location->fresh()->accepts_pickup)->toBeFalse();
+
+    $this->get(route('panel.settings.locations.edit', $location))
+        ->assertInertia(fn (Assert $page) => $page->where('location.accepts_pickup', false));
+});
+
 test('unsetting default on the default location is rejected with a flash error', function () {
     $location = Location::factory()->create(['default' => true]);
 

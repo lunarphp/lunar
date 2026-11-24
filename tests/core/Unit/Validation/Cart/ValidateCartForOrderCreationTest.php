@@ -21,6 +21,10 @@ uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->counter = Location::factory()->default()->acceptsPickup()->create();
+});
+
 test('can validate missing billing address', function () {
     $currency = Currency::factory()->create();
 
@@ -161,7 +165,7 @@ test('can validate collection with partial shipping address', function () {
         identifier: 'PICKUP',
         price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
-        pickupLocation: Location::factory()->create(),
+        pickupLocation: Location::factory()->acceptsPickup()->create(),
     );
 
     ShippingManifest::addOption($shippingOption);
@@ -432,7 +436,7 @@ function cartWithShippingOption(bool $pickup): Cart
         identifier: $pickup ? 'PICKUP' : 'DELIVERY',
         price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
-        pickupLocation: $pickup ? Location::factory()->create() : null,
+        pickupLocation: $pickup ? Location::factory()->acceptsPickup()->create() : null,
     );
 
     ShippingManifest::addOption($shippingOption);
@@ -557,3 +561,17 @@ test('allows a pickup option when every physical line is picked up', function ()
 
     expect(app(ValidateCartForOrderCreation::class)->using(cart: $cart->refresh())->validate())->toBeTrue();
 });
+
+test('rejects a line set to pickup once no location accepts pickup', function () {
+    $cart = cartWithShippingOption(pickup: false);
+    $line = $cart->lines->first();
+    $cart->lines()->create([
+        'purchasable_type' => $line->purchasable_type,
+        'purchasable_id' => $line->purchasable_id,
+        'quantity' => 1,
+        'fulfilment_method' => 'pickup',
+    ]);
+    $this->counter->update(['accepts_pickup' => false]);
+
+    app(ValidateCartForOrderCreation::class)->using(cart: $cart->refresh()->load('lines.purchasable'))->validate();
+})->throws(CartException::class, 'This location doesn\'t accept pickup');

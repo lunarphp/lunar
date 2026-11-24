@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Как може да бъде изпълнен този артикул',
     'field_fulfilment_none_hint' => 'Без отметнат метод няма нищо за изпълнение, например незабавно изтегляне или услуга.',
     'field_fulfilment_methods_mixed' => 'Изберете методи за физически артикул или за нефизически, но не и двете.',
+    'fulfilment_methods_unavailable' => '{methods} в момента не е наличен, затова клиентите не могат да го изберат. Премахнете отметката или го направете отново наличен.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Энэ барааг хэрхэн биелүүлэх боломжтой',
     'field_fulfilment_none_hint' => 'Ямар ч арга сонгоогүй бол биелүүлэх зүйл байхгүй, жишээ нь шууд татаж авах эсвэл үйлчилгээ.',
     'field_fulfilment_methods_mixed' => 'Биет эсвэл биет бус барааны аргуудыг сонгоно уу, хоёуланг нь биш.',
+    'fulfilment_methods_unavailable' => '{methods} одоогоор боломжгүй тул үйлчлүүлэгчид сонгох боломжгүй. Сонголтыг арилгах эсвэл дахин боломжтой болгоно уу.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

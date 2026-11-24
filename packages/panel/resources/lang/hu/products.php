@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Hogyan teljesíthető ez a tétel',
     'field_fulfilment_none_hint' => 'Ha nincs bejelölt mód, nincs mit teljesíteni, például azonnali letöltésnél vagy szolgáltatásnál.',
     'field_fulfilment_methods_mixed' => 'Fizikai vagy nem fizikai tételhez való módokat válasszon, ne mindkettőt.',
+    'fulfilment_methods_unavailable' => 'A(z) {methods} jelenleg nem érhető el, így az ügyfelek nem választhatják. Vegye ki a pipát, vagy tegye újra elérhetővé.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

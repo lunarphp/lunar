@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Thanh toán khi giao hàng cần ít nhất một sản phẩm được giao',
     'carts.fulfilment_method_unknown' => 'Phương thức thực hiện ":method" không khả dụng',
     'carts.fulfilment_method_unsupported' => '":identifier" không thể được thực hiện bằng :method',
+    'carts.fulfilment_method_none' => '":identifier" hiện không thể được thực hiện',
+    'carts.pickup_location_unavailable' => 'Địa điểm này không nhận khách đến lấy hàng',
     'missing_currency_price' => 'Không tồn tại giá cho đơn vị tiền tệ ":currency"',
     'minimum_quantity' => 'Bạn phải thêm tối thiểu :quantity sản phẩm.',
     'quantity_increment' => 'Số lượng :quantity phải là bội số của :increment',

@@ -43,6 +43,7 @@ class LocationIndexController
                     'name' => $location->name,
                     'handle' => $location->handle,
                     'default' => $location->default,
+                    'accepts_pickup' => $location->accepts_pickup,
                     'stocked_variants_count' => (int) ($stocked[$location->id] ?? 0),
                     'urls' => [
                         'edit' => route('panel.settings.locations.edit', $location),

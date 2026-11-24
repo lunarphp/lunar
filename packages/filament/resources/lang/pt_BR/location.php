@@ -11,6 +11,10 @@ return [
         'default' => [
             'label' => 'Padrão',
         ],
+        'accepts_pickup' => [
+            'label' => 'Os clientes podem retirar aqui',
+            'helper_text' => 'Oferecer este local como ponto de retirada no checkout.',
+        ],
         'address' => [
             'label' => 'Endereço',
         ],
@@ -25,6 +29,9 @@ return [
         ],
         'default' => [
             'label' => 'Padrão',
+        ],
+        'accepts_pickup' => [
+            'label' => 'Retirada',
         ],
         'fulfilments' => [
             'label' => 'Fulfillments',

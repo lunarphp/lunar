@@ -894,6 +894,13 @@ class Cart extends Base
      */
     public function setPickupLocation(?Location $location, bool $refresh = true): Cart
     {
+        foreach ($this->steps(StepList::SetPickupLocationValidation) as $action) {
+            app($action)->using(
+                cart: $this,
+                location: $location,
+            )->validate();
+        }
+
         app(SetsCartPickupLocation::class)->execute($this, $location);
 
         return $refresh ? $this->refresh()->recalculate() : $this->syncRevision();

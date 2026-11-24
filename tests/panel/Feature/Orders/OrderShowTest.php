@@ -483,7 +483,7 @@ it('marks a courier order as not a pickup', function () {
 it('offers the other methods an outstanding fulfilment can change to', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $warehouse = Location::factory()->create(['default' => true]);
+    $warehouse = Location::factory()->acceptsPickup()->create(['default' => true]);
     $order = Order::factory()->placed()->create();
     $line = OrderLine::factory()->for($order)->create(['type' => 'physical', 'quantity' => 1]);
     $pending = $order->createFulfilment([$line->id => 1], ['method' => 'shipping']);
@@ -495,6 +495,23 @@ it('offers the other methods an outstanding fulfilment can change to', function 
             ->where('fulfilments.0.change_methods.0.requires_delivery', false)
             ->where('fulfilments.0.change_methods.0.location_id', $warehouse->id)
             ->where('fulfilments.0.urls.method', route('panel.orders.fulfilments.method.update', [$order, $pending])));
+});
+
+it('starts a change to pickup at the default pickup location once the chosen one stops accepting pickup', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Location::factory()->create(['default' => true, 'name' => 'Warehouse']);
+    $closed = Location::factory()->create(['name' => 'Dartford']);
+    $counter = Location::factory()->acceptsPickup()->create(['name' => 'Gravesend']);
+    $order = Order::factory()->placed()->create(['pickup_location_id' => $closed->id]);
+    $line = OrderLine::factory()->for($order)->create(['type' => 'physical', 'quantity' => 1]);
+    $order->createFulfilment([$line->id => 1], ['method' => 'shipping']);
+
+    $this->get(route('panel.orders.show', $order))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('fulfilments.0.change_methods.0.key', 'pickup')
+            ->where('fulfilments.0.change_methods.0.location_id', $counter->id)
+            ->where('locations', fn ($locations) => collect($locations)->where('accepts_pickup', true)->pluck('id')->all() === [$counter->id]));
 });
 
 it('offers no method change once a fulfilment is handed over', function () {

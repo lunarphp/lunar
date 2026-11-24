@@ -483,8 +483,9 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                     return [
                         Select::make('location')
                             ->label(__('lunarpanel::order.fulfilments.actions.change_location.field'))
-                            ->options($this->locations->mapWithKeys(fn (Location $location) => [$location->id => $location->name])->all())
-                            ->default($this->record->pickup_location_id ?? $this->locations->firstWhere('default', true)?->id)
+                            ->options($this->locations->where('accepts_pickup', true)->mapWithKeys(fn (Location $location) => [$location->id => $location->name])->all())
+                            ->default($this->locations->first(fn (Location $location) => $location->id === $this->record->pickup_location_id && $location->accepts_pickup)?->id
+                                ?? Location::defaultPickup()?->id)
                             ->selectablePlaceholder(false)
                             ->required(),
                     ];

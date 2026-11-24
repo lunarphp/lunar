@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Cum poate fi onorat acest articol',
     'field_fulfilment_none_hint' => 'Fără nicio metodă bifată nu este nimic de onorat, de exemplu o descărcare imediată sau un serviciu.',
     'field_fulfilment_methods_mixed' => 'Alege metode pentru un articol fizic sau nefizic, nu ambele.',
+    'fulfilment_methods_unavailable' => '{methods} nu este disponibil momentan, așa că clienții nu îl pot alege. Debifează-l sau fă-l din nou disponibil.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

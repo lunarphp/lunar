@@ -35,7 +35,10 @@ class MethodRequest extends FormRequest
             'weight_unit' => ['nullable', Rule::in($weightUnits)],
             'min_weight' => ['nullable', 'numeric', 'min:0', 'required_with:weight_unit'],
             'max_weight' => ['nullable', 'numeric', 'min:0', 'required_with:weight_unit'],
-            'pickup_location_id' => ['nullable', 'integer', Rule::exists(Location::class, 'id')],
+            // A pickup method collects from a location that accepts pickup; any other drops its location.
+            'pickup_location_id' => ['nullable', 'integer', $this->input('driver') === 'pickup'
+                ? Rule::exists(Location::class, 'id')->where('accepts_pickup', true)
+                : Rule::exists(Location::class, 'id')],
 
             'data' => ['sometimes', 'array'],
             'data.charge_by' => ['nullable', Rule::in(['cart_total', 'weight'])],

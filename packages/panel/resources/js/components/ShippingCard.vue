@@ -11,7 +11,7 @@ const props = defineProps<{
     values: Record<string, unknown>;
     fieldPrefix?: string;
     measurements: { length: string[]; weight: string[] };
-    fulfilmentMethods?: { key: string; label: string; physical: boolean }[];
+    fulfilmentMethods?: { key: string; label: string; physical: boolean; available: boolean }[];
     errors?: Record<string, string>;
 }>();
 
@@ -28,16 +28,26 @@ const write = (field: string, value: unknown): void => {
 
 const shippable = computed(() => Boolean(read('shippable')));
 
-type MethodOption = { key: string; label: string; physical: boolean };
+type MethodOption = { key: string; label: string; physical: boolean; available: boolean };
 
-const methodOptions = computed<MethodOption[]>(() => props.fulfilmentMethods ?? []);
+const storedMethods = computed(() => (read('fulfilment_methods') as string[] | null) ?? []);
+
+// A method a customer can't choose right now, such as pickup with no location that accepts it, is
+// only listed while the variant still names it, so it can be unticked.
+const methodOptions = computed<MethodOption[]>(() =>
+    (props.fulfilmentMethods ?? []).filter((method) => method.available || storedMethods.value.includes(method.key)),
+);
 
 const physicalKeys = computed(() => methodOptions.value.filter((method) => method.physical).map((method) => method.key));
 
 const otherKeys = computed(() => methodOptions.value.filter((method) => !method.physical).map((method) => method.key));
 
+const unavailableMethods = computed(() =>
+    methodOptions.value.filter((method) => !method.available && tickedMethods.value.includes(method.key)).map((method) => method.label),
+);
+
 // A variant that ships uses the physical methods, and one that doesn't uses the others or none.
-// Null on a shippable variant allows every physical method, so it shows them all ticked.
+// Null on a shippable variant allows every physical method, so it shows the listed ones ticked.
 const tickedMethods = computed<string[]>(() => {
     const stored = read('fulfilment_methods') as string[] | null;
 
@@ -49,8 +59,8 @@ const tickedMethods = computed<string[]>(() => {
 });
 
 // An item either ships or it doesn't, so ticking a method of the other kind switches the variant
-// over. Shippable follows the ticked methods, and ticking every physical method stores null again,
-// which keeps a method registered later available.
+// over. Shippable follows the ticked methods, and ticking every listed physical method stores null
+// again, which keeps a method registered or made available later allowed.
 const toggleMethod = (method: MethodOption, ticked: boolean): void => {
     const sameKind = method.physical === shippable.value;
     const keys = ticked
@@ -125,6 +135,9 @@ const volumeDisplay = computed(() => String(Math.round(volume.value * 100) / 100
                     />
                     {{ method.label }}
                 </label>
+            </div>
+            <div v-if="unavailableMethods.length" class="mt-2 text-[11px] text-warn-ink">
+                {{ t('products.fulfilment_methods_unavailable', { methods: unavailableMethods.join(', ') }) }}
             </div>
             <div v-if="(errors ?? {})[key('fulfilment_methods')]" class="mt-1 text-[11px] text-danger">{{ (errors ?? {})[key('fulfilment_methods')] }}</div>
         </div>

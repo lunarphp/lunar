@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Betalen bij levering vereist ten minste één artikel om te bezorgen',
     'carts.fulfilment_method_unknown' => 'De afhandelingsmethode ":method" is niet beschikbaar',
     'carts.fulfilment_method_unsupported' => '":identifier" kan niet via :method worden afgehandeld',
+    'carts.fulfilment_method_none' => '":identifier" kan op dit moment niet worden afgehandeld',
+    'carts.pickup_location_unavailable' => 'Op deze locatie kan niet worden afgehaald',
     'missing_currency_price' => 'Er bestaat geen prijs voor valuta ":currency"',
     'minimum_quantity' => 'U moet minimaal :quantity items toevoegen.',
     'quantity_increment' => 'Hoeveelheid :quantity moet in stappen van :increment zijn',

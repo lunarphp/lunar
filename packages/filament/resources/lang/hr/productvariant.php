@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Načini ispunjenja',
             'helper_text' => 'Kako se ova varijanta ispunjava. Označavanje fizičkog načina, poput slanja ili preuzimanja, čini je dostavljivom. Ne označite ništa kada se nema što ispuniti, npr. za trenutno preuzimanje datoteke.',
+            'unavailable' => ':methods trenutno nije dostupno pa ga kupci ne mogu odabrati. Odznačite ga ili ga ponovno učinite dostupnim.',
         ],
         'length_value' => [
             'label' => 'Duljina',

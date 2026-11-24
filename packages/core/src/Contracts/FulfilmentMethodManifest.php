@@ -53,8 +53,8 @@ interface FulfilmentMethodManifest
     public function get(?string $key): ?FulfilmentMethod;
 
     /**
-     * The registered methods that support the purchasable and that it allows,
-     * keyed by key, in priority order.
+     * The registered methods that support the purchasable, that it allows and
+     * that are available, keyed by key, in priority order.
      *
      * @return Collection<string, FulfilmentMethod>
      */

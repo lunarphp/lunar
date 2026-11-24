@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'Jak można zrealizować tę pozycję',
     'field_fulfilment_none_hint' => 'Bez zaznaczonej metody nie ma czego realizować, np. przy natychmiastowym pobraniu lub usłudze.',
     'field_fulfilment_methods_mixed' => 'Wybierz metody dla pozycji fizycznej albo niefizycznej, nie obie naraz.',
+    'fulfilment_methods_unavailable' => '{methods} jest obecnie niedostępne, więc klienci nie mogą tego wybrać. Odznacz to lub ponownie udostępnij.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

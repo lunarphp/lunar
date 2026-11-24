@@ -140,4 +140,5 @@ export interface CarrierData {
 export interface LocationData {
     id: number;
     name: string;
+    accepts_pickup: boolean;
 }

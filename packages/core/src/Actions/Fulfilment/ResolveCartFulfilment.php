@@ -40,8 +40,10 @@ class ResolveCartFulfilment implements ResolvesCartFulfilment
 
         $hasPickup = collect($lines)->contains(fn (?FulfilmentMethod $method) => $method?->getKey() === Pickup::KEY);
 
+        // A location chosen earlier is skipped once it stops accepting pickup.
         $pickupLocation = $hasPickup
-            ? ($cart->pickupLocation ?? $shippingOption?->pickupLocation ?? Location::getDefault())
+            ? collect([$cart->pickupLocation, $shippingOption?->pickupLocation])
+                ->first(fn (?Location $location) => $location?->accepts_pickup) ?? Location::defaultPickup()
             : null;
 
         return new CartFulfilment($default, $lines, $pickupLocation);

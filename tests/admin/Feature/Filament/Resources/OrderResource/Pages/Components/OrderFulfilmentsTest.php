@@ -34,7 +34,7 @@ beforeEach(function () {
 
     $currency = Currency::factory()->create(['default' => true]);
     Language::factory()->create(['default' => true, 'code' => 'en']);
-    Location::factory()->default()->create();
+    Location::factory()->default()->acceptsPickup()->create();
 
     $this->order = Order::factory()->create(['currency_code' => $currency->code]);
     $this->line = OrderLine::factory()->create([
@@ -250,7 +250,7 @@ it('offers a change to each other method the fulfilment supports', function () {
 });
 
 it('changes a delivery to pickup at the chosen location', function () {
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
     $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'shipping']);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
@@ -261,6 +261,17 @@ it('changes a delivery to pickup at the chosen location', function () {
 
     expect($pickup->method)->toBe('pickup')
         ->and($pickup->location_id)->toBe($counter->id);
+});
+
+it('only offers locations that accept pickup for a change to pickup', function () {
+    $closed = Location::factory()->create();
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'shipping']);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('changeMethod', data: ['location' => $closed->id], arguments: ['fulfilment' => $fulfilment->id, 'method' => 'pickup'])
+        ->assertHasActionErrors(['location']);
+
+    expect($this->order->fulfilments()->sole()->method)->toBe('shipping');
 });
 
 it('changes a pickup to shipping with the address entered in the same step', function () {

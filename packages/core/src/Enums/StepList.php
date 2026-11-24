@@ -18,6 +18,7 @@ enum StepList: string
     case SetShippingOptionValidation = 'cart.validation.set_shipping_option';
     case SetFulfilmentMethodValidation = 'cart.validation.set_fulfilment_method';
     case SetLineFulfilmentMethodValidation = 'cart.validation.set_line_fulfilment_method';
+    case SetPickupLocationValidation = 'cart.validation.set_pickup_location';
     case OrderCreateValidation = 'cart.validation.order_create';
     case CartPruning = 'cart.pruning';
 
@@ -39,7 +40,7 @@ enum StepList: string
             self::SetShippingOptionValidation => 'lunar.cart.validators.set_shipping_option',
             self::OrderCreateValidation => 'lunar.cart.validators.order_create',
             self::CartPruning => 'lunar.cart.prune_tables.pipelines',
-            self::SetFulfilmentMethodValidation, self::SetLineFulfilmentMethodValidation => null,
+            self::SetFulfilmentMethodValidation, self::SetLineFulfilmentMethodValidation, self::SetPickupLocationValidation => null,
         };
     }
 }

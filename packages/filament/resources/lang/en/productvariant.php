@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Fulfilment methods',
             'helper_text' => 'How this variant is fulfilled. Ticking a physical method such as shipping or pickup makes it shippable. Tick none when there is nothing to fulfil, such as an instant download.',
+            'unavailable' => ':methods isn\'t available right now, so customers can\'t choose it. Untick it, or make it available again.',
         ],
         'length_value' => [
             'label' => 'Length',

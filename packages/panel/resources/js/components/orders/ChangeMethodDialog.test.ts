@@ -19,8 +19,9 @@ async function mountDialog(method: FulfilmentMethodTarget, hasShippingAddress: b
             fulfilment: makeFulfilment(),
             method,
             locations: [
-                { id: 1, name: 'Warehouse' },
-                { id: 2, name: 'Dartford' },
+                { id: 1, name: 'Warehouse', accepts_pickup: false },
+                { id: 2, name: 'Dartford', accepts_pickup: true },
+                { id: 3, name: 'Leeds', accepts_pickup: true },
             ],
             hasShippingAddress,
             countries: [{ id: 44, name: 'United Kingdom' }],
@@ -43,6 +44,14 @@ describe('ChangeMethodDialog', () => {
         expect(body().textContent).toContain('orders.action_change_method');
         expect(body().querySelector<HTMLSelectElement>('select')?.value).toBe('2');
         expect(body().querySelector('#change-method-address-first-name')).toBeNull();
+    });
+
+    it('only offers locations that accept pickup', async () => {
+        await mountDialog(pickup, true);
+
+        const options = [...body().querySelectorAll<HTMLOptionElement>('select option')].map((option) => option.textContent);
+
+        expect(options).toEqual(['Dartford', 'Leeds']);
     });
 
     it('takes a shipping address when a delivery method has none to send to', async () => {

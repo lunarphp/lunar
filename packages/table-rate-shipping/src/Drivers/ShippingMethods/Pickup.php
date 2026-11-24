@@ -54,8 +54,10 @@ class Pickup implements ShippingRateInterface
             return null;
         }
 
-        // A pickup option is one with a location, so without one there is nothing to offer.
-        if (! $pickupLocation = $shippingMethod->pickupLocation ?? Location::getDefault()) {
+        // A pickup option is one with a location that accepts pickup, so without one there is nothing to offer.
+        $pickupLocation = $shippingMethod->pickup_location_id ? $shippingMethod->pickupLocation : Location::defaultPickup();
+
+        if (! $pickupLocation?->accepts_pickup) {
             return null;
         }
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Tests\Upgrade\TestCase;
 
@@ -94,4 +95,25 @@ test('it is a no-op when the tables do not exist', function () {
     fulfilmentChoiceUpgradeMigration('add_fulfilment_choice_columns')->up();
 
     expect(Schema::hasTable(FULFILMENT_CHOICE_UPG_PREFIX.'carts'))->toBeFalse();
+});
+
+test('it marks only the default location as accepting pickup, once', function () {
+    $locations = FULFILMENT_CHOICE_UPG_PREFIX.'locations';
+
+    Schema::create($locations, function (Blueprint $blueprint) {
+        $blueprint->id();
+        $blueprint->boolean('default')->default(false);
+    });
+
+    DB::table($locations)->insert([['id' => 1, 'default' => true], ['id' => 2, 'default' => false]]);
+
+    $migration = fulfilmentChoiceUpgradeMigration('add_location_accepts_pickup');
+    $migration->up();
+
+    expect(DB::table($locations)->orderBy('id')->pluck('accepts_pickup')->map(fn ($value) => (bool) $value)->all())->toBe([true, false]);
+
+    DB::table($locations)->where('id', 1)->update(['accepts_pickup' => false]);
+    $migration->up();
+
+    expect((bool) DB::table($locations)->where('id', 1)->value('accepts_pickup'))->toBeFalse();
 });

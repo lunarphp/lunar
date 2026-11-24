@@ -39,6 +39,7 @@ class LocationForm
             static::getNameComponent(),
             static::getHandleComponent(),
             static::getDefaultComponent(),
+            static::getAcceptsPickupComponent(),
         ];
     }
 
@@ -96,5 +97,12 @@ class LocationForm
     {
         return Toggle::make('default')
             ->label(__('lunar-filament::location.form.default.label'));
+    }
+
+    public static function getAcceptsPickupComponent(): Component
+    {
+        return Toggle::make('accepts_pickup')
+            ->label(__('lunar-filament::location.form.accepts_pickup.label'))
+            ->helperText(__('lunar-filament::location.form.accepts_pickup.helper_text'));
     }
 }

@@ -169,11 +169,12 @@ interface Lunar\Core\Contracts\FulfilmentMethod
     public function priority(): int;
     public function usesTracking(): bool;
     public function supports(Purchasable $purchasable): bool;
+    public function isAvailable(): bool;
     public function requiresDelivery(): bool;
 }
 ```
 
-`supports()` asks the `claim()` rule of a single purchasable before the order exists, so a cart can offer only the methods that can fulfil a line. `requiresDelivery()` says whether the method delivers to the customer, so its lines need a shipping option and address and count towards shipping rates.
+`supports()` asks the `claim()` rule of a single purchasable before the order exists, so a cart can offer only the methods that can fulfil a line. `isAvailable()` says whether the store can use the method right now, whatever the purchasable: `pickup` is available only while a location has `accepts_pickup` set, and the other core methods always are. `requiresDelivery()` says whether the method delivers to the customer, so its lines need a shipping option and address and count towards shipping rates.
 
 Core registers three, in `packages/core/src/Drivers/FulfilmentMethods/`:
 
@@ -195,7 +196,7 @@ A variant that isn't shippable needs fulfilling only when its `fulfilment_method
 
 The panel and Filament variant forms show every registered method as one checklist. Ticking a method that supports a shippable variant, such as `shipping` or `pickup`, makes the variant shippable; ticking another kind, such as `digital`, makes it not shippable, and the two kinds can't be mixed. Ticking nothing leaves the variant not shippable with nothing to fulfil.
 
-`FulfilmentMethods::supporting($purchasable)` returns the registered methods that support the purchasable and that it allows, keyed by key in priority order. The allow-list never adds a method the driver doesn't support.
+`FulfilmentMethods::supporting($purchasable)` returns the registered methods that support the purchasable, that it allows and that are available, keyed by key in priority order. The allow-list never adds a method the driver doesn't support. An item restricted to methods that are all unavailable, such as a collection-only item when no location accepts pickup, can't be added to a cart. The variant forms still list an unavailable method an item uses, marked as unavailable, so staff can see why.
 
 Manage the registry via the `FulfilmentMethods` facade:
 
@@ -248,8 +249,9 @@ $delivery = $fulfilment->changeMethod('shipping');
 - the fulfilment has been handed over. Only fulfilments in the `Outstanding` category can change.
 - the target method doesn't support a moved line's purchasable, so a collection-only item can't be changed to shipping.
 - the target method delivers and the order has no shipping address.
+- the target method is `pickup` and the location doesn't accept pickup.
 
-A pickup defaults to the order's pickup location, then the default location. Core never charges or refunds the change. Refund part of the shipping charge with the refund composer, or take an extra payment with [`recordPayment()`](/reference/orders#recording-a-payment).
+A pickup defaults to the order's pickup location while it still accepts pickup, then `Location::defaultPickup()`, and throws when the location doesn't accept pickup. Core never charges or refunds the change. Refund part of the shipping charge with the refund composer, or take an extra payment with [`recordPayment()`](/reference/orders#recording-a-payment).
 
 ## Fulfilment lines
 

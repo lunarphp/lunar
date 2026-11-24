@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Phương thức thực hiện đơn',
             'helper_text' => 'Cách biến thể này được thực hiện. Chọn một phương thức vật lý như giao hàng hoặc nhận tại cửa hàng sẽ khiến nó có thể giao. Không chọn gì khi không có gì cần thực hiện, ví dụ tải xuống ngay.',
+            'unavailable' => ':methods hiện không khả dụng nên khách hàng không thể chọn. Bỏ chọn hoặc làm cho phương thức khả dụng trở lại.',
         ],
         'length_value' => [
             'label' => 'Chiều dài',

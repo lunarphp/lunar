@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'يتطلب الدفع عند التسليم عنصرًا واحدًا على الأقل للتوصيل',
     'carts.fulfilment_method_unknown' => 'طريقة التنفيذ ":method" غير متاحة',
     'carts.fulfilment_method_unsupported' => 'لا يمكن تنفيذ ":identifier" عبر :method',
+    'carts.fulfilment_method_none' => 'لا يمكن تنفيذ ":identifier" في الوقت الحالي',
+    'carts.pickup_location_unavailable' => 'هذا الموقع لا يقبل الاستلام',
     'missing_currency_price' => 'لا يوجد سعر للعملة ":currency".',
     'minimum_quantity' => 'يجب إضافة حد أدنى قدره :quantity من العناصر.',
     'quantity_increment' => 'يجب أن تكون الكمية :quantity بمضاعفات قدرها :increment.',

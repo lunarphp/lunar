@@ -373,7 +373,15 @@ $cartLine->setFulfilmentMethod('pickup');  // a line override; null inherits the
 $cart->setPickupLocation($location);       // null clears it
 ```
 
-The verbs delegate to `Lunar\Core\Contracts\Actions\Carts\SetsCartFulfilmentMethod`, `SetsCartLineFulfilmentMethod` and `SetsCartPickupLocation`. Before they run, the `StepList::SetFulfilmentMethodValidation` list checks that the key is registered, and `StepList::SetLineFulfilmentMethodValidation` checks that the line's purchasable supports it. Adding a line runs the same line check from `StepList::AddToCartValidation`. A failure throws `Lunar\Core\Exceptions\Carts\CartException`. The method is part of a line's identity, so a line set to the same method as another line for the same purchasable and `meta` merges into it, and `setFulfilmentMethod()` returns the merged line.
+Offer the customer only the locations that accept pickup, and leave pickup out when there are none:
+
+```php
+use Lunar\Core\Models\Location;
+
+$pickupLocations = Location::query()->acceptsPickup()->orderBy('name')->get();
+```
+
+The verbs delegate to `Lunar\Core\Contracts\Actions\Carts\SetsCartFulfilmentMethod`, `SetsCartLineFulfilmentMethod` and `SetsCartPickupLocation`. Before they run, the `StepList::SetFulfilmentMethodValidation` list checks that the key is registered, `StepList::SetLineFulfilmentMethodValidation` checks that the line's purchasable supports it, and `StepList::SetPickupLocationValidation` checks that the location accepts pickup. Adding a line runs the same line check from `StepList::AddToCartValidation`. A failure throws `Lunar\Core\Exceptions\Carts\CartException`. The method is part of a line's identity, so a line set to the same method as another line for the same purchasable and `meta` merges into it, and `setFulfilmentMethod()` returns the merged line.
 
 The same purchasable for delivery and for pickup is two lines. The method joins line identity, cart merging and the cart fingerprint.
 
@@ -392,7 +400,7 @@ The cart default is the explicit `fulfilment_method`, else `pickup` when the cho
 3. When the purchasable restricts its methods, the first method it allows. A collection-only item in a cart delivered by default resolves to `pickup`.
 4. Otherwise `null`. The line's method is inferred when fulfilments are created.
 
-The pickup location is the cart's `pickup_location_id`, else the chosen shipping option's `pickupLocation`, else the default location. All three accessors delegate to `Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment`. A method key that is no longer registered resolves to `null` at that step and falls through.
+The pickup location is the cart's `pickup_location_id`, else the chosen shipping option's `pickupLocation`, skipping either once it stops accepting pickup, else `Location::defaultPickup()`. Order creation fails when a line resolves to `pickup` and no location accepts pickup. All three accessors delegate to `Lunar\Core\Contracts\Actions\Fulfilment\ResolvesCartFulfilment`. A method key that is no longer registered resolves to `null` at that step and falls through.
 
 ### Delivery lines
 

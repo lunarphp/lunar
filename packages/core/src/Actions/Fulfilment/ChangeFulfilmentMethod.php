@@ -41,9 +41,15 @@ class ChangeFulfilmentMethod implements ChangesFulfilmentMethod
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_change_address_missing'));
         }
 
-        $location ??= $target->getKey() === Pickup::KEY
-            ? ($order->pickupLocation ?? Location::getDefault())
-            : Location::getDefault();
+        if ($target->getKey() === Pickup::KEY) {
+            $location ??= $order->pickupLocation?->accepts_pickup ? $order->pickupLocation : Location::defaultPickup();
+
+            if (! $location?->accepts_pickup) {
+                throw new FulfilmentException(__('lunar::exceptions.carts.pickup_location_unavailable'));
+            }
+        }
+
+        $location ??= Location::getDefault();
 
         return DB::transaction(function () use ($fulfilment, $target, $location, $moves) {
             $sourceLines = $fulfilment->lines()->with('orderLine.purchasable')->lockForUpdate()->get()->keyBy('order_line_id');

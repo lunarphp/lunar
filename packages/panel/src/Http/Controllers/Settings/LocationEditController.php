@@ -25,6 +25,7 @@ class LocationEditController
                 'name' => $location->name,
                 'handle' => $location->handle,
                 'default' => $location->default,
+                'accepts_pickup' => $location->accepts_pickup,
                 ...$location->only(LocationRequest::ADDRESS_FIELDS),
             ],
             'countries' => Country::orderBy('name')->get(['id', 'name']),

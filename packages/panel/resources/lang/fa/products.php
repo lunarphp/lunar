@@ -161,6 +161,7 @@ return [
     'field_fulfilment_methods_hint' => 'این کالا چگونه می‌تواند تأمین شود',
     'field_fulfilment_none_hint' => 'اگر هیچ روشی تیک نخورده باشد، چیزی برای تأمین وجود ندارد؛ مانند دانلود فوری یا یک خدمت.',
     'field_fulfilment_methods_mixed' => 'روش‌هایی برای کالای فیزیکی یا غیرفیزیکی انتخاب کنید، نه هر دو.',
+    'fulfilment_methods_unavailable' => '{methods} در حال حاضر در دسترس نیست، بنابراین مشتریان نمی‌توانند آن را انتخاب کنند. تیک آن را بردارید یا دوباره آن را در دسترس قرار دهید.',
     'field_weight' => 'Weight',
     'field_length' => 'Length',
     'field_width' => 'Width',

@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Metode de onorare',
             'helper_text' => 'Cum este onorată această variantă. Bifarea unei metode fizice, cum ar fi expedierea sau ridicarea, o face expediabilă. Nu bifa nimic când nu este nimic de onorat, de exemplu o descărcare imediată.',
+            'unavailable' => ':methods nu este disponibil momentan, așa că clienții nu îl pot alege. Debifează-l sau fă-l din nou disponibil.',
         ],
         'length_value' => [
             'label' => 'Lungime',

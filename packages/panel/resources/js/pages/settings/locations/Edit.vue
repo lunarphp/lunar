@@ -20,6 +20,7 @@ type Location = {
     name: string;
     handle: string;
     default: boolean;
+    accepts_pickup: boolean;
     line_one: string | null;
     line_two: string | null;
     line_three: string | null;
@@ -50,6 +51,7 @@ const form = usePanelForm({
     name: props.location.name,
     handle: props.location.handle,
     default: props.location.default,
+    accepts_pickup: props.location.accepts_pickup,
     line_one: props.location.line_one ?? '',
     line_two: props.location.line_two ?? '',
     line_three: props.location.line_three ?? '',
@@ -137,6 +139,13 @@ const confirmDestroy = (): void => {
                     <div class="text-[11px] text-ink-500">
                         {{ location.default ? t('locations.default_locked_hint') : t('locations.default_location_hint') }}
                     </div>
+                </div>
+            </label>
+            <label class="flex items-center gap-3 mt-4 cursor-pointer">
+                <Toggle :on="form.accepts_pickup" @toggle="form.accepts_pickup = !form.accepts_pickup" />
+                <div>
+                    <div class="text-[12.5px] text-ink-900 font-medium">{{ t('locations.accepts_pickup') }}</div>
+                    <div class="text-[11px] text-ink-500">{{ t('locations.accepts_pickup_hint') }}</div>
                 </div>
             </label>
         </Section>

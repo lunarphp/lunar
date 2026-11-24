@@ -80,7 +80,7 @@ const props = defineProps<{
     customerGroups: { id: number; name: string }[];
     taxClasses: { id: number; name: string }[];
     measurements: { length: string[]; weight: string[] };
-    fulfilmentMethods: { key: string; label: string; physical: boolean }[];
+    fulfilmentMethods: { key: string; label: string; physical: boolean; available: boolean }[];
     draft: DraftState | null;
     languages: LanguageOption[];
     mediaGroups: MediaGroup[];

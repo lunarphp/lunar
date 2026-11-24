@@ -89,6 +89,7 @@ return [
         'fulfilment_methods' => [
             'label' => 'Metody realizacji',
             'helper_text' => 'Jak realizowany jest ten wariant. Zaznaczenie metody fizycznej, takiej jak wysyłka lub odbiór osobisty, czyni go wysyłkowym. Nie zaznaczaj niczego, gdy nie ma czego realizować, np. przy natychmiastowym pobraniu.',
+            'unavailable' => ':methods jest obecnie niedostępne, więc klienci nie mogą tego wybrać. Odznacz to lub ponownie udostępnij.',
         ],
         'length_value' => [
             'label' => 'Długość',
