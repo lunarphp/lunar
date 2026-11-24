@@ -43,7 +43,7 @@ class MethodEditController
                 'data' => $this->methodData->toForm((array) $shippingMethod->data),
             ],
             'drivers' => $this->driverOptions->all(),
-            'locations' => Location::query()->orderBy('name')->get(['id', 'name']),
+            'locations' => Location::query()->acceptsPickup()->orderBy('name')->get(['id', 'name']),
             'weightUnits' => array_keys(Converter::getMeasurements()['weight'] ?? []),
             'currencies' => $this->currencyOptions->all(),
             'customerGroups' => CustomerGroup::query()->orderBy('name')->get()->map(function (CustomerGroup $group) use ($groups) {

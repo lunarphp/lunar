@@ -175,13 +175,14 @@ test('an end date covers the whole of its last day', function () {
 });
 
 test('a pickup method collects from the chosen location', function () {
-    $counter = Location::factory()->create(['name' => 'Dartford']);
+    $counter = Location::factory()->acceptsPickup()->create(['name' => 'Dartford']);
+    Location::factory()->create(['name' => 'Warehouse']);
     $method = ShippingMethod::factory()->create(['driver' => 'pickup']);
 
     $this->get(route('panel.settings.shipping.methods.edit', $method))
         ->assertInertia(fn (Assert $page) => $page
             ->where('method.pickup_location_id', null)
-            ->where('locations', fn ($locations) => collect($locations)->pluck('name')->contains('Dartford'))
+            ->where('locations', fn ($locations) => collect($locations)->pluck('name')->all() === ['Dartford'])
         );
 
     $this->put(route('panel.settings.shipping.methods.update', $method), [
@@ -206,4 +207,16 @@ test('a method that stops being a pickup drops its location', function () {
     ])->assertRedirect()->assertSessionHasNoErrors();
 
     expect($method->refresh()->pickup_location_id)->toBeNull();
+});
+
+test('a pickup method cannot collect from a location that does not accept pickup', function () {
+    $warehouse = Location::factory()->create();
+    $method = ShippingMethod::factory()->create(['driver' => 'pickup']);
+
+    $this->put(route('panel.settings.shipping.methods.update', $method), [
+        'name' => $method->name,
+        'code' => $method->code,
+        'driver' => 'pickup',
+        'pickup_location_id' => $warehouse->id,
+    ])->assertSessionHasErrors('pickup_location_id');
 });

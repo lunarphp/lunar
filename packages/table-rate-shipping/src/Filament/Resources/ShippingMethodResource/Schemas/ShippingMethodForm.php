@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Facades\Converter;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -181,7 +182,7 @@ class ShippingMethodForm
         return Select::make('pickup_location_id')
             ->label(__('shipping::shippingmethod.form.pickup_location.label'))
             ->helperText(__('shipping::shippingmethod.form.pickup_location.helper_text'))
-            ->relationship('pickupLocation', 'name')
+            ->relationship('pickupLocation', 'name', fn (Builder $query) => $query->acceptsPickup())
             ->visible(fn (Get $get) => $get('driver') === 'pickup');
     }
 }
