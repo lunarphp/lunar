@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Le paiement à la livraison nécessite au moins un article à livrer',
     'carts.fulfilment_method_unknown' => 'Le mode de traitement ":method" n\'est pas disponible',
     'carts.fulfilment_method_unsupported' => '":identifier" ne peut pas être traité par :method',
+    'carts.fulfilment_method_none' => '":identifier" ne peut pas être traité pour le moment',
+    'carts.pickup_location_unavailable' => 'Cet emplacement n\'accepte pas le retrait',
     'missing_currency_price' => 'Aucun prix pour la devise ":currency" n\'existe',
     'minimum_quantity' => 'Vous devez ajouter un minimum de :quantity articles.',
     'quantity_increment' => 'La quantité :quantity doit être par incréments de :increment',

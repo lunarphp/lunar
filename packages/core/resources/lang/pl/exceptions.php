@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Płatność przy odbiorze przesyłki wymaga co najmniej jednej pozycji do dostawy',
     'carts.fulfilment_method_unknown' => 'Metoda realizacji ":method" jest niedostępna',
     'carts.fulfilment_method_unsupported' => '":identifier" nie może zostać zrealizowany metodą :method',
+    'carts.fulfilment_method_none' => '":identifier" nie może teraz zostać zrealizowany',
+    'carts.pickup_location_unavailable' => 'Ta lokalizacja nie obsługuje odbioru osobistego',
     'missing_currency_price' => 'Nie istnieje cena dla waluty ":currency"',
     'minimum_quantity' => 'Musisz dodać co najmniej :quantity elementów.',
     'quantity_increment' => 'Ilość :quantity musi być wielokrotnością :increment',

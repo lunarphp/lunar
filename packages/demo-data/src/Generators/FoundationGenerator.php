@@ -94,7 +94,7 @@ class FoundationGenerator implements Generator
     {
         return Location::query()->firstOrCreate(
             ['handle' => 'default'],
-            ['name' => 'Default', 'default' => true],
+            ['name' => 'Default', 'default' => true, 'accepts_pickup' => true],
         );
     }
 

@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Плащането при доставка изисква поне един артикул за доставка',
     'carts.fulfilment_method_unknown' => 'Методът на изпълнение ":method" не е наличен',
     'carts.fulfilment_method_unsupported' => '":identifier" не може да бъде изпълнен чрез :method',
+    'carts.fulfilment_method_none' => '":identifier" не може да бъде изпълнен в момента',
+    'carts.pickup_location_unavailable' => 'Това местоположение не приема вземане на място',
     'missing_currency_price' => 'Няма цена за валута ":currency"',
     'minimum_quantity' => 'Трябва да добавите минимум :quantity артикула.',
     'quantity_increment' => 'Количество :quantity трябва да бъде в стъпки от :increment',

@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Pay on delivery needs at least one item to deliver',
     'carts.fulfilment_method_unknown' => 'The fulfilment method ":method" is not available',
     'carts.fulfilment_method_unsupported' => '":identifier" cannot be fulfilled by :method',
+    'carts.fulfilment_method_none' => '":identifier" can\'t be fulfilled right now',
+    'carts.pickup_location_unavailable' => 'This location doesn\'t accept pickup',
     'missing_currency_price' => 'No price for currency ":currency" exists',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',

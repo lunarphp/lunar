@@ -18,7 +18,7 @@ class CartLineFulfilmentMethod extends BaseValidator
         $key = $this->parameters['fulfilmentMethod'] ?? null;
 
         if ($key === null) {
-            return $this->pass();
+            return $this->validateRestrictedPurchasable();
         }
 
         if (! $method = $this->fulfilmentMethods->get($key)) {
@@ -37,6 +37,26 @@ class CartLineFulfilmentMethod extends BaseValidator
         ]));
     }
 
+    /**
+     * An item restricted to methods that are all unavailable, such as a
+     * collection-only item when no location accepts pickup, can't be added:
+     * with no method it would be claimed and shipped.
+     */
+    protected function validateRestrictedPurchasable(): bool
+    {
+        $purchasable = $this->purchasable();
+
+        if (! $purchasable
+            || $purchasable->allowedFulfilmentMethods() === null
+            || $this->fulfilmentMethods->supporting($purchasable)->isNotEmpty()) {
+            return $this->pass();
+        }
+
+        return $this->fail('cart', __('lunar::exceptions.carts.fulfilment_method_none', [
+            'identifier' => $purchasable->getIdentifier(),
+        ]));
+    }
+
     protected function purchasable(): ?Purchasable
     {
         if (($this->parameters['purchasable'] ?? null) instanceof Purchasable) {
@@ -45,6 +65,6 @@ class CartLineFulfilmentMethod extends BaseValidator
 
         $cartLine = $this->parameters['cartLine'] ?? null;
 
-        return $cartLine instanceof CartLine ? $cartLine->purchasable : null;
+        return $cartLine instanceof CartLine ? $cartLine->loadMissing('purchasable')->purchasable : null;
     }
 }

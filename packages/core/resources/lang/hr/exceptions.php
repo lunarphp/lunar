@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Plaćanje pouzećem zahtijeva barem jedan artikl za dostavu',
     'carts.fulfilment_method_unknown' => 'Način ispunjenja ":method" nije dostupan',
     'carts.fulfilment_method_unsupported' => '":identifier" ne može se ispuniti putem :method',
+    'carts.fulfilment_method_none' => '":identifier" trenutno se ne može ispuniti',
+    'carts.pickup_location_unavailable' => 'Ova lokacija ne prihvaća osobno preuzimanje',
     'missing_currency_price' => 'Ne postoji cijena za valutu ":currency"',
     'minimum_quantity' => 'Morate dodati najmanje :quantity stavki.',
     'quantity_increment' => 'Količina :quantity mora biti u koracima od :increment',

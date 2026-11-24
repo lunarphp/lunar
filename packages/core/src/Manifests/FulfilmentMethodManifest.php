@@ -122,6 +122,7 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
         return $this->all()->filter(
             fn (FulfilmentMethod $method) => ($allowed === null || in_array($method->getKey(), $allowed, true))
                 && $method->supports($purchasable)
+                && $method->isAvailable()
         );
     }
 

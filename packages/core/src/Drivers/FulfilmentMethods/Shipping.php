@@ -99,6 +99,11 @@ class Shipping implements FulfilmentMethod
         return (bool) ($purchasable->isShippable());
     }
 
+    public function isAvailable(): bool
+    {
+        return true;
+    }
+
     public function requiresDelivery(): bool
     {
         return true;

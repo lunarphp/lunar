@@ -18,6 +18,7 @@ class LocationFactory extends BaseFactory
             'name' => $name,
             'handle' => Str::slug($name).'-'.Str::random(5),
             'default' => false,
+            'accepts_pickup' => false,
             'meta' => null,
         ];
     }
@@ -25,5 +26,10 @@ class LocationFactory extends BaseFactory
     public function default(): static
     {
         return $this->state(fn () => ['default' => true]);
+    }
+
+    public function acceptsPickup(): static
+    {
+        return $this->state(fn () => ['accepts_pickup' => true]);
     }
 }

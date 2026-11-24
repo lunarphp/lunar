@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('handle')->unique();
             $table->boolean('default')->default(false)->index();
+            $table->boolean('accepts_pickup')->default(false)->index();
             $table->string('line_one')->nullable();
             $table->string('line_two')->nullable();
             $table->string('line_three')->nullable();

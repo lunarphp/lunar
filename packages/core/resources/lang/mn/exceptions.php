@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Хүргэлтээр төлөхөд дор хаяж нэг хүргэх бараа шаардлагатай',
     'carts.fulfilment_method_unknown' => '":method" биелүүлэх арга боломжгүй',
     'carts.fulfilment_method_unsupported' => '":identifier"-г :method аргаар биелүүлэх боломжгүй',
+    'carts.fulfilment_method_none' => '":identifier"-г одоогоор биелүүлэх боломжгүй',
+    'carts.pickup_location_unavailable' => 'Энэ байршилд очиж авах боломжгүй',
     'missing_currency_price' => '":currency" валютын үнэ байхгүй байна',
     'minimum_quantity' => 'Та хамгийн багадаа :quantity ширхэгийг нэмэх ёстой.',
     'quantity_increment' => ':quantity тоо хэмжээ нь :increment-ын үржвэр байх ёстой',

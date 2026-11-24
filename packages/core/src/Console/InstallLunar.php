@@ -92,6 +92,7 @@ class InstallLunar extends Command
                     'name' => 'Default',
                     'handle' => 'default',
                     'default' => true,
+                    'accepts_pickup' => true,
                 ]);
             }
 

@@ -87,6 +87,14 @@ interface FulfilmentMethod
     public function supports(Purchasable $purchasable): bool;
 
     /**
+     * Whether the store can use this method right now, whatever the
+     * purchasable, such as `pickup` needing a location that accepts pickup.
+     * An unavailable method is left out of `supporting()`, so customers
+     * can't choose it, while forms still show it on items that use it.
+     */
+    public function isAvailable(): bool;
+
+    /**
      * Whether this method delivers to the customer, so its lines need a
      * shipping option and address and count towards shipping rates.
      */

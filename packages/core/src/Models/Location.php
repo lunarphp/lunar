@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
  * A physical place — a warehouse or store — that fulfilments are assigned to
@@ -23,6 +25,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property string $name
  * @property string $handle
  * @property bool $default
+ * @property bool $accepts_pickup
  * @property ?string $line_one
  * @property ?string $line_two
  * @property ?string $line_three
@@ -53,8 +56,15 @@ class Location extends Base
      */
     protected $casts = [
         'default' => 'boolean',
+        'accepts_pickup' => 'boolean',
         'meta' => AsArrayObject::class,
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Blink::forget('lunar_default_pickup_location'));
+        static::deleted(fn () => Blink::forget('lunar_default_pickup_location'));
+    }
 
     /**
      * Return a new factory instance for the model.
@@ -70,6 +80,28 @@ class Location extends Base
     public function setHandleAttribute(?string $val): void
     {
         $this->attributes['handle'] = Str::slug($val);
+    }
+
+    /**
+     * Locations customers can collect from.
+     */
+    public function scopeAcceptsPickup(Builder $query): void
+    {
+        $query->where('accepts_pickup', true);
+    }
+
+    /**
+     * Where a pickup is collected when nothing chooses a location: the
+     * default location when it accepts pickup, otherwise the first location
+     * that does by name, otherwise null.
+     */
+    public static function defaultPickup(): ?self
+    {
+        return Blink::once('lunar_default_pickup_location', fn () => static::query()
+            ->acceptsPickup()
+            ->orderByDesc('default')
+            ->orderBy('name')
+            ->first());
     }
 
     public function country(): BelongsTo

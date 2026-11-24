@@ -22,7 +22,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     Language::factory()->create(['default' => true, 'code' => 'en']);
     Currency::factory()->create(['default' => true]);
-    $this->warehouse = Location::factory()->create(['default' => true]);
+    $this->warehouse = Location::factory()->acceptsPickup()->create(['default' => true]);
 
     $this->order = Order::factory()->create(['placed_at' => null]);
     $this->line = OrderLine::factory()->create([
@@ -41,7 +41,7 @@ function shippingFulfilment(Order $order, OrderLine $line): Fulfilment
 
 test('a delivery can be changed to pickup in full', function () {
     $source = shippingFulfilment($this->order, $this->line);
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
 
     $pickup = $source->changeMethod(Pickup::KEY, $counter);
 
@@ -65,12 +65,25 @@ test('part of a delivery can be changed to pickup', function () {
 });
 
 test('a pickup defaults to the order pickup location', function () {
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
     $this->order->update(['pickup_location_id' => $counter->id]);
 
     $pickup = shippingFulfilment($this->order, $this->line)->changeMethod(Pickup::KEY);
 
     expect($pickup->location_id)->toBe($counter->id);
+});
+
+test('a pickup can only be changed to a location that accepts pickup', function () {
+    shippingFulfilment($this->order, $this->line)->changeMethod(Pickup::KEY, Location::factory()->create());
+})->throws(FulfilmentException::class, 'This location doesn\'t accept pickup');
+
+test('a pickup skips an order pickup location that stopped accepting pickup', function () {
+    $counter = Location::factory()->create();
+    $this->order->update(['pickup_location_id' => $counter->id]);
+
+    $pickup = shippingFulfilment($this->order, $this->line)->changeMethod(Pickup::KEY);
+
+    expect($pickup->location_id)->toBe($this->warehouse->id);
 });
 
 test('a pickup changed to delivery needs a shipping address', function () {

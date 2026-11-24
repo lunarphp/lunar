@@ -26,7 +26,7 @@ beforeEach(function () {
     CustomerGroup::factory()->create(['default' => true]);
     TaxClass::factory()->create(['default' => true]);
     $this->currency = Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
-    $this->warehouse = Location::factory()->create(['default' => true]);
+    $this->warehouse = Location::factory()->acceptsPickup()->create(['default' => true]);
     $this->cart = Cart::factory()->create(['currency_id' => $this->currency->id]);
 });
 
@@ -113,7 +113,7 @@ test('a variant that does not ship gets a fulfilment for the method it names', f
 });
 
 test('pickup fulfilments are created at the order pickup location', function () {
-    $counter = Location::factory()->create();
+    $counter = Location::factory()->acceptsPickup()->create();
     $this->cart->add(orderVariant($this->currency));
 
     $order = place(readyForOrder($this->cart, pickupLocation: $counter)->createOrder());

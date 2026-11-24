@@ -92,6 +92,11 @@ class ValidateCartForOrderCreation extends BaseValidator
 
         $hasPickup = collect($fulfilment->lines)->contains(fn (?FulfilmentMethod $method) => $method?->getKey() === Pickup::KEY);
 
+        // A line still set to pickup after every location stopped accepting it has nowhere to be collected.
+        if ($hasPickup && ! $fulfilment->pickupLocation) {
+            return $this->fail('cart', __('lunar::exceptions.carts.pickup_location_unavailable'));
+        }
+
         if ($cart->payment_terms === PaymentTerms::OnPickup && ! $hasPickup) {
             return $this->fail('cart', __('lunar::exceptions.carts.payment_terms_pickup_missing'));
         }

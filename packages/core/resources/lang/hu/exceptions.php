@@ -19,6 +19,8 @@ return [
     'carts.payment_terms_delivery_missing' => 'Az utánvétes fizetéshez legalább egy kiszállítandó tétel szükséges',
     'carts.fulfilment_method_unknown' => 'A(z) ":method" teljesítési mód nem érhető el',
     'carts.fulfilment_method_unsupported' => 'A(z) ":identifier" nem teljesíthető ezzel: :method',
+    'carts.fulfilment_method_none' => 'A(z) ":identifier" jelenleg nem teljesíthető',
+    'carts.pickup_location_unavailable' => 'Ezen a helyszínen nincs személyes átvétel',
     'missing_currency_price' => 'A ":currency" pénznemhez nem létezik ár.',
     'minimum_quantity' => 'Legalább :quantity tételt kell hozzáadni.',
     'quantity_increment' => 'A mennyiségnek :increment lépésközzel adható meg.',

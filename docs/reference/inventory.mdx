@@ -38,6 +38,7 @@ Lunar\Core\Models\Location
 | `name` | `string` | Display name |
 | `handle` | `string` | Unique slug, automatically slugified on save |
 | `default` | `boolean` | Whether this is the default location |
+| `accepts_pickup` | `boolean` | Whether customers can collect from this location. Pickup is only offered when at least one location accepts it |
 | `line_one` | `string` `nullable` | Address, so a pickup can tell the customer where to go |
 | `line_two` | `string` `nullable` | |
 | `line_three` | `string` `nullable` | |
@@ -62,6 +63,9 @@ Lunar\Core\Models\Location
 | Scope | Description |
 |:-|:-|
 | `default($default = true)` | Filter to the default location |
+| `acceptsPickup()` | Filter to locations customers can collect from |
+
+`Location::defaultPickup()` returns where a pickup is collected when nothing chooses a location: the default location when it accepts pickup, otherwise the first location that does by name, otherwise `null`.
 
 ## Stock levels
 

@@ -90,6 +90,11 @@ class Digital implements FulfilmentMethod
         return (bool) ($purchasable->requiresFulfilment() && ! $purchasable->isShippable());
     }
 
+    public function isAvailable(): bool
+    {
+        return true;
+    }
+
     public function requiresDelivery(): bool
     {
         return false;

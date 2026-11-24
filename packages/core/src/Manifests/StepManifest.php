@@ -22,6 +22,7 @@ use Lunar\Core\Pipelines\Order\Creation\CreateShippingLine;
 use Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart;
 use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 use Lunar\Core\Validation\Cart\CartFulfilmentMethod;
+use Lunar\Core\Validation\Cart\CartPickupLocation;
 use Lunar\Core\Validation\Cart\ShippingOptionValidator;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\CartLine\CartLineAvailability;
@@ -105,6 +106,9 @@ class StepManifest implements StepManifestContract
             ],
             StepList::SetLineFulfilmentMethodValidation => [
                 CartLineFulfilmentMethod::class,
+            ],
+            StepList::SetPickupLocationValidation => [
+                CartPickupLocation::class,
             ],
             StepList::OrderCreateValidation => [
                 ValidateCartForOrderCreation::class,
