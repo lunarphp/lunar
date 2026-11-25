@@ -533,6 +533,10 @@ const formatDateTime = (value: string): string =>
                                     <dt class="text-ink-500">{{ t('orders.cancel_reason') }}</dt>
                                     <dd class="text-ink-900">{{ order.cancel_reason_label }}</dd>
                                 </div>
+                                <div v-if="order.cancel_note" class="flex items-start justify-between gap-2">
+                                    <dt class="text-ink-500 shrink-0">{{ t('orders.cancel_note') }}</dt>
+                                    <dd class="text-ink-900 text-right min-w-0 break-words whitespace-pre-line">{{ order.cancel_note }}</dd>
+                                </div>
                             </dl>
                         </SideCard>
 

@@ -221,7 +221,7 @@ class OrderShowController
                 ->latest()
                 ->limit(25)
                 ->get()
-                ->map(fn (Activity $activity) => TimelineActivity::toArray($activity))),
+                ->map(fn (Activity $activity) => TimelineActivity::forOrder($activity, $currency))),
             'urls' => [
                 'index' => route('panel.orders.index'),
                 'capture' => route('panel.orders.capture', $order),
