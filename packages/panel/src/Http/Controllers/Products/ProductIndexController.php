@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Http\Controllers\Products;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Models\Brand;
@@ -176,13 +175,13 @@ class ProductIndexController
      */
     protected function kpis(): array
     {
-        return Cache::remember('lunar.panel.products.kpis', now()->addMinutes(5), fn (): array => [
+        return [
             'total' => Product::count(),
             'published' => Product::query()->where('status', Published::$name)->count(),
             'draft' => Product::query()->where('status', Draft::$name)->count(),
             'outOfStock' => Product::query()
                 ->whereDoesntHave('variants', fn ($query) => $query->where('stock_available', '>', 0))
                 ->count(),
-        ]);
+        ];
     }
 }

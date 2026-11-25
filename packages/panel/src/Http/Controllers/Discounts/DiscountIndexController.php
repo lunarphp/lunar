@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Http\Controllers\Discounts;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Facades\Discounts;
@@ -161,8 +160,8 @@ class DiscountIndexController
     }
 
     /**
-     * KPI strip values, cached briefly — they are whole-table aggregates and do
-     * not need to be second-accurate.
+     * KPI strip values, read fresh on every load so they agree with the table
+     * straight after staff change a discount.
      *
      * Redemptions is a lifetime total rather than a 30-day window: `uses` is a
      * bare counter with no per-redemption timestamp, and the one timestamped
@@ -173,11 +172,11 @@ class DiscountIndexController
      */
     protected function kpis(): array
     {
-        return Cache::remember('lunar.panel.discounts.kpis', now()->addMinutes(5), fn (): array => [
+        return [
             'active' => Discount::active()->count(),
             'scheduled' => Discount::scheduled()->count(),
             'endingSoon' => Discount::active()->whereNotNull('ends_at')->where('ends_at', '<=', now()->addDays(7))->count(),
             'redemptions' => (int) Discount::sum('uses'),
-        ]);
+        ];
     }
 }

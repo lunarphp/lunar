@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Http\Controllers\Customers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\DataObjects\PriceValue;
@@ -141,46 +140,42 @@ class CustomerIndexController
     }
 
     /**
-     * KPI strip values. Everything here is an aggregate over whole tables, so
-     * the block is cached briefly: on stores with very large customer or order
-     * tables these queries are the expensive part of the page, and the strip
-     * does not need to be second-accurate. Average lifetime value is a single
-     * aggregate over placed, not-cancelled orders (default-currency basis,
-     * like everywhere else); its delta compares against the average as it
-     * stood 30 days ago.
+     * KPI strip values, read fresh on every load so they agree with the table
+     * straight after a customer or order changes, like the dashboard's figures.
+     * Average lifetime value is a single aggregate over placed, not-cancelled
+     * orders (default-currency basis, like everywhere else); its delta
+     * compares against the average as it stood 30 days ago.
      *
      * @return array{total: int, newLast30Days: int, business: int, avgLifetimeValue: ?string, avgLifetimeValueDelta: ?int}
      */
     protected function kpis(): array
     {
-        return Cache::remember('lunar.panel.customers.kpis', now()->addMinutes(5), function (): array {
-            $lifetime = fn () => Order::query()
-                ->whereNotNull('placed_at')
-                ->whereNull('cancelled_at')
-                ->whereNotNull('customer_id')
-                ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS spend, COUNT(DISTINCT customer_id) AS customers');
+        $lifetime = fn () => Order::query()
+            ->whereNotNull('placed_at')
+            ->whereNull('cancelled_at')
+            ->whereNotNull('customer_id')
+            ->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0) AS spend, COUNT(DISTINCT customer_id) AS customers');
 
-            $current = $lifetime()->first();
-            $prior = $lifetime()->where('placed_at', '<', now()->subDays(30))->first();
+        $current = $lifetime()->first();
+        $prior = $lifetime()->where('placed_at', '<', now()->subDays(30))->first();
 
-            $average = fn ($row): int => $row->customers ? (int) round($row->spend / $row->customers) : 0;
+        $average = fn ($row): int => $row->customers ? (int) round($row->spend / $row->customers) : 0;
 
-            $currentAverage = $average($current);
-            $priorAverage = $average($prior);
+        $currentAverage = $average($current);
+        $priorAverage = $average($prior);
 
-            $defaultCurrency = Currency::getDefault();
+        $defaultCurrency = Currency::getDefault();
 
-            return [
-                'total' => Customer::count(),
-                'newLast30Days' => Customer::where('created_at', '>=', now()->subDays(30))->count(),
-                'business' => Customer::whereNotNull('company_name')->where('company_name', '!=', '')->count(),
-                'avgLifetimeValue' => $currentAverage && $defaultCurrency
-                    ? (new PriceValue($currentAverage, $defaultCurrency))->format()
-                    : null,
-                'avgLifetimeValueDelta' => $priorAverage > 0
-                    ? (int) round(($currentAverage - $priorAverage) / $priorAverage * 100)
-                    : null,
-            ];
-        });
+        return [
+            'total' => Customer::count(),
+            'newLast30Days' => Customer::where('created_at', '>=', now()->subDays(30))->count(),
+            'business' => Customer::whereNotNull('company_name')->where('company_name', '!=', '')->count(),
+            'avgLifetimeValue' => $currentAverage && $defaultCurrency
+                ? (new PriceValue($currentAverage, $defaultCurrency))->format()
+                : null,
+            'avgLifetimeValueDelta' => $priorAverage > 0
+                ? (int) round(($currentAverage - $priorAverage) / $priorAverage * 100)
+                : null,
+        ];
     }
 }

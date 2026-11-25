@@ -256,6 +256,29 @@ it('sets bulk status on a selection', function () {
     expect((string) $untouched->fresh()->status)->toBe('draft');
 });
 
+it('reflects a bulk status change in the KPIs on the next load', function () {
+    actingAsAdmin();
+
+    $draft = Product::factory()->create(['status' => 'draft']);
+    Product::factory()->create(['status' => 'published']);
+
+    $this->get(route('panel.products.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.draft', 1)
+            ->where('kpis.published', 1)
+        );
+
+    $this->post(route('panel.products.bulk-status', ['status' => 'published']), [
+        'ids' => [$draft->id],
+    ])->assertRedirect();
+
+    $this->get(route('panel.products.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.draft', 0)
+            ->where('kpis.published', 2)
+        );
+});
+
 it('rejects bulk status outside the allowed states', function () {
     actingAsAdmin();
 
