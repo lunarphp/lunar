@@ -72,6 +72,7 @@ const props = defineProps<{
         draft: string;
         draftCommit: string;
         stockAdjust: string;
+        stockIncoming: string | null;
     };
 }>();
 
@@ -234,6 +235,7 @@ const timelineEvents = computed(() =>
                             :values="details"
                             :stock="variant.stock"
                             :adjust-url="urls.stockAdjust"
+                            :incoming-url="urls.stockIncoming"
                             :errors="detailsErrors"
                         />
 

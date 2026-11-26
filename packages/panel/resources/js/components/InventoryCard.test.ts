@@ -17,13 +17,14 @@ const levels: StockLevelRow[] = [
     { location_id: 1, location_name: 'Warehouse', default: true, on_hand: 10, incoming: 0, committed: 2, unavailable: 1 },
 ];
 
-const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
+const mountCard = (values: Record<string, unknown>, fieldPrefix = '', incomingUrl: string | null = '/incoming') =>
     mount(InventoryCard, {
         props: {
             values: reactive(values),
             fieldPrefix,
             stock: { aggregate, levels },
             adjustUrl: '/stock',
+            incomingUrl,
         },
     });
 
@@ -88,6 +89,24 @@ describe('InventoryCard', () => {
         expect(post).not.toHaveBeenCalled();
     });
 
+    it('commits an inline incoming edit to the incoming url', async () => {
+        const post = vi.spyOn(router, 'post').mockImplementation(() => undefined as never);
+
+        const wrapper = mountCard(baseValues());
+
+        const incoming = wrapper.find('input[aria-label="products.stock_incoming — Warehouse"]');
+        await incoming.setValue('12');
+        await incoming.trigger('blur');
+
+        expect(post).toHaveBeenCalledWith('/incoming', { location_id: 1, incoming: 12 }, expect.anything());
+    });
+
+    it('shows incoming read-only when entry is turned off', () => {
+        const wrapper = mountCard(baseValues(), '', null);
+
+        expect(wrapper.find('input[aria-label="products.stock_incoming — Warehouse"]').exists()).toBe(false);
+    });
+
     it('writes ordering quantities to prefixed keys', async () => {
         const values = baseValues('variant:');
         const wrapper = mountCard(values, 'variant:');
@@ -95,6 +114,7 @@ describe('InventoryCard', () => {
         // The three quantity fields render without an aria-label, in order:
         // unit_quantity, min_quantity, quantity_increment.
         const quantityInputs = wrapper.findAll('input[type="number"]').filter((input) => !input.attributes('aria-label'));
+        expect(quantityInputs).toHaveLength(3);
         await quantityInputs[1].setValue('6');
 
         expect(values['variant:min_quantity']).toBe(6);

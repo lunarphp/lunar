@@ -42,6 +42,18 @@ Panel::extendSection(new MyExtension);  // grafted onto someone else's section
 Register sections and extensions inside a service provider's `boot()` method. Sections are processed once during the application's own boot, and a registration arriving after that point is silently ignored — `Lunar\Panel\PanelManager` logs a warning naming the late class, but nothing throws.
 </Warning>
 
+### Taking over incoming stock
+
+A product's inventory card lets staff edit each location's incoming stock inline. An add-on that keeps `incoming` in step with its own purchase orders turns that editor off, so the figure has one writer:
+
+```php
+use Lunar\Panel\Facades\Panel;
+
+Panel::withoutIncomingStockEntry();
+```
+
+Incoming stock then shows read-only, and the panel's incoming-stock route refuses writes with a 403. The add-on writes through `$variant->setIncomingStock()`, see [Setting incoming stock](/reference/inventory#setting-incoming-stock).
+
 ## The hook table
 
 Every `Section` and `SectionExtension` implements the same set of hooks, each returning an empty default so overriding one is opt-in.

@@ -9,6 +9,7 @@ use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Panel\PanelManager;
 
 /**
  * Inline on-hand edit for one location: the posted figure is applied as an
@@ -38,5 +39,27 @@ class ProductVariantStockController
         }
 
         return back()->with('success', __('panel::products.flash_stock_updated'));
+    }
+
+    /**
+     * Inline incoming edit for one location: the posted figure replaces what
+     * the location expects to receive. Refused while a purchasing add-on owns
+     * the figure, so the editor and the endpoint cannot disagree.
+     */
+    public function incoming(Request $request, Product $product, ProductVariant $productVariant, PanelManager $panel): RedirectResponse
+    {
+        abort_unless($panel->usesIncomingStockEntry(), 403);
+
+        $validated = $request->validate([
+            'location_id' => ['required', Rule::exists((new Location)->getTable(), 'id')],
+            'incoming' => ['required', 'integer', 'min:0'],
+        ]);
+
+        /** @var Location $location */
+        $location = Location::query()->findOrFail($validated['location_id']);
+
+        $productVariant->setIncomingStock($location, (int) $validated['incoming']);
+
+        return back()->with('success', __('panel::products.flash_incoming_updated'));
     }
 }

@@ -160,6 +160,9 @@ class ProductVariantController
                 'draft' => route('panel.products.variants.draft.update', [$product, $productVariant]),
                 'draftCommit' => route('panel.products.variants.draft.commit', [$product, $productVariant]),
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $productVariant]),
+                'stockIncoming' => app(PanelManager::class)->usesIncomingStockEntry()
+                    ? route('panel.products.variants.stock.incoming', [$product, $productVariant])
+                    : null,
             ],
         ]);
     }

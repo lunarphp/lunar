@@ -33,6 +33,8 @@ const props = defineProps<{
     fieldPrefix?: string;
     stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
     adjustUrl: string;
+    // Null while a purchasing add-on owns incoming stock; the figure is then read-only.
+    incomingUrl?: string | null;
     errors?: Record<string, string>;
 }>();
 
@@ -79,6 +81,33 @@ const commitOnHand = (row: StockLevelRow): void => {
     router.post(props.adjustUrl, {
         location_id: row.location_id,
         on_hand: next,
+    }, { preserveScroll: true, preserveState: true });
+};
+
+// Inline incoming edits post immediately too — incoming is set, not drafted.
+const incomingEdits = reactive<Record<number, string>>({});
+
+const incomingValue = (row: StockLevelRow): string =>
+    incomingEdits[row.location_id] ?? String(row.incoming);
+
+const commitIncoming = (row: StockLevelRow): void => {
+    const edited = incomingEdits[row.location_id];
+
+    delete incomingEdits[row.location_id];
+
+    if (edited === undefined || !props.incomingUrl) {
+        return;
+    }
+
+    const next = Math.max(0, Number(edited) || 0);
+
+    if (next === row.incoming) {
+        return;
+    }
+
+    router.post(props.incomingUrl, {
+        location_id: row.location_id,
+        incoming: next,
     }, { preserveScroll: true, preserveState: true });
 };
 
@@ -140,7 +169,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                 </div>
             </div>
             <div class="bg-surface border border-line rounded-md overflow-hidden">
-                <div class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_70px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
+                <div class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_82px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
                     <div>{{ t('products.stock_location') }}</div>
                     <div class="text-right">{{ t('products.stock_on_hand') }}</div>
                     <div class="text-right">{{ t('products.stock_available') }}</div>
@@ -150,7 +179,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                 <div
                     v-for="row in stock.levels"
                     :key="row.location_id"
-                    class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_70px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
+                    class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_82px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
                 >
                     <div class="min-w-0">
                         <div class="text-[12.5px] text-ink-900 truncate">{{ row.location_name }}</div>
@@ -169,7 +198,18 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                     </div>
                     <div class="text-right text-[12.5px] font-medium [font-variant-numeric:tabular-nums] text-ink-900">{{ levelAvailable(row) }}</div>
                     <div class="text-right text-[12.5px] [font-variant-numeric:tabular-nums] text-ink-700">{{ row.committed }}</div>
-                    <div :class="['text-right text-[12.5px] [font-variant-numeric:tabular-nums]', row.incoming > 0 ? 'text-warn-ink font-medium' : 'text-ink-400']">{{ row.incoming }}</div>
+                    <div v-if="incomingUrl">
+                        <TextInput
+                            :model-value="incomingValue(row)"
+                            type="number"
+                            min="0"
+                            :aria-label="`${t('products.stock_incoming')} — ${row.location_name}`"
+                            @update:model-value="(value) => { incomingEdits[row.location_id] = String(value); }"
+                            @blur="commitIncoming(row)"
+                            @keydown.enter.prevent="commitIncoming(row)"
+                        />
+                    </div>
+                    <div v-else :class="['text-right text-[12.5px] [font-variant-numeric:tabular-nums]', row.incoming > 0 ? 'text-warn-ink font-medium' : 'text-ink-400']">{{ row.incoming }}</div>
                 </div>
             </div>
             <div class="text-[11px] text-ink-500 mt-1.5">{{ t('products.stock_inline_hint') }}</div>

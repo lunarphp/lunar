@@ -80,6 +80,8 @@ class PanelManager
 
     protected WidgetRegistry $widgetRegistry;
 
+    protected bool $incomingStockEntry = true;
+
     public function __construct()
     {
         $this->sectionRegistry = new SectionRegistry;
@@ -544,6 +546,23 @@ class PanelManager
     public function viteBuildPaths(): array
     {
         return $this->viteBuildPaths;
+    }
+
+    /**
+     * Turn off the inline incoming-stock editor, for a purchasing add-on that
+     * keeps `incoming` in step with its own purchase orders. The figure stays
+     * visible, and the rest of the inventory controls are unaffected.
+     */
+    public function withoutIncomingStockEntry(bool $without = true): static
+    {
+        $this->incomingStockEntry = ! $without;
+
+        return $this;
+    }
+
+    public function usesIncomingStockEntry(): bool
+    {
+        return $this->incomingStockEntry;
     }
 
     public function path(): string
