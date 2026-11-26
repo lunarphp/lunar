@@ -41,7 +41,10 @@ it('drafts and commits the redemption choice', function () {
 
     expect(EditDraft::sole()->base_snapshot)->toHaveKey('redemption', 'automatic');
 
-    $this->postJson(route('panel.discounts.draft.commit', $this->discount))->assertSuccessful();
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
+        'data' => ['redemption' => 'coupon'],
+        'rebase' => [],
+    ])->assertSuccessful();
 
     expect($this->discount->refresh()->redemption)->toBe(DiscountRedemptionMethod::Coupon);
 });
@@ -51,7 +54,10 @@ it('rejects a redemption that is not a method', function () {
         'data' => ['redemption' => 'sometimes'],
     ])->assertOk();
 
-    $this->postJson(route('panel.discounts.draft.commit', $this->discount))->assertUnprocessable();
+    $this->postJson(route('panel.discounts.draft.commit', $this->discount), [
+        'data' => ['redemption' => 'sometimes'],
+        'rebase' => [],
+    ])->assertUnprocessable();
 
     expect($this->discount->refresh()->redemption)->toBe(DiscountRedemptionMethod::Automatic);
 });

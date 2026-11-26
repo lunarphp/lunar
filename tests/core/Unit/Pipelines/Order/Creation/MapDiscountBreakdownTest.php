@@ -150,9 +150,8 @@ test('keeps a shopper line and a reward line for the same purchasable apart when
     ]);
 
     // Prices both lines, so its breakdown names each of them.
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => PercentageOff::class,
-        'coupon' => '10OFF',
         'data' => ['percentage' => 10],
     ]);
 
