@@ -13,6 +13,7 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Actions\Products\AdjustStockAction;
+use Lunar\Filament\Actions\Products\SetIncomingStockAction;
 use Lunar\Filament\Schemas\ProductVariant\ProductVariantInventory;
 
 /**
@@ -105,17 +106,20 @@ class ManageProductInventory extends BaseEditRecord
     {
         return $schema->components([
             Section::make(__('lunar-filament::productvariant.inventory.summary_heading'))
+                ->key('stock_summary')
                 ->description(ProductVariantInventory::locationDescription())
                 ->headerActions([
                     AdjustStockAction::make()->record($this->getVariant()),
+                    SetIncomingStockAction::make()->record($this->getVariant()),
                 ])
                 ->schema([
                     $this->rollupPlaceholder('stock_on_hand', 'on_hand'),
                     $this->rollupPlaceholder('stock_available', 'available'),
                     $this->rollupPlaceholder('stock_committed', 'committed'),
                     $this->rollupPlaceholder('stock_reserved', 'reserved'),
+                    $this->rollupPlaceholder('stock_incoming', 'incoming'),
                 ])
-                ->columns(['default' => 2, 'xl' => 4]),
+                ->columns(['default' => 2, 'xl' => 5]),
             ProductVariantInventory::getSellingPolicySection(),
         ])->statePath('');
     }

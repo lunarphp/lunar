@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Definir estoque a receber',
+            'modal_heading' => 'Definir estoque a receber',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'A receber',
+                    'helper_text' => 'Unidades que o local padrão espera receber. Substitui o valor atual.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Estoque a receber atualizado.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

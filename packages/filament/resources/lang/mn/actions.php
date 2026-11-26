@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Ирэх нөөц тохируулах',
+            'modal_heading' => 'Ирэх нөөц тохируулах',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Ирэх',
+                    'helper_text' => 'Үндсэн байршилд ирэхээр хүлээгдэж буй нэгж. Одоогийн утгыг солино.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Ирэх нөөц шинэчлэгдлээ.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

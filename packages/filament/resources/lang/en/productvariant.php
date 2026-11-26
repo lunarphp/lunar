@@ -10,6 +10,7 @@ return [
         'available' => 'Available',
         'committed' => 'Committed',
         'reserved' => 'Reserved',
+        'incoming' => 'Incoming',
         'recent_movements' => 'Recent movements',
         'no_movements' => 'No stock movements yet.',
     ],

@@ -13,6 +13,8 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
+use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Filament\Actions\Products\SetIncomingStockAction;
 
 class LunarPanelProvider extends ServiceProvider
 {
@@ -37,6 +39,12 @@ class LunarPanelProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunarpanel');
+
+        // Read at render time, so LunarPanel::withoutIncomingStockEntry() works
+        // whenever the application calls it.
+        SetIncomingStockAction::configureUsing(
+            fn (SetIncomingStockAction $action) => $action->visible(fn (): bool => LunarPanel::usesIncomingStockEntry()),
+        );
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel');
 

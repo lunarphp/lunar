@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'تعيين المخزون الوارد',
+            'modal_heading' => 'تعيين المخزون الوارد',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'الوارد',
+                    'helper_text' => 'الوحدات المتوقع وصولها إلى الموقع الافتراضي. يحل هذا محل الرقم الحالي.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'تم تحديث المخزون الوارد.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

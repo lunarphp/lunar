@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Postavi dolaznu zalihu',
+            'modal_heading' => 'Postavi dolaznu zalihu',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Dolazno',
+                    'helper_text' => 'Jedinice koje zadana lokacija očekuje primiti. Zamjenjuje trenutačnu vrijednost.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Dolazna zaliha ažurirana.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

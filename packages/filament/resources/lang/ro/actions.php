@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Setează stocul în curs de sosire',
+            'modal_heading' => 'Setează stocul în curs de sosire',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'În curs de sosire',
+                    'helper_text' => 'Unitățile pe care locația implicită le așteaptă. Înlocuiește valoarea curentă.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Stocul în curs de sosire a fost actualizat.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Ustaw przychodzący stan',
+            'modal_heading' => 'Ustaw przychodzący stan',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Przychodzące',
+                    'helper_text' => 'Sztuki, których oczekuje domyślna lokalizacja. Zastępuje bieżącą wartość.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Zaktualizowano przychodzący stan.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

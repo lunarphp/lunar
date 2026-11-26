@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'تنظیم موجودی ورودی',
+            'modal_heading' => 'تنظیم موجودی ورودی',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'ورودی',
+                    'helper_text' => 'واحدهایی که مکان پیش‌فرض انتظار دریافت آن‌ها را دارد. این مقدار جایگزین رقم فعلی می‌شود.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'موجودی ورودی به‌روزرسانی شد.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

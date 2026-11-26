@@ -84,6 +84,8 @@ class LunarPanelManager
 
     protected bool $inventoryControls = true;
 
+    protected bool $incomingStockEntry = true;
+
     protected static $resources = [
         ActivityResource::class,
         AttributeGroupResource::class,
@@ -401,6 +403,23 @@ class LunarPanelManager
     public function usesInventoryControls(): bool
     {
         return $this->inventoryControls;
+    }
+
+    /**
+     * Hide the action that sets incoming stock by hand, for a purchasing
+     * add-on that keeps `incoming` in step with its own purchase orders. The
+     * rest of the inventory controls stay.
+     */
+    public function withoutIncomingStockEntry(bool $without = true): self
+    {
+        $this->incomingStockEntry = ! $without;
+
+        return $this;
+    }
+
+    public function usesIncomingStockEntry(): bool
+    {
+        return $this->incomingStockEntry;
     }
 
     /**

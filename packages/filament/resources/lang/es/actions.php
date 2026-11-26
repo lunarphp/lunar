@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Fijar stock entrante',
+            'modal_heading' => 'Fijar stock entrante',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Entrante',
+                    'helper_text' => 'Unidades que la ubicación predeterminada espera recibir. Reemplaza la cifra actual.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Stock entrante actualizado.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

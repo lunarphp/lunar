@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Eingehenden Bestand festlegen',
+            'modal_heading' => 'Eingehenden Lagerbestand festlegen',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Eingehend',
+                    'helper_text' => 'Einheiten, die der Standardstandort erwartet. Ersetzt den aktuellen Wert.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Eingehender Lagerbestand aktualisiert.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

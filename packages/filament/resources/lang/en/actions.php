@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Set Incoming Stock',
+            'modal_heading' => 'Set incoming stock',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Incoming',
+                    'helper_text' => 'Units the default location expects to receive. This replaces the current figure.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Incoming stock updated.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

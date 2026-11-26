@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Inkomende voorraad instellen',
+            'modal_heading' => 'Inkomende voorraad instellen',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Inkomend',
+                    'helper_text' => 'Eenheden die de standaardlocatie verwacht te ontvangen. Vervangt het huidige aantal.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Inkomende voorraad bijgewerkt.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

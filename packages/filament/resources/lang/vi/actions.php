@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Đặt hàng sắp về',
+            'modal_heading' => 'Đặt hàng sắp về',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Sắp về',
+                    'helper_text' => 'Số lượng mà vị trí mặc định đang chờ nhận. Thay thế con số hiện tại.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Đã cập nhật hàng sắp về.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

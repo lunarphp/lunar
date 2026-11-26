@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Задаване на очаквана наличност',
+            'modal_heading' => 'Задаване на очаквана наличност',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Очаквани',
+                    'helper_text' => 'Бройки, които основното местоположение очаква да получи. Това заменя текущата стойност.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Очакваната наличност е обновена.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

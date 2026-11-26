@@ -1,8 +1,10 @@
 <?php
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductInventory;
+use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -198,4 +200,45 @@ it('updates the variant selling policy', function () {
         'continue_selling' => false,
         'sell_against_incoming' => true,
     ]);
+});
+
+it('sets the incoming stock at the default location', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    $location = Location::factory()->create(['default' => true]);
+
+    $record = Product::factory()->create();
+    $variant = ProductVariant::factory()->create(['product_id' => $record->id]);
+
+    $this->asStaff();
+
+    Livewire::test(ManageProductInventory::class, ['record' => $record->getRouteKey()])
+        ->callAction(TestAction::make('set_incoming_stock')->schemaComponent('stock_summary'), data: ['incoming' => 9])
+        ->assertHasNoActionErrors();
+
+    expect($variant->fresh()->stock_incoming)->toBe(9)
+        ->and($variant->stockLevels()->where('location_id', $location->id)->value('incoming'))->toBe(9);
+});
+
+it('hides incoming stock entry once it is turned off', function () {
+    Language::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    Location::factory()->create(['default' => true]);
+
+    $record = Product::factory()->create();
+    ProductVariant::factory()->create(['product_id' => $record->id]);
+
+    $this->asStaff();
+
+    $action = TestAction::make('set_incoming_stock')->schemaComponent('stock_summary');
+
+    Livewire::test(ManageProductInventory::class, ['record' => $record->getRouteKey()])
+        ->assertActionVisible($action)
+        ->assertActionVisible(TestAction::make('adjust_stock')->schemaComponent('stock_summary'));
+
+    LunarPanel::withoutIncomingStockEntry();
+
+    Livewire::test(ManageProductInventory::class, ['record' => $record->getRouteKey()])
+        ->assertActionDoesNotExist($action)
+        ->assertActionVisible(TestAction::make('adjust_stock')->schemaComponent('stock_summary'));
 });
