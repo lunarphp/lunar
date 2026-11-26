@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Em estoque',
         ],
-        'backorder' => [
-            'label' => 'Sob encomenda',
-        ],
-        'selling_policy' => [
-            'label' => 'Política de venda',
-            'options' => [
-                'always' => 'Sempre',
-                'in_stock' => 'Em estoque',
-                'in_stock_or_on_backorder' => 'Em estoque ou sob encomenda',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Quantidade por unidade',
             'helper_text' => 'Quantos itens individuais formam 1 unidade.',

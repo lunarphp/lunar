@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Op Voorraad',
         ],
-        'backorder' => [
-            'label' => 'In Nabestelling',
-        ],
-        'selling_policy' => [
-            'label' => 'Verkoopbeleid',
-            'options' => [
-                'always' => 'Altijd',
-                'in_stock' => 'Op Voorraad',
-                'in_stock_or_on_backorder' => 'Op Voorraad of In Nabestelling',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Eenheidsaantal',
             'helper_text' => 'Hoeveel individuele items vormen 1 eenheid.',

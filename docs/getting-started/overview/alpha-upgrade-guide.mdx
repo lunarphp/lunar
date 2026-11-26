@@ -128,6 +128,7 @@ Changes made since 2.0.0-alpha.9.
 | `product_variants` | Add `fulfilment_methods` `jsonb` `nullable`. | `2026_06_01_000032_add_fulfilment_choice_columns` |
 | `shipping_methods` | Table-rate shipping only. Add `pickup_location_id` `foreignId` `nullable`, constrained to `locations`, null on delete. | `2026_06_01_000032_add_fulfilment_choice_columns` |
 | `locations` | Add `accepts_pickup` `boolean`, default `false`, indexed. | `2026_06_01_000033_add_location_accepts_pickup` |
+| `product_variants` | Add `continue_selling` `boolean`, default `true`, indexed. Add `sell_against_incoming` `boolean`, default `false`. Backfill both from `selling_policy` (see below), then drop `selling_policy` and `backorder` with their indexes. | |
 
 `edit_drafts.version` counts writes to a staff member's draft, so the panel can refuse a save from a browser tab holding an older copy. Existing drafts need no backfill: each one starts at version `0`, and the edit page passes the stored version to the panel.
 
@@ -138,6 +139,8 @@ Changes made since 2.0.0-alpha.9.
 A null `fulfilment_method` or `pickup_location_id` means the choice is inferred as before, so carts, lines and variants need no backfill. Alpha releases recorded a pickup order with `meta['pickup']` (`meta['collect']` before alpha.8) on its shipping line, which Lunar no longer reads. `Order::isPickup()` now reads the order's fulfilments, so orders that already have fulfilments keep their pickup status. For an order with no fulfilments yet, set `orders.pickup_location_id` to the default location's ID where its shipping line's `meta->pickup` or `meta->collect` is `true`, so its lines are still picked up when the fulfilments are created.
 
 Pickup is only offered at a location with `accepts_pickup` set. Set it to `true` for the default location, and for any other location customers collect from, or pickup stops being offered. A custom `Lunar\Core\Contracts\FulfilmentMethod` adds `isAvailable(): bool`, returning `true` when it is always available.
+
+`continue_selling` and `sell_against_incoming` replace `product_variants.selling_policy` and its `backorder` allowance. Map `always` to `continue_selling = true`, `in_stock` to `continue_selling = false`, and `in_stock_or_on_backorder` to `continue_selling = false` with `sell_against_incoming = true`. Selling beyond available stock now reads the tracked incoming bucket instead of the allowance, so for each `in_stock_or_on_backorder` variant with a positive `backorder`, add it to the `incoming` of the variant's `stock_levels` row at the default location and to `product_variants.stock_incoming`, creating the row with zeroes elsewhere when there is none. The `Lunar\Core\Enums\SellingPolicy` enum is removed.
 
 ## Folded migrations
 

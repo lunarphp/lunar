@@ -158,7 +158,8 @@ $variantOptionMap = $product->variants->map(function ($variant) {
         'option_value_ids' => $variant->values->pluck('id')->sort()->values()->all(),
         'sku' => $variant->sku,
         'enabled' => $variant->enabled,
-        'selling_policy' => $variant->selling_policy->value,
+        'continue_selling' => $variant->continue_selling,
+        'sellable' => $variant->getTotalInventory(),
         'stock_available' => $variant->stock_available,
     ];
 });
@@ -303,19 +304,19 @@ Each variant tracks its own inventory through a set of stock rollup columns (`st
 @endif
 ```
 
-The `selling_policy` field on a variant is a `Lunar\Core\Enums\SellingPolicy` case that controls how it may be sold relative to its stock:
+Two flags on a variant control how it may be sold relative to its stock:
 
-| Case | Value | Behavior |
+| `continue_selling` | `sell_against_incoming` | Behavior |
 |:---|:---|:---|
-| `SellingPolicy::Always` | `always` | Can always be purchased, even when stock reaches zero (backorders allowed) |
-| `SellingPolicy::InStock` | `in_stock` | Can only be purchased up to `stock_available` |
-| `SellingPolicy::InStockOrOnBackorder` | `in_stock_or_on_backorder` | Can be purchased up to `stock_available` plus the `backorder` allowance |
+| `true` | either | Can always be purchased, even when stock reaches zero |
+| `false` | `false` | Can only be purchased up to `stock_available` |
+| `false` | `true` | Can be purchased up to `stock_available` plus `stock_incoming`, the stock the store is expecting |
 
-Use `canBeFulfilledAtQuantity()` to verify a specific quantity can be fulfilled before adding to cart, and `getTotalInventory()` to read the effective sellable quantity under the current policy:
+Use `canBeFulfilledAtQuantity()` to verify a specific quantity can be fulfilled before adding to cart, and `getTotalInventory()` to read the effective sellable quantity under the variant's flags:
 
 ```php
 $variant->canBeFulfilledAtQuantity(3); // Returns true or false
-$variant->getTotalInventory();         // Effective sellable quantity for the current policy
+$variant->getTotalInventory();         // Effective sellable quantity under the variant's flags
 ```
 
 ## Adding to Cart

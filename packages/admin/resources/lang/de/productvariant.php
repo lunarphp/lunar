@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Auf Lager',
         ],
-        'backorder' => [
-            'label' => 'Im Rückstand',
-        ],
-        'selling_policy' => [
-            'label' => 'Verkaufsrichtlinie',
-            'options' => [
-                'always' => 'Immer',
-                'in_stock' => 'Auf Lager',
-                'in_stock_or_on_backorder' => 'Auf Lager oder im Rückstand',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Stückzahl',
             'helper_text' => 'Wie viele Einzelartikel 1 Einheit ausmachen.',

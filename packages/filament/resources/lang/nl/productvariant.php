@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'In Nabestelling',
+        'continue_selling' => [
+            'label' => 'Doorverkopen zonder voorraad',
+            'tooltip' => 'Aan: deze variant kan ongeacht de voorraad besteld worden. Uit: klanten kunnen alleen kopen wat beschikbaar is.',
         ],
-        'selling_policy' => [
-            'label' => 'Verkoopbeleid',
-            'tooltip' => 'Wanneer deze variant gekocht kan worden. „Op Voorraad” verkoopt alleen zolang er eenheden beschikbaar zijn; „Op Voorraad of In Nabestelling” verkoopt ook het nabestellingstegoed; „Altijd” negeert de voorraad volledig.',
-            'options' => [
-                'always' => 'Altijd',
-                'in_stock' => 'Op Voorraad',
-                'in_stock_or_on_backorder' => 'Op Voorraad of In Nabestelling',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Verkopen op inkomende voorraad',
+            'tooltip' => 'Inkomende voorraad telt mee als beschikbaar, zodat klanten verwachte eenheden kunnen bestellen.',
         ],
         'unit_quantity' => [
             'label' => 'Eenheidsaantal',

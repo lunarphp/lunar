@@ -25,8 +25,10 @@ return new class extends Migration
             $table->dimensions();
             $table->boolean('shippable')->default(true)->index();
             $table->jsonb('fulfilment_methods')->nullable();
-            $table->integer('backorder')->default(0)->index();
-            $table->string('selling_policy')->default('always')->index();
+            // Selling decisions (spec 0082): ignore stock entirely, or count the
+            // incoming bucket as sellable alongside available stock.
+            $table->boolean('continue_selling')->default(true)->index();
+            $table->boolean('sell_against_incoming')->default(false);
             // Cached stock rollup, summed from the variant's stock levels (and the
             // global committed/reserved counters). `stock_available` is the indexed
             // sellable figure: on_hand - committed - reserved - unavailable.

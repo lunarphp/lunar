@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Dostępny',
         ],
-        'backorder' => [
-            'label' => 'Na zamówienie',
-        ],
-        'selling_policy' => [
-            'label' => 'Zasady sprzedaży',
-            'options' => [
-                'always' => 'Zawsze',
-                'in_stock' => 'Tylko gdy jest w magazynie',
-                'in_stock_or_on_backorder' => 'W magazynie lub na zamówienie',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Ilość jednostkowa',
             'helper_text' => 'Ile pojedynczych przedmiotów stanowi 1 jednostkę.',

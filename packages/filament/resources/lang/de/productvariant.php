@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Im Rückstand',
+        'continue_selling' => [
+            'label' => 'Bei fehlendem Lagerbestand weiterverkaufen',
+            'tooltip' => 'Wenn aktiviert, kann diese Variante unabhängig vom Lagerbestand bestellt werden. Wenn deaktiviert, können Kunden nur verfügbare Ware kaufen.',
         ],
-        'selling_policy' => [
-            'label' => 'Verkaufsrichtlinie',
-            'tooltip' => 'Wann diese Variante gekauft werden kann. „Auf Lager“ verkauft nur, solange Einheiten verfügbar sind; „Auf Lager oder im Rückstand“ verkauft zusätzlich das Rückstandskontingent; „Immer“ ignoriert den Lagerbestand vollständig.',
-            'options' => [
-                'always' => 'Immer',
-                'in_stock' => 'Auf Lager',
-                'in_stock_or_on_backorder' => 'Auf Lager oder im Rückstand',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Gegen eingehenden Lagerbestand verkaufen',
+            'tooltip' => 'Eingehenden Lagerbestand als verfügbar zählen, damit Kunden erwartete Einheiten bestellen können.',
         ],
         'unit_quantity' => [
             'label' => 'Stückzahl',

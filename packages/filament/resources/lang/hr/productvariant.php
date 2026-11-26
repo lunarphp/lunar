@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Naručeno unaprijed',
+        'continue_selling' => [
+            'label' => 'Nastavi prodaju kad nema zalihe',
+            'tooltip' => 'Kad je uključeno, ova se varijanta može naručiti bez obzira na zalihu. Kad je isključeno, kupci mogu kupiti samo dostupno.',
         ],
-        'selling_policy' => [
-            'label' => 'Pravila prodaje',
-            'tooltip' => 'Kada se ova varijanta može kupiti. „Na zalihi“ prodaje samo dok ima dostupnih jedinica; „Na zalihi ili naručeno unaprijed“ prodaje i količinu za naručivanje unaprijed; „Uvijek“ potpuno zanemaruje zalihu.',
-            'options' => [
-                'always' => 'Uvijek',
-                'in_stock' => 'Na zalihi',
-                'in_stock_or_on_backorder' => 'Na zalihi ili naručeno unaprijed',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Prodaja na temelju dolazne zalihe',
+            'tooltip' => 'Dolazna zaliha računa se kao dostupna, pa kupci mogu naručiti jedinice koje očekujete.',
         ],
         'unit_quantity' => [
             'label' => 'Broj komada',

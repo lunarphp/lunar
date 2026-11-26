@@ -7,7 +7,6 @@ use Lunar\Bundles\Models\Bundle;
 use Lunar\Bundles\Models\BundleComponent;
 use Lunar\Bundles\Models\BundleGroup;
 use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\ProductVariant;
@@ -25,7 +24,7 @@ beforeEach(function () {
 function stockedPart(int $stock, int $quantity = 1, ?BundleGroup $group = null, array $attributes = []): BundleComponent
 {
     $variant = ProductVariant::factory()->inStock($stock)->create(array_merge([
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ], $attributes));
 
     return BundleComponent::factory()->make([
@@ -48,6 +47,19 @@ test('a fixed bundle is available as the smallest number of complete units its c
         ->and($variant->canBeFulfilledAtQuantity(4))->toBeFalse();
 });
 
+test('a component selling against incoming stock counts its incoming units', function () {
+    $bundle = Bundle::factory()->create();
+
+    $bundle->components()->save(stockedPart(10, 1));
+
+    $component = stockedPart(1, 2, null, ['sell_against_incoming' => true]);
+    ProductVariant::query()->whereKey($component->product_variant_id)->update(['stock_incoming' => 5]);
+    $bundle->components()->save($component);
+
+    // (1 available + 5 incoming) / 2 per bundle = 3 complete bundles.
+    expect(ProductVariant::query()->find($bundle->product_variant_id)->getTotalInventory())->toBe(3);
+});
+
 test('a configurable bundle counts the best-stocked option of each group', function () {
     $bundle = Bundle::factory()->create();
     $group = BundleGroup::factory()->create(['bundle_id' => $bundle->id]);
@@ -61,7 +73,7 @@ test('a configurable bundle counts the best-stocked option of each group', funct
 
 test('unlimited selling propagates only when every candidate component is unlimited', function () {
     $bundle = Bundle::factory()->create();
-    $bundle->components()->save(stockedPart(0, 1, null, ['selling_policy' => SellingPolicy::Always]));
+    $bundle->components()->save(stockedPart(0, 1, null, ['continue_selling' => true]));
 
     $variant = ProductVariant::query()->find($bundle->product_variant_id);
 
@@ -83,14 +95,14 @@ test('a bundle with no components has nothing to sell', function () {
 });
 
 test('an ordinary variant falls through to the core resolver', function () {
-    $variant = ProductVariant::factory()->inStock(6)->create(['selling_policy' => SellingPolicy::InStock]);
+    $variant = ProductVariant::factory()->inStock(6)->create(['continue_selling' => false]);
 
     expect(ProductVariant::query()->find($variant->id)->getTotalInventory())->toBe(6);
 });
 
 test('the bundle variant\'s own stock is ignored', function () {
     $bundle = Bundle::factory()->create([
-        'product_variant_id' => ProductVariant::factory()->inStock(100)->create(['selling_policy' => SellingPolicy::InStock])->id,
+        'product_variant_id' => ProductVariant::factory()->inStock(100)->create(['continue_selling' => false])->id,
     ]);
     $bundle->components()->save(stockedPart(1, 1));
 

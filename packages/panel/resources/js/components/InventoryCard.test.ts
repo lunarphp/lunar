@@ -25,14 +25,11 @@ const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
             stock: { aggregate, levels },
             adjustUrl: '/stock',
         },
-        global: {
-            stubs: { StatusSegmentedControl: false },
-        },
     });
 
 const baseValues = (prefix = ''): Record<string, unknown> => ({
-    [`${prefix}selling_policy`]: 'always',
-    [`${prefix}backorder`]: 0,
+    [`${prefix}continue_selling`]: true,
+    [`${prefix}sell_against_incoming`]: false,
     [`${prefix}unit_quantity`]: 1,
     [`${prefix}min_quantity`]: 1,
     [`${prefix}quantity_increment`]: 1,
@@ -50,15 +47,21 @@ describe('InventoryCard', () => {
         expect(wrapper.text()).toContain('7');
     });
 
-    it('writes the selling policy to the prefixed draft key', async () => {
+    it('shows the incoming toggle only once continue-selling is off', async () => {
         const values = baseValues('variant:');
         const wrapper = mountCard(values, 'variant:');
 
-        // The segmented control renders a button per policy option.
-        const inStock = wrapper.findAll('button').find((button) => button.text().includes('products.selling_policy_in_stock'));
-        await inStock?.trigger('click');
+        const toggle = (label: string) => wrapper.find(`[aria-label="${label}"]`);
 
-        expect(values['variant:selling_policy']).toBe('in_stock');
+        expect(toggle('products.field_sell_against_incoming').exists()).toBe(false);
+
+        await toggle('products.field_continue_selling').trigger('click');
+
+        expect(values['variant:continue_selling']).toBe(false);
+
+        await toggle('products.field_sell_against_incoming').trigger('click');
+
+        expect(values['variant:sell_against_incoming']).toBe(true);
     });
 
     it('commits an inline on-hand edit as an adjustment post', async () => {
@@ -89,10 +92,10 @@ describe('InventoryCard', () => {
         const values = baseValues('variant:');
         const wrapper = mountCard(values, 'variant:');
 
-        // The four quantity fields render without an aria-label, in order:
-        // backorder, unit_quantity, min_quantity, quantity_increment.
+        // The three quantity fields render without an aria-label, in order:
+        // unit_quantity, min_quantity, quantity_increment.
         const quantityInputs = wrapper.findAll('input[type="number"]').filter((input) => !input.attributes('aria-label'));
-        await quantityInputs[2].setValue('6');
+        await quantityInputs[1].setValue('6');
 
         expect(values['variant:min_quantity']).toBe(6);
     });

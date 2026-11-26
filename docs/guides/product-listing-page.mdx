@@ -270,16 +270,16 @@ Prices are stored as integers in the lowest denomination (e.g., cents). Multiply
 
 ### Filtering by Product Availability
 
-A variant's availability is governed by its `enabled` flag and its `selling_policy` (an `Lunar\Core\Enums\SellingPolicy` case: `Always`, `InStock`, or `InStockOrOnBackorder`), checked against the `stock_available` rollup.
+A variant's availability is governed by its `enabled` flag and its selling flags: `continue_selling` sells regardless of stock, and `sell_against_incoming` counts the `stock_incoming` rollup alongside `stock_available`.
 
 ```php
-use Lunar\Core\Enums\SellingPolicy;
-
 if ($request->boolean('in_stock')) {
     $query->whereHas('variants', function ($variantQuery) {
         $variantQuery->where('enabled', true)->where(function ($q) {
-            $q->where('selling_policy', SellingPolicy::Always->value)
-                ->orWhere('stock_available', '>', 0);
+            $q->where('continue_selling', true)
+                ->orWhere('stock_available', '>', 0)
+                ->orWhere(fn ($q) => $q->where('sell_against_incoming', true)
+                    ->whereRaw('stock_available + stock_incoming > 0'));
         });
     });
 }
@@ -414,8 +414,10 @@ class CollectionController extends Controller
         if ($request->boolean('in_stock')) {
             $query->whereHas('variants', function ($q) {
                 $q->where('enabled', true)->where(function ($q) {
-                    $q->where('selling_policy', \Lunar\Core\Enums\SellingPolicy::Always->value)
-                        ->orWhere('stock_available', '>', 0);
+                    $q->where('continue_selling', true)
+                        ->orWhere('stock_available', '>', 0)
+                        ->orWhere(fn ($q) => $q->where('sell_against_incoming', true)
+                            ->whereRaw('stock_available + stock_incoming > 0'));
                 });
             });
         }

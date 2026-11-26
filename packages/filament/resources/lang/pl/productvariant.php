@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Na zamówienie',
+        'continue_selling' => [
+            'label' => 'Kontynuuj sprzedaż przy braku stanu',
+            'tooltip' => 'Po włączeniu ten wariant można zamówić niezależnie od stanu magazynowego. Po wyłączeniu klienci mogą kupić tylko dostępne sztuki.',
         ],
-        'selling_policy' => [
-            'label' => 'Zasady sprzedaży',
-            'tooltip' => 'Kiedy ten wariant można kupić. „Tylko gdy jest w magazynie” sprzedaje tylko, gdy są dostępne sztuki; „W magazynie lub na zamówienie” sprzedaje także limit zamówień oczekujących; „Zawsze” całkowicie ignoruje stan magazynowy.',
-            'options' => [
-                'always' => 'Zawsze',
-                'in_stock' => 'Tylko gdy jest w magazynie',
-                'in_stock_or_on_backorder' => 'W magazynie lub na zamówienie',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Sprzedawaj z przychodzącego stanu',
+            'tooltip' => 'Przychodzący stan jest liczony jako dostępny, więc klienci mogą zamawiać oczekiwane sztuki.',
         ],
         'unit_quantity' => [
             'label' => 'Ilość jednostkowa',

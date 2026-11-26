@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'In Stock',
         ],
-        'backorder' => [
-            'label' => 'On Backorder',
-        ],
-        'selling_policy' => [
-            'label' => 'Selling Policy',
-            'options' => [
-                'always' => 'Always',
-                'in_stock' => 'In Stock',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',
             'helper_text' => 'How many individual items make up 1 unit.',

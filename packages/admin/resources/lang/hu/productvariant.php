@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Raktáron',
         ],
-        'backorder' => [
-            'label' => 'Utánrendelhető',
-        ],
-        'selling_policy' => [
-            'label' => 'Értékesítési szabály',
-            'options' => [
-                'always' => 'Mindig',
-                'in_stock' => 'Raktáron',
-                'in_stock_or_on_backorder' => 'Raktáron vagy utánrendelhető',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Egység mennyiség',
             'helper_text' => 'Hány egyedi darabból áll egy egység.',

@@ -43,7 +43,7 @@ test('duplicates a product as a draft', function () {
 
 test('the duplicate starts with no stock while the source keeps its own', function () {
     $product = Product::factory()->create();
-    $variant = ProductVariant::factory()->create(['product_id' => $product->id, 'backorder' => 5]);
+    $variant = ProductVariant::factory()->sellsAgainstIncoming()->create(['product_id' => $product->id]);
     $location = Location::factory()->create(['default' => true]);
 
     $variant->adjustStock($location, 9, StockMovementType::Received);
@@ -67,7 +67,8 @@ test('the duplicate starts with no stock while the source keeps its own', functi
         ->stock_reserved->toBe(0)
         ->stock_unavailable->toBe(0)
         ->stock_available->toBe(0)
-        ->backorder->toBe(5);
+        ->continue_selling->toBeFalse()
+        ->sell_against_incoming->toBeTrue();
 
     expect(StockLevel::where('product_variant_id', $copy->id)->exists())->toBeFalse();
 

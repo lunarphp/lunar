@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Stokta',
         ],
-        'backorder' => [
-            'label' => 'Sipariş Üzerine',
-        ],
-        'selling_policy' => [
-            'label' => 'Satış Politikası',
-            'options' => [
-                'always' => 'Her Zaman',
-                'in_stock' => 'Stokta',
-                'in_stock_or_on_backorder' => 'Stokta veya Sipariş Üzerine',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Birim Miktarı',
             'helper_text' => '1 birimi kaç adet ürün oluşturur.',

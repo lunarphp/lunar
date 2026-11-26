@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Sipariş Üzerine',
+        'continue_selling' => [
+            'label' => 'Stok bittiğinde satışa devam et',
+            'tooltip' => 'Açıkken bu varyant stoktan bağımsız olarak sipariş edilebilir. Kapalıyken müşteriler yalnızca mevcut olanı satın alabilir.',
         ],
-        'selling_policy' => [
-            'label' => 'Satış Politikası',
-            'tooltip' => 'Bu varyantın ne zaman satın alınabileceği. „Stokta” yalnızca birim mevcutken satar; „Stokta veya Sipariş Üzerine” ayrıca ön sipariş kotasını da satar; „Her Zaman” stoğu tamamen yok sayar.',
-            'options' => [
-                'always' => 'Her Zaman',
-                'in_stock' => 'Stokta',
-                'in_stock_or_on_backorder' => 'Stokta veya Sipariş Üzerine',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Gelen stok üzerinden sat',
+            'tooltip' => 'Gelen stoku mevcut olarak sayar, böylece müşteriler beklediğiniz birimleri sipariş edebilir.',
         ],
         'unit_quantity' => [
             'label' => 'Birim Miktarı',

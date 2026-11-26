@@ -3,7 +3,6 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
@@ -29,6 +28,28 @@ class ProductVariantFactory extends BaseFactory
         });
     }
 
+    /**
+     * Stock is binding: the variant sells only what is available.
+     */
+    public function stockBound(): static
+    {
+        return $this->state([
+            'continue_selling' => false,
+            'sell_against_incoming' => false,
+        ]);
+    }
+
+    /**
+     * Stock is binding, but incoming stock counts as sellable.
+     */
+    public function sellsAgainstIncoming(): static
+    {
+        return $this->state([
+            'continue_selling' => false,
+            'sell_against_incoming' => true,
+        ]);
+    }
+
     public function definition(): array
     {
         return [
@@ -44,7 +65,8 @@ class ProductVariantFactory extends BaseFactory
             'ean' => $this->faker->unique()->ean13,
             'enabled' => true,
             'shippable' => true,
-            'selling_policy' => SellingPolicy::Always,
+            'continue_selling' => true,
+            'sell_against_incoming' => false,
         ];
     }
 }

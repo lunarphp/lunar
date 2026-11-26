@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'В наличност',
         ],
-        'backorder' => [
-            'label' => 'По заявка',
-        ],
-        'selling_policy' => [
-            'label' => 'Политика на продажба',
-            'options' => [
-                'always' => 'Винаги',
-                'in_stock' => 'В наличност',
-                'in_stock_or_on_backorder' => 'В наличност или по заявка',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Количество в единица',
             'helper_text' => 'Колко отделни артикула съставляват 1 единица.',

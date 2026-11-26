@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Агуулахын нөөц',
         ],
-        'backorder' => [
-            'label' => 'Захиалгаар',
-        ],
-        'selling_policy' => [
-            'label' => 'Худалдааны бодлого',
-            'options' => [
-                'always' => 'Үргэлж',
-                'in_stock' => 'Нөөцтэй үед',
-                'in_stock_or_on_backorder' => 'Нөөцтэй үед эсвэл захиалгаар',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Нэгжийн тоо',
             'helper_text' => '1 нэгжид хэдэн ширхэг бараа байх вэ.',

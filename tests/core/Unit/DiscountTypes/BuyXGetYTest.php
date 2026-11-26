@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
 use Lunar\Core\DiscountTypes\PercentageOff;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
@@ -1848,7 +1847,7 @@ test('does not automatically add reward when product variant has no stock', func
     $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
     $purchasableB = ProductVariant::factory()->create([
         'product_id' => $productB->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
 
     $cart = Cart::factory()->create([
@@ -1921,7 +1920,7 @@ test('does not automatically add collection reward when all products are out of 
     $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
     $purchasableB = ProductVariant::factory()->create([
         'product_id' => $productB->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
 
     $cart = Cart::factory()->create([
@@ -1996,11 +1995,11 @@ test('automatically adds collection reward selecting in-stock product when other
     $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
     $purchasableB = ProductVariant::factory()->create([
         'product_id' => $productB->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
     $purchasableC = ProductVariant::factory()->inStock(5)->create([
         'product_id' => $productC->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
 
     $cart = Cart::factory()->create([
@@ -2072,11 +2071,11 @@ test('automatically adds in-stock product reward when another reward product is 
     $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
     $purchasableB = ProductVariant::factory()->create([
         'product_id' => $productB->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
     $purchasableC = ProductVariant::factory()->inStock(5)->create([
         'product_id' => $productC->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
 
     $cart = Cart::factory()->create([
@@ -2147,7 +2146,7 @@ test('does not allocate a multi quantity reward beyond stock', function () {
     $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
     $purchasableB = ProductVariant::factory()->inStock(1)->create([
         'product_id' => $productB->id,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
     ]);
 
     $cart = Cart::factory()->create([

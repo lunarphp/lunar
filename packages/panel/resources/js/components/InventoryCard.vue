@@ -4,8 +4,8 @@ import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import FieldLabel from './FieldLabel.vue';
 import Section from './Section.vue';
-import StatusSegmentedControl from './StatusSegmentedControl.vue';
 import TextInput from './TextInput.vue';
+import Toggle from './Toggle.vue';
 
 export interface StockLevelRow {
     location_id: number;
@@ -28,7 +28,7 @@ export interface StockAggregate {
 
 const props = defineProps<{
     // The page's draft values object; field keys are prefixed on the simple
-    // shape (variant:selling_policy) and bare on the variant page.
+    // shape (variant:continue_selling) and bare on the variant page.
     values: Record<string, unknown>;
     fieldPrefix?: string;
     stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
@@ -41,34 +41,18 @@ const { t } = useI18n();
 const key = (field: string): string => `${props.fieldPrefix ?? ''}${field}`;
 
 const field = (name: string) => computed({
-    get: () => props.values[key(name)] as string | number | null,
-    set: (value: string | number | null) => {
+    get: () => props.values[key(name)] as string | number | boolean | null,
+    set: (value: string | number | boolean | null) => {
         // eslint-disable-next-line vue/no-mutating-props
         props.values[key(name)] = value;
     },
 });
 
-const sellingPolicy = field('selling_policy');
-const backorder = field('backorder');
+const continueSelling = field('continue_selling');
+const sellAgainstIncoming = field('sell_against_incoming');
 const unitQuantity = field('unit_quantity');
 const minQuantity = field('min_quantity');
 const quantityIncrement = field('quantity_increment');
-
-const policyOptions = computed(() => [
-    { value: 'always', label: t('products.selling_policy_always'), tone: 'neutral' as const },
-    { value: 'in_stock', label: t('products.selling_policy_in_stock'), tone: 'sage' as const },
-    { value: 'in_stock_or_on_backorder', label: t('products.selling_policy_backorder'), tone: 'warn' as const },
-]);
-
-const policyHelp = computed(() => {
-    const policy = sellingPolicy.value;
-
-    return policy === 'always'
-        ? t('products.selling_policy_always_help')
-        : policy === 'in_stock_or_on_backorder'
-            ? t('products.selling_policy_backorder_help')
-            : t('products.selling_policy_in_stock_help');
-});
 
 // Inline on-hand edits post immediately as adjustment movements — stock is a
 // ledger, not a drafted field.
@@ -104,14 +88,12 @@ const quantityField = (name: string, label: string, hint: string, min: number) =
     ({ name, label, hint, min });
 
 const quantityFields = computed(() => [
-    quantityField('backorder', t('products.field_backorder'), t('products.field_backorder_hint'), 0),
     quantityField('unit_quantity', t('products.field_unit_quantity'), t('products.field_unit_quantity_hint'), 1),
     quantityField('min_quantity', t('products.field_min_quantity'), t('products.field_min_quantity_hint'), 1),
     quantityField('quantity_increment', t('products.field_quantity_increment'), t('products.field_quantity_increment_hint'), 1),
 ]);
 
 const quantityModels: Record<string, ReturnType<typeof field>> = {
-    backorder,
     unit_quantity: unitQuantity,
     min_quantity: minQuantity,
     quantity_increment: quantityIncrement,
@@ -122,14 +104,30 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
     <Section :title="t('products.section_inventory')">
         <template #desc>{{ t('products.section_inventory_description') }}</template>
 
-        <div class="mb-4">
-            <FieldLabel>{{ t('products.field_selling_policy') }}</FieldLabel>
-            <StatusSegmentedControl
-                :model-value="String(sellingPolicy ?? 'always')"
-                :options="policyOptions"
-                @update:model-value="sellingPolicy = $event"
-            />
-            <div class="text-[11.5px] text-ink-500 mt-1.5">{{ policyHelp }}</div>
+        <div class="mb-4 flex flex-col gap-3">
+            <div class="flex items-start gap-2.5">
+                <Toggle
+                    :on="!!continueSelling"
+                    :aria-label="t('products.field_continue_selling')"
+                    @toggle="continueSelling = !continueSelling"
+                />
+                <div>
+                    <div class="text-[12.5px] text-ink-900">{{ t('products.field_continue_selling') }}</div>
+                    <div class="text-[11.5px] text-ink-500 mt-0.5">{{ t('products.field_continue_selling_help') }}</div>
+                </div>
+            </div>
+            <!-- Incoming stock only matters when stock is binding. -->
+            <div v-if="!continueSelling" class="flex items-start gap-2.5">
+                <Toggle
+                    :on="!!sellAgainstIncoming"
+                    :aria-label="t('products.field_sell_against_incoming')"
+                    @toggle="sellAgainstIncoming = !sellAgainstIncoming"
+                />
+                <div>
+                    <div class="text-[12.5px] text-ink-900">{{ t('products.field_sell_against_incoming') }}</div>
+                    <div class="text-[11.5px] text-ink-500 mt-0.5">{{ t('products.field_sell_against_incoming_help') }}</div>
+                </div>
+            </div>
         </div>
 
         <!-- Per-location stock; one row collapses naturally with one location. -->
@@ -177,7 +175,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
             <div class="text-[11px] text-ink-500 mt-1.5">{{ t('products.stock_inline_hint') }}</div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-3.5 gap-y-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-3.5 gap-y-3">
             <div v-for="entry in quantityFields" :key="entry.name">
                 <FieldLabel>{{ entry.label }}</FieldLabel>
                 <TextInput

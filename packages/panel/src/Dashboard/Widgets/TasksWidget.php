@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Dashboard\Widgets;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -76,8 +75,16 @@ class TasksWidget extends Widget
             ->count();
 
         $outOfStock = ProductVariant::query()
-            ->where('stock_available', '<=', 0)
-            ->where('selling_policy', SellingPolicy::InStock)
+            // Stock-bound variants with nothing left to sell, counting incoming
+            // stock for those that sell against it.
+            ->where('continue_selling', false)
+            ->where(fn (Builder $query) => $query
+                ->where(fn (Builder $query) => $query
+                    ->where('sell_against_incoming', false)
+                    ->where('stock_available', '<=', 0))
+                ->orWhere(fn (Builder $query) => $query
+                    ->where('sell_against_incoming', true)
+                    ->whereRaw('stock_available + stock_incoming <= 0')))
             ->whereHas('product', fn (Builder $product) => $product->whereVisible())
             ->count();
 

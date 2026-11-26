@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'În stoc',
         ],
-        'backorder' => [
-            'label' => 'La precomandă',
-        ],
-        'selling_policy' => [
-            'label' => 'Politică de vânzare',
-            'options' => [
-                'always' => 'Întotdeauna',
-                'in_stock' => 'În stoc',
-                'in_stock_or_on_backorder' => 'În stoc sau la precomandă',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Cantitate unitate',
             'helper_text' => 'Câte articole individuale compun 1 unitate.',

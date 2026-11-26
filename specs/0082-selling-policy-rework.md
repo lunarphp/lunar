@@ -295,7 +295,7 @@ None.
 Each slice leaves `2.x` working, so the slice that removes the enum also moves every reader of
 it, including both admins' forms, to the booleans.
 
-- [ ] Slice 1 — core schema + model: booleans on the baseline, enum removal,
+- [x] Slice 1 — core schema + model: booleans on the baseline, enum removal,
   `ResolveInventory` rework, `GenerateProductVariants`, factory states; the panel's
   `InventoryCard` toggles, `VariantFields` and dashboard widgets; the Filament bridge and admin
   inventory forms; lang keys across 16 locales; reference docs and the alpha upgrade guide.

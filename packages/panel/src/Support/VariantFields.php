@@ -5,7 +5,6 @@ namespace Lunar\Panel\Support;
 use Closure;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Contracts\FulfilmentMethod;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\ProductVariant;
@@ -13,7 +12,7 @@ use Lunar\Core\Models\TaxClass;
 
 /**
  * The draftable field surface of a single variant — identifiers, tax,
- * shipping, allowed fulfilment methods, ordering quantities, selling policy, enabled flag, and the
+ * shipping, allowed fulfilment methods, ordering quantities, selling flags, enabled flag, and the
  * variant-morph attribute values. Shared by the variant edit page's draft
  * resource and the product page's simple shape, where the same keys ride the
  * product draft under a `variant:` prefix.
@@ -41,8 +40,8 @@ class VariantFields
         'unit_quantity',
         'min_quantity',
         'quantity_increment',
-        'backorder',
-        'selling_policy',
+        'continue_selling',
+        'sell_against_incoming',
         'enabled',
     ];
 
@@ -90,8 +89,8 @@ class VariantFields
             'unit_quantity' => $variant->unit_quantity,
             'min_quantity' => $variant->min_quantity,
             'quantity_increment' => $variant->quantity_increment,
-            'backorder' => $variant->backorder,
-            'selling_policy' => $variant->selling_policy->value,
+            'continue_selling' => $variant->continue_selling,
+            'sell_against_incoming' => $variant->sell_against_incoming,
             'enabled' => $variant->enabled,
             ...$this->attributeSchema->values($variant),
         ]);
@@ -134,8 +133,8 @@ class VariantFields
             'unit_quantity' => ['integer', 'min:1'],
             'min_quantity' => ['integer', 'min:1'],
             'quantity_increment' => ['integer', 'min:1'],
-            'backorder' => ['integer', 'min:0'],
-            'selling_policy' => [Rule::in(array_column(SellingPolicy::cases(), 'value'))],
+            'continue_selling' => ['boolean'],
+            'sell_against_incoming' => ['boolean'],
             'enabled' => ['boolean'],
             ...($variant ? $this->attributeSchema->rules($variant) : []),
         ];
@@ -163,8 +162,8 @@ class VariantFields
     public function normalizeValue(string $field, mixed $value): mixed
     {
         return match (true) {
-            in_array($field, ['shippable', 'enabled'], true) => (bool) $value,
-            in_array($field, ['unit_quantity', 'min_quantity', 'quantity_increment', 'backorder'], true) => (int) $value,
+            in_array($field, ['shippable', 'enabled', 'continue_selling', 'sell_against_incoming'], true) => (bool) $value,
+            in_array($field, ['unit_quantity', 'min_quantity', 'quantity_increment'], true) => (int) $value,
             in_array($field, ['tax_class_id'], true) => $value === null || $value === '' ? null : (int) $value,
             $field === 'fulfilment_methods' => $this->normalizeMethods($value),
             str_ends_with($field, '_value') => $value === null || $value === '' ? null : (float) $value,

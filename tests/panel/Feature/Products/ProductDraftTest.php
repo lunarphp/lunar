@@ -171,7 +171,8 @@ it('commits simple-shape variant fields through the variant action', function ()
             'variant:sku' => 'WID-NEW',
             'variant:shippable' => false,
             'variant:min_quantity' => 4,
-            'variant:selling_policy' => 'in_stock',
+            'variant:continue_selling' => false,
+            'variant:sell_against_incoming' => true,
         ],
     ])->assertOk();
 
@@ -180,7 +181,8 @@ it('commits simple-shape variant fields through the variant action', function ()
             'variant:sku' => 'WID-NEW',
             'variant:shippable' => false,
             'variant:min_quantity' => 4,
-            'variant:selling_policy' => 'in_stock',
+            'variant:continue_selling' => false,
+            'variant:sell_against_incoming' => true,
         ],
         'rebase' => [],
     ])->assertOk();
@@ -190,7 +192,8 @@ it('commits simple-shape variant fields through the variant action', function ()
     expect($variant->sku)->toBe('WID-NEW')
         ->and($variant->shippable)->toBeFalse()
         ->and($variant->min_quantity)->toBe(4)
-        ->and($variant->selling_policy->value)->toBe('in_stock');
+        ->and($variant->continue_selling)->toBeFalse()
+        ->and($variant->sell_against_incoming)->toBeTrue();
 });
 
 it('drafts and commits the sole variant allowed fulfilment methods', function () {

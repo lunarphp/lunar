@@ -137,7 +137,7 @@ Lunar\Core\Models\CartLine
 </Info>
 
 <Info>
-Don't confuse the `purchasable` morph relation with `Lunar\Core\Enums\SellingPolicy`, the `always` / `in_stock` / `in_stock_or_on_backorder` mode stored on `ProductVariant::$selling_policy` (renamed from `purchasable` in v2). The two are unrelated: the morph is *what* is in the line, the selling policy is *whether* the underlying variant can currently be sold, and it's what `canBeFulfilledAtQuantity()` checks when a line is added or updated (see [Adding and updating lines](#adding-and-updating-lines)).
+Don't confuse the `purchasable` morph relation with a variant's selling flags, `ProductVariant::$continue_selling` and `$sell_against_incoming` (which replace v1's `purchasable` column). The two are unrelated: the morph is *what* is in the line, the selling flags decide *whether* the underlying variant can currently be sold, and it's what `canBeFulfilledAtQuantity()` checks when a line is added or updated (see [Adding and updating lines](#adding-and-updating-lines)).
 </Info>
 
 ## Cart address model
@@ -332,7 +332,7 @@ $cart->updateLines(collect([
 $cart->clear();
 ```
 
-Stock validation calls `$purchasable->canBeFulfilledAtQuantity($quantity)`, which for a `Lunar\Core\Models\ProductVariant` reads its `Lunar\Core\Enums\SellingPolicy` (`Always`, `InStock`, `InStockOrOnBackorder`) — a variant with policy `Always` is always fulfillable regardless of stock.
+Stock validation calls `$purchasable->canBeFulfilledAtQuantity($quantity)`, which for a `Lunar\Core\Models\ProductVariant` reads its selling flags — a variant with `continue_selling` set is always fulfillable regardless of stock, and one with `sell_against_incoming` set counts `stock_incoming` as sellable (see [Sellability](/reference/inventory#sellability)).
 
 ## Addresses and tax zone
 

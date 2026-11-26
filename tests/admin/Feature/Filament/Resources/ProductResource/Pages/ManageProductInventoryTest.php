@@ -148,16 +148,14 @@ it('mounts inventory page using the active variant when a trashed variant exists
 
     $record = Product::factory()->create();
 
-    $trashedVariant = ProductVariant::factory()->create([
+    $trashedVariant = ProductVariant::factory()->sellsAgainstIncoming()->create([
         'product_id' => $record->id,
-        'backorder' => 99,
     ]);
 
     $trashedVariant->delete();
 
     $activeVariant = ProductVariant::factory()->create([
         'product_id' => $record->id,
-        'backorder' => 42,
     ]);
 
     $this->asStaff();
@@ -165,7 +163,8 @@ it('mounts inventory page using the active variant when a trashed variant exists
     Livewire::test(
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
-        ])->assertSet('backorder', $activeVariant->backorder);
+        ])->assertSet('continue_selling', true)
+        ->assertSet('sell_against_incoming', false);
 });
 
 it('updates the variant selling policy', function () {
@@ -190,13 +189,13 @@ it('updates the variant selling policy', function () {
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
         ])->fillForm([
-            'backorder' => 50,
-            'selling_policy' => 'in_stock_or_on_backorder',
+            'continue_selling' => false,
+            'sell_against_incoming' => true,
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new ProductVariant)->getTable(), [
         'id' => $variant->id,
-        'backorder' => 50,
-        'selling_policy' => 'in_stock_or_on_backorder',
+        'continue_selling' => false,
+        'sell_against_incoming' => true,
     ]);
 });
