@@ -17,6 +17,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Discounts\DiscountRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\CouponGenerations;
 use Lunar\Panel\Support\DateTimeValue;
 use Lunar\Panel\Support\DiscountDataSchema;
 use Lunar\Panel\Support\DiscountTargetSchema;
@@ -35,6 +36,7 @@ class DiscountEditController
         DiscountTypeSchema $typeSchema,
         DiscountDataSchema $dataSchema,
         DiscountTargetSchema $targetSchema,
+        CouponGenerations $couponGenerations,
     ): Response {
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($discount, $staff) : null;
@@ -88,6 +90,8 @@ class DiscountEditController
             'activities' => $activities,
             'coupons' => $this->coupons($request, $discount),
             'couponSearch' => $request->string('coupons_q')->value(),
+            'couponGenerations' => $couponGenerations->unfinished($discount),
+            'couponQueueThreshold' => (int) config('lunar.discounts.coupons.queue_threshold'),
             'urls' => [
                 'index' => route('panel.discounts.index'),
                 'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $discount->getMorphClass()]),
@@ -97,6 +101,8 @@ class DiscountEditController
                 'draftCommit' => route('panel.discounts.draft.commit', $discount),
                 'targetSearch' => route('panel.discounts.targets.search', $discount),
                 'couponStore' => route('panel.discounts.coupons.store', $discount),
+                'couponGenerate' => route('panel.discounts.coupons.generate', $discount),
+                'couponExport' => route('panel.discounts.coupons.export', $discount),
             ],
         ]);
     }
@@ -129,6 +135,7 @@ class DiscountEditController
                 'last_redeemed_at' => $coupon->getAttribute('redemptions_max_redeemed_at'),
                 '_actions' => [
                     'delete' => route('panel.discounts.coupons.destroy', [$discount, $coupon]),
+                    'exportBatch' => $coupon->batch ? route('panel.discounts.coupons.export', [$discount, 'batch' => $coupon->batch]) : null,
                 ],
             ]);
     }

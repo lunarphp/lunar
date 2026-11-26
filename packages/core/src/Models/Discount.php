@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\Actions\Discounts\GeneratesCoupons;
 use Lunar\Core\Database\Factories\DiscountFactory;
+use Lunar\Core\DataObjects\CouponBatch;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Concerns\HasChannels;
@@ -114,6 +116,14 @@ class Discount extends Base
     public function coupons(): HasMany
     {
         return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Generate a batch of codes for this discount and return the batch ULID.
+     */
+    public function generateCoupons(CouponBatch $batch): string
+    {
+        return app(GeneratesCoupons::class)->execute($this, $batch);
     }
 
     public function discountables(): HasMany

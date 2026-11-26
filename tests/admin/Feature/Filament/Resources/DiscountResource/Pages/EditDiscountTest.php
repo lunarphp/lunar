@@ -17,14 +17,14 @@ beforeEach(function () {
     $this->asStaff();
 });
 
-it('can render discount edit page', function () {
+it('can render discount edit page', function (DiscountRedemptionMethod $redemption) {
     get(
         DiscountResource::getUrl(
             'edit',
-            ['record' => Discount::factory()->create()]
+            ['record' => Discount::factory()->create(['redemption' => $redemption])]
         )
     )->assertSuccessful();
-});
+})->with(DiscountRedemptionMethod::cases());
 
 it('can edit discount', function () {
     $discount = Discount::factory()->create();

@@ -44,6 +44,7 @@ use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
+use Lunar\Core\Contracts\CouponCodeGenerator;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DefaultStorefrontContext;
 use Lunar\Core\Contracts\DependencyResolver as DependencyResolverContract;
@@ -74,6 +75,7 @@ use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Events\Orders\OrderRefunded;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
+use Lunar\Core\Generators\CouponCodeGenerator as CouponCodeGeneratorImpl;
 use Lunar\Core\Listeners\AllocateStockForFulfilment;
 use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
@@ -535,6 +537,8 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(PriceCalculatorInterface::class, DefaultPriceCalculator::class);
 
         $this->app->bind(CouponValidator::class, CouponValidatorImpl::class);
+
+        $this->app->singleton(CouponCodeGenerator::class, CouponCodeGeneratorImpl::class);
 
         $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
             return $app->make(TelemetryInsights::class);

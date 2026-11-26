@@ -93,7 +93,10 @@ class EditDiscount extends BaseEditRecord
             $managers[] = ProductRewardRelationManager::class;
         }
 
-        $managers[] = CouponRelationManager::class;
+        // This list replaces Filament's own, which would otherwise drop a manager the record can't view.
+        if (CouponRelationManager::canViewForRecord($this->record, static::class)) {
+            $managers[] = CouponRelationManager::class;
+        }
 
         if ($form = LunarFilament::discountFormFor($this->record->getType())) {
             $managers = array_merge($managers, $form->lunarPanelRelationManagers());

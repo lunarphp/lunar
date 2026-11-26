@@ -147,6 +147,94 @@ $discount->coupons()->create(['code' => 'VIP-ALEX', 'max_uses' => 1, 'email' => 
 
 `redemption` is set explicitly rather than derived from whether a discount has codes, so deleting the last code of a coupon discount does not turn it into an automatic discount that applies to every cart.
 
+### Generating codes
+
+`Discount::generateCoupons()` creates a batch of codes on a discount and returns the batch ULID, which every code in the batch stores in its `batch` column. A `Lunar\Core\DataObjects\CouponBatch` describes the batch.
+
+```php
+use Lunar\Core\DataObjects\CouponBatch;
+
+// 500 anonymous single-use codes.
+$batchId = $discount->generateCoupons(CouponBatch::ofQuantity(500));
+
+// One code per recipient, recorded in each code's email column.
+$batchId = $discount->generateCoupons(
+    CouponBatch::forEmails(['alex@example.com', 'sam@example.com'], prefix: 'SPRING-', length: 8),
+);
+```
+
+| Method | Description |
+|:-------|:------------|
+| `CouponBatch::ofQuantity(int $quantity, ...)` | A number of codes with no `email` |
+| `CouponBatch::forEmails(iterable $emails, ...)` | One code per distinct address. Addresses are trimmed and lowercased, as for [per-customer limits](#per-customer-limits), and blank entries are dropped |
+
+Both take the same named options:
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `length` | `10` | The number of generated characters after the prefix |
+| `prefix` | `''` | Put before the generated characters, uppercased |
+| `maxUses` | `1` | The `max_uses` of each code. `null` for no limit |
+
+A batch with no codes, such as `ofQuantity(0)` or a list with no addresses, throws an `InvalidArgumentException`.
+
+The batch ULID is set when the `CouponBatch` is created, and is available as `$batch->id`. Generating the same `CouponBatch` again completes the batch instead of adding codes to it, so a retried job does not make duplicates.
+
+`generateCoupons()` delegates to `Lunar\Core\Contracts\Actions\Discounts\GeneratesCoupons`. The default action, `Lunar\Core\Actions\Discounts\GenerateCoupons`, inserts codes in chunks of 1,000 with `insertOrIgnore()` and keeps going until the batch is complete, so a code that collides with an existing one is replaced, not lost. If 10 chunks in a row insert nothing, the code space is nearly used up and it throws a `RuntimeException`; use a longer `length`. Codes are inserted in bulk, so no Eloquent model events fire for them.
+
+#### Code generator
+
+Each code comes from `Lunar\Core\Contracts\CouponCodeGenerator`, which has one method, `generate(CouponBatch $batch): string`. The default, `Lunar\Core\Generators\CouponCodeGenerator`, returns the prefix followed by `length` characters from an alphabet of uppercase letters and digits without the look-alike characters `0`, `O`, `1`, `I` and `L`. The generator does not need to return unique codes: the action replaces any that collide. Bind a different implementation in a service provider to change the format:
+
+```php
+use Lunar\Core\Contracts\CouponCodeGenerator;
+
+$this->app->singleton(CouponCodeGenerator::class, MyCouponCodeGenerator::class);
+```
+
+#### Queueing large batches
+
+`Lunar\Core\Jobs\GenerateCouponsJob` generates a batch on the queue. It carries the `CouponBatch`, so a retry completes the same batch.
+
+```php
+use Lunar\Core\DataObjects\CouponBatch;
+use Lunar\Core\Jobs\GenerateCouponsJob;
+
+$batch = CouponBatch::ofQuantity(50_000);
+
+GenerateCouponsJob::dispatch($discount, $batch);
+
+// $batch->id identifies the codes once the job has run.
+```
+
+The admin panel generates a batch during the request up to `lunar.discounts.coupons.queue_threshold` codes (default `5000`), and dispatches `GenerateCouponsJob` for a larger one. Code that calls `generateCoupons()` directly decides for itself. Measured locally against tables already holding 200,000 codes, 5,000 codes take about 0.1 to 0.2 seconds on SQLite, MySQL 8 and PostgreSQL, and 50,000 take 1 to 2.3 seconds. The time grows with the number of codes, not with the size of the table, and is spent almost entirely in the database inserts.
+
+```php
+// config/lunar/discounts.php
+return [
+    'coupons' => [
+        'queue_threshold' => 5000,
+    ],
+];
+```
+
+#### Exporting codes
+
+The admin panel exports a discount's codes, or one batch, as CSV with the columns `code`, `email`, `uses` and `redeemed_at` (the most recent redemption). In code, read a batch from the `coupons` relationship:
+
+```php
+use App\Mail\SpringCampaign;
+use Illuminate\Support\Facades\Mail;
+use Lunar\Core\Models\Coupon;
+
+$discount->coupons()
+    ->where('batch', $batchId)
+    ->lazyById()
+    ->each(fn (Coupon $coupon) => Mail::to($coupon->email)->queue(new SpringCampaign($coupon->code)));
+```
+
+`App\Mail\SpringCampaign` stands for the store's own mailable.
+
 ### Resolving a cart's code
 
 `Lunar\Core\Models\Cart::coupon()` is a `BelongsTo` from the cart's `coupon_code` to `coupons.code`. Both columns are stored uppercase, so the relationship is a single indexed lookup and can be eager loaded. Everything that matches a cart's code reads it through `$cart->coupon`:
