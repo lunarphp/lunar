@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RenameSellingPolicyRectorTest extends AbstractRectorTestCase
+final class RewriteSellingPolicyComparisonRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,11 +18,11 @@ final class RenameSellingPolicyRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__.'/Fixture/RenameSellingPolicy');
+        return self::yieldFilesFromDirectory(__DIR__.'/Fixture/RewriteSellingPolicyComparison');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__.'/config/rename_selling_policy.php';
+        return __DIR__.'/config/selling_policy_comparison.php';
     }
 }
