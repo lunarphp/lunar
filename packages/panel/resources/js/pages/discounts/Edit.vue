@@ -592,7 +592,7 @@ const confirmDestroy = (): void => {
                                     <button
                                         v-if="value"
                                         type="button"
-                                        class="flex items-center gap-1 min-w-0 text-[11px] font-mono text-ink-500 hover:text-ink-900"
+                                        class="flex items-center gap-1 min-w-0 max-w-full text-[11px] font-mono text-ink-500 hover:text-ink-900"
                                         :title="t('discounts.coupons_export_batch')"
                                         :aria-label="t('discounts.coupons_export_batch')"
                                         @click="download((row as unknown as CouponRow)._actions.exportBatch as string)"
