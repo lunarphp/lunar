@@ -4,10 +4,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\Actions\Carts\CreateOrder;
 use Lunar\Core\DiscountTypes\FixedAmountOff;
+use Lunar\Core\Enums\DiscountLimit;
 use Lunar\Core\Events\Discounts\DiscountLimitExceeded;
 use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
@@ -88,6 +90,17 @@ function couponCart(array $attributes = []): Cart
     return $cart->calculate();
 }
 
+function withBillingEmail(Cart $cart, string $email): Cart
+{
+    CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+        'contact_email' => $email,
+    ]);
+
+    return $cart->refresh();
+}
+
 function draftOrderFor(Cart $cart): Order
 {
     return app(CreateOrder::class)->execute($cart)->refresh();
@@ -134,7 +147,7 @@ test('placing an order records who redeemed each of its discounts', function () 
     expect($redemption->order_id)->toBe($order->id)
         ->and($redemption->cart_id)->toBe($cart->id)
         ->and($redemption->user_id)->toEqual($user->id)
-        ->and($redemption->email)->toBeNull()
+        ->and($redemption->email)->toBe(strtolower($user->email))
         ->and($redemption->redeemed_at->equalTo($order->placed_at))->toBeTrue()
         ->and($discount->users->pluck('id')->all())->toEqual([$user->id]);
 });
@@ -181,6 +194,7 @@ test('a placement over the limit keeps the order and reports it', function () {
         DiscountLimitExceeded::class,
         fn (DiscountLimitExceeded $event) => $event->order->is($second)
             && $event->discount->is($discount)
+            && $event->limit === DiscountLimit::MaxUses
             && $event->coupon === null,
     );
 
@@ -191,6 +205,7 @@ test('a placement over the limit keeps the order and reports it', function () {
             'discount_id' => $discount->id,
             'discount' => 'Ten off',
             'coupon' => null,
+            'limit' => 'max_uses',
             'uses' => 2,
             'max_uses' => 1,
         ]);
@@ -206,5 +221,56 @@ test('a signed-in customer at their per-user limit no longer gets the discount',
 
     expect(draftOrderFor(couponCart(['user_id' => $user->id]))->discount_total)->toEqual(0)
         ->and(draftOrderFor(couponCart(['user_id' => User::factory()->create()->id]))->discount_total)->toEqual(500)
+        ->and($discount->refresh()->uses)->toBe(1);
+});
+
+test('placing an order records the customer\'s email, normalised', function () {
+    $discount = redeemableDiscount();
+
+    draftOrderFor(withBillingEmail(couponCart(), ' Guest@Example.com '))->update(['placed_at' => now()]);
+
+    expect($discount->redemptions()->sole()->email)->toBe('guest@example.com');
+});
+
+test('a placement over the per-customer limit keeps the order and reports it', function () {
+    Event::fake([DiscountLimitExceeded::class]);
+    activity()->enableLogging();
+
+    $discount = redeemableDiscount(['max_uses' => null, 'max_uses_per_user' => 1]);
+
+    // The same guest pays for two carts before either is placed.
+    $first = draftOrderFor(withBillingEmail(couponCart(), 'guest@example.com'));
+    $second = draftOrderFor(withBillingEmail(couponCart(), 'guest@example.com'));
+
+    expect($second->discount_total)->toEqual(500);
+
+    $first->update(['placed_at' => now()]);
+    $second->update(['placed_at' => now()]);
+
+    expect($second->refresh()->isPlaced())->toBeTrue()
+        ->and($discount->redemptions()->where('email', 'guest@example.com')->count())->toBe(2);
+
+    Event::assertDispatchedTimes(DiscountLimitExceeded::class, 1);
+    Event::assertDispatched(
+        DiscountLimitExceeded::class,
+        fn (DiscountLimitExceeded $event) => $event->order->is($second)
+            && $event->limit === DiscountLimit::MaxUsesPerUser,
+    );
+
+    expect(Activity::query()->where('event', 'discount-limit-exceeded')->sole()->properties->all())
+        ->toMatchArray([
+            'limit' => 'max_uses_per_user',
+            'uses' => 2,
+            'max_uses' => 1,
+        ]);
+});
+
+test('a guest at their per-customer limit no longer gets the discount', function () {
+    $discount = redeemableDiscount(['max_uses' => null, 'max_uses_per_user' => 1]);
+
+    draftOrderFor(withBillingEmail(couponCart(), 'guest@example.com'))->update(['placed_at' => now()]);
+
+    expect(draftOrderFor(withBillingEmail(couponCart(), 'GUEST@example.com'))->discount_total)->toEqual(0)
+        ->and(draftOrderFor(withBillingEmail(couponCart(), 'other@example.com'))->discount_total)->toEqual(500)
         ->and($discount->refresh()->uses)->toBe(1);
 });

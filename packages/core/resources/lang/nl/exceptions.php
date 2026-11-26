@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" kan niet via :method worden afgehandeld',
     'carts.fulfilment_method_none' => '":identifier" kan op dit moment niet worden afgehandeld',
     'carts.pickup_location_unavailable' => 'Op deze locatie kan niet worden afgehaald',
+    'carts.customer_email_missing' => 'Een e-mailadres is vereist om de korting ":discount" te gebruiken',
     'missing_currency_price' => 'Er bestaat geen prijs voor valuta ":currency"',
     'minimum_quantity' => 'U moet minimaal :quantity items toevoegen.',
     'quantity_increment' => 'Hoeveelheid :quantity moet in stappen van :increment zijn',

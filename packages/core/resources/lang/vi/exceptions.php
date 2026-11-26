@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier" không thể được thực hiện bằng :method',
     'carts.fulfilment_method_none' => '":identifier" hiện không thể được thực hiện',
     'carts.pickup_location_unavailable' => 'Địa điểm này không nhận khách đến lấy hàng',
+    'carts.customer_email_missing' => 'Cần có địa chỉ email để sử dụng chương trình giảm giá ":discount"',
     'missing_currency_price' => 'Không tồn tại giá cho đơn vị tiền tệ ":currency"',
     'minimum_quantity' => 'Bạn phải thêm tối thiểu :quantity sản phẩm.',
     'quantity_increment' => 'Số lượng :quantity phải là bội số của :increment',

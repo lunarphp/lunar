@@ -107,7 +107,7 @@ Steps::for(StepList::CartCalculation)
 | `RemoveFromCartValidation` | `Cart::remove()` | none |
 | `AddAddressValidation` | `Cart::addAddress()` | none |
 | `SetShippingOptionValidation` | `Cart::setShippingOption()` | `Lunar\Core\Validation\Cart\ShippingOptionValidator` |
-| `OrderCreateValidation` | `Cart::createOrder()`, `Cart::canCreateOrder()` | `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation` |
+| `OrderCreateValidation` | `Cart::createOrder()`, `Cart::canCreateOrder()` | `Lunar\Core\Validation\Cart\ValidateCartForOrderCreation`, `ValidateCustomerForDiscounts` |
 | `CartPruning` | `lunar:prune:carts` | `Lunar\Core\Pipelines\CartPrune\PruneAfter`, `WithoutOrders`, `WhereNotMerged` |
 
 List what runs, including steps registered by add-ons, with:

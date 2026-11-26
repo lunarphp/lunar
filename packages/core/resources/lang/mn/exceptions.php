@@ -21,6 +21,7 @@ return [
     'carts.fulfilment_method_unsupported' => '":identifier"-г :method аргаар биелүүлэх боломжгүй',
     'carts.fulfilment_method_none' => '":identifier"-г одоогоор биелүүлэх боломжгүй',
     'carts.pickup_location_unavailable' => 'Энэ байршилд очиж авах боломжгүй',
+    'carts.customer_email_missing' => '":discount" хөнгөлөлтийг ашиглахын тулд и-мэйл хаяг шаардлагатай',
     'missing_currency_price' => '":currency" валютын үнэ байхгүй байна',
     'minimum_quantity' => 'Та хамгийн багадаа :quantity ширхэгийг нэмэх ёстой.',
     'quantity_increment' => ':quantity тоо хэмжээ нь :increment-ын үржвэр байх ёстой',

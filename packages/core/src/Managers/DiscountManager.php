@@ -270,8 +270,8 @@ class DiscountManager implements DiscountManagerContract
         return $this;
     }
 
-    public function validateCoupon(string $coupon): bool
+    public function validateCoupon(string $coupon, ?Cart $cart = null): bool
     {
-        return $this->couponValidator->validate($coupon);
+        return $this->couponValidator->validate($coupon, $cart);
     }
 }

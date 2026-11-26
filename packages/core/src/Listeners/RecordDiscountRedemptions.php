@@ -4,8 +4,12 @@ namespace Lunar\Core\Listeners;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
+use Lunar\Core\Contracts\Actions\Discounts\ResolvesCustomerEmail;
+use Lunar\Core\Enums\DiscountLimit;
 use Lunar\Core\Events\Discounts\DiscountLimitExceeded;
 use Lunar\Core\Events\Orders\OrderPlaced;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Order;
@@ -19,6 +23,8 @@ class RecordDiscountRedemptions
 {
     public function __construct(
         protected Dispatcher $events,
+        protected ResolvesCustomerEmail $resolvesCustomerEmail,
+        protected CountsCustomerRedemptions $countsCustomerRedemptions,
     ) {}
 
     public function handle(OrderPlaced $event): void
@@ -31,20 +37,24 @@ class RecordDiscountRedemptions
             return;
         }
 
-        $order->getConnection()->transaction(function () use ($order, $discountIds) {
+        $cart = $order->cart;
+        $email = $cart ? $this->resolvesCustomerEmail->execute($cart) : null;
+
+        $order->getConnection()->transaction(function () use ($order, $cart, $email, $discountIds) {
             foreach (Discount::query()->whereIn('id', $discountIds)->get() as $discount) {
-                $this->record($order, $discount);
+                $this->record($order, $cart, $email, $discount);
             }
         });
     }
 
-    protected function record(Order $order, Discount $discount): void
+    protected function record(Order $order, ?Cart $cart, ?string $email, Discount $discount): void
     {
         $inserted = DiscountRedemption::query()->insertOrIgnore([
             'discount_id' => $discount->id,
             'order_id' => $order->id,
             'cart_id' => $order->cart_id,
             'user_id' => $order->user_id,
+            'email' => $email,
             'redeemed_at' => $order->placed_at,
         ]);
 
@@ -56,11 +66,22 @@ class RecordDiscountRedemptions
 
         $discount->refresh();
 
-        if ($discount->max_uses === null || $discount->uses <= $discount->max_uses) {
-            return;
+        if ($discount->max_uses !== null && $discount->uses > $discount->max_uses) {
+            $this->reportExceeded($order, $discount, DiscountLimit::MaxUses, $discount->uses, $discount->max_uses);
         }
 
-        $this->events->dispatch(new DiscountLimitExceeded($order, $discount));
+        if ($cart && $discount->max_uses_per_user) {
+            $customerUses = $this->countsCustomerRedemptions->execute($discount, $cart);
+
+            if ($customerUses > $discount->max_uses_per_user) {
+                $this->reportExceeded($order, $discount, DiscountLimit::MaxUsesPerUser, $customerUses, $discount->max_uses_per_user);
+            }
+        }
+    }
+
+    protected function reportExceeded(Order $order, Discount $discount, DiscountLimit $limit, int $uses, int $max): void
+    {
+        $this->events->dispatch(new DiscountLimitExceeded($order, $discount, $limit));
 
         activity()
             ->performedOn($order)
@@ -69,8 +90,9 @@ class RecordDiscountRedemptions
                 'discount_id' => $discount->id,
                 'discount' => $discount->name,
                 'coupon' => null,
-                'uses' => $discount->uses,
-                'max_uses' => $discount->max_uses,
+                'limit' => $limit->value,
+                'uses' => $uses,
+                'max_uses' => $max,
             ])
             ->log('discount-limit-exceeded');
     }
