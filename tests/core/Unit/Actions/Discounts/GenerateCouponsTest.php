@@ -79,12 +79,14 @@ test('running a batch again finishes it rather than duplicating it', function ()
         ->toBe(['jo@example.com', 'sam@example.com']);
 });
 
-test('gives up when every generated code is taken', function () {
+test('gives up when every generated code is taken', function (string $kind) {
     Coupon::factory()->create(['code' => 'TAKEN']);
     fakeCouponCodes(['TAKEN']);
 
-    Discount::factory()->coupon()->create()->generateCoupons(CouponBatch::ofQuantity(1));
-})->throws(RuntimeException::class);
+    Discount::factory()->coupon()->create()->generateCoupons($kind === 'emails'
+        ? CouponBatch::forEmails(['jo@example.com'])
+        : CouponBatch::ofQuantity(1));
+})->with(['quantity', 'emails'])->throws(RuntimeException::class);
 
 test('the job generates the batch', function () {
     Queue::fake();

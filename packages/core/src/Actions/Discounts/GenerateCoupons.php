@@ -58,11 +58,16 @@ class GenerateCoupons implements GeneratesCoupons
     {
         foreach (array_chunk($batch->emails, static::CHUNK) as $emails) {
             $emptyPasses = 0;
+            $missing = $this->emailsWithoutCode($batch, $emails);
 
-            while ($missing = $this->emailsWithoutCode($batch, $emails)) {
-                $inserted = $this->insert($discount, $batch, $missing);
+            while ($missing !== []) {
+                $this->insert($discount, $batch, $missing);
 
-                $emptyPasses = $this->countEmptyPass($inserted, $emptyPasses);
+                // Progress is addresses that now have a code, not rows inserted:
+                // a row that does not match its address would otherwise loop forever.
+                $stillMissing = $this->emailsWithoutCode($batch, $emails);
+                $emptyPasses = $this->countEmptyPass(count($missing) - count($stillMissing), $emptyPasses);
+                $missing = $stillMissing;
             }
         }
     }

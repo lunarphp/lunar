@@ -30,6 +30,14 @@ test('a quantity batch needs at least one code', function () {
     CouponBatch::ofQuantity(0);
 })->throws(InvalidArgumentException::class);
 
+test('an email batch rejects an address longer than the email column', function () {
+    $local = str_repeat('a', 64);
+
+    expect(CouponBatch::forEmails([$local.'@'.str_repeat('b', 255 - 69).'.com'])->emails)->toHaveCount(1);
+
+    CouponBatch::forEmails([$local.'@'.str_repeat('b', 256 - 69).'.com']);
+})->throws(InvalidArgumentException::class);
+
 test('an email batch needs at least one address', function () {
     CouponBatch::forEmails(['', ' ']);
 })->throws(InvalidArgumentException::class);

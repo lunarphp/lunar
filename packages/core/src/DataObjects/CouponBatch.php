@@ -13,6 +13,11 @@ use Lunar\Core\Actions\Discounts\ResolveCustomerEmail;
  */
 final class CouponBatch
 {
+    /**
+     * The width of the coupons table's email column.
+     */
+    public const MAX_EMAIL_LENGTH = 255;
+
     public readonly string $id;
 
     public readonly string $prefix;
@@ -61,9 +66,15 @@ final class CouponBatch
         foreach ($emails as $email) {
             $email = ResolveCustomerEmail::normalize($email);
 
-            if ($email !== null) {
-                $distinct[$email] = true;
+            if ($email === null) {
+                continue;
             }
+
+            if (strlen($email) > self::MAX_EMAIL_LENGTH) {
+                throw new InvalidArgumentException('A coupon email can be at most '.self::MAX_EMAIL_LENGTH.' characters.');
+            }
+
+            $distinct[$email] = true;
         }
 
         $distinct = array_map('strval', array_keys($distinct));
