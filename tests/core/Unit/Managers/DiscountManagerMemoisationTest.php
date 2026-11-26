@@ -62,15 +62,13 @@ function discountMemoFixture(): Cart
     $attach(Discount::factory()->create([
         'type' => FixedAmountOff::class,
         'name' => 'Always on',
-        'coupon' => null,
         'starts_at' => now()->subDay(),
         'data' => ['amounts' => ['GBP' => 1]],
     ]));
 
-    $attach(Discount::factory()->create([
+    $attach(Discount::factory()->coupon('SAVE')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Coupon discount',
-        'coupon' => 'SAVE',
         'starts_at' => now()->subDay(),
         'data' => ['amounts' => ['GBP' => 5]],
     ]));

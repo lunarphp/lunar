@@ -50,10 +50,9 @@ test('will handle customer limitation', function () {
         'coupon_code' => '10OFF',
     ]);
 
-    $discountModel = Discount::factory()->create([
+    $discountModel = Discount::factory()->coupon('10OFF')->create([
         'type' => TestAbstractDiscount::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'amounts' => [
                 'GBP' => 10,
@@ -110,10 +109,9 @@ function perUserLimitedCart(?int $userId = null): Cart
         'user_id' => $userId,
     ]);
 
-    Discount::factory()->create([
+    Discount::factory()->coupon('10OFF')->create([
         'type' => TestAbstractDiscount::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'max_uses_per_user' => 1,
         'data' => ['amounts' => ['GBP' => 10]],
     ]);

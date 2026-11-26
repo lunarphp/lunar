@@ -226,7 +226,7 @@ $cart->clear();
 
 ## Coupon Codes
 
-Coupon codes are stored on the cart's `coupon_code` field (automatically uppercased). When the cart recalculates, the discount pipeline checks whether the code matches any active discount and applies it.
+Coupon codes are stored on the cart's `coupon_code` field (automatically uppercased). When the cart recalculates, the discount pipeline resolves the code to a `Lunar\Core\Models\Coupon` through `$cart->coupon` and applies the discount it belongs to. See [Coupons](/reference/discounts#coupons-coupon).
 
 ### Applying a Coupon
 

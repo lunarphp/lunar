@@ -37,7 +37,7 @@ php artisan migrate
 | Infolist entries | `Lunar\Filament\Infolists\Components\*` | `Tags`, `Transaction` |
 | Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, `LocationForm`, `RegionForm`, … (22 models) |
 | Resource tables | `Lunar\Filament\Tables\{Model}\{Model}Table` | `ProductTable`, `OrderTable`, … |
-| Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions, ProductOption values, … |
+| Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions and coupons, ProductOption values, … |
 | Actions | `Lunar\Filament\Actions\{Subject}\*Action` | `RefundOrderAction`, `CaptureOrderAction`, `DuplicateProductAction`, `PublishProductsBulkAction` |
 | Global-search descriptors | `Lunar\Filament\GlobalSearch\*GlobalSearch` | `OrderGlobalSearch`, `ProductGlobalSearch`, `CustomerGlobalSearch` |
 | Dashboard widgets | `Lunar\Filament\Widgets\*` | `OrderStatsOverview`, `OrdersSalesChart`, `LatestOrdersTable` |

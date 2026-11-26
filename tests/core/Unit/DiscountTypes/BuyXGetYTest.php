@@ -804,13 +804,12 @@ test('can apply multiple different discounts', function () {
         ],
     ]);
 
-    $discountB = Discount::factory()->create([
+    $discountB = Discount::factory()->coupon('AMOUNTOFFTEST')->create([
         'type' => PercentageOff::class,
         'name' => 'Test amount off',
         'uses' => 0,
         'priority' => 2,
         'max_uses' => 1,
-        'coupon' => 'AMOUNTOFFTEST',
         'data' => [
             'percentage' => 10,
         ],

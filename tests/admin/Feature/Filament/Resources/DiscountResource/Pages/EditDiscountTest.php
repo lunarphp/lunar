@@ -3,6 +3,7 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\EditDiscount;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Discount;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
@@ -16,14 +17,14 @@ beforeEach(function () {
     $this->asStaff();
 });
 
-it('can render discount edit page', function () {
+it('can render discount edit page', function (DiscountRedemptionMethod $redemption) {
     get(
         DiscountResource::getUrl(
             'edit',
-            ['record' => Discount::factory()->create()]
+            ['record' => Discount::factory()->create(['redemption' => $redemption])]
         )
     )->assertSuccessful();
-});
+})->with(DiscountRedemptionMethod::cases());
 
 it('can edit discount', function () {
     $discount = Discount::factory()->create();
@@ -50,4 +51,24 @@ it('can validate start and end date', function () {
     ])->call('save')->assertHasFormErrors([
         'starts_at' => 'before',
     ]);
+});
+
+it('can change how a discount is redeemed', function () {
+    $discount = Discount::factory()->create();
+
+    Livewire::test(EditDiscount::class, ['record' => $discount->getKey()])
+        ->assertFormSet(['redemption' => DiscountRedemptionMethod::Automatic->value])
+        ->fillForm(['redemption' => DiscountRedemptionMethod::Coupon->value])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($discount->refresh()->redemption)->toBe(DiscountRedemptionMethod::Coupon);
+});
+
+it('shows the coupons relation manager only for coupon discounts', function () {
+    Livewire::test(EditDiscount::class, ['record' => Discount::factory()->coupon('SAVE10')->create()->getKey()])
+        ->assertSeeHtml('SAVE10');
+
+    Livewire::test(EditDiscount::class, ['record' => Discount::factory()->create()->getKey()])
+        ->assertDontSeeHtml('SAVE10');
 });

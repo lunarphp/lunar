@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Discounts\CreateDiscount;
 use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Discount;
 use Lunar\Tests\Core\TestCase;
 
@@ -14,7 +15,7 @@ test('creates a discount with the given attributes', function () {
         'name' => 'Winter Sale',
         'handle' => 'winter-sale',
         'type' => PercentageOff::class,
-        'coupon' => 'WINTER',
+        'redemption' => DiscountRedemptionMethod::Coupon,
         'starts_at' => now(),
         'data' => ['percentage' => 15],
     ]);
@@ -23,6 +24,6 @@ test('creates a discount with the given attributes', function () {
     expect(Discount::whereHandle('winter-sale')->count())->toBe(1);
     expect($discount->name)->toBe('Winter Sale');
     expect($discount->type)->toBe(PercentageOff::class);
-    expect($discount->coupon)->toBe('WINTER');
+    expect($discount->redemption)->toBe(DiscountRedemptionMethod::Coupon);
     expect($discount->data)->toBe(['percentage' => 15]);
 });

@@ -48,10 +48,9 @@ function hydratableCart(): Cart
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('TENOFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Ten percent',
-        'coupon' => 'TENOFF',
         'data' => ['percentage' => 10],
     ]);
 

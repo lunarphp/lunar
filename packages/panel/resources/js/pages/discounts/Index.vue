@@ -38,7 +38,9 @@ interface DiscountRow {
     type: string;
     type_label: string;
     effect: string | null;
+    redemption: 'automatic' | 'coupon';
     coupon: string | null;
+    coupons_count: number;
     starts_at: string | null;
     ends_at: string | null;
     uses: number;
@@ -379,8 +381,10 @@ const formatDate = (value: string | null): string | null =>
                     </template>
 
                     <template #cell-coupon="{ row }">
-                        <span v-if="row.coupon" class="text-[11.5px] font-mono text-ink-900">{{ row.coupon }}</span>
-                        <StatusBadge v-else tone="neutral">{{ t('discounts.automatic') }}</StatusBadge>
+                        <StatusBadge v-if="row.redemption === 'automatic'" tone="neutral">{{ t('discounts.automatic') }}</StatusBadge>
+                        <span v-else-if="row.coupon" class="text-[11.5px] font-mono text-ink-900">{{ row.coupon }}</span>
+                        <span v-else-if="(row.coupons_count as number) > 1" class="text-[11.5px] text-ink-900">{{ t('discounts.coupons_count', { count: row.coupons_count as number }) }}</span>
+                        <span v-else class="text-[11.5px] text-ink-500">{{ t('discounts.coupons_none') }}</span>
                     </template>
 
                     <template #cell-window="{ row }">

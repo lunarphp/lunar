@@ -36,9 +36,12 @@ return [
             'label' => 'Interromper outros descontos após este',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Cupom',
-            'helper_text' => 'Informe o cupom necessário para aplicar o desconto; se deixado em branco, será aplicado automaticamente.',
+        'redemption' => [
+            'label' => 'Aplicação',
+            'options' => [
+                'automatic' => 'Aplicado automaticamente',
+                'coupon' => 'Requer um cupom',
+            ],
         ],
         'max_uses' => [
             'label' => 'Máximo de usos',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Cupom',
+            'count' => 'Códigos: :count',
+        ],
+        'redemption' => [
+            'label' => 'Aplicação',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Exclusão',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Cupons',
+            'actions' => [
+                'create' => [
+                    'label' => 'Adicionar cupom',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Código',
+                ],
+                'uses' => [
+                    'label' => 'Usos',
+                ],
+                'limit' => [
+                    'label' => 'Limite',
+                    'unlimited' => 'Ilimitado',
+                ],
+                'email' => [
+                    'label' => 'E-mail',
+                ],
+                'batch' => [
+                    'label' => 'Lote',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Último resgate',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Código',
+                ],
+                'max_uses' => [
+                    'label' => 'Máximo de usos',
                 ],
             ],
         ],

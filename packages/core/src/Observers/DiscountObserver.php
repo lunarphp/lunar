@@ -36,5 +36,6 @@ class DiscountObserver
         $discount->customers()->detach();
         $discount->discountables()->delete();
         $discount->redemptions()->delete();
+        $discount->coupons()->delete();
     }
 }

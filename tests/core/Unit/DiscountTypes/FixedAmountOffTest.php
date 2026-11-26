@@ -65,10 +65,9 @@ test('can apply fixed amount discount', function () {
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'amounts' => [
                 'GBP' => 1050,
@@ -157,10 +156,9 @@ test('fixed amount discount distributes across cart lines', function () {
         'quantity' => 1,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'amounts' => [
                 'GBP' => 1000,
@@ -225,7 +223,6 @@ test('can apply discount without coupon code', function () {
     $discount = Discount::factory()->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => null,
         'data' => [
             'amounts' => [
                 'GBP' => 1000,
@@ -283,10 +280,9 @@ test('cannot apply discount coupon without coupon code', function () {
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('OFF10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => 'OFF10',
         'data' => [
             'amounts' => [
                 'GBP' => 1000,
@@ -601,10 +597,9 @@ test('can apply discount with conditions', function () {
         'quantity' => 10,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('OFF10')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => 'OFF10',
         'uses' => 2,
         'max_uses' => 10,
         'data' => [
@@ -879,10 +874,9 @@ test('fixed amount discount distributes across cart lines with different values'
         'quantity' => 9,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('DISCOUNTOFF')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => 'DISCOUNTOFF',
         'data' => [
             'amounts' => [
                 'GBP' => 1500,
@@ -957,10 +951,9 @@ test('can apply discount dynamically', function () {
         'quantity' => 2,
     ]);
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'amounts' => [
                 'GBP' => 1050,
@@ -1054,10 +1047,9 @@ test('will only apply to lines with correct brand', function () {
         ]);
     }
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('10OFF')->create([
         'type' => FixedAmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10OFF',
         'data' => [
             'amounts' => [
                 'GBP' => 100,

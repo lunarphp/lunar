@@ -2,7 +2,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
-vi.mock('@inertiajs/vue3', () => ({
+vi.mock('@inertiajs/vue3', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@inertiajs/vue3')>()),
     Link: { template: '<a><slot /></a>' },
     router: { on: vi.fn(() => () => {}), delete: vi.fn(), reload: vi.fn() },
     usePage: () => ({ props: {} }),
@@ -29,7 +30,7 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
                 id: 1,
                 name: 'Spring',
                 handle: 'spring',
-                coupon: null,
+                redemption: 'automatic',
                 type: 'percentage',
                 status: 'active',
                 status_label: 'Active',
@@ -60,6 +61,10 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
             availability: { channels: [], customer_groups: [] },
             availabilityValues: {},
             activities: [],
+            coupons: { data: [], current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null, from: null, to: null, total: 0 },
+            couponSearch: '',
+            couponGenerations: [],
+            couponQueueThreshold: 5000,
             urls: {
                 index: '/panel/discounts',
                 activityLog: '/panel/discounts/1/activity',
@@ -68,6 +73,9 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
                 draft: '/panel/discounts/1/draft',
                 draftCommit: '/panel/discounts/1/draft/commit',
                 targetSearch: '/panel/discounts/1/targets/search',
+                couponStore: '/panel/discounts/1/coupons',
+                couponGenerate: '/panel/discounts/1/coupons/generate',
+                couponExport: '/panel/discounts/1/coupons/export',
             },
         },
         global: {

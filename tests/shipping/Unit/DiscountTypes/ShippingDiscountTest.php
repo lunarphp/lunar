@@ -73,9 +73,8 @@ test('does not apply when conditions are not met (wrong coupon)', function () {
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
     $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
-    $discountModel = Discount::factory()->create([
+    $discountModel = Discount::factory()->coupon('FREESHIP')->create([
         'type' => ShippingDiscount::class,
-        'coupon' => 'FREESHIP',
         'data' => [
             'methods' => [
                 [
@@ -484,9 +483,8 @@ test('applies correctly through full cart calculation pipeline', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $discountModel = Discount::factory()->create([
+    $discountModel = Discount::factory()->coupon('FREESHIP')->create([
         'type' => ShippingDiscount::class,
-        'coupon' => 'FREESHIP',
         'data' => [
             'methods' => [
                 [

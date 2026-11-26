@@ -36,9 +36,12 @@ return [
             'label' => 'Dừng áp dụng các giảm giá khác sau mã này',
             'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
-        'coupon' => [
-            'label' => 'Mã giảm giá',
-            'helper_text' => 'Nhập mã giảm giá cần thiết để áp dụng, nếu để trống sẽ tự động áp dụng.',
+        'redemption' => [
+            'label' => 'Cách áp dụng',
+            'options' => [
+                'automatic' => 'Tự động áp dụng',
+                'coupon' => 'Cần mã giảm giá',
+            ],
         ],
         'max_uses' => [
             'label' => 'Số lần sử dụng tối đa',
@@ -104,6 +107,10 @@ return [
         ],
         'coupon' => [
             'label' => 'Coupon',
+            'count' => 'Mã: :count',
+        ],
+        'redemption' => [
+            'label' => 'Cách áp dụng',
         ],
     ],
     'pages' => [
@@ -350,6 +357,43 @@ return [
                             'label' => 'Loại trừ',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'coupons' => [
+            'title' => 'Mã giảm giá',
+            'actions' => [
+                'create' => [
+                    'label' => 'Thêm mã giảm giá',
+                ],
+            ],
+            'table' => [
+                'code' => [
+                    'label' => 'Mã',
+                ],
+                'uses' => [
+                    'label' => 'Lượt sử dụng',
+                ],
+                'limit' => [
+                    'label' => 'Giới hạn',
+                    'unlimited' => 'Không giới hạn',
+                ],
+                'email' => [
+                    'label' => 'Email',
+                ],
+                'batch' => [
+                    'label' => 'Lô',
+                ],
+                'last_redeemed' => [
+                    'label' => 'Lần dùng gần nhất',
+                ],
+            ],
+            'form' => [
+                'code' => [
+                    'label' => 'Mã',
+                ],
+                'max_uses' => [
+                    'label' => 'Số lần sử dụng tối đa',
                 ],
             ],
         ],

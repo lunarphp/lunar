@@ -11,6 +11,7 @@ use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Filament\Contracts\DiscountFormType;
 use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CouponRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
 use Lunar\Filament\Support\Facades\LunarFilament;
@@ -90,6 +91,11 @@ class EditDiscount extends BaseEditRecord
                 CollectionConditionRelationManager::class,
             ]);
             $managers[] = ProductRewardRelationManager::class;
+        }
+
+        // This list replaces Filament's own, which would otherwise drop a manager the record can't view.
+        if (CouponRelationManager::canViewForRecord($this->record, static::class)) {
+            $managers[] = CouponRelationManager::class;
         }
 
         if ($form = LunarFilament::discountFormFor($this->record->getType())) {

@@ -1,0 +1,144 @@
+---
+title: "Single-Use Coupon Campaign"
+description: "Send every customer on a list their own single-use coupon code, redeemable at guest checkout without an account."
+---
+
+## Overview
+
+A single-use code campaign gives each recipient their own code for one discount, and each code can be redeemed once. This guide covers creating the discount, generating a code per email address, exporting the codes for a mail merge, and what happens when a guest redeems a code at checkout.
+
+The code is the credential. A guest does not need to sign in, and the cart does not need a customer: whoever holds a code can redeem it once. This differs from `max_uses_per_user`, which limits each customer but lets anyone who sees a shared code use it. See [Per-customer limits](/reference/discounts#per-customer-limits).
+
+## Creating the Discount
+
+Create a discount whose `redemption` is `coupon`, so it only applies to a cart with one of its codes:
+
+```php
+use Lunar\Core\DiscountTypes\PercentageOff;
+use Lunar\Core\Enums\DiscountRedemptionMethod;
+use Lunar\Core\Models\Discount;
+
+$discount = Discount::create([
+    'name' => 'Spring thank you',
+    'handle' => 'spring_thank_you',
+    'type' => PercentageOff::class,
+    'redemption' => DiscountRedemptionMethod::Coupon,
+    'data' => ['percentage' => 15],
+    'starts_at' => now(),
+    'ends_at' => now()->addMonth(),
+]);
+```
+
+In the admin panel, open **Sales > Discounts**, create the discount, and set **Redemption** to **Needs a coupon**.
+
+To cap the whole campaign as well as each code, set the discount's own `max_uses`. For example, 5,000 single-use codes with `max_uses` of 1,000 stop applying after 1,000 orders.
+
+## Generating a Code per Recipient
+
+`CouponBatch::forEmails()` describes one code per distinct email address. Each code has `max_uses` of `1` by default, and records the address in its `email` column:
+
+The example below sends a code to everyone who has placed an order, guests included, using the billing contact email of past orders:
+
+```php
+use Lunar\Core\DataObjects\CouponBatch;
+use Lunar\Core\Models\OrderAddress;
+
+$emails = OrderAddress::query()
+    ->where('type', 'billing')
+    ->whereNotNull('contact_email')
+    ->distinct()
+    ->pluck('contact_email');
+
+$batchId = $discount->generateCoupons(
+    CouponBatch::forEmails($emails, prefix: 'THANKS-'),
+);
+```
+
+Addresses are trimmed and lowercased, and an address that appears twice gets one code. The returned batch ULID identifies the codes this run made.
+
+For a long list, generate on the queue so the request does not wait:
+
+```php
+use Lunar\Core\DataObjects\CouponBatch;
+use Lunar\Core\Jobs\GenerateCouponsJob;
+
+$batch = CouponBatch::forEmails($emails, prefix: 'THANKS-');
+
+GenerateCouponsJob::dispatch($discount, $batch);
+
+$batchId = $batch->id;
+```
+
+In the admin panel, open the discount and choose **Generate codes** in the **Coupons** section. Choose **A list of emails**, then paste the addresses or upload a CSV file. Any cell containing `@` is read as an address, so a CSV export from a mailing tool works without editing. Batches larger than `lunar.discounts.coupons.queue_threshold` codes (default `5000`) are generated on the queue, and the panel shows the batch as generating until it is complete. A queue worker must be running for the batch to finish.
+
+See [Generating codes](/reference/discounts#generating-codes) for every option.
+
+## Exporting Codes for a Mail Merge
+
+In the admin panel, **Export to CSV** downloads every code of the discount. To export one batch, select the batch ULID in the table's **Batch** column. The file has the columns `code`, `email`, `uses` and `redeemed_at`, ready for an email platform's mail merge.
+
+To send the emails from the store instead, read the batch from the discount:
+
+```php
+use App\Mail\SpringThankYou;
+use Illuminate\Support\Facades\Mail;
+use Lunar\Core\Models\Coupon;
+
+$discount->coupons()
+    ->where('batch', $batchId)
+    ->lazyById()
+    ->each(fn (Coupon $coupon) => Mail::to($coupon->email)->queue(new SpringThankYou($coupon->code)));
+```
+
+`App\Mail\SpringThankYou` stands for the store's own mailable.
+
+## Redeeming a Code at Guest Checkout
+
+A guest applies the code like any other coupon, by setting the cart's `coupon_code`. See [Applying a Coupon](/guides/cart#applying-a-coupon). To give a clear message when the code is unknown or already used, check it first:
+
+```php
+use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Discounts;
+
+$cart = CartSession::current();
+
+if (! Discounts::validateCoupon($request->coupon_code, $cart)) {
+    return back()->withErrors(['coupon_code' => 'This code is not valid or has already been used.']);
+}
+
+$cart->update(['coupon_code' => $request->coupon_code]);
+$cart->recalculate();
+```
+
+Lunar does not compare the guest's email with the code's `email`. A recipient who checks out with a different address can still redeem their code, and a forwarded code can still be redeemed only once.
+
+## When a Code Counts as Used
+
+A code is used when its order is placed, not when the draft order is created. A declined card or an abandoned checkout does not use the code, so a guest who retries, on the same cart or on a new one, still gets the discount. When the order is placed, Lunar records a `Lunar\Core\Models\DiscountRedemption` for the code and increments the code's `uses`. See [Usage](/reference/discounts#usage-discountredemption).
+
+Two carts can be paid for with the same code at the same moment, before either order is placed. Both orders stand, because both have been paid for. Lunar dispatches `Lunar\Core\Events\Discounts\DiscountLimitExceeded` and logs an activity on the second order, so the merchant can see it. See [Going over a limit](/reference/discounts#going-over-a-limit).
+
+## Tracking the Campaign
+
+Each code's `uses` shows whether it has been redeemed, and its `redemptions` relationship links to the orders:
+
+```php
+$redeemed = $discount->coupons()
+    ->where('batch', $batchId)
+    ->where('uses', '>', 0)
+    ->count();
+
+$orders = $discount->redemptions()
+    ->whereNotNull('coupon_id')
+    ->with('order')
+    ->get()
+    ->pluck('order');
+```
+
+The admin panel shows each code's uses and when it was last redeemed in the **Coupons** section, and the CSV export includes the same columns.
+
+## Next Steps
+
+- Review the [Discounts reference](/reference/discounts) for coupons, redemptions, and limits.
+- Review the [Cart guide](/guides/cart) for applying and removing coupon codes.
+- Review the [Checkout guide](/guides/checkout) for guest checkout.

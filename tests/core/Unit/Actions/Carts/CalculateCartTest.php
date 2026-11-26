@@ -112,10 +112,9 @@ function calculableCart(): Cart
         ]);
     }
 
-    $discount = Discount::factory()->create([
+    $discount = Discount::factory()->coupon('TENOFF')->create([
         'type' => PercentageOff::class,
         'name' => 'Ten percent',
-        'coupon' => 'TENOFF',
         'data' => ['percentage' => 10],
     ]);
 
