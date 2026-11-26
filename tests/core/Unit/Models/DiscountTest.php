@@ -4,8 +4,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('cross-db');
@@ -33,6 +35,19 @@ test('can apply usable scope', function () {
     expect($discounts->first(
         fn ($discount) => $discount->id == $discountC->id
     ))->toBeNull();
+});
+
+test('users are the signed-in users who redeemed the discount', function () {
+    setAuthUserConfig();
+
+    $discount = Discount::factory()->create();
+    [$userA, $userB, $userC] = User::factory()->count(3)->create();
+
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $userA->id]);
+    DiscountRedemption::factory()->for($discount)->create(['user_id' => $userB->id]);
+    DiscountRedemption::factory()->for(Discount::factory())->create(['user_id' => $userC->id]);
+
+    expect($discount->users->pluck('id')->all())->toEqualCanonicalizing([$userA->id, $userB->id]);
 });
 
 test('status scopes partition the table the way the status accessor does', function () {

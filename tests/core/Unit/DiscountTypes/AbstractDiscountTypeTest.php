@@ -7,6 +7,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\DiscountRedemption;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -154,7 +155,7 @@ test('does not apply a per-user-limited discount to a user at the limit', functi
     $user = User::factory()->create();
     $cart = perUserLimitedCart($user->id);
 
-    Discount::query()->sole()->users()->attach($user->id);
+    DiscountRedemption::factory()->for(Discount::query()->sole())->create(['user_id' => $user->id]);
 
     expect($cart->calculate()->subTotalDiscounted->value)->toBe(1000);
 });
