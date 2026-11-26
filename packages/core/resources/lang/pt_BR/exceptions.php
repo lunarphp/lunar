@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Itens para entrega exigem uma opção de envio com entrega',
     'carts.delivery_option_unneeded' => 'Não há itens para entrega, então uma opção de envio com entrega não pode ser usada',
     'carts.line_unavailable' => 'Um item deste carrinho não está mais disponível (:identifier)',
+    'carts.insufficient_stock' => 'Estoque insuficiente para finalizar este pedido (:identifier)',
     'carts.line_not_purchasable' => ':identifier não pode ser comprado neste canal ou pelo seu grupo de clientes',
     'carts.payment_terms_pickup_missing' => 'Pagar na retirada exige pelo menos um item para retirar',
     'carts.payment_terms_delivery_missing' => 'Pagar na entrega exige pelo menos um item para entregar',

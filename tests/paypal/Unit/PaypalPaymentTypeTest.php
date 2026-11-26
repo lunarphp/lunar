@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Transaction;
+use Lunar\Paypal\Events\OrphanedPaypalOrderDetected;
 use Lunar\Paypal\Managers\PaypalManager;
 use Lunar\Paypal\Models\PaypalOrder;
 use Lunar\Paypal\PaypalPaymentType;
@@ -53,6 +55,28 @@ it('captures an approved order and places the order', function () {
         'driver' => 'paypal',
         'reference' => '3C679366HH908993F',
     ]);
+});
+
+it('reports a captured payment whose order cannot be created', function () {
+    Event::fake([OrphanedPaypalOrderDetected::class]);
+
+    $cart = CartBuilder::build()->calculate();
+
+    PaypalFake::forCart($cart);
+
+    // Order creation now fails after PayPal has captured the payment.
+    $cart->addresses()->delete();
+
+    $response = (new PaypalPaymentType)->cart($cart->refresh())->withData([
+        'paypal_order_id' => '5O190127TN364715T',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and(PaypalOrder::where('paypal_order_id', '5O190127TN364715T')->first()->isProcessed())->toBeTrue();
+
+    Event::assertDispatched(OrphanedPaypalOrderDetected::class, fn ($event) => $event->paypalOrderId === '5O190127TN364715T'
+        && $event->cartId === $cart->id);
 });
 
 it('fails when the paypal order does not exist', function () {

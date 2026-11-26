@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Artikelen voor bezorging hebben een verzendoptie met bezorging nodig',
     'carts.delivery_option_unneeded' => 'Er zijn geen artikelen voor bezorging, dus een verzendoptie met bezorging kan niet worden gebruikt',
     'carts.line_unavailable' => 'Een regel in deze winkelwagen is niet meer beschikbaar (:identifier)',
+    'carts.insufficient_stock' => 'Onvoldoende voorraad om deze bestelling te plaatsen (:identifier)',
     'carts.line_not_purchasable' => ':identifier kan niet worden gekocht in dit kanaal of door uw klantgroep',
     'carts.payment_terms_pickup_missing' => 'Betalen bij afhalen vereist ten minste één artikel om af te halen',
     'carts.payment_terms_delivery_missing' => 'Betalen bij levering vereist ten minste één artikel om te bezorgen',

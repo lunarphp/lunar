@@ -278,7 +278,9 @@ A mismatch on either amount or currency fails the authorization before anything 
 
 ### Orphaned intents
 
-If order creation fails after Stripe has already reported the PaymentIntent as `succeeded` (for example, the cart cannot create a second order), the driver dispatches `Lunar\Stripe\Events\OrphanedPaymentIntentDetected` with the intent ID, cart ID, and failure reason, so the captured payment can be reconciled manually.
+If order creation fails after Stripe has already reported the PaymentIntent as `succeeded` (for example, the cart cannot create a second order), the driver dispatches `Lunar\Stripe\Events\OrphanedPaymentIntentDetected` with the intent ID, cart ID, and failure reason, so the captured payment can be reconciled manually. The driver refunds nothing automatically.
+
+When the intent is only authorized (`requires_capture`, under the `manual` policy), there is nothing to reconcile: the driver cancels the intent to release the hold, then returns the failed `PaymentAuthorize`. Order creation can fail this way when stock runs out between checkout and payment, see [Converting a cart to an order](/reference/carts#converting-a-cart-to-an-order). Creating the draft order with `$cart->createOrder()` before taking payment surfaces that failure before the customer pays.
 
 ```php
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;

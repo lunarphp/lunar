@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'اقلامی که برای ارسال تعیین شده‌اند به گزینه ارسال با تحویل در محل نیاز دارند',
     'carts.delivery_option_unneeded' => 'هیچ قلمی برای ارسال تعیین نشده است، بنابراین نمی‌توان از گزینه ارسال با تحویل در محل استفاده کرد',
     'carts.line_unavailable' => 'یکی از اقلام این سبد دیگر در دسترس نیست (:identifier).',
+    'carts.insufficient_stock' => 'موجودی کافی برای ثبت این سفارش وجود ندارد (:identifier)',
     'carts.line_not_purchasable' => ':identifier در این کانال یا توسط گروه مشتری شما قابل خرید نیست.',
     'carts.payment_terms_pickup_missing' => 'پرداخت هنگام تحویل حضوری دست‌کم به یک قلم برای تحویل حضوری نیاز دارد',
     'carts.payment_terms_delivery_missing' => 'پرداخت هنگام تحویل دست‌کم به یک قلم برای ارسال نیاز دارد',

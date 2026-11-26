@@ -332,7 +332,7 @@ $cart->updateLines(collect([
 $cart->clear();
 ```
 
-Stock validation calls `$purchasable->canBeFulfilledAtQuantity($quantity)`, which for a `Lunar\Core\Models\ProductVariant` reads its selling flags — a variant with `continue_selling` set is always fulfillable regardless of stock, and one with `sell_against_incoming` set counts `stock_incoming` as sellable (see [Sellability](/reference/inventory#sellability)).
+Stock validation calls `$purchasable->canBeFulfilledAtQuantity($quantity)`, which for a `Lunar\Core\Models\ProductVariant` reads its selling flags. `createOrder()` checks stock again, as described below — a variant with `continue_selling` set is always fulfillable regardless of stock, and one with `sell_against_incoming` set counts `stock_incoming` as sellable (see [Sellability](/reference/inventory#sellability)).
 
 ## Addresses and tax zone
 
@@ -539,7 +539,9 @@ The write is guarded on the revision the cart was loaded at. If another request 
 $order = $cart->createOrder();
 ```
 
-`createOrder()` recalculates the cart, runs the `StepList::OrderCreateValidation` validators (by default `ValidateCartForOrderCreation` for quantity, stock, and address/shipping completeness, and `ValidateCustomerForDiscounts`, which requires a user or email when a per-customer-limited discount applies), then delegates to the `CreatesOrder` action contract to create or update the draft order tied to the cart and return the resulting `Lunar\Core\Models\Order`.
+`createOrder()` recalculates the cart, runs the `StepList::OrderCreateValidation` validators (by default `ValidateCartForOrderCreation` for line availability and address, shipping and fulfilment completeness, `ValidateCustomerForDiscounts`, which requires a user or email when a per-customer-limited discount applies, and `ValidateCartStock`, which checks stock again), then delegates to the `CreatesOrder` action contract to create or update the draft order tied to the cart and return the resulting `Lunar\Core\Models\Order`.
+
+`Lunar\Core\Validation\Cart\ValidateCartStock` adds up the quantity of every line for the same purchasable, reads the purchasable fresh, and asks `canBeFulfilledAtQuantity()` for the total. A variant with `continue_selling` set always passes. When a line is short it throws `Lunar\Core\Exceptions\Carts\InsufficientStockException`, a `CartException` whose `lines()` returns the short cart lines, before any order is written. Remove the validator with the `Steps` facade to keep the add-to-cart check advisory. The check narrows, but does not close, the window in which two checkouts can sell the same last unit; [reserving stock](/reference/inventory#reserving-stock) closes it.
 
 ```php
 $cart->canCreateOrder();   // true/false, without throwing

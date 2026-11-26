@@ -622,6 +622,15 @@ class StripePaymentType extends AbstractPayment implements SupportsPaymentHolds,
                     $paymentIntentModel->order_id = $this->order->id;
                     $paymentIntentModel->save();
                 } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                    // No order will be placed, so release an uncaptured hold
+                    // now rather than leaving it to expire.
+                    if ($this->paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE) {
+                        $this->paymentIntent = $this->stripe->paymentIntents->cancel($paymentIntentId);
+                        $paymentIntentModel->status = $this->paymentIntent->status;
+                        $paymentIntentModel->processed_at = now();
+                        $paymentIntentModel->save();
+                    }
+
                     if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
                         $paymentIntentModel->processed_at = now();
                         $paymentIntentModel->save();

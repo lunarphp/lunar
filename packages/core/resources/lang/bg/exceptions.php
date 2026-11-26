@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Артикулите за доставка изискват опция за доставка до адрес',
     'carts.delivery_option_unneeded' => 'Няма артикули за доставка, затова не може да се използва опция за доставка до адрес',
     'carts.line_unavailable' => 'Артикул в тази количка вече не е наличен (:identifier)',
+    'carts.insufficient_stock' => 'Няма достатъчна наличност за тази поръчка (:identifier)',
     'carts.line_not_purchasable' => ':identifier не може да бъде закупен в този канал или от вашата клиентска група',
     'carts.payment_terms_pickup_missing' => 'Плащането при вземане изисква поне един артикул за вземане',
     'carts.payment_terms_delivery_missing' => 'Плащането при доставка изисква поне един артикул за доставка',

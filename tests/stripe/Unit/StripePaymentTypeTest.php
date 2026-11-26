@@ -338,6 +338,31 @@ it('syncs payment intent status when order creation fails on a non-succeeded str
     Event::assertNotDispatched(OrphanedPaymentIntentDetected::class);
 });
 
+it('cancels an uncaptured intent when order creation fails', function () {
+    Event::fake([OrphanedPaymentIntentDetected::class]);
+    config(['lunar.stripe.policy' => 'manual']);
+
+    $cart = CartBuilder::build();
+    $cart->addresses()->delete();
+    $cart->refresh();
+
+    $mock = StripeFake::forCart($cart, ['status' => 'requires_capture']);
+
+    $response = (new StripePaymentType)->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse()
+        ->and(collect($mock->requests)->filter(fn ($r) => str_ends_with($r['url'], 'PI_CAPTURE/cancel')))->toHaveCount(1);
+
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => 'PI_CAPTURE',
+        'status' => 'canceled',
+    ]);
+
+    Event::assertNotDispatched(OrphanedPaymentIntentDetected::class);
+});
+
 it('can return correct payment checks', function () {
     Currency::factory()->create();
 

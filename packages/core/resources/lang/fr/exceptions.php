@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Les articles à livrer nécessitent une option de livraison à domicile',
     'carts.delivery_option_unneeded' => 'Aucun article n\'est à livrer, une option de livraison à domicile ne peut donc pas être utilisée',
     'carts.line_unavailable' => 'Un article de ce panier n\'est plus disponible (:identifier)',
+    'carts.insufficient_stock' => 'Stock insuffisant pour passer cette commande (:identifier)',
     'carts.line_not_purchasable' => ':identifier ne peut pas être acheté sur ce canal ni par votre groupe de clients',
     'carts.payment_terms_pickup_missing' => 'Le paiement au retrait nécessite au moins un article à retirer',
     'carts.payment_terms_delivery_missing' => 'Le paiement à la livraison nécessite au moins un article à livrer',

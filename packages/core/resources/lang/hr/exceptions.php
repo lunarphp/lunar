@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Artikli za dostavu zahtijevaju opciju dostave na adresu',
     'carts.delivery_option_unneeded' => 'Nema artikala za dostavu, pa se opcija dostave na adresu ne može koristiti',
     'carts.line_unavailable' => 'Stavka u ovoj košarici više nije dostupna (:identifier)',
+    'carts.insufficient_stock' => 'Nema dovoljno zalihe za ovu narudžbu (:identifier)',
     'carts.line_not_purchasable' => ':identifier se ne može kupiti u ovom kanalu ili od strane vaše grupe kupaca',
     'carts.payment_terms_pickup_missing' => 'Plaćanje pri preuzimanju zahtijeva barem jedan artikl za preuzimanje',
     'carts.payment_terms_delivery_missing' => 'Plaćanje pouzećem zahtijeva barem jedan artikl za dostavu',
