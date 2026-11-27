@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Pozycje do dostawy wymagają opcji dostawy kurierskiej',
     'carts.delivery_option_unneeded' => 'Brak pozycji do dostawy, więc nie można użyć opcji dostawy kurierskiej',
     'carts.line_unavailable' => 'Pozycja w tym koszyku nie jest już dostępna (:identifier)',
+    'carts.insufficient_stock' => 'Za mało towaru na stanie, aby złożyć to zamówienie (:identifier)',
     'carts.line_not_purchasable' => ':identifier nie może zostać kupiony w tym kanale ani przez Twoją grupę klientów',
     'carts.payment_terms_pickup_missing' => 'Płatność przy odbiorze wymaga co najmniej jednej pozycji do odbioru osobistego',
     'carts.payment_terms_delivery_missing' => 'Płatność przy odbiorze przesyłki wymaga co najmniej jednej pozycji do dostawy',

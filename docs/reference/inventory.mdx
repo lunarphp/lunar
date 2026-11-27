@@ -222,7 +222,7 @@ Both methods are idempotent, delegating to `Lunar\Core\Contracts\Actions\Product
 | `stock_unavailable` | `integer` | Sum of the variant's stock levels' `unavailable` |
 | `stock_available` | `integer` | `stock_on_hand − stock_committed − stock_reserved − stock_unavailable`, indexed |
 
-`stock_committed` and `stock_reserved` are not pure sums of location rows: `stock_committed` includes commitments not yet allocated to any location, and `stock_reserved` has no location at all. `stock_available` may go negative — an oversell is allowed by design and surfaced as a warning, mirroring the fact that a placed order cannot be un-sold.
+`stock_committed` and `stock_reserved` are not pure sums of location rows: `stock_committed` includes commitments not yet allocated to any location, and `stock_reserved` has no location at all. `stock_available` may go negative — a placed order cannot be un-sold, so the rollup records an oversell rather than refusing it. Order creation re-checks stock for variants with `continue_selling` off (see [Converting a cart to an order](/reference/carts#converting-a-cart-to-an-order)), which narrows that window to checkouts racing for the last units.
 
 ```php
 $variant->stockLevels;      // HasMany Lunar\Core\Models\StockLevel

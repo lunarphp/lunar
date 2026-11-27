@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Хүргэлтээр авах бараанд хүргэлтийн сонголт шаардлагатай',
     'carts.delivery_option_unneeded' => 'Хүргэлтээр авах бараа байхгүй тул хүргэлтийн сонголтыг ашиглах боломжгүй',
     'carts.line_unavailable' => 'Энэ сагсны нэг бараа боломжгүй болсон байна (:identifier)',
+    'carts.insufficient_stock' => 'Энэ захиалгыг өгөхөд нөөц хүрэлцэхгүй байна (:identifier)',
     'carts.line_not_purchasable' => ':identifier-г энэ суваг эсвэл таны хэрэглэгчийн бүлэг худалдан авах боломжгүй',
     'carts.payment_terms_pickup_missing' => 'Авахдаа төлөхөд дор хаяж нэг очиж авах бараа шаардлагатай',
     'carts.payment_terms_delivery_missing' => 'Хүргэлтээр төлөхөд дор хаяж нэг хүргэх бараа шаардлагатай',

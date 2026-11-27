@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Teslimat için seçilen ürünler adrese teslim gönderim seçeneği gerektirir',
     'carts.delivery_option_unneeded' => 'Teslim edilecek ürün yok, bu nedenle adrese teslim gönderim seçeneği kullanılamaz',
     'carts.line_unavailable' => 'Bu sepetteki bir ürün artık mevcut değil (:identifier)',
+    'carts.insufficient_stock' => 'Bu siparişi vermek için yeterli stok yok (:identifier)',
     'carts.line_not_purchasable' => ':identifier bu kanaldan veya müşteri grubunuz tarafından satın alınamaz',
     'carts.payment_terms_pickup_missing' => 'Teslim alırken ödeme en az bir mağazadan teslim alınacak ürün gerektirir',
     'carts.payment_terms_delivery_missing' => 'Kapıda ödeme en az bir teslim edilecek ürün gerektirir',

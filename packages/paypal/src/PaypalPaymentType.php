@@ -15,6 +15,7 @@ use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
+use Lunar\Paypal\Events\OrphanedPaypalOrderDetected;
 use Lunar\Paypal\Facades\Paypal;
 use Lunar\Paypal\Managers\PaypalManager;
 use Lunar\Paypal\Models\PaypalOrder;
@@ -91,6 +92,10 @@ class PaypalPaymentType extends AbstractPayment
             try {
                 $this->order = $this->cart->createOrder();
             } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                $paypalOrderModel->update(['processed_at' => now()]);
+
+                OrphanedPaypalOrderDetected::dispatch($paypalOrderId, $this->cart?->id, $e->getMessage());
+
                 return $this->fail($e->getMessage());
             }
         }

@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Articolele de livrat necesită o opțiune de livrare la adresă',
     'carts.delivery_option_unneeded' => 'Nu există articole de livrat, așa că nu se poate folosi o opțiune de livrare la adresă',
     'carts.line_unavailable' => 'Un articol din acest coș nu mai este disponibil (:identifier)',
+    'carts.insufficient_stock' => 'Stoc insuficient pentru a plasa această comandă (:identifier)',
     'carts.line_not_purchasable' => ':identifier nu poate fi cumpărat în acest canal sau de grupul tău de clienți',
     'carts.payment_terms_pickup_missing' => 'Plata la ridicare necesită cel puțin un articol de ridicat',
     'carts.payment_terms_delivery_missing' => 'Plata la livrare necesită cel puțin un articol de livrat',

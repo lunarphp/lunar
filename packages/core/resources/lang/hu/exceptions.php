@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'A kiszállításra szánt tételekhez házhozszállítási mód szükséges',
     'carts.delivery_option_unneeded' => 'Nincs kiszállításra szánt tétel, ezért házhozszállítási mód nem használható',
     'carts.line_unavailable' => 'A kosár egyik tétele már nem elérhető (:identifier).',
+    'carts.insufficient_stock' => 'Nincs elegendő készlet a rendelés leadásához (:identifier)',
     'carts.line_not_purchasable' => 'A(z) :identifier nem vásárolható meg ezen a csatornán vagy az Ön vásárlói csoportja által.',
     'carts.payment_terms_pickup_missing' => 'Az átvételkori fizetéshez legalább egy személyesen átvett tétel szükséges',
     'carts.payment_terms_delivery_missing' => 'Az utánvétes fizetéshez legalább egy kiszállítandó tétel szükséges',

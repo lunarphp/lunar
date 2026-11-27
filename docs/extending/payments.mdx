@@ -214,6 +214,8 @@ Every authorization, capture, and refund a driver performs should be recorded as
 
 ### Authorizing
 
+A driver that creates the order inside `authorize()`, after the customer has paid, must handle `$cart->createOrder()` throwing a `Lunar\Core\Exceptions\Carts\CartException`, including its `InsufficientStockException` subclass when stock ran out. Release any authorization that has not been captured, report captured funds so they can be refunded or reconciled, and return a failed `PaymentAuthorize`. A storefront that creates the draft order before taking payment meets the same failure before any money moves.
+
 If a payment is not captured immediately, its transaction should use the type `intent`. When it is later captured, create a second transaction related to the intent through `parent_transaction_id`:
 
 ```php

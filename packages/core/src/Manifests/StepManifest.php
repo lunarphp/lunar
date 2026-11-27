@@ -25,6 +25,7 @@ use Lunar\Core\Validation\Cart\CartFulfilmentMethod;
 use Lunar\Core\Validation\Cart\CartPickupLocation;
 use Lunar\Core\Validation\Cart\ShippingOptionValidator;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Core\Validation\Cart\ValidateCartStock;
 use Lunar\Core\Validation\Cart\ValidateCustomerForDiscounts;
 use Lunar\Core\Validation\CartLine\CartLineAvailability;
 use Lunar\Core\Validation\CartLine\CartLineFulfilmentMethod;
@@ -114,6 +115,7 @@ class StepManifest implements StepManifestContract
             StepList::OrderCreateValidation => [
                 ValidateCartForOrderCreation::class,
                 ValidateCustomerForDiscounts::class,
+                ValidateCartStock::class,
             ],
             StepList::CartPruning => [
                 PruneAfter::class,

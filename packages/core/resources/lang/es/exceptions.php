@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Los artículos para envío necesitan una opción de envío a domicilio',
     'carts.delivery_option_unneeded' => 'No hay artículos para envío, por lo que no se puede usar una opción de envío a domicilio',
     'carts.line_unavailable' => 'Una línea de este carrito ya no está disponible (:identifier).',
+    'carts.insufficient_stock' => 'No hay stock suficiente para realizar este pedido (:identifier)',
     'carts.line_not_purchasable' => ':identifier no se puede comprar en este canal ni por tu grupo de clientes.',
     'carts.payment_terms_pickup_missing' => 'El pago al recoger requiere al menos un artículo para recoger',
     'carts.payment_terms_delivery_missing' => 'El pago contra entrega requiere al menos un artículo para entregar',

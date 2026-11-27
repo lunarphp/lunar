@@ -190,6 +190,23 @@ public function store(Request $request)
 
 `authorize()` verifies the amount, captures the money, creates the order, and places it, in that order. It returns a `Lunar\Core\DataObjects\PaymentAuthorize` carrying `success`, `message`, and `orderId`.
 
+### Orphaned orders
+
+When no draft order exists, `authorize()` creates the order after PayPal has taken the payment. If that fails, for example because [stock ran out](/reference/carts#converting-a-cart-to-an-order) since the cart was checked, the driver marks the PayPal order processed, dispatches `Lunar\Paypal\Events\OrphanedPaypalOrderDetected` and returns a failed `PaymentAuthorize`. Nothing is refunded automatically; listen for the event to refund, back-order or contact the customer:
+
+```php
+use Lunar\Paypal\Events\OrphanedPaypalOrderDetected;
+
+public function handle(OrphanedPaypalOrderDetected $event)
+{
+    $event->paypalOrderId;
+    $event->cartId;
+    $event->reason;
+}
+```
+
+Creating the draft order with `$cart->createOrder()` before rendering the buttons surfaces that failure before the customer pays.
+
 <Info>
 The `message` on a failure is a diagnostic, not shopper-facing copy — the storefront decides what wording to show for each failure case.
 </Info>

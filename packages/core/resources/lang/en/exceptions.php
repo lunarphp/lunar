@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'Items set for delivery need a delivery shipping option',
     'carts.delivery_option_unneeded' => 'Nothing in the cart is set for delivery, so a delivery shipping option can\'t be used',
     'carts.line_unavailable' => 'A line in this cart is no longer available (:identifier)',
+    'carts.insufficient_stock' => 'Not enough stock to place this order (:identifier)',
     'carts.line_not_purchasable' => ':identifier cannot be purchased in this channel or by your customer group',
     'carts.payment_terms_pickup_missing' => 'Pay on pickup needs at least one item to pick up',
     'carts.payment_terms_delivery_missing' => 'Pay on delivery needs at least one item to deliver',

@@ -14,6 +14,7 @@ return [
     'carts.delivery_option_missing' => 'العناصر المحددة للتوصيل تحتاج إلى خيار شحن للتوصيل',
     'carts.delivery_option_unneeded' => 'لا توجد عناصر للتوصيل، لذا لا يمكن استخدام خيار شحن للتوصيل',
     'carts.line_unavailable' => 'أحد عناصر هذه السلة لم يعد متاحاً (:identifier).',
+    'carts.insufficient_stock' => 'لا يوجد مخزون كافٍ لإتمام هذا الطلب (:identifier)',
     'carts.line_not_purchasable' => 'العنصر :identifier لا يمكن شراؤه في هذه القناة أو من قبل مجموعة العملاء الخاصة بك.',
     'carts.payment_terms_pickup_missing' => 'يتطلب الدفع عند الاستلام عنصرًا واحدًا على الأقل للاستلام',
     'carts.payment_terms_delivery_missing' => 'يتطلب الدفع عند التسليم عنصرًا واحدًا على الأقل للتوصيل',

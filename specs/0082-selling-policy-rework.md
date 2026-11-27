@@ -166,8 +166,9 @@ created:
     until it expires.
   - Stripe, captured intent: unchanged. The driver marks the intent processed and dispatches
     `OrphanedPaymentIntentDetected`, the existing "paid, no order" signal.
-  - PayPal: dispatch a matching `OrphanedPaypalOrderDetected` event, carrying the PayPal
-    order ID, cart ID and message, before returning the failure. Today the driver returns
+  - PayPal: mark the PayPal order processed and dispatch a matching
+    `OrphanedPaypalOrderDetected` event, carrying the PayPal order ID, cart ID and message,
+    before returning the failure. Today the driver returns
     the failure without any signal.
 
   Neither driver refunds automatically: whether to refund, back-order or contact the
@@ -301,7 +302,7 @@ it, including both admins' forms, to the booleans.
   inventory forms; lang keys across 16 locales; reference docs and the alpha upgrade guide.
 - [x] Slice 2 — `SetIncomingStock` action + contract, `ActionServiceProvider` registration,
   `setIncomingStock()` verb on the variant, tests.
-- [ ] Slice 3 — `ValidateCartStock` + `InsufficientStockException` in
+- [x] Slice 3 — `ValidateCartStock` + `InsufficientStockException` in
   `OrderCreateValidation`, Stripe intent cancellation and PayPal orphan event on
   driver-created order failure, tests, docs.
 - [ ] Slice 4 — panel: inline incoming editor and route, disable toggle, lang keys across 16
