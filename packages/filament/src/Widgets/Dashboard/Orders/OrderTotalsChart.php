@@ -104,12 +104,8 @@ class OrderTotalsChart extends LineChartWidget
                 DB::RAW('SUM(discount_total) as discount_total'),
                 DB::RAW('SUM(sub_total) as sub_total'),
                 DB::RAW('SUM(tax_total) as tax_total'),
-                DB::RAW(db_date('placed_at', '%M', 'month')),
-                DB::RAW(db_date('placed_at', '%Y', 'year')),
                 DB::RAW(db_date('placed_at', '%Y%m', 'monthstamp'))
             )->groupBy(
-                DB::RAW('month'),
-                DB::RAW('year'),
                 DB::RAW('monthstamp'),
                 DB::RAW(db_date('placed_at', '%Y-%m')),
             )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();

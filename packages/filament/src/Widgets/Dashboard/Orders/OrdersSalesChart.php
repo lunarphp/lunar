@@ -2,6 +2,7 @@
 
 namespace Lunar\Filament\Widgets\Dashboard\Orders;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -52,10 +53,8 @@ class OrdersSalesChart extends LineChartWidget
                 DB::RAW('SUM(discount_total) as discount_total'),
                 DB::RAW('SUM(sub_total) as sub_total'),
                 DB::RAW('SUM(tax_total) as tax_total'),
-                DB::RAW(db_date('placed_at', '%M %Y', 'date')),
                 DB::RAW(db_date('placed_at', '%Y-%m', 'sort_date')),
             )->groupBy(
-                DB::RAW('date'),
                 DB::RAW('sort_date'),
             )->orderBy(DB::RAW('sort_date'), 'asc')->get();
 
@@ -64,7 +63,7 @@ class OrdersSalesChart extends LineChartWidget
         $salesData = [];
 
         foreach ($orders as $order) {
-            $labels[] = $order->date;
+            $labels[] = Carbon::createFromFormat('!Y-m', $order->sort_date)->format('F Y');
             $ordersData[] = $order->count;
             $salesData[] = $order->decimal('sub_total');
         }
