@@ -33,6 +33,8 @@ const props = defineProps<{
     fieldPrefix?: string;
     stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
     adjustUrl: string;
+    // Null while a purchasing add-on owns incoming stock; the figure is then read-only.
+    incomingUrl?: string | null;
     errors?: Record<string, string>;
 }>();
 
@@ -54,32 +56,57 @@ const unitQuantity = field('unit_quantity');
 const minQuantity = field('min_quantity');
 const quantityIncrement = field('quantity_increment');
 
-// Inline on-hand edits post immediately as adjustment movements — stock is a
-// ledger, not a drafted field.
-const onHandEdits = reactive<Record<number, string>>({});
+// Inline stock edits post immediately rather than being drafted: on-hand as an
+// adjustment movement (stock is a ledger), incoming as an absolute figure.
+type StockColumn = 'on_hand' | 'incoming';
 
-const onHandValue = (row: StockLevelRow): string =>
-    onHandEdits[row.location_id] ?? String(row.on_hand);
+const stockEdits = reactive<Record<StockColumn, Record<number, string>>>({ on_hand: {}, incoming: {} });
 
-const commitOnHand = (row: StockLevelRow): void => {
-    const edited = onHandEdits[row.location_id];
+// The figure each cell is posting, so Enter followed by blur posts once.
+const stockSaving = reactive<Record<StockColumn, Record<number, number>>>({ on_hand: {}, incoming: {} });
 
-    delete onHandEdits[row.location_id];
+const stockValue = (column: StockColumn, row: StockLevelRow): string =>
+    stockEdits[column][row.location_id] ?? String(row[column]);
 
-    if (edited === undefined) {
+const commitStock = (column: StockColumn, row: StockLevelRow, url: string | null | undefined): void => {
+    const edited = stockEdits[column][row.location_id];
+
+    if (edited === undefined || !url) {
         return;
     }
 
     const next = Math.max(0, Number(edited) || 0);
 
-    if (next === row.on_hand) {
+    if (stockSaving[column][row.location_id] === next) {
         return;
     }
 
-    router.post(props.adjustUrl, {
+    if (next === row[column]) {
+        delete stockEdits[column][row.location_id];
+
+        return;
+    }
+
+    // Keep showing the entered figure until the reloaded props carry it,
+    // instead of flashing the old value while the request is in flight.
+    stockEdits[column][row.location_id] = String(next);
+    stockSaving[column][row.location_id] = next;
+
+    router.post(url, {
         location_id: row.location_id,
-        on_hand: next,
-    }, { preserveScroll: true, preserveState: true });
+        [column]: next,
+    }, {
+        preserveScroll: true,
+        preserveState: true,
+        onFinish: () => {
+            delete stockSaving[column][row.location_id];
+
+            // A figure typed while this request ran stays for its own commit.
+            if (stockEdits[column][row.location_id] === String(next)) {
+                delete stockEdits[column][row.location_id];
+            }
+        },
+    });
 };
 
 const levelAvailable = (row: StockLevelRow): number => row.on_hand - row.committed - row.unavailable;
@@ -140,7 +167,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                 </div>
             </div>
             <div class="bg-surface border border-line rounded-md overflow-hidden">
-                <div class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_70px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
+                <div class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_82px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
                     <div>{{ t('products.stock_location') }}</div>
                     <div class="text-right">{{ t('products.stock_on_hand') }}</div>
                     <div class="text-right">{{ t('products.stock_available') }}</div>
@@ -150,7 +177,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                 <div
                     v-for="row in stock.levels"
                     :key="row.location_id"
-                    class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_70px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
+                    class="grid grid-cols-[minmax(0,1fr)_82px_82px_70px_82px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
                 >
                     <div class="min-w-0">
                         <div class="text-[12.5px] text-ink-900 truncate">{{ row.location_name }}</div>
@@ -158,18 +185,29 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                     </div>
                     <div>
                         <TextInput
-                            :model-value="onHandValue(row)"
+                            :model-value="stockValue('on_hand', row)"
                             type="number"
                             min="0"
                             :aria-label="`${t('products.stock_on_hand')} — ${row.location_name}`"
-                            @update:model-value="(value) => { onHandEdits[row.location_id] = String(value); }"
-                            @blur="commitOnHand(row)"
-                            @keydown.enter.prevent="commitOnHand(row)"
+                            @update:model-value="(value) => { stockEdits.on_hand[row.location_id] = String(value); }"
+                            @blur="commitStock('on_hand', row, adjustUrl)"
+                            @keydown.enter.prevent="commitStock('on_hand', row, adjustUrl)"
                         />
                     </div>
                     <div class="text-right text-[12.5px] font-medium [font-variant-numeric:tabular-nums] text-ink-900">{{ levelAvailable(row) }}</div>
                     <div class="text-right text-[12.5px] [font-variant-numeric:tabular-nums] text-ink-700">{{ row.committed }}</div>
-                    <div :class="['text-right text-[12.5px] [font-variant-numeric:tabular-nums]', row.incoming > 0 ? 'text-warn-ink font-medium' : 'text-ink-400']">{{ row.incoming }}</div>
+                    <div v-if="incomingUrl">
+                        <TextInput
+                            :model-value="stockValue('incoming', row)"
+                            type="number"
+                            min="0"
+                            :aria-label="`${t('products.stock_incoming')} — ${row.location_name}`"
+                            @update:model-value="(value) => { stockEdits.incoming[row.location_id] = String(value); }"
+                            @blur="commitStock('incoming', row, incomingUrl)"
+                            @keydown.enter.prevent="commitStock('incoming', row, incomingUrl)"
+                        />
+                    </div>
+                    <div v-else :class="['text-right text-[12.5px] [font-variant-numeric:tabular-nums]', row.incoming > 0 ? 'text-warn-ink font-medium' : 'text-ink-400']">{{ row.incoming }}</div>
                 </div>
             </div>
             <div class="text-[11px] text-ink-500 mt-1.5">{{ t('products.stock_inline_hint') }}</div>

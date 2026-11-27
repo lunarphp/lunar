@@ -265,6 +265,7 @@ class CatalogSection extends Section
                     Route::post('/{product}/media', [ProductMediaController::class, 'store'])->name('media.store');
 
                     Route::post('/{product}/variants/{productVariant}/stock', [ProductVariantStockController::class, 'update'])->name('variants.stock.adjust');
+                    Route::post('/{product}/variants/{productVariant}/incoming', [ProductVariantStockController::class, 'incoming'])->name('variants.stock.incoming');
 
                     Route::post('/{product}/options/generate', [ProductOptionsController::class, 'generate'])->name('options.generate');
                     Route::post('/{product}/variants/bulk', [ProductVariantBulkController::class, 'update'])->name('variants.bulk');

@@ -257,7 +257,7 @@ $variant->adjustStock(
 $variant->setIncomingStock(Location::getDefault(), 24);
 ```
 
-It delegates to `Lunar\Core\Contracts\Actions\Products\SetsIncomingStock` and throws an `InvalidArgumentException` for a negative quantity. When the goods arrive, record them with `adjustStock()` and lower `incoming` to match; core does not pair the two. A purchasing add-on that derives `incoming` from purchase orders writes through the same action.
+It delegates to `Lunar\Core\Contracts\Actions\Products\SetsIncomingStock` and throws an `InvalidArgumentException` for a negative quantity. When the goods arrive, record them with `adjustStock()` and lower `incoming` to match; core does not pair the two. A purchasing add-on that derives `incoming` from purchase orders writes through the same action, and can turn off the admin editors with `Panel::withoutIncomingStockEntry()` in the panel and `LunarPanel::withoutIncomingStockEntry()` in the Filament admin.
 
 ## Reserving stock
 

@@ -14,6 +14,8 @@ use Lunar\Panel\PanelManager;
  * @method static \Lunar\Panel\PanelManager extendTable(string $tableId, string $extensionClass)
  * @method static \Lunar\Panel\PanelManager registerRoutes(\Closure $callback)
  * @method static \Lunar\Panel\PanelManager translations(string ...$namespaces)
+ * @method static \Lunar\Panel\PanelManager withoutIncomingStockEntry(bool $without = true)
+ * @method static bool usesIncomingStockEntry()
  * @method static string guard()
  * @method static string path()
  * @method static array availableLocales()

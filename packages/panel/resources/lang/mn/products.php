@@ -144,6 +144,7 @@ return [
     'stock_default_location' => 'Default',
     'stock_inline_hint' => 'Edit On hand inline - each change is recorded as an adjustment movement.',
     'flash_stock_updated' => 'Stock adjusted.',
+    'flash_incoming_updated' => 'Ирэх нөөц шинэчлэгдлээ.',
     'field_unit_quantity' => 'Unit qty',
     'field_unit_quantity_hint' => 'units per pack',
     'field_min_quantity' => 'Min qty',

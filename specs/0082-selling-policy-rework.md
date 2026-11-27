@@ -305,7 +305,7 @@ it, including both admins' forms, to the booleans.
 - [x] Slice 3 — `ValidateCartStock` + `InsufficientStockException` in
   `OrderCreateValidation`, Stripe intent cancellation and PayPal orphan event on
   driver-created order failure, tests, docs.
-- [ ] Slice 4 — panel: inline incoming editor and route, disable toggle, lang keys across 16
+- [x] Slice 4 — panel: inline incoming editor and route, disable toggle, lang keys across 16
   locales.
 - [ ] Slice 5 — Filament bridge + admin resources: incoming rollup + header action, disable
   toggle, lang keys across 16 locales.

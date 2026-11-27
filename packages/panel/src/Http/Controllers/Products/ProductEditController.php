@@ -357,6 +357,9 @@ class ProductEditController
             ],
             'urls' => [
                 'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $variant]),
+                'stockIncoming' => app(PanelManager::class)->usesIncomingStockEntry()
+                    ? route('panel.products.variants.stock.incoming', [$product, $variant])
+                    : null,
             ],
         ];
     }

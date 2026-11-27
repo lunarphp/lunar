@@ -73,7 +73,7 @@ const props = defineProps<{
     variant: {
         id: number;
         stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
-        urls: { stockAdjust: string };
+        urls: { stockAdjust: string; stockIncoming: string | null };
     } | null;
     variantAttributeGroups: AttributeGroup[];
     currencies: CurrencyOption[];
@@ -476,6 +476,7 @@ const timelineEvents = computed(() =>
                                 field-prefix="variant:"
                                 :stock="variant.stock"
                                 :adjust-url="variant.urls.stockAdjust"
+                                :incoming-url="variant.urls.stockIncoming"
                                 :errors="detailsErrors"
                             />
                             <ShippingCard
