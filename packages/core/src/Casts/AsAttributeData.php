@@ -56,7 +56,14 @@ class AsAttributeData implements Castable
             /**
              * Serialize a handle/id-keyed collection of FieldType instances into id-keyed raw JSON.
              *
+             * A value that cannot be encoded, such as a string that is not
+             * valid UTF-8, throws a JsonException. A plain json_encode()
+             * returns false, which would be written as 0 and replace every
+             * attribute on the record.
+             *
              * @return array<string, string>
+             *
+             * @throws \JsonException
              */
             public function set($model, $key, $value, $attributes): array
             {
@@ -75,7 +82,7 @@ class AsAttributeData implements Castable
                     $data[(string) $id] = $item instanceof FieldType ? $item->jsonSerialize() : $item;
                 }
 
-                return [$key => json_encode($data)];
+                return [$key => json_encode($data, JSON_THROW_ON_ERROR)];
             }
         };
     }
