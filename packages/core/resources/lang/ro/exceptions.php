@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Un articol din acest coș nu mai este disponibil (:identifier)',
     'carts.insufficient_stock' => 'Stoc insuficient pentru a plasa această comandă (:identifier)',
     'carts.line_not_purchasable' => ':identifier nu poate fi cumpărat în acest canal sau de grupul tău de clienți',
+    'carts.line_added_by_discount' => 'Acest articol a fost adăugat de o reducere, așa că nu i se poate modifica cantitatea',
     'carts.payment_terms_pickup_missing' => 'Plata la ridicare necesită cel puțin un articol de ridicat',
     'carts.payment_terms_delivery_missing' => 'Plata la livrare necesită cel puțin un articol de livrat',
     'carts.fulfilment_method_unknown' => 'Metoda de onorare ":method" nu este disponibilă',

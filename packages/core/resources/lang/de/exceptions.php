@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Eine Position in diesem Warenkorb ist nicht mehr verfügbar (:identifier)',
     'carts.insufficient_stock' => 'Nicht genügend Lagerbestand, um diese Bestellung aufzugeben (:identifier)',
     'carts.line_not_purchasable' => ':identifier kann in diesem Kanal oder von Ihrer Kundengruppe nicht gekauft werden',
+    'carts.line_added_by_discount' => 'Dieser Artikel wurde durch einen Rabatt hinzugefügt, daher kann seine Menge nicht geändert werden',
     'carts.payment_terms_pickup_missing' => 'Zahlung bei Abholung erfordert mindestens einen Artikel zur Abholung',
     'carts.payment_terms_delivery_missing' => 'Zahlung bei Lieferung erfordert mindestens einen Artikel zur Lieferung',
     'carts.fulfilment_method_unknown' => 'Die Erfüllungsmethode ":method" ist nicht verfügbar',

@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'یکی از اقلام این سبد دیگر در دسترس نیست (:identifier).',
     'carts.insufficient_stock' => 'موجودی کافی برای ثبت این سفارش وجود ندارد (:identifier)',
     'carts.line_not_purchasable' => ':identifier در این کانال یا توسط گروه مشتری شما قابل خرید نیست.',
+    'carts.line_added_by_discount' => 'این کالا توسط یک تخفیف اضافه شده است، بنابراین تعداد آن قابل تغییر نیست.',
     'carts.payment_terms_pickup_missing' => 'پرداخت هنگام تحویل حضوری دست‌کم به یک قلم برای تحویل حضوری نیاز دارد',
     'carts.payment_terms_delivery_missing' => 'پرداخت هنگام تحویل دست‌کم به یک قلم برای ارسال نیاز دارد',
     'carts.fulfilment_method_unknown' => 'روش تحویل ":method" در دسترس نیست',

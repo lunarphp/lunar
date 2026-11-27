@@ -6,6 +6,7 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Enums\StepList;
+use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Facades\Steps;
@@ -327,6 +328,39 @@ test('recalculating the same cart does not repeat its free items', function () {
     $cart->recalculate();
 
     expect($cart->freeItems)->toHaveCount(1);
+});
+
+test('refuses a quantity change on a reward line', function () {
+    ['cart' => $cart, 'a' => $a] = rewardLinesSetUp();
+
+    $shopperLine = rewardLinesAdd($cart, $a, 1);
+
+    $cart = rewardLinesCalculate($cart);
+    $reward = rewardLinesAdded($cart)->sole();
+
+    expect(fn () => $cart->updateLine($reward->id, 3))
+        ->toThrow(CartException::class, __('lunar::exceptions.carts.line_added_by_discount'));
+
+    expect($reward->fresh()->quantity)->toBe(1);
+
+    // The shopper's own line still changes, and the reward follows it.
+    $cart->updateLine($shopperLine->id, 2);
+
+    expect(rewardLinesAdded(rewardLinesCalculate($cart))->sole()->quantity)->toBe(2);
+});
+
+test('accepts a meta change on a reward line at the same quantity', function () {
+    ['cart' => $cart, 'a' => $a] = rewardLinesSetUp();
+
+    rewardLinesAdd($cart, $a, 1);
+
+    $cart = rewardLinesCalculate($cart);
+    $reward = rewardLinesAdded($cart)->sole();
+
+    $cart->updateLine($reward->id, 1, ['gift_note' => 'Happy birthday']);
+
+    expect($reward->fresh()->meta['gift_note'])->toBe('Happy birthday')
+        ->and($reward->fresh()->quantity)->toBe(1);
 });
 
 /**

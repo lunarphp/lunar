@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Stavka u ovoj košarici više nije dostupna (:identifier)',
     'carts.insufficient_stock' => 'Nema dovoljno zalihe za ovu narudžbu (:identifier)',
     'carts.line_not_purchasable' => ':identifier se ne može kupiti u ovom kanalu ili od strane vaše grupe kupaca',
+    'carts.line_added_by_discount' => 'Ovu je stavku dodao popust pa se njezina količina ne može promijeniti',
     'carts.payment_terms_pickup_missing' => 'Plaćanje pri preuzimanju zahtijeva barem jedan artikl za preuzimanje',
     'carts.payment_terms_delivery_missing' => 'Plaćanje pouzećem zahtijeva barem jedan artikl za dostavu',
     'carts.fulfilment_method_unknown' => 'Način ispunjenja ":method" nije dostupan',

@@ -27,6 +27,7 @@ use Lunar\Core\Validation\Cart\ShippingOptionValidator;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\Cart\ValidateCartStock;
 use Lunar\Core\Validation\Cart\ValidateCustomerForDiscounts;
+use Lunar\Core\Validation\CartLine\CartLineAddedByDiscount;
 use Lunar\Core\Validation\CartLine\CartLineAvailability;
 use Lunar\Core\Validation\CartLine\CartLineFulfilmentMethod;
 use Lunar\Core\Validation\CartLine\CartLineQuantity;
@@ -98,6 +99,7 @@ class StepManifest implements StepManifestContract
                 CartLineQuantity::class,
                 CartLineStock::class,
                 CartLineAvailability::class,
+                CartLineAddedByDiscount::class,
             ],
             StepList::RemoveFromCartValidation, StepList::AddAddressValidation => [],
             StepList::SetShippingOptionValidation => [

@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'A kosár egyik tétele már nem elérhető (:identifier).',
     'carts.insufficient_stock' => 'Nincs elegendő készlet a rendelés leadásához (:identifier)',
     'carts.line_not_purchasable' => 'A(z) :identifier nem vásárolható meg ezen a csatornán vagy az Ön vásárlói csoportja által.',
+    'carts.line_added_by_discount' => 'Ezt a tételt egy kedvezmény adta hozzá, ezért a mennyisége nem módosítható.',
     'carts.payment_terms_pickup_missing' => 'Az átvételkori fizetéshez legalább egy személyesen átvett tétel szükséges',
     'carts.payment_terms_delivery_missing' => 'Az utánvétes fizetéshez legalább egy kiszállítandó tétel szükséges',
     'carts.fulfilment_method_unknown' => 'A(z) ":method" teljesítési mód nem érhető el',

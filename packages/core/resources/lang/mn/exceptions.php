@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Энэ сагсны нэг бараа боломжгүй болсон байна (:identifier)',
     'carts.insufficient_stock' => 'Энэ захиалгыг өгөхөд нөөц хүрэлцэхгүй байна (:identifier)',
     'carts.line_not_purchasable' => ':identifier-г энэ суваг эсвэл таны хэрэглэгчийн бүлэг худалдан авах боломжгүй',
+    'carts.line_added_by_discount' => 'Энэ барааг хөнгөлөлтөөр нэмсэн тул тоо хэмжээг нь өөрчлөх боломжгүй',
     'carts.payment_terms_pickup_missing' => 'Авахдаа төлөхөд дор хаяж нэг очиж авах бараа шаардлагатай',
     'carts.payment_terms_delivery_missing' => 'Хүргэлтээр төлөхөд дор хаяж нэг хүргэх бараа шаардлагатай',
     'carts.fulfilment_method_unknown' => '":method" биелүүлэх арга боломжгүй',

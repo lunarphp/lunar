@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Артикул в тази количка вече не е наличен (:identifier)',
     'carts.insufficient_stock' => 'Няма достатъчна наличност за тази поръчка (:identifier)',
     'carts.line_not_purchasable' => ':identifier не може да бъде закупен в този канал или от вашата клиентска група',
+    'carts.line_added_by_discount' => 'Този артикул е добавен от отстъпка, затова количеството му не може да бъде променяно',
     'carts.payment_terms_pickup_missing' => 'Плащането при вземане изисква поне един артикул за вземане',
     'carts.payment_terms_delivery_missing' => 'Плащането при доставка изисква поне един артикул за доставка',
     'carts.fulfilment_method_unknown' => 'Методът на изпълнение ":method" не е наличен',

@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Una línea de este carrito ya no está disponible (:identifier).',
     'carts.insufficient_stock' => 'No hay stock suficiente para realizar este pedido (:identifier)',
     'carts.line_not_purchasable' => ':identifier no se puede comprar en este canal ni por tu grupo de clientes.',
+    'carts.line_added_by_discount' => 'Este artículo lo añadió un descuento, por lo que no se puede cambiar su cantidad.',
     'carts.payment_terms_pickup_missing' => 'El pago al recoger requiere al menos un artículo para recoger',
     'carts.payment_terms_delivery_missing' => 'El pago contra entrega requiere al menos un artículo para entregar',
     'carts.fulfilment_method_unknown' => 'El método de entrega ":method" no está disponible',

@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Bu sepetteki bir ürün artık mevcut değil (:identifier)',
     'carts.insufficient_stock' => 'Bu siparişi vermek için yeterli stok yok (:identifier)',
     'carts.line_not_purchasable' => ':identifier bu kanaldan veya müşteri grubunuz tarafından satın alınamaz',
+    'carts.line_added_by_discount' => 'Bu ürün bir indirim tarafından eklendi, bu nedenle miktarı değiştirilemez',
     'carts.payment_terms_pickup_missing' => 'Teslim alırken ödeme en az bir mağazadan teslim alınacak ürün gerektirir',
     'carts.payment_terms_delivery_missing' => 'Kapıda ödeme en az bir teslim edilecek ürün gerektirir',
     'carts.fulfilment_method_unknown' => '":method" karşılama yöntemi kullanılamıyor',

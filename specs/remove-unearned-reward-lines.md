@@ -81,7 +81,7 @@ The extra pass runs only on a calculation that changes added lines, typically th
 
 ### Shoppers changing an added line
 
-A new validator, `Lunar\Core\Validation\CartLine\CartLineAddedByDiscount`, is appended to `StepList::UpdateCartLineValidation`. It fails when the line being updated has `added_by_discount_id` set and the requested quantity differs from the line's quantity. The message is `lunar::exceptions.carts.line_added_by_discount`: "This item was added by a promotion, so its quantity can't be changed". A meta-only update at the same quantity passes. Without the validator, reconciliation would silently undo the change on the next calculation.
+A new validator, `Lunar\Core\Validation\CartLine\CartLineAddedByDiscount`, is appended to `StepList::UpdateCartLineValidation`. It fails when the line being updated has `added_by_discount_id` set and the requested quantity differs from the line's quantity. The message is `lunar::exceptions.carts.line_added_by_discount`: "This item was added by a discount, so its quantity can't be changed". A meta-only update at the same quantity passes. Without the validator, reconciliation would silently undo the change on the next calculation.
 
 A shopper who wants more of the reward product adds it, and `GetExistingCartLine` already gives it a line of its own. Removing an added line stays allowed. The line comes back on the next calculation while the cart still earns it, as it does today.
 
@@ -135,5 +135,5 @@ None.
 
 - [x] Slice 1 — Reconciliation: added lines left out of `BuyXGetY` conditions and first-pass rewards and out of both `getEligibleLines()` implementations; keep, raise and add allocation without writes in `BuyXGetY`; `ReconcilesRewardLines` and its binding; the second pass in `CalculateCart`; `freeItems` reset in `ApplyDiscounts`. Pest tests for each case in the Problem table, the collection and minimum-spend cases, the shopper adding the reward product, a merged cart with two added lines from one discount, the second pass leaving nothing to reconcile, and the cart's shipping option seeing an added line in the calculation that adds it. Existing reward tests that count pipeline runs are updated for the second pass.
 - [x] Slice 2 — Deleting a discount removes its added lines on carts without a completed order, with a test that a cart with a completed order keeps its lines and that the affected cart's totals are invalidated.
-- [ ] Slice 3 — `CartLineAddedByDiscount` in `UpdateCartLineValidation`, the translation in 16 locales, and tests for a refused quantity change and an accepted meta-only update.
+- [x] Slice 3 — `CartLineAddedByDiscount` in `UpdateCartLineValidation`, the translation in 16 locales, and tests for a refused quantity change and an accepted meta-only update.
 - [ ] Slice 4 — Docs and the alpha upgrade guide note.

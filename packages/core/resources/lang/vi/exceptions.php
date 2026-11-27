@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Một mặt hàng trong giỏ hàng này không còn khả dụng (:identifier)',
     'carts.insufficient_stock' => 'Không đủ hàng để đặt đơn hàng này (:identifier)',
     'carts.line_not_purchasable' => ':identifier không thể được mua trong kênh này hoặc bởi nhóm khách hàng của bạn',
+    'carts.line_added_by_discount' => 'Mặt hàng này được thêm bởi một chương trình giảm giá nên không thể thay đổi số lượng',
     'carts.payment_terms_pickup_missing' => 'Thanh toán khi nhận hàng tại cửa hàng cần ít nhất một sản phẩm nhận tại cửa hàng',
     'carts.payment_terms_delivery_missing' => 'Thanh toán khi giao hàng cần ít nhất một sản phẩm được giao',
     'carts.fulfilment_method_unknown' => 'Phương thức thực hiện ":method" không khả dụng',
