@@ -397,12 +397,14 @@ test('an automatic reward line written during the pipeline does not prevent the 
         ->and($cart->freeItems)->toHaveCount(1)
         ->and($cart->fresh()->calculated_revision)->toBe($cart->fresh()->revision);
 
-    // The reward line is priced in the run that adds it, so the first
-    // snapshot already covers it and is served.
+    // Adding the reward line runs the steps a second time, which prices it,
+    // so the first snapshot already covers it and is served.
+    expect(CartPipelineSpy::$runs)->toBe(2);
+
     Blink::flush();
     $served = Cart::query()->find($cart->id)->calculate();
 
-    expect(CartPipelineSpy::$runs)->toBe(1)
+    expect(CartPipelineSpy::$runs)->toBe(2)
         ->and($served->lines)->toHaveCount(2)
         ->and($served->freeItems)->toHaveCount(1)
         ->and($served->freeItems->first()->is($purchasableB))->toBeTrue();

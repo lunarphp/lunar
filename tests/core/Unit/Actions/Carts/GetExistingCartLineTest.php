@@ -164,7 +164,9 @@ test('a product the shopper adds never goes onto a line core added for a discoun
 
     expect((new GetExistingCartLine)->execute($cart, $purchasable))->toBeNull();
 
-    $cart->add($purchasable, 2);
+    // Without recalculating: the line's discount applies to nothing here, so a
+    // calculation would remove it (spec remove-unearned-reward-lines).
+    $cart->add($purchasable, 2, refresh: false);
 
     $lines = $cart->lines()->get();
 

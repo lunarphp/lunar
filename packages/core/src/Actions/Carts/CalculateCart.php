@@ -6,6 +6,7 @@ use Illuminate\Pipeline\Pipeline;
 use Lunar\Core\Contracts\Actions\Carts\CalculatesCart;
 use Lunar\Core\Contracts\Actions\Carts\HydratesCartTotals;
 use Lunar\Core\Contracts\Actions\Carts\PersistsCartTotals;
+use Lunar\Core\Contracts\Actions\Discounts\ReconcilesRewardLines;
 use Lunar\Core\Contracts\StepManifest;
 use Lunar\Core\Enums\StepList;
 use Lunar\Core\Models\Cart;
@@ -28,6 +29,7 @@ class CalculateCart implements CalculatesCart
         protected CartLineModifiers $cartLineModifiers,
         protected HydratesCartTotals $hydratesCartTotals,
         protected PersistsCartTotals $persistsCartTotals,
+        protected ReconcilesRewardLines $reconcilesRewardLines,
     ) {}
 
     public function execute(Cart $cart, bool $force = false): Cart
@@ -43,17 +45,23 @@ class CalculateCart implements CalculatesCart
             return $this->hydratesCartTotals->execute($cart);
         }
 
-        // Lines the pipeline itself writes (BuyXGetY reward lines) are part of
-        // the calculation, not a change to it; the line observer skips
-        // invalidation while this flag is set. It also holds the cart's
+        // Lines the calculation itself writes (reward lines a discount added)
+        // are part of the calculation, not a change to it; the line observer
+        // skips invalidation while this flag is set. It also holds the cart's
         // context for the whole calculation.
         $calculating = $cart->setCalculating(true);
 
         try {
-            $cart = $this->pipeline
-                ->send($this->cartModifiers->calculating($cart))
-                ->through($this->steps->for(StepList::CartCalculation)->all())
-                ->thenReturn();
+            $cart = $this->runSteps($this->cartModifiers->calculating($cart));
+
+            // Reward lines follow what the discounts allocated (spec
+            // remove-unearned-reward-lines). When any changed, the steps run
+            // once more so shipping, tax and the totals see the lines as they
+            // now stand. Added lines count toward no discount's conditions,
+            // so that pass allocates the same units and needs no reconciling.
+            if ($this->reconcilesRewardLines->execute($cart)) {
+                $cart = $this->runSteps($cart);
+            }
 
             if ($this->cartLineModifiers->getModifiers()->isNotEmpty()) {
                 foreach ($cart->loadMissing('lines')->lines as $line) {
@@ -74,6 +82,14 @@ class CalculateCart implements CalculatesCart
         }
 
         return $cart;
+    }
+
+    protected function runSteps(Cart $cart): Cart
+    {
+        return $this->pipeline
+            ->send($cart)
+            ->through($this->steps->for(StepList::CartCalculation)->all())
+            ->thenReturn();
     }
 
     /**

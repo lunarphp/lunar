@@ -79,8 +79,13 @@ class BuyXGetY extends AbstractDiscountType
             $productCollectionIds = $products->mapWithKeys(fn ($p) => [$p->id => $p->collections->pluck('id')]);
         }
 
+        // Lines a discount added are not the shopper's purchases: they never
+        // count as conditions or take a reward here, so a reward can't keep
+        // itself earned. This discount's own lines are allocated below.
+        $shopperLines = $cart->lines->reject(fn (CartLine $line) => $line->isAddedByDiscount());
+
         // Get all discountables that are eligible.
-        $conditions = $cart->lines->reject(function ($line) use ($productCollectionIds) {
+        $conditions = $shopperLines->reject(function ($line) use ($productCollectionIds) {
             return ! $this->discount->discountableConditions->first(function ($item) use ($line, $productCollectionIds) {
                 if ($item->discountable_type == Product::morphName() &&
                     $item->discountable_id == $line->purchasable->product->id
@@ -128,7 +133,7 @@ class BuyXGetY extends AbstractDiscountType
         $discountTotal = 0;
 
         // Get the reward lines and sort by cheapest first.
-        $rewardLines = $cart->lines->filter(function ($line) use ($productCollectionIds) {
+        $rewardLines = $shopperLines->filter(function ($line) use ($productCollectionIds) {
             return $this->discount->discountableRewards->first(function ($item) use ($line, $productCollectionIds) {
                 if ($item->discountable_type == Product::morphName() &&
                     $item->discountable_id == $line->purchasable->product->id
@@ -215,7 +220,7 @@ class BuyXGetY extends AbstractDiscountType
         }
 
         if ($automaticallyAddRewards) {
-            [$affectedLines, $discountTotal] = $this->processAutomaticRewards($cart, $remainingRewardQty, $affectedLines, $discountTotal);
+            [$affectedLines, $discountTotal] = $this->processAutomaticRewards($cart, (int) $remainingRewardQty, $affectedLines, $discountTotal);
         }
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
@@ -229,15 +234,49 @@ class BuyXGetY extends AbstractDiscountType
         return $cart;
     }
 
-    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
+    /**
+     * Allocate the reward units the shopper's own lines could not take onto
+     * lines this discount manages (spec remove-unearned-reward-lines):
+     *
+     * 1. Keep — its existing added lines, oldest first, keep up to their
+     *    current quantity.
+     * 2. Raise — units still left raise those lines as far as stock allows.
+     * 3. Add — units still left pick a reward candidate and go on a new,
+     *    unsaved line.
+     *
+     * Nothing is written here. Each allocation is recorded in the breakdown,
+     * and ReconcilesRewardLines then creates, resizes or deletes the lines to
+     * match, so a line this discount allocates nothing to goes.
+     *
+     * @return array{0: Collection, 1: int}
+     */
+    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal): array
     {
-        // Reward lines this run has added, keyed by purchasable. The check below
-        // reads $cart->lines, which never receives a line made here, so without
-        // this a reward quantity of three opens three lines of one rather than
-        // one line of three.
-        $addedRewardLines = [];
+        /** @var array<int, array{line: CartLine, quantity: int}> $allocations keyed by spl_object_id() */
+        $allocations = [];
 
-        // we have lines to add
+        $ownLines = $cart->lines
+            ->filter(fn (CartLine $line) => $line->added_by_discount_id == $this->discount->id)
+            ->sortBy('id')
+            ->values();
+
+        foreach ($ownLines as $line) {
+            $quantity = min($line->quantity, $remainingRewardQty);
+
+            $allocations[spl_object_id($line)] = ['line' => $line, 'quantity' => $quantity];
+
+            $remainingRewardQty -= $quantity;
+        }
+
+        foreach ($ownLines as $line) {
+            $key = spl_object_id($line);
+
+            while ($remainingRewardQty > 0 && $line->purchasable->canBeFulfilledAtQuantity($allocations[$key]['quantity'] + 1)) {
+                $allocations[$key]['quantity']++;
+                $remainingRewardQty--;
+            }
+        }
+
         if ($remainingRewardQty > 0) {
             // Fulfillable products per collection reward, hydrated once here rather
             // than re-queried on every iteration of the allocation loop below.
@@ -267,128 +306,99 @@ class BuyXGetY extends AbstractDiscountType
                 return (bool) $rewardItem->variants()->first()?->canBeFulfilledAtQuantity(1);
             });
 
-            if ($fulfillableRewards->isEmpty()) {
-                return [$affectedLines, $discountTotal];
-            }
+            // New lines this run allocates to, keyed by purchasable, so a reward
+            // quantity of three opens one line of three rather than three of one.
+            $newLines = [];
 
-            while ($remainingRewardQty > 0) {
+            while ($remainingRewardQty > 0 && $fulfillableRewards->isNotEmpty()) {
                 $selectedRewardItem = $fulfillableRewards->random()->discountable;
 
                 if ($selectedRewardItem instanceof LunarCollection) {
-                    $product = $fulfillableCollectionProducts[$selectedRewardItem->id]->random();
-                    $purchasable = $product->variants->first();
-                    $selectedRewardItem = $product;
+                    $purchasable = $fulfillableCollectionProducts[$selectedRewardItem->id]->random()->variants->first();
                 } elseif ($selectedRewardItem instanceof Purchasable) {
                     $purchasable = $selectedRewardItem;
                 } else {
                     $purchasable = $selectedRewardItem->variants()->first();
                 }
 
-                if (! $purchasable) {
-                    $remainingRewardQty--;
+                $remainingRewardQty--;
 
+                if (! $purchasable) {
                     continue;
                 }
 
                 $rewardKey = $purchasable->getMorphClass().':'.$purchasable->id;
 
-                // How many units of this reward this run has already allocated,
-                // since canBeFulfilledAtQuantity below must check against that
-                // running total rather than a fixed quantity of 1 each time.
-                $allocated = $addedRewardLines[$rewardKey]->quantity ?? 0;
-
-                if (! $purchasable->canBeFulfilledAtQuantity($allocated + 1)) {
-                    $remainingRewardQty--;
-
+                // A purchasable one of this discount's lines already holds was
+                // raised as far as its stock allows above.
+                if (! isset($newLines[$rewardKey]) && $ownLines->contains(
+                    fn (CartLine $line) => $line->purchasable_type == $purchasable->getMorphClass() && $line->purchasable_id == $purchasable->id
+                )) {
                     continue;
                 }
 
-                // is it already in cart?
-                $rewardLine = $addedRewardLines[$rewardKey] ?? $cart->lines->first(function ($line) use ($purchasable) {
-                    return $line->purchasable->id == $purchasable->id;
-                });
+                $allocated = isset($newLines[$rewardKey])
+                    ? $allocations[spl_object_id($newLines[$rewardKey])]['quantity']
+                    : 0;
 
-                if ($rewardLine && isset($addedRewardLines[$rewardKey])) {
-                    // Another unit of a reward this run already added: raise the
-                    // quantity on that line. A line the shopper put in the cart
-                    // themselves is left at the quantity they chose, as before.
-                    $rewardLine->quantity++;
-
-                    $lineTotal = $rewardLine->unitPrice->multiply($rewardLine->quantity);
-
-                    $rewardLine->subTotal = $lineTotal;
-                    $rewardLine->total = $lineTotal;
+                if (! $purchasable->canBeFulfilledAtQuantity($allocated + 1)) {
+                    continue;
                 }
 
-                if (! $rewardLine) {
-                    // Only a line core creates records the discount. A line the
-                    // shopper added that this loop prices stays theirs.
-                    $rewardLine = $cart->lines()->make([
+                if (! isset($newLines[$rewardKey])) {
+                    $newLines[$rewardKey] = $cart->lines()->make([
                         'purchasable_type' => $purchasable->getMorphClass(),
                         'purchasable_id' => $purchasable->id,
-                        'quantity' => 1,
+                        'quantity' => 0,
                         'added_by_discount_id' => $this->discount->id,
                     ]);
 
-                    if (! $cart->freeItems) {
-                        $cart->freeItems = collect();
-                    }
-
-                    if (! $cart->freeItems->contains($purchasable)) {
-                        $cart->freeItems->push($purchasable);
-                    }
-
-                    $rewardLine = app(Pipeline::class)
-                        ->send($rewardLine)
-                        ->through(app(StepManifest::class)->for(StepList::CartLinePricing)->all())
-                        ->thenReturn(function ($cartLine) {
-                            $cartLine->cacheProperties();
-
-                            return $cartLine;
-                        });
-
-                    $rewardLine->subTotal = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
-                    $rewardLine->taxAmount = new PriceValue(0, $cart->currency);
-                    $rewardLine->total = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
-
-                    $addedRewardLines[$rewardKey] = $rewardLine;
+                    $allocations[spl_object_id($newLines[$rewardKey])] = ['line' => $newLines[$rewardKey], 'quantity' => 0];
                 }
 
-                $affectedLine = $affectedLines->first(function ($line) use ($rewardLine) {
-                    return $line->line == $rewardLine;
-                });
+                $allocations[spl_object_id($newLines[$rewardKey])]['quantity']++;
+            }
+        }
 
-                if (! $affectedLine) {
-                    $affectedLines->push(new DiscountBreakdownLine(
-                        line: $rewardLine,
-                        quantity: 1
-                    ));
-                } else {
-                    $affectedLine->quantity++;
-                }
+        foreach ($allocations as ['line' => $line, 'quantity' => $quantity]) {
+            if ($quantity < 1) {
+                continue;
+            }
 
-                $unitPrice = $rewardLine->unitPrice->value;
+            if (! $line->exists) {
+                // Priced here only so this pass's breakdown carries an amount;
+                // creating the line makes the calculation run again, and that
+                // pass prices it like any other line.
+                $line->quantity = $quantity;
 
-                $discountTotal += $unitPrice;
+                $line = app(Pipeline::class)
+                    ->send($line)
+                    ->through(app(StepManifest::class)->for(StepList::CartLinePricing)->all())
+                    ->thenReturn();
 
-                if ($discountTotal > $rewardLine->subTotal->value) {
-                    $discountTotal = $rewardLine->subTotal->value;
-                }
+                $line->subTotal = $line->unitPrice->multiply($quantity);
+                $line->taxAmount = new PriceValue(0, $cart->currency);
+                $line->total = $line->subTotal;
+            }
 
-                $rewardLine->discountTotal = new PriceValue($discountTotal, $cart->currency);
+            $lineDiscount = min($line->unitPrice->multiply($quantity)->value, $line->subTotal->value);
 
-                $rewardLine->subTotalDiscounted = $rewardLine->subTotal
-                    ->subtract($rewardLine->discountTotal)
-                    ->clampToZero();
+            $line->discountTotal = new PriceValue($lineDiscount, $cart->currency);
+            $line->subTotalDiscounted = $line->subTotal->subtract($line->discountTotal)->clampToZero();
 
-                $rewardLine->save();
+            $discountTotal += $lineDiscount;
 
-                // Priced with the rest of the cart in this run, as it is in every later one.
-                if (! $cart->lines->contains($rewardLine)) {
-                    $cart->lines->push($rewardLine);
-                }
+            $affectedLines->push(new DiscountBreakdownLine(
+                line: $line,
+                quantity: $quantity,
+            ));
 
-                $remainingRewardQty--;
+            if (! $cart->freeItems) {
+                $cart->freeItems = collect();
+            }
+
+            if (! $cart->freeItems->contains($line->purchasable)) {
+                $cart->freeItems->push($line->purchasable);
             }
         }
 

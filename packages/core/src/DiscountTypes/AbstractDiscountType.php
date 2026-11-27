@@ -7,6 +7,7 @@ use Lunar\Core\Contracts\Actions\Discounts\CountsCustomerRedemptions;
 use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Enums\DiscountRedemptionMethod;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 
@@ -42,11 +43,15 @@ abstract class AbstractDiscountType implements DiscountType
 
     /**
      * Return the eligible lines for the discount.
+     *
+     * Lines a discount added are left out: they are not the shopper's
+     * purchases, so they never count toward a minimum spend or take another
+     * discount (spec remove-unearned-reward-lines).
      */
     protected function getEligibleLines(Cart $cart): Collection
     {
         /** @var Cart $cart */
-        return $cart->lines;
+        return $cart->lines->reject(fn (CartLine $line) => $line->isAddedByDiscount());
     }
 
     /**
