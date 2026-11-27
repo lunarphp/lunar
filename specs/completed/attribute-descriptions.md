@@ -1,6 +1,6 @@
 # Attribute descriptions
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn
 - Created: 2026-11-23
 - TODO item: Attribute descriptions — restore the v1 helper text shown beside attribute fields, in core, both admin UIs, and the upgrade

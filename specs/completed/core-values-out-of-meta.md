@@ -1,6 +1,6 @@
 # Typed fields for the core values still kept in meta
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-11-12
 - TODO item: Typed fields for the core values still kept in meta — option value colours and reward lines added by a discount (spec core-values-out-of-meta)

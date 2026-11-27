@@ -12,13 +12,8 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel order screen improvements — stock visibility, activity pagination, timeline money events, address polish (spec 0069)
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
-- Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
-- Typed fields for the core values still kept in meta — option value colours and reward lines added by a discount (spec core-values-out-of-meta)
 - Remove reward lines the cart no longer earns — an automatically added `BuyXGetY` reward stays and is charged at full price once the cart stops earning it; builds on `added_by_discount_id` from spec core-values-out-of-meta (spec remove-unearned-reward-lines)
-- Fulfilment choice — a cart default and per-line fulfilment method, per-variant allowed methods, a typed pickup location, and changing a fulfilment's method after placement (spec 0083)
 - Add Boost guidelines to packages
-- Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
-- Attribute descriptions — restore the v1 helper text staff write for an attribute and editors see under its field, in core, both admin UIs and the upgrade (spec attribute-descriptions)
 
 ## Ideas
 
@@ -38,6 +33,11 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Attribute descriptions — restore the v1 helper text staff write for an attribute and editors see under its field, in core, both admin UIs and the upgrade (spec attribute-descriptions)
+- Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk (spec discount-coupons)
+- Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
+- Typed fields for the core values still kept in meta — option value colours and reward lines added by a discount (spec core-values-out-of-meta)
+- Fulfilment choice — a cart default and per-line fulfilment method, per-variant allowed methods, a typed pickup location, and changing a fulfilment's method after placement (spec 0083)
 - Selling-policy rework — `continue_selling` and `sell_against_incoming` flags replace the selling-policy enum, staff set incoming stock by hand, and order creation re-checks stock (spec 0082)
 - Pickup locations — a location says whether customers can collect from it, and pickup is only offered when one can; builds on spec 0083 (spec pickup-locations)
 - Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)

@@ -1,6 +1,6 @@
 # Discount coupons
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-11-10
 - TODO item: Discount coupons — a discount has many coupon codes, each with its own usage limit and optional recipient, and codes can be generated in bulk
@@ -229,9 +229,9 @@ None.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Count usage at placement: `discount_redemptions` (including the nullable `email` column) replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded` and the order activity, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event and logs the activity.
-- [ ] Slice 2 — Coupons: `coupons` table, `redemption` column, `Coupon` model and factory, `Cart::coupon()`, matching in `DiscountManager`, `AbstractDiscountType` and `CouponValidator`, and the coupon on the order breakdown. Existing behavior covered by moving each single-code test to a one-row coupon, plus guest-cart tests.
-- [ ] Slice 3 — Upgrade: v1 `discounts.coupon` → `coupons` and `discount_user` → `discount_redemptions` in the data migration step, and upgrade notes.
-- [ ] Slice 4 — Generation: `CouponCodeGenerator`, `CouponBatch`, `GenerateCoupons` action and job, `Discount::generateCoupons()`, and the timing test that sets the `queue_threshold` default.
-- [ ] Slice 5 — Panel: the timeline label for `discount-limit-exceeded`, redemption choice, Coupons section, generation by quantity or email list, CSV export, index filter and column, translations in all 16 locales.
-- [ ] Slice 6 — Docs, including the guest-checkout campaign guide.
+- [x] Slice 1 — Count usage at placement: `discount_redemptions` (including the nullable `email` column) replaces `discount_user`, `RecordDiscountRedemptions` on `OrderPlaced`, atomic counters, `DiscountLimitExceeded` and the order activity, and removal of `markAsUsed()`, `consumedDiscountIds()`, `forgetConsumedDiscountIds()` and the `$exempt` argument. Tests: a declined card then a new cart keeps the use, an abandoned draft doesn't count, `OrderPlaced` firing twice counts once, and an over-limit placement dispatches the event and logs the activity.
+- [x] Slice 2 — Coupons: `coupons` table, `redemption` column, `Coupon` model and factory, `Cart::coupon()`, matching in `DiscountManager`, `AbstractDiscountType` and `CouponValidator`, and the coupon on the order breakdown. Existing behavior covered by moving each single-code test to a one-row coupon, plus guest-cart tests.
+- [x] Slice 3 — Upgrade: v1 `discounts.coupon` → `coupons` and `discount_user` → `discount_redemptions` in the data migration step, and upgrade notes.
+- [x] Slice 4 — Generation: `CouponCodeGenerator`, `CouponBatch`, `GenerateCoupons` action and job, `Discount::generateCoupons()`, and the timing test that sets the `queue_threshold` default.
+- [x] Slice 5 — Panel: the timeline label for `discount-limit-exceeded`, redemption choice, Coupons section, generation by quantity or email list, CSV export, index filter and column, translations in all 16 locales.
+- [x] Slice 6 — Docs, including the guest-checkout campaign guide.
