@@ -56,59 +56,57 @@ const unitQuantity = field('unit_quantity');
 const minQuantity = field('min_quantity');
 const quantityIncrement = field('quantity_increment');
 
-// Inline on-hand edits post immediately as adjustment movements — stock is a
-// ledger, not a drafted field.
-const onHandEdits = reactive<Record<number, string>>({});
+// Inline stock edits post immediately rather than being drafted: on-hand as an
+// adjustment movement (stock is a ledger), incoming as an absolute figure.
+type StockColumn = 'on_hand' | 'incoming';
 
-const onHandValue = (row: StockLevelRow): string =>
-    onHandEdits[row.location_id] ?? String(row.on_hand);
+const stockEdits = reactive<Record<StockColumn, Record<number, string>>>({ on_hand: {}, incoming: {} });
 
-const commitOnHand = (row: StockLevelRow): void => {
-    const edited = onHandEdits[row.location_id];
+// The figure each cell is posting, so Enter followed by blur posts once.
+const stockSaving = reactive<Record<StockColumn, Record<number, number>>>({ on_hand: {}, incoming: {} });
 
-    delete onHandEdits[row.location_id];
+const stockValue = (column: StockColumn, row: StockLevelRow): string =>
+    stockEdits[column][row.location_id] ?? String(row[column]);
 
-    if (edited === undefined) {
+const commitStock = (column: StockColumn, row: StockLevelRow, url: string | null | undefined): void => {
+    const edited = stockEdits[column][row.location_id];
+
+    if (edited === undefined || !url) {
         return;
     }
 
     const next = Math.max(0, Number(edited) || 0);
 
-    if (next === row.on_hand) {
+    if (stockSaving[column][row.location_id] === next) {
         return;
     }
 
-    router.post(props.adjustUrl, {
+    if (next === row[column]) {
+        delete stockEdits[column][row.location_id];
+
+        return;
+    }
+
+    // Keep showing the entered figure until the reloaded props carry it,
+    // instead of flashing the old value while the request is in flight.
+    stockEdits[column][row.location_id] = String(next);
+    stockSaving[column][row.location_id] = next;
+
+    router.post(url, {
         location_id: row.location_id,
-        on_hand: next,
-    }, { preserveScroll: true, preserveState: true });
-};
+        [column]: next,
+    }, {
+        preserveScroll: true,
+        preserveState: true,
+        onFinish: () => {
+            delete stockSaving[column][row.location_id];
 
-// Inline incoming edits post immediately too — incoming is set, not drafted.
-const incomingEdits = reactive<Record<number, string>>({});
-
-const incomingValue = (row: StockLevelRow): string =>
-    incomingEdits[row.location_id] ?? String(row.incoming);
-
-const commitIncoming = (row: StockLevelRow): void => {
-    const edited = incomingEdits[row.location_id];
-
-    delete incomingEdits[row.location_id];
-
-    if (edited === undefined || !props.incomingUrl) {
-        return;
-    }
-
-    const next = Math.max(0, Number(edited) || 0);
-
-    if (next === row.incoming) {
-        return;
-    }
-
-    router.post(props.incomingUrl, {
-        location_id: row.location_id,
-        incoming: next,
-    }, { preserveScroll: true, preserveState: true });
+            // A figure typed while this request ran stays for its own commit.
+            if (stockEdits[column][row.location_id] === String(next)) {
+                delete stockEdits[column][row.location_id];
+            }
+        },
+    });
 };
 
 const levelAvailable = (row: StockLevelRow): number => row.on_hand - row.committed - row.unavailable;
@@ -187,26 +185,26 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                     </div>
                     <div>
                         <TextInput
-                            :model-value="onHandValue(row)"
+                            :model-value="stockValue('on_hand', row)"
                             type="number"
                             min="0"
                             :aria-label="`${t('products.stock_on_hand')} — ${row.location_name}`"
-                            @update:model-value="(value) => { onHandEdits[row.location_id] = String(value); }"
-                            @blur="commitOnHand(row)"
-                            @keydown.enter.prevent="commitOnHand(row)"
+                            @update:model-value="(value) => { stockEdits.on_hand[row.location_id] = String(value); }"
+                            @blur="commitStock('on_hand', row, adjustUrl)"
+                            @keydown.enter.prevent="commitStock('on_hand', row, adjustUrl)"
                         />
                     </div>
                     <div class="text-right text-[12.5px] font-medium [font-variant-numeric:tabular-nums] text-ink-900">{{ levelAvailable(row) }}</div>
                     <div class="text-right text-[12.5px] [font-variant-numeric:tabular-nums] text-ink-700">{{ row.committed }}</div>
                     <div v-if="incomingUrl">
                         <TextInput
-                            :model-value="incomingValue(row)"
+                            :model-value="stockValue('incoming', row)"
                             type="number"
                             min="0"
                             :aria-label="`${t('products.stock_incoming')} — ${row.location_name}`"
-                            @update:model-value="(value) => { incomingEdits[row.location_id] = String(value); }"
-                            @blur="commitIncoming(row)"
-                            @keydown.enter.prevent="commitIncoming(row)"
+                            @update:model-value="(value) => { stockEdits.incoming[row.location_id] = String(value); }"
+                            @blur="commitStock('incoming', row, incomingUrl)"
+                            @keydown.enter.prevent="commitStock('incoming', row, incomingUrl)"
                         />
                     </div>
                     <div v-else :class="['text-right text-[12.5px] [font-variant-numeric:tabular-nums]', row.incoming > 0 ? 'text-warn-ink font-medium' : 'text-ink-400']">{{ row.incoming }}</div>

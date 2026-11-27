@@ -77,6 +77,32 @@ describe('InventoryCard', () => {
         expect(post).toHaveBeenCalledWith('/stock', { location_id: 1, on_hand: 25 }, expect.anything());
     });
 
+    it.each([
+        ['products.stock_on_hand — Warehouse', '10'],
+        ['products.stock_incoming — Warehouse', '0'],
+    ])('keeps showing the entered %s figure until its save finishes', async (label, saved) => {
+        let finish: () => void = () => {};
+        const post = vi.spyOn(router, 'post').mockImplementation((_url, _data, options) => {
+            finish = () => options?.onFinish?.(undefined as never);
+        });
+
+        const wrapper = mountCard(baseValues());
+
+        const input = wrapper.find<HTMLInputElement>(`input[aria-label="${label}"]`);
+        await input.setValue('25');
+        await input.trigger('keydown', { key: 'Enter' });
+        await input.trigger('blur');
+
+        expect(post).toHaveBeenCalledTimes(1);
+        expect(input.element.value).toBe('25');
+
+        // These props never change, so once the save ends the cell falls back to them.
+        finish();
+        await wrapper.vm.$nextTick();
+
+        expect(input.element.value).toBe(saved);
+    });
+
     it('does not post when the on-hand figure is unchanged', async () => {
         const post = vi.spyOn(router, 'post').mockImplementation(() => undefined as never);
 
