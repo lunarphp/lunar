@@ -1,6 +1,6 @@
 # 0082 — Selling-policy rework
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs (with Claude)
 - Created: 2026-09-09
 - TODO item: Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)

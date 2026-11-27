@@ -27,7 +27,6 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Stock events — `StockMovementRecorded`, a variant stock-changed event and the Scout re-index on `stock_available` change (spec 0038's unshipped events section; split out of spec 0065)
 - Location-scoped availability & stock routing — per-location stock selection + sell-time routing/splitting (follow-on to 0038)
 - Checkout stock reservations — hold stock via the `ReservesStock` seam at checkout start (follow-on to 0038)
-- Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
 - Low-stock thresholds & notifications — reorder thresholds firing notifications (follow-on to 0038)
 - Returned-goods quarantine — route returns through `unavailable` for inspection; pairs with RMA
 - Storefront REST API — first-party `lunar/api` storefront API (see `specs/draft-storefront-api.md`)
@@ -39,6 +38,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Done
 
+- Selling-policy rework — `continue_selling` and `sell_against_incoming` flags replace the selling-policy enum, staff set incoming stock by hand, and order creation re-checks stock (spec 0082)
 - Pickup locations — a location says whether customers can collect from it, and pickup is only offered when one can; builds on spec 0083 (spec pickup-locations)
 - Payment terms — record when an order is meant to be paid (at checkout, on account, on pickup, or on delivery) as a typed order field, and record a payment taken later (spec payment-terms)
 - Panel draft slices — one contract for namespaced draft contributions, used by first-party surfaces and by add-on slot components alike (spec 0086)
