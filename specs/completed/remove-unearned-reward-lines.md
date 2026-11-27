@@ -1,6 +1,6 @@
 # Remove reward lines the cart no longer earns
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-11-27
 - TODO item: Remove reward lines the cart no longer earns — an automatically added `BuyXGetY` reward stays and is charged at full price once the cart stops earning it; builds on `added_by_discount_id` from spec core-values-out-of-meta (spec remove-unearned-reward-lines)
