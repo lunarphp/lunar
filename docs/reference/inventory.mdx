@@ -13,7 +13,7 @@ Stock is modeled across four pieces: a `Location` (a warehouse or store), a `Sto
 | Quantity | Meaning | Scope |
 |:-|:-|:-|
 | `on_hand` | Physically present units | Per location, and summed on the variant rollup |
-| `incoming` | Expected in on a purchase order | Per location, and summed on the variant rollup. A manual field; populating it is left to a purchasing add-on |
+| `incoming` | Expected in on a purchase order | Per location, and summed on the variant rollup. Set by hand with `setIncomingStock()`, or by a purchasing add-on. Sellable when the variant's `sell_against_incoming` flag is set |
 | `committed` | Allocated to open orders, not yet dispatched | Global on the variant rollup first; allocated to a location once a fulfilment is created there |
 | `reserved` | Held for an in-flight checkout, not yet an order | Global only, on the variant rollup — a cart has no location |
 | `unavailable` | Held back — damaged, or otherwise not sellable | Per location, and summed on the variant rollup |
@@ -249,6 +249,16 @@ $variant->adjustStock(
 
 `adjustStock()` delegates to `Lunar\Core\Contracts\Actions\Products\RecordsStockMovement`. A manual admin adjustment goes through `Lunar\Core\Contracts\Actions\Products\AdjustsStock` instead, which records an `Adjustment` movement and defaults to the default location when none is given.
 
+## Setting incoming stock
+
+`incoming` is what a location expects to receive, not a ledger balance, so it is set rather than adjusted, and no movement is recorded. `setIncomingStock()` replaces the figure at one location, locking and creating the stock level the same way as a movement, and refreshes the rollup:
+
+```php
+$variant->setIncomingStock(Location::getDefault(), 24);
+```
+
+It delegates to `Lunar\Core\Contracts\Actions\Products\SetsIncomingStock` and throws an `InvalidArgumentException` for a negative quantity. When the goods arrive, record them with `adjustStock()` and lower `incoming` to match; core does not pair the two. A purchasing add-on that derives `incoming` from purchase orders writes through the same action.
+
 ## Reserving stock
 
 ```php
@@ -399,4 +409,4 @@ Releases every reservation whose `expires_at` has passed and that has not alread
 
 ## What inventory does not cover yet
 
-Location-scoped storefront availability (selling only what a specific location holds) and system-driven allocation routing (assigning a placed order's commitment to a specific location, or splitting it across several) are not implemented. Availability today is always the global sum across every location. A fulfilment allocates to whichever location it is created at; nothing auto-assigns that location. Purchase-order automation for `incoming` is likewise out of scope for core — it is a plain field intended for a purchasing add-on to populate.
+Location-scoped storefront availability (selling only what a specific location holds) and system-driven allocation routing (assigning a placed order's commitment to a specific location, or splitting it across several) are not implemented. Availability today is always the global sum across every location. A fulfilment allocates to whichever location it is created at; nothing auto-assigns that location. Purchase-order automation for `incoming` is likewise out of scope for core — `setIncomingStock()` sets it by hand, and a purchasing add-on can keep it in step with its purchase orders.

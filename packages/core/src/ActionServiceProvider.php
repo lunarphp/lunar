@@ -124,6 +124,7 @@ use Lunar\Core\Actions\Products\RecordStockMovement;
 use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
 use Lunar\Core\Actions\Products\ResolveInventory;
+use Lunar\Core\Actions\Products\SetIncomingStock;
 use Lunar\Core\Actions\Products\SyncProductAssociations;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
 use Lunar\Core\Actions\Products\UpdateProduct;
@@ -272,6 +273,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\ReleasesReservation::class => ReleaseReservation::class,
         Contracts\Products\ResolvesInventory::class => ResolveInventory::class,
         Contracts\Products\ReservesStock::class => ReserveStock::class,
+        Contracts\Products\SetsIncomingStock::class => SetIncomingStock::class,
         Contracts\Products\SyncsProductAssociations::class => SyncProductAssociations::class,
         Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,

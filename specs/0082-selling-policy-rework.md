@@ -98,8 +98,8 @@ purchasing system.
 
 - **New action + contract**: `Actions/Products/SetIncomingStock` implementing
   `Contracts\Actions\Products\SetsIncomingStock`, registered in `ActionServiceProvider`.
-  `execute(ProductVariant $variant, Location $location, int $quantity, ?string $note = null): StockLevel`
-  sets the level's `incoming` **absolutely** (it is a statement of expectation, not a ledger
+  `execute(ProductVariant $variant, Location $location, int $quantity): StockLevel`, with a
+  `setIncomingStock()` verb on the variant like `adjustStock()`, sets the level's `incoming` **absolutely** (it is a statement of expectation, not a ledger
   delta), inside a transaction with the same `firstOrCreate` + `lockForUpdate` discipline as
   `RecordStockMovement`, then recomputes the rollup via `RecomputesStockRollup`. A negative
   quantity is rejected. No `StockMovement` row: incoming is not part of the `on_hand` ledger.
@@ -299,7 +299,7 @@ it, including both admins' forms, to the booleans.
   `ResolveInventory` rework, `GenerateProductVariants`, factory states; the panel's
   `InventoryCard` toggles, `VariantFields` and dashboard widgets; the Filament bridge and admin
   inventory forms; lang keys across 16 locales; reference docs and the alpha upgrade guide.
-- [ ] Slice 2 — `SetIncomingStock` action + contract, `ActionServiceProvider` registration,
+- [x] Slice 2 — `SetIncomingStock` action + contract, `ActionServiceProvider` registration,
   `setIncomingStock()` verb on the variant, tests.
 - [ ] Slice 3 — `ValidateCartStock` + `InsufficientStockException` in
   `OrderCreateValidation`, Stripe intent cancellation and PayPal orphan event on

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Core\Contracts\Actions\Products\RecordsStockMovement;
 use Lunar\Core\Contracts\Actions\Products\ReservesStock;
+use Lunar\Core\Contracts\Actions\Products\SetsIncomingStock;
 use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
@@ -45,6 +46,15 @@ trait HasStock
     public function adjustStock(Location $location, int $quantity, StockMovementType $type, ?Model $source = null, ?string $note = null): StockMovement
     {
         return app(RecordsStockMovement::class)->execute($this, $location, $quantity, $type, $source, $note);
+    }
+
+    /**
+     * Set the stock expected at a location, replacing the previous figure, and
+     * refresh the rollup. The model-first seam over {@see SetsIncomingStock}.
+     */
+    public function setIncomingStock(Location $location, int $quantity): StockLevel
+    {
+        return app(SetsIncomingStock::class)->execute($this, $location, $quantity);
     }
 
     /**
