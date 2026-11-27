@@ -255,7 +255,7 @@ hand-set the booleans. (`inStock()` already seeds on-hand stock, so it keeps tha
   - It then drops `selling_policy`/`purchasable` and `backorder`.
   - It runs after `backfill_stock_from_variants`, which creates the stock levels it writes.
   - Rector: `LunarSetList` drops the `purchasable` → `selling_policy` property rename and
-    adds a rule that rewrites equality checks of `$variant->purchasable` /
+    adds `RewriteSellingPolicyComparisonRector`, which rewrites equality checks of `$variant->purchasable` /
     `$variant->selling_policy` against the three values (string or enum case) into the
     boolean expressions. Other uses are listed in the upgrade guide for manual changes.
 - **Translations**: retire the `selling_policy*` / `backorder*` keys and add the two toggle
@@ -312,5 +312,5 @@ it, including both admins' forms, to the booleans.
   locales.
 - [x] Slice 5 — Filament bridge + admin resources: incoming rollup + header action, disable
   toggle, lang keys across 16 locales.
-- [ ] Slice 6 — upgrade package: mode → booleans data step, incoming seed, column drops,
+- [x] Slice 6 — upgrade package: mode → booleans data step, incoming seed, column drops,
   Rector rule, upgrade guide.

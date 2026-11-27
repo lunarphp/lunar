@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lunar\Upgrade\Rector;
 
+use Lunar\Upgrade\Rector\Catalogue\RewriteSellingPolicyComparisonRector;
 use Lunar\Upgrade\Rector\Discounts\AddCartParamToCouponValidationRector;
 use Lunar\Upgrade\Rector\Media\RetypeGetThumbnailImageRector;
 use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
@@ -540,6 +541,7 @@ final class LunarSetList
         RetypeFormatterStyleParamRector::class,
         RetypeGetThumbnailImageRector::class,
         RewriteShippingOptionCollectRector::class,
+        RewriteSellingPolicyComparisonRector::class,
         AddCartParamToCouponValidationRector::class,
     ];
 
@@ -677,15 +679,9 @@ final class LunarSetList
      * class strings are listed so the rename applies regardless of whether
      * `RenameClassRector` has already rewritten the surrounding type.
      *
-     * Spec 0048 renamed the `ProductVariant` selling-policy attribute
-     * `purchasable` to `selling_policy`. `RenamePropertyRector` is class-scoped,
-     * so it rewrites `->purchasable` only on expressions typed as
-     * `ProductVariant` — the `CartLine`/`OrderLine` morph relation
-     * (`$line->purchasable`) and the `customer_group_product.purchasable` pivot
-     * boolean, which mean unrelated things, are left untouched. A fully untyped
-     * `$model->purchasable` cannot be inferred and is flagged for manual review
-     * in the upgrade notes (those are almost always the morph/pivot accesses,
-     * which must not be renamed anyway).
+     * The `ProductVariant` selling mode (`purchasable` in v1) is not renamed
+     * here: spec 0082 replaced it with two flags, and
+     * `RewriteSellingPolicyComparisonRector` rewrites comparisons against it.
      *
      * Spec 0056 renamed the `ProductType` attribute pivot relation (see
      * `V1_TO_V2_METHOD_RENAMES`); the property fetch form
@@ -699,8 +695,6 @@ final class LunarSetList
     public const V1_TO_V2_PROPERTY_RENAMES = [
         ['Lunar\\Core\\Models\\Price', 'compare_price', 'list_price'],
         ['Lunar\\Models\\Price', 'compare_price', 'list_price'],
-        ['Lunar\\Core\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
-        ['Lunar\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
         ['Lunar\\Core\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
         ['Lunar\\Models\\ProductType', 'mappedAttributes', 'attributeMapping'],
     ];
