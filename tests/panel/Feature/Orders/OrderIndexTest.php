@@ -189,6 +189,36 @@ it('filters orders by a placed-at date preset', function () {
         );
 });
 
+it('sorts newest first by the placed date shown, breaking ties on id', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    // created_at runs the opposite way to placed_at, so a created_at sort
+    // would reverse the list.
+    $older = Order::factory()->create(['placed_at' => now()->subDays(10), 'created_at' => now()->subDay()]);
+    $newer = Order::factory()->create(['placed_at' => now()->subDays(2), 'created_at' => now()->subDays(20)]);
+    $tiedFirst = Order::factory()->create(['placed_at' => now()->subDays(5)->startOfSecond(), 'created_at' => now()->subDays(5)->startOfSecond()]);
+    $tiedSecond = Order::factory()->create(['placed_at' => $tiedFirst->placed_at, 'created_at' => $tiedFirst->created_at]);
+    $draft = Order::factory()->create(['placed_at' => null, 'created_at' => now()]);
+
+    $this->get(route('panel.orders.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orders.data.0.id', $newer->id)
+            ->where('orders.data.1.id', $tiedSecond->id)
+            ->where('orders.data.2.id', $tiedFirst->id)
+            ->where('orders.data.3.id', $older->id)
+            ->where('orders.data.4.id', $draft->id)
+        );
+
+    $this->get(route('panel.orders.index', ['sort' => 'placed_at', 'direction' => 'asc']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orders.data.0.id', $older->id)
+            ->where('orders.data.1.id', $tiedFirst->id)
+            ->where('orders.data.2.id', $tiedSecond->id)
+            ->where('orders.data.3.id', $newer->id)
+            ->where('orders.data.4.id', $draft->id)
+        );
+})->group('cross-db');
+
 it('sorts orders by total ascending', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
