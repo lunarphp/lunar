@@ -98,6 +98,13 @@ class ProductEditController
 
         $measurements = Converter::getMeasurements();
 
+        $types = ProductType::query()
+            ->where('status', Active::$name)
+            ->orWhere('id', $product->product_type_id)
+            ->orderBy('name')
+            ->with(['productAttributes' => fn ($query) => $query->orderBy('position')->with('group')])
+            ->get(['id', 'name']);
+
         $orderedVariantIds = $this->orderedVariantIds($product);
 
         $usedValueIds = $product->variants
@@ -211,12 +218,12 @@ class ProductEditController
                 ->map(fn (Brand $brand) => ['value' => $brand->id, 'label' => $brand->name]),
             // Active types plus the product's current one, so a since-drafted
             // type stays selectable on the products that already use it.
-            'typeOptions' => ProductType::query()
-                ->where('status', Active::$name)
-                ->orWhere('id', $product->product_type_id)
-                ->orderBy('name')
-                ->get(['id', 'name'])
-                ->map(fn (ProductType $type) => ['value' => $type->id, 'label' => $type->name]),
+            'typeOptions' => $types->map(fn (ProductType $type) => ['value' => $type->id, 'label' => $type->name]),
+            // Each selectable type's attribute groups, keyed by type id, so
+            // the form shows the selected type's fields as soon as it changes.
+            'typeAttributeGroups' => $types
+                ->mapWithKeys(fn (ProductType $type) => [$type->id => $attributeSchema->groupsFor($type->productAttributes)])
+                ->all() ?: (object) [],
             'collections' => $product->collections()->with('ancestors')->get()->map(fn (Collection $collection) => [
                 'id' => $collection->id,
                 'name' => $collection->translate('name'),

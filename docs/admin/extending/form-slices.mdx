@@ -242,7 +242,7 @@ The panel uses the same contract for its own sub-surfaces on the catalog edit pa
 
 | Slice | Model | Namespace | Fields |
 |:------|:------|:----------|:-------|
-| `ProductAttributeSlice` | Product | `attribute` | One per mapped attribute handle. |
+| `ProductAttributeSlice` | Product | `attribute` | One per product attribute handle. The edit page shows the fields of the selected product type, validation applies each attribute only under the types that map it, and a commit writes only the attributes of the type the product ends up with. |
 | `ProductAssociationSlice` | Product | `association` | One per association type, each an ordered list of product ids. |
 | `ProductUrlSlice`, `BrandUrlSlice`, `CollectionUrlSlice` | Product, brand, collection | `url` | One per language code, each an ordered list of `{id, slug, default}` rows. |
 | `ProductChannelSlice` | Product | `channel` | One per channel id, each an availability row. |
