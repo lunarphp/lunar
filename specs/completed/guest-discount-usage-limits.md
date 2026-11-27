@@ -1,6 +1,6 @@
 # Per-customer discount limits for guest checkout
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-11-10
 - TODO item: Per-customer discount limits for guest checkout — count `max_uses_per_user` by email as well as user, so guests can use limited discounts without bypassing the limit (spec guest-discount-usage-limits)
@@ -97,6 +97,6 @@ None.
 
 Starts after [[discount-coupons]] slice 1.
 
-- [ ] Slice 1 — `ResolvesCustomerEmail` and `CountsCustomerRedemptions`; `RecordDiscountRedemptions` writes `email`; `checkDiscountConditions()` counts through it. Tests: a guest within the limit gets the discount, a guest whose email has used it does not, a signed-in customer's earlier guest order with the same email counts, billing email wins over shipping email.
-- [ ] Slice 2 — `CouponValidator` takes the cart; `ValidateCustomerForDiscounts` with its translations; `DiscountLimitExceeded` for per-customer limits at placement.
-- [ ] Slice 3 — Docs and upgrade guide.
+- [x] Slice 1 — `ResolvesCustomerEmail` and `CountsCustomerRedemptions`; `RecordDiscountRedemptions` writes `email`; `checkDiscountConditions()` counts through it. Tests: a guest within the limit gets the discount, a guest whose email has used it does not, a signed-in customer's earlier guest order with the same email counts, billing email wins over shipping email.
+- [x] Slice 2 — `CouponValidator` takes the cart; `ValidateCustomerForDiscounts` with its translations; `DiscountLimitExceeded` for per-customer limits at placement.
+- [x] Slice 3 — Docs and upgrade guide.
