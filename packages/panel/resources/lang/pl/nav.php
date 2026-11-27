@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Wyloguj się',
     'toggle_theme' => 'Przełącz motyw',
     'toggle_sidebar' => 'Przełącz panel boczny',
+    'collapse_sidebar' => 'Zwiń panel boczny',
+    'expand_sidebar' => 'Rozwiń panel boczny',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

@@ -14,6 +14,8 @@ return [
     'sign_out' => 'تسجيل الخروج',
     'toggle_theme' => 'تبديل المظهر',
     'toggle_sidebar' => 'تبديل الشريط الجانبي',
+    'collapse_sidebar' => 'طي الشريط الجانبي',
+    'expand_sidebar' => 'توسيع الشريط الجانبي',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

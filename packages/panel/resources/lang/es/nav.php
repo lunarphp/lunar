@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Cerrar sesión',
     'toggle_theme' => 'Cambiar tema',
     'toggle_sidebar' => 'Alternar barra lateral',
+    'collapse_sidebar' => 'Contraer barra lateral',
+    'expand_sidebar' => 'Expandir barra lateral',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Odjava',
     'toggle_theme' => 'Promijeni temu',
     'toggle_sidebar' => 'Promijeni bočnu traku',
+    'collapse_sidebar' => 'Sažmi bočnu traku',
+    'expand_sidebar' => 'Proširi bočnu traku',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

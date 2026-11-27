@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Abmelden',
     'toggle_theme' => 'Design umschalten',
     'toggle_sidebar' => 'Seitenleiste umschalten',
+    'collapse_sidebar' => 'Seitenleiste einklappen',
+    'expand_sidebar' => 'Seitenleiste ausklappen',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

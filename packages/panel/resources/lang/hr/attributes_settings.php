@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Proizvodi',
+    'model_type_product_variant' => 'Varijante',
+    'model_type_product_type' => 'Tipovi proizvoda',
+    'model_type_collection' => 'Kolekcije',
+    'model_type_customer' => 'Kupci',
+    'model_type_brand' => 'Marke',
+    'model_type_customer_group' => 'Grupe kupaca',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

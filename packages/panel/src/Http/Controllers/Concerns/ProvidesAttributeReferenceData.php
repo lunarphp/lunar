@@ -2,6 +2,8 @@
 
 namespace Lunar\Panel\Http\Controllers\Concerns;
 
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
 use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\FieldTypeManifest;
 use Lunar\Core\Facades\ModelManifest;
@@ -36,14 +38,24 @@ trait ProvidesAttributeReferenceData
         return $class ? (new $class)->getConfigurationFields() : [];
     }
 
-    /** @return array<int, array{value: string, label: string}> */
+    /**
+     * Each attributable model type labelled in the staff locale. A type a store
+     * registers on the AttributeManifest without a panel lang key falls back to
+     * its class name as words ("GiftCard" reads "Gift Card").
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
     protected function attributableModelTypes(): array
     {
         return AttributeManifest::getTypes()
-            ->map(fn (string $type) => [
-                'value' => ModelManifest::getMorphMapKey($type),
-                'label' => class_basename($type),
-            ])
+            ->map(function (string $type) {
+                $key = 'panel::attributes_settings.model_type_'.Str::snake(class_basename($type));
+
+                return [
+                    'value' => ModelManifest::getMorphMapKey($type),
+                    'label' => Lang::has($key) ? __($key) : Str::headline(class_basename($type)),
+                ];
+            })
             ->values()
             ->all();
     }

@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Çıkış yap',
     'toggle_theme' => 'Temayı değiştir',
     'toggle_sidebar' => 'Kenar çubuğunu değiştir',
+    'collapse_sidebar' => 'Kenar çubuğunu daralt',
+    'expand_sidebar' => 'Kenar çubuğunu genişlet',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

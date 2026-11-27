@@ -14,6 +14,8 @@ return [
     'sign_out' => 'Se déconnecter',
     'toggle_theme' => 'Basculer le thème',
     'toggle_sidebar' => 'Basculer la barre latérale',
+    'collapse_sidebar' => 'Réduire la barre latérale',
+    'expand_sidebar' => 'Développer la barre latérale',
     'catalog' => 'Catalog',
     'products' => 'Products',
     'all_products' => 'All products',

@@ -131,8 +131,8 @@ onUnmounted(() => {
                     'focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35 focus-visible:border-sage',
                     state.collapsed ? 'left-[calc(56px-11px)]' : 'left-[calc(232px-11px)]',
                 ]"
-                :aria-label="state.collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-                :title="state.collapsed ? 'Expand sidebar  ⌘\\' : 'Collapse sidebar  ⌘\\'"
+                :aria-label="state.collapsed ? t('nav.expand_sidebar') : t('nav.collapse_sidebar')"
+                :title="`${state.collapsed ? t('nav.expand_sidebar') : t('nav.collapse_sidebar')}  ⌘\\`"
                 @click="toggleCollapsed"
             >
                 <svg

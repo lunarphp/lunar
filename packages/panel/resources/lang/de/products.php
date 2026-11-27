@@ -271,7 +271,7 @@ return [
     'variants_delete_title' => 'Delete selected variants?',
     'variants_delete_confirm' => 'This permanently deletes {count} variants. Variants referenced by orders are skipped.',
     'flash_bulk_updated' => 'Variants updated.',
-    'flash_bulk_skipped' => ':count variants were skipped - they are referenced by orders or are the last variant.',
+    'flash_bulk_skipped' => ':count Variante wurde übersprungen - sie wird in Bestellungen verwendet oder ist die letzte Variante.|:count Varianten wurden übersprungen - sie werden in Bestellungen verwendet oder sind die letzte Variante.',
     'section_variant_media' => 'Variant media',
     'section_variant_media_description' => 'Pick this variant\'s images from the product media pool. The first is its primary image.',
     'variant_media_empty' => 'Upload images on the product page first, then pick them here.',

@@ -29,6 +29,13 @@ return [
     'field_model_types' => 'Applies to',
     'model_types_desc' => 'Which records carry this attribute.',
     'product_and_variant_invalid' => 'Product attributes already surface on variants; pick one or the other.',
+    'model_type_product' => 'Бараа',
+    'model_type_product_variant' => 'Хувилбарууд',
+    'model_type_product_type' => 'Бүтээгдэхүүний төрлүүд',
+    'model_type_collection' => 'Цуглуулгууд',
+    'model_type_customer' => 'Харилцагчид',
+    'model_type_brand' => 'Брэндүүд',
+    'model_type_customer_group' => 'Хэрэглэгчийн бүлгүүд',
 
     'type_text' => 'Text',
     'type_translated_text' => 'Translated text',

@@ -71,10 +71,40 @@ it('deletes a selection but skips guarded rows', function () {
     $this->post(route('panel.products.variants.bulk', $this->product), [
         'op' => 'destroy',
         'ids' => [$deletable->id, $ordered->id],
-    ])->assertRedirect()->assertSessionHas('error', '1 variants were skipped - they are referenced by orders or are the last variant.');
+    ])->assertRedirect()->assertSessionHas('error', '1 variant was skipped - it is referenced by orders or is the last variant.');
 
     $this->assertDatabaseMissing('lunar_product_variants', ['id' => $deletable->id]);
     $this->assertDatabaseHas('lunar_product_variants', ['id' => $ordered->id]);
+});
+
+it('pluralises the skipped count', function () {
+    foreach ($this->variants->take(2) as $variant) {
+        OrderLine::factory()->create([
+            'purchasable_type' => $variant->getMorphClass(),
+            'purchasable_id' => $variant->id,
+        ]);
+    }
+
+    $this->post(route('panel.products.variants.bulk', $this->product), [
+        'op' => 'destroy',
+        'ids' => $this->variants->take(2)->pluck('id')->all(),
+    ])->assertRedirect()->assertSessionHas('error', '2 variants were skipped - they are referenced by orders or are the last variant.');
+});
+
+it('picks the plural form of the staff locale for the skipped count', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true, 'preferred_locale' => 'pl']), 'staff');
+
+    foreach ($this->variants->take(2) as $variant) {
+        OrderLine::factory()->create([
+            'purchasable_type' => $variant->getMorphClass(),
+            'purchasable_id' => $variant->id,
+        ]);
+    }
+
+    $this->post(route('panel.products.variants.bulk', $this->product), [
+        'op' => 'destroy',
+        'ids' => $this->variants->take(2)->pluck('id')->all(),
+    ])->assertRedirect()->assertSessionHas('error', '2 warianty zostały pominięte - są powiązane z zamówieniami lub są ostatnim wariantem.');
 });
 
 it('validates the operation payload', function () {
