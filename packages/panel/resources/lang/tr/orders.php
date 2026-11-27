@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Bu tutar, iade edilebilecek {amount} tutarını aşıyor.',
+    'refund_quantity_exceeded' => 'İade edilebilecek yalnızca {quantity} adet kaldı.',
+    'refund_total_not_positive' => 'İade toplamı sıfırdan büyük olmalıdır.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Esto supera los {amount} disponibles para reembolsar.',
+    'refund_quantity_exceeded' => 'Solo quedan {quantity} por reembolsar.',
+    'refund_total_not_positive' => 'El total del reembolso debe ser mayor que cero.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'To je više od {amount} dostupnih za povrat.',
+    'refund_quantity_exceeded' => 'Za povrat je preostalo još samo {quantity}.',
+    'refund_total_not_positive' => 'Ukupni iznos povrata mora biti veći od nule.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

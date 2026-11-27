@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Das ist mehr als die {amount}, die zur Rückerstattung verfügbar sind.',
+    'refund_quantity_exceeded' => 'Nur noch {quantity} zur Rückerstattung übrig.',
+    'refund_total_not_positive' => 'Der Rückerstattungsbetrag muss größer als null sein.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

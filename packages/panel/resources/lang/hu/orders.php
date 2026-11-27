@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Ez több, mint a visszatérítésre rendelkezésre álló {amount}.',
+    'refund_quantity_exceeded' => 'Már csak {quantity} téríthető vissza.',
+    'refund_total_not_positive' => 'A visszatérítés összegének nagyobbnak kell lennie nullánál.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

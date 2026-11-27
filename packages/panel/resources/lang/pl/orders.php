@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'To więcej niż {amount} dostępne do zwrotu.',
+    'refund_quantity_exceeded' => 'Do zwrotu pozostało tylko {quantity}.',
+    'refund_total_not_positive' => 'Łączna kwota zwrotu musi być większa od zera.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 

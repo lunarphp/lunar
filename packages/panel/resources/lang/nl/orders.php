@@ -148,6 +148,9 @@ return [
     'refund_total' => 'Refunding {amount}',
     'refund_item_count' => '{count} item|{count} items',
     'refund_available' => 'Available to refund: {amount}',
+    'refund_exceeds_available' => 'Dit is meer dan de {amount} die beschikbaar is voor terugbetaling.',
+    'refund_quantity_exceeded' => 'Nog maar {quantity} over om terug te betalen.',
+    'refund_total_not_positive' => 'Het totaal van de terugbetaling moet groter zijn dan nul.',
     'refund_notify' => 'Notify the customer',
     'refund_summary_and_more' => 'and more',
 
