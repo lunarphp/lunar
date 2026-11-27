@@ -9,7 +9,7 @@ This page lists every database change made during the 2.0 alpha releases, so an 
 
 Lunar v2 ships a flat baseline: one migration per table, dated `2026_01_01_*`. While v2 was in alpha, schema changes were folded into those baseline migrations instead of being added as new migrations. An application that already ran a baseline migration does not run it again, so it never receives the columns that were added to that migration later.
 
-Alpha releases were not intended for production use. If an application was built on one anyway, it needs a migration of its own to add the missing columns. After 2.0.0 is released, every schema change ships as a new migration and this page no longer grows.
+Alpha releases were not intended for production use. If an application was built on one anyway, it needs a migration of its own to add the missing columns. From 2.0.0-beta.1 onwards, every schema change ships as a new migration, which `php artisan migrate` runs, and this page no longer grows.
 
 <Note>
 New migration files are not a problem. `php artisan migrate` runs any Lunar migration that is not yet recorded in the `migrations` table, such as `create_refund_lines_table`. Only changes made to a migration the application has already run need the steps on this page.
