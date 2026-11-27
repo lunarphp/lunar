@@ -19,6 +19,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Customers\CustomerRequest;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Sections\Sales\SalesSection;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 
@@ -110,6 +111,9 @@ class CustomerEditController
             $stats['avgOrder'] = (new PriceValue((int) round($totalSpend / $orderCount), $defaultCurrency))->format();
         }
 
+        // Rows link to the order page only for staff who may open it.
+        $canViewOrders = (bool) $staff?->can(SalesSection::ORDERS_PERMISSION);
+
         $orders = (clone $placedOrders)
             ->latest('placed_at')
             ->limit(25)
@@ -121,6 +125,7 @@ class CustomerEditController
                 'status_label' => __('lunar::states.order.'.$order->lifecycleStatus()),
                 'placed_at' => $order->placed_at,
                 'total' => $order->format('total'),
+                'show_url' => $canViewOrders ? route('panel.orders.show', $order) : null,
             ]);
 
         return Inertia::render('customers/Edit', [

@@ -64,6 +64,7 @@ class RecentOrdersWidget extends Widget
                 'placed_at' => $order->placed_at?->toJSON(),
                 'placed_at_human' => $order->placed_at?->diffForHumans(),
                 'total' => (string) $order->format('total'),
+                'show_url' => route('panel.orders.show', $order),
             ])->all(),
         ];
     }

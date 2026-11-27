@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import PageEmpty from '../../PageEmpty.vue';
 import StatusBadge from '../../StatusBadge.vue';
@@ -14,6 +15,7 @@ interface OrderRow {
     placed_at: string | null;
     placed_at_human: string | null;
     total: string;
+    show_url: string | null;
 }
 
 defineProps<{ data: { orders: OrderRow[] } }>();
@@ -32,10 +34,15 @@ const STATUS_TONE: Record<string, Tone> = {
         {{ t('dashboard.no_orders_description') }}
     </PageEmpty>
     <div v-else class="divide-y divide-line">
-        <div
+        <component
+            :is="order.show_url ? Link : 'div'"
             v-for="order in data.orders"
             :key="order.id"
-            class="grid grid-cols-[1fr_auto] items-center gap-3 py-2.5 first:pt-0 last:pb-0"
+            :href="order.show_url ?? undefined"
+            :class="[
+                'grid grid-cols-[1fr_auto] items-center gap-3 py-2.5 -mx-1 px-1 rounded-sm first:pt-0 last:pb-0',
+                order.show_url ? 'hover:bg-surface-2' : '',
+            ]"
         >
             <div class="min-w-0">
                 <div class="flex items-center gap-2 min-w-0">
@@ -52,6 +59,6 @@ const STATUS_TONE: Record<string, Tone> = {
                 </div>
                 <div class="text-[11px] text-ink-500">{{ order.placed_at_human }}</div>
             </div>
-        </div>
+        </component>
     </div>
 </template>
