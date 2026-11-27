@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'أحد عناصر هذه السلة لم يعد متاحاً (:identifier).',
     'carts.insufficient_stock' => 'لا يوجد مخزون كافٍ لإتمام هذا الطلب (:identifier)',
     'carts.line_not_purchasable' => 'العنصر :identifier لا يمكن شراؤه في هذه القناة أو من قبل مجموعة العملاء الخاصة بك.',
+    'carts.line_added_by_discount' => 'أُضيف هذا العنصر بواسطة خصم، لذا لا يمكن تغيير كميته.',
     'carts.payment_terms_pickup_missing' => 'يتطلب الدفع عند الاستلام عنصرًا واحدًا على الأقل للاستلام',
     'carts.payment_terms_delivery_missing' => 'يتطلب الدفع عند التسليم عنصرًا واحدًا على الأقل للتوصيل',
     'carts.fulfilment_method_unknown' => 'طريقة التنفيذ ":method" غير متاحة',

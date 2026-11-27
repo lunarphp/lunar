@@ -103,7 +103,7 @@ Steps::for(StepList::CartCalculation)
 | `PriceMatching` | `PricingManager::get()` | none |
 | `OrderCreation` | `Lunar\Core\Actions\Carts\CreateOrder` | `Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart`, `CreateOrderLines`, `CreateOrderAddresses`, `CreateShippingLine`, `CleanUpOrderLines`, `MapDiscountBreakdown` |
 | `AddToCartValidation` | `Cart::add()` | `Lunar\Core\Validation\CartLine\CartLineQuantity`, `CartLineStock`, `CartLineAvailability` |
-| `UpdateCartLineValidation` | `Cart::updateLine()` | `Lunar\Core\Validation\CartLine\CartLineQuantity`, `CartLineStock`, `CartLineAvailability` |
+| `UpdateCartLineValidation` | `Cart::updateLine()` | `Lunar\Core\Validation\CartLine\CartLineQuantity`, `CartLineStock`, `CartLineAvailability`, `CartLineAddedByDiscount` |
 | `RemoveFromCartValidation` | `Cart::remove()` | none |
 | `AddAddressValidation` | `Cart::addAddress()` | none |
 | `SetShippingOptionValidation` | `Cart::setShippingOption()` | `Lunar\Core\Validation\Cart\ShippingOptionValidator` |
@@ -142,6 +142,12 @@ class ApplyHandlingFee
     }
 }
 ```
+
+### Reward lines and the second pass
+
+After the `CartCalculation` steps run, `CalculateCart` calls `Lunar\Core\Contracts\Actions\Discounts\ReconcilesRewardLines`, which creates, resizes or deletes the lines discounts added so each holds the units its discount allocated (see [Automatically adding rewards](/reference/discounts#automatically-adding-rewards)). When it changes any line, the steps run a second time over the lines as they now stand, so shipping, tax and the totals include them. A calculation that changes no added line runs the steps once.
+
+A step therefore runs twice on the calculation where the cart starts or stops earning a reward. Keep steps free of side effects outside the cart, or make them safe to repeat. The cart modifiers' `calculating()` and `calculated()` hooks still run once per calculation.
 
 ## Totals caching
 

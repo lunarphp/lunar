@@ -1,6 +1,6 @@
 # Remove reward lines the cart no longer earns
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-11-27
 - TODO item: Remove reward lines the cart no longer earns — an automatically added `BuyXGetY` reward stays and is charged at full price once the cart stops earning it; builds on `added_by_discount_id` from spec core-values-out-of-meta (spec remove-unearned-reward-lines)
@@ -47,7 +47,7 @@ As a result, the reward units any discount earns depend only on the shopper's li
 2. **Raise.** Units still left raise the existing added lines, oldest first, as far as `canBeFulfilledAtQuantity()` allows.
 3. **Add.** Units still left pick a reward candidate the way `processAutomaticRewards()` does today: at random from the fulfillable rewards, more than one unit on one line, and an out-of-stock candidate skipped. Each new line is a new unsaved `CartLine` with `added_by_discount_id` set.
 
-The discount records each allocation as a `DiscountBreakdownLine` in its breakdown, as it does today. It no longer saves lines, changes their quantity, or prices them by hand. When `automatically_add_rewards` is off, the shortfall goes nowhere, so the discount's existing added lines get no units. A merchant who turns the setting off sees the added lines go.
+The discount records each allocation as a `DiscountBreakdownLine` in its breakdown, as it does today. It no longer saves lines or changes their quantity. A new line gets a unit price in the first pass only so that pass's breakdown carries an amount; the second pass prices it like any other line. When `automatically_add_rewards` is off, the shortfall goes nowhere, so the discount's existing added lines get no units. A merchant who turns the setting off sees the added lines go.
 
 Keeping the existing lines first means a gift the shopper has already seen doesn't change product on a later calculation. That matters for a collection reward, which picks at random.
 
@@ -81,7 +81,7 @@ The extra pass runs only on a calculation that changes added lines, typically th
 
 ### Shoppers changing an added line
 
-A new validator, `Lunar\Core\Validation\CartLine\CartLineAddedByDiscount`, is appended to `StepList::UpdateCartLineValidation`. It fails when the line being updated has `added_by_discount_id` set and the requested quantity differs from the line's quantity. The message is `lunar::exceptions.carts.line_added_by_discount`: "This item was added by a promotion, so its quantity can't be changed". A meta-only update at the same quantity passes. Without the validator, reconciliation would silently undo the change on the next calculation.
+A new validator, `Lunar\Core\Validation\CartLine\CartLineAddedByDiscount`, is appended to `StepList::UpdateCartLineValidation`. It fails when the line being updated has `added_by_discount_id` set and the requested quantity differs from the line's quantity. The message is `lunar::exceptions.carts.line_added_by_discount`: "This item was added by a discount, so its quantity can't be changed". A meta-only update at the same quantity passes. Without the validator, reconciliation would silently undo the change on the next calculation.
 
 A shopper who wants more of the reward product adds it, and `GetExistingCartLine` already gives it a line of its own. Removing an added line stays allowed. The line comes back on the next calculation while the cart still earns it, as it does today.
 
@@ -133,7 +133,7 @@ None.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Reconciliation: added lines left out of `BuyXGetY` conditions and first-pass rewards and out of both `getEligibleLines()` implementations; keep, raise and add allocation without writes in `BuyXGetY`; `ReconcilesRewardLines` and its binding; the second pass in `CalculateCart`; `freeItems` reset in `ApplyDiscounts`. Pest tests for each case in the Problem table, the collection and minimum-spend cases, the shopper adding the reward product, a merged cart with two added lines from one discount, the second pass leaving nothing to reconcile, and the cart's shipping option seeing an added line in the calculation that adds it. Existing reward tests that count pipeline runs are updated for the second pass.
-- [ ] Slice 2 — Deleting a discount removes its added lines on carts without a completed order, with a test that a cart with a completed order keeps its lines and that the affected cart's totals are invalidated.
-- [ ] Slice 3 — `CartLineAddedByDiscount` in `UpdateCartLineValidation`, the translation in 16 locales, and tests for a refused quantity change and an accepted meta-only update.
-- [ ] Slice 4 — Docs and the alpha upgrade guide note.
+- [x] Slice 1 — Reconciliation: added lines left out of `BuyXGetY` conditions and first-pass rewards and out of both `getEligibleLines()` implementations; keep, raise and add allocation without writes in `BuyXGetY`; `ReconcilesRewardLines` and its binding; the second pass in `CalculateCart`; `freeItems` reset in `ApplyDiscounts`. Pest tests for each case in the Problem table, the collection and minimum-spend cases, the shopper adding the reward product, a merged cart with two added lines from one discount, the second pass leaving nothing to reconcile, and the cart's shipping option seeing an added line in the calculation that adds it. Existing reward tests that count pipeline runs are updated for the second pass.
+- [x] Slice 2 — Deleting a discount removes its added lines on carts without a completed order, with a test that a cart with a completed order keeps its lines and that the affected cart's totals are invalidated.
+- [x] Slice 3 — `CartLineAddedByDiscount` in `UpdateCartLineValidation`, the translation in 16 locales, and tests for a refused quantity change and an accepted meta-only update.
+- [x] Slice 4 — Docs and the alpha upgrade guide note.

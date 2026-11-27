@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Een regel in deze winkelwagen is niet meer beschikbaar (:identifier)',
     'carts.insufficient_stock' => 'Onvoldoende voorraad om deze bestelling te plaatsen (:identifier)',
     'carts.line_not_purchasable' => ':identifier kan niet worden gekocht in dit kanaal of door uw klantgroep',
+    'carts.line_added_by_discount' => 'Dit artikel is door een korting toegevoegd, daarom kan het aantal niet worden gewijzigd',
     'carts.payment_terms_pickup_missing' => 'Betalen bij afhalen vereist ten minste één artikel om af te halen',
     'carts.payment_terms_delivery_missing' => 'Betalen bij levering vereist ten minste één artikel om te bezorgen',
     'carts.fulfilment_method_unknown' => 'De afhandelingsmethode ":method" is niet beschikbaar',

@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'Pozycja w tym koszyku nie jest już dostępna (:identifier)',
     'carts.insufficient_stock' => 'Za mało towaru na stanie, aby złożyć to zamówienie (:identifier)',
     'carts.line_not_purchasable' => ':identifier nie może zostać kupiony w tym kanale ani przez Twoją grupę klientów',
+    'carts.line_added_by_discount' => 'Ten produkt został dodany przez rabat, więc nie można zmienić jego ilości',
     'carts.payment_terms_pickup_missing' => 'Płatność przy odbiorze wymaga co najmniej jednej pozycji do odbioru osobistego',
     'carts.payment_terms_delivery_missing' => 'Płatność przy odbiorze przesyłki wymaga co najmniej jednej pozycji do dostawy',
     'carts.fulfilment_method_unknown' => 'Metoda realizacji ":method" jest niedostępna',

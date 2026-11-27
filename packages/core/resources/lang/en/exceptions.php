@@ -16,6 +16,7 @@ return [
     'carts.line_unavailable' => 'A line in this cart is no longer available (:identifier)',
     'carts.insufficient_stock' => 'Not enough stock to place this order (:identifier)',
     'carts.line_not_purchasable' => ':identifier cannot be purchased in this channel or by your customer group',
+    'carts.line_added_by_discount' => 'This item was added by a discount, so its quantity can\'t be changed',
     'carts.payment_terms_pickup_missing' => 'Pay on pickup needs at least one item to pick up',
     'carts.payment_terms_delivery_missing' => 'Pay on delivery needs at least one item to deliver',
     'carts.fulfilment_method_unknown' => 'The fulfilment method ":method" is not available',

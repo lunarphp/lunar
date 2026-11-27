@@ -4,6 +4,7 @@ namespace Lunar\Core\DiscountTypes\Concerns;
 
 use Illuminate\Support\Collection as SupportCollection;
 use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Collection;
 
 /**
@@ -35,7 +36,9 @@ trait TargetsCartLines
             ->reject(fn ($limitation) => ! $limitation->discountable)
             ->map(fn ($limitation) => get_class($limitation->discountable).'::'.$limitation->discountable->id);
 
-        $lines = $cart->lines;
+        // Lines a discount added are not the shopper's purchases (spec
+        // remove-unearned-reward-lines).
+        $lines = $cart->lines->reject(fn (CartLine $line) => $line->isAddedByDiscount());
 
         if ($collectionIds->count()) {
             $lines = $lines->filter(function ($line) use ($collectionIds) {

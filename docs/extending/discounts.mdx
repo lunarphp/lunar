@@ -30,7 +30,7 @@ interface DiscountType
 
 Extend `Lunar\Core\DiscountTypes\AbstractDiscountType` rather than implementing the interface directly. It supplies the `Discount` model the type is running for (`$this->discount`, set via `with()`), plus helpers a discount type typically needs:
 
-- `getEligibleLines(Cart $cart)` — the cart lines the discount can apply to; defaults to every line.
+- `getEligibleLines(Cart $cart)` — the cart lines the discount can apply to; defaults to every line except those a discount added (`isAddedByDiscount()`), which are not the customer's purchases. An override that does not call the parent decides for itself.
 - `checkDiscountConditions(Cart $cart)` — validates the discount's customer restriction, coupon, minimum spend, and use limits. For a discount whose `redemption` is `coupon`, it passes only when `$cart->coupon` belongs to the discount and is usable.
 - `addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)` — records the discount against the cart's breakdown, which is what makes it show up as applied.
 
@@ -110,6 +110,31 @@ class ApplyDiscounts
 ```
 
 `DiscountManager::apply()` fetches every eligible `Discount`, ordered by `priority` descending (ties broken by id), and calls each one's type's `apply($cart)` in turn. A discount's `stop` flag, when true, halts the loop as soon as that discount applies — lower-priority discounts after it are skipped. Both `priority` and `stop` are plain columns on the `Discount` model, set through its admin form; a discount type does not need to implement anything to participate in ordering or stopping, as long as `apply()` calls `addDiscountBreakdown()` when it actually applies.
+
+## Adding lines to the cart
+
+A discount type that gives away an item can have Lunar manage the line for it instead of writing the line itself. In `apply()`, make an unsaved line with `added_by_discount_id` set to the discount's ID and record it in the breakdown with the quantity it earns:
+
+```php
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\ValueObjects\Cart\DiscountBreakdownLine;
+
+$line = $cart->lines()->make([
+    'purchasable_type' => $gift->getMorphClass(),
+    'purchasable_id' => $gift->id,
+    'quantity' => 1,
+    'added_by_discount_id' => $this->discount->id,
+]);
+
+$this->addDiscountBreakdown($cart, new DiscountBreakdown(
+    price: new PriceValue(0, $cart->currency),
+    lines: collect([new DiscountBreakdownLine(line: $line, quantity: 1)]),
+    discount: $this->discount,
+));
+```
+
+After the calculation steps run, `Lunar\Core\Contracts\Actions\Discounts\ReconcilesRewardLines` sets every line with `added_by_discount_id` to the quantity its discount's breakdown records for it: it creates new lines, resizes existing ones, and deletes those with nothing recorded, including every line of a discount that did not apply. On later calculations, find the type's existing lines in `$cart->lines` by `added_by_discount_id` and record them again for as long as the cart earns them. The steps then run once more, so the type is called a second time and must record the same allocation.
 
 ## Adding an admin form
 

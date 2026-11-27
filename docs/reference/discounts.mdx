@@ -496,14 +496,23 @@ Condition and reward matching also accepts collections: a `Discountable` entry w
 
 #### Automatically adding rewards
 
-When `automatically_add_rewards` is `true` and a qualifying cart does not already contain enough reward items, `BuyXGetY` adds a cart line for the reward rather than requiring the customer to add it themselves:
+When `automatically_add_rewards` is `true` and a qualifying cart does not already contain enough reward items, `BuyXGetY` adds a cart line for the reward rather than requiring the customer to add it themselves. A line the discount added always holds exactly the reward units the cart earns in the current calculation:
 
-- A reward candidate is chosen at random from the fulfillable `discountableRewards` (a collection reward picks a random fulfillable product from that collection).
-- Only reward items that can currently be fulfilled at the required quantity are considered; an out-of-stock reward is skipped rather than raising an error.
-- A reward quantity greater than one is added to a single cart line, not one line per unit.
-- A line `BuyXGetY` adds has `added_by_discount_id` set to the discount's ID, and `isAddedByDiscount()` returns `true`. When the reward product is already on a line the customer added, that line is discounted instead and its `added_by_discount_id` stays `null`.
+- Reward units go first to reward lines the customer added, cheapest first. When the reward product is already on a line the customer added, that line is discounted and its `added_by_discount_id` stays `null`.
+- Units left over go onto lines the discount manages, in this order: its existing added lines keep up to their current quantity, oldest first; units still left raise those lines as far as stock allows; any remaining units go on a new line.
+- A new line's reward is chosen at random from the fulfillable `discountableRewards` (a collection reward picks a random fulfillable product from that collection). An out-of-stock reward is skipped rather than raising an error, and a reward quantity greater than one goes on a single line, not one line per unit.
+- A line `BuyXGetY` adds has `added_by_discount_id` set to the discount's ID, and `isAddedByDiscount()` returns `true`.
+- When the cart earns fewer units, the added line's quantity is lowered. When the cart no longer earns the reward at all (the condition items are removed, the discount ends or reaches its usage limit, its coupon is removed, or `automatically_add_rewards` is turned off), the line is deleted on the next calculation.
+- Added lines are not the customer's purchases. They never count toward any discount's conditions, minimum spend or targeted lines, so a reward cannot keep itself earned.
+- The customer cannot change an added line's quantity: `Cart::updateLine()` throws a `Lunar\Core\Exceptions\Carts\CartException` when the quantity differs. A meta-only update at the same quantity is accepted. The customer can remove an added line, but it returns on the next calculation while the cart still earns it.
 - A product the customer adds never merges into a line added by a discount: `Cart::add()` creates a separate line. Merging carts keeps the two apart as well, and order creation copies `added_by_discount_id` to the order line.
-- When the discount is deleted, `added_by_discount_id` is set to `null` and the line stays in the cart as an ordinary line.
+- When the discount is deleted, the lines it added are deleted from every cart without a completed order. Carts with a completed order keep the lines, with `added_by_discount_id` set to `null`.
+
+The lines are reconciled by `Lunar\Core\Contracts\Actions\Discounts\ReconcilesRewardLines` after the `CartCalculation` steps run. When it changes any line, the steps run once more so shipping and tax see the cart as it now stands. See [Extending Carts](/extending/carts#reward-lines-and-the-second-pass).
+
+<Tip>
+Render lines where `$line->isAddedByDiscount()` is `true` without quantity controls.
+</Tip>
 
 ## The Discounts facade
 

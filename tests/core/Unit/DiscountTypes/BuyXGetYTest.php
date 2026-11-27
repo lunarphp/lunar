@@ -1827,10 +1827,15 @@ test('can leave a reward line the shopper added at their own quantity', function
 
     $rewardLines = CartLine::where('cart_id', $cart->id)
         ->where('purchasable_id', $purchasableB->id)
+        ->orderBy('id')
         ->get();
 
-    expect($rewardLines)->toHaveCount(1);
+    // The shopper's line takes one reward and keeps their quantity; the two
+    // units it can't take go on a line the discount adds.
+    expect($rewardLines)->toHaveCount(2);
     expect($rewardLines->first()->quantity)->toEqual(1);
+    expect($rewardLines->last()->quantity)->toEqual(2)
+        ->and($rewardLines->last()->added_by_discount_id)->toBe($discount->id);
 
     // Pricing the shopper's line as the reward doesn't make it core's.
     expect($rewardLines->first()->added_by_discount_id)->toBeNull()

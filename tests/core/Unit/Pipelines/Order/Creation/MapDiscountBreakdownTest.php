@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\DiscountTypes\PercentageOff;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
@@ -139,52 +140,58 @@ test('keeps a shopper line and a reward line for the same purchasable apart when
 
     $currency = Currency::getDefault();
 
+    $condition = ProductVariant::factory()->create();
     $purchasable = ProductVariant::factory()->create();
 
-    Price::factory()->create([
-        'price' => 100,
-        'min_quantity' => 1,
-        'currency_id' => $currency->id,
-        'priceable_type' => $purchasable->getMorphClass(),
-        'priceable_id' => $purchasable->id,
+    foreach ([$condition, $purchasable] as $variant) {
+        Price::factory()->create([
+            'price' => 100,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $variant->getMorphClass(),
+            'priceable_id' => $variant->id,
+        ]);
+    }
+
+    // Three conditions earn three rewards: the shopper's own line takes one,
+    // and the discount adds a line for the other two.
+    $rewardDiscount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'data' => ['min_qty' => 1, 'reward_qty' => 1, 'automatically_add_rewards' => true],
     ]);
 
-    // Prices both lines, so its breakdown names each of them.
-    $discount = Discount::factory()->coupon('10OFF')->create([
-        'type' => PercentageOff::class,
-        'data' => ['percentage' => 10],
-    ]);
-
-    $discount->customerGroups()->sync([$customerGroup->id => ['enabled' => true, 'starts_at' => now()]]);
-    $discount->channels()->sync([$channel->id => ['enabled' => true, 'starts_at' => now()->subHour()]]);
-
-    // The discount that added the reward line; it isn't active in this cart.
-    $rewardDiscount = Discount::factory()->create();
+    $rewardDiscount->customerGroups()->sync([$customerGroup->id => ['enabled' => true, 'starts_at' => now()]]);
+    $rewardDiscount->channels()->sync([$channel->id => ['enabled' => true, 'starts_at' => now()->subHour()]]);
+    $rewardDiscount->discountableConditions()->create(['discountable_type' => $condition->getMorphClass(), 'discountable_id' => $condition->id]);
+    $rewardDiscount->discountableRewards()->create(['discountable_type' => $purchasable->getMorphClass(), 'discountable_id' => $purchasable->id, 'type' => 'reward']);
 
     $cart = Cart::factory()->create([
         'channel_id' => $channel->id,
         'currency_id' => $currency->id,
-        'coupon_code' => '10OFF',
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => $purchasable->getMorphClass(),
-        'purchasable_id' => $purchasable->id,
-        'quantity' => 2,
+        'purchasable_type' => $condition->getMorphClass(),
+        'purchasable_id' => $condition->id,
+        'quantity' => 3,
     ]);
 
     $cart->lines()->create([
         'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
-        'added_by_discount_id' => $rewardDiscount->id,
     ]);
+
+    $cart->recalculate();
 
     $order = Order::factory()->create([
         'cart_id' => $cart->id,
     ]);
 
-    $build = function () use ($order) {
+    $build = function () use ($order, $cart) {
+        // Loaded the way CartSession loads it, with its two variants.
+        $order->setRelation('cart', Cart::query()->with(config('lunar.cart.eager_load'))->find($cart->id));
+
         foreach ([CreateOrderLines::class, CleanUpOrderLines::class, MapDiscountBreakdown::class] as $step) {
             app($step)->handle($order, fn ($order) => $order);
         }
@@ -195,11 +202,11 @@ test('keeps a shopper line and a reward line for the same purchasable apart when
     $build();
     $build();
 
-    $lines = $order->lines;
+    $lines = $order->lines->where('purchasable_id', $purchasable->id);
 
     expect($lines)->toHaveCount(2)
-        ->and($lines->whereNull('added_by_discount_id')->first()->quantity)->toBe(2)
-        ->and($lines->firstWhere('added_by_discount_id', $rewardDiscount->id)->quantity)->toBe(1);
+        ->and($lines->whereNull('added_by_discount_id')->first()->quantity)->toBe(1)
+        ->and($lines->firstWhere('added_by_discount_id', $rewardDiscount->id)->quantity)->toBe(2);
 
     $breakdownLineIds = collect($order->discount_breakdown->first()->lines)->pluck('line.id');
 

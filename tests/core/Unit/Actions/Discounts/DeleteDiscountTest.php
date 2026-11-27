@@ -4,12 +4,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Actions\Discounts\DeleteDiscount;
 use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -80,4 +85,39 @@ test('leaves no channel availability rows behind', function () {
     app(DeleteDiscount::class)->execute($discount);
 
     expect($channelables())->toBe(0);
+});
+
+test('removes the lines it added from carts without a completed order', function () {
+    Channel::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+
+    $discount = Discount::factory()->create();
+    $variant = ProductVariant::factory()->create();
+
+    $addLine = fn (Cart $cart, ?int $addedBy) => $cart->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+        'added_by_discount_id' => $addedBy,
+    ]);
+
+    // Still being shopped, with a draft order: its reward line goes.
+    $shopping = Cart::factory()->create();
+    $shopperLine = $addLine($shopping, null);
+    $shoppingReward = $addLine($shopping, $discount->id);
+    Order::factory()->create(['cart_id' => $shopping->id, 'placed_at' => null]);
+
+    // Already placed: its lines are history and stay.
+    $placed = Cart::factory()->create();
+    $placedReward = $addLine($placed, $discount->id);
+    Order::factory()->create(['cart_id' => $placed->id, 'placed_at' => now()]);
+
+    $revision = $shopping->fresh()->revision;
+
+    app(DeleteDiscount::class)->execute($discount);
+
+    expect(CartLine::query()->find($shoppingReward->id))->toBeNull()
+        ->and(CartLine::query()->find($shopperLine->id))->not->toBeNull()
+        ->and($shopping->fresh()->revision)->toBeGreaterThan($revision)
+        ->and(CartLine::query()->whereKey($placedReward->id)->exists())->toBeTrue();
 });
