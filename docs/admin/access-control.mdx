@@ -18,7 +18,7 @@ There is no password-only login path. Every staff login is a two-step challenge:
 
 The email code is the automatic fallback, so a staff member can always sign in even before setting up an authenticator app.
 
-While a login is waiting on its second factor, opening any panel page returns the staff member to the challenge rather than to `/panel/login`, and a correct code then continues to the page they opened. The login screen stays reachable from the challenge's **Use a different account** link.
+While a login is waiting on its second factor, opening any panel page returns the staff member to the challenge rather than to `/panel/login`, and a correct code then continues to the page they opened. When that page's route is gated with a `can:{handle}` permission the staff member does not hold, the code lands them on the dashboard instead. The login screen stays reachable from the challenge's **Use a different account** link.
 
 ### Enrolling an authenticator app
 
@@ -69,4 +69,4 @@ The same hook is registered by `lunarphp/admin`, so the two panels apply identic
 
 ### Navigation and routes stay in sync
 
-Panel routes are gated with Laravel's `can:{handle}` middleware, and navigation items carry the same permission handle. Because both read from the same handle, a staff member never sees a navigation entry they cannot reach, and never hits a route for a feature that is hidden from their navigation. Add-on sections follow the same convention when they register their own navigation items, routes, and actions — see [Extending the panel](/admin/extending/overview).
+Panel routes are gated with Laravel's `can:{handle}` middleware, and navigation items carry the same permission handle. Because both read from the same handle, a staff member never sees a navigation entry they cannot reach, and never hits a route for a feature that is hidden from their navigation. The sidebar's **Settings** link opens the first settings page the staff member can see, and is hidden when they can see none. Add-on sections follow the same convention when they register their own navigation items, routes, and actions — see [Extending the panel](/admin/extending/overview).

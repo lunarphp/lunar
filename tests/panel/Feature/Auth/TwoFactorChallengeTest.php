@@ -53,7 +53,7 @@ test('a guest visiting a panel page goes to login when nothing is pending', func
 });
 
 test('a panel page sends a pending login back to the challenge and then on to that page', function () {
-    $staff = Staff::factory()->withTwoFactor()->create();
+    $staff = Staff::factory()->withTwoFactor()->create(['admin' => true]);
     submitCredentials($staff);
 
     $this->get(route('panel.products.index'))
@@ -61,6 +61,33 @@ test('a panel page sends a pending login back to the challenge and then on to th
 
     $this->post(route('panel.two-factor.challenge.store'), ['code' => currentOtp()])
         ->assertRedirect(route('panel.products.index'));
+});
+
+test('signing in lands on the dashboard when the intended page is one the staff member cannot open', function () {
+    $staff = Staff::factory()->withTwoFactor()->create(['admin' => false]);
+
+    $this->get(route('panel.settings.channels.index'))
+        ->assertRedirect(route('panel.login'));
+
+    submitCredentials($staff);
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => currentOtp()])
+        ->assertRedirect(route('panel.dashboard'));
+
+    expect(session('url.intended'))->toBeNull();
+});
+
+test('signing in still goes to an intended page the staff member is permitted to open', function () {
+    $staff = Staff::factory()->withTwoFactor()->create(['admin' => false]);
+    $staff->givePermissionTo('settings:core');
+
+    $this->get(route('panel.settings.channels.index'))
+        ->assertRedirect(route('panel.login'));
+
+    submitCredentials($staff);
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => currentOtp()])
+        ->assertRedirect(route('panel.settings.channels.index'));
 });
 
 test('the login screen stays reachable while a login is pending', function () {

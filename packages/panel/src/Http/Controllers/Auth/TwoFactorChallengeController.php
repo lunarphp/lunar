@@ -2,8 +2,10 @@
 
 namespace Lunar\Panel\Http\Controllers\Auth;
 
+use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -13,6 +15,7 @@ use Lunar\Core\Models\Staff;
 use Lunar\Panel\Auth\AppAuthentication;
 use Lunar\Panel\Auth\EmailTwoFactor;
 use Lunar\Panel\PanelManager;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class TwoFactorChallengeController
 {
@@ -51,6 +54,7 @@ class TwoFactorChallengeController
         PanelManager $manager,
         AppAuthentication $appAuthentication,
         EmailTwoFactor $emailTwoFactor,
+        Router $router,
     ): RedirectResponse {
         $id = $request->session()->get('panel.login.id');
 
@@ -114,7 +118,50 @@ class TwoFactorChallengeController
         $request->session()->forget('panel.login.id');
         $request->session()->regenerate();
 
-        return redirect()->intended(route('panel.dashboard'));
+        return redirect()->to($this->landingUrl($request, $user, $router));
+    }
+
+    /**
+     * Where a completed sign-in lands: the page the staff member was sent
+     * to sign in from, unless a `can:` gate on that page's route refuses
+     * them. Following a refused URL would answer the challenge form with a
+     * 403, which Inertia shows as a raw error modal over the challenge, so
+     * such a URL falls back to the dashboard. Only abilities without
+     * arguments are checked here; a gate on a route model is left to the
+     * page itself.
+     */
+    protected function landingUrl(Request $request, Staff $user, Router $router): string
+    {
+        $dashboard = route('panel.dashboard');
+        $intended = $request->session()->pull('url.intended');
+
+        if (! is_string($intended) || $intended === '') {
+            return $dashboard;
+        }
+
+        try {
+            $route = $router->getRoutes()->match(Request::create($intended));
+        } catch (HttpExceptionInterface) {
+            return $intended;
+        }
+
+        foreach ($route->gatherMiddleware() as $middleware) {
+            if (! is_string($middleware) || ! str_contains($middleware, ':')) {
+                continue;
+            }
+
+            [$name, $parameters] = explode(':', $middleware, 2);
+
+            if (! in_array($name, ['can', Authorize::class], true) || str_contains($parameters, ',')) {
+                continue;
+            }
+
+            if ($user->cannot($parameters)) {
+                return $dashboard;
+            }
+        }
+
+        return $intended;
     }
 
     public function resend(
