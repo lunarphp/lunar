@@ -8,6 +8,7 @@ return [
         'available' => 'Available',
         'committed' => 'Committed',
         'reserved' => 'Reserved',
+        'incoming' => 'În curs de sosire',
         'recent_movements' => 'Recent movements',
         'no_movements' => 'No stock movements yet.',
     ],

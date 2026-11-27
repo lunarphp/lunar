@@ -9,13 +9,15 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
 use Lunar\Core\Models\Location;
 use Lunar\Filament\Actions\Products\AdjustStockAction;
+use Lunar\Filament\Actions\Products\SetIncomingStockAction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 /**
  * The built-in, swappable per-variant inventory controls: a read-only stock
  * rollup summary, the selling fields, and recent movements. Stock is
  * adjusted through the AdjustStock header action, never edited inline — the
- * levels are ledger-derived.
+ * levels are ledger-derived. Incoming stock is set through the SetIncomingStock
+ * header action.
  *
  * Deliberately minimal: per-location editing, the full ledger history and
  * reservation management are left to add-ons. Change it via the
@@ -54,17 +56,20 @@ class ProductVariantInventory
     public static function getRollupSection(): Section
     {
         return Section::make(__('lunar-filament::productvariant.inventory.summary_heading'))
+            ->key('stock_summary')
             ->description(static::locationDescription())
             ->headerActions([
                 AdjustStockAction::make(),
+                SetIncomingStockAction::make(),
             ])
             ->schema([
                 static::getRollupPlaceholder('stock_on_hand', 'on_hand'),
                 static::getRollupPlaceholder('stock_available', 'available'),
                 static::getRollupPlaceholder('stock_committed', 'committed'),
                 static::getRollupPlaceholder('stock_reserved', 'reserved'),
+                static::getRollupPlaceholder('stock_incoming', 'incoming'),
             ])
-            ->columns(['default' => 2, 'xl' => 4]);
+            ->columns(['default' => 2, 'xl' => 5]);
     }
 
     public static function getRollupPlaceholder(string $attribute, string $key): Placeholder

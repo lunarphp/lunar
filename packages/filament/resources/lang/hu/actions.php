@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Beérkező készlet beállítása',
+            'modal_heading' => 'Beérkező készlet beállítása',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Beérkező',
+                    'helper_text' => 'Az alapértelmezett helyszínre várt egységek. Felülírja a jelenlegi értéket.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Beérkező készlet frissítve.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

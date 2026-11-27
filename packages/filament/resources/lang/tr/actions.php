@@ -218,6 +218,19 @@ return [
                 'success' => 'Stock adjusted.',
             ],
         ],
+        'set_incoming_stock' => [
+            'label' => 'Gelen stoku ayarla',
+            'modal_heading' => 'Gelen stoku ayarla',
+            'fields' => [
+                'incoming' => [
+                    'label' => 'Gelen',
+                    'helper_text' => 'Varsayılan konumun teslim almayı beklediği birimler. Mevcut değerin yerini alır.',
+                ],
+            ],
+            'notification' => [
+                'success' => 'Gelen stok güncellendi.',
+            ],
+        ],
         'map_variants_to_options' => [
             'label' => 'Map Variants to Product Options',
             'notification' => [

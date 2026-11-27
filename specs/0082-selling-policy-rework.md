@@ -119,8 +119,11 @@ inventory controls. The incoming editor is therefore individually disableable in
 named after the existing `withoutInventoryControls()` / `usesInventoryControls()` pair on the
 admin's `LunarPanelManager`:
 
-- Filament: `LunarPanel::withoutIncomingStockEntry()` / `usesIncomingStockEntry()`. When off,
-  the header action is hidden; the rollup placeholder stays.
+- Filament: `LunarPanel::withoutIncomingStockEntry()` / `usesIncomingStockEntry()` on the
+  admin's `LunarPanelManager`. When off, the header action is hidden; the rollup placeholder
+  stays. The bridge does not depend on the admin package, so the admin hides the bridge's
+  `SetIncomingStockAction` through Filament's `configureUsing()`, which a custom Filament
+  panel built on the bridge can call the same way.
 - Panel: `Panel::withoutIncomingStockEntry()` / `usesIncomingStockEntry()` on `PanelManager`,
   next to its other fluent registration methods. When off, the incoming cell renders
   read-only and the panel's incoming route refuses writes with a 403, so the editor and its
@@ -307,7 +310,7 @@ it, including both admins' forms, to the booleans.
   driver-created order failure, tests, docs.
 - [x] Slice 4 — panel: inline incoming editor and route, disable toggle, lang keys across 16
   locales.
-- [ ] Slice 5 — Filament bridge + admin resources: incoming rollup + header action, disable
+- [x] Slice 5 — Filament bridge + admin resources: incoming rollup + header action, disable
   toggle, lang keys across 16 locales.
 - [ ] Slice 6 — upgrade package: mode → booleans data step, incoming seed, column drops,
   Rector rule, upgrade guide.

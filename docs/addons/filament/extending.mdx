@@ -199,7 +199,7 @@ Prebuilt Filament actions under `Lunar\Filament\Actions\` that delegate to [Luna
 | Group | Actions |
 | --- | --- |
 | Orders | `RefundOrderAction`, `CaptureOrderAction`, `CancelOrderAction`, `CloseOrderAction`, `ReopenOrderAction`, `NotifyCustomerAction`, `AddOrderNoteAction` |
-| Products | `AdjustStockAction`, `DuplicateProductAction`, `PublishProductsBulkAction`, `UnpublishProductsBulkAction`, `ArchiveProductsBulkAction` |
+| Products | `AdjustStockAction`, `SetIncomingStockAction`, `DuplicateProductAction`, `PublishProductsBulkAction`, `UnpublishProductsBulkAction`, `ArchiveProductsBulkAction` |
 | Attributes | `CreateAttributeAction`, `EditAttributeAction`, `DeleteAttributeAction`, `DeleteAttributesBulkAction` |
 | Collections | `CreateRootCollectionAction`, `CreateChildCollectionAction`, `MoveCollectionAction`, `DeleteCollectionAction` |
 
@@ -214,6 +214,14 @@ protected function getHeaderActions(): array
         CaptureOrderAction::make(),
     ];
 }
+```
+
+`SetIncomingStockAction` sets the stock the default location expects to receive, through `setIncomingStock()`. A purchasing add-on that keeps `incoming` in step with its own purchase orders hides it. In the turnkey admin, call `LunarPanel::withoutIncomingStockEntry()`; in a panel of your own, hide it with Filament's `configureUsing()`:
+
+```php
+use Lunar\Filament\Actions\Products\SetIncomingStockAction;
+
+SetIncomingStockAction::configureUsing(fn (SetIncomingStockAction $action) => $action->hidden());
 ```
 
 ### Global search
