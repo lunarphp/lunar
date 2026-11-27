@@ -8,6 +8,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Tests\Core\Stubs\User;
@@ -103,7 +104,7 @@ test('refreshing a calculated line reloads it and clears its cached totals', fun
         ->and(isset($line->taxBreakdown))->toBeFalse();
 });
 
-test('a line added for a discount stays in the cart as an ordinary line when the discount is deleted', function () {
+test('a line added for a discount on a placed cart stays as an ordinary line when the discount is deleted', function () {
     $discount = Discount::factory()->create();
 
     $line = CartLine::factory()->create([
@@ -112,6 +113,10 @@ test('a line added for a discount stays in the cart as an ordinary line when the
 
     expect($line->addedByDiscount->is($discount))->toBeTrue()
         ->and($line->isAddedByDiscount())->toBeTrue();
+
+    // A cart with a completed order keeps its lines as history (spec
+    // remove-unearned-reward-lines); a cart still being shopped loses them.
+    Order::factory()->create(['cart_id' => $line->cart_id, 'placed_at' => now()]);
 
     $discount->delete();
 
