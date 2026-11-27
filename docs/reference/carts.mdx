@@ -110,7 +110,7 @@ Lunar\Core\Models\CartLine
 | `quantity` | `unsignedInteger` | |
 | `fulfilment_method` | `string` `nullable` | Overrides the cart default for this line. `null` inherits it |
 | `meta` | `jsonb` `nullable` | |
-| `added_by_discount_id` | `foreignId` `nullable` | The discount that added this line as an automatic reward, `null` on a line the customer added. Set to `null` when the discount is deleted. See [Automatically adding rewards](/reference/discounts#automatically-adding-rewards) |
+| `added_by_discount_id` | `foreignId` `nullable` | The discount that added this line as an automatic reward, `null` on a line the customer added. Each calculation resizes or deletes the line to match the reward the cart earns, and deleting the discount deletes the line unless the cart has a completed order. See [Automatically adding rewards](/reference/discounts#automatically-adding-rewards) |
 | `created_at` | `timestamp` | |
 | `updated_at` | `timestamp` | |
 | `unit_price` | `unsignedBigInteger` `nullable` | Persisted totals snapshot, `null` until the line is first calculated |

@@ -136,6 +136,8 @@ Changes made since 2.0.0-alpha.9.
 
 `added_by_discount_id` marks the cart lines a Buy X Get Y discount added automatically, which alpha releases recorded in `meta['added_by_discount']`. A line left unmarked behaves as a line the shopper added. To keep reward lines already in carts and orders marked, set `added_by_discount_id` to the discount ID used as the key in `meta['added_by_discount']`, then remove that key.
 
+Lines with `added_by_discount_id` set now follow the reward their discount earns: each calculation lowers, raises or deletes them, and deleting the discount deletes them from carts without a completed order. They no longer count toward any discount's conditions or minimum spend, and `Cart::updateLine()` refuses to change their quantity. No schema change is needed.
+
 A null `fulfilment_method` or `pickup_location_id` means the choice is inferred as before, so carts, lines and variants need no backfill. Alpha releases recorded a pickup order with `meta['pickup']` (`meta['collect']` before alpha.8) on its shipping line, which Lunar no longer reads. `Order::isPickup()` now reads the order's fulfilments, so orders that already have fulfilments keep their pickup status. For an order with no fulfilments yet, set `orders.pickup_location_id` to the default location's ID where its shipping line's `meta->pickup` or `meta->collect` is `true`, so its lines are still picked up when the fulfilments are created.
 
 Pickup is only offered at a location with `accepts_pickup` set. Set it to `true` for the default location, and for any other location customers collect from, or pickup stops being offered. A custom `Lunar\Core\Contracts\FulfilmentMethod` adds `isAvailable(): bool`, returning `true` when it is always available.

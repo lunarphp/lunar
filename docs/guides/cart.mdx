@@ -127,6 +127,8 @@ After calculation, each `Lunar\Core\Models\CartLine` has the following propertie
 | `taxAmount` | `Lunar\Core\DataObjects\PriceValue` | Tax amount for this line |
 | `total` | `Lunar\Core\DataObjects\PriceValue` | Final line total including tax and discounts |
 
+A line a discount added as a free reward has `isAddedByDiscount()` set to `true`. Lunar sets its quantity to the reward the cart earns and refuses a quantity change through `updateLine()`, so render it without the quantity form, for example with `@unless($line->isAddedByDiscount())` around it. See [Automatically adding rewards](/reference/discounts#automatically-adding-rewards).
+
 Every `PriceValue` wraps an integer minor-unit `value` and exposes `format()` (a formatted currency string) and `decimal()` (a float). Passing `null` values through Blade should be guarded with `?->format()` where a property might not yet be calculated.
 
 ### Accessing the Product from a Cart Line
