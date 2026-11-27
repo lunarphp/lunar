@@ -88,6 +88,26 @@ class DiscountTargetSchema
     }
 
     /**
+     * Which of the given buckets hold no target of any kind, in the order given.
+     *
+     * @param  array<int, string>  $buckets
+     * @return array<int, string>
+     */
+    public function emptyBuckets(Discount $discount, array $buckets): array
+    {
+        if (! $buckets) {
+            return [];
+        }
+
+        $values = $this->values($discount);
+
+        return array_values(array_filter(
+            $buckets,
+            fn (string $bucket) => collect($values[static::PREFIX.$bucket] ?? [])->flatten()->isEmpty(),
+        ));
+    }
+
+    /**
      * The same targeting resolved to display rows, so the edit page can render
      * a chip per target without a second round trip.
      *

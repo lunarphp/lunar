@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Bu indirimi kataloğun bir bölümüyle sınırlayın. Boş bırakılan blok her şeye uygulanır.',
 
+    'section_targets_required_description' => 'Bu indirimin çalışacağı ürünleri seçin. Aşağıdaki her blokta en az bir ürün olana kadar hiçbir şey yapmaz.',
+
     'section_customers' => 'Uygun müşteriler',
 
     'bucket_limitation' => 'Kapsamı',
@@ -126,6 +128,12 @@ return [
     'target_remove' => '{label} kaldır',
 
     'target_empty' => 'Hiçbir şey seçilmedi, yani her şeye uygulanır.',
+
+    'target_empty_required' => 'En az bir ürün ekleyin. O zamana kadar bu indirim hiçbir şey yapmaz.',
+
+    'missing_targets_warning' => 'Bu indirim henüz hiçbir şey yapmıyor. Şuraya en az bir ürün ekleyin: {buckets}.',
+
+    'missing_targets_short' => 'Ürün eklenene kadar hiçbir şey yapmaz',
 
     'target_dialog_title' => 'Hedef ekle',
 

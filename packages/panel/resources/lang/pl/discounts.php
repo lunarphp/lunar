@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Ogranicz ten rabat do części katalogu. Pusty blok oznacza, że obowiązuje wszędzie.',
 
+    'section_targets_required_description' => 'Wybierz produkty, z którymi działa ten rabat. Nie działa, dopóki każdy blok poniżej nie ma co najmniej jednego.',
+
     'section_customers' => 'Uprawnieni klienci',
 
     'bucket_limitation' => 'Dotyczy',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Usuń {label}',
 
     'target_empty' => 'Nic nie wybrano, więc dotyczy wszystkiego.',
+
+    'target_empty_required' => 'Dodaj co najmniej jeden produkt. Do tego czasu ten rabat nie działa.',
+
+    'missing_targets_warning' => 'Ten rabat jeszcze nie działa. Dodaj co najmniej jeden produkt do: {buckets}.',
+
+    'missing_targets_short' => 'Nie działa, dopóki nie dodasz produktów',
 
     'target_dialog_title' => 'Dodaj cele',
 

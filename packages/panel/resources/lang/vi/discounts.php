@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Giới hạn chương trình này trong một phần danh mục. Để trống một khối nghĩa là áp dụng cho tất cả.',
 
+    'section_targets_required_description' => 'Chọn các sản phẩm mà chương trình này áp dụng. Chương trình không có tác dụng cho đến khi mỗi khối bên dưới có ít nhất một sản phẩm.',
+
     'section_customers' => 'Khách hàng đủ điều kiện',
 
     'bucket_limitation' => 'Áp dụng cho',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Bỏ {label}',
 
     'target_empty' => 'Chưa chọn gì nên áp dụng cho tất cả.',
+
+    'target_empty_required' => 'Thêm ít nhất một sản phẩm. Trước đó, chương trình này không có tác dụng.',
+
+    'missing_targets_warning' => 'Chương trình này chưa có tác dụng. Thêm ít nhất một sản phẩm vào: {buckets}.',
+
+    'missing_targets_short' => 'Không có tác dụng cho đến khi thêm sản phẩm',
 
     'target_dialog_title' => 'Thêm mục tiêu',
 

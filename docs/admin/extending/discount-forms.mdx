@@ -43,6 +43,24 @@ interface DiscountTypeForm
 
 Scale money through `Currency::decimal_places` (via `PriceCalculator`), never a hardcoded factor — the same rule that applies to every price-handling code path in Lunar.
 
+## Buckets a type cannot do without
+
+By default, the edit page describes an empty bucket as applying to everything, which is how `PercentageOff` and `FixedAmountOff` treat an empty `limitation` bucket. A type that only discounts lines matching a bucket does nothing while that bucket is empty. `BuyXGetY` is one: with no qualifying products or no rewarded products, it matches no cart line.
+
+Such a form also implements `Lunar\Panel\Contracts\RequiresDiscountTargets`:
+
+```php
+namespace Lunar\Panel\Contracts;
+
+interface RequiresDiscountTargets
+{
+    /** @return array<int, string> */
+    public function requiredTargetBuckets(): array;
+}
+```
+
+`requiredTargetBuckets()` returns the buckets, from those `targetBuckets()` returns, that must each hold at least one target. The edit page then says an empty one leaves the discount doing nothing, shows a warning until each has a target, and the discounts list marks the discount. Saving is not blocked, so staff can save a discount part way through setting it up. `BuyXGetYForm` returns `['condition', 'reward']`.
+
 ## Registering a form
 
 Map the discount type class to its form class from the owning `Section`:

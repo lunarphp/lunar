@@ -68,6 +68,18 @@ describe('TargetChipList', () => {
         expect(wrapper.text()).toContain('discounts.target_empty');
     });
 
+    it('says an empty required block leaves the discount doing nothing', () => {
+        // Buy X Get Y matches no line without qualifying or rewarded products,
+        // so "applies to everything" would be the opposite of the truth.
+        const wrapper = mount(TargetChipList, {
+            props: { chips: { products: [] }, kinds: ['products'], label: 'Qualifying products', required: true },
+            global,
+        });
+
+        expect(wrapper.text()).toContain('discounts.target_empty_required');
+        expect(wrapper.text()).not.toMatch(/discounts\.target_empty(?!_required)/);
+    });
+
     it('emits the kind alongside the id when a chip is removed', async () => {
         const wrapper = mount(TargetChipList, {
             props: { chips, kinds: ['products', 'brands'], label: 'Applies to' },

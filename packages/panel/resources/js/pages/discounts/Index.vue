@@ -45,6 +45,8 @@ interface DiscountRow {
     ends_at: string | null;
     uses: number;
     max_uses: number | null;
+    /** Buckets the type does nothing without that are still empty. */
+    missing_targets: string[];
     priority: number;
     edit_url: string;
     // Extension-contributed columns land here under their own key.
@@ -370,6 +372,10 @@ const formatDate = (value: string | null): string | null =>
                         <div class="min-w-0">
                             <div class="text-[12.5px] font-medium text-ink-900 truncate">{{ row.name }}</div>
                             <div class="text-[11px] font-mono text-ink-500 truncate">{{ row.handle }}</div>
+                            <div v-if="(row.missing_targets as string[] | undefined)?.length" class="mt-0.5 flex items-center gap-1 text-[11px] text-warn-ink">
+                                <Icon name="alert" cls="sm" class="shrink-0" />
+                                <span class="truncate">{{ t('discounts.missing_targets_short') }}</span>
+                            </div>
                         </div>
                     </template>
 

@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Beperk deze korting tot een deel van de catalogus. Laat een blok leeg om overal te gelden.',
 
+    'section_targets_required_description' => 'Kies de producten waarmee deze korting werkt. Ze doet niets totdat elk blok hieronder er minstens één heeft.',
+
     'section_customers' => 'In aanmerking komende klanten',
 
     'bucket_limitation' => 'Geldt voor',
@@ -126,6 +128,12 @@ return [
     'target_remove' => '{label} verwijderen',
 
     'target_empty' => 'Niets geselecteerd, dus dit geldt voor alles.',
+
+    'target_empty_required' => 'Voeg minstens één product toe. Tot die tijd doet deze korting niets.',
+
+    'missing_targets_warning' => 'Deze korting doet nog niets. Voeg minstens één product toe aan: {buckets}.',
+
+    'missing_targets_short' => 'Doet niets totdat er producten zijn toegevoegd',
 
     'target_dialog_title' => 'Doelen toevoegen',
 

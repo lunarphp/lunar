@@ -25,7 +25,7 @@ it('renders the edit screen with the discount, its type schema and availability'
             ->where('discount.id', $discount->id)
             ->where('discount.type', PercentageOff::class)
             ->where('typeRegistered', true)
-            ->has('type', fn (Assert $type) => $type->hasAll(['class', 'label', 'component', 'buckets']))
+            ->has('type', fn (Assert $type) => $type->hasAll(['class', 'label', 'component', 'buckets', 'required_buckets']))
             ->has('availability.channels')
             ->has('availability.customer_groups')
             ->has('availabilityValues')

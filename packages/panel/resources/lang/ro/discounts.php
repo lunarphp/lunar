@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Restrângeți reducerea la o parte din catalog. Un bloc lăsat gol se aplică peste tot.',
 
+    'section_targets_required_description' => 'Alegeți produsele cu care funcționează această reducere. Nu are niciun efect până când fiecare bloc de mai jos are cel puțin unul.',
+
     'section_customers' => 'Clienți eligibili',
 
     'bucket_limitation' => 'Se aplică la',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Elimină {label}',
 
     'target_empty' => 'Nu e nimic selectat, deci se aplică la tot.',
+
+    'target_empty_required' => 'Adăugați cel puțin un produs. Până atunci, această reducere nu are niciun efect.',
+
+    'missing_targets_warning' => 'Această reducere încă nu are niciun efect. Adăugați cel puțin un produs la: {buckets}.',
+
+    'missing_targets_short' => 'Fără efect până la adăugarea produselor',
 
     'target_dialog_title' => 'Adaugă ținte',
 

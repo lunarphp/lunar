@@ -20,6 +20,11 @@ const props = defineProps<{
     kinds: string[];
     label: string;
     description?: string;
+    /**
+     * The discount does nothing while this block is empty (Buy X Get Y's
+     * qualifying and rewarded products), so empty must not read as "everything".
+     */
+    required?: boolean;
 }>();
 
 const emit = defineEmits<{ add: []; remove: [kind: string, id: number] }>();
@@ -63,6 +68,7 @@ const total = computed(() => props.kinds.reduce((sum, kind) => sum + (props.chip
                 </template>
             </div>
         </div>
+        <div v-else-if="required" class="text-[11.5px] text-warn-ink">{{ t('discounts.target_empty_required') }}</div>
         <div v-else class="text-[11.5px] text-ink-500">{{ t('discounts.target_empty') }}</div>
     </div>
 </template>

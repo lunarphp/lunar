@@ -5,6 +5,7 @@ namespace Lunar\Panel\Support;
 use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Panel\Contracts\DiscountTypeForm;
+use Lunar\Panel\Contracts\RequiresDiscountTargets;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Support\DiscountTypeForms\RawDataForm;
 
@@ -25,7 +26,7 @@ class DiscountTypeSchema
      * Every registered type as a prop bundle for the type picker and the
      * config block.
      *
-     * @return array<int, array{class: class-string, label: string, component: string, buckets: array<int, string>}>
+     * @return array<int, array{class: class-string, label: string, component: string, buckets: array<int, string>, required_buckets: array<int, string>}>
      */
     public function all(): array
     {
@@ -41,7 +42,7 @@ class DiscountTypeSchema
      * still renders.
      *
      * @param  class-string  $discountType
-     * @return array{class: class-string, label: string, component: string, buckets: array<int, string>}
+     * @return array{class: class-string, label: string, component: string, buckets: array<int, string>, required_buckets: array<int, string>}
      */
     public function describe(string $discountType, ?string $label = null): array
     {
@@ -52,7 +53,22 @@ class DiscountTypeSchema
             'label' => $label ?? $this->labelFor($discountType),
             'component' => $form->component(),
             'buckets' => $form->targetBuckets(),
+            'required_buckets' => $this->requiredBuckets($discountType),
         ];
+    }
+
+    /**
+     * The buckets the type does nothing without, empty for a type where an
+     * empty bucket means "everything".
+     *
+     * @param  class-string  $discountType
+     * @return array<int, string>
+     */
+    public function requiredBuckets(string $discountType): array
+    {
+        $form = $this->formFor($discountType);
+
+        return $form instanceof RequiresDiscountTargets ? $form->requiredTargetBuckets() : [];
     }
 
     /**

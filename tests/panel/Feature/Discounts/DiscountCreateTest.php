@@ -18,7 +18,7 @@ it('renders the create screen with the registered types', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('discounts/Create')
             ->has('types', 3)
-            ->has('types.0', fn (Assert $type) => $type->hasAll(['class', 'label', 'component', 'buckets']))
+            ->has('types.0', fn (Assert $type) => $type->hasAll(['class', 'label', 'component', 'buckets', 'required_buckets']))
             ->has('urls.store')
         );
 });

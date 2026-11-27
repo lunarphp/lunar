@@ -23,7 +23,28 @@ let wrapper: VueWrapper | null = null;
 
 const emptyLimitation = { products: [], variants: [], collections: [], brands: [], customers: [] };
 
-function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
+const emptyExclusion = { products: [], variants: [], collections: [], brands: [] };
+const emptyProductBucket = { products: [], variants: [], collections: [] };
+
+const percentageOff = {
+    type: { class: 'PercentageOff', label: 'Percentage off', component: 'PercentageOffForm', buckets: ['limitation', 'exclusion'], required_buckets: [] },
+    targets: {
+        'target:limitation': { ...emptyLimitation },
+        'target:exclusion': { ...emptyExclusion },
+    },
+};
+
+const buyXGetY = {
+    type: { class: 'BuyXGetY', label: 'Buy X get Y', component: 'BuyXGetYForm', buckets: ['condition', 'reward'], required_buckets: ['condition', 'reward'] },
+    targets: {
+        // Eligible customers live under limitation for every type.
+        'target:limitation': { ...emptyLimitation },
+        'target:condition': { ...emptyProductBucket },
+        'target:reward': { ...emptyProductBucket },
+    },
+};
+
+function mountEdit(discount: Record<string, unknown> = {}, discountType: typeof percentageOff | typeof buyXGetY = percentageOff): VueWrapper {
     wrapper = mount(Edit, {
         props: {
             discount: {
@@ -46,18 +67,12 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
                 updated_at: '2026-01-01',
                 ...discount,
             },
-            type: { class: 'PercentageOff', label: 'Percentage off', component: 'PercentageOffForm', buckets: ['limitation', 'exclusion'] },
+            type: discountType.type,
             typeRegistered: true,
             draft: null,
             currencies: [],
-            targets: {
-                'target:limitation': { ...emptyLimitation },
-                'target:exclusion': { products: [], variants: [], collections: [], brands: [] },
-            },
-            targetChips: {
-                'target:limitation': { ...emptyLimitation },
-                'target:exclusion': { products: [], variants: [], collections: [], brands: [] },
-            },
+            targets: JSON.parse(JSON.stringify(discountType.targets)),
+            targetChips: JSON.parse(JSON.stringify(discountType.targets)),
             availability: { channels: [], customer_groups: [] },
             availabilityValues: {},
             activities: [],
@@ -92,6 +107,7 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
                 AvailabilityCard: true,
                 DiscountConditions: true,
                 PercentageOffForm: true,
+                BuyXGetYForm: true,
                 TargetPickerDialog: true,
             },
         },
@@ -102,6 +118,9 @@ function mountEdit(discount: Record<string, unknown> = {}): VueWrapper {
 
 const customerList = (page: VueWrapper) =>
     page.findAllComponents(TargetChipList).find((list) => list.props('label') === 'discounts.bucket_customers')!;
+
+const productList = (page: VueWrapper, bucket: string) =>
+    page.findAllComponents(TargetChipList).find((list) => list.props('label') === `discounts.bucket_${bucket}`)!;
 
 const pickerFor = (page: VueWrapper, kinds: string[]) =>
     page.findAllComponents(TargetPickerDialog).find((picker) => JSON.stringify(picker.props('kinds')) === JSON.stringify(kinds))!;
@@ -126,6 +145,47 @@ describe('discounts/Edit', () => {
 
         expect(customerList(page).props('chips')).toEqual({
             customers: [{ id: 42, label: 'Ada Kshlerin', hint: null }],
+        });
+    });
+
+    describe('empty target blocks', () => {
+        it('say an empty percentage off block applies to everything, with no warning', () => {
+            const page = mountEdit({}, percentageOff);
+
+            expect(productList(page, 'limitation').text()).toContain('discounts.target_empty');
+            expect(productList(page, 'limitation').text()).not.toContain('discounts.target_empty_required');
+            expect(productList(page, 'exclusion').text()).not.toContain('discounts.target_empty_required');
+            expect(page.text()).toContain('discounts.section_targets_description');
+            expect(page.find('[data-testid="missing-targets-warning"]').exists()).toBe(false);
+        });
+
+        it('say an empty buy x get y block leaves the discount doing nothing, and warn', () => {
+            const page = mountEdit({}, buyXGetY);
+
+            expect(productList(page, 'condition').text()).toContain('discounts.target_empty_required');
+            expect(productList(page, 'reward').text()).toContain('discounts.target_empty_required');
+            expect(page.text()).toContain('discounts.section_targets_required_description');
+            expect(page.text()).not.toContain('discounts.section_targets_description');
+            expect(page.find('[data-testid="missing-targets-warning"]').exists()).toBe(true);
+        });
+
+        it('clears the buy x get y warning once both blocks have a product', async () => {
+            const page = mountEdit({}, buyXGetY);
+
+            productList(page, 'condition').vm.$emit('add');
+            await nextTick();
+            pickerFor(page, ['products', 'variants', 'collections']).vm.$emit('add', [{ kind: 'products', id: 1, label: 'Widget', hint: null }]);
+            await nextTick();
+
+            // One block filled is still a discount that does nothing.
+            expect(page.find('[data-testid="missing-targets-warning"]').exists()).toBe(true);
+
+            productList(page, 'reward').vm.$emit('add');
+            await nextTick();
+            pickerFor(page, ['products', 'variants', 'collections']).vm.$emit('add', [{ kind: 'products', id: 2, label: 'Gadget', hint: null }]);
+            await nextTick();
+
+            expect(page.find('[data-testid="missing-targets-warning"]').exists()).toBe(false);
         });
     });
 

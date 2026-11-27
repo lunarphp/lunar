@@ -89,6 +89,8 @@ return [
 
     'section_targets_description' => 'Limitez cette réduction à une partie du catalogue. Un bloc laissé vide s\'applique partout.',
 
+    'section_targets_required_description' => 'Choisissez les produits concernés par cette réduction. Elle reste sans effet tant que chaque bloc ci-dessous n\'en contient pas au moins un.',
+
     'section_customers' => 'Clients éligibles',
 
     'bucket_limitation' => 'S\'applique à',
@@ -126,6 +128,12 @@ return [
     'target_remove' => 'Retirer {label}',
 
     'target_empty' => 'Rien de sélectionné : s\'applique donc à tout.',
+
+    'target_empty_required' => 'Ajoutez au moins un produit. D\'ici là, cette réduction reste sans effet.',
+
+    'missing_targets_warning' => 'Cette réduction est encore sans effet. Ajoutez au moins un produit à : {buckets}.',
+
+    'missing_targets_short' => 'Sans effet tant qu\'aucun produit n\'est ajouté',
 
     'target_dialog_title' => 'Ajouter des cibles',
 
