@@ -9,6 +9,7 @@ use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Region;
+use Lunar\Core\States\Channel\Active;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
 
 class RegionIndexController
@@ -67,10 +68,34 @@ class RegionIndexController
             'channels' => Channel::query()->orderBy('name')->get(['id', 'name']),
             'currencies' => Currency::query()->orderBy('code')->get(['id', 'code']),
             'languages' => Language::query()->orderBy('code')->get(['id', 'code']),
+            'defaults' => $this->createDefaults(),
             'urls' => [
                 'index' => route('panel.settings.regions.index'),
                 'store' => route('panel.settings.regions.store'),
             ],
         ]);
+    }
+
+    /**
+     * The channel and currency the create form starts on: the store's default
+     * channel and currency, falling back to the first active channel and the
+     * first enabled currency, then to the first record of each.
+     *
+     * @return array{channel_id: int|null, currency_id: int|null}
+     */
+    protected function createDefaults(): array
+    {
+        $channel = Channel::getDefault()
+            ?? Channel::query()->whereState('status', Active::class)->orderBy('name')->first()
+            ?? Channel::query()->orderBy('name')->first();
+
+        $currency = Currency::getDefault()
+            ?? Currency::query()->where('enabled', true)->orderBy('code')->first()
+            ?? Currency::query()->orderBy('code')->first();
+
+        return [
+            'channel_id' => $channel?->id,
+            'currency_id' => $currency?->id,
+        ];
     }
 }
