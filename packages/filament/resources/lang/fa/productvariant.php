@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'On Backorder',
+        'continue_selling' => [
+            'label' => 'ادامه فروش در صورت اتمام موجودی',
+            'tooltip' => 'در صورت فعال بودن، این گونه بدون توجه به موجودی قابل سفارش است. در صورت غیرفعال بودن، مشتریان فقط می‌توانند کالای موجود را بخرند.',
         ],
-        'selling_policy' => [
-            'label' => 'سیاست فروش',
-            'tooltip' => 'این تنوع چه زمانی قابل خرید است. «موجود در انبار» فقط تا زمانی که موجودی هست می‌فروشد؛ «موجود در انبار یا پیش‌خرید» سهمیه پیش‌خرید را نیز می‌فروشد؛ «همیشه» موجودی را کاملاً نادیده می‌گیرد.',
-            'options' => [
-                'always' => 'همیشه',
-                'in_stock' => 'موجود در انبار',
-                'in_stock_or_on_backorder' => 'موجود در انبار یا پیش‌خرید',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'فروش در برابر موجودی ورودی',
+            'tooltip' => 'موجودی ورودی به‌عنوان موجود محاسبه می‌شود تا مشتریان بتوانند واحدهای مورد انتظار را سفارش دهند.',
         ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',

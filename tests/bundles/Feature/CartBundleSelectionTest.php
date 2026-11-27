@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Bundles\Models\Bundle;
 use Lunar\Bundles\Models\BundleComponent;
 use Lunar\Bundles\Models\BundleGroup;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\ProductVariant;
@@ -20,12 +19,12 @@ beforeEach(function () {
 
     $this->bundleVariant = Catalogue::variant($this->currency, 5000);
     $this->bundle = Bundle::factory()->create(['product_variant_id' => $this->bundleVariant->id]);
-    $this->body = Catalogue::variant($this->currency, 3000, stock: 10, attributes: ['selling_policy' => SellingPolicy::InStock]);
+    $this->body = Catalogue::variant($this->currency, 3000, stock: 10, attributes: ['continue_selling' => false]);
     BundleComponent::factory()->create(['bundle_id' => $this->bundle->id, 'product_variant_id' => $this->body->id]);
 
     $this->lens = BundleGroup::factory()->create(['bundle_id' => $this->bundle->id, 'min_selections' => 1, 'max_selections' => 1]);
-    $this->lensA = Catalogue::variant($this->currency, 1000, stock: 10, attributes: ['selling_policy' => SellingPolicy::InStock]);
-    $this->lensB = Catalogue::variant($this->currency, 2000, stock: 1, attributes: ['selling_policy' => SellingPolicy::InStock]);
+    $this->lensA = Catalogue::variant($this->currency, 1000, stock: 10, attributes: ['continue_selling' => false]);
+    $this->lensB = Catalogue::variant($this->currency, 2000, stock: 1, attributes: ['continue_selling' => false]);
     $this->lensAComponent = BundleComponent::factory()->create(['bundle_id' => $this->bundle->id, 'bundle_group_id' => $this->lens->id, 'product_variant_id' => $this->lensA->id, 'default' => true]);
     $this->lensBComponent = BundleComponent::factory()->create(['bundle_id' => $this->bundle->id, 'bundle_group_id' => $this->lens->id, 'product_variant_id' => $this->lensB->id]);
 });

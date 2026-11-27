@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'En Pedido Pendiente',
+        'continue_selling' => [
+            'label' => 'Seguir vendiendo sin stock',
+            'tooltip' => 'Si está activado, esta variante se puede pedir sin importar el stock. Si está desactivado, los clientes solo pueden comprar lo disponible.',
         ],
-        'selling_policy' => [
-            'label' => 'Política de venta',
-            'tooltip' => 'Cuándo se puede comprar esta variante. «En Stock» vende solo mientras haya unidades disponibles; «En Stock o en Pedido Pendiente» también vende el margen de pedido pendiente; «Siempre» ignora el stock por completo.',
-            'options' => [
-                'always' => 'Siempre',
-                'in_stock' => 'En Stock',
-                'in_stock_or_on_backorder' => 'En Stock o en Pedido Pendiente',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Vender contra stock entrante',
+            'tooltip' => 'Cuenta el stock entrante como disponible, para que los clientes puedan pedir unidades que esperas recibir.',
         ],
         'unit_quantity' => [
             'label' => 'Cantidad por Unidad',

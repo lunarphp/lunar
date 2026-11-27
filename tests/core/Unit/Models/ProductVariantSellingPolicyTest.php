@@ -3,70 +3,64 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;
 use Lunar\Core\DataObjects\VariantInventory;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
 uses(RefreshDatabase::class);
 
-test('selling_policy casts to the enum', function () {
-    $variant = ProductVariant::factory()->create(['selling_policy' => 'in_stock']);
+/**
+ * A variant with 30 available and 50 incoming, so each flag's effect on the
+ * figure is visible.
+ */
+function variantWithIncoming(ProductVariant $variant): ProductVariant
+{
+    $variant->forceFill(['stock_incoming' => 50])->save();
 
-    expect($variant->refresh()->selling_policy)->toBe(SellingPolicy::InStock);
+    return $variant->refresh();
+}
+
+test('a new variant continues selling and ignores incoming stock', function () {
+    $variant = ProductVariant::factory()->create()->refresh();
+
+    expect($variant->continue_selling)->toBeTrue()
+        ->and($variant->sell_against_incoming)->toBeFalse();
 });
 
-test('always reports physical stock only and never adds backorder', function () {
-    $variant = ProductVariant::factory()->inStock(30)->create([
-        'selling_policy' => SellingPolicy::Always,
-        'backorder' => 50,
-    ]);
+test('a variant that continues selling reports available stock only', function () {
+    $variant = variantWithIncoming(ProductVariant::factory()->inStock(30)->create());
 
-    // The bug fix: Always no longer inflates the figure with the backorder allowance.
-    expect($variant->refresh()->getTotalInventory())->toBe(30);
+    expect($variant->getTotalInventory())->toBe(30)
+        ->and($variant->canBeFulfilledAtQuantity(9999))->toBeTrue();
 });
 
-test('in_stock reports physical stock only', function () {
-    $variant = ProductVariant::factory()->inStock(30)->create([
-        'selling_policy' => SellingPolicy::InStock,
-        'backorder' => 50,
-    ]);
+test('a stock-bound variant sells only what is available', function () {
+    $variant = variantWithIncoming(ProductVariant::factory()->stockBound()->inStock(30)->create());
 
-    expect($variant->refresh()->getTotalInventory())->toBe(30);
+    expect($variant->getTotalInventory())->toBe(30)
+        ->and($variant->canBeFulfilledAtQuantity(30))->toBeTrue()
+        ->and($variant->canBeFulfilledAtQuantity(31))->toBeFalse();
 });
 
-test('in_stock_or_on_backorder adds the backorder allowance', function () {
-    $variant = ProductVariant::factory()->inStock(30)->create([
-        'selling_policy' => SellingPolicy::InStockOrOnBackorder,
-        'backorder' => 50,
-    ]);
+test('a variant selling against incoming adds incoming stock to available', function () {
+    $variant = variantWithIncoming(ProductVariant::factory()->sellsAgainstIncoming()->inStock(30)->create());
 
-    expect($variant->refresh()->getTotalInventory())->toBe(80);
+    expect($variant->getTotalInventory())->toBe(80)
+        ->and($variant->canBeFulfilledAtQuantity(80))->toBeTrue()
+        ->and($variant->canBeFulfilledAtQuantity(81))->toBeFalse();
 });
 
-test('always can be fulfilled at any quantity beyond its inventory', function () {
-    $variant = ProductVariant::factory()->inStock(5)->create([
-        'selling_policy' => SellingPolicy::Always,
-        'backorder' => 0,
-    ]);
+test('continuing to sell counts incoming stock when selling against it', function () {
+    $variant = variantWithIncoming(ProductVariant::factory()->inStock(30)->create([
+        'sell_against_incoming' => true,
+    ]));
 
-    expect($variant->refresh()->canBeFulfilledAtQuantity(9999))->toBeTrue();
-});
-
-test('in_stock cannot be fulfilled beyond available stock', function () {
-    $variant = ProductVariant::factory()->inStock(5)->create([
-        'selling_policy' => SellingPolicy::InStock,
-        'backorder' => 0,
-    ]);
-
-    expect($variant->refresh()->canBeFulfilledAtQuantity(6))->toBeFalse();
-    expect($variant->refresh()->canBeFulfilledAtQuantity(5))->toBeTrue();
+    expect($variant->getTotalInventory())->toBe(80)
+        ->and($variant->canBeFulfilledAtQuantity(9999))->toBeTrue();
 });
 
 test('inventory answers come from the ResolvesInventory seam', function () {
-    $variant = ProductVariant::factory()->inStock(1)->create([
-        'selling_policy' => SellingPolicy::InStock,
-    ]);
+    $variant = ProductVariant::factory()->stockBound()->inStock(1)->create();
 
     app()->bind(ResolvesInventory::class, fn () => new class implements ResolvesInventory
     {

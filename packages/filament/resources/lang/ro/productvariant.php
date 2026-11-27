@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'Cod de bare (UPC/EAN)',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'La precomandă',
+        'continue_selling' => [
+            'label' => 'Continuă vânzarea când stocul este epuizat',
+            'tooltip' => 'Când este activat, această variantă poate fi comandată indiferent de stoc. Când este dezactivat, clienții pot cumpăra doar ce este disponibil.',
         ],
-        'selling_policy' => [
-            'label' => 'Politică de vânzare',
-            'tooltip' => 'Când poate fi cumpărată această variantă. „În stoc” vinde doar cât timp există unități disponibile; „În stoc sau la precomandă” vinde și limita de precomandă; „Întotdeauna” ignoră complet stocul.',
-            'options' => [
-                'always' => 'Întotdeauna',
-                'in_stock' => 'În stoc',
-                'in_stock_or_on_backorder' => 'În stoc sau la precomandă',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Vinde din stocul în curs de sosire',
+            'tooltip' => 'Stocul în curs de sosire este considerat disponibil, astfel încât clienții pot comanda unitățile așteptate.',
         ],
         'unit_quantity' => [
             'label' => 'Cantitate unitate',

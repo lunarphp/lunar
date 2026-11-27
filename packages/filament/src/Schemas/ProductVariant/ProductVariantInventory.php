@@ -13,7 +13,7 @@ use Lunar\Filament\Support\Concerns\CallsHooks;
 
 /**
  * The built-in, swappable per-variant inventory controls: a read-only stock
- * rollup summary, the selling-policy fields, and recent movements. Stock is
+ * rollup summary, the selling fields, and recent movements. Stock is
  * adjusted through the AdjustStock header action, never edited inline — the
  * levels are ledger-derived.
  *
@@ -78,9 +78,10 @@ class ProductVariantInventory
     {
         return Section::make()
             ->schema([
-                ProductVariantForm::getSellingPolicyComponent()->live(),
-                ProductVariantForm::getBackorderComponent()
-                    ->disabled(fn (Get $get): bool => $get('selling_policy') !== 'in_stock_or_on_backorder'),
+                ProductVariantForm::getContinueSellingComponent()->live(),
+                // Incoming stock only matters when stock is binding.
+                ProductVariantForm::getSellAgainstIncomingComponent()
+                    ->visible(fn (Get $get): bool => ! $get('continue_selling')),
                 ProductVariantForm::getUnitQtyComponent(),
                 ProductVariantForm::getQuantityIncrementComponent(),
                 ProductVariantForm::getMinQuantityComponent(),

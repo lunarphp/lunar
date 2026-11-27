@@ -12,7 +12,7 @@ uses(TestCase::class)
     ->group('validation.cart_line');
 uses(RefreshDatabase::class);
 
-test('can validate available stock', function (int $stock, int $backorder, int $quantity, string $sellingPolicy, bool $shouldValidate = true) {
+test('can validate available stock', function (int $stock, int $incoming, int $quantity, bool $continueSelling, bool $sellAgainstIncoming, bool $shouldValidate) {
     $currency = Currency::factory()->create();
 
     $cart = Cart::factory()->create([
@@ -20,13 +20,15 @@ test('can validate available stock', function (int $stock, int $backorder, int $
     ]);
 
     $purchasable = ProductVariant::factory()->inStock($stock)->create([
-        'backorder' => $backorder,
-        'selling_policy' => $sellingPolicy,
+        'continue_selling' => $continueSelling,
+        'sell_against_incoming' => $sellAgainstIncoming,
     ]);
+
+    $purchasable->forceFill(['stock_incoming' => $incoming])->save();
 
     $validator = (new CartLineStock)->using(
         cart: $cart,
-        purchasable: $purchasable,
+        purchasable: $purchasable->refresh(),
         quantity: $quantity,
         meta: []
     );
@@ -39,53 +41,12 @@ test('can validate available stock', function (int $stock, int $backorder, int $
 
     $expectation->toThrow(CartException::class);
 })->with([
-    [
-        100,
-        0,
-        150,
-        'always',
-        true,
-    ],
-    [
-        0,
-        0,
-        150,
-        'always',
-        true,
-    ],
-    [
-        500,
-        0,
-        150,
-        'in_stock',
-        true,
-    ],
-    [
-        150,
-        0,
-        150,
-        'in_stock',
-        true,
-    ],
-    [
-        0,
-        0,
-        150,
-        'in_stock',
-        false,
-    ],
-    [
-        0,
-        150,
-        150,
-        'in_stock',
-        false,
-    ],
-    [
-        0,
-        150,
-        150,
-        'in_stock_or_on_backorder',
-        true,
-    ],
+    'continue selling, stock below quantity' => [100, 0, 150, true, false, true],
+    'continue selling, no stock' => [0, 0, 150, true, false, true],
+    'stock bound, enough stock' => [500, 0, 150, false, false, true],
+    'stock bound, exactly enough stock' => [150, 0, 150, false, false, true],
+    'stock bound, no stock' => [0, 0, 150, false, false, false],
+    'stock bound, only incoming' => [0, 150, 150, false, false, false],
+    'against incoming, stock plus incoming covers it' => [50, 100, 150, false, true, true],
+    'against incoming, one short' => [50, 99, 150, false, true, false],
 ]);

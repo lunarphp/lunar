@@ -1,6 +1,6 @@
 # 0082 — Selling-policy rework
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs (with Claude)
 - Created: 2026-09-09
 - TODO item: Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
@@ -199,8 +199,8 @@ This retires the panel's stale "Purchasable" label.
 ### Factories
 
 `ProductVariantFactory` defaults to `(continue_selling: true, sell_against_incoming: false)`;
-states `inStock()` and `sellsAgainstIncoming()` cover the other combinations so tests never
-hand-set the booleans.
+states `stockBound()` and `sellsAgainstIncoming()` cover the other combinations so tests never
+hand-set the booleans. (`inStock()` already seeds on-hand stock, so it keeps that meaning.)
 
 ## Alternatives considered
 
@@ -292,17 +292,21 @@ None.
 
 ## Implementation plan
 
-- [ ] Slice 1 — core schema + model: booleans on the baseline, enum removal,
-  `ResolveInventory` rework, `GenerateProductVariants`, factory states, tests (including a
-  bundle whose components sell against incoming).
+Each slice leaves `2.x` working, so the slice that removes the enum also moves every reader of
+it, including both admins' forms, to the booleans.
+
+- [x] Slice 1 — core schema + model: booleans on the baseline, enum removal,
+  `ResolveInventory` rework, `GenerateProductVariants`, factory states; the panel's
+  `InventoryCard` toggles, `VariantFields` and dashboard widgets; the Filament bridge and admin
+  inventory forms; lang keys across 16 locales; reference docs and the alpha upgrade guide.
 - [ ] Slice 2 — `SetIncomingStock` action + contract, `ActionServiceProvider` registration,
-  tests.
+  `setIncomingStock()` verb on the variant, tests.
 - [ ] Slice 3 — `ValidateCartStock` + `InsufficientStockException` in
   `OrderCreateValidation`, Stripe intent cancellation and PayPal orphan event on
   driver-created order failure, tests, docs.
-- [ ] Slice 4 — panel: toggles, inline incoming editor and route, disable toggle, dashboard
-  widgets, lang keys across 16 locales.
-- [ ] Slice 5 — Filament bridge + admin resources: toggles, incoming rollup + header action,
-  disable toggle, lang keys across 16 locales.
+- [ ] Slice 4 — panel: inline incoming editor and route, disable toggle, lang keys across 16
+  locales.
+- [ ] Slice 5 — Filament bridge + admin resources: incoming rollup + header action, disable
+  toggle, lang keys across 16 locales.
 - [ ] Slice 6 — upgrade package: mode → booleans data step, incoming seed, column drops,
   Rector rule, upgrade guide.

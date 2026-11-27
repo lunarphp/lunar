@@ -404,7 +404,8 @@ class GenerateProductVariants implements GeneratesProductVariants
         $variant = $product->variants()->create([
             'tax_class_id' => $template?->tax_class_id ?? TaxClass::getDefault()->id,
             'shippable' => $template?->shippable ?? true,
-            'selling_policy' => $template?->selling_policy ?? 'always',
+            'continue_selling' => $template?->continue_selling ?? true,
+            'sell_against_incoming' => $template?->sell_against_incoming ?? false,
             'unit_quantity' => $template?->unit_quantity ?? 1,
             'min_quantity' => $template?->min_quantity ?? 1,
             'quantity_increment' => $template?->quantity_increment ?? 1,

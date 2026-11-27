@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'In Stock',
         ],
-        'backorder' => [
-            'label' => 'On Backorder',
-        ],
-        'selling_policy' => [
-            'label' => 'سیاست فروش',
-            'options' => [
-                'always' => 'همیشه',
-                'in_stock' => 'موجود در انبار',
-                'in_stock_or_on_backorder' => 'موجود در انبار یا پیش‌خرید',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',
             'helper_text' => 'How many individual items make up 1 unit.',

@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Bundles\Contracts\Actions\DefinesBundle;
 use Lunar\Bundles\Enums\BundlePricing;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Tests\Bundles\Support\Catalogue;
@@ -17,8 +16,8 @@ beforeEach(function () {
     $this->cart = Catalogue::checkoutCart($this->currency);
 
     $this->bundleVariant = Catalogue::variant($this->currency, 5000);
-    $this->body = Catalogue::variant($this->currency, 3000, stock: 10, attributes: ['selling_policy' => SellingPolicy::InStock]);
-    $this->bag = Catalogue::variant($this->currency, 500, stock: 20, attributes: ['selling_policy' => SellingPolicy::InStock]);
+    $this->body = Catalogue::variant($this->currency, 3000, stock: 10, attributes: ['continue_selling' => false]);
+    $this->bag = Catalogue::variant($this->currency, 500, stock: 20, attributes: ['continue_selling' => false]);
 
     $this->bundle = app(DefinesBundle::class)->execute($this->bundleVariant, BundlePricing::Fixed);
     $this->bundle->syncComponents([
@@ -109,7 +108,7 @@ test('re-running creation for a draft order replaces the component lines', funct
 });
 
 test('a mixed physical and digital bundle fulfils the physical part and records the digital one', function () {
-    $key = Catalogue::variant($this->currency, 900, stock: 5, attributes: ['shippable' => false, 'selling_policy' => SellingPolicy::InStock]);
+    $key = Catalogue::variant($this->currency, 900, stock: 5, attributes: ['shippable' => false, 'continue_selling' => false]);
     $this->bundle->syncComponents([
         ['variant' => $this->body, 'quantity' => 1],
         ['variant' => $key, 'quantity' => 1],
@@ -133,8 +132,8 @@ test('a mixed physical and digital bundle fulfils the physical part and records 
 
 test('a selected configuration is recorded as sold', function () {
     $lens = $this->bundle->syncGroups([['name' => ['en' => 'Lens'], 'min_selections' => 1, 'max_selections' => 1]])->groups->first();
-    $lensA = Catalogue::variant($this->currency, 1000, stock: 5, attributes: ['selling_policy' => SellingPolicy::InStock]);
-    $lensB = Catalogue::variant($this->currency, 2000, stock: 5, attributes: ['selling_policy' => SellingPolicy::InStock]);
+    $lensA = Catalogue::variant($this->currency, 1000, stock: 5, attributes: ['continue_selling' => false]);
+    $lensB = Catalogue::variant($this->currency, 2000, stock: 5, attributes: ['continue_selling' => false]);
     $this->bundle->syncComponents([
         ['variant' => $this->body, 'quantity' => 1],
         ['variant' => $lensA, 'quantity' => 1, 'group' => $lens, 'default' => true],

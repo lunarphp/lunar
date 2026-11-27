@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Còn hàng',
         ],
-        'backorder' => [
-            'label' => 'Đặt trước',
-        ],
-        'selling_policy' => [
-            'label' => 'Chính sách bán hàng',
-            'options' => [
-                'always' => 'Luôn luôn',
-                'in_stock' => 'Còn hàng',
-                'in_stock_or_on_backorder' => 'Còn hàng hoặc đặt trước',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Số lượng đơn vị',
             'helper_text' => 'Số lượng sản phẩm đơn lẻ tạo thành 1 đơn vị.',

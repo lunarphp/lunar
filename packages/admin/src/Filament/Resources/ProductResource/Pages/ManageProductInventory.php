@@ -18,16 +18,16 @@ use Lunar\Filament\Schemas\ProductVariant\ProductVariantInventory;
 /**
  * Single-variant convenience: the variant's inventory controls surfaced on the
  * product. The full per-variant view lives on the variant Inventory page; this
- * mirrors the editable selling-policy fields, a read-only rollup summary, and
+ * mirrors the editable selling fields, a read-only rollup summary, and
  * the AdjustStock action.
  */
 class ManageProductInventory extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
 
-    public ?string $backorder = null;
+    public bool $continue_selling = true;
 
-    public ?string $selling_policy = null;
+    public bool $sell_against_incoming = false;
 
     public ?int $unit_quantity = 1;
 
@@ -75,8 +75,8 @@ class ManageProductInventory extends BaseEditRecord
 
         $variant = $this->getVariant();
 
-        $this->backorder = $variant->backorder;
-        $this->selling_policy = $variant->selling_policy?->value;
+        $this->continue_selling = $variant->continue_selling;
+        $this->sell_against_incoming = $variant->sell_against_incoming;
         $this->unit_quantity = $variant->unit_quantity;
         $this->min_quantity = $variant->min_quantity;
         $this->quantity_increment = $variant->quantity_increment;

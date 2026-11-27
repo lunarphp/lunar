@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'طلب مسبق',
+        'continue_selling' => [
+            'label' => 'متابعة البيع عند نفاد المخزون',
+            'tooltip' => 'عند التفعيل، يمكن طلب هذا المتغير بغض النظر عن المخزون. عند الإيقاف، يمكن للعملاء شراء المتوفر فقط.',
         ],
-        'selling_policy' => [
-            'label' => 'سياسة البيع',
-            'tooltip' => 'متى يمكن شراء هذا المتغير. "متوفر في المخزون" يبيع فقط أثناء توفر الوحدات؛ "متوفر في المخزون أو طلب مسبق" يبيع أيضًا ضمن حد الطلب المسبق؛ "دائمًا" يتجاهل المخزون تمامًا.',
-            'options' => [
-                'always' => 'دائمًا',
-                'in_stock' => 'متوفر في المخزون',
-                'in_stock_or_on_backorder' => 'متوفر في المخزون أو طلب مسبق',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'البيع من المخزون الوارد',
+            'tooltip' => 'احتساب المخزون الوارد كمتاح، ليتمكن العملاء من طلب الوحدات التي تنتظر وصولها.',
         ],
         'unit_quantity' => [
             'label' => 'كمية الوحدة',

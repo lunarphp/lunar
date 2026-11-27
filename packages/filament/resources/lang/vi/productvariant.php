@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'Mã UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Đặt trước',
+        'continue_selling' => [
+            'label' => 'Tiếp tục bán khi hết hàng',
+            'tooltip' => 'Khi bật, biến thể này có thể được đặt bất kể tồn kho. Khi tắt, khách hàng chỉ có thể mua số lượng còn sẵn.',
         ],
-        'selling_policy' => [
-            'label' => 'Chính sách bán hàng',
-            'tooltip' => 'Khi nào có thể mua biến thể này. „Còn hàng” chỉ bán khi còn đơn vị; „Còn hàng hoặc đặt trước” bán thêm cả hạn mức đặt trước; „Luôn luôn” bỏ qua hoàn toàn tồn kho.',
-            'options' => [
-                'always' => 'Luôn luôn',
-                'in_stock' => 'Còn hàng',
-                'in_stock_or_on_backorder' => 'Còn hàng hoặc đặt trước',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Bán theo hàng sắp về',
+            'tooltip' => 'Tính hàng sắp về là còn sẵn, để khách hàng có thể đặt những đơn vị bạn đang chờ nhận.',
         ],
         'unit_quantity' => [
             'label' => 'Số lượng đơn vị',

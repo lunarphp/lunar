@@ -6,7 +6,7 @@ namespace Lunar\Core\DataObjects;
  * A variant's sellable inventory as answered by the `ResolvesInventory` seam.
  *
  * `available` is the number of units that can be sold now; `unlimited` means
- * selling continues regardless of that number (the "always" selling policy).
+ * selling continues regardless of that number (`continue_selling`).
  */
 final readonly class VariantInventory
 {

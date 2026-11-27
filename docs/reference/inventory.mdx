@@ -278,19 +278,20 @@ This is the built-in `Lunar\Core\Contracts\TracksStock::syncStockCommitment()` i
 ## Sellability
 
 ```php
-$variant->getTotalInventory();          // sellable quantity, accounting for the selling policy
+$variant->getTotalInventory();          // sellable quantity, accounting for the selling flags
 $variant->canBeFulfilledAtQuantity(3);  // bool
 ```
 
-Both methods delegate to the [`ResolvesInventory` seam](#the-resolvesinventory-seam) below. The default implementation reads `stock_available`, adding `backorder` when the variant's `Lunar\Core\Enums\SellingPolicy` is `InStockOrOnBackorder`:
+Both methods delegate to the [`ResolvesInventory` seam](#the-resolvesinventory-seam) below. The default implementation reads `stock_available`, adding `stock_incoming` when the variant's `sell_against_incoming` flag is set:
 
-| Case | Value | `getTotalInventory()` |
+| `continue_selling` | `sell_against_incoming` | `getTotalInventory()` |
 |:-|:-|:-|
-| `Always` | `always` | `stock_available` (any quantity can be fulfilled regardless) |
-| `InStock` | `in_stock` | `stock_available` |
-| `InStockOrOnBackorder` | `in_stock_or_on_backorder` | `stock_available + backorder` |
+| `true` | `false` | `stock_available` (any quantity can be fulfilled regardless) |
+| `true` | `true` | `stock_available + stock_incoming` (any quantity can be fulfilled regardless) |
+| `false` | `false` | `stock_available` |
+| `false` | `true` | `stock_available + stock_incoming` |
 
-`canBeFulfilledAtQuantity()` returns `true` when the policy is `Always`, or when the requested quantity does not exceed `getTotalInventory()`.
+`canBeFulfilledAtQuantity()` returns `true` when `continue_selling` is set, or when the requested quantity does not exceed `getTotalInventory()`.
 
 <Info>
 The add-to-cart stock check is advisory: with no reservation taken at add-to-cart, stock can still sell out before an order is placed. `reserveStock()` is the supported way for a checkout to hold stock, optionally time-boxed, and close that window for flows that opt in.
@@ -317,12 +318,12 @@ The answer is a `Lunar\Core\DataObjects\VariantInventory`, a small read-only val
 | Property / method | Type | Description |
 |:-|:-|:-|
 | `available` | `int` | Units that can be sold now |
-| `unlimited` | `bool` | Selling continues regardless of `available` (the `Always` selling policy); defaults to `false` |
+| `unlimited` | `bool` | Selling continues regardless of `available` (the variant's `continue_selling` flag); defaults to `false` |
 | `allows(int $quantity)` | `bool` | `true` when `unlimited`, or when `$quantity` does not exceed `available` |
 
 `getTotalInventory()` returns `available`; `canBeFulfilledAtQuantity($quantity)` returns `allows($quantity)`.
 
-The default binding, `Lunar\Core\Actions\Products\ResolveInventory`, registered in the core `ActionServiceProvider`, applies the selling-policy table above to the variant's rollup columns. To answer differently for some variants and fall through for the rest, decorate the binding rather than replacing it:
+The default binding, `Lunar\Core\Actions\Products\ResolveInventory`, registered in the core `ActionServiceProvider`, applies the table above to the variant's rollup columns. To answer differently for some variants and fall through for the rest, decorate the binding rather than replacing it:
 
 ```php
 use Lunar\Core\Contracts\Actions\Products\ResolvesInventory;

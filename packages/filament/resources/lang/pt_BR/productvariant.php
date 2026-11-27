@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Sob encomenda',
+        'continue_selling' => [
+            'label' => 'Continuar vendendo sem estoque',
+            'tooltip' => 'Quando ativado, esta variante pode ser pedida independentemente do estoque. Quando desativado, os clientes só podem comprar o que está disponível.',
         ],
-        'selling_policy' => [
-            'label' => 'Política de venda',
-            'tooltip' => 'Quando esta variação pode ser comprada. «Em estoque» vende apenas enquanto houver unidades disponíveis; «Em estoque ou sob encomenda» também vende o limite de encomenda; «Sempre» ignora o estoque completamente.',
-            'options' => [
-                'always' => 'Sempre',
-                'in_stock' => 'Em estoque',
-                'in_stock_or_on_backorder' => 'Em estoque ou sob encomenda',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Vender com base no estoque a receber',
+            'tooltip' => 'Conta o estoque a receber como disponível, para que os clientes possam pedir unidades que você está esperando.',
         ],
         'unit_quantity' => [
             'label' => 'Quantidade por unidade',

@@ -72,26 +72,20 @@ class ProductVariantForm
         );
     }
 
-    public static function getBackorderComponent(): TextInput
+    public static function getContinueSellingComponent(): Toggle
     {
-        return TextInput::make('backorder')
-            ->label(__('lunar-filament::productvariant.form.backorder.label'))
+        return Toggle::make('continue_selling')
+            ->label(__('lunar-filament::productvariant.form.continue_selling.label'))
             ->hintIcon('heroicon-m-question-mark-circle')
-            ->hintIconTooltip(__('lunar-filament::productvariant.form.backorder.tooltip'))
-            ->numeric();
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.continue_selling.tooltip'));
     }
 
-    public static function getSellingPolicyComponent(): Select
+    public static function getSellAgainstIncomingComponent(): Toggle
     {
-        return Select::make('selling_policy')
-            ->options([
-                'always' => __('lunar-filament::productvariant.form.selling_policy.options.always'),
-                'in_stock' => __('lunar-filament::productvariant.form.selling_policy.options.in_stock'),
-                'in_stock_or_on_backorder' => __('lunar-filament::productvariant.form.selling_policy.options.in_stock_or_on_backorder'),
-            ])
-            ->label(__('lunar-filament::productvariant.form.selling_policy.label'))
+        return Toggle::make('sell_against_incoming')
+            ->label(__('lunar-filament::productvariant.form.sell_against_incoming.label'))
             ->hintIcon('heroicon-m-question-mark-circle')
-            ->hintIconTooltip(__('lunar-filament::productvariant.form.selling_policy.tooltip'));
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.sell_against_incoming.tooltip'));
     }
 
     public static function getUnitQtyComponent(): TextInput

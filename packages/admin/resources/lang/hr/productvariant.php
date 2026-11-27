@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'Na zalihi',
         ],
-        'backorder' => [
-            'label' => 'Naručeno unaprijed',
-        ],
-        'selling_policy' => [
-            'label' => 'Pravila prodaje',
-            'options' => [
-                'always' => 'Uvijek',
-                'in_stock' => 'Na zalihi',
-                'in_stock_or_on_backorder' => 'Na zalihi ili naručeno unaprijed',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'Broj komada',
             'helper_text' => 'Koliko pojedinačnih artikala čini 1 jedinicu.',

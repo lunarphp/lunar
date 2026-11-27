@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
-            'label' => 'Utánrendelhető',
+        'continue_selling' => [
+            'label' => 'Értékesítés folytatása készlethiány esetén',
+            'tooltip' => 'Bekapcsolva ez a változat a készlettől függetlenül rendelhető. Kikapcsolva a vásárlók csak az elérhető mennyiséget vehetik meg.',
         ],
-        'selling_policy' => [
-            'label' => 'Értékesítési szabály',
-            'tooltip' => 'Mikor vásárolható meg ez a változat. A „Raktáron” csak addig ad el, amíg van elérhető darab; a „Raktáron vagy utánrendelhető” az utánrendelési keretet is értékesíti; a „Mindig” teljesen figyelmen kívül hagyja a készletet.',
-            'options' => [
-                'always' => 'Mindig',
-                'in_stock' => 'Raktáron',
-                'in_stock_or_on_backorder' => 'Raktáron vagy utánrendelhető',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Értékesítés beérkező készletre',
+            'tooltip' => 'A beérkező készletet elérhetőként számolja, így a vásárlók a várt egységeket is megrendelhetik.',
         ],
         'unit_quantity' => [
             'label' => 'Egység mennyiség',

@@ -380,8 +380,8 @@ Lunar\Core\Models\ProductVariant
 | `volume_unit` | `string` `nullable` | Volume unit of measure |
 | `shippable` | `boolean` | Whether the variant requires shipping, default: `true` |
 | `fulfilment_methods` | `jsonb` `nullable` | The fulfilment method keys the variant may use, for example `["pickup"]` for a collection-only item. `null` allows any method. A variant that isn't shippable needs fulfilling only when this names a method, such as `["digital"]`. See [Restricting a purchasable's methods](/reference/fulfilments#restricting-a-purchasables-methods) |
-| `backorder` | `integer` | Backorder allowance, default: `0` |
-| `selling_policy` | `string` | Selling policy: `always`, `in_stock`, or `in_stock_or_on_backorder`, default: `always` |
+| `continue_selling` | `boolean` | Sell regardless of stock, default: `true` |
+| `sell_against_incoming` | `boolean` | Count `stock_incoming` as sellable alongside `stock_available`, default: `false` |
 | `stock_on_hand` | `integer` | Cached stock rollup. Default: `0` |
 | `stock_incoming` | `integer` | Default: `0` |
 | `stock_committed` | `integer` | Default: `0` |
@@ -418,15 +418,15 @@ Stock is a cached rollup derived from the variant's per-location stock levels an
 
 ### Selling Policy
 
-`selling_policy` decides whether a variant can be sold relative to its stock, cast to the `Lunar\Core\Enums\SellingPolicy` enum:
+Two booleans decide whether a variant can be sold relative to its stock:
 
-```php
-use Lunar\Core\Enums\SellingPolicy;
+| `continue_selling` | `sell_against_incoming` | Sells |
+|:-|:-|:-|
+| `true` | either | Any quantity, regardless of stock (the default) |
+| `false` | `false` | Up to `stock_available` |
+| `false` | `true` | Up to `stock_available + stock_incoming` |
 
-SellingPolicy::Always;               // 'always' — sell regardless of stock; any quantity is fulfillable
-SellingPolicy::InStock;              // 'in_stock' — sell only what is physically available
-SellingPolicy::InStockOrOnBackorder; // 'in_stock_or_on_backorder' — sell available stock plus the backorder allowance
-```
+`sell_against_incoming` only changes the sellable figure `getTotalInventory()` reports when `continue_selling` is `true`; any quantity can still be fulfilled.
 
 ```php
 $variant->canBeFulfilledAtQuantity(5);

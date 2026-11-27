@@ -55,18 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'backorder' => [
-            'label' => 'On Backorder',
-            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
+        'continue_selling' => [
+            'label' => 'Continue Selling When Out of Stock',
+            'tooltip' => 'When on, this variant can be ordered regardless of stock. When off, customers can only buy what is available.',
         ],
-        'selling_policy' => [
-            'label' => 'Selling Policy',
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'options' => [
-                'always' => 'Always',
-                'in_stock' => 'In Stock',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
-            ],
+        'sell_against_incoming' => [
+            'label' => 'Sell Against Incoming Stock',
+            'tooltip' => 'Count incoming stock as available, so customers can order units you are expecting.',
         ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',

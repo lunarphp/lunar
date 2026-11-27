@@ -270,7 +270,7 @@ The bundle variant's own `stock_*` columns are ignored and stay at zero. Its ava
 
 - For a **fixed bundle**, `available` is the smallest number of complete kits any component can supply: each component's own available quantity divided by its `quantity` per kit, and the minimum taken across components.
 - For a **configurable bundle**, each group contributes its best-stocked option, so `available` answers "can at least one valid configuration be sold". The chosen selection is checked exactly at add-to-cart (below).
-- `unlimited` is `true` only when every candidate component is on the `Always` selling policy.
+- `unlimited` is `true` only when every candidate component has `continue_selling` set.
 - A bundle with no components has nothing to sell.
 
 Because the seam sits behind `getTotalInventory()` and `canBeFulfilledAtQuantity()`, every caller is right without knowing bundles exist: a storefront stock badge, the core `CartLineStock` validator, and the panel.

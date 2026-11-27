@@ -3,7 +3,6 @@
 namespace Lunar\Panel\Dashboard\Widgets;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Panel\Dashboard\DashboardRange;
 use Lunar\Panel\Dashboard\Widget;
@@ -53,7 +52,7 @@ class LowStockWidget extends Widget
         $query = ProductVariant::query()
             ->where('stock_available', '<=', $threshold)
             // Variants sold regardless of stock have no reorder pressure.
-            ->where('selling_policy', '!=', SellingPolicy::Always)
+            ->where('continue_selling', false)
             ->whereHas('product', fn (Builder $product) => $product->whereVisible());
 
         $count = (clone $query)->count();

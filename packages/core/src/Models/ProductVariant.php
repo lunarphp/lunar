@@ -13,7 +13,6 @@ use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Contracts\TracksStock;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -53,8 +52,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?string $volume_unit
  * @property bool $shippable
  * @property ?list<string> $fulfilment_methods
- * @property int $backorder
- * @property SellingPolicy $selling_policy
+ * @property bool $continue_selling
+ * @property bool $sell_against_incoming
  * @property int $stock_on_hand
  * @property int $stock_incoming
  * @property int $stock_committed
@@ -91,7 +90,8 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
         'enabled' => 'bool',
         'shippable' => 'bool',
         'fulfilment_methods' => 'array',
-        'selling_policy' => SellingPolicy::class,
+        'continue_selling' => 'bool',
+        'sell_against_incoming' => 'bool',
         'stock_on_hand' => 'integer',
         'stock_incoming' => 'integer',
         'stock_committed' => 'integer',

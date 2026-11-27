@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Products\UpdateProductVariant;
-use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
@@ -15,7 +14,7 @@ test('updates variant fields', function () {
     app(UpdateProductVariant::class)->execute($variant, [
         'sku' => 'NEW-SKU',
         'enabled' => false,
-        'selling_policy' => SellingPolicy::InStock,
+        'continue_selling' => false,
         'min_quantity' => 6,
         'shippable' => false,
     ]);
@@ -24,7 +23,7 @@ test('updates variant fields', function () {
 
     expect($variant->sku)->toBe('NEW-SKU')
         ->and($variant->enabled)->toBeFalse()
-        ->and($variant->selling_policy)->toBe(SellingPolicy::InStock)
+        ->and($variant->continue_selling)->toBeFalse()
         ->and($variant->min_quantity)->toBe(6)
         ->and($variant->shippable)->toBeFalse();
 });

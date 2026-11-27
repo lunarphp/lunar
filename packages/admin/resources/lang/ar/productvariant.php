@@ -48,17 +48,6 @@ return [
         'stock' => [
             'label' => 'متوفر في المخزون',
         ],
-        'backorder' => [
-            'label' => 'طلب مسبق',
-        ],
-        'selling_policy' => [
-            'label' => 'سياسة البيع',
-            'options' => [
-                'always' => 'دائمًا',
-                'in_stock' => 'متوفر في المخزون',
-                'in_stock_or_on_backorder' => 'متوفر في المخزون أو طلب مسبق',
-            ],
-        ],
         'unit_quantity' => [
             'label' => 'كمية الوحدة',
             'helper_text' => 'كم عدد العناصر الفردية التي تشكل وحدة واحدة.',
