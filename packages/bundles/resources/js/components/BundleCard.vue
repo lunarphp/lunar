@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Section, http } from '@lunarphp/panel';
@@ -22,17 +22,43 @@ const failed = ref(false);
 
 const path = panelPath(usePage().props as Record<string, unknown>);
 
-onMounted(async () => {
+// Only the newest request may write: an older one resolving late would
+// bring back variants the page no longer has.
+let latestRequest = 0;
+
+const load = async (): Promise<void> => {
+    const request = ++latestRequest;
+
     try {
+        let loaded: BundleSummary[] | null = null;
+
         if (props.variant) {
-            summaries.value = [await http.get<BundleSummary>(`/${path}/bundles/variants/${props.variant.id}`)];
+            loaded = [await http.get<BundleSummary>(`/${path}/bundles/variants/${props.variant.id}`)];
         } else if (props.product) {
             const payload = await http.get<{ variants: BundleSummary[] }>(`/${path}/bundles/products/${props.product.id}`);
-            summaries.value = payload.variants;
+            loaded = payload.variants;
+        }
+
+        if (request === latestRequest) {
+            summaries.value = loaded;
+            failed.value = false;
         }
     } catch {
-        failed.value = true;
+        if (request === latestRequest) {
+            failed.value = true;
+        }
     }
+};
+
+onMounted(load);
+
+// Inertia keeps the page mounted across visits back to it, so a change made
+// elsewhere on the page (collapsing to a simple product deletes the other
+// variants, regenerating options replaces them) arrives as a fresh `product`
+// or `variant` prop without remounting this card. Reload on each fresh prop;
+// a partial reload that leaves the prop untouched does not refetch.
+watch([() => props.product, () => props.variant], () => {
+    void load();
 });
 </script>
 
