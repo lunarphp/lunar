@@ -23,6 +23,11 @@ class ShippingManifest implements ShippingManifestInterface
     protected bool $resolving = false;
 
     /**
+     * The cart the options currently in the manifest were resolved for.
+     */
+    protected ?int $resolvedFor = null;
+
+    /**
      * Initiate the class.
      */
     public function __construct()
@@ -35,13 +40,18 @@ class ShippingManifest implements ShippingManifestInterface
      */
     public function addOption(ShippingOption $option)
     {
-        $exists = $this->options->first(function ($opt) use ($option) {
-            return $opt->getIdentifier() == $option->getIdentifier();
-        });
+        // Publishing an identifier that is already here replaces it. Skipping
+        // instead meant the first price ever computed for an identifier was the
+        // only one that counted: a modifier re-pricing the same option for a
+        // changed destination or basket had its answer discarded.
+        $index = $this->options->search(
+            fn ($opt) => $opt->getIdentifier() == $option->getIdentifier()
+        );
 
-        // Does this option already exist?
-        if (! $exists) {
+        if ($index === false) {
             $this->options->push($option);
+        } else {
+            $this->options->put($index, $option);
         }
 
         return $this;
@@ -88,6 +98,17 @@ class ShippingManifest implements ShippingManifestInterface
         if ($this->resolving) {
             return $this->options;
         }
+
+        // The manifest is a singleton, so in any process that handles more than
+        // one cart - a queue job, a console command, an Octane worker - options
+        // priced for the last cart are still here. Start clean when the cart
+        // changes; options added for THIS cart, including any published before
+        // the first resolve, are left alone.
+        if ($this->resolvedFor !== null && $this->resolvedFor !== $cart->id) {
+            $this->options = collect();
+        }
+
+        $this->resolvedFor = $cart->id;
 
         $this->resolving = true;
 
