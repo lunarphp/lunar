@@ -106,6 +106,26 @@ it('can search brand', function () {
         ->assertSee($brand->name);
 });
 
+it('can search product without a variant', function () {
+
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = Product::factory()->create();
+
+    $record->tags()->create(['value' => 'NOVARIANTS']);
+
+    Livewire::test(GlobalSearch::class)
+        ->set('search', 'NOVARIANTS')
+        ->assertDispatched('open-global-search-results')
+        ->assertSee($record->translateAttribute('name'));
+});
+
 it('can search product', function () {
 
     Language::factory()->create([
