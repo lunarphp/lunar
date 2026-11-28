@@ -36,7 +36,7 @@ class PopularProductsTable extends TableWidget
                     DB::RAW('MAX(description) as description'),
                     'identifier',
                 )->groupBy('identifier', 'purchasable_id')
-                    ->whereType('physical');
+                    ->whereIn('type', ['physical', 'digital']);
             })->defaultSort('quantity', 'desc')
             ->defaultKeySort(false)
             ->columns([
