@@ -71,7 +71,7 @@ function can_handle_non_int_values()
         'currency_id' => $currencyGBP->id,
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.99,
+        'price' => 1299,
         'min_quantity' => 1,
     ]);
 
@@ -88,7 +88,7 @@ function can_handle_non_int_values()
         'currency_id' => $currencyUSD->id,
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.995,
+        'price' => 12995,
         'min_quantity' => 1,
     ]);
 
@@ -150,8 +150,8 @@ test('compare price is cast correctly', function () {
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.99,
-        'compare_price' => 13.99,
+        'price' => 1299,
+        'compare_price' => 1399,
         'min_quantity' => 1,
     ]);
 
